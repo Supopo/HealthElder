@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<template
+    format="5"
+    revision="1"
+    name="MVVM Activity"
+    minApi="14"
+    minBuildApi="14"
+    description="Creates a new activity with view model"> //模板创建窗口标题
+
+    <category value="Activity" /> //该模板所处的分类，可以自己写一个分类
+    <formfactor value="Mobile" />
+
+
+//除了description外，一个parameter代表创建窗口中的一行。
+//id标识该parameter，可以用${id值}来引用该parameter的值，例如${activityClass}；
+//name是该parameter呈现到上图时的名称；
+//type决定了该parameter的行为，如boolean为勾选框，string为文本输入框，pacakage为下拉框选择包；
+//constraints为约束，例如class要按标准类名来命名（首字母大写），unique表明这个parameter的string必须唯一，noempty是非空；
+//suggest是建议值，比如Activity Name中suggest为${layoutToActivity(layoutName)}，则id为layoutName的parameter改变值时，会执行${layoutToActivity(layoutName)}该函数，返回的值就是Activity Name显示的值。注意是实时改变；
+//default是parameter显示的默认值；
+//help是选中该parameter时提示的string。
+
+
+    <parameter
+        id="activityClass"
+        name="Activity Name"
+        type="string"
+        constraints="class|unique|nonempty"
+        default="XxxActivity"
+        help="The name of the activity class to create" />
+
+    <parameter
+        id="activityLayout"
+        name="Activity Layout Name"
+        type="string"
+        constraints="layout|unique|nonempty"
+        suggest="activity_${classToResource(activityClass)}"
+        default="activity_xxx"
+        help="The name of the layout to create for the activity" />
+		
+	<parameter
+        id="creatAdapter"
+        name="Creat adapter"
+        type="boolean"
+        default="false"
+        help="If true, this activity will creat an adapter" />
+		
+	<parameter
+        id="hasRefresh"
+        name="Has Refresh"
+        type="boolean"
+        default="true"
+		visibility="creatAdapter"
+        help="If true, this activity will have a SwipeRefreshLayout layout" />
+		
+	<parameter
+        id="hasLoadMore"
+        name="Has Lode More"
+        type="boolean"
+        default="true"
+		visibility="creatAdapter"
+        help="If true, this adapter can load more" />
+		
+	<parameter
+        id="creatBean"
+        name="Creat Bean"
+        type="boolean"
+        default="false"
+		visibility="creatAdapter"
+        help="If true, will creat a bean class" />
+		
+		
+	<parameter
+        id="beanClass"
+        name="Bean Name"
+        type="string"
+        constraints="class|unique|nonempty"
+		suggest="${underscoreToCamelCase(classToResource(activityClass))}Bean"
+        default="XxxBean"
+		visibility="creatAdapter"
+        help="The name of the bean class to create" />
+		
+		
+	<parameter
+        id="itemLayout"
+        name="Item Layout Name"
+        type="string"
+        constraints="layout|unique|nonempty"
+        suggest="item_${classToResource(beanClass)}"
+        default="item_xxx"
+		visibility="creatAdapter"
+        help="The name of the layout to create for the item" />
+		
+		
+	<parameter
+        id="adapterClass"
+        name="Adapter Name"
+        type="string"
+        constraints="class|unique|nonempty"
+        suggest="${underscoreToCamelCase(classToResource(activityClass))}Adapter"
+        default="XxxAdapter"
+        visibility="creatAdapter"
+        help="The name of the adapter to create for the activity" />
+
+
+    <parameter
+        id="viewModelClass"
+        name="ViewModel Name"
+        type="string"
+        constraints="class|unique|nonempty"
+        suggest="${underscoreToCamelCase(classToResource(activityClass))}ViewModel"
+        default="XxxViewModel"
+        help="The name of the view model class to create" />
+
+    <parameter
+        id="packageName"
+        name="Package name"
+        type="string"
+        constraints="package"
+        default="com.mycompany.myapp" />
+		
+
+    <!-- 128x128 thumbnails relative to template.xml -->
+    <thumbs>
+        <!-- default thumbnail is required -->
+        <thumb>template_blank_activity.png</thumb>
+    </thumbs>
+
+    <globals file="globals.xml.ftl" />
+    <execute file="recipe.xml.ftl" />
+
+</template>

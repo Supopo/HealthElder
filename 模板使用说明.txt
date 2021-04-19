@@ -1,0 +1,15 @@
+MVVMActivity文件夹解压放到AndroidStudio如下目录：
+...\AndroidStudio\plugins\android\lib\templates\activities
+
+AndroidStudio内一键生成操作：
+打开项目之后在总包名（注意是com.xxx.xxx这个位置）上右键->New->Activity-MVVMActivity
+
+
+MVVMFragment文件夹解压放到AndroidStudio如下目录：
+...\AndroidStudio\plugins\android\lib\templates\others
+
+AndroidStudio内一键生成操作
+打开项目之后在总包名上右键->New->Fragment-MVVMFragment
+
+
+

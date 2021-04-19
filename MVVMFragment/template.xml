@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<template
+    format="5"
+    revision="3"
+    name="MVVM Fragment"
+    description="Creates a Fragment with a ViewModel."
+    minApi="7"
+    minBuildApi="8">
+
+    <category value="Fragment" />
+
+
+    <parameter
+        id="fragmentClass"
+        name="Fragment Name"
+        type="string"
+        constraints="class|nonempty|unique"
+        default="XxxFragment"
+        help="The name of the fragment class to create" />
+
+    <parameter
+        id="fragmentLayout"
+        name="Fragment Layout Name"
+        type="string"
+        constraints="layout|nonempty|unique"
+        default="fragment_xxx"
+        suggest="fragment_${classToResource(fragmentClass)}"
+        help="The name of the layout to create" />
+		
+	<parameter
+        id="creatAdapter"
+        name="Creat adapter"
+        type="boolean"
+        default="false"
+        help="If true, this fragment will creat an adapter" />
+		
+	<parameter
+        id="hasRefresh"
+        name="Has Refresh"
+        type="boolean"
+        default="true"
+		visibility="creatAdapter"
+        help="If true, this fragment will have a SwipeRefreshLayout layout" />
+		
+	<parameter
+        id="hasLoadMore"
+        name="Has Lode More"
+        type="boolean"
+        default="true"
+		visibility="creatAdapter"
+        help="If true, this adapter can load more" />
+		
+	<parameter
+        id="creatBean"
+        name="Creat Bean"
+        type="boolean"
+        default="false"
+		visibility="creatAdapter"
+        help="If true, will creat a bean class" />
+		
+	<parameter
+        id="creatListBean"
+        name="Creat List Bean"
+        type="boolean"
+        default="false"
+		visibility="creatAdapter"
+        help="If true, will creat a list bean class" />
+		
+	<parameter
+        id="beanClass"
+        name="Bean Name"
+        type="string"
+        constraints="class|unique|nonempty"
+		suggest="${underscoreToCamelCase(classToResource(fragmentClass))}Bean"
+        default="XxxBean"
+		visibility="creatAdapter"
+        help="The name of the bean class to create" />
+		
+	<parameter
+        id="listBeanClass"
+        name="List Bean Name"
+        type="string"
+        constraints="class|unique|nonempty"
+		suggest="${underscoreToCamelCase(classToResource(activityClass))}ListBean"
+        default="XxxListBean"
+		visibility="creatAdapter"
+        help="The name of the list bean class to create" />
+		
+	<parameter
+        id="itemLayout"
+        name="Item Layout Name"
+        type="string"
+        constraints="layout|unique|nonempty"
+        suggest="item_${classToResource(beanClass)}"
+        default="item_xxx"
+		visibility="creatAdapter"
+        help="The name of the layout to create for the item" />
+		
+		
+	<parameter
+        id="adapterClass"
+        name="Adapter Name"
+        type="string"
+        constraints="class|unique|nonempty"
+        suggest="${underscoreToCamelCase(classToResource(fragmentClass))}Adapter"
+        default="XxxAdapter"
+        visibility="creatAdapter"
+        help="The name of the adapter to create for the fragment" />
+
+    <parameter
+        id="viewModelClass"
+        name="ViewModel Name"
+        type="string"
+        constraints="class|nonempty|unique"
+        default="XxxViewModel"
+        suggest="${underscoreToCamelCase(classToResource(fragmentClass))}ViewModel"
+        help="The name of the ViewModel class to create" />
+
+    <thumbs>
+        <thumb>template_blank_fragment.png</thumb>
+    </thumbs>
+
+    <globals file="globals.xml.ftl" />
+    <execute file="recipe.xml.ftl" />
+
+</template>
