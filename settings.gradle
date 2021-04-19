@@ -1,0 +1,2 @@
+include ':app', ':LibMVVM', ':beautysettingkit', ':audioeffectsettingkit', ':tuikit'
+rootProject.name='HealthElder'

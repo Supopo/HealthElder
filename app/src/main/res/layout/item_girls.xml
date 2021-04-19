@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.GirlsBean" />
+    </data>
+
+    <!--    随机背景颜色-->
+    <!--    android:background="@{viewModel.placeholderRes}"-->
+
+    <LinearLayout
+        android:id="@+id/ll_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{viewModel.placeholderRes}"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_girls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            binding:url="@{viewModel.url}" />
+
+
+    </LinearLayout>
+</layout>

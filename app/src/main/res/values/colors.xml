@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="themeColor">#fff</color>
+    <color name="pageColor">#fff</color>
+    <color name="btn_blue">#1C54E7</color>
+    <color name="btn_white">#fff5f5f5</color>
+    <color name="gray_999">#999999</color>
+    <color name="gray_666">#666666</color>
+    <color name="gray_242427">#242427</color>
+    <color name="textColor">#202020</color>
+    <color name="textColorHint">#A0A0A0</color>
+    <color name="textColorVice">#6C6C6C</color>
+    <color name="viewLineColor">#F0F0F0</color>
+</resources>

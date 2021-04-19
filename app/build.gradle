@@ -1,0 +1,186 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    defaultConfig {
+        applicationId = "com.xaqinren.healthyelders"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //方法超过65K，需要支持多个库
+        multiDexEnabled true
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+        }
+
+
+        vectorDrawables.useSupportLibrary = true
+
+        renderscriptTargetApi 25
+        renderscriptSupportModeEnabled true
+    }
+
+    //设置JDK版本
+    compileOptions {
+        sourceCompatibility = rootProject.ext.android.sourceCompatibility
+        targetCompatibility = rootProject.ext.android.targetCompatibility
+    }
+
+
+    // 创建一个名为keystorePropertiesFile的变量，并将其初始化为rootProject文件夹中的keystore.properties文件。
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    // 初始化一个名为keystoreProperties的新Properties（）对象
+    def keystoreProperties = new Properties()
+    // 将keystore.properties文件加载到keystoreProperties对象中
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+        debug {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
+
+    buildTypes {
+        release {
+            debuggable true
+            minifyEnabled false //启用Proguard
+            shrinkResources false //是否清理无用资源,依赖于minifyEnabled
+            zipAlignEnabled false //是否启用zipAlign压缩
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+
+        }
+        debug {
+            debuggable true
+            minifyEnabled false  //不启用Proguard
+            shrinkResources false //是否清理无用资源,依赖于minifyEnabled
+            zipAlignEnabled false //是否启用zipAlign压缩
+            signingConfig signingConfigs.debug
+        }
+    }
+    dataBinding {
+        enabled true
+    }
+    //防止代码量过大
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    configurations {
+        all*.exclude module: 'okio'
+    }
+
+    //因为主项目依赖的腾讯云专业版SDK和tuikit聊天库里面的冲突了所以需要这里压制
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libijksdl.so'
+        pickFirst 'lib/armeabi-v7a/libijkplayer.so'
+        pickFirst 'lib/armeabi-v7a/libijkffmpeg.so'
+        pickFirst 'lib/arm64-v8a/libijksdl.so'
+        pickFirst 'lib/arm64-v8a/libijkplayer.so'
+        pickFirst 'lib/arm64-v8a/libijkffmpeg.so'
+        pickFirst 'lib/x86/libijksdl.so'
+        pickFirst 'lib/x86/libijkplayer.so'
+        pickFirst 'lib/x86/libijkffmpeg.so'
+        pickFirst 'lib/x86_64/libijksdl.so'
+        pickFirst 'lib/x86_64/libijkplayer.so'
+        pickFirst 'lib/x86_64/libijkffmpeg.so'
+        pickFirst 'lib/armeabi-v7a/libRSSupport.so'
+        pickFirst 'lib/armeabi-v7a/libnms.so'
+
+        //美颜和音效库的冲突
+        pickFirst '**/libc++_shared.so'
+        doNotStrip "*/armeabi/libYTCommon.so"
+        doNotStrip "*/armeabi-v7a/libYTCommon.so"
+        doNotStrip "*/x86/libYTCommon.so"
+        doNotStrip "*/arm64-v8a/libYTCommon.so"
+    }
+
+    //直播云JAR包导入需要
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs/upload')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.annotation:annotation:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //内存泄漏测试 debugImplementation和releaseImplementation都要有
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+
+    //LibMVVM
+    implementation project(path: ':LibMVVM')
+    //QMUI小功能控件库
+    api rootProject.ext.dependencies.qmui
+    //BaseQuickAdapter 最新版本 latest.integration 但是使用这个有些系统库可能下载不下来
+    api rootProject.ext.dependencies.adapter
+
+    // ------------------腾讯云直播-------------------------------
+    //  MLVB 需要依赖 okhttp 拦截器
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    //  MLVB 需要使用 gson 进行 json 解析
+    api rootProject.ext.dependencies.gson
+    //  腾讯云专业版SDK
+    implementation 'com.tencent.liteav:LiteAVSDK_Professional:latest.release'
+    //  MLVB 需要依赖腾讯云 IM 服务
+    implementation 'com.tencent.imsdk:imsdk:4.9.1'
+    //  弹幕功能需要依赖此库
+    implementation 'com.github.ctiao:dfm:0.4.4'
+    //  Dex 多分包依赖
+    implementation 'androidx.multidex:multidex:2.0.0'
+    //  直播音效面板库
+    implementation project(path: ':audioeffectsettingkit')
+    //  直播美颜面板库
+    implementation project(path: ':beautysettingkit')
+    //  IM聊天库
+    implementation project(path: ':tuikit')
+    // ------------------腾讯云直播-------------------------------
+
+    //图片加载
+    api rootProject.ext.dependencies.glide
+
+
+}
