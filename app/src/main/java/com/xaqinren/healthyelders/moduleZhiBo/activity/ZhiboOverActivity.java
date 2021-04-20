@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityZhiboOverBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZhiboOverAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZB2LinkSettingPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverViewModel;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -41,6 +43,14 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
         setStatusBarTransparent();
         initAdapter();
         viewModel.getTopUserList();
+        binding.ivClose.setOnClickListener(lis -> {
+            ZB2LinkSettingPop zb2LinkSettingPop = new ZB2LinkSettingPop(this);
+            zb2LinkSettingPop.showPopupWindow();
+        });
+        binding.tvTitle.setOnClickListener(lis -> {
+            ZBUserInfoPop zbUserInfoPop = new ZBUserInfoPop(this);
+            zbUserInfoPop.showPopupWindow();
+        });
     }
 
 
@@ -65,7 +75,7 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
     private void initAdapter() {
         mAdapter = new ZhiboOverAdapter(R.layout.item_zhibo_user_bean);
         //设置不可滑动
-        binding.rvContent.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false){
+        binding.rvContent.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false) {
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -80,7 +90,6 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
 
         });
-
 
 
     }

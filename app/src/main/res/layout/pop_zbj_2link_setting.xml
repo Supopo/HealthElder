@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_pop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_280"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_pop_bottom"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_52"
+                android:gravity="center"
+                android:text="双人设置"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_52"
+                android:background="@color/color_EAEAEA" />
+
+
+            <LinearLayout
+                android:id="@+id/ll_menu1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/line"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="仅接受粉丝的的连线申请"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+
+                <com.xaqinren.healthyelders.widget.SwitchButton
+                    android:layout_width="@dimen/dp_51"
+                    android:layout_height="@dimen/dp_31"
+                    app:sb_show_indicator="false"
+                    app:sb_shadow_color="@color/transparent"
+                    app:sb_checked_color="@color/color_34C"
+                    app:sb_background="@color/color_E9E9A"
+                    app:sb_uncheck_color="@color/color_E9E9A" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_menu2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_menu1"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="管理员对连线嘉宾有操作权限"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+
+                <com.xaqinren.healthyelders.widget.SwitchButton
+                    android:layout_width="@dimen/dp_51"
+                    android:layout_height="@dimen/dp_31"
+                    app:sb_show_indicator="false"
+                    app:sb_shadow_color="@color/transparent"
+                    app:sb_checked_color="@color/color_34C"
+                    app:sb_background="@color/color_E9E9A"
+                    app:sb_uncheck_color="@color/color_E9E9A" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_menu3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_menu2"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="观众连线需要通过申请"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+
+                <com.xaqinren.healthyelders.widget.SwitchButton
+                    android:layout_width="@dimen/dp_51"
+                    android:layout_height="@dimen/dp_31"
+                    app:sb_show_indicator="false"
+                    app:sb_shadow_color="@color/transparent"
+                    app:sb_checked_color="@color/color_34C"
+                    app:sb_background="@color/color_E9E9A"
+                    app:sb_uncheck_color="@color/color_E9E9A" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_menu4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_menu3"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="仅允许通过邀请上麦"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+
+                <com.xaqinren.healthyelders.widget.SwitchButton
+                    android:layout_width="@dimen/dp_51"
+                    android:layout_height="@dimen/dp_31"
+                    app:sb_show_indicator="false"
+                    app:sb_shadow_color="@color/transparent"
+                    app:sb_checked_color="@color/color_34C"
+                    app:sb_background="@color/color_E9E9A"
+                    app:sb_uncheck_color="@color/color_E9E9A" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</layout>

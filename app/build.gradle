@@ -182,5 +182,9 @@ dependencies {
     //图片加载
     api rootProject.ext.dependencies.glide
 
+    //BasepopupWindow
+    implementation 'com.github.razerdp:BasePopup:2.1.9'
+
+
 
 }
