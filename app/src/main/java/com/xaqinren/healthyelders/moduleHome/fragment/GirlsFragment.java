@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -16,12 +17,15 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.moduleHome.activity.WebActivity;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.databinding.FragmentGirlsBinding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.WebActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.GirlsAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.GirlsViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
@@ -89,6 +93,32 @@ public class GirlsFragment extends BaseFragment<FragmentGirlsBinding, GirlsViewM
             }
         });
 
+        // 单数据加载写法
+        viewModel.getData().observe(this, new Observer<List<GirlsBean>>() {
+            @Override
+            public void onChanged(List<GirlsBean> dataList) {
+                if (dataList != null) {
+                    if (dataList.size() > 0) {
+                        //加载更多加载完成
+                        mLoadMore.loadMoreComplete();
+                    }
+                    if (pageNum == 1) {
+                        //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                        mAdapter.setList(dataList);
+                        if (dataList.size() == 0) {
+                            //创建适配器.空布局，没有数据时候默认展示的
+                            mAdapter.setEmptyView(R.layout.list_empty);
+                        }
+                    } else {
+                        if (dataList.size() == 0) {
+                            //加载更多加载结束
+                            mLoadMore.loadMoreEnd(true);
+                        }
+                        mAdapter.addData(dataList);
+                    }
+                }
+            }
+        });
 
     }
 
@@ -120,7 +150,11 @@ public class GirlsFragment extends BaseFragment<FragmentGirlsBinding, GirlsViewM
         binding.rvContent.setAdapter(mAdapter);
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
-        viewModel.getDataList(pageNum);
+
+        // 多页数据加载写法
+//        viewModel.getDataList(pageNum);
+        // 单数据加载写法
+        viewModel.getData();
 
         //Item点击事件
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
