@@ -407,8 +407,17 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         return ViewModelProviders.of(activity).get(cls);
     }
 
+    /**
+     * 设置全屏
+     * 如果有的手机开启全屏之后顶部有彩色条，那是因为手机的全屏设置没有设置该app
+     */
+    public void setFullScreen() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
 
-    //设置透明状态栏，页面延伸
+    /**
+     * 设置透明状态栏，页面延伸
+     */
     public void setStatusBarTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View decorView = getWindow().getDecorView();
@@ -428,28 +437,21 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
     }
 
-    //设置全屏（隐藏状态栏）
-    //如果有刘海先要在手机里面设置显示刘海内容
-    //如果有的手机开启全屏之后顶部有彩色条，那是因为手机的全屏设置没有设置该app
-    public void setFullScreen() {
-        Window window = getWindow();
-        //设置全屏
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        //如果有刘海先要在手机里面设置显示刘海内容
-        if (Build.VERSION.SDK_INT >= 28) {
-            WindowManager.LayoutParams lp = window.getAttributes();
-            //设置内容扩展到刘海位置
-            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-            getWindow().setAttributes(lp);
-
-            // View.SYSTEM_UI_FLAG_FULLSCREEN: 状态栏隐藏
-            // View.SYSTEM_UI_FLAG_HIDE_NAVIGATION: 导航栏隐藏
-            // View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN: 视图延伸至状态栏区域，状态栏上浮于视图之上
-            int flags = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-            int visibility = window.getDecorView().getSystemUiVisibility();
-            visibility |= flags; //追加沉浸式设置
-            window.getDecorView().setSystemUiVisibility(visibility);
+    public void cancelStatusBarTransparent() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            View decorView = getWindow().getDecorView();
+            decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    WindowInsets defaultInsets = v.onApplyWindowInsets(insets);
+                    return defaultInsets.replaceSystemWindowInsets(
+                            defaultInsets.getSystemWindowInsetLeft(),
+                            defaultInsets.getSystemWindowInsetTop(),
+                            defaultInsets.getSystemWindowInsetRight(),
+                            defaultInsets.getSystemWindowInsetBottom());
+                }
+            });
+            ViewCompat.requestApplyInsets(decorView);
         }
     }
 

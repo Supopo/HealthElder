@@ -9,39 +9,106 @@
             type="com.xaqinren.healthyelders.moduleHome.viewModel.MainViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:background="@color/gray_999">
 
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_menu" />
 
-        <View
+
+        <LinearLayout
+            android:id="@+id/ll_menu"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#F0F0F0" />
-
-
-        <!--        app:itemBackground="@null" 取消点击水波纹-->
-        <!--        app:itemHorizontalTranslationEnabled="false"  取消位移偏量-->
-        <!--        app:labelVisibilityMode="labeled"  文字常显示-->
-
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_49"
+            android:layout_alignParentBottom="true"
             android:background="@color/white"
-            app:elevation="8dp"
-            app:itemBackground="@null"
-            app:itemHorizontalTranslationEnabled="false"
-            app:labelVisibilityMode="labeled"
-            app:menu="@menu/bottom_menus" />
-    </LinearLayout>
+            android:gravity="top"
+            android:orientation="horizontal"
+            android:paddingTop="13dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:id="@+id/tv_menu1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableBottom="@mipmap/line_bq"
+                android:drawablePadding="@dimen/dp_4"
+                android:gravity="center"
+                android:text="首页"
+                android:textColor="@color/color_DC3530"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_menu2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/dp_4"
+                android:gravity="center"
+                android:text="直播"
+                android:textColor="@color/gray_666"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tv_menu3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/dp_4"
+                android:gravity="center"
+                android:text="消息"
+                android:textColor="@color/gray_666"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_menu4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/dp_4"
+                android:gravity="center"
+                android:text="我的"
+                android:textColor="@color/gray_666"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_39"
+            android:background="@mipmap/home_zb_bg" />
+
+
+        <ImageView
+            android:id="@+id/iv_live"
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@mipmap/icon_kszb" />
+
+    </RelativeLayout>
 </layout>

@@ -93,7 +93,7 @@ public class GirlsFragment extends BaseFragment<FragmentGirlsBinding, GirlsViewM
             }
         });
 
-        // 单数据加载写法
+        //单数据加载写法
         viewModel.getData().observe(this, new Observer<List<GirlsBean>>() {
             @Override
             public void onChanged(List<GirlsBean> dataList) {
@@ -152,7 +152,7 @@ public class GirlsFragment extends BaseFragment<FragmentGirlsBinding, GirlsViewM
         binding.rvContent.setItemAnimator(null);
 
         // 多页数据加载写法
-//        viewModel.getDataList(pageNum);
+//        viewModel.getTopUserList(pageNum);
         // 单数据加载写法
         viewModel.getData();
 

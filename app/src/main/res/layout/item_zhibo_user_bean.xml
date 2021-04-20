@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_item"
+        android:layout_width="@dimen/dp_54"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+
+        <FrameLayout
+            android:layout_centerHorizontal="true"
+            android:id="@+id/fl_photo"
+            android:layout_width="@dimen/dp_54"
+            android:layout_height="wrap_content">
+
+            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                android:layout_marginLeft="@dimen/dp_5"
+                android:id="@+id/riv_photo"
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="@dimen/dp_44"
+                android:src="@drawable/ic_avatar"
+                app:qmui_border_color="@color/transparent"
+                app:qmui_is_circle="true" />
+            <RelativeLayout
+                android:layout_marginTop="@dimen/dp_3"
+                android:layout_marginLeft="@dimen/dp_38"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_12"
+                android:background="@mipmap/pm_bg">
+
+                <TextView
+                    android:id="@+id/tv_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/color_FFE6D074"
+                    android:textSize="@dimen/sp_11" />
+            </RelativeLayout>
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fl_photo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:singleLine="true"
+            android:text="@{viewModel.nickname}"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name"
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"
+            android:text="60分钟"
+            android:textColor="@color/color_FF525461"
+            android:textSize="@dimen/sp_11" />
+
+    </RelativeLayout>
+</layout>

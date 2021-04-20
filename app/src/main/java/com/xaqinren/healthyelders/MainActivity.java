@@ -1,15 +1,12 @@
 package com.xaqinren.healthyelders;
 
-import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,12 +14,8 @@ import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleHome.viewModel.MainViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverActivity;
 
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +25,8 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
     private List<Fragment> mFragments;
     private double firstTime;
+    private TextView oldView;
+    private TextView selectView;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -50,8 +45,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         ivLeft.setVisibility(View.INVISIBLE);
         //初始化Fragment
         initFragment();
-        //初始化底部Button
-        initBottomTab();
     }
 
     private void initFragment() {
@@ -63,31 +56,67 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         //默认选中第一个
         commitAllowingStateLoss(0);
+        oldView = binding.tvMenu1;
+
+        initEvent();
     }
 
-    private void initBottomTab() {
-        closeAnimation(binding.navigation);
-
-        binding.navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                CharSequence title = item.getTitle();
-                if (title.equals(getString(R.string.home_menu1))) {
-                    commitAllowingStateLoss(0);
-                    return true; //必须返回true 不然无效
-                } else if (title.equals(getString(R.string.home_menu2))) {
-                    commitAllowingStateLoss(1);
-                    return true;
-                } else if (title.equals(getString(R.string.home_menu3))) {
-                    commitAllowingStateLoss(2);
-                    return true;
-                } else if (title.equals(getString(R.string.home_menu4))) {
-                    commitAllowingStateLoss(3);
-                    return true;
-                }
-                return false;
-            }
+    private void initEvent() {
+        binding.tvMenu1.setOnClickListener(lis -> {
+            selectView = binding.tvMenu1;
+            initBottomTab();
+            oldView = binding.tvMenu1;
         });
+        binding.tvMenu2.setOnClickListener(lis -> {
+            selectView = binding.tvMenu2;
+            initBottomTab();
+            oldView = binding.tvMenu2;
+        });
+        binding.tvMenu3.setOnClickListener(lis -> {
+            selectView = binding.tvMenu3;
+            initBottomTab();
+            oldView = binding.tvMenu3;
+        });
+        binding.tvMenu4.setOnClickListener(lis -> {
+            selectView = binding.tvMenu4;
+            initBottomTab();
+            oldView = binding.tvMenu4;
+        });
+        binding.ivLive.setOnClickListener(lis -> {
+            startActivity(ZhiboOverActivity.class);
+        });
+    }
+
+
+    private void initBottomTab() {
+
+        Drawable dawable = getResources().getDrawable(R.mipmap.line_bq);
+        dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
+
+        oldView.setCompoundDrawables(null, null, null, null);
+        oldView.setTextColor(getResources().getColor(R.color.gray_666));
+        oldView.setTextSize(16);
+
+        selectView.setCompoundDrawables(null, null, null, dawable);
+        selectView.setTextColor(getResources().getColor(R.color.color_DC3530));
+        selectView.setTextSize(18);
+
+        switch (selectView.getId()) {
+            case R.id.tv_menu1:
+                commitAllowingStateLoss(0);
+                break;
+            case R.id.tv_menu2:
+                commitAllowingStateLoss(1);
+                break;
+            case R.id.tv_menu3:
+                commitAllowingStateLoss(2);
+                break;
+            case R.id.tv_menu4:
+                commitAllowingStateLoss(3);
+                break;
+
+        }
+
     }
 
     private void commitAllowingStateLoss(int position) {
@@ -135,60 +164,4 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
         return super.onKeyUp(keyCode, event);
     }
-
-
-    /**
-     * 例用反射关闭 BottomNavigationView 的点击放大效果
-     *
-     * @param view ---------------------------------------------
-     */
-
-    @SuppressLint("RestrictedApi")
-    public void closeAnimation(BottomNavigationView view) {
-        BottomNavigationMenuView mMenuView = (BottomNavigationMenuView) view.getChildAt(0);
-        for (int i = 0; i < mMenuView.getChildCount(); i++) {
-            BottomNavigationItemView button = (BottomNavigationItemView) mMenuView.getChildAt(i);
-            TextView mLargeLabel = getField(button.getClass(), button, "largeLabel");
-            TextView mSmallLabel = getField(button.getClass(), button, "smallLabel");
-            float mSmallLabelSize = mSmallLabel.getTextSize();
-            setField(button.getClass(), button, "shiftAmount", 0F);
-            setField(button.getClass(), button, "scaleUpFactor", 1F);
-            setField(button.getClass(), button, "scaleDownFactor", 1F);
-            mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSmallLabelSize);
-        }
-        mMenuView.updateMenuView();
-    }
-
-
-    private <T> T getField(Class targetClass, Object instance, String fieldName) {
-        try {
-            Field field = targetClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (T) field.get(instance);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    private void setField(Class targetClass, Object instance, String fieldName, Object value) {
-        try {
-            Field field = targetClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(instance, value);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *------------------------------------------------
-     */
-
-
 }

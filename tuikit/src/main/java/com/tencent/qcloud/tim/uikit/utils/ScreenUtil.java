@@ -89,6 +89,16 @@ public class ScreenUtil {
         return (int) (dp * scale + 0.5f);
     }
 
+    public static float dp2px(@NonNull Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return dp * scale + 0.5f;
+    }
+
+    public static float sp2px(@NonNull Context context, float sp) {
+        final float scale = context.getResources().getDisplayMetrics().scaledDensity;
+        return sp * scale;
+    }
+
     public static int getDpi(Context context) {
         int dpi = 0;
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

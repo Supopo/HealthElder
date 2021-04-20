@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
-        android:name="com.xaqinren.healthyelders.global.AppApplication"
+        android:name=".global.AppApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".moduleZhiBo.activity.ZhiboOverActivity"
+            android:screenOrientation="portrait" />
         <!-- 设置是否可以分屏 -->
         <!-- 这个属性在你target到Android N后，android:resizeableActivity的默认值就是true -->
         <!-- android:resizeableActivity="false" -->
@@ -28,7 +31,6 @@
         <!-- android:requestLegacyExternalStorage="true" -->
         <!-- 避免10.0出现http联网问题 -->
         <!-- 表示可以明文访问网络http android:usesCleartextTraffic="true" -->
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" /> <!-- 声明最大高宽比 解决不能全屏问题 -->
@@ -47,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.xaqinren.healthyelders.MainActivity"
+            android:name=".MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
