@@ -53,7 +53,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         mFragments.add(new GirlsFragment());
         mFragments.add(new XxxFragment());
         mFragments.add(new XxxFragment());
-
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;

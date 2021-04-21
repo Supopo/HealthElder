@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_goods"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_125"
+        android:background="@color/white"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_13"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_12">
+
+        <ImageView
+            android:id="@+id/iv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/icon_rad_nor" />
+
+        <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+            android:id="@+id/iv_image"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:layout_below="@+id/view_line"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_toRightOf="@id/iv_select"
+            android:background="@{viewModel.getPlaceholderRes()}"
+            app:qmui_border_color="@color/transparent"
+            app:qmui_corner_radius="@dimen/dp_2" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_image"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="商品名称商品名称商品名称商品名称商品名称商品名称"
+            android:textColor="@color/color_252525"
+            android:textSize="@dimen/sp_13" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@id/iv_image"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_price_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/dp_2"
+                android:text="￥"
+                android:textColor="@color/color_DC3530"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@+id/tv_price_unit"
+                android:text="99"
+                android:textColor="@color/color_DC3530"
+                android:textSize="@dimen/sp_18" />
+
+            <TextView
+                android:id="@+id/tv_oldPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_2"
+                android:layout_toRightOf="@+id/tv_price"
+                android:text="￥0"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

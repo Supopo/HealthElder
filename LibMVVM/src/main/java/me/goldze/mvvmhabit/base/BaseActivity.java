@@ -109,6 +109,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setStatusBar(getResources().getColor(R.color.white));
 
         //解决 8.0系统 设置竖屏和透明状态栏 冲突问题
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O && isTranslucentOrFloating()) {
@@ -388,7 +389,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void initData() {
-
     }
 
     @Override

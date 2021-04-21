@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.viewModel.GoodsListViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srl_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_content"
+                android:paddingTop="@dimen/dp_12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_52"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="移除选中的商品"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="选中商品："
+                android:textColor="@color/gray_666"
+                android:textSize="@dimen/sp_11" />
+
+            <TextView
+                android:id="@+id/tv_remove"
+                android:layout_width="@dimen/dp_88"
+                android:layout_height="@dimen/dp_40"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/btn_red_empty"
+                android:gravity="center"
+                android:text="移除"
+                android:textColor="@color/color_DC3530" />
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

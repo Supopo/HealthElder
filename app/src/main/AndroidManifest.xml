@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.xaqinren.healthyelders">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".global.AppApplication"
         android:allowBackup="true"
+        android:allowClearUserData="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name=".moduleZhiBo.activity.MyGoodsListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
-            android:screenOrientation="portrait" />
-        <!-- 设置是否可以分屏 -->
+            android:screenOrientation="portrait" /> <!-- 设置是否可以分屏 -->
         <!-- 这个属性在你target到Android N后，android:resizeableActivity的默认值就是true -->
         <!-- android:resizeableActivity="false" -->
         <!-- 10.0无法保持图片 需要的权限 -->
@@ -37,7 +41,6 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
-
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
             android:screenOrientation="portrait">

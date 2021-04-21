@@ -6,4 +6,5 @@ package com.xaqinren.healthyelders.global;
  */
 public class CodeTable {
     public static int CODE_SUCCESS = 100;
+    public static int RESH_VIEW_CODE = 99;
 }

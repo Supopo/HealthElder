@@ -8,13 +8,15 @@ import androidx.annotation.Nullable;
 
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 
+import io.dcloud.feature.sdk.DCUniMPSDK;
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.databinding.ActivityBaseBinding;
 
 //注意ActivityBaseBinding换成自己fragment_layout对应的名字 FragmentXxxBinding
-public class XxxFragment extends BaseFragment<ActivityBaseBinding, XxxViewModel> {
+public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> {
 
 
     @Override
@@ -30,6 +32,16 @@ public class XxxFragment extends BaseFragment<ActivityBaseBinding, XxxViewModel>
     //页面数据初始化方法
     @Override
     public void initData() {
+        binding.tvMenu1.setOnClickListener(lis -> {
+            try {
+                DCUniMPSDK.getInstance().startApp(getActivity(), "__UNI__04E3A11");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        binding.tvMenu2.setOnClickListener(lis -> {
+            startActivity(MyGoodsListActivity.class);
+        });
     }
 
 

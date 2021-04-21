@@ -1,12 +1,19 @@
 package com.xaqinren.healthyelders.global;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
 
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.dcloud.feature.sdk.DCSDKInitConfig;
+import io.dcloud.feature.sdk.DCUniMPSDK;
+import io.dcloud.feature.sdk.MenuActionSheetItem;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
 import me.goldze.mvvmhabit.utils.KLog;
@@ -33,6 +40,26 @@ public class AppApplication extends BaseApplication {
                 LeakCanary.install(this);
             }
         }
+        //初始化Uni小程序
+        initUni();
+    }
+
+    private void initUni() {
+        MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
+        List<MenuActionSheetItem> sheetItems = new ArrayList<>();
+        sheetItems.add(item);
+        DCSDKInitConfig config = new DCSDKInitConfig.Builder()
+                .setCapsule(true)
+                .setMenuDefFontSize("16px")
+                .setMenuDefFontColor("#ff00ff")
+                .setMenuDefFontWeight("normal")
+                .setMenuActionSheetItems(sheetItems)
+                .build();
+        DCUniMPSDK.getInstance().initialize(this, config, new DCUniMPSDK.IDCUNIMPPreInitCallback() {
+            @Override
+            public void onInitFinished(boolean isSuccess) {
+            }
+        });
     }
 
     private void initCrash() {

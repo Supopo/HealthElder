@@ -1,25 +1,19 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.xaqinren.healthyelders.utils.ColorsUtils;
+
 /**
  * Created by Lee. on 2021/4/21.
  */
 public class GoodsBean {
-    public String banners;//: Any?,
-    public String bidPrice;//: Double?,
-    public String code;//: Any?,
+    public int id;//: Any?,
     public String content;//: Any?,
     public String cover;//: String?,
-    public String curPrice;//: Double?,
-    public String explainStatus;//: String?,
-    public String intStatus;//: Int?,
+    public double curPrice;//: Double?,
     public String name;//: String?,
-    public String oldPrice;//: Double?,
-    public String productId;//: Int?,
-    public String productSkuId;//: Int?,
-    public String productTypeId;//: Int?,
-    public String productTypeName;//: Any?,
-    public String skuAttrs;//: Any?,
-    public String sysCode;//: Any?,
-    public String type;//: Int?,
-    public String businessEntity;//: BusinessBasicBean
+    public double oldPrice;//: Double?,
+    public boolean isSelect;//:
+    public int getPlaceholderRes() {
+        return ColorsUtils.randomColor();
+    }
 }
