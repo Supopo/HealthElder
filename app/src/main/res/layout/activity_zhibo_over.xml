@@ -36,7 +36,7 @@
                 android:layout_below="@id/iv_close"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/dp_22"
-                android:background="@drawable/bg_zhibo_over_zbzx"
+                android:background="@mipmap/zhub_zx_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
 
