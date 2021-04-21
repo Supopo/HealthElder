@@ -163,6 +163,12 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         ivLeft = baseBinding.getRoot().findViewById(R.id.iv_left);
         ivRight = baseBinding.getRoot().findViewById(R.id.iv_right);
         tvRight = baseBinding.getRoot().findViewById(R.id.tv_right);
+        ivLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //设置页面中的布局
         FrameLayout mContainer = (FrameLayout) baseBinding.getRoot().findViewById(R.id.rl_container);

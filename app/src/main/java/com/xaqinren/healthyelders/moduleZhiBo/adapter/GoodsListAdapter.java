@@ -25,6 +25,11 @@ public class GoodsListAdapter extends BaseQuickAdapter<GoodsBean, BaseViewHolder
         ItemGoodsBeanBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+
+        if (item.isSelect)
+            helper.getView(R.id.iv_select).setBackgroundResource(R.mipmap.icon_rad_sel);
+        else
+            helper.getView(R.id.iv_select).setBackgroundResource(R.mipmap.icon_rad_nor);
     }
 
     //局部刷新用的

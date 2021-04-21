@@ -12,7 +12,9 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.GoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.GoodsListViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -74,7 +76,7 @@ public class MyGoodsListActivity extends BaseActivity<ActivityGoodsListBinding, 
     }
 
 
-    private Map<Integer, Boolean> selectMap = new HashMap<>();
+    private Map<Integer, GoodsBean> selectMap = new HashMap<>();
 
     private void initAdapter() {
         mAdapter = new GoodsListAdapter(R.layout.item_goods_bean);
@@ -97,9 +99,21 @@ public class MyGoodsListActivity extends BaseActivity<ActivityGoodsListBinding, 
         });
 
         binding.tvRemove.setOnClickListener(lis -> {
-
+            removeSelect();
         });
 
+    }
+
+    //移除所选商品
+    private void removeSelect() {
+        List<GoodsBean> temp = new ArrayList<>();
+        if (selectMap.size() > 0) {
+            for (Integer integer : selectMap.keySet()) {
+                temp.add(selectMap.get(integer));
+            }
+            mAdapter.getData().removeAll(temp);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void selectEvent(int position) {
@@ -107,14 +121,14 @@ public class MyGoodsListActivity extends BaseActivity<ActivityGoodsListBinding, 
         mAdapter.notifyItemChanged(position, CodeTable.RESH_VIEW_CODE);
 
         if (mAdapter.getData().get(position).isSelect) {
-            selectMap.put(mAdapter.getData().get(position).id, true);
+            selectMap.put(mAdapter.getData().get(position).id, mAdapter.getData().get(position));
         } else {
             if (selectMap.get(mAdapter.getData().get(position).id) != null) {
                 selectMap.remove(mAdapter.getData().get(position).id);
             }
         }
 
-        binding.tvSelect.setText("选中商品：" + selectMap.size());
+        binding.tvSelect.setText("选中商品：" + (selectMap.size() == 0 ? "" : selectMap.size()));
     }
 
 }
