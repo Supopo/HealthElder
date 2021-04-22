@@ -40,7 +40,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
-            android:screenOrientation="portrait" /> <!-- 设置是否可以分屏 -->
+            android:screenOrientation="portrait" />
+        <!-- 设置是否可以分屏 -->
         <!-- 这个属性在你target到Android N后，android:resizeableActivity的默认值就是true -->
         <!-- android:resizeableActivity="false" -->
         <!-- 10.0无法保持图片 需要的权限 -->
@@ -91,7 +92,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- Maps(高德地图) begin -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="1245f55df04583e53eb0fbf511be9a08" />
 
+        <service android:name="com.amap.api.location.APSService" />
         <!-- 微信分享 配置begin -->
         <meta-data
             android:name="WX_APPID"
@@ -142,14 +148,9 @@
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <!-- Oauth QQ end -->
-        <!-- Maps(高德地图) begin -->
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="1245f55df04583e53eb0fbf511be9a08" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />        <!-- Oauth QQ end -->
+        <activity android:name=".moduleZhiBo.activity.SettingRoomPwdActivity" />
 
-        <service android:name="com.amap.api.location.APSService" />
     </application>
 
 </manifest>

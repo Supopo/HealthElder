@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 
 import io.dcloud.common.DHInterface.ICallBack;
 import io.dcloud.feature.sdk.DCUniMPSDK;
@@ -93,7 +94,7 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             });
         });
         binding.tvMenu6.setOnClickListener(lis -> {
-
+            startActivity(SettingRoomPwdActivity.class);
         });
 
     }

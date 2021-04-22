@@ -55,7 +55,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/green"
             android:gravity="center"
-            android:text="打开下载过的线上小程序"
+            android:text="设置直播间密码"
             android:textColor="@color/white" />
 
         <TextView
