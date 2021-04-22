@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
 
@@ -50,7 +49,8 @@ public class AppApplication extends BaseApplication {
         }
         //初始化Uni小程序
         initUni();
-        regToWx();
+        //注册微信
+        registerWx();
     }
 
     private void initUni() {
@@ -86,7 +86,7 @@ public class AppApplication extends BaseApplication {
                 .apply();
     }
 
-    private void regToWx() {
+    private void registerWx() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
         mWXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
 

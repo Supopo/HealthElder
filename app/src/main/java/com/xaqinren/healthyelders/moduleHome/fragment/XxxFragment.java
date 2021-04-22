@@ -6,10 +6,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 
 import io.dcloud.feature.sdk.DCUniMPSDK;
@@ -41,6 +42,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         });
         binding.tvMenu2.setOnClickListener(lis -> {
             startActivity(MyGoodsListActivity.class);
+        });
+        binding.tvMenu3.setOnClickListener(lis -> {
+            startActivity(SelectLoginActivity.class);
         });
     }
 

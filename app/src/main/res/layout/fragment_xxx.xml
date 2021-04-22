@@ -45,7 +45,7 @@
             android:layout_height="@dimen/dp_30"
             android:background="@color/green"
             android:gravity="center"
-            android:text="按钮"
+            android:text="登陆页面"
             android:textColor="@color/white" />
 
     </LinearLayout>
