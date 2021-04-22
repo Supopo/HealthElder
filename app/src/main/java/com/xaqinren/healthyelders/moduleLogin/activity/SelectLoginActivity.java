@@ -2,12 +2,15 @@ package com.xaqinren.healthyelders.moduleLogin.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivitySelectLoginBinding;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SelectLoginViewModel;
 
+import io.dcloud.common.DHInterface.ICallBack;
+import io.dcloud.feature.sdk.DCUniMPSDK;
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 /**
