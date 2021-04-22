@@ -1,10 +1,16 @@
 package com.xaqinren.healthyelders.global;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
 
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.R;
 
@@ -21,6 +27,8 @@ import me.goldze.mvvmhabit.utils.KLog;
 
 public class AppApplication extends BaseApplication {
     public static Context mContext;
+    public String WX_APP_ID = "wx4083c9a2be58173b";
+    public static IWXAPI mWXapi;
 
     public static Context getContext() {
         return mContext;
@@ -42,6 +50,7 @@ public class AppApplication extends BaseApplication {
         }
         //初始化Uni小程序
         initUni();
+        regToWx();
     }
 
     private void initUni() {
@@ -76,4 +85,23 @@ public class AppApplication extends BaseApplication {
                 // .eventListener(new YourCustomEventListener()) //崩溃后的错误监听
                 .apply();
     }
+
+    private void regToWx() {
+        // 通过WXAPIFactory工厂，获取IWXAPI的实例
+        mWXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
+
+        // 将应用的appId注册到微信
+        mWXapi.registerApp(WX_APP_ID);
+
+        //建议动态监听微信启动广播进行注册到微信
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // 将该app注册到微信
+                mWXapi.registerApp(WX_APP_ID);
+            }
+        }, new IntentFilter(ConstantsAPI.ACTION_REFRESH_WXAPP));
+
+    }
+
 }

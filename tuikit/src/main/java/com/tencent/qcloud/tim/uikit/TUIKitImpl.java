@@ -57,7 +57,6 @@ public class TUIKitImpl {
      * @param configs  TUIKit的相关配置项，一般使用默认即可，需特殊配置参考API文档
      */
     public static void init(Context context, int sdkAppID, TUIKitConfigs configs) {
-        TUIKitLog.e(TAG, "init tuikit version: " + BuildConfig.VERSION_NAME);
         sAppContext = context;
         sConfigs = configs;
         if (sConfigs.getGeneralConfig() == null) {

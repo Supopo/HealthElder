@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+
+    <!--    微信QQ分享需要-->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <application
         android:name=".global.AppApplication"
         android:allowBackup="true"
@@ -41,6 +45,7 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
+
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -58,6 +63,62 @@
         <activity
             android:name=".moduleHome.activity.WebActivity"
             android:screenOrientation="portrait" />
+
+
+        <!-- 微信分享 配置begin -->
+        <meta-data
+            android:name="WX_APPID"
+            android:value="wx4083c9a2be58173b"></meta-data>
+        <meta-data
+            android:name="WX_SECRET"
+            android:value="%微信开放平台申请应用的Secret%"></meta-data>
+
+        <activity
+            android:name="com.xaqinren.healthyelders.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="wx4083c9a2be58173b" />
+            </intent-filter>
+        </activity>
+        <!-- 微信分享 配置 end -->
+        <!-- 微信支付 配置begin -->
+        <activity
+            android:name="com.xaqinren.healthyelders.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- 微信分享 配置 end -->
+        <!-- Oauth 授权登陆 start -->
+        <!-- Oauth QQ start -->
+        <!-- QQ 分享 配置和授权登陆相同 -->
+        <meta-data
+            android:name="QQ_APPID"
+            android:value="%appid%" />
+
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="%appid%" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- Oauth QQ end -->
+
+
     </application>
 
 </manifest>
