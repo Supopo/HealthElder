@@ -16,7 +16,6 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         AppApplication.mWXapi.handleIntent(getIntent(), this);
     }
 
@@ -38,6 +37,7 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
                     //获取微信传回的code
                     String code = newResp.code;
                     Log.i("WXTest", "onResp code = " + code);
+                    //去通知服务器
                 }
 
                 break;

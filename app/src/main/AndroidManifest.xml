@@ -98,7 +98,7 @@
             android:value="wx4083c9a2be58173b" />
         <meta-data
             android:name="WX_SECRET"
-            android:value="%微信开放平台申请应用的Secret%" />
+            android:value="5c5d0e573066297111fea47a30b031e6" />
 
         <activity
             android:name=".wxapi.WXEntryActivity"

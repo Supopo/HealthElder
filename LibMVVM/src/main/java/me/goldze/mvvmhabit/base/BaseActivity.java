@@ -425,6 +425,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
      * 设置透明状态栏，页面延伸
      */
     public void setStatusBarTransparent() {
+        rlTitle.setVisibility(View.GONE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View decorView = getWindow().getDecorView();
             decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
