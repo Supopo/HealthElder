@@ -30,7 +30,9 @@
           "item_material_url": "",
           "item_level": 4,
           "item_icon_normal": "@beauty_ic_smooth",
-          "item_icon_select": "@beauty_ic_smooth"
+          "item_icon_select": "@beauty_ic_smooth",
+          "item_icon_width": 22,
+          "item_icon_height": 29
         },
         {
           "item_id": 2,
@@ -39,7 +41,9 @@
           "item_material_url": "",
           "item_level": 4,
           "item_icon_normal": "@beauty_ic_natural",
-          "item_icon_select": "@beauty_ic_natural"
+          "item_icon_select": "@beauty_ic_natural",
+          "item_icon_width": 32,
+          "item_icon_height": 21
         },
         {
           "item_id": 3,
@@ -48,7 +52,9 @@
           "item_material_url": "",
           "item_level": 4,
           "item_icon_normal": "@beauty_ic_pitu",
-          "item_icon_select": "@beauty_ic_pitu"
+          "item_icon_select": "@beauty_ic_pitu",
+          "item_icon_width": 25,
+          "item_icon_height": 27
         },
         {
           "item_id": 4,
@@ -57,7 +63,9 @@
           "item_material_url": "",
           "item_level": 1,
           "item_icon_normal": "@beauty_ic_white",
-          "item_icon_select": "@beauty_ic_white"
+          "item_icon_select": "@beauty_ic_white",
+          "item_icon_width": 25,
+          "item_icon_height": 29
         },
         {
           "item_id": 5,
@@ -66,178 +74,9 @@
           "item_material_url": "",
           "item_level": 0,
           "item_icon_normal": "@beauty_ic_ruddy",
-          "item_icon_select": "@beauty_ic_ruddy"
-        },
-        {
-          "item_id": 6,
-          "item_type": 20106,
-          "item_name": "@beauty_panel_bigeye",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_bigeye",
-          "item_icon_select": "@beauty_ic_bigeye"
-        },
-        {
-          "item_id": 7,
-          "item_type": 20107,
-          "item_name": "@beauty_panel_faceslim",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_faceslim",
-          "item_icon_select": "@beauty_ic_faceslim"
-        },
-        {
-          "item_id": 8,
-          "item_type": 20108,
-          "item_name": "@beauty_panel_facev",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_facev",
-          "item_icon_select": "@beauty_ic_facev"
-        },
-        {
-          "item_id": 9,
-          "item_type": 20109,
-          "item_name": "@beauty_panel_chin",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_chin",
-          "item_icon_select": "@beauty_ic_chin"
-        },
-        {
-          "item_id": 10,
-          "item_type": 20110,
-          "item_name": "@beauty_panel_faceshort",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_face_short",
-          "item_icon_select": "@beauty_ic_face_short"
-        },
-        {
-          "item_id": 11,
-          "item_type": 20111,
-          "item_name": "@beauty_panel_noseslim",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_noseslim",
-          "item_icon_select": "@beauty_ic_noseslim"
-        },
-        {
-          "item_id": 12,
-          "item_type": 20112,
-          "item_name": "@beauty_panel_eyelighten",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_eye_bright",
-          "item_icon_select": "@beauty_ic_eye_bright"
-        },
-        {
-          "item_id": 13,
-          "item_type": 20113,
-          "item_name": "@beauty_panel_toothwhite",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_tooth_white",
-          "item_icon_select": "@beauty_ic_tooth_white"
-        },
-        {
-          "item_id": 14,
-          "item_type": 20114,
-          "item_name": "@beauty_panel_wrinkleremove",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_wrinkles",
-          "item_icon_select": "@beauty_ic_wrinkles"
-        },
-        {
-          "item_id": 15,
-          "item_type": 20115,
-          "item_name": "@beauty_panel_pounchremove",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_pouch_remove",
-          "item_icon_select": "@beauty_ic_pouch_remove"
-        },
-        {
-          "item_id": 16,
-          "item_type": 20116,
-          "item_name": "@beauty_panel_smilelinesremove",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_smile_lines",
-          "item_icon_select": "@beauty_ic_smile_lines"
-        },
-        {
-          "item_id": 17,
-          "item_type": 20117,
-          "item_name": "@beauty_panel_forehead",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_forehead",
-          "item_icon_select": "@beauty_ic_forehead"
-        },
-        {
-          "item_id": 18,
-          "item_type": 20118,
-          "item_name": "@beauty_panel_eyedistance",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_eye_distance",
-          "item_icon_select": "@beauty_ic_eye_distance"
-        },
-        {
-          "item_id": 19,
-          "item_type": 20119,
-          "item_name": "@beauty_panel_eyeangle",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_eye_angle",
-          "item_icon_select": "@beauty_ic_eye_angle"
-        },
-        {
-          "item_id": 20,
-          "item_type": 20120,
-          "item_name": "@beauty_panel_mouthshape",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_mouse_shape",
-          "item_icon_select": "@beauty_ic_mouse_shape"
-        },
-        {
-          "item_id": 21,
-          "item_type": 20121,
-          "item_name": "@beauty_panel_nosewing",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_nose_wing",
-          "item_icon_select": "@beauty_ic_nose_wing"
-        },
-        {
-          "item_id": 22,
-          "item_type": 20122,
-          "item_name": "@beauty_panel_noseposition",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_nose_position",
-          "item_icon_select": "@beauty_ic_nose_position"
-        },
-        {
-          "item_id": 23,
-          "item_type": 20123,
-          "item_name": "@beauty_panel_mousewidth",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_mouse_width",
-          "item_icon_select": "@beauty_ic_mouse_width"
-        },
-        {
-          "item_id": 24,
-          "item_type": 20124,
-          "item_name": "@beauty_panel_faceshape",
-          "item_material_url": "",
-          "item_level": 0,
-          "item_icon_normal": "@beauty_ic_face_shape",
-          "item_icon_select": "@beauty_ic_face_shape"
+          "item_icon_select": "@beauty_ic_ruddy",
+          "item_icon_width": 30,
+          "item_icon_height": 21
         }
       ]
     },

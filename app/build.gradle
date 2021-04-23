@@ -149,7 +149,6 @@ repositories {
         dirs 'libs'
     }
 }
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.jar'], dir: 'libs/upload')
@@ -212,9 +211,11 @@ dependencies {
 
     //图片加载
     api rootProject.ext.dependencies.glide
-
-    //BasepopupWindow
-    implementation 'com.github.razerdp:BasePopup:2.1.9'
+    //图片选择
+    api rootProject.ext.dependencies.PictureSelector
+    //BasePopupWindow
+    api rootProject.ext.dependencies.BasePopup
 
 
 }
+

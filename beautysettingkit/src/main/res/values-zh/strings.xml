@@ -18,13 +18,13 @@
     <string name="beauty_setting_panel_facebeauty">美妆</string>
     <string name="beauty_setting_panel_gesture">手势</string>
 
-    <string name="beauty_panel_style_smooth">美颜(光滑)</string>
-    <string name="beauty_panel_style_natural">美颜(自然)</string>
-    <string name="beauty_panel_style_pitu">美颜(天天P图)</string>
+    <string name="beauty_panel_style_smooth">光滑</string>
+    <string name="beauty_panel_style_natural">自然</string>
+    <string name="beauty_panel_style_pitu">P图</string>
 
     <string name="beauty_panel_beauty">美颜</string>
     <string name="beauty_panel_white">美白</string>
-    <string name="beauty_panel_ruddy">红润</string>
+    <string name="beauty_panel_ruddy">腮红</string>
     <string name="beauty_panel_bigeye">大眼</string>
     <string name="beauty_panel_faceslim">瘦脸</string>
     <string name="beauty_panel_facev">V脸</string>

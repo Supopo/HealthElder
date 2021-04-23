@@ -1,6 +1,7 @@
 package com.tencent.liteav.demo.beauty.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,9 @@ import java.util.List;
 
 public class ItemAdapter extends BaseAdapter {
 
-    private Context             mContext;
-    private TabInfo             mTabInfo;
-    private List<ItemInfo>      mItemInfoList;
+    private Context mContext;
+    private TabInfo mTabInfo;
+    private List<ItemInfo> mItemInfoList;
     private OnItemClickListener mItemClickListener;
 
     public interface OnItemClickListener {
@@ -76,19 +77,27 @@ public class ItemAdapter extends BaseAdapter {
             holder = new ViewHolder(convertView);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.icon.getLayoutParams();
             int width, height;
-            if (mTabInfo.getTabItemIconWidth() == LinearLayout.LayoutParams.MATCH_PARENT) {
-                width = LinearLayout.LayoutParams.MATCH_PARENT;
-            } else if(mTabInfo.getTabItemIconWidth() == LinearLayout.LayoutParams.WRAP_CONTENT) {
-                width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            if (mItemInfoList.get(position).getItemWidth() != 0) {
+                width = BeautyUtils.dip2px(mContext, mItemInfoList.get(position).getItemWidth());
             } else {
-                width = BeautyUtils.dip2px(mContext, mTabInfo.getTabItemIconWidth());
+                if (mTabInfo.getTabItemIconWidth() == LinearLayout.LayoutParams.MATCH_PARENT) {
+                    width = LinearLayout.LayoutParams.MATCH_PARENT;
+                } else if (mTabInfo.getTabItemIconWidth() == LinearLayout.LayoutParams.WRAP_CONTENT) {
+                    width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                } else {
+                    width = BeautyUtils.dip2px(mContext, mTabInfo.getTabItemIconWidth());
+                }
             }
-            if (mTabInfo.getTabItemIconHeight() == LinearLayout.LayoutParams.MATCH_PARENT) {
-                height = LinearLayout.LayoutParams.MATCH_PARENT;
-            } else if (mTabInfo.getTabItemIconHeight() == LinearLayout.LayoutParams.WRAP_CONTENT) {
-                height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            if (mItemInfoList.get(position).getItemHeigh() != 0) {
+                height = BeautyUtils.dip2px(mContext, mItemInfoList.get(position).getItemHeigh());
             } else {
-                height = BeautyUtils.dip2px(mContext, mTabInfo.getTabItemIconHeight());
+                if (mTabInfo.getTabItemIconHeight() == LinearLayout.LayoutParams.MATCH_PARENT) {
+                    height = LinearLayout.LayoutParams.MATCH_PARENT;
+                } else if (mTabInfo.getTabItemIconHeight() == LinearLayout.LayoutParams.WRAP_CONTENT) {
+                    height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                } else {
+                    height = BeautyUtils.dip2px(mContext, mTabInfo.getTabItemIconHeight());
+                }
             }
             layoutParams.width = width;
             layoutParams.height = height;

@@ -7,7 +7,8 @@ package com.tencent.liteav.demo.beauty.model;
 public class ItemInfo {
 
     private long item_id;               // long, item id，item 唯一标识
-
+    private int item_icon_width;              //
+    private int item_icon_height;              //
     private int item_type;              // int, item 类型，item 的功能
     private int item_level;             // int, 特效级别，-1代表无特效级别，即不显示SeekBar
 
@@ -16,6 +17,14 @@ public class ItemInfo {
     private String item_material_path;  // string, 素材本地路径
     private String item_icon_normal;    // drawable, item 常规 icon
     private String item_icon_select;    // drawable, item 选中 icon
+
+    public int getItemWidth() {
+        return item_icon_width;
+    }
+
+    public int getItemHeigh() {
+        return item_icon_height;
+    }
 
     public long getItemId() {
         return item_id;
@@ -68,6 +77,8 @@ public class ItemInfo {
                 ", item_icon_normal='" + item_icon_normal + '\'' +
                 ", item_icon_select='" + item_icon_select + '\'' +
                 ", item_material_path='" + item_material_path + '\'' +
+                ", item_icon_width='" + item_icon_width + '\'' +
+                ", item_icon_height='" + item_icon_height + '\'' +
                 '}';
     }
 }

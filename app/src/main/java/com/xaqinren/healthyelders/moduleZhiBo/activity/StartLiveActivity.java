@@ -1,6 +1,5 @@
-package com.xaqinren.healthyelders;
+package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
-import android.Manifest;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -11,36 +10,38 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
+import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
+import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleHome.viewModel.MainViewModel;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
-import me.goldze.mvvmhabit.utils.ToastUtils;
+import me.goldze.mvvmhabit.base.BaseViewModel;
 
-
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
+/**
+ * 开启直播-发小视频页面
+ */
+public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, BaseViewModel> {
     private List<Fragment> mFragments;
-    private double firstTime;
     private TextView oldView;
     private TextView selectView;
-    private Disposable disposable;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
-        return R.layout.activity_main;
+        return R.layout.activity_start_live;
     }
 
     @Override
     public int initVariableId() {
-        return com.xaqinren.healthyelders.BR.viewModel;
+        return BR.viewModel;
     }
 
     @Override
@@ -52,13 +53,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void initFragment() {
         mFragments = new ArrayList<>();
-        mFragments.add(new XxxFragment());
+        mFragments.add(new StartLiveFragment());
         mFragments.add(new GirlsFragment());
-        mFragments.add(new XxxFragment());
         mFragments.add(new XxxFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;
+
         initEvent();
     }
 
@@ -78,37 +79,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             initBottomTab();
             oldView = binding.tvMenu3;
         });
-        binding.tvMenu4.setOnClickListener(lis -> {
-            selectView = binding.tvMenu4;
-            initBottomTab();
-            oldView = binding.tvMenu4;
-        });
-        binding.ivLive.setOnClickListener(lis -> {
-            disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                    .subscribe(granted -> {
-                        if (granted) {
-                            startActivity(StartLiveActivity.class);
-                        } else {
-                            ToastUtils.showShort("访问权限已拒绝");
-                        }
-
-                    });
-        });
     }
 
 
     private void initBottomTab() {
 
-        Drawable dawable = getResources().getDrawable(R.mipmap.line_bq);
+        Drawable dawable = getResources().getDrawable(R.mipmap.line_white);
         dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
 
         oldView.setCompoundDrawables(null, null, null, null);
-        oldView.setTextColor(getResources().getColor(R.color.gray_666));
-        oldView.setTextSize(16);
+        oldView.setTextColor(getResources().getColor(R.color.color_FF9C9C9C));
 
         selectView.setCompoundDrawables(null, null, null, dawable);
-        selectView.setTextColor(getResources().getColor(R.color.color_DC3530));
-        selectView.setTextSize(18);
+        selectView.setTextColor(getResources().getColor(R.color.white));
 
         switch (selectView.getId()) {
             case R.id.tv_menu1:
@@ -120,10 +103,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             case R.id.tv_menu3:
                 commitAllowingStateLoss(2);
                 break;
-            case R.id.tv_menu4:
-                commitAllowingStateLoss(3);
-                break;
-
         }
 
     }
@@ -151,33 +130,5 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         }
         transaction.commitAllowingStateLoss();
-    }
-
-    /**
-     * 二次点击（返回键）退出
-     */
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                long secondTime = System.currentTimeMillis();
-                if (secondTime - firstTime > 2000) {
-                    //如果两次按键时间间隔大于2秒，则不退出
-                    Toast.makeText(this, "再按一次退出程序~", Toast.LENGTH_SHORT).show();
-                    firstTime = secondTime;//更新firstTime
-                    return true;
-                } else {
-                    //两次按键小于2秒时，退出应用
-                    System.exit(0);
-                }
-                break;
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        disposable.dispose();
     }
 }

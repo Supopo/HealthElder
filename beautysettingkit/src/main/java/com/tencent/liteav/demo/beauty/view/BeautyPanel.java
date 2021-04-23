@@ -3,10 +3,13 @@ package com.tencent.liteav.demo.beauty.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -33,29 +36,49 @@ import com.tencent.liteav.demo.beauty.utils.ResourceUtils;
  * -外部可通过 setBeautyInfo 设置美颜面板内部属性
  * -外部可通过 setOnBeautyListener 监听美颜面板的行为动作
  */
-public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeListener {
 
     private static final String TAG = "BeautyPanel";
 
-    private Context                 mContext;
+    private Context mContext;
 
-    private TCHorizontalScrollView  mScrollTabView;
-    private TCHorizontalScrollView  mScrollItemView;
-    private RelativeLayout          mRelativeSeekBarLayout;
-    private SeekBar                 mSeekBarLevel;
-    private TextView                mTextLevelHint;
-    private TextView                mTextLevelValue;
-    private TextView                mTextTitle;
-    private TextView                mTextClose;
+    private TCHorizontalScrollView mScrollItemView;
+    private RelativeLayout mRelativeSeekBarLayout;
+    private SeekBar mSeekBarLevel;
+    private TextView mTextLevelHint;
+    private TextView mTextLevelValue;
+    private TextView tvPopTitle;
 
-    private BeautyInfo              mBeautyInfo;
-    private OnBeautyListener        mOnBeautyListener;
-    private Beauty                  mBeauty;
+    private BeautyInfo mBeautyInfo;
+    private OnBeautyListener mOnBeautyListener;
+    private Beauty mBeauty;
 
-    private TabInfo                 mCurrentTabInfo;
-    private ItemInfo[]              mCurrentItemInfo;
-    private int                     mCurrentTabPosition = 0;
-    private int[]                   mCurrentItemPosition;
+    private TabInfo mCurrentTabInfo;
+    private ItemInfo[] mCurrentItemInfo;
+    private int mCurrentTabPosition = 0;
+    private int[] mCurrentItemPosition;
+
+    private int position;
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        mCurrentItemInfo[mCurrentTabPosition].setItemLevel(progress);
+        mTextLevelValue.setText(String.valueOf(progress));
+        if (mOnBeautyListener == null
+                || !mOnBeautyListener.onLevelChanged(mCurrentTabInfo, mCurrentTabPosition, mCurrentItemInfo[mCurrentTabPosition], mCurrentItemPosition[mCurrentTabPosition], progress)) {
+            mBeauty.setBeautySpecialEffects(mCurrentTabInfo, mCurrentTabPosition, mCurrentItemInfo[mCurrentTabPosition], mCurrentItemPosition[mCurrentTabPosition]);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
 
     public abstract static class OnBeautyListener {
         public void onTabChange(TabInfo tabInfo, int position) {
@@ -89,42 +112,17 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         initialize(context);
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mCurrentItemInfo[mCurrentTabPosition].setItemLevel(progress);
-        mTextLevelValue.setText(String.valueOf(progress));
-        if (mOnBeautyListener == null
-                || !mOnBeautyListener.onLevelChanged(mCurrentTabInfo, mCurrentTabPosition, mCurrentItemInfo[mCurrentTabPosition], mCurrentItemPosition[mCurrentTabPosition], progress)) {
-            mBeauty.setBeautySpecialEffects(mCurrentTabInfo, mCurrentTabPosition, mCurrentItemInfo[mCurrentTabPosition], mCurrentItemPosition[mCurrentTabPosition]);
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == mTextClose.getId()) {
-            if (mOnBeautyListener == null || !mOnBeautyListener.onClose()) {
-                setVisibility(View.GONE);
-            }
-        }
-    }
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        if(visibility == View.VISIBLE) {
+        if (visibility == View.VISIBLE) {
             bringToFront();
         }
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     /**
@@ -137,10 +135,9 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
 
         //根据配置文件选择默认选中项
         setCurrentBeautyInfo(beautyInfo);
-
         mBeauty.fillingMaterialPath(beautyInfo);
-        setBackground(ResourceUtils.getLinearDrawable(ResourceUtils.getColor(beautyInfo.getBeautyBg())));
-        refresh();
+        setBackgroundColor(Color.TRANSPARENT);
+        refresh(position);
     }
 
     /**
@@ -221,15 +218,21 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         mSeekBarLevel = (SeekBar) findViewById(R.id.beauty_seek_bar_third);
         mTextLevelHint = (TextView) findViewById(R.id.beauty_tv_seek_bar_hint);
         mTextLevelValue = (TextView) findViewById(R.id.beauty_tv_seek_bar_value);
-        mTextTitle = (TextView) findViewById(R.id.beauty_tv_title);
-        mTextClose = (TextView) findViewById(R.id.beauty_tv_close);
-        mTextClose.setOnClickListener(this);
         mSeekBarLevel.setOnSeekBarChangeListener(this);
-
-        mScrollTabView = (TCHorizontalScrollView) findViewById(R.id.beauty_horizontal_picker_view_first);
         mScrollItemView = (TCHorizontalScrollView) findViewById(R.id.beauty_horizontal_picker_second);
+        LinearLayout llReset = findViewById(R.id.ll_reset);
+        tvPopTitle = findViewById(R.id.tv_pop_title);
+        llReset.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View list) {
+                onCancelClickListener.closePop();
+            }
+        });
     }
 
+    public void setPopTitle(String title){
+        tvPopTitle.setText(title);
+    }
     private void initData() {
         setBeautyInfo(getDefaultBeautyInfo());
     }
@@ -238,41 +241,24 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         int tabSize = beautyInfo.getBeautyTabList().size();
         mCurrentItemPosition = new int[tabSize];
         mCurrentItemInfo = new ItemInfo[tabSize];
-
-        for (int i = 0; i < tabSize; i++) {
-            TabInfo tabInfo = beautyInfo.getBeautyTabList().get(i);
-            mCurrentItemPosition[i] = tabInfo.getTabItemListDefaultSelectedIndex();
-            mCurrentItemInfo[i] = tabInfo.getTabItemList().get(tabInfo.getTabItemListDefaultSelectedIndex());
-            mBeauty.setBeautySpecialEffects(tabInfo, i, mCurrentItemInfo[i], mCurrentItemPosition[i]);
-        }
+        TabInfo tabInfo = beautyInfo.getBeautyTabList().get(position);
+        mCurrentItemPosition[position] = tabInfo.getTabItemListDefaultSelectedIndex();
+        mCurrentItemInfo[position] = tabInfo.getTabItemList().get(tabInfo.getTabItemListDefaultSelectedIndex());
+        mBeauty.setBeautySpecialEffects(tabInfo, position, mCurrentItemInfo[position], mCurrentItemPosition[position]);
     }
 
-    private void refresh() {
-        createTabList();
+    private void refresh(int position) {
+        createTabList(position);
     }
 
-    private void createTabList() {
-        TabAdapter tabAdapter = new TabAdapter(mContext, mBeautyInfo);
-        mScrollTabView.setAdapter(tabAdapter);
-        tabAdapter.setOnTabClickListener(new TabAdapter.OnTabChangeListener() {
-            @Override
-            public void onTabChange(TabInfo tabInfo, int position) {
-                mCurrentTabInfo = tabInfo;
-                mCurrentTabPosition = position;
-                createItemList(tabInfo, position);
-                if (mOnBeautyListener != null) {
-                    mOnBeautyListener.onTabChange(tabInfo, position);
-                }
-            }
-        });
-        TabInfo tabInfo = mBeautyInfo.getBeautyTabList().get(0);
+    private void createTabList(int position) {
+        TabInfo tabInfo = mBeautyInfo.getBeautyTabList().get(position);
         mCurrentTabInfo = tabInfo;
         mCurrentTabPosition = 0;
         createItemList(tabInfo, 0);
     }
 
     private void createItemList(@NonNull final TabInfo tabInfo, @NonNull final int tabPosition) {
-        setBeautyTitle(tabInfo.getTabName());
         ItemAdapter itemAdapter = new ItemAdapter(mContext);
         itemAdapter.setData(tabInfo, mCurrentItemPosition[tabPosition]);
         mScrollItemView.setAdapter(itemAdapter);
@@ -310,7 +296,13 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         mRelativeSeekBarLayout.setVisibility(visibility);
     }
 
-    private void setBeautyTitle(String title) {
-        mTextTitle.setText(ResourceUtils.getString(title) + ResourceUtils.getString(R.string.beauty_setup));
+    public interface OnCancelClickListener {
+        void closePop();
+    }
+
+    OnCancelClickListener onCancelClickListener;
+
+    public void setOnCancelClickListener(OnCancelClickListener listener) {
+        this.onCancelClickListener = listener;
     }
 }

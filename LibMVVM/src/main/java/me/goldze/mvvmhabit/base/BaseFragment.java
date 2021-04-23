@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.lang.reflect.ParameterizedType;
@@ -36,6 +37,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     private int viewModelId;
     //    private MaterialDialog dialog;  //  普通Dialog
     private QMUITipDialog dialog;
+    public RxPermissions permissions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        permissions = new RxPermissions(this);
         //私有的初始化Databinding和ViewModel方法
         initViewDataBinding();
         //私有的ViewModel与View的契约事件回调逻辑
