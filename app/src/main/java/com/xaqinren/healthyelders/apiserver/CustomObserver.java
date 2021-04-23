@@ -20,7 +20,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 import retrofit2.HttpException;
 
 
-public abstract class CustomObserver<T extends BaseResponse> implements Observer<T> {
+public abstract class CustomObserver<T extends MBaseResponse> implements Observer<T> {
     private String msg;
 
     @Override

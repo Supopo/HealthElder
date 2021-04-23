@@ -10,12 +10,12 @@ import razerdp.basepopup.BasePopupWindow;
 
 /**
  * Created by Lee. on 2021/4/20.
- * 直播间双人聊设置弹窗
+ * 开启直播间设置弹窗
  */
-public class ZB2LinkSettingPop extends BasePopupWindow {
+public class ZBStartSettingPop extends BasePopupWindow {
 
 
-    public ZB2LinkSettingPop(Context context) {
+    public ZBStartSettingPop(Context context) {
         super(context);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
@@ -23,12 +23,15 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
     }
 
     private void initView() {
-
+        findViewById(R.id.ll_menu).setOnClickListener(lis -> {
+            ZBDesSettingPop desSettingPop = new ZBDesSettingPop(getContext());
+            desSettingPop.showPopupWindow();
+        });
     }
 
 
     @Override
     public View onCreateContentView() {
-        return createPopupById(R.layout.pop_zbj_2link_setting);
+        return createPopupById(R.layout.pop_zbj_start_setting);
     }
 }

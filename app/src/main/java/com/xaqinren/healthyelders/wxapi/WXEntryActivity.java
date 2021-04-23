@@ -8,9 +8,18 @@ import android.util.Log;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
+import com.xaqinren.healthyelders.apiserver.ApiServer;
+import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.http.RetrofitClient;
 
 import io.dcloud.share.mm.AbsWXCallbackActivity;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import me.goldze.mvvmhabit.http.BaseResponse;
 
 public class WXEntryActivity extends AbsWXCallbackActivity {
     @Override
@@ -38,6 +47,9 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
                     String code = newResp.code;
                     Log.i("WXTest", "onResp code = " + code);
                     //去通知服务器
+                    String a = "Basic MTM3ODYxODg2MDYxMzE0NDU3NjprMnF3c2sxNTMzZm1jMGhqdHJiYWowcjk=";
+                    String m = "1378618860613144576";
+                    toWxChatLogin(a, m, code);
                 }
 
                 break;
@@ -56,6 +68,41 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
         }
         finish();
     }
+
+    private void toWxChatLogin(String authorization, String mid, String code) {
+        RetrofitClient.getInstance().create(ApiServer.class)
+                .toWxChatLogin(authorization, mid, code)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MBaseResponse<Object>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(MBaseResponse<Object> baseResponse) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
 }
 
 

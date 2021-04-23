@@ -1,8 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,8 +8,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.qmuiteam.qmui.widget.QMUIRadiusImageView;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.databinding.PopZbjUserInfoBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 
 import razerdp.basepopup.BasePopupWindow;
 
@@ -33,6 +31,9 @@ public class ZBUserInfoPop extends BasePopupWindow {
 
     public ZBUserInfoPop(Context context) {
         super(context);
+        setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
+        initView();
     }
 
     private void initView() {

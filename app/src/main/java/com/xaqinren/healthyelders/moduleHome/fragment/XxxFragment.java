@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,14 +23,14 @@ import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 
 import io.dcloud.common.DHInterface.ICallBack;
 import io.dcloud.feature.sdk.DCUniMPSDK;
-import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 //注意ActivityBaseBinding换成自己fragment_layout对应的名字 FragmentXxxBinding
 public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> {
@@ -95,6 +97,11 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         });
         binding.tvMenu6.setOnClickListener(lis -> {
             startActivity(SettingRoomPwdActivity.class);
+        });
+
+        binding.tvMenu7.setOnClickListener(lis -> {
+            ZBStartSettingPop zbStartSettingPop = new ZBStartSettingPop(getActivity());
+            zbStartSettingPop.showPopupWindow();
         });
 
     }
