@@ -52,7 +52,7 @@
             app:vcv_et_number="4"
             app:vcv_et_spacing="@dimen/dp_12"
             app:vcv_et_text_color="@color/color_252525"
-            app:vcv_et_text_size="15sp"
+            app:vcv_et_text_size="10sp"
             />
 
         <TextView

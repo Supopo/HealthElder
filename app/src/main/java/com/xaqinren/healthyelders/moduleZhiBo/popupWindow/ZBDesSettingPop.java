@@ -17,6 +17,8 @@ public class ZBDesSettingPop extends BasePopupWindow {
 
     public ZBDesSettingPop(Context context) {
         super(context);
+        //去掉背景
+        setBackground(R.color.transparent);
         setShowAnimation(AnimUtils.PopAnimRight2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimRight2Exit(context));
         initView();
