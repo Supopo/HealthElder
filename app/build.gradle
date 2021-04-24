@@ -215,8 +215,6 @@ dependencies {
     api rootProject.ext.dependencies.PictureSelector
     //BasePopupWindow
     api rootProject.ext.dependencies.BasePopup
-    //SmartRefreshLayout下拉刷新
-    api rootProject.ext.dependencies.SmartRefreshLayout
 
 }
 
