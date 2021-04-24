@@ -1,4 +1,4 @@
-package com.xaqinren.healthyelders;
+package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.Manifest;
 import android.graphics.drawable.Drawable;
@@ -11,8 +11,10 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
+import com.xaqinren.healthyelders.moduleHome.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleHome.viewModel.MainViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
@@ -55,7 +57,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         mFragments.add(new XxxFragment());
         mFragments.add(new GirlsFragment());
         mFragments.add(new XxxFragment());
-        mFragments.add(new XxxFragment());
+        mFragments.add(new MineFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;
