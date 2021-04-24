@@ -1,13 +1,19 @@
 package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -19,8 +25,37 @@ public interface ApiServer {
 
     //微信登录
     @GET("merchant/oauth/weChatUserInfo")
-    Observable<MBaseResponse<Object>> toWxChatLogin(
+    Observable<MBaseResponse<WeChatUserInfoBean>> toWxChatLogin(
             @Header("Authorization") String authorization,
             @Header("mid") String mid,
             @Query("code") String code);
+
+
+    /**
+     * 微信登录（真）
+     * @param body
+     * @return
+     */
+    @Headers(
+            {"content-type:application/json"}
+    )
+    @POST("user/open/weChatLogin")
+    Observable<MBaseResponse<LoginTokenBean>> toWxChatRealLogin(@Header("Authorization") String authorization,
+                                                                @Header("mid") String mid,
+                                                                @Body RequestBody body);
+
+    /**
+     * 手机号登录注册
+     * @param authorization
+     * @param mid
+     * @param body
+     * @return
+     */
+    @Headers(
+            {"content-type:application/json"}
+    )
+    @POST("user/open/mobileLogin")
+    Observable<MBaseResponse<LoginTokenBean>> phoneLogin(@Header("Authorization") String authorization,
+                                                         @Header("mid") String mid,
+                                                         @Body RequestBody body);
 }

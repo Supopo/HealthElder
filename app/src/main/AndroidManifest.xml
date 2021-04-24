@@ -157,6 +157,8 @@
          />
         <activity android:name=".moduleZhiBo.activity.StartRenZhengActivity" />
 
+        <activity android:name=".moduleLogin.activity.PhoneLoginActivity" />
+
     </application>
 
 </manifest>

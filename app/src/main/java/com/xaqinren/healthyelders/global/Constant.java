@@ -18,4 +18,33 @@ public class Constant {
     public static String getRoomId(String userId) {
         return "room_" + userId;
     }
+
+    public static String auth = "Basic MTM3ODYxODg2MDYxMzE0NDU3NjprMnF3c2sxNTMzZm1jMGhqdHJiYWowcjk=";
+    public static String mid = "1378618860613144576";
+
+
+
+    /* RxBus Event Code */
+    /**
+     * 微信登录,未绑定手机号
+     */
+    public static final int WX_UN_LOGIN_PHONE = 0x100012;
+    /**
+     * token 过期
+     */
+    public static final int TOKEN_ERR = 0x100013;
+
+
+    /* SPUtils 存储 KEY */
+    /**
+     * 微信登录返回的数据
+     */
+    public static final String SP_KEY_WX_INFO = "wxUserInfo";
+    /**
+     * 登录token
+     */
+    public static final String SP_KEY_TOKEN_INFO = "tokenInfo";
+
+
+
 }

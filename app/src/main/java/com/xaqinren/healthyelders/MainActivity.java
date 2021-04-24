@@ -10,7 +10,9 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
@@ -21,6 +23,8 @@ import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
@@ -30,6 +34,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private TextView oldView;
     private TextView selectView;
     private Disposable disposable;
+    private Disposable eventDisposable;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -91,6 +96,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         }
 
                     });
+        });
+
+        eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
+            if (o.msgId == Constant.TOKEN_ERR) {
+                //TODO token失效 重新登录
+                SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
+                SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO,"");
+            }
         });
     }
 
@@ -177,5 +190,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     protected void onDestroy() {
         super.onDestroy();
         disposable.dispose();
+        eventDisposable.dispose();
     }
 }

@@ -41,6 +41,7 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
 
     private void initEvent() {
         binding.btnLogin.setOnClickListener(lis -> {
+            if (checkAgree())
             wxLogin();
         });
         binding.rlSelect.setOnClickListener(lis ->{
@@ -51,7 +52,22 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
                 binding.ivSelect.setBackgroundResource(R.mipmap.login_rad_nor);
             }
         });
+        binding.ivPhone.setOnClickListener(lis -> {
+            //手机号登录
+            if (checkAgree()) {
+                startActivity(PhoneLoginActivity.class);
+            }
+        });
+
     }
+    private boolean checkAgree() {
+        if (!isAgree) {
+            Toast.makeText(this, "请先同意用户协议", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
 
     //微信登录页
     private void wxLogin() {

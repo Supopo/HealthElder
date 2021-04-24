@@ -4,7 +4,10 @@ package com.xaqinren.healthyelders.apiserver;
 import android.net.ParseException;
 
 import com.google.gson.JsonParseException;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 
 import org.json.JSONException;
 
@@ -14,6 +17,7 @@ import java.net.UnknownHostException;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -43,6 +47,14 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
         //        }
         if (t.isOk()) {
             onSuccess(t);
+        }else {
+            ToastUtils.showShort(t.getMessage());
+            if (t.getCode().equals(CodeTable.TOKEN_ERR_CODE)) {
+                //token过期
+                onTokenErr();
+                return;
+            }
+            onFail(t.getCode(),t);
         }
     }
 
@@ -55,6 +67,12 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
     }
 
     abstract public void onSuccess(T data);
+
+    public void onFail(String code, T data){}
+
+    public void onTokenErr(){
+        RxBus.getDefault().post(new EventBean(Constant.TOKEN_ERR, null));
+    }
 
     @Override
     public void onError(Throwable e) {

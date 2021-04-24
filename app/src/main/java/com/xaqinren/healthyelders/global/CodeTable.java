@@ -7,4 +7,36 @@ package com.xaqinren.healthyelders.global;
 public class CodeTable {
     public static int CODE_SUCCESS = 100;
     public static int RESH_VIEW_CODE = 99;
+
+    /**
+     * 成功
+     */
+    public static final String SUCCESS_CODE = "0000000";
+    /**
+     * 手机号未绑定
+     */
+    public static final String NO_PHONE_CODE = "20018";
+    /**
+     * 网络不稳定
+     */
+    public static final String UNKNOWN_CODE = "1000001";
+    /**
+     * 频繁调用
+     */
+    public static final String NET_LOOP_CODE = "1000002";
+    /**
+     * 参数错误
+     */
+    public static final String PARAMS_ERR_CODE = "1000003";
+    /**
+     * 服务器忙
+     */
+    public static final String SERVICE_ERR_CODE = "1000004";
+    /**
+     * token过期
+     */
+    public static final String TOKEN_ERR_CODE = "040010";
+
+
+
 }

@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import com.xaqinren.healthyelders.global.CodeTable;
+
 /**
  * 该类仅供参考，实际业务返回的固定字段, 根据需求来定义，
  */
@@ -26,7 +28,7 @@ public class MBaseResponse<T> {
     }
 
     public boolean isOk() {
-        return code.equals("200");
+        return code.equals(CodeTable.SUCCESS_CODE);
     }
 
     public String getMessage() {
