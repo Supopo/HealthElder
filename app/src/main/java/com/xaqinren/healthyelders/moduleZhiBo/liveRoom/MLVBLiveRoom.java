@@ -425,6 +425,11 @@ public abstract class MLVBLiveRoom {
     public abstract void switchCamera();
 
     /**
+     * 设置观众端是否开启镜像
+     */
+    public abstract void setMirror(boolean mirror);
+
+    /**
      * 设置摄像头缩放因子（焦距）
      *
      * @param distance 取值范围 1 - 5 ，当为1的时候为最远视角（正常镜头），当为5的时候为最近视角（放大镜头），这里最大值推荐为5，超过5后视频数据会变得模糊不清

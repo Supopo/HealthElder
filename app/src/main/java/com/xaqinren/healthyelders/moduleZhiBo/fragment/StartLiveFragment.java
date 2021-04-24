@@ -34,7 +34,6 @@ import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
-import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
@@ -62,6 +61,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
     private List<LocalMedia> selectList;
     private String photoPath;
     private boolean isAgree = true;
+    private boolean isJingXiangRight;//是否镜像翻转
     private boolean isBackCamera;//是否后置摄像头
     private boolean isOpenRoom = true;//是否公开
     private ZBStartSettingPop startSettingPop;
@@ -110,6 +110,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
                 binding.ivSelect.setBackgroundResource(R.mipmap.radbox_sel);
             } else {
                 binding.ivSelect.setBackgroundResource(R.mipmap.radbox_nor);
+            }
+        });
+        //镜头翻转
+        binding.llJx.setOnClickListener(lis -> {
+            isJingXiangRight = !isJingXiangRight;
+            mLiveRoom.setMirror(isJingXiangRight);
+            if (isJingXiangRight) {
+                binding.ivJx.setBackgroundResource(R.mipmap.icon_jingxiang_fz);
+            } else {
+                binding.ivJx.setBackgroundResource(R.mipmap.icon_jingxiang);
             }
         });
         //摄像头设置

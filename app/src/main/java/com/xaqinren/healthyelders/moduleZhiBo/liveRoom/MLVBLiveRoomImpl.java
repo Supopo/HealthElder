@@ -2180,6 +2180,12 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
     }
 
+    public void setMirror(boolean mirror) {
+        if (mTXLivePusher != null) {
+            mTXLivePusher.setMirror(mirror);
+        }
+    }
+
     /**
      * 设置摄像头缩放因子（焦距）
      *
