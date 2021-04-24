@@ -5,20 +5,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_icon"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:background="@drawable/ship_meiy_bg"
-        android:gravity="center"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/ll_icon"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/ship_meiy_bg"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/beauty_iv_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
 
         <ImageView
-            android:id="@+id/beauty_iv_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside" />
-    </LinearLayout>
+            android:id="@+id/beauty_iv_select"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/select_red_empty"
+            android:visibility="visible" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/beauty_tv_title"

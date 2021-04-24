@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,7 +76,7 @@ public class ItemAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.beauty_view_item, parent, false);
             holder = new ViewHolder(convertView);
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.icon.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.icon.getLayoutParams();
             int width, height;
             if (mItemInfoList.get(position).getItemWidth() != 0) {
                 width = BeautyUtils.dip2px(mContext, mItemInfoList.get(position).getItemWidth());
@@ -120,11 +121,11 @@ public class ItemAdapter extends BaseAdapter {
         if (mSelectPos == position) {
             BeautyUtils.setTextViewColor(holder.title, mTabInfo.getTabItemNameColorSelect());
             BeautyUtils.setImageResource(holder.icon, itemInfo.getItemIconSelect());
-            holder.llIcon.setBackgroundResource(R.drawable.ship_meiy_bg_sel);
+            holder.ivSelect.setVisibility(View.VISIBLE);
         } else {
             BeautyUtils.setTextViewColor(holder.title, mTabInfo.getTabItemNameColorNormal());
             BeautyUtils.setImageResource(holder.icon, itemInfo.getItemIconNormal());
-            holder.llIcon.setBackgroundResource(R.drawable.ship_meiy_bg);
+            holder.ivSelect.setVisibility(View.GONE);
         }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,12 +150,14 @@ public class ItemAdapter extends BaseAdapter {
         private ImageView icon;
         private TextView title;
         private LinearLayout llItem;
-        private LinearLayout llIcon;
+        private RelativeLayout llIcon;
+        private ImageView ivSelect;
 
         public ViewHolder(View itemView) {
             super(itemView);
             llItem = (LinearLayout) itemView.findViewById(R.id.ll_item);
-            llIcon = (LinearLayout) itemView.findViewById(R.id.ll_icon);
+            llIcon = (RelativeLayout) itemView.findViewById(R.id.ll_icon);
+            ivSelect = (ImageView) itemView.findViewById(R.id.beauty_iv_select);
             icon = (ImageView) itemView.findViewById(R.id.beauty_iv_icon);
             title = (TextView) itemView.findViewById(R.id.beauty_tv_title);
         }

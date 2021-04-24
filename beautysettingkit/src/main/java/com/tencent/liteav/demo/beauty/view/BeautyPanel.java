@@ -223,7 +223,7 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         llReset.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View list) {
-                onCancelClickListener.closePop();
+                mScrollItemView.setClicked(0);
             }
         });
     }

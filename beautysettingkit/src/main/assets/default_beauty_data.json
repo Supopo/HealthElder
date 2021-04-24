@@ -84,9 +84,9 @@
       "tab_id": 2,
       "tab_type": 10002,
       "tab_name": "滤镜",
-      "tab_item_name_size": 10,
-      "tab_item_name_color_normal": "#ff888888",
-      "tab_item_name_color_select": "#ffffffff",
+      "tab_item_name_size": 14,
+      "tab_item_name_color_normal": "#ffffffff",
+      "tab_item_name_color_select": "#FFFF004E",
       "tab_item_icon_width": 54,
       "tab_item_icon_height": 54,
       "tab_item_level_hint_color": "#ffffffff",
@@ -104,16 +104,9 @@
           "item_material_url": "",
           "item_level": 0,
           "item_icon_normal": "@beauty_ic_common_none",
-          "item_icon_select": "@beauty_ic_common_none"
-        },
-        {
-          "item_id": 2,
-          "item_type": 20202,
-          "item_name": "@beauty_panel_filter_baixi",
-          "item_material_url": "",
-          "item_level": 5,
-          "item_icon_normal": "@beauty_baixi",
-          "item_icon_select": "@beauty_baixi"
+          "item_icon_select": "@beauty_ic_common_none",
+          "item_icon_width": 28,
+          "item_icon_height": 28
         },
         {
           "item_id": 3,
@@ -123,14 +116,6 @@
           "item_level": 4,
           "item_icon_normal": "@beauty_biaozhun",
           "item_icon_select": "@beauty_biaozhun"
-        },{
-          "item_id": 4,
-          "item_type": 20204,
-          "item_name": "@beauty_panel_filter_ziran",
-          "item_material_url": "",
-          "item_level": 5,
-          "item_icon_normal": "@beauty_ziran",
-          "item_icon_select": "@beauty_ziran"
         },
         {
           "item_id": 5,

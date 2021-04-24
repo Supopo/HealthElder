@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -61,7 +60,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
     private ZBStartSettingPop startSettingPop;
     private BottomDialog mLvJingPop;
     private BottomDialog mMeiYanPop;
-    private BeautyPanel mPanelBeautyControl;
+    private BeautyPanel mMeiYanControl;
+    private BeautyPanel mLvJingControl;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,15 +129,15 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
 
         if (mMeiYanPop == null) {
             View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
-            mPanelBeautyControl = filterView.findViewById(R.id.beauty_pannel);
-            mPanelBeautyControl.setPosition(0);
-            mPanelBeautyControl.setBeautyManager(mLiveRoom.getBeautyManager());
-            mPanelBeautyControl.setPopTitle("美颜");
+            mMeiYanControl = filterView.findViewById(R.id.beauty_pannel);
+            mMeiYanControl.setPosition(0);
+            mMeiYanControl.setBeautyManager(mLiveRoom.getBeautyManager());
+            mMeiYanControl.setPopTitle("美颜");
             mMeiYanPop = new BottomDialog(getActivity(), filterView,
                     null);
         }
             mMeiYanPop.show();
-            mPanelBeautyControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
+            mMeiYanControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
                 @Override
                 public void onTabChange(TabInfo tabInfo, int position) {
                 }
@@ -168,22 +168,24 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
 
     //滤镜设置弹窗
     private void showLJPop() {
-        View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
-        BeautyPanel mPanelBeautyControl = filterView.findViewById(R.id.beauty_pannel);
-        mPanelBeautyControl.setPosition(1);
-        mPanelBeautyControl.setBeautyManager(mLiveRoom.getBeautyManager());
+        if (mLvJingPop == null) {
+            View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
+            mLvJingControl = filterView.findViewById(R.id.beauty_pannel);
+            mLvJingControl.setPosition(1);
+            mLvJingControl.setBeautyManager(mLiveRoom.getBeautyManager());
 
-        mPanelBeautyControl.setPopTitle("滤镜");
-        BeautyInfo defaultBeautyInfo = mPanelBeautyControl.getDefaultBeautyInfo();
-        mPanelBeautyControl.setBeautyInfo(defaultBeautyInfo);
+            mLvJingControl.setPopTitle("滤镜");
+            BeautyInfo defaultBeautyInfo = mLvJingControl.getDefaultBeautyInfo();
+            mLvJingControl.setBeautyInfo(defaultBeautyInfo);
 
+            mLvJingPop = new BottomDialog(getActivity(), filterView,
+                    null);
+        }
 
-        mLvJingPop = new BottomDialog(getActivity(), filterView,
-                null);
         mLvJingPop.show();
 
 
-        mPanelBeautyControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
+        mLvJingControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
             @Override
             public void onTabChange(TabInfo tabInfo, int position) {
             }
