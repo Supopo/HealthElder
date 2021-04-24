@@ -23,9 +23,15 @@ public interface ApiServer {
     @GET("data/category/Girl/type/Girl/page/{page}/count/{count}")
     Observable<BaseResponse<List<GirlsBean>>> getGirls(@Path("page") Integer page, @Path("count") Integer count);
 
-    //微信登录
+    /**
+     * 获取微信信息
+     * @param authorization
+     * @param mid
+     * @param code
+     * @return
+     */
     @GET("merchant/oauth/weChatUserInfo")
-    Observable<MBaseResponse<WeChatUserInfoBean>> toWxChatLogin(
+    Observable<MBaseResponse<WeChatUserInfoBean>> getWxChatInfo(
             @Header("Authorization") String authorization,
             @Header("mid") String mid,
             @Query("code") String code);

@@ -31,7 +31,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -64,7 +63,7 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
                     //去通知服务器
                     String a = "Basic MTM3ODYxODg2MDYxMzE0NDU3NjprMnF3c2sxNTMzZm1jMGhqdHJiYWowcjk=";
                     String m = "1378618860613144576";
-                    toWxChatLogin(a, m, code);
+                    getWxChatInfo(a, m, code);
                 }
 
                 break;
@@ -84,9 +83,9 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
         finish();
     }
 
-    private void toWxChatLogin(String authorization, String mid, String code) {
+    private void getWxChatInfo(String authorization, String mid, String code) {
         RetrofitClient.getInstance().create(ApiServer.class)
-                .toWxChatLogin(authorization, mid, code)
+                .getWxChatInfo(authorization, mid, code)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
