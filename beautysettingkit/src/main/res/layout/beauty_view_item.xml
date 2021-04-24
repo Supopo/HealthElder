@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_icon"
         android:layout_width="54dp"
         android:layout_height="54dp"
         android:background="@drawable/ship_meiy_bg"
@@ -24,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="14dp"
         android:textColor="@color/beauty_color_white"
         android:textSize="14sp" />
 </LinearLayout>

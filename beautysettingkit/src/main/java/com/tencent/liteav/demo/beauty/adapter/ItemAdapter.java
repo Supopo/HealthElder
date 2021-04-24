@@ -102,6 +102,14 @@ public class ItemAdapter extends BaseAdapter {
             layoutParams.width = width;
             layoutParams.height = height;
             holder.icon.setLayoutParams(layoutParams);
+
+
+            if (position != 0) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.llItem.getLayoutParams();
+                lp.leftMargin = BeautyUtils.dip2px(mContext, 15);
+                holder.llItem.setLayoutParams(lp);
+            }
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -112,9 +120,11 @@ public class ItemAdapter extends BaseAdapter {
         if (mSelectPos == position) {
             BeautyUtils.setTextViewColor(holder.title, mTabInfo.getTabItemNameColorSelect());
             BeautyUtils.setImageResource(holder.icon, itemInfo.getItemIconSelect());
+            holder.llIcon.setBackgroundResource(R.drawable.ship_meiy_bg_sel);
         } else {
             BeautyUtils.setTextViewColor(holder.title, mTabInfo.getTabItemNameColorNormal());
             BeautyUtils.setImageResource(holder.icon, itemInfo.getItemIconNormal());
+            holder.llIcon.setBackgroundResource(R.drawable.ship_meiy_bg);
         }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,9 +148,13 @@ public class ItemAdapter extends BaseAdapter {
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView icon;
         private TextView title;
+        private LinearLayout llItem;
+        private LinearLayout llIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            llItem = (LinearLayout) itemView.findViewById(R.id.ll_item);
+            llIcon = (LinearLayout) itemView.findViewById(R.id.ll_icon);
             icon = (ImageView) itemView.findViewById(R.id.beauty_iv_icon);
             title = (TextView) itemView.findViewById(R.id.beauty_tv_title);
         }

@@ -45,7 +45,6 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
     private TCHorizontalScrollView mScrollItemView;
     private RelativeLayout mRelativeSeekBarLayout;
     private SeekBar mSeekBarLevel;
-    private TextView mTextLevelHint;
     private TextView mTextLevelValue;
     private TextView tvPopTitle;
 
@@ -216,7 +215,6 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
     private void initView() {
         mRelativeSeekBarLayout = (RelativeLayout) findViewById(R.id.beauty_rl_seek_bar);
         mSeekBarLevel = (SeekBar) findViewById(R.id.beauty_seek_bar_third);
-        mTextLevelHint = (TextView) findViewById(R.id.beauty_tv_seek_bar_hint);
         mTextLevelValue = (TextView) findViewById(R.id.beauty_tv_seek_bar_value);
         mSeekBarLevel.setOnSeekBarChangeListener(this);
         mScrollItemView = (TCHorizontalScrollView) findViewById(R.id.beauty_horizontal_picker_second);
@@ -288,8 +286,6 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
             visibility = View.VISIBLE;
             mTextLevelValue.setText(String.valueOf(itemInfo.getItemLevel()));
             mSeekBarLevel.setProgress(itemInfo.getItemLevel());
-            BeautyUtils.setTextViewSize(mTextLevelHint, tabInfo.getTabItemLevelHintSize());
-            BeautyUtils.setTextViewColor(mTextLevelHint, tabInfo.getTabItemLevelHintColor());
             BeautyUtils.setTextViewSize(mTextLevelValue, tabInfo.getTabItemLevelValueSize());
             BeautyUtils.setTextViewColor(mTextLevelValue, tabInfo.getTabItemLevelValueColor());
         }

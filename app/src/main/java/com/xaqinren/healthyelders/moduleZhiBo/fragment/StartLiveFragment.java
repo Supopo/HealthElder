@@ -61,6 +61,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
     private ZBStartSettingPop startSettingPop;
     private BottomDialog mLvJingPop;
     private BottomDialog mMeiYanPop;
+    private BeautyPanel mPanelBeautyControl;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,14 +79,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
         setMoreTextData("我已阅读并同意", "《健康长老视频号直播功能使用条款》", "及", "《健康长老视频号直播行为规范》");
         //直播间控制类
         mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //打开本地摄像头预览
-                mLiveRoom.startLocalPreview(true, binding.videoView);
-            }
-        }, 100);
-
+        //打开本地摄像头预览
+        mLiveRoom.startLocalPreview(true, binding.videoView);
         initEvent();
     }
 
@@ -129,45 +124,46 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
             startSettingPop.showPopupWindow();
         });
     }
+
     private void showMYPop() {
-        View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
-        BeautyPanel mPanelBeautyControl = filterView.findViewById(R.id.beauty_pannel);
-        mPanelBeautyControl.setPosition(0);
-        mPanelBeautyControl.setBeautyManager(mLiveRoom.getBeautyManager());
 
-        mPanelBeautyControl.setPopTitle("美颜");
+        if (mMeiYanPop == null) {
+            View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
+            mPanelBeautyControl = filterView.findViewById(R.id.beauty_pannel);
+            mPanelBeautyControl.setPosition(0);
+            mPanelBeautyControl.setBeautyManager(mLiveRoom.getBeautyManager());
+            mPanelBeautyControl.setPopTitle("美颜");
+            mMeiYanPop = new BottomDialog(getActivity(), filterView,
+                    null);
+        }
+            mMeiYanPop.show();
+            mPanelBeautyControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
+                @Override
+                public void onTabChange(TabInfo tabInfo, int position) {
+                }
 
-        mMeiYanPop = new BottomDialog(getActivity(), filterView,
-                null);
-        mMeiYanPop.show();
+                @Override
+                public boolean onClose() {
+                    return false;
+                }
 
+                @Override
+                public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
+                    return false;
+                }
 
-        mPanelBeautyControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
-            @Override
-            public void onTabChange(TabInfo tabInfo, int position) {
-            }
+                @Override
+                public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
+                    return false;
+                }
+            });
+            mMeiYanPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
+                @Override
+                public void onBottomItemClick(BottomDialog dialog, View view) {
 
-            @Override
-            public boolean onClose() {
-                return false;
-            }
+                }
+            });
 
-            @Override
-            public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
-                return false;
-            }
-
-            @Override
-            public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
-                return false;
-            }
-        });
-        mMeiYanPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
-            @Override
-            public void onBottomItemClick(BottomDialog dialog, View view) {
-
-            }
-        });
     }
 
     //滤镜设置弹窗
