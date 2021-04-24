@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
-import com.xaqinren.healthyelders.moduleHome.activity.MainActivity;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.databinding.ActivitySplashBinding;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SplashViewModel;
 import com.xaqinren.healthyelders.R;

@@ -2,22 +2,16 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
-import com.xaqinren.healthyelders.moduleHome.viewModel.MainViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 
 import java.util.ArrayList;

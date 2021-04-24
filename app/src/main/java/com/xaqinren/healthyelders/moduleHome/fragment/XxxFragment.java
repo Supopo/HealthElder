@@ -23,6 +23,7 @@ import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 
@@ -102,6 +103,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu7.setOnClickListener(lis -> {
             ZBStartSettingPop zbStartSettingPop = new ZBStartSettingPop(getActivity());
             zbStartSettingPop.showPopupWindow();
+        });
+
+        binding.tvMenu8.setOnClickListener(lis -> {
+            startActivity(StartRenZhengActivity.class);
         });
 
     }

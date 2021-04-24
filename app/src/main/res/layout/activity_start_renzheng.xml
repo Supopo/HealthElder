@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data></data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pageColor"
+            android:padding="@dimen/dp_16">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="上传身份证照片"
+                android:textStyle="bold"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_18" />
+
+            <TextView
+                android:id="@+id/tv_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_title"
+                android:layout_marginTop="@dimen/dp_9"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:text="请上传本人身份证照片，拍照时请确保拍摄光线均匀，图像清晰，边框完整。"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_13" />
+
+            <RelativeLayout
+                android:id="@+id/rl_zm"
+                android:layout_width="@dimen/dp_343"
+                android:layout_height="@dimen/dp_220"
+                android:layout_below="@id/tv_tip"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_renzheng_white"
+                android:paddingTop="@dimen/dp_14">
+
+                <ImageView
+                    android:id="@+id/iv_zm"
+                    android:layout_width="@dimen/dp_242"
+                    android:layout_height="@dimen/dp_162"
+                    android:layout_centerHorizontal="true"
+                    android:background="@mipmap/sfz_zm" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_zm"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_9"
+                    android:text="上传身份证人像面"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_fm"
+                android:layout_width="@dimen/dp_343"
+                android:layout_height="@dimen/dp_220"
+                android:layout_below="@id/rl_zm"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@drawable/bg_renzheng_white"
+                android:paddingTop="@dimen/dp_14">
+
+                <ImageView
+                    android:id="@+id/iv_fm"
+                    android:layout_width="@dimen/dp_242"
+                    android:layout_height="@dimen/dp_162"
+                    android:layout_centerHorizontal="true"
+                    android:background="@mipmap/sfz_fm" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_fm"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_9"
+                    android:text="上传身份证人像面"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_select"
+                android:layout_width="@dimen/dp_284"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_fm"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/rl_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/dp_1"
+                    android:paddingRight="@dimen/dp_8">
+
+                    <ImageView
+                        android:id="@+id/iv_select"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
+                        android:background="@mipmap/radbox_sel" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_12" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="@dimen/dp_343"
+                android:layout_height="@dimen/dp_44"
+                android:layout_below="@id/ll_select"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:background="@mipmap/btn_zb"
+                android:text="下一步"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
+
+        </RelativeLayout>
+    </ScrollView>
+</layout>

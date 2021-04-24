@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#fff</color>
     <color name="colorAccent">#fff</color>
     <color name="themeColor">#fff</color>
-    <color name="pageColor">#fff</color>
+    <color name="pageColor">#FFF8F8F8</color>
     <color name="btn_blue">#1C54E7</color>
     <color name="btn_white">#fff5f5f5</color>
     <color name="gray_999">#999999</color>

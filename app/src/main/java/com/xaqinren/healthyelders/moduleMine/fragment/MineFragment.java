@@ -1,4 +1,4 @@
-package com.xaqinren.healthyelders.moduleHome.fragment;
+package com.xaqinren.healthyelders.moduleMine.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
-import com.xaqinren.healthyelders.moduleHome.viewModel.MineViewModel;
+import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 

@@ -1,4 +1,4 @@
-package com.xaqinren.healthyelders.moduleHome.viewModel;
+package com.xaqinren.healthyelders;
 
 
 import android.app.Application;

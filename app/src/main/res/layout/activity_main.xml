@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleHome.viewModel.MainViewModel" />
+            type="com.xaqinren.healthyelders.MainViewModel" />
     </data>
 
     <RelativeLayout

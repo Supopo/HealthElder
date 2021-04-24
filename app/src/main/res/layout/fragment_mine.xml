@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleHome.viewModel.MineViewModel" />
+            type="com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel" />
 
     </data>
 

@@ -1,11 +1,11 @@
-package com.xaqinren.healthyelders.moduleHome.viewModel;
+package com.xaqinren.healthyelders.moduleMine.viewModel;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.xaqinren.healthyelders.moduleHome.bean.MinePageInfo;
+import com.xaqinren.healthyelders.moduleMine.bean.MinePageInfo;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 

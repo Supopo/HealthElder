@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".moduleHome.activity.MainActivity"
+            android:name=".MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
@@ -155,6 +155,7 @@
         <activity
             android:name=".moduleZhiBo.activity.StartLiveActivity"
          />
+        <activity android:name=".moduleZhiBo.activity.StartRenZhengActivity" />
 
     </application>
 

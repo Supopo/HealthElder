@@ -1,4 +1,4 @@
-package com.xaqinren.healthyelders.moduleHome.bean;
+package com.xaqinren.healthyelders.moduleMine.bean;
 
 import android.text.TextUtils;
 
