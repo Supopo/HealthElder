@@ -15,6 +15,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -31,15 +34,19 @@ import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.widget.BottomDialog;
+import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -92,6 +99,10 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
         binding.rlAddCover.setOnClickListener(lis -> {
             selectImage();
         });
+        binding.llLoc.setOnClickListener(lis -> {
+            showListPop();
+        });
+
         //选择同意协议
         binding.rlSelect.setOnClickListener(lis -> {
             isAgree = !isAgree;
@@ -125,6 +136,21 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
         });
     }
 
+    private void showListPop() {
+        List<ListPopMenuBean> menus = new ArrayList<>();
+        menus.add(new ListPopMenuBean("显示位置更多人能看到你噢", getResources().getColor(R.color.gray_999), 14));
+        menus.add(new ListPopMenuBean("显示位置", 0, 0));
+        menus.add(new ListPopMenuBean("隐藏位置", 0, 0));
+        ListBottomPopup listBottomPopup = new ListBottomPopup(getActivity(), menus, new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Log.e("--", "点击了：" + menus.get(position).menuName);
+            }
+        });
+        listBottomPopup.showPopupWindow();
+    }
+
     private void showMYPop() {
 
         if (mMeiYanPop == null) {
@@ -136,33 +162,33 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
             mMeiYanPop = new BottomDialog(getActivity(), filterView,
                     null);
         }
-            mMeiYanPop.show();
-            mMeiYanControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
-                @Override
-                public void onTabChange(TabInfo tabInfo, int position) {
-                }
+        mMeiYanPop.show();
+        mMeiYanControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
+            @Override
+            public void onTabChange(TabInfo tabInfo, int position) {
+            }
 
-                @Override
-                public boolean onClose() {
-                    return false;
-                }
+            @Override
+            public boolean onClose() {
+                return false;
+            }
 
-                @Override
-                public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
-                    return false;
-                }
+            @Override
+            public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
+                return false;
+            }
 
-                @Override
-                public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
-                    return false;
-                }
-            });
-            mMeiYanPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
-                @Override
-                public void onBottomItemClick(BottomDialog dialog, View view) {
+            @Override
+            public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
+                return false;
+            }
+        });
+        mMeiYanPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
+            @Override
+            public void onBottomItemClick(BottomDialog dialog, View view) {
 
-                }
-            });
+            }
+        });
 
     }
 

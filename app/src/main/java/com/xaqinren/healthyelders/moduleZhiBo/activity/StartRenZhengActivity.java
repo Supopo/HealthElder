@@ -27,7 +27,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzhengBinding;
-import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 
 import java.util.List;
@@ -82,6 +81,9 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         binding.ivFm.setOnClickListener(lis -> {
             selectType = 2;
             selectImage();
+        });
+        binding.btnNext.setOnClickListener(lis -> {
+            startActivity(StartRenZheng2Activity.class);
         });
     }
 

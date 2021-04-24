@@ -128,7 +128,7 @@
                 android:layout_below="@id/ll_select"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@mipmap/btn_zb"
+                android:background="@mipmap/btn_login"
                 android:text="下一步"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16" />
