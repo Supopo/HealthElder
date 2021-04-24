@@ -11,25 +11,25 @@
         android:background="@color/pageColor"
         android:padding="@dimen/dp_16">
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="请确认您的身份信息"
-            android:textColor="@color/color_252525"
-            android:textSize="@dimen/sp_18"
-            android:textStyle="bold" />
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_17"
+            android:id="@+id/iv_success"
+            android:background="@mipmap/icon_rzpass"
+            android:layout_width="@dimen/dp_73"
+            android:layout_height="@dimen/dp_72" />
 
         <TextView
             android:id="@+id/tv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_title"
-            android:layout_marginTop="@dimen/dp_9"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="认证信息将用于直播、收益提现等，与账号唯一绑定，我们会对信息进行严格保密。"
-            android:textColor="@color/gray_999"
-            android:textSize="@dimen/sp_13" />
+            android:layout_below="@id/iv_success"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_37"
+            android:text="认证成功"
+            android:textColor="@color/color_252525"
+            android:textSize="@dimen/sp_20" />
 
         <LinearLayout
             android:id="@+id/ll_info1"
@@ -46,32 +46,31 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="真实姓名"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
 
-            <EditText
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@null"
                 android:gravity="center_vertical|right"
                 android:text="桃几"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
+                android:textSize="@dimen/sp_14" />
 
         </LinearLayout>
 
         <View
-            android:layout_below="@id/ll_info1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/color_EAEAEA"
-            />
+            android:layout_below="@id/ll_info1"
+            android:background="@color/color_EAEAEA" />
+
         <LinearLayout
             android:id="@+id/ll_info2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginTop="@dimen/dp_1"
             android:layout_below="@id/ll_info1"
+            android:layout_marginTop="@dimen/dp_1"
             android:background="@color/white"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_12"
@@ -82,33 +81,29 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="身份证号"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
 
-            <EditText
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@null"
                 android:gravity="center_vertical|right"
-                android:maxLength="18"
-                android:inputType="numberSigned"
-                android:digits="0123456789xX"
                 android:text="610328199207140714"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
+                android:textSize="@dimen/sp_14" />
 
         </LinearLayout>
 
 
         <Button
-            android:id="@+id/btn_next"
+            android:id="@+id/btn_toLive"
             android:layout_width="@dimen/dp_343"
             android:layout_height="@dimen/dp_44"
             android:layout_below="@id/ll_info2"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_25"
             android:background="@mipmap/btn_login"
-            android:text="下一步"
+            android:text="去直播"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16" />
 

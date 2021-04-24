@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.databinding.ActivityRenzhengSuccessBinding;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzheng2Binding;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -11,13 +12,13 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
  * Created by Lee. on 2021/4/24.
- * 身份证认证页面2
+ * 身份证认证成功
  */
-public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2Binding, BaseViewModel> {
+public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSuccessBinding, BaseViewModel> {
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
-        return R.layout.activity_start_renzheng2;
+        return R.layout.activity_renzheng_success;
     }
 
     @Override
@@ -29,9 +30,6 @@ public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2B
     public void initData() {
         super.initData();
         tvTitle.setText("实名认证");
-        binding.btnNext.setOnClickListener(lis -> {
-            startActivity(RenZhengSuccessActivity.class);
-        });
     }
 
 }

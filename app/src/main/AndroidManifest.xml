@@ -158,6 +158,8 @@
         <activity android:name=".moduleZhiBo.activity.StartRenZhengActivity" />
 
         <activity android:name=".moduleLogin.activity.PhoneLoginActivity" />
+        <activity android:name=".moduleZhiBo.activity.StartRenZheng2Activity" />
+        <activity android:name=".moduleZhiBo.activity.RenZhengSuccessActivity" />
 
     </application>
 
