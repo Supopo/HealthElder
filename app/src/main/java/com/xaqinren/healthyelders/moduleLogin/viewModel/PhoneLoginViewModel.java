@@ -39,4 +39,5 @@ public class PhoneLoginViewModel extends BaseViewModel {
     public void loginByPhone(String phone, String code, String openId) {
         userRepository.loginByPhone(loginSuccess, phone, code, openId);
     }
+
 }

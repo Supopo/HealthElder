@@ -1,6 +1,6 @@
 package com.xaqinren.healthyelders.moduleLogin.bean;
 
-public class LoginUserBean {
+public class UserInfoBean {
 
     private String avatarUrl;
     private String mobileNumber;

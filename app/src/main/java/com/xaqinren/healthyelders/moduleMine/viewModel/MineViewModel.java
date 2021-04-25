@@ -9,12 +9,13 @@ import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfo;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.MinePageInfo;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
 public class MineViewModel extends BaseViewModel {
-    public MutableLiveData<UserInfo> userInfo = new MutableLiveData<>();
+    public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     private UserRepository userRepository = UserRepository.getInstance();
 
     public MineViewModel(@NonNull Application application) {

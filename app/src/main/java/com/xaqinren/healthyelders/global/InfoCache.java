@@ -2,7 +2,7 @@ package com.xaqinren.healthyelders.global;
 
 import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
@@ -27,21 +27,21 @@ public class InfoCache {
         synchronized (lock){
             String userInfoStr = SPUtils.getInstance().getString(Constant.SP_KEY_LOGIN_USER);
             if (StringUtils.isEmpty(userInfoStr)) return false;
-            LoginUserBean loginUserBean = JSON.parseObject(userInfoStr, LoginUserBean.class);
-            if (loginUserBean ==null) return false;
+            UserInfoBean userInfoBean = JSON.parseObject(userInfoStr, UserInfoBean.class);
+            if (userInfoBean ==null) return false;
             return true;
         }
     }
-    public LoginUserBean getLoginUser() {
+    public UserInfoBean getLoginUser() {
         synchronized (lock) {
             String userInfoStr = SPUtils.getInstance().getString(Constant.SP_KEY_LOGIN_USER);
             if (StringUtils.isEmpty(userInfoStr)) return null;
-            LoginUserBean loginUserBean = JSON.parseObject(userInfoStr, LoginUserBean.class);
-            if (loginUserBean == null) return null;
-            return loginUserBean;
+            UserInfoBean userInfoBean = JSON.parseObject(userInfoStr, UserInfoBean.class);
+            if (userInfoBean == null) return null;
+            return userInfoBean;
         }
     }
-    public void setLoginUser(LoginUserBean user) {
+    public void setLoginUser(UserInfoBean user) {
         synchronized (lock) {
             SPUtils.getInstance().put(Constant.SP_KEY_LOGIN_USER,JSON.toJSONString(user));
         }

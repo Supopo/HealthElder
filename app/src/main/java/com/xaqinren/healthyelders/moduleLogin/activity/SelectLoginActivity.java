@@ -22,7 +22,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SelectLoginViewModel;
 
@@ -45,6 +45,7 @@ import okhttp3.RequestBody;
 public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding, SelectLoginViewModel> {
     private boolean isAgree;//是否同意协议
     private Disposable disposable;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_select_login;
@@ -65,13 +66,13 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
     private void initEvent() {
         binding.btnLogin.setOnClickListener(lis -> {
             if (checkAgree())
-            wxLogin();
+                wxLogin();
         });
-        binding.rlSelect.setOnClickListener(lis ->{
+        binding.rlSelect.setOnClickListener(lis -> {
             isAgree = !isAgree;
             if (isAgree) {
                 binding.ivSelect.setBackgroundResource(R.mipmap.login_rad_sel);
-            }else {
+            } else {
                 binding.ivSelect.setBackgroundResource(R.mipmap.login_rad_nor);
             }
         });
@@ -83,6 +84,7 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
         });
 
     }
+
     private boolean checkAgree() {
         if (!isAgree) {
             Toast.makeText(this, "请先同意用户协议", Toast.LENGTH_LONG).show();
@@ -113,10 +115,22 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
                 .subscribe(eventBean -> {
                     if (eventBean.msgId == CodeTable.WX_LOGIN_SUCCESS) {
                         String wxInfo = SPUtils.getInstance().getString(Constant.SP_KEY_WX_INFO);
-                        toWxChatRealLogin(JSON.parseObject(wxInfo,WeChatUserInfoBean.class));
+                        viewModel.toWxChatRealLogin(JSON.parseObject(wxInfo, WeChatUserInfoBean.class));
                     }
                 });
         RxSubscriptions.add(disposable);
+
+        viewModel.loginStatus.observe(this, status -> {
+            if (status != null) {
+                dismissDialog();
+                if (status == 1) {
+                    startActivity(MainActivity.class);
+                } else if (status == 2) {
+                    startActivity(PhoneLoginActivity.class);
+                }
+                finish();
+            }
+        });
     }
 
     @Override
@@ -125,90 +139,4 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
         disposable.dispose();
     }
 
-    /**
-     * 登录
-     * @param infoBean
-     */
-    private void toWxChatRealLogin(WeChatUserInfoBean infoBean) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("unionId", infoBean.unionId);
-        map.put("openId", infoBean.openId);
-        map.put("nickName", infoBean.nickName);
-        map.put("sex", infoBean.sex);
-        map.put("city", infoBean.city);
-        map.put("province", infoBean.province);
-        map.put("country", infoBean.country);
-        map.put("avatarUrl", infoBean.avatarUrl);
-        map.put("sessionKey", infoBean.sessionKey);
-        map.put("rCode", infoBean.rcode);
-
-        String json = JSON.toJSONString(map);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),json);
-        //去通知服务器
-        showDialog();
-        RetrofitClient.getInstance().create(ApiServer.class)
-                .toWxChatRealLogin(Constant.auth,Constant.mid,body)
-                .compose(this.bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CustomObserver<MBaseResponse<LoginTokenBean>>(){
-
-                    @Override
-                    protected void dismissDialog() {
-
-                    }
-
-                    @Override
-                    public MutableLiveData<Boolean> onSuccess(MBaseResponse<LoginTokenBean> baseResponse) {
-                        SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
-                        if (baseResponse.isOk()) {
-
-                            //SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO,JSON.toJSONString(baseResponse.getData()));
-                            InfoCache.getInstance().setTokenInfo(baseResponse.getData());
-                            getUserInfo(baseResponse.getData().access_token);
-                        }else{
-                            SelectLoginActivity.this.dismissDialog();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    public void onFail(String code, MBaseResponse data) {
-                        super.onFail(code, data);
-                        SelectLoginActivity.this.dismissDialog();
-                        SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
-                        if (code.equals(CodeTable.NO_PHONE_CODE)) {
-                            //需要绑定手机号,跳转登录页
-                            Intent intent = new Intent(SelectLoginActivity.this, PhoneLoginActivity.class);
-                            intent.putExtra("openId", infoBean.openId);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                });
-    }
-
-    private void getUserInfo(String token) {
-        RetrofitClient.getInstance().create(ApiServer.class)
-                .userInfo("Bearer " + token)
-                .compose(this.bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CustomObserver<MBaseResponse<LoginUserBean>>() {
-                    @Override
-                    protected void dismissDialog() {
-                        SelectLoginActivity.this.dismissDialog();
-                    }
-
-                    @Override
-                    public MutableLiveData<Boolean> onSuccess(MBaseResponse<LoginUserBean> data) {
-                        InfoCache.getInstance().setLoginUser(data.getData());
-                        //跳转首页
-                        Toast.makeText(SelectLoginActivity.this,"登录成功",Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(SelectLoginActivity.this, MainActivity.class));
-                        finish();
-                        return null;
-                    }
-                });
-    }
 }

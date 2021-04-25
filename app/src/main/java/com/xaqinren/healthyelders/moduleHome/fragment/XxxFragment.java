@@ -149,7 +149,6 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
     public void initViewObservable() {
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
-            Log.e("--", "XXXUserInfo:" + userInfo.nickname);
         });
     }
 

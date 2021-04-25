@@ -1,27 +1,13 @@
 package com.xaqinren.healthyelders.moduleLogin.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.lifecycle.Observer;
-
-import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.BR;
-import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.apiserver.ApiServer;
-import com.xaqinren.healthyelders.apiserver.CustomObserver;
-import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.databinding.ActivityPhoneLoginBinding;
-import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.global.InfoCache;
-import com.xaqinren.healthyelders.http.RetrofitClient;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.PhoneLoginViewModel;
 
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -30,10 +16,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.base.BaseActivity;
-import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, PhoneLoginViewModel> {
     private String openId;

@@ -1,16 +1,22 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
-import com.xaqinren.healthyelders.bean.UserInfo;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +50,6 @@ public class UserRepository {
     }
 
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
-
 
     public MutableLiveData<List<GirlsBean>> getGirls(int page) {
         MutableLiveData<List<GirlsBean>> girlsList = new MutableLiveData<>();
@@ -81,7 +86,7 @@ public class UserRepository {
         return girlsList;
     }
 
-    public void getUserInfo(MutableLiveData<UserInfo> userInfo, String token) {
+    public void getUserInfo(MutableLiveData<UserInfoBean> userInfo, String token) {
         userApi.getUserInfo(token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -90,11 +95,12 @@ public class UserRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<UserInfo>>() {
+                .subscribe(new DisposableObserver<MBaseResponse<UserInfoBean>>() {
                     @Override
-                    public void onNext(MBaseResponse<UserInfo> response) {
+                    public void onNext(MBaseResponse<UserInfoBean> response) {
                         if (response.isOk()) {
                             userInfo.postValue(response.getData());
+                            InfoCache.getInstance().setLoginUser(response.getData());
                             UserInfoMgr.getInstance().setUserInfo(response.getData());
                         }
                     }
@@ -152,5 +158,53 @@ public class UserRepository {
                 });
     }
 
+    public void toWxChatRealLogin(MutableLiveData<Integer> loginStatus, WeChatUserInfoBean infoBean) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("unionId", infoBean.unionId);
+        map.put("openId", infoBean.openId);
+        map.put("nickName", infoBean.nickName);
+        map.put("sex", infoBean.sex);
+        map.put("city", infoBean.city);
+        map.put("province", infoBean.province);
+        map.put("country", infoBean.country);
+        map.put("avatarUrl", infoBean.avatarUrl);
+        map.put("sessionKey", infoBean.sessionKey);
+        map.put("rCode", infoBean.rcode);
 
+        String json = JSON.toJSONString(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.toWxChatRealLogin(Constant.auth, Constant.mid, body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new DisposableObserver<MBaseResponse<LoginTokenBean>>() {
+                    @Override
+                    public void onNext(MBaseResponse<LoginTokenBean> response) {
+                        SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
+                        if (response.isOk()) {
+                            InfoCache.getInstance().setTokenInfo(response.getData());
+                            loginStatus.postValue(1);
+                        } else {
+                            //需要绑定手机号跳转绑定手机号页面
+                            if (response.getCode().equals(CodeTable.NO_PHONE_CODE)) {
+                                loginStatus.postValue(2);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 }
