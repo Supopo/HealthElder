@@ -34,7 +34,10 @@ public class Constant {
      * 登录token
      */
     public static final String SP_KEY_TOKEN_INFO = "tokenInfo";
-
+    /**
+     * 登录用户
+     */
+    public static final String SP_KEY_LOGIN_USER = "loginUser";
 
 
 }

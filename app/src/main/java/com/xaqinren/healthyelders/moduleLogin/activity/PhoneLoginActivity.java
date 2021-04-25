@@ -13,8 +13,10 @@ import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.databinding.ActivityPhoneLoginBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.PhoneLoginViewModel;
 
 import java.util.HashMap;
@@ -149,16 +151,41 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
                 .subscribe(new CustomObserver<MBaseResponse<LoginTokenBean>>() {
                     @Override
                     protected void dismissDialog() {
-                        PhoneLoginActivity.this.dismissDialog();
+
                     }
 
                     @Override
                     public void onSuccess(MBaseResponse<LoginTokenBean> data) {
                         if (data.isOk()) {
-                            SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(data.getData()));
-                            startActivity(new Intent(PhoneLoginActivity.this, MainActivity.class));
-                            finish();
+                            //SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(data.getData()));
+                            InfoCache.getInstance().setTokenInfo(data.getData());
+                            getUserInfo(data.getData().access_token);
+                        }else{
+                            PhoneLoginActivity.this.dismissDialog();
                         }
+                    }
+                });
+    }
+
+    private void getUserInfo(String token) {
+        RetrofitClient.getInstance().create(ApiServer.class)
+                .userInfo("Bearer " + token)
+                .compose(this.bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CustomObserver<MBaseResponse<LoginUserBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        PhoneLoginActivity.this.dismissDialog();
+                    }
+
+                    @Override
+                    public void onSuccess(MBaseResponse<LoginUserBean> data) {
+                        InfoCache.getInstance().setLoginUser(data.getData());
+                        //跳转首页
+                        Toast.makeText(PhoneLoginActivity.this,"登录成功",Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(PhoneLoginActivity.this, MainActivity.class));
+                        finish();
                     }
                 });
     }

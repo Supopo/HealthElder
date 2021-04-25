@@ -47,6 +47,10 @@ public class CodeTable {
      * token 过期
      */
     public static final int TOKEN_ERR = 0x100013;
+    /**
+     * 微信登录成功
+     */
+    public static final int WX_LOGIN_SUCCESS = 0x100014;
 
 
 

@@ -25,6 +25,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO,"");
             }
         });
+        RxSubscriptions.add(eventDisposable);
     }
 
 

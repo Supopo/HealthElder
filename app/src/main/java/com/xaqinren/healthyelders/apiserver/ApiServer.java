@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 
 import java.util.List;
@@ -64,4 +65,12 @@ public interface ApiServer {
     Observable<MBaseResponse<LoginTokenBean>> phoneLogin(@Header("Authorization") String authorization,
                                                          @Header("mid") String mid,
                                                          @Body RequestBody body);
+
+    /**
+     * 用户登录信息获取
+     * @param authorization
+     * @return
+     */
+    @GET("user/findUserBaseInfo")
+    Observable<MBaseResponse<LoginUserBean>> userInfo(@Header("Authorization") String authorization);
 }

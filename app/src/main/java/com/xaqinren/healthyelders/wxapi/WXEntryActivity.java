@@ -15,9 +15,11 @@ import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
@@ -31,6 +33,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -104,7 +107,8 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
                     public void onNext(MBaseResponse<WeChatUserInfoBean> baseResponse) {
                         if (baseResponse.isOk()) {
                             SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO,JSON.toJSONString(baseResponse.getData()));
-                            toWxChatRealLogin(baseResponse.getData());
+//                            toWxChatRealLogin(baseResponse.getData());
+                            RxBus.getDefault().post(new EventBean(CodeTable.WX_LOGIN_SUCCESS,null));
                         }
                     }
 
@@ -120,60 +124,6 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
                 });
     }
 
-    private void toWxChatRealLogin(WeChatUserInfoBean infoBean) {
-
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("unionId", infoBean.unionId);
-        map.put("openId", infoBean.openId);
-        map.put("nickName", infoBean.nickName);
-        map.put("sex", infoBean.sex);
-        map.put("city", infoBean.city);
-        map.put("province", infoBean.province);
-        map.put("country", infoBean.country);
-        map.put("avatarUrl", infoBean.avatarUrl);
-        map.put("sessionKey", infoBean.sessionKey);
-        map.put("rCode", infoBean.rcode);
-
-        String json = JSON.toJSONString(map);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),json);
-        //去通知服务器
-        RetrofitClient.getInstance().create(ApiServer.class)
-                .toWxChatRealLogin(Constant.auth,Constant.mid,body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CustomObserver<MBaseResponse<LoginTokenBean>>(){
-
-                    @Override
-                    protected void dismissDialog() {
-
-                    }
-
-                    @Override
-                    public void onSuccess(MBaseResponse<LoginTokenBean> baseResponse) {
-                        String code = baseResponse.getCode();
-                        if (baseResponse.isOk()) {
-                            //跳转首页
-                            SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO,JSON.toJSONString(baseResponse.getData()));
-                            Toast.makeText(WXEntryActivity.this,"登录成功",Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(WXEntryActivity.this, MainActivity.class));
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void onFail(String code, MBaseResponse data) {
-                        super.onFail(code, data);
-                        if (code.equals(CodeTable.NO_PHONE_CODE)) {
-                            //需要绑定手机号,跳转登录页
-                            Intent intent = new Intent(WXEntryActivity.this, PhoneLoginActivity.class);
-                            intent.putExtra("openId", infoBean.openId);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                });
-    }
 }
 
 

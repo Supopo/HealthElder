@@ -35,7 +35,7 @@
 
     <application>
 
-        <activity
+        <!--<activity
             android:name="com.tencent.qcloud.xiaoshipin.play.TCVideoPreviewActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -43,9 +43,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
-        <activity
+        <!--<activity
             android:name="com.tencent.qcloud.xiaoshipin.mainui.TCSplashActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -54,7 +54,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
         <!-- 消息收发service -->
         <service
