@@ -52,7 +52,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         startParamMap.put("address", "陕西省 西安市");
         startParamMap.put("longitude", 116.473083);
         startParamMap.put("latitude", 39.993762);
-        startParamMap.put("liveRoomType", "39.VIDEO_LIVE");
+        startParamMap.put("liveRoomType", "VIDEO_LIVE");
         startParamMap.put("canRecordVideo", true);
         startParamMap.put("liveRoomIntroduce", "此处省略500字");
         startParamMap.put("hasIntroduce", true);

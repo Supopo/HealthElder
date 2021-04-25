@@ -6,7 +6,7 @@ package com.xaqinren.healthyelders.global;
 public class Constant {
     public static boolean DEBUG = true;
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
-    public static String debugUrl = "http://192.168.2.113:8080/";
+    public static String debugUrl = "http://192.168.2.113:18080/";
     public static String PageUrl = "WEB_URL";
     public static String PageTitle = "WEB_TITLE";
     public static final int NET_SPEED = 10086;

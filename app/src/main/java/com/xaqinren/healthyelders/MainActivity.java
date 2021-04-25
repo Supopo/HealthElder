@@ -68,6 +68,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             } else {
                 UserInfoMgr.getInstance().setUserInfo(userInfoBean);
                 UserInfoMgr.getInstance().setAccessToken(accessToken);
+                UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
             }
         }
     }

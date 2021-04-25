@@ -38,6 +38,15 @@ public class UserInfoMgr {
         this.accessToken = accessToken;
     }
 
+    public String getHttpToken() {
+        return httpToken;
+    }
+
+    public void setHttpToken(String httpToken) {
+        this.httpToken = httpToken;
+    }
+
+    private String httpToken;
     private String accessToken;
     private String userSig;
     private String sdkAppID;

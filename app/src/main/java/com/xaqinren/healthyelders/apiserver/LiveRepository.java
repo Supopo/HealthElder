@@ -43,10 +43,9 @@ public class LiveRepository {
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
     public void startLive(MutableLiveData<Boolean> startSuccess, HashMap<String, Object> map) {
-        String token = Constant.API_HEADER + UserInfoMgr.getInstance().getAccessToken();
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.toStartLive(token, body)
+        userApi.toStartLive(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -54,9 +53,9 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<LoginTokenBean>>() {
+                .subscribe(new DisposableObserver<MBaseResponse<Object>>() {
                     @Override
-                    public void onNext(MBaseResponse<LoginTokenBean> response) {
+                    public void onNext(MBaseResponse<Object> response) {
                         if (response.isOk()) {
                             startSuccess.postValue(true);
                         }

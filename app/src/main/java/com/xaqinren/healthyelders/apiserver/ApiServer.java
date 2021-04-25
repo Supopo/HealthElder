@@ -77,6 +77,11 @@ public interface ApiServer {
 
     @Headers({"content-type:application/json"})
     @POST("live/start")
-    Observable<MBaseResponse<LoginTokenBean>> toStartLive(@Header("Authorization") String authorization,
-                                                         @Body RequestBody body);
+    Observable<MBaseResponse<Object>> toStartLive(@Header("Authorization") String authorization,
+                                                  @Body RequestBody body);
+
+    @Headers({"content-type:application/json"})
+    @POST("live/getLiveHomeInfo")
+    Observable<MBaseResponse<Object>> getLiveInfo(@Header("Authorization") String authorization,
+                                                  @Body RequestBody body);
 }
