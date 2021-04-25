@@ -7,11 +7,10 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.tencent.qcloud.xiaoshipin.videorecord.TCVideoRecordFragment;
+
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
-import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleliteav.fragment.StartLiteAVFragment;
