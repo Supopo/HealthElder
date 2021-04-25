@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -174,6 +175,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
+            Log.e("--", "MineUserInfo:" + userInfo.nickname);
         });
     }
 }

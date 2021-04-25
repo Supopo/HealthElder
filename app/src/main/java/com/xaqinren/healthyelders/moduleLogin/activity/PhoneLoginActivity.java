@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.lifecycle.Observer;
+
 import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
@@ -51,8 +53,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     @Override
     public void initData() {
         super.initData();
-        tvTitle.setText("我的上铺");
-        //        setStatusBarTransparent();
+        tvTitle.setText("手机号登陆");
         initEvent();
     }
 
@@ -78,7 +79,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         binding.conformBtn.setOnClickListener(view -> {
             if (checkParam())
                 showDialog();
-                viewModel.loginByPhone(binding.etPhone.getText().toString().trim(), binding.etVCode.getText().toString().trim(), openId);
+            viewModel.loginByPhone(binding.etPhone.getText().toString().trim(), binding.etVCode.getText().toString().trim(), openId);
         });
         if (StringUtils.isEmpty(openId)) {
             //登录/注册
@@ -96,7 +97,10 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         super.initViewObservable();
         //监听登录请求状态
         viewModel.loginSuccess.observe(this, isSuccess -> {
-            dismissDialog();
+            if (isSuccess) {
+                dismissDialog();
+                finish();
+            }
         });
     }
 

@@ -16,12 +16,15 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
@@ -33,12 +36,14 @@ import io.dcloud.feature.sdk.DCUniMPSDK;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 //注意ActivityBaseBinding换成自己fragment_layout对应的名字 FragmentXxxBinding
 public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> {
 
 
     private String wgtPath;
+    private LoginTokenBean loginTokenBean;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,8 +107,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         });
 
         binding.tvMenu7.setOnClickListener(lis -> {
-            ZBStartSettingPop zbStartSettingPop = new ZBStartSettingPop(getActivity());
-            zbStartSettingPop.showPopupWindow();
+            if (loginTokenBean != null) {
+                showDialog();
+                viewModel.getUserInfo(loginTokenBean.access_token);
+            }
         });
 
         binding.tvMenu8.setOnClickListener(lis -> {
@@ -114,6 +121,8 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             startActivity(TCMainActivity.class);
         });
 
+        String jsUserInfo = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
+        loginTokenBean = JSON.parseObject(jsUserInfo, LoginTokenBean.class);
     }
 
     private void toXCX() {
@@ -138,7 +147,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
     //页面事件监听的方法，一般用于ViewModel层转到View层的事件注册
     @Override
     public void initViewObservable() {
-
+        viewModel.userInfo.observe(this, userInfo -> {
+            dismissDialog();
+            Log.e("--", "XXXUserInfo:" + userInfo.nickname);
+        });
     }
 
     /**

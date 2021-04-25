@@ -34,7 +34,7 @@ public class GirlsViewModel extends BaseViewModel {
     }
 
 
-    //加载但也数据写法
+    //加载单数据写法
     public LiveData<List<GirlsBean>> getData(){
         return  userRepository.getGirls(1);
     }

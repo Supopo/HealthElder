@@ -36,8 +36,7 @@ public class PhoneLoginViewModel extends BaseViewModel {
 
     private UserRepository userRepository = UserRepository.getInstance();
     public MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
-
     public void loginByPhone(String phone, String code, String openId) {
-        loginSuccess = userRepository.loginByPhone(phone, code, openId);
+        userRepository.loginByPhone(loginSuccess, phone, code, openId);
     }
 }

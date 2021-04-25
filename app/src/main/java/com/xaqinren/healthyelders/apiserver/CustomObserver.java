@@ -3,11 +3,12 @@ package com.xaqinren.healthyelders.apiserver;
 
 import android.net.ParseException;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.gson.JsonParseException;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.global.Constant;
 
 import org.json.JSONException;
 
@@ -18,7 +19,6 @@ import java.net.UnknownHostException;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
-import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import retrofit2.HttpException;
@@ -66,7 +66,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
         dismissDialog();
     }
 
-    abstract public void onSuccess(T data);
+    abstract public MutableLiveData<Boolean> onSuccess(T data);
 
     public void onFail(String code, T data){}
 

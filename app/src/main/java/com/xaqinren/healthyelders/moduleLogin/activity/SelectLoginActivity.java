@@ -2,8 +2,9 @@ package com.xaqinren.healthyelders.moduleLogin.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
+
+import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -24,15 +25,11 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SelectLoginViewModel;
-import com.xaqinren.healthyelders.wxapi.WXEntryActivity;
 
 import java.util.HashMap;
 
-import io.dcloud.common.DHInterface.ICallBack;
-import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
@@ -162,7 +159,7 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
                     }
 
                     @Override
-                    public void onSuccess(MBaseResponse<LoginTokenBean> baseResponse) {
+                    public MutableLiveData<Boolean> onSuccess(MBaseResponse<LoginTokenBean> baseResponse) {
                         SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                         if (baseResponse.isOk()) {
 
@@ -172,6 +169,7 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
                         }else{
                             SelectLoginActivity.this.dismissDialog();
                         }
+                        return null;
                     }
 
                     @Override
@@ -203,12 +201,13 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
                     }
 
                     @Override
-                    public void onSuccess(MBaseResponse<LoginUserBean> data) {
+                    public MutableLiveData<Boolean> onSuccess(MBaseResponse<LoginUserBean> data) {
                         InfoCache.getInstance().setLoginUser(data.getData());
                         //跳转首页
                         Toast.makeText(SelectLoginActivity.this,"登录成功",Toast.LENGTH_LONG).show();
                         startActivity(new Intent(SelectLoginActivity.this, MainActivity.class));
                         finish();
+                        return null;
                     }
                 });
     }

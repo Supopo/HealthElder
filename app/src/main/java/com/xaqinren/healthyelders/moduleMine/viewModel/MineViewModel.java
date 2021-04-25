@@ -29,6 +29,6 @@ public class MineViewModel extends BaseViewModel {
         //        minePageInfo.birthplace = "西安市";
         //        minePageInfo.hobby = "音乐";
         //        userInfo.setValue(minePageInfo);
-        userInfo = userRepository.getUserInfo(Constant.API_HEADER + token);
+        userRepository.getUserInfo(userInfo,Constant.API_HEADER + token);
     }
 }
