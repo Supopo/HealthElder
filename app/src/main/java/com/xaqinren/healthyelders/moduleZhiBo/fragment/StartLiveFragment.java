@@ -36,11 +36,14 @@ import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
@@ -55,7 +58,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
  * Created by Lee. on 2021/4/23.
  * 开启直播间
  */
-public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, BaseViewModel> {
+public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, StartLiveZbViewModel> {
 
     private MLVBLiveRoom mLiveRoom;
     private List<LocalMedia> selectList;
@@ -143,6 +146,26 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, Ba
         binding.llSet.setOnClickListener(lis -> {
             startSettingPop = new ZBStartSettingPop(getActivity());
             startSettingPop.showPopupWindow();
+            Log.e("--","token:"+ UserInfoMgr.getInstance().getAccessToken());
+        });
+        binding.btnStart.setOnClickListener(lis -> {
+            //登录直播间服务
+            viewModel.toLoginRoom(mLiveRoom);
+        });
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.loginRoomSuccess.observe(getActivity(), isSuccess -> {
+            if (isSuccess != null) {
+                if (isSuccess) {
+                    //去登录直播间服务
+                    startActivity(LiveZhuboActivity.class);
+                    getActivity().finish();
+                }
+            }
+
         });
     }
 

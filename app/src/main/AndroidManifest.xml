@@ -162,6 +162,7 @@
         <activity android:name=".moduleZhiBo.activity.StartRenZheng2Activity" />
         <activity android:name=".moduleZhiBo.activity.RenZhengSuccessActivity" />
         <activity android:name=".moduleLiteav.activity.LiveAVActivity" />
+        <activity android:name=".moduleZhiBo.activity.LiveZhuboActivity" />
 
     </application>
 

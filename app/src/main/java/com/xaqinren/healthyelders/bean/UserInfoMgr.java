@@ -39,7 +39,25 @@ public class UserInfoMgr {
     }
 
     private String accessToken;
+    private String userSig;
+    private String sdkAppID;
 
+
+    public String getUserSig() {
+        return userSig;
+    }
+
+    public void setUserSig(String userSig) {
+        this.userSig = userSig;
+    }
+
+    public String getSdkAppID() {
+        return sdkAppID;
+    }
+
+    public void setSdkAppID(String sdkAppID) {
+        this.sdkAppID = sdkAppID;
+    }
 
     public UserInfoBean getUserInfo() {
         return userInfo;

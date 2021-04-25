@@ -2,14 +2,111 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleLiteav.viewModel.LiveAVViewModel" />
+            type="com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/zbj_bg" />
+
+        <com.tencent.rtmp.ui.TXCloudVideoView
+            android:id="@+id/mTxVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_menu"
+            android:visibility="visible" />
+
+        <!--        底部菜单栏-->
+        <LinearLayout
+            android:id="@+id/ll_menu"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_1C1E1D"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <TextView
+                android:id="@+id/tv_msg"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_38"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_weight="1"
+                android:background="@drawable/bg_zbj_menu_msg"
+                android:gravity="center_vertical|start"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15"
+                android:text="发条评论吧"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+
+            <Button
+                android:id="@+id/btn_pk"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_pk" />
+
+
+            <RelativeLayout
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8">
+
+                <Button
+                    android:id="@+id/btn_lm"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_36"
+                    android:background="@mipmap/zbj_menu_lianmai" />
+
+                <TextView
+                    android:id="@+id/tv_link_num"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_15"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@mipmap/zbj_menu_link_msg"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_10"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_goods"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_goods" />
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:background="@mipmap/zbj_menu_quit" />
+
+            <Button
+                android:id="@+id/btn_more"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_more"
+                android:visibility="visible" />
+
+        </LinearLayout>
     </RelativeLayout>
 </layout>

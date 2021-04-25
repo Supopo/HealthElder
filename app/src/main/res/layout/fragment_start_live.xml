@@ -4,7 +4,9 @@
 
     <data>
 
-
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel" />
         <import type="android.view.View" />
     </data>
 

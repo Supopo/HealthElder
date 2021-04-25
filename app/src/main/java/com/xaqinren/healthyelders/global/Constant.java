@@ -6,6 +6,7 @@ package com.xaqinren.healthyelders.global;
 public class Constant {
     public static boolean DEBUG = true;
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
+    public static String debugUrl = "http://192.168.2.113:8080/";
     public static String PageUrl = "WEB_URL";
     public static String PageTitle = "WEB_TITLE";
     public static final int NET_SPEED = 10086;
@@ -14,6 +15,7 @@ public class Constant {
     public static String IM_SIG = "IM_SIG_M";
     public static String USER_ID = "user_id";
     public static String API_HEADER = "Bearer ";//用户接口传token时候前面拼接的字符串
+    public static String TAG_LIVE = "Live-zb";
 
     //生成roomId
     public static String getRoomId(String userId) {
