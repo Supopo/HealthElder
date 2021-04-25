@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
@@ -107,6 +108,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
 
         binding.tvMenu8.setOnClickListener(lis -> {
             startActivity(StartRenZhengActivity.class);
+        });
+
+        binding.tvMenu101.setOnClickListener(lis -> {
+            startActivity(TCMainActivity.class);
         });
 
     }

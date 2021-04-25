@@ -71,7 +71,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
     public void onFail(String code, T data){}
 
     public void onTokenErr(){
-        RxBus.getDefault().post(new EventBean(Constant.TOKEN_ERR, null));
+        RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
     }
 
     @Override

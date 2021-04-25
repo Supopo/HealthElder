@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
@@ -99,7 +100,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
 
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
-            if (o.msgId == Constant.TOKEN_ERR) {
+            if (o.msgId == CodeTable.TOKEN_ERR) {
                 //TODO token失效 重新登录
                 SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO,"");

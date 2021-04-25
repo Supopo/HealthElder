@@ -7,12 +7,14 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.tencent.qcloud.xiaoshipin.videorecord.TCVideoRecordFragment;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
+import com.xaqinren.healthyelders.moduleliteav.fragment.StartLiteAVFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,13 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // 必须在代码中设置主题(setTheme)或者在AndroidManifest中设置主题(android:theme)
+        setTheme(com.hjyy.liteav.R.style.RecordActivityTheme);
+    }
+
+    @Override
     public void initData() {
         setStatusBarTransparent();
         //初始化Fragment
@@ -48,7 +57,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private void initFragment() {
         mFragments = new ArrayList<>();
         mFragments.add(new StartLiveFragment());
-        mFragments.add(new GirlsFragment());
+        mFragments.add(new StartLiteAVFragment());
         mFragments.add(new XxxFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);

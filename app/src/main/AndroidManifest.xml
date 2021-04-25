@@ -89,7 +89,8 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.xaqinren.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
@@ -160,6 +161,7 @@
         <activity android:name=".moduleLogin.activity.PhoneLoginActivity" />
         <activity android:name=".moduleZhiBo.activity.StartRenZheng2Activity" />
         <activity android:name=".moduleZhiBo.activity.RenZhengSuccessActivity" />
+        <activity android:name=".moduleliteav.activity.LiveAVActivity" />
 
     </application>
 

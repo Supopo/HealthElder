@@ -10,6 +10,11 @@ import com.squareup.leakcanary.LeakCanary;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.tencent.qcloud.ugckit.UGCKit;
+import com.tencent.qcloud.ugckit.utils.TCUserMgr;
+import com.tencent.qcloud.xiaoshipin.config.TCConfigManager;
+import com.tencent.rtmp.TXLog;
+import com.tencent.ugc.TXUGCBase;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.R;
 
@@ -28,6 +33,13 @@ public class AppApplication extends BaseApplication {
     public static Context mContext;
     public String WX_APP_ID = "wx4083c9a2be58173b";
     public static IWXAPI mWXapi;
+    /**
+     * 短视频 key , licence
+     */
+    private String ugcKey = "4018de20566977de6c69d5a22f65c881";
+//    private String ugcLicenceUrl = "http://license.vod2.myqcloud.com/license/v1/acec2faaf32923c383cbb79df86f42db/TXLiveSDK.licence";
+    private String ugcLicenceUrl = "RRL6H7YYBLoGamzi1MODRmXiPmaDx99x52iGcVVUOl1/284KGSmZyhFa46OVZB0IBBXfj4lRjmnizionJAXnPeDStZg3eAncIw7dHPeKbJvxu1DS0Ux9uBZ9oHBkjuBjj8nIoBG6ucsdt/pG4GJQhDB/5+31UZz3xEf/fCRtrB28+r9PDK1qAiZKRfd4gfB5Mnoi9BsNiRVGwCF7fs+TpDncSd8UA1pq63lrZLbv5crMMYm3jG3KL9kpvAs0DMkqX0BrnXRqHqLWLa0xRjlaqgsNW3sLjVRY5w/kCSOfSoM=";
+
 
     public static Context getContext() {
         return mContext;
@@ -51,6 +63,8 @@ public class AppApplication extends BaseApplication {
         initUni();
         //注册微信
         registerWx();
+        //短视频
+        initLiteAv();
     }
 
     private void initUni() {
@@ -102,6 +116,15 @@ public class AppApplication extends BaseApplication {
             }
         }, new IntentFilter(ConstantsAPI.ACTION_REFRESH_WXAPP));
 
+    }
+
+    private void initLiteAv() {
+        TCConfigManager.init(this);
+        TCUserMgr.getInstance().initContext(getApplicationContext());
+        TXLog.w("AppApplication", "app init sdk");
+        // 短视频licence设置
+        TXUGCBase.getInstance().setLicence(this, ugcLicenceUrl, ugcKey);
+        UGCKit.init(this);
     }
 
 }

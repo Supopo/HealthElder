@@ -38,5 +38,16 @@ public class CodeTable {
     public static final String TOKEN_ERR_CODE = "040010";
 
 
+    /* RxBus Event Code */
+    /**
+     * 微信登录,未绑定手机号
+     */
+    public static final int WX_UN_LOGIN_PHONE = 0x100012;
+    /**
+     * token 过期
+     */
+    public static final int TOKEN_ERR = 0x100013;
+
+
 
 }

@@ -24,16 +24,6 @@ public class Constant {
 
 
 
-    /* RxBus Event Code */
-    /**
-     * 微信登录,未绑定手机号
-     */
-    public static final int WX_UN_LOGIN_PHONE = 0x100012;
-    /**
-     * token 过期
-     */
-    public static final int TOKEN_ERR = 0x100013;
-
 
     /* SPUtils 存储 KEY */
     /**
