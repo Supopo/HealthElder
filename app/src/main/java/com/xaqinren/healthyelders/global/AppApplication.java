@@ -7,16 +7,25 @@ import android.content.IntentFilter;
 
 import com.squareup.leakcanary.LeakCanary;
 
+import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.tencent.qcloud.tim.uikit.TUIKit;
+import com.tencent.qcloud.tim.uikit.config.CustomFaceConfig;
+import com.tencent.qcloud.tim.uikit.config.GeneralConfig;
+import com.tencent.qcloud.tim.uikit.config.TUIKitConfigs;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.tencent.qcloud.xiaoshipin.config.TCConfigManager;
+import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLog;
 import com.tencent.ugc.TXUGCBase;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +36,8 @@ import io.dcloud.feature.sdk.MenuActionSheetItem;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.crash.CaocConfig;
 import me.goldze.mvvmhabit.utils.KLog;
+
+import static com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig.SDKAPPID;
 
 
 public class AppApplication extends BaseApplication {
@@ -65,6 +76,18 @@ public class AppApplication extends BaseApplication {
         registerWx();
         //短视频
         initLiteAv();
+        //初始化im聊天
+        initTIM();
+        //初始化直播
+        initLiveRoom();
+        UserInfoMgr.getInstance().initContext(getApplicationContext());
+    }
+
+    private void initLiveRoom() {
+        // 必须：初始化 LiteAVSDK Licence。 用于直播推流鉴权。
+        TXLiveBase.getInstance().setLicence(this, TCGlobalConfig.LICENCE_URL, TCGlobalConfig.LICENCE_KEY);
+        // 必须：初始化 MLVB 组件
+        MLVBLiveRoomImpl.sharedInstance(this);
     }
 
     private void initUni() {
@@ -127,4 +150,13 @@ public class AppApplication extends BaseApplication {
         UGCKit.init(this);
     }
 
+    private void initTIM() {
+        // 配置 Config，请按需配置
+        TUIKitConfigs configs = TUIKit.getConfigs();
+        configs.setSdkConfig(new V2TIMSDKConfig());
+        configs.setCustomFaceConfig(new CustomFaceConfig());
+        configs.setGeneralConfig(new GeneralConfig());
+
+        TUIKit.init(this, SDKAPPID, configs);
+    }
 }

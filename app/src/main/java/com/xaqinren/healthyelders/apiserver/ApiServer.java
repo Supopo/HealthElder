@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import com.xaqinren.healthyelders.bean.UserInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginUserBean;
@@ -26,6 +27,7 @@ public interface ApiServer {
 
     /**
      * 获取微信信息
+     *
      * @param authorization
      * @param mid
      * @param code
@@ -40,6 +42,7 @@ public interface ApiServer {
 
     /**
      * 微信登录（真）
+     *
      * @param body
      * @return
      */
@@ -53,6 +56,7 @@ public interface ApiServer {
 
     /**
      * 手机号登录注册
+     *
      * @param authorization
      * @param mid
      * @param body
@@ -68,9 +72,20 @@ public interface ApiServer {
 
     /**
      * 用户登录信息获取
+     *
      * @param authorization
      * @return
      */
     @GET("user/findUserBaseInfo")
     Observable<MBaseResponse<LoginUserBean>> userInfo(@Header("Authorization") String authorization);
+
+    /**
+     * 获取用户信息
+     *
+     * @param authorization
+     * @return
+     */
+    @GET("user/findUserBaseInfo")
+    Observable<MBaseResponse<UserInfo>> getUserInfo(
+            @Header("Authorization") String authorization);
 }

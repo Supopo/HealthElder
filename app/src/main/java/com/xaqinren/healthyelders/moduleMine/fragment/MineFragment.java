@@ -7,13 +7,17 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 
+import com.alibaba.fastjson.JSON;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.utils.SPUtils;
 
 /**
  * Created by Lee. on 2021/4/24.
@@ -46,7 +50,12 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     @Override
     public void initData() {
         super.initData();
-        viewModel.getUserInfo();
+        String jsUserInfo = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
+        LoginTokenBean loginTokenBean = JSON.parseObject(jsUserInfo, LoginTokenBean.class);
+        if (loginTokenBean != null) {
+            showDialog();
+            viewModel.getUserInfo(loginTokenBean.access_token);
+        }
         initEvent();
     }
 
@@ -127,7 +136,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             }
         });
 
-        binding.refreshLayout.setOnRefreshListener(()->{
+        binding.refreshLayout.setOnRefreshListener(() -> {
             binding.refreshLayout.setRefreshing(false);
         });
         binding.tvZp.setOnClickListener(lis -> {
@@ -160,4 +169,11 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         });
     }
 
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.userInfo.observe(this, userInfo -> {
+            dismissDialog();
+        });
+    }
 }

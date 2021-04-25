@@ -52,7 +52,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     public void initData() {
         super.initData();
         tvTitle.setText("我的上铺");
-//        setStatusBarTransparent();
+        //        setStatusBarTransparent();
         initEvent();
     }
 
@@ -77,7 +77,8 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         });
         binding.conformBtn.setOnClickListener(view -> {
             if (checkParam())
-                loginByPhone();
+                showDialog();
+                viewModel.loginByPhone(binding.etPhone.getText().toString().trim(), binding.etVCode.getText().toString().trim(), openId);
         });
         if (StringUtils.isEmpty(openId)) {
             //登录/注册
@@ -90,8 +91,13 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         }
     }
 
-    private void sendCode() {
-
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        //监听登录请求状态
+        viewModel.loginSuccess.observe(this, isSuccess -> {
+            dismissDialog();
+        });
     }
 
     @Override
@@ -106,7 +112,6 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     public void initParam() {
         super.initParam();
         openId = getIntent().getStringExtra("openId");
-
     }
 
     private boolean checkParam() {
@@ -123,70 +128,4 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         return true;
     }
 
-
-    private void loginByPhone() {
-        String phone = binding.etPhone.getText().toString().trim();
-        String code = binding.etVCode.getText().toString().trim();
-        HashMap<String, String> map = new HashMap<>();
-        map.put("mobileNumber", phone);
-        map.put("password", code);
-        map.put("clientId", Constant.mid);
-        map.put("requestSource", "ANDROID_APP");
-        if (!StringUtils.isEmpty(openId)) {
-            map.put("openId", openId);
-        }
-        map.put("recommendCode", "");
-        String json = JSON.toJSONString(map);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        showDialog();
-        RetrofitClient.getInstance().create(ApiServer.class)
-                .phoneLogin(Constant.auth, Constant.mid, body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                    }
-                })
-                .subscribe(new CustomObserver<MBaseResponse<LoginTokenBean>>() {
-                    @Override
-                    protected void dismissDialog() {
-
-                    }
-
-                    @Override
-                    public void onSuccess(MBaseResponse<LoginTokenBean> data) {
-                        if (data.isOk()) {
-                            //SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(data.getData()));
-                            InfoCache.getInstance().setTokenInfo(data.getData());
-                            getUserInfo(data.getData().access_token);
-                        }else{
-                            PhoneLoginActivity.this.dismissDialog();
-                        }
-                    }
-                });
-    }
-
-    private void getUserInfo(String token) {
-        RetrofitClient.getInstance().create(ApiServer.class)
-                .userInfo("Bearer " + token)
-                .compose(this.bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CustomObserver<MBaseResponse<LoginUserBean>>() {
-                    @Override
-                    protected void dismissDialog() {
-                        PhoneLoginActivity.this.dismissDialog();
-                    }
-
-                    @Override
-                    public void onSuccess(MBaseResponse<LoginUserBean> data) {
-                        InfoCache.getInstance().setLoginUser(data.getData());
-                        //跳转首页
-                        Toast.makeText(PhoneLoginActivity.this,"登录成功",Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(PhoneLoginActivity.this, MainActivity.class));
-                        finish();
-                    }
-                });
-    }
 }

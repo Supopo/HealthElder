@@ -96,11 +96,13 @@
 
                             <TextView
                                 android:id="@+id/tv_name"
-                                android:layout_width="@dimen/dp_84"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/dp_19"
                                 android:layout_marginTop="@dimen/dp_50"
                                 android:gravity="start|bottom"
+                                android:maxLength="10"
+                                android:singleLine="true"
                                 android:paddingTop="@dimen/dp_16"
                                 android:text="@{viewModel.userInfo.nickname}"
                                 android:textSize="@dimen/sp_20"
@@ -115,7 +117,6 @@
                                 android:layout_marginTop="@dimen/dp_12"
                                 android:layout_marginBottom="@dimen/dp_16"
                                 android:gravity="center"
-                                android:text="@{viewModel.userInfo.getJKHCode()}"
                                 android:textColor="@color/gray_999"
                                 android:textSize="@dimen/sp_13" />
 
@@ -131,7 +132,6 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@{String.valueOf(viewModel.userInfo.zanCount)}"
                                     android:textSize="@dimen/sp_20"
                                     android:textStyle="bold" />
 
@@ -148,7 +148,6 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@{String.valueOf(viewModel.userInfo.followCount)}"
                                     android:textSize="@dimen/sp_20"
                                     android:textStyle="bold" />
 
@@ -165,7 +164,6 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@{String.valueOf(viewModel.userInfo.fansCount)}"
                                     android:textSize="@dimen/sp_20"
                                     android:textStyle="bold" />
 
@@ -197,7 +195,6 @@
                                 android:layout_marginRight="@dimen/dp_16"
                                 android:gravity="center"
                                 android:singleLine="true"
-                                android:text="@{viewModel.userInfo.getGRJJ()}"
                                 android:textColor="@color/gray_666" />
 
                             <LinearLayout
@@ -227,21 +224,20 @@
                                         android:layout_height="@dimen/dp_13"
                                         android:layout_marginRight="@dimen/dp_4"
                                         android:background="@mipmap/zy_female"
-                                        android:visibility="@{viewModel.userInfo.sex == 1?View.VISIBLE:View.GONE}" />
+                                         />
 
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginRight="@dimen/dp_4"
                                         android:background="@mipmap/zy_male"
-                                        android:visibility="@{viewModel.userInfo.sex != 1?View.VISIBLE:View.GONE}" />
+                                         />
 
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:gravity="center_vertical"
-                                        android:text="@{viewModel.userInfo.getSexString()}"
                                         android:textSize="@dimen/sp_11" />
                                 </LinearLayout>
 
@@ -256,7 +252,6 @@
                                     android:paddingTop="@dimen/dp_6"
                                     android:paddingRight="@dimen/dp_5"
                                     android:paddingBottom="@dimen/dp_6"
-                                    android:text="@{viewModel.userInfo.birthplace}"
                                     android:textSize="@dimen/sp_11" />
 
                                 <TextView
@@ -269,7 +264,6 @@
                                     android:paddingTop="@dimen/dp_6"
                                     android:paddingRight="@dimen/dp_5"
                                     android:paddingBottom="@dimen/dp_6"
-                                    android:text="@{viewModel.userInfo.hobby}"
                                     android:textSize="@dimen/sp_11" />
 
                             </LinearLayout>
@@ -439,6 +433,6 @@
             app:qmui_border_color="@color/white"
             app:qmui_border_width="@dimen/dp_1"
             app:qmui_is_circle="true"
-            app:url="@{viewModel.userInfo.headPortrait}" />
+            app:url="@{viewModel.userInfo.avatarUrl}" />
     </RelativeLayout>
 </layout>

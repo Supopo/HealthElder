@@ -111,7 +111,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
     private long mLastEnterAudienceTimeMS = 0;
     private long mLastExitAudienceTimeMS = 0;
     //观众列表
-    private LinkedHashMap<String/*userID*/, AudienceInfo> mAudiences = null;
+    private LinkedHashMap<String, AudienceInfo> mAudiences = null;
 
 
     private static final int LIVEROOM_CAMERA_PREVIEW = 0;

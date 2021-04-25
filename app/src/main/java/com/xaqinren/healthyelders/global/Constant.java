@@ -13,6 +13,7 @@ public class Constant {
     public static String IM_USERID = "IM_USERID_M";
     public static String IM_SIG = "IM_SIG_M";
     public static String USER_ID = "user_id";
+    public static String API_HEADER = "Bearer ";//用户接口传token时候前面拼接的字符串
 
     //生成roomId
     public static String getRoomId(String userId) {
