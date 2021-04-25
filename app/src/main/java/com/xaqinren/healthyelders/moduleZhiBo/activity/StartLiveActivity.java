@@ -13,7 +13,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
-import com.xaqinren.healthyelders.moduleliteav.fragment.StartLiteAVFragment;
+import com.xaqinren.healthyelders.moduleLiteav.fragment.StartLiteAVFragment;
 
 import java.util.ArrayList;
 import java.util.List;

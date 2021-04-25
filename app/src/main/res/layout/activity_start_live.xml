@@ -2,13 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-    </data>
+    <data></data>
 
     <RelativeLayout
-        android:background="@color/black"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
 
         <FrameLayout
@@ -28,10 +27,10 @@
             android:paddingTop="12dp">
 
             <TextView
-                android:layout_toLeftOf="@id/tv_menu2"
                 android:id="@+id/tv_menu1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/tv_menu2"
                 android:drawableBottom="@mipmap/line_white"
                 android:drawablePadding="@dimen/dp_4"
                 android:text="开直播"
@@ -40,12 +39,12 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/dp_40"
-                android:layout_marginRight="@dimen/dp_40"
                 android:id="@+id/tv_menu2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/dp_40"
+                android:layout_marginRight="@dimen/dp_40"
                 android:drawablePadding="@dimen/dp_4"
                 android:text="拍视频"
                 android:textColor="@color/color_FF9C9C9C"
@@ -54,17 +53,15 @@
 
 
             <TextView
-                android:layout_toRightOf="@id/tv_menu2"
                 android:id="@+id/tv_menu3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_menu2"
                 android:drawablePadding="@dimen/dp_4"
                 android:text="相册"
                 android:textColor="@color/color_FF9C9C9C"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
-
         </RelativeLayout>
-
     </RelativeLayout>
 </layout>

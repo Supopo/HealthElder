@@ -1,4 +1,4 @@
-package com.xaqinren.healthyelders.moduleliteav.fragment;
+package com.xaqinren.healthyelders.moduleLiteav.fragment;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.UGCKitVideoRecord;
@@ -26,7 +25,6 @@ import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IVideoRecordKit;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEditerActivity;
-import com.tencent.qcloud.xiaoshipin.videorecord.TCVideoRecordActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;

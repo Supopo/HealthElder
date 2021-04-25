@@ -1,4 +1,4 @@
-package com.xaqinren.healthyelders.moduleliteav.viewModel;
+package com.xaqinren.healthyelders.moduleLiteav.viewModel;
 
 import android.app.Application;
 

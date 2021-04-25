@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleliteav.viewModel.LiveAVViewModel" />
+            type="com.xaqinren.healthyelders.moduleLiteav.viewModel.LiveAVViewModel" />
     </data>
 
     <RelativeLayout

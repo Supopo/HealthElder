@@ -1,11 +1,11 @@
-package com.xaqinren.healthyelders.moduleliteav.activity;
+package com.xaqinren.healthyelders.moduleLiteav.activity;
 
 import android.os.Bundle;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiteAvBinding;
-import com.xaqinren.healthyelders.moduleliteav.viewModel.LiveAVViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.viewModel.LiveAVViewModel;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
