@@ -24,10 +24,12 @@ public final class ViewAdapter {
                 Glide.with(imageView.getContext())
                         .load(url)
                         .apply(new RequestOptions().placeholder(placeholderRes))
+                        .thumbnail(0.2f)
                         .into(imageView);
             }else {
                 Glide.with(imageView.getContext())
                         .load(url)
+                        .thumbnail(0.2f)
                         .into(imageView);
             }
 

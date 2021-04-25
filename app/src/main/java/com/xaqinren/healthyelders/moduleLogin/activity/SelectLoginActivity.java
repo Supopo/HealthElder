@@ -1,42 +1,26 @@
 package com.xaqinren.healthyelders.moduleLogin.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-
-import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.apiserver.ApiServer;
-import com.xaqinren.healthyelders.apiserver.CustomObserver;
-import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivitySelectLoginBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.global.InfoCache;
-import com.xaqinren.healthyelders.http.RetrofitClient;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
-import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SelectLoginViewModel;
 
-import java.util.HashMap;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.SPUtils;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 /**
  * Created by Lee. on 2021/4/22.

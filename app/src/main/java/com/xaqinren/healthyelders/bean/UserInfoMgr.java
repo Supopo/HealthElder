@@ -30,6 +30,16 @@ public class UserInfoMgr {
     private Context context;
     private UserInfoBean userInfo;
 
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    private String accessToken;
+
 
     public UserInfoBean getUserInfo() {
         return userInfo;

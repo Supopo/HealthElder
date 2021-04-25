@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders;
 import android.Manifest;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,10 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
@@ -53,6 +57,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         setStatusBarTransparent();
         //初始化Fragment
         initFragment();
+        //获取token
+        String accessToken = InfoCache.getInstance().getAccessToken();
+        UserInfoBean userInfoBean = InfoCache.getInstance().getLoginUser();
+        //已登陆，判断下用户信息存不存在请求用户信息接口
+        if (!TextUtils.isEmpty(accessToken)) {
+            if (userInfoBean == null) {
+                //获取用户信息
+                viewModel.getUserInfo(accessToken);
+            } else {
+                UserInfoMgr.getInstance().setUserInfo(userInfoBean);
+                UserInfoMgr.getInstance().setAccessToken(accessToken);
+            }
+        }
     }
 
     private void initFragment() {
@@ -104,7 +121,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             if (o.msgId == CodeTable.TOKEN_ERR) {
                 //TODO token失效 重新登录
                 SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
-                SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO,"");
+                SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
             }
         });
         RxSubscriptions.add(eventDisposable);

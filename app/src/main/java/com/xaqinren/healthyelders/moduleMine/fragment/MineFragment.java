@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,8 +13,10 @@ import com.alibaba.fastjson.JSON;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 
@@ -51,11 +54,12 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     @Override
     public void initData() {
         super.initData();
-        String jsUserInfo = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
-        LoginTokenBean loginTokenBean = JSON.parseObject(jsUserInfo, LoginTokenBean.class);
-        if (loginTokenBean != null) {
-            showDialog();
-            viewModel.getUserInfo(loginTokenBean.access_token);
+        //获取内存中的信息，如果没有调接口
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
+        } else {
+            String accessToken = InfoCache.getInstance().getAccessToken();
+            viewModel.getUserInfo(accessToken);
         }
         initEvent();
     }
