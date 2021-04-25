@@ -55,6 +55,7 @@ public class InfoCache {
         synchronized (lock) {
             String tokenStr = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
             LoginTokenBean tokenBean = JSON.parseObject(tokenStr, LoginTokenBean.class);
+            if (tokenBean==null) return null;
             return tokenBean.access_token;
         }
     }
@@ -62,6 +63,7 @@ public class InfoCache {
         synchronized (lock) {
             String tokenStr = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
             LoginTokenBean tokenBean = JSON.parseObject(tokenStr, LoginTokenBean.class);
+            if (tokenBean==null) return null;
             return tokenBean.refresh_token;
         }
     }

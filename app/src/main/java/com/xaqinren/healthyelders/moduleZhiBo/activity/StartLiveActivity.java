@@ -28,6 +28,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private List<Fragment> mFragments;
     private TextView oldView;
     private TextView selectView;
+    private StartLiveFragment startLiveFragment;
+    private StartLiteAVFragment startLiteAVFragment;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -54,9 +56,11 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     }
 
     private void initFragment() {
+        startLiveFragment = new StartLiveFragment();
+        startLiteAVFragment = new StartLiteAVFragment();
         mFragments = new ArrayList<>();
-        mFragments.add(new StartLiveFragment());
-        mFragments.add(new StartLiteAVFragment());
+        mFragments.add(startLiveFragment);
+        mFragments.add(startLiteAVFragment);
         mFragments.add(new XxxFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);

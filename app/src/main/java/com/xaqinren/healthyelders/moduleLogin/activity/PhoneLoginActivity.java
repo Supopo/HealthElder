@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityPhoneLoginBinding;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.PhoneLoginViewModel;
@@ -82,6 +83,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         viewModel.loginSuccess.observe(this, isSuccess -> {
             if (isSuccess) {
                 dismissDialog();
+                startActivity(MainActivity.class);
                 finish();
             }
         });
