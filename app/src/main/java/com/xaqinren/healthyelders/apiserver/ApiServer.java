@@ -45,9 +45,7 @@ public interface ApiServer {
      * @param body
      * @return
      */
-    @Headers(
-            {"content-type:application/json"}
-    )
+    @Headers({"content-type:application/json"})
     @POST("user/open/weChatLogin")
     Observable<MBaseResponse<LoginTokenBean>> toWxChatRealLogin(@Header("Authorization") String authorization,
                                                                 @Header("mid") String mid,
@@ -61,9 +59,7 @@ public interface ApiServer {
      * @param body
      * @return
      */
-    @Headers(
-            {"content-type:application/json"}
-    )
+    @Headers({"content-type:application/json"})
     @POST("user/open/mobileLogin")
     Observable<MBaseResponse<LoginTokenBean>> phoneLogin(@Header("Authorization") String authorization,
                                                          @Header("mid") String mid,
@@ -78,4 +74,9 @@ public interface ApiServer {
     @GET("user/findUserBaseInfo")
     Observable<MBaseResponse<UserInfoBean>> getUserInfo(@Header("Authorization") String authorization);
 
+
+    @Headers({"content-type:application/json"})
+    @POST("live/start")
+    Observable<MBaseResponse<LoginTokenBean>> toStartLive(@Header("Authorization") String authorization,
+                                                         @Body RequestBody body);
 }

@@ -203,6 +203,8 @@ public abstract class MLVBLiveRoom {
      * @param callback 获取自定义信息回调
      */
     public abstract void getCustomInfo(final IMLVBLiveRoomListener.GetCustomInfoCallback callback);
+
+    public abstract String getPushUrl();
     /// @}
 
 

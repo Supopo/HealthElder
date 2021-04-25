@@ -368,6 +368,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
     }
 
+    @Override
+    public String getPushUrl() {
+        return mSelfPushUrl;
+    }
 
     public String getUserId() {
         if (mSelfAccountInfo == null)
@@ -468,7 +472,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 if (retcode == HttpResponse.CODE_OK && data != null && data.pushURL != null) {
                     final String pushURL = data.pushURL;
                     mSelfPushUrl = data.pushURL;
-                    Log.e("--", "pushUrl:" + data.pushURL);
                     mSelfAccelerateURL = data.accelerateURL;
                     //3.开始推流
                     startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
