@@ -114,6 +114,18 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         VideoRecordSDK.getInstance().switchCamera(cameraSwitch);
     }
 
+    public void setFrontCamera() {
+        cameraSwitch = true;
+        recodeLiteListener.isCameraFront(cameraSwitch);
+        VideoRecordSDK.getInstance().switchCamera(cameraSwitch);
+    }
+
+    public void setBackCamera() {
+        cameraSwitch = false;
+        recodeLiteListener.isCameraFront(cameraSwitch);
+        VideoRecordSDK.getInstance().switchCamera(cameraSwitch);
+    }
+
     public void setRecodeSpeed(int speed) {
         VideoRecordSDK.getInstance().setRecordSpeed(speed);
     }

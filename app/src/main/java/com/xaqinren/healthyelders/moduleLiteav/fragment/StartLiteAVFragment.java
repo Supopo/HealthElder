@@ -122,10 +122,12 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
                 if (integer.intValue() == 0) {
                     //释放
-                    VideoRecordSDK.getInstance().releaseRecord();
+                    VideoRecordSDK.getInstance().getRecorder().stopBGM();
+                    VideoRecordSDK.getInstance().stopCameraPreview();
                 }else{
                     //重新加载
-//                    initCameraRecode();
+                    VideoRecordSDK.getInstance().getRecorder().resumeBGM();
+                    VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
                 }
             }
         });

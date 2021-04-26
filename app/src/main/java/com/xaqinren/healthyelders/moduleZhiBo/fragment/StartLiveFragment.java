@@ -233,15 +233,17 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
                 if (integer.intValue() == 1) {
                     //释放
-                    mLiveRoom.stopLocalPreview();
+                    mLiveRoom.stopBGM();
                     mLiveRoom.stopScreenCapture();
-                    MLVBLiveRoom.destroySharedInstance();
+                    mLiveRoom.stopLocalPreview();
+//                    MLVBLiveRoom.destroySharedInstance();
                     //                    liveUiViewModel.getCurrentPage().setValue(11);
                 } else {
                     //                    if (integer == 12) {
-                    mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
-                    mLiveRoom.startLocalPreview(true, binding.videoView);
+                    /*mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
+                    mLiveRoom.startLocalPreview(true, binding.videoView);*/
                     //                    }
+                    mLiveRoom.startLocalPreview(true,binding.videoView);
                 }
             }
         });
