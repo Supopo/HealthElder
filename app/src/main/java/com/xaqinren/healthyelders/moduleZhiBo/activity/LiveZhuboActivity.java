@@ -107,6 +107,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     public void initEvent() {
         //退出直播
         binding.btnBack.setOnClickListener(lis -> {
+            //通知服务器结束直播
             //弹窗提示
             stopPublish();
         });

@@ -28,5 +28,11 @@ public class SettingRoomPwdActivity extends BaseActivity<ActivitySettingRoomPwdB
     public void initData() {
         super.initData();
         tvTitle.setText("私密房间");
+        setResult(1001);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 }

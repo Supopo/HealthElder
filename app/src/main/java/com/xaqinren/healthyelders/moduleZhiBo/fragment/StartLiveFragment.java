@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +38,7 @@ import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -46,16 +46,13 @@ import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
-import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
-import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
@@ -63,7 +60,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
  * Created by Lee. on 2021/4/23.
@@ -84,6 +80,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private BeautyPanel mMeiYanControl;
     private BeautyPanel mLvJingControl;
     private QMUIDialog showSelectDialog;
+    private LiveInitInfo liveInitInfo = new LiveInitInfo();
     private StartLiveUiViewModel liveUiViewModel;
 
     @Override
@@ -110,7 +107,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.checkLiveInfo();
         initEvent();
     }
-
 
     private void initEvent() {
         binding.ivBack.setOnClickListener(lis -> {
@@ -158,17 +154,33 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
         //公开设置
         binding.llPwd.setOnClickListener(lis -> {
-            startActivity(SettingRoomPwdActivity.class);
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+            startActivityForResult(intent, 1001);
         });
         //设置
         binding.llSet.setOnClickListener(lis -> {
-            startSettingPop = new ZBStartSettingPop(getActivity());
+            startSettingPop = new ZBStartSettingPop(getActivity(), liveInitInfo);
             startSettingPop.showPopupWindow();
             Log.e("--", "token:" + UserInfoMgr.getInstance().getAccessToken());
         });
         binding.btnStart.setOnClickListener(lis -> {
-            //登录直播间服务
-            viewModel.toLoginRoom(mLiveRoom);
+            if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
+                ToastUtil.toastShortMessage("请输入直播间名称");
+                return;
+            }
+            if (TextUtils.isEmpty(liveInitInfo.liveRoomCover)) {
+                if (TextUtils.isEmpty(photoPath)) {
+                    ToastUtil.toastShortMessage("请先选择照片");
+                    return;
+                }
+                showDialog("正在上传照片...");
+                viewModel.updatePhoto(photoPath);
+            } else {
+                toStartLive();
+            }
+
+
         });
     }
 
@@ -178,27 +190,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.loginRoomSuccess.observe(getActivity(), isSuccess -> {
             if (isSuccess != null) {
                 if (isSuccess) {
-                    //去登录直播间服务
-                    startActivity(LiveZhuboActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Constant.LiveInitInfo, liveInitInfo);
+                    startActivity(LiveZhuboActivity.class, bundle);
                     getActivity().finish();
                 }
             }
 
-        });
-        liveUiViewModel.getCurrentPage().observe(getActivity(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
-                if (integer.intValue() == 1) {
-                    //释放
-                    mLiveRoom.stopLocalPreview();
-                    mLiveRoom.stopScreenCapture();
-                    MLVBLiveRoom.destroySharedInstance();
-                }else{
-                    mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
-                    mLiveRoom.startLocalPreview(true, binding.videoView);
-                }
-            }
         });
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
@@ -218,9 +216,22 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 }
             }
         });
+
+        viewModel.fileUrl.observe(this, url -> {
+            if (!TextUtils.isEmpty(url)) {
+                liveInitInfo.liveRoomCover = url;
+                toStartLive();
+            }
+        });
+    }
+
+    private void toStartLive() {
+        showDialog("开启直播间...");
+        viewModel.toLoginRoom(mLiveRoom);
     }
 
     private void initRoomInfo(LiveInitInfo liveInfo) {
+        liveInitInfo = liveInfo;
         binding.etTitle.setText(liveInfo.liveRoomName);
         Glide.with(getActivity()).load(liveInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
         if (TextUtils.isEmpty(liveInfo.roomPassword)) {
@@ -462,6 +473,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     }
                     break;
             }
+        } else if (requestCode == 1001) {
+            liveInitInfo.roomPassword = data.getDataString();
         }
     }
 
