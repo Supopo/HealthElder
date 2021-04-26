@@ -125,10 +125,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.startLiveSuccess.observe(this, isSuccess -> {
-            if (isSuccess != null) {
-                if (isSuccess) {
-                    Log.v(Constant.TAG_LIVE, "通知服务器成功");
+        viewModel.dismissDialog.observe(this, dismiss -> {
+            if (dismiss != null) {
+                if (dismiss) {
+                    dismissDialog();
                 }
             }
         });

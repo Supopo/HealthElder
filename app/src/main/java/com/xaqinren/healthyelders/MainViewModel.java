@@ -20,19 +20,10 @@ public class MainViewModel extends BaseViewModel {
         super(application);
     }
 
-    public MutableLiveData<Boolean> overSuccess = new MutableLiveData<>();
-    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
 
     public void getUserInfo(String token) {
         UserRepository.getInstance().getUserInfo(userInfo, Constant.API_HEADER + token);
     }
 
-    public void checkLiveInfo() {
-        LiveRepository.getInstance().checkLiveInfo(liveInfo);
-    }
-
-    public void closeLastLive(String liveRoomId) {
-        LiveRepository.getInstance().overLive(overSuccess, liveRoomId);
-    }
 }

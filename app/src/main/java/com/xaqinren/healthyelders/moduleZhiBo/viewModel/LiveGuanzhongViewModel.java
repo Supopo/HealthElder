@@ -22,9 +22,6 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
-    public MutableLiveData<Boolean> startLiveSuccess = new MutableLiveData<>();
-    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
-
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         //判断登录
         LoginInfo loginInfo = new LoginInfo();
@@ -46,9 +43,5 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
                 loginRoomSuccess.postValue(true);
             }
         });
-    }
-
-    public void joinLive(String liveRoomId) {
-        LiveRepository.getInstance().joinLive(liveInfo, liveRoomId);
     }
 }

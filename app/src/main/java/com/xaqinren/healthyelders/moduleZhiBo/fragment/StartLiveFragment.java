@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +32,7 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
@@ -38,9 +41,12 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
@@ -72,6 +78,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private BottomDialog mMeiYanPop;
     private BeautyPanel mMeiYanControl;
     private BeautyPanel mLvJingControl;
+    private QMUIDialog showSelectDialog;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,6 +98,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
         //打开本地摄像头预览
         mLiveRoom.startLocalPreview(true, binding.videoView);
+        //检查直播权限
+        showDialog();
+        viewModel.checkLiveInfo();
         initEvent();
     }
 
@@ -146,7 +156,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         binding.llSet.setOnClickListener(lis -> {
             startSettingPop = new ZBStartSettingPop(getActivity());
             startSettingPop.showPopupWindow();
-            Log.e("--","token:"+ UserInfoMgr.getInstance().getAccessToken());
+            Log.e("--", "token:" + UserInfoMgr.getInstance().getAccessToken());
         });
         binding.btnStart.setOnClickListener(lis -> {
             //登录直播间服务
@@ -167,6 +177,58 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             }
 
         });
+        viewModel.liveInfo.observe(this, liveInfo -> {
+            if (liveInfo != null) {
+                //初始化房间信息
+                initRoomInfo(liveInfo);
+                //有上次记录，说明没有结束直播，弹选择框
+                if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId)) {
+                    showSelectDialog(liveInfo.liveRoomRecordId);
+                }
+            }
+        });
+
+        viewModel.dismissDialog.observe(this, dismiss -> {
+            if (dismiss != null) {
+                if (dismiss) {
+                    dismissDialog();
+                }
+            }
+        });
+    }
+
+    private void initRoomInfo(LiveInitInfo liveInfo) {
+        binding.etTitle.setText(liveInfo.liveRoomName);
+        Glide.with(getActivity()).load(liveInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
+        if (TextUtils.isEmpty(liveInfo.roomPassword)) {
+            binding.tvPwd.setText("公开");
+            binding.ivPwd.setBackgroundResource(R.mipmap.icon_gongkai);
+        } else {
+            binding.tvPwd.setText("私密");
+            binding.ivPwd.setBackgroundResource(R.mipmap.icon_jiami);
+        }
+    }
+
+    private void showSelectDialog(String liveRoomRecordId) {
+        final String[] items = new String[]{"继续直播", "结束直播"};
+        if (showSelectDialog == null) {
+            showSelectDialog = new QMUIDialog.MenuDialogBuilder(getActivity())
+                    .addItems(items, (dialog, which) -> {
+                        Toast.makeText(getActivity(), "你选择了 " + items[which], Toast.LENGTH_SHORT).show();
+                        if (which == 0) {
+                            //直接进入直播间 省去创建
+                        } else {
+                            //调接口结束直播
+                            showDialog();
+                            viewModel.closeLastLive(liveRoomRecordId);
+                        }
+                        dialog.dismiss();
+                    })
+                    .show();
+        } else {
+            showSelectDialog.show();
+        }
+
     }
 
     private void showListPop() {

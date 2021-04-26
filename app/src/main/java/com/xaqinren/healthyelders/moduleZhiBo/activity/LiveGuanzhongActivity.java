@@ -2,28 +2,19 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 
-import com.tencent.liteav.basic.log.TXCLog;
-import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
-import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
-import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
-import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
-
-import java.io.Serializable;
-import java.util.HashMap;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 

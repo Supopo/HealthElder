@@ -6,9 +6,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
@@ -23,7 +25,9 @@ public class StartLiveZbViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         //判断登录
@@ -48,4 +52,12 @@ public class StartLiveZbViewModel extends BaseViewModel {
         });
     }
 
+
+    public void checkLiveInfo() {
+        LiveRepository.getInstance().checkLiveInfo(dismissDialog, liveInfo);
+    }
+
+    public void closeLastLive(String liveRoomId) {
+        LiveRepository.getInstance().overLive(dismissDialog, liveRoomId);
+    }
 }

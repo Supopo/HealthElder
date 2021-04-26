@@ -3,8 +3,6 @@ package com.xaqinren.healthyelders.apiserver;
 
 import android.net.ParseException;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.google.gson.JsonParseException;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
@@ -37,24 +35,16 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
 
     @Override
     public void onNext(T t) {
-        //判断登陆超时，token过期等
-        //        if (t.getStatus() == 408) {
-        //            SPUtils.getInstance().clear();
-        //            Intent intent = new Intent();
-        //            intent.setClass(AppApplication.getContext(), LoginActivity.class);
-        //            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        //            AppApplication.getContext().startActivity(intent);
-        //        }
         if (t.isOk()) {
             onSuccess(t);
-        }else {
+        } else {
             ToastUtils.showShort(t.getMessage());
+            //判断token过期
             if (t.getCode().equals(CodeTable.TOKEN_ERR_CODE)) {
-                //token过期
                 onTokenErr();
                 return;
             }
-            onFail(t.getCode(),t);
+            onFail(t.getCode(), t);
         }
     }
 
@@ -66,11 +56,13 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
         dismissDialog();
     }
 
-    abstract public MutableLiveData<Boolean> onSuccess(T data);
+    protected abstract void onSuccess(T data);
 
-    public void onFail(String code, T data){}
+    public void onFail(String code, T data) {
 
-    public void onTokenErr(){
+    }
+
+    public void onTokenErr() {
         RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
     }
 

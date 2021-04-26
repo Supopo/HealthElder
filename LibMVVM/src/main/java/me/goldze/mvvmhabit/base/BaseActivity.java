@@ -300,7 +300,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                     .setTipWord(TextUtils.isEmpty(title) ? "请稍后" : title)
                     .create();
         }
-        dialog.show();
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
     }
 
     public void showDialog() {
@@ -310,8 +312,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                     .setTipWord("请稍后")
                     .create();
         }
-        dialog.show();
-
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
     }
 
     public void dismissDialog() {

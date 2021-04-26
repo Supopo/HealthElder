@@ -26,8 +26,7 @@ import okhttp3.RequestBody;
 public class LiveRepository {
     private static LiveRepository instance = new LiveRepository();
 
-    private LiveRepository() {
-    }
+    private LiveRepository() {}
 
     public static LiveRepository getInstance() {
         if (instance == null) {
@@ -38,7 +37,7 @@ public class LiveRepository {
 
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
-    public void startLive(MutableLiveData<Boolean> startSuccess, HashMap<String, Object> map) {
+    public void startLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInitInfo, HashMap<String, Object> map) {
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toStartLive(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -49,32 +48,21 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<LiveInitInfo>>() {
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
+
                     @Override
-                    public void onNext(MBaseResponse<LiveInitInfo> response) {
-                        if (response != null) {
-                            if (response.isOk()) {
-                                startSuccess.postValue(true);
-                            }else {
-                                startSuccess.postValue(false);
-                                ToastUtil.toastShortMessage(response.getMessage());
-                            }
-                        }
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-                        startSuccess.postValue(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        liveInitInfo.postValue(data.getData());
                     }
                 });
     }
 
-    public void joinLive(MutableLiveData<LiveInitInfo> liveInfo, String liveRoomId) {
+    public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomId) {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("liveRoomId", liveRoomId);
         String json = JSON.toJSONString(hashMap);
@@ -87,31 +75,21 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<LiveInitInfo>>() {
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
                     @Override
-                    public void onNext(MBaseResponse<LiveInitInfo> response) {
-                        if (response != null) {
-                            if (response.isOk()) {
-                                liveInfo.postValue(response.getData());
-                            }else {
-                                ToastUtil.toastShortMessage(response.getMessage());
-                            }
-                        }
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        liveInfo.postValue(data.getData());
 
                     }
                 });
     }
 
-    public void checkLiveInfo(MutableLiveData<LiveInitInfo> liveInfo) {
+    public void checkLiveInfo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo) {
         userApi.checkLiveInfo(UserInfoMgr.getInstance().getHttpToken())
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -120,31 +98,22 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<LiveInitInfo>>() {
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
                     @Override
-                    public void onNext(MBaseResponse<LiveInitInfo> response) {
-                        if (response != null) {
-                            if (response.isOk()) {
-                                liveInfo.postValue(response.getData());
-                            }
-                        }
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        liveInfo.postValue(data.getData());
                     }
 
 
                 });
     }
 
-    public void overLive(MutableLiveData<Boolean> overSuccess, String liveRoomId) {
+    public void overLive(MutableLiveData<Boolean> dismissDialog, String liveRoomId) {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("liveRoomRecordId", liveRoomId);
         String json = JSON.toJSONString(hashMap);
@@ -157,28 +126,17 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<LiveInitInfo>>() {
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
                     @Override
-                    public void onNext(MBaseResponse<LiveInitInfo> response) {
-                        if (response != null) {
-                            if (response.isOk()) {
-                                overSuccess.postValue(true);
-                            }else {
-                                overSuccess.postValue(false);
-                            }
-                        }
-
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-                        overSuccess.postValue(false);
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        ToastUtil.toastShortMessage("结束成功");
                     }
 
-                    @Override
-                    public void onComplete() {
-
-                    }
                 });
     }
 

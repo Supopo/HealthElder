@@ -30,14 +30,13 @@ import okhttp3.RequestBody;
 
 /**
  * =====================================================
- * 描    述: 网络请求仓库
+ * 描    述: 用户数据网络请求仓库
  * =====================================================
  */
 public class UserRepository {
     private static UserRepository instance = new UserRepository();
 
-    private UserRepository() {
-    }
+    private UserRepository() {}
 
     public static UserRepository getInstance() {
         if (instance == null) {

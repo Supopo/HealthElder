@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -25,8 +26,9 @@ public class LiveZhuboViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
-    public MutableLiveData<Boolean> startLiveSuccess = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInitInfo = new MutableLiveData<>();
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         LoginInfo loginInfo = new LoginInfo();
@@ -52,6 +54,6 @@ public class LiveZhuboViewModel extends BaseViewModel {
 
     //通知服务器
     public void startLive(HashMap map) {
-        LiveRepository.getInstance().startLive(startLiveSuccess, map);
+        LiveRepository.getInstance().startLive(dismissDialog, liveInitInfo, map);
     }
 }

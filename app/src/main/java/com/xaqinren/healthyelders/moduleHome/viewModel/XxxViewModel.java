@@ -25,7 +25,7 @@ public class XxxViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
-    public MutableLiveData<Boolean> joinSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     private UserRepository userRepository = UserRepository.getInstance();
@@ -35,7 +35,7 @@ public class XxxViewModel extends BaseViewModel {
     }
 
     public void joinLive(String liveRoomId) {
-        LiveRepository.getInstance().joinLive(liveInfo, liveRoomId);
+        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
     }
 
 }
