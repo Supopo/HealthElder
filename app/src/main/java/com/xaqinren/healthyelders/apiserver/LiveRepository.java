@@ -26,7 +26,8 @@ import okhttp3.RequestBody;
 public class LiveRepository {
     private static LiveRepository instance = new LiveRepository();
 
-    private LiveRepository() {}
+    private LiveRepository() {
+    }
 
     public static LiveRepository getInstance() {
         if (instance == null) {
@@ -37,7 +38,7 @@ public class LiveRepository {
 
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
-    public void startLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInitInfo, HashMap<String, Object> map) {
+    public void startLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInitInfo, LiveInitInfo map) {
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toStartLive(UserInfoMgr.getInstance().getHttpToken(), body)

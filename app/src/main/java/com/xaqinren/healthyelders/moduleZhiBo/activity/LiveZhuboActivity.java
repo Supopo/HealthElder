@@ -8,14 +8,13 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
-
-import java.util.HashMap;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -26,7 +25,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, LiveZhuboViewModel> implements IMLVBLiveRoomListener {
 
     private MLVBLiveRoom mLiveRoom;
-    private HashMap<String, Object> startParamMap;
+    private LiveInitInfo mLiveInitInfo;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -45,17 +44,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
-        startParamMap = new HashMap<>();
-        startParamMap.put("liveRoomName", "直播主题");
-        startParamMap.put("liveRoomCover", "https://img.qianniux.com/missing-face.png");
-        startParamMap.put("address", "陕西省 西安市");
-        startParamMap.put("longitude", 116.473083);
-        startParamMap.put("latitude", 39.993762);
-        startParamMap.put("liveRoomType", "VIDEO_LIVE");
-        startParamMap.put("canRecordVideo", true);
-        startParamMap.put("liveRoomIntroduce", "此处省略500字");
-        startParamMap.put("hasIntroduce", true);
+        Bundle bundle = getIntent().getExtras();
+        mLiveInitInfo = (LiveInitInfo) bundle.getSerializable(Constant.LiveInitInfo);
     }
 
     @Override
@@ -81,9 +71,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             public void onSuccess(String roomId) {
                 Log.v(Constant.TAG_LIVE, "直播间创建成功");
                 //去通知服务器开启直播间
-                startParamMap.put("pushUrl", mLiveRoom.getPushUrl());
                 LogUtils.v(Constant.TAG_LIVE, mLiveRoom.getPushUrl());
-                viewModel.startLive(startParamMap);
+                mLiveInitInfo.pushUrl = mLiveRoom.getPushUrl();
+                viewModel.startLive(mLiveInitInfo);
             }
 
 
@@ -131,6 +121,20 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     dismissDialog();
                 }
             }
+        });
+        viewModel.liveInitInfo.observe(this, liveInitInfo -> {
+            mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
+            if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
+                for (String groupId : liveInitInfo.groupIds) {
+                    //判断下不是当前的群
+                    if (!Constant.getRoomId(mLiveInitInfo.liveRoomCode).equals(groupId)) {
+                        //退出之前的的群
+                        mLiveRoom.exitGroup(groupId);
+                    }
+
+                }
+            }
+
         });
     }
 

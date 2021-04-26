@@ -53,7 +53,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
     }
 
     //通知服务器
-    public void startLive(HashMap map) {
+    public void startLive(LiveInitInfo map) {
         LiveRepository.getInstance().startLive(dismissDialog, liveInitInfo, map);
     }
 }

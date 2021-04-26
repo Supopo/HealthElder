@@ -98,4 +98,8 @@ public interface ApiServer {
     @POST("live/over")
     Observable<MBaseResponse<Object>> toOverLive(@Header("Authorization") String authorization,
                                                  @Body RequestBody body);
+
+    //上传文件
+    @POST("merchant/fileUpload")
+    Observable<MBaseResponse<String>> uploadFile(@Header("Authorization") String token, @Body RequestBody requestBody);
 }

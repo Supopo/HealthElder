@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,7 +54,7 @@ public class ListBottomPopup extends BasePopupWindow {
 
         //根据item计Pop的高度，不然是整页
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPop.getLayoutParams();
-        lp.height = (int) ScreenUtil.dp2px(getContext(), (64 + menus.size() * 56));
+        lp.height = (int) ScreenUtil.dp2px(getContext(), (64 + menus.size() * 57));
         rlPop.setLayoutParams(lp);
 
         rvPop.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -61,6 +62,10 @@ public class ListBottomPopup extends BasePopupWindow {
             @Override
             protected void convert(@NotNull BaseViewHolder holder, ListPopMenuBean menuBean) {
                 TextView tvMenu = holder.getView(R.id.tv_menu);
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tvMenu.getLayoutParams();
+                lp.height = (int) ScreenUtil.dp2px(getContext(), 56);
+                tvMenu.setLayoutParams(lp);
+
                 holder.setText(R.id.tv_menu, menuBean.menuName);
                 if (menuBean.textColor != 0) {
                     tvMenu.setTextColor(menuBean.textColor);

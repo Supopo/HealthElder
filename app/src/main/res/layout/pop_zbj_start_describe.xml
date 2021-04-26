@@ -70,6 +70,7 @@
                     android:textSize="@dimen/sp_14" />
 
                 <com.xaqinren.healthyelders.widget.SwitchButton
+                    android:id="@+id/sb_kqjs"
                     android:layout_width="@dimen/dp_51"
                     android:layout_height="@dimen/dp_31"
                     app:sb_background="@color/color_E9E9A"

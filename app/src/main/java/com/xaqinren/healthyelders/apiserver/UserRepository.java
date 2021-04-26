@@ -15,6 +15,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 /**
@@ -36,7 +38,8 @@ import okhttp3.RequestBody;
 public class UserRepository {
     private static UserRepository instance = new UserRepository();
 
-    private UserRepository() {}
+    private UserRepository() {
+    }
 
     public static UserRepository getInstance() {
         if (instance == null) {
@@ -140,7 +143,7 @@ public class UserRepository {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             loginSuccess.postValue(true);
-                        }else {
+                        } else {
                             loginSuccess.postValue(false);
                         }
                     }
@@ -204,6 +207,34 @@ public class UserRepository {
                     @Override
                     public void onComplete() {
 
+                    }
+                });
+    }
+
+    public void updatePhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<String> fileUrl, String filePath) {
+        File file = new File(filePath);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file))
+                .build();
+        RetrofitClient.getInstance().create(ApiServer.class).uploadFile(UserInfoMgr.getInstance().getHttpToken(), requestBody)
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<String>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<String> data) {
+                        fileUrl.postValue(data.getData());
                     }
                 });
     }

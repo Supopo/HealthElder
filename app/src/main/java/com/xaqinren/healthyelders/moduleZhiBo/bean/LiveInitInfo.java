@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class LiveInitInfo implements Serializable {
     //------主播创建房间返回字段-----
     public String liveRoomId;
-    public String liveRecordId;// 直播记录ID 存在代表有未完成直播
     public String liveRoomIntroduce;//"此处省略500字",直播间介绍
     public String[] groupIds;//上次加入的群
 
@@ -54,6 +53,11 @@ public class LiveInitInfo implements Serializable {
     public Boolean hasAdmin;//false, // 是否是管理员
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
 
+    //开启直播间需要传
+    public double longitude;
+    public double latitude;
+    public String address;
+    public String pushUrl;
 
     public void setHasNotice(Boolean hasNotice) {
         this.hasNotice = hasNotice;
