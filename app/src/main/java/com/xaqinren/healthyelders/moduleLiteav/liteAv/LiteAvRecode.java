@@ -48,13 +48,14 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
     private boolean cameraSwitch = true;        //是否前置摄像头UI判断
     private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
     private int minRecordTime = 5 * 1000;
-    private int maxRecordTime = 20 * 1000;
+    private int maxRecordTime = 10 * 1000;
     private int currentAsp = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;  //屏幕比
 
     private final int STATUS_IDLE = 0;
     private final int STATUS_RECODE = 1;
     private final int STATUS_PAUSE = 2;
     private int currentStatus = STATUS_IDLE;
+    private long currentRecodeTime = 0;
 
 
     private RecodeLiteListener recodeLiteListener;
@@ -220,6 +221,15 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             }else
                 recodeLiteListener.onRecodeProgress("0" + min + ":" + (sec < 10 ? "0"+sec : sec));
         }
+        currentRecodeTime = milliSecond;
+    }
+
+    public long getCurrentRecodeTime() {
+        return currentRecodeTime;
+    }
+
+    public boolean isCanEdit() {
+        return getCurrentRecodeTime() > minRecordTime;
     }
 
     @Override
@@ -231,11 +241,19 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
     public void onRecordComplete(TXRecordCommon.TXRecordResult result) {
         if (result.retCode >= 0) {
             // 录制成功， 视频文件在 result.videoPath 中
+            boolean editFlag = UGCKitRecordConfig.getInstance().mIsNeedEdit;
+            /*if (editFlag) {
+                // 录制后需要进行编辑，预处理产生视频缩略图
+                startPreprocess(result.videoPath);
+            }else{
+
+            }*/
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
             currentStatus = STATUS_IDLE;
             recodeLiteListener.onRecodeComplete();
         } else {
             // 错误处理，错误码定义请参见 TXRecordCommon 中“录制结果回调错误码定义”
+            LogUtils.e("LiteAVRecode", result.descMsg);
         }
     }
 
@@ -303,6 +321,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             VideoRecordSDK.getInstance().resumeRecord();
             ToastUtils.showShort("已恢复录制");
             recodeLiteListener.onRecodeSuccess();
+            currentStatus = STATUS_RECODE;
         } else if (currentStatus == STATUS_RECODE) {
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
             VideoRecordSDK.getInstance().stopRecord();
@@ -335,6 +354,17 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         }
     }
 
+    /**
+     * 长按录制停止
+     */
+    public void shortPauseRecode() {
+        VideoRecordSDK.getInstance().getRecorder().stopBGM();
+        if (isIsRecodeStatus()) {
+            VideoRecordSDK.getInstance().pauseRecord();
+            currentStatus = STATUS_PAUSE;
+            ToastUtils.showShort("已暂停录制");
+        }
+    }
     public void pauseRecode() {
         VideoRecordSDK.getInstance().stopCameraPreview();
         VideoRecordSDK.getInstance().getRecorder().stopBGM();
@@ -342,6 +372,18 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             VideoRecordSDK.getInstance().pauseRecord();
             currentStatus = STATUS_PAUSE;
             ToastUtils.showShort("已暂停录制");
+        }
+    }
+
+    /**
+     * 停止录像，去编辑
+     */
+    public void stopRecode() {
+        VideoRecordSDK.getInstance().getRecorder().stopBGM();
+        if (isIsRecodeStatus()) {
+            currentStatus = STATUS_IDLE;
+            VideoRecordSDK.getInstance().stopRecord();
+            ToastUtils.showShort("已停止录像");
         }
     }
 

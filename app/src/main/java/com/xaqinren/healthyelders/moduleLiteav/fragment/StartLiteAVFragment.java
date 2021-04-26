@@ -421,18 +421,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void pauseRecode() {
-        liteAvRecode.pauseRecode();
-        /*if (isRecord) {
-            VideoRecordSDK.getInstance().pauseRecord();
-            RecordMusicManager.getInstance().pauseMusic();
-            AudioFocusManager.getInstance().abandonAudioFocus();
-        }*/
-    }
-
-    private void restartRecode(){
-        binding.recodeTime.setText("00:00" );
-        VideoRecordSDK.getInstance().deleteAllParts();
-        startRecode();
+        showNormalPanel();
+        if (liteAvRecode.isCanEdit()) {
+            liteAvRecode.stopRecode();
+        }else{
+            liteAvRecode.shortPauseRecode();
+        }
+        onFragmentStatusListener.isRecode(false);
     }
 
     @Override
@@ -451,6 +446,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         ToastUtils.showShort("录制成功");
         showNormalPanel();
         onFragmentStatusListener.isRecode(false);
+        startEditActivity();
     }
 
     @Override
@@ -480,6 +476,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     private void startEditActivity() {
         Intent intent = new Intent(getContext(), TCVideoEditerActivity.class);
+        intent.putExtra(UGCKitConstants.VIDEO_PATH, VideoRecordSDK.getInstance().getRecordVideoPath());
         startActivity(intent);
     }
 

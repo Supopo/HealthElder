@@ -48,6 +48,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     private void initViews() {
         mActivity = (Activity) getContext();
         inflate(mActivity, R.layout.layout_record_button, this);
+        setOnTouchListener(this);
         translucenceView = findViewById(R.id.translucence_view);
         whiteView = findViewById(R.id.white_view);
         recodeView = findViewById(R.id.recode_view);
