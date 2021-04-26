@@ -42,9 +42,6 @@
             android:id="@+id/recode_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             />
 
         <LinearLayout

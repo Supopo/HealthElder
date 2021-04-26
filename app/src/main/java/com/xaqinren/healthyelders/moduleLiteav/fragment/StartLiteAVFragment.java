@@ -91,8 +91,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private RecordMusicPannel musicPannel;         //滤镜控制器
     private PopupWindow scalePop;               //屏幕比例弹窗
     private boolean isRecord = false;
-    private int maxRecordTime = 20 * 1000;
-    private int minRecordTime = 5 * 1000;
+    public int maxRecordTime = 20 * 1000;
+    public int minRecordTime = 5 * 1000;
     private StartLiveUiViewModel liveUiViewModel;
     private LiteAvRecode liteAvRecode;
     private OnFragmentStatusListener onFragmentStatusListener;

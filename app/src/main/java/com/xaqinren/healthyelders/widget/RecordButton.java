@@ -55,6 +55,8 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         tranColor = Color.parseColor("#7f000000");
         translucenceView.setBackground(createCircleGradientDrawable(tranColor));
         whiteView.setBackground(createCircleGradientDrawable(getResources().getColor(R.color.white)));
+        translucenceView.setBackground(createCircleGradientDrawable(tranColor));
+//        whiteView.setVisibility(GONE);
     }
 
     @Override
@@ -62,11 +64,12 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         int action = motionEvent.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                onRecordButtonListener.onRecordStart();
+                startRecodeAnim();
+
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                onRecordButtonListener.onRecordPause();
+                endRecodeAnim();
                 break;
             }
         }
@@ -85,28 +88,30 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
      * 开启录制动画
      */
     private void startRecodeAnim() {
-        ObjectAnimator btnBkgZoomOutXAn = ObjectAnimator.ofFloat(translucenceView, "scaleX", 2.0f);
-        ObjectAnimator btnBkgZoomOutYAn = ObjectAnimator.ofFloat(translucenceView, "scaleY",2.0f);
+        ObjectAnimator btnBkgZoomOutXAn = ObjectAnimator.ofFloat(translucenceView, "scaleX", 2.5f);
+        ObjectAnimator btnBkgZoomOutYAn = ObjectAnimator.ofFloat(translucenceView, "scaleY",2.5f);
 
-        ObjectAnimator btnZoomInXAn = ObjectAnimator.ofFloat(whiteView, "scaleX", 0.5f);
-        ObjectAnimator btnZoomInYAn = ObjectAnimator.ofFloat(whiteView, "scaleY", 0.5f);
+        ObjectAnimator whiteZoomInXAn = ObjectAnimator.ofFloat(whiteView, "scaleX", 0.65f);
+        ObjectAnimator whiteZoomInYAn = ObjectAnimator.ofFloat(whiteView, "scaleY", 0.65f);
+
+
+        ObjectAnimator btnZoomInXAn = ObjectAnimator.ofFloat(recodeView, "scaleX", 0.f);
+        ObjectAnimator btnZoomInYAn = ObjectAnimator.ofFloat(recodeView, "scaleY", 0.f);
 
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setDuration(80);
+        animatorSet.setDuration(120);
         animatorSet.setInterpolator(new LinearInterpolator());
-        animatorSet.play(btnBkgZoomOutXAn).with(btnBkgZoomOutYAn).with(btnZoomInXAn).with(btnZoomInYAn);
+        animatorSet.play(btnBkgZoomOutXAn).with(btnBkgZoomOutYAn).with(whiteZoomInXAn).with(whiteZoomInYAn)
+        .with(btnZoomInXAn).with(btnZoomInYAn);
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
+//                whiteView.setVisibility(VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                /*if (mOnRecordButtonListener != null) {
-                    mOnRecordButtonListener.onRecordStart();
-                    mIsRecording = true;
-                }*/
+                onRecordButtonListener.onRecordStart();
             }
 
             @Override
@@ -122,6 +127,45 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         animatorSet.start();
     }
 
+
+    private void endRecodeAnim() {
+        ObjectAnimator btnBkgZoomOutXAn = ObjectAnimator.ofFloat(translucenceView, "scaleX", 0.5f);
+        ObjectAnimator btnBkgZoomOutYAn = ObjectAnimator.ofFloat(translucenceView, "scaleY",0.5f);
+
+        ObjectAnimator whiteZoomInXAn = ObjectAnimator.ofFloat(whiteView, "scaleX", 1f);
+        ObjectAnimator whiteZoomInYAn = ObjectAnimator.ofFloat(whiteView, "scaleY", 1f);
+
+
+        ObjectAnimator btnZoomInXAn = ObjectAnimator.ofFloat(recodeView, "scaleX", 1.f);
+        ObjectAnimator btnZoomInYAn = ObjectAnimator.ofFloat(recodeView, "scaleY", 1.f);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(120);
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.play(btnBkgZoomOutXAn).with(btnBkgZoomOutYAn).with(whiteZoomInXAn).with(whiteZoomInYAn)
+                .with(btnZoomInXAn).with(btnZoomInYAn);
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+//                whiteView.setVisibility(GONE);
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                onRecordButtonListener.onRecordPause();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+    }
 
     public interface OnRecordButtonListener{
         /**
