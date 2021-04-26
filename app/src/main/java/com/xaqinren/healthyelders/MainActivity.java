@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -42,6 +43,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private TextView selectView;
     private Disposable disposable;
     private Disposable eventDisposable;
+    private String accessToken;
+    private UserInfoBean userInfoBean;
+    private QMUIDialog showSelectDialog;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -63,8 +67,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void getCacheUserInfo() {
         //获取token
-        String accessToken = InfoCache.getInstance().getAccessToken();
-        UserInfoBean userInfoBean = InfoCache.getInstance().getLoginUser();
+        accessToken = InfoCache.getInstance().getAccessToken();
+        userInfoBean = InfoCache.getInstance().getLoginUser();
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {
             if (userInfoBean == null) {
@@ -121,7 +125,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                     .subscribe(granted -> {
                         if (granted) {
-                            startActivity(StartLiveActivity.class);
+                            //去检查直播权限
+                            showDialog();
+                            viewModel.checkLiveInfo();
                         } else {
                             ToastUtils.showShort("访问权限已拒绝");
                         }
@@ -137,6 +143,54 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         });
         RxSubscriptions.add(eventDisposable);
+    }
+
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.liveInfo.observe(this, liveInfo -> {
+            if (liveInfo != null) {
+                dismissDialog();
+                //有上次记录，说明没有结束直播，弹选择框
+                if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId)) {
+                    showSelectDialog(liveInfo.liveRoomRecordId);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                    startActivity(StartLiveActivity.class, bundle);
+                }
+            }
+        });
+        viewModel.overSuccess.observe(this, overSuccess -> {
+            if (overSuccess != null) {
+                if (overSuccess) {
+                    dismissDialog();
+                }
+            }
+        });
+    }
+
+    private void showSelectDialog(String liveRoomRecordId) {
+        final String[] items = new String[]{"继续直播", "结束直播"};
+        if (showSelectDialog == null) {
+            showSelectDialog = new QMUIDialog.MenuDialogBuilder(this)
+                    .addItems(items, (dialog, which) -> {
+                        Toast.makeText(this, "你选择了 " + items[which], Toast.LENGTH_SHORT).show();
+                        if (which == 0) {
+                            //直接进入直播间 省去创建
+                        } else {
+                            //调接口结束直播
+                            showDialog();
+                            viewModel.closeLastLive(liveRoomRecordId);
+                        }
+                        dialog.dismiss();
+                    })
+                    .show();
+        } else {
+            showSelectDialog.show();
+        }
+
     }
 
 

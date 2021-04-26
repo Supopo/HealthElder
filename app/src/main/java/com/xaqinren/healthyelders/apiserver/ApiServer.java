@@ -85,11 +85,17 @@ public interface ApiServer {
     //主播-获取直播间权限信息
     @Headers({"content-type:application/json"})
     @GET("live/findLiveHomeInfo")
-    Observable<MBaseResponse<Object>> getLiveInfo(@Header("Authorization") String authorization);
+    Observable<MBaseResponse<LiveInitInfo>> checkLiveInfo(@Header("Authorization") String authorization);
 
     //用户-进入直播间
     @Headers({"content-type:application/json"})
     @POST("live/inRoom")
     Observable<MBaseResponse<LiveInitInfo>> toJoinLive(@Header("Authorization") String authorization,
                                                        @Body RequestBody body);
+
+    //主播-结束直播
+    @Headers({"content-type:application/json"})
+    @POST("live/over")
+    Observable<MBaseResponse<Object>> toOverLive(@Header("Authorization") String authorization,
+                                                 @Body RequestBody body);
 }

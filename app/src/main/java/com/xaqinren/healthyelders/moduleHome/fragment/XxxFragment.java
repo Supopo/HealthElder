@@ -187,7 +187,7 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+//                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
                 startActivity(LiveGuanzhongActivity.class, bundle);
             }
         });
