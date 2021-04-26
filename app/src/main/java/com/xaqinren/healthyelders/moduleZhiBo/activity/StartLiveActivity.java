@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 
 import com.xaqinren.healthyelders.BR;
@@ -14,6 +15,7 @@ import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleLiteav.fragment.StartLiteAVFragment;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private TextView selectView;
     private StartLiveFragment startLiveFragment;
     private StartLiteAVFragment startLiteAVFragment;
-
+    private StartLiveUiViewModel liveUiViewModel;
+    private int currentFragmentPosition = 0;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_start_live;
@@ -43,9 +46,11 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        liveUiViewModel = createViewModel(this,StartLiveUiViewModel.class);
         super.onCreate(savedInstanceState);
         // 必须在代码中设置主题(setTheme)或者在AndroidManifest中设置主题(android:theme)
         setTheme(com.hjyy.liteav.R.style.RecordActivityTheme);
+
     }
 
     @Override
@@ -102,12 +107,15 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         switch (selectView.getId()) {
             case R.id.tv_menu1:
                 commitAllowingStateLoss(0);
+                currentFragmentPosition = 0;
                 break;
             case R.id.tv_menu2:
                 commitAllowingStateLoss(1);
+                currentFragmentPosition = 1;
                 break;
             case R.id.tv_menu3:
                 commitAllowingStateLoss(2);
+                currentFragmentPosition = 2;
                 break;
         }
 
@@ -124,6 +132,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             transaction.add(R.id.frameLayout, currentFragment, position + "");
         }
         transaction.commitAllowingStateLoss();
+        liveUiViewModel.getCurrentPage().setValue(position);
     }
 
     //隐藏所有Fragment
@@ -136,5 +145,37 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             }
         }
         transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragmentPosition == 1) {
+            //短视频
+            if (startLiteAVFragment.onBackPress()) {
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (currentFragmentPosition == 1) {
+            startLiteAVFragment.onActivityStop();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (currentFragmentPosition == 1) {
+            startLiteAVFragment.onActivityRestart();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

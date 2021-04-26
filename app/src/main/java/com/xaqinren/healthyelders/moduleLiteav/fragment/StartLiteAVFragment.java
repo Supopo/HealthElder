@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleLiteav.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.icu.util.Measure;
 import android.icu.util.MeasureUnit;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +30,8 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
@@ -35,16 +40,22 @@ import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.qcloud.tim.uikit.utils.PopWindowUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.UGCKitVideoRecord;
+import com.tencent.qcloud.ugckit.basic.ITitleBarLayout;
 import com.tencent.qcloud.ugckit.basic.UGCKitResult;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
 import com.tencent.qcloud.ugckit.module.record.AspectView;
+import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
+import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
+import com.tencent.qcloud.ugckit.module.record.RecordMusicPannel;
 import com.tencent.qcloud.ugckit.module.record.RecordSpeedLayout;
 import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
+import com.tencent.qcloud.ugckit.module.record.interfaces.IRecordMusicPannel;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IVideoRecordKit;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEditerActivity;
+import com.tencent.qcloud.xiaoshipin.videorecord.TCVideoRecordActivity;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.ugc.TXRecordCommon;
 import com.tencent.ugc.TXUGCBase;
@@ -53,6 +64,9 @@ import com.tencent.ugc.TXVideoEditConstants;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 
 import java.io.File;
@@ -65,21 +79,21 @@ import me.goldze.mvvmhabit.utils.ConvertUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.goldze.mvvmhabit.utils.Utils;
 
-public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding, BaseViewModel> implements TXRecordCommon.ITXVideoRecordListener {
+public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding, BaseViewModel> implements
+        LiteAvRecode.RecodeLiteListener, IRecordMusicPannel.MusicChangeListener {
 
-    private TXCloudVideoView videoView;
-    private TXUGCRecord mTXCameraRecord;
-    private boolean cameraSwitch = true;        //是否前置摄像头UI判断
-    private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
     private BottomDialog mLvJingPop;            //滤镜弹窗
     private BottomDialog mMeiYanPop;            //美颜弹窗
+    private BottomDialog mMusicPop;            //美颜弹窗
     private BeautyPanel mMeiYanControl;         //美颜控制器
     private BeautyPanel mLvJingControl;         //滤镜控制器
+    private RecordMusicPannel musicPannel;         //滤镜控制器
     private PopupWindow scalePop;               //屏幕比例弹窗
-    private AspectView aspectView;              //屏幕比例控件
     private boolean isRecord = false;
     private int maxRecordTime = 20 * 1000;
     private int minRecordTime = 5 * 1000;
+    private StartLiveUiViewModel liveUiViewModel;
+    private LiteAvRecode liteAvRecode;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -92,10 +106,30 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         return BR.viewModel;
     }
 
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        liveUiViewModel.getCurrentPage()
+                .observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
+                if (integer.intValue() == 0) {
+                    //释放
+                    VideoRecordSDK.getInstance().releaseRecord();
+                }else{
+                    //重新加载
+//                    initCameraRecode();
+                }
+            }
+        });
+
+    }
 
     @Override
     public void initData() {
         super.initData();
+        liveUiViewModel = ViewModelProviders.of(getActivity()).get(StartLiveUiViewModel.class);
         initCameraRecode();
         initView();
     }
@@ -103,15 +137,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private void initView() {
         //翻转
         binding.turnLayout.setOnClickListener(view -> {
-            //true:切换前置摄像头 false:切换后置摄像头
-            cameraSwitch = !cameraSwitch;
-            Log.i(StartLiteAVFragment.class.getSimpleName(), "cameraSwitch="+cameraSwitch);
-            if (!cameraSwitch){
-                binding.lightLayout.setVisibility(View.VISIBLE);
-            }else{
-                binding.lightLayout.setVisibility(View.GONE);
-            }
-            mTXCameraRecord.switchCamera(cameraSwitch);
+            liteAvRecode.switchCamera();
         });
         //快慢速
         binding.speedLayout.setOnClickListener(view -> {
@@ -134,24 +160,19 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
         //闪光灯
         binding.lightLayout.setOnClickListener(view -> {
-            toggleTorch();
+            liteAvRecode.toggleTorch();
         });
         //选择音乐
         binding.selMusic.setOnClickListener(view -> {
-
+            showMusic();
         });
         //录制
         binding.recodeBtn.setOnClickListener(view -> {
             startRecode();
         });
 
-        binding.recordSpeedLayout.setOnRecordSpeedListener(new RecordSpeedLayout.OnRecordSpeedListener() {
-            @Override
-            public void onSpeedSelect(int speed) {
-                mTXCameraRecord.setRecordSpeed(speed);
-            }
-        });
-//
+        binding.recordSpeedLayout.setOnRecordSpeedListener(speed -> liteAvRecode.setRecodeSpeed(speed));
+
     }
 
     /**
@@ -210,7 +231,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;
                     break;
             }
-            mTXCameraRecord.setAspectRatio(mAspectRatio);
+            liteAvRecode.setCurrentAsp(mAspectRatio);
         }
     };
 
@@ -219,12 +240,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
             mMeiYanControl = filterView.findViewById(R.id.beauty_pannel);
             mMeiYanControl.setPosition(0);
-            mMeiYanControl.setBeautyManager(mTXCameraRecord.getBeautyManager());
+            mMeiYanControl.setBeautyManager(VideoRecordSDK.getInstance().getRecorder().getBeautyManager());
             mMeiYanControl.setPopTitle("美颜");
             mMeiYanPop = new BottomDialog(getActivity(), filterView,
                     null);
         }
         mMeiYanPop.show();
+        mMeiYanControl.setMeiYDialogBgDraw(getResources().getDrawable(R.drawable.bg_meiy_dialog));
         Window window = mMeiYanPop.getWindow();
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
@@ -270,7 +292,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
             mLvJingControl = filterView.findViewById(R.id.beauty_pannel);
             mLvJingControl.setPosition(1);
-            mLvJingControl.setBeautyManager(mTXCameraRecord.getBeautyManager());
+            mLvJingControl.setBeautyManager(VideoRecordSDK.getInstance().getRecorder().getBeautyManager());
 
             mLvJingControl.setPopTitle("滤镜");
             BeautyInfo defaultBeautyInfo = mLvJingControl.getDefaultBeautyInfo();
@@ -280,6 +302,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                     null);
         }
         mLvJingPop.show();
+        mLvJingControl.setMeiYDialogBgDraw(getResources().getDrawable(R.drawable.bg_meiy_dialog));
         Window window = mLvJingPop.getWindow();
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
@@ -320,139 +343,94 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
     }
 
-    /**
-     * 切换闪光灯开/关
-     */
-    private void toggleTorch() {
-        mIsTorchOpenFlag = !mIsTorchOpenFlag;
-        if (mIsTorchOpenFlag) {
-            binding.lightIv.setImageResource(R.mipmap.icon_xsp_shgd_k);
-            TXUGCRecord record = mTXCameraRecord;
-            if (record != null) {
-                record.toggleTorch(true);
-            }
-        } else {
-            binding.lightIv.setImageResource(R.mipmap.icon_xsp_shgd);
-            TXUGCRecord record = mTXCameraRecord;
-            if (record != null) {
-                record.toggleTorch(false);
-            }
+    private void showMusicPop() {
+        if (mMusicPop == null) {
+            View filterView = View.inflate(getActivity(), R.layout.pop_music_control, null);
+            musicPannel = filterView.findViewById(R.id.record_music_pannel);
+            musicPannel.setOnMusicChangeListener(this);
+            mMusicPop = new BottomDialog(getActivity(), filterView,
+                    null);
         }
+        mMusicPop.show();
+
+        Window window = mMusicPop.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams lp = window.getAttributes();
+            mMusicPop.getWindow().setDimAmount(0.f);
+            mMusicPop.getWindow().setAttributes(lp);
+        }
+
+        mMusicPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
+            @Override
+            public void onBottomItemClick(BottomDialog dialog, View view) {
+
+            }
+        });
+        mMusicPop.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                showNormalPanel();
+            }
+        });
     }
 
     private void initCameraRecode(){
-        mTXCameraRecord = TXUGCRecord.getInstance(getActivity().getApplicationContext());
-        mTXCameraRecord.setVideoRecordListener(this);                    // 设置录制回调
-        videoView = binding.videoView; // 准备一个预览摄像头画面的
-        TXRecordCommon.TXUGCSimpleConfig param = new TXRecordCommon.TXUGCSimpleConfig();
-        //param.videoQuality = TXRecordCommon.VIDEO_QUALITY_LOW;        // 360p
-        //param.videoQuality = TXRecordCommon.VIDEO_QUALITY_MEDIUM;        // 540p
-        param.videoQuality = TXRecordCommon.VIDEO_QUALITY_HIGH;        // 720p
-        param.isFront = true;           // 是否使用前置摄像头
-        param.minDuration = minRecordTime;    // 视频录制的最小时长 ms
-        param.maxDuration = maxRecordTime;    // 视频录制的最大时长 ms
-        param.touchFocus = false; // false 为自动聚焦；true 为手动聚焦
-        mTXCameraRecord.setAspectRatio(TXRecordCommon.VIDEO_ASPECT_RATIO_9_16);
-        mTXCameraRecord.startCameraSimplePreview(param,videoView);
-        // 结束画面预览
-//        mTXCameraRecord.stopCameraPreview();
+        liteAvRecode = LiteAvRecode.getInstance();
+        liteAvRecode.init(getContext());
+        liteAvRecode.setRecodeLiteListener(this);
+        liteAvRecode.startPreview(binding.videoView);
     }
 
     /**
-     * 录制效果添加水印
+     * 选择音乐
      */
-    private void addCameraWater() {
-// 3、设置录制效果，这里以添加水印为例
-        TXVideoEditConstants.TXRect rect = new TXVideoEditConstants.TXRect();
-        rect.x = 0.5f;
-        rect.y = 0.5f;
-        rect.width = 0.5f;
-//        添加水印
-        //mTXCameraRecord.setWatermark(BitmapFactory.decodeResource(getResources(), .drawable.water), rect);
-// 4、开始录制
-        int result = mTXCameraRecord.startRecord();
-        if (result != TXRecordCommon.START_RECORD_OK) {
-            if (result == -4) {
-                //画面还没出来
-            } else if (result == -3) {//版本太低
-
-            }
-            else if (result == -5) {// licence 验证失败] }
-                } else {// 启动成功}
-                // 结束录
-                mTXCameraRecord.stopRecord();
-                // 录制完成回调
-                }
+    private void showMusic() {
+        boolean isChooseMusicFlag = RecordMusicManager.getInstance().isChooseMusic();
+        if (isChooseMusicFlag) {
+            //展示音乐面板
+            showMusicPanel();
+        }else{
+            Intent bgmIntent = new Intent(getContext(), TCMusicActivity.class);
+            bgmIntent.putExtra(UGCKitConstants.MUSIC_POSITION, UGCKitRecordConfig.getInstance().musicInfo.position);
+            startActivityForResult(bgmIntent, UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE);
         }
-
     }
+
 
     /**
      * 开启录制
      */
     private void startRecode() {
-        String info = TXUGCBase.getInstance().getLicenceInfo(getContext());
-        Log.i(this.getClass().getSimpleName(), info);
+        liteAvRecode.startRecode();
+    }
+
+    private void pauseRecode() {
         if (isRecord) {
-            restartRecode();
-            isRecord = false;
-            return;
+            VideoRecordSDK.getInstance().pauseRecord();
+            RecordMusicManager.getInstance().pauseMusic();
+            AudioFocusManager.getInstance().abandonAudioFocus();
         }
-        int result = mTXCameraRecord.startRecord();
-        if (result != TXRecordCommon.START_RECORD_OK) {
-            if (result == -4) {
-                //画面还没出来
-            } else if (result == -3) {//版本太低
+    }
 
-            }
-            else if (result == -5) {// licence 验证失败] }
-            } else {
-                // 启动成功}
-                // 结束录
-                mTXCameraRecord.stopRecord();
-                // 录制完成回调
-            }
-        }else{
-            showRecodePanel();
-            isRecord = true;
-        }
-    }
-    private void clearRecode() {
-        VideoRecordSDK.getInstance().deleteAllParts();
-    }
     private void restartRecode(){
-        clearRecode();
-        int size = VideoRecordSDK.getInstance().getPartManager().getPartsPathList().size();
-        if (size == 0) {
-            //重录
-            startRecode();
-        }
-    }
-
-
-    @Override
-    public void onRecordEvent(int i, Bundle bundle) {
-        Log.i(getClass().getSimpleName(), "onRecordEvent\ti=" + i );
-
+        binding.recodeTime.setText("00:00" );
+        VideoRecordSDK.getInstance().deleteAllParts();
+        startRecode();
     }
 
     @Override
-    public void onRecordProgress(long l) {
-        Log.i(getClass().getSimpleName(), "onRecordProgress\tl="+  l );
-        int s = (int) (l / 1000);
-        binding.recodeTime.setText("00:" + s);
+    public void onRecodeProgress(String time) {
+        binding.recodeTime.setText(time);
     }
 
-    public void onRecordComplete (TXRecordCommon.TXRecordResult result){
-        if (result.retCode >= 0) {
-            // 录制成功， 视频文件在 result.videoPath 中
-            ToastUtils.showShort("录制成功");
-            isRecord = false;
-            clearRecode();
-        } else {
-            // 错误处理，错误码定义请参见 TXRecordCommon 中“录制结果回调错误码定义”
-        }
+    @Override
+    public void onRecodeSuccess() {
+        showRecodePanel();
+    }
 
+    @Override
+    public void onRecodeComplete() {
+        ToastUtils.showShort("录制成功");
         showNormalPanel();
     }
 
@@ -481,14 +459,6 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         return true;
     }
 
-    private void initWindowParam() {
-        Window window = getActivity().getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    }
-
     private void startEditActivity() {
         Intent intent = new Intent(getContext(), TCVideoEditerActivity.class);
         startActivity(intent);
@@ -496,20 +466,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     @Override
     public void onDestroyView() {
+        liteAvRecode.releaseRecode();
         super.onDestroyView();
-        if (mTXCameraRecord!=null){
-            mTXCameraRecord.stopCameraPreview();
-            mTXCameraRecord.stopRecord();
-            mTXCameraRecord.stopBGM();
-            mTXCameraRecord.release();
-        }
-
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
     }
 
 
@@ -522,12 +485,12 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             return;
         }
         MusicInfo musicInfo = new MusicInfo();
-
         musicInfo.path = data.getStringExtra(UGCKitConstants.MUSIC_PATH);
         musicInfo.name = data.getStringExtra(UGCKitConstants.MUSIC_NAME);
         musicInfo.position = data.getIntExtra(UGCKitConstants.MUSIC_POSITION, -1);
-
+        liteAvRecode.setMusicInfo(musicInfo);
     }
+
 
 
     @Override
@@ -537,8 +500,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void hidePanel() {
-        binding.rightPanel.setVisibility(View.INVISIBLE);
+
         binding.recordSpeedLayout.setVisibility(View.GONE);
+        binding.rightPanel.setVisibility(View.INVISIBLE);
         binding.selMusic.setVisibility(View.INVISIBLE);
         binding.recodeBtn.setVisibility(View.INVISIBLE);
         binding.galleryLayout.setVisibility(View.INVISIBLE);
@@ -546,12 +510,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void showNormalPanel() {
-        binding.rightPanel.setVisibility(View.VISIBLE);
-        binding.recordSpeedLayout.setVisibility(View.GONE);
-        binding.selMusic.setVisibility(View.VISIBLE);
-        binding.recodeBtn.setVisibility(View.VISIBLE);
-        binding.galleryLayout.setVisibility(View.VISIBLE);
-        binding.recodeTime.setVisibility(View.INVISIBLE);
+        getActivity().runOnUiThread(()->{
+            binding.recordSpeedLayout.setVisibility(View.GONE);
+            binding.rightPanel.setVisibility(View.VISIBLE);
+            binding.selMusic.setVisibility(View.VISIBLE);
+            binding.recodeBtn.setVisibility(View.VISIBLE);
+            binding.galleryLayout.setVisibility(View.VISIBLE);
+            binding.recodeTime.setVisibility(View.INVISIBLE);
+        });
     }
 
     private void showRecodePanel() {
@@ -559,5 +525,91 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         binding.recodeTime.setVisibility(View.VISIBLE);
         binding.recodeBtn.setVisibility(View.VISIBLE);
     }
+
+    private void showMusicPanel() {
+        hidePanel();
+        showMusicPop();
+    }
+
+
+    @Override
+    public void isCameraFront(boolean front) {
+        if (!front){
+            binding.lightLayout.setVisibility(View.VISIBLE);
+        }else{
+            binding.lightLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void lightOpen(boolean open) {
+        if (!open) {
+            binding.lightIv.setImageResource(R.mipmap.icon_xsp_shgd);
+        }else{
+            binding.lightIv.setImageResource(R.mipmap.icon_xsp_shgd_k);
+        }
+    }
+
+    @Override
+    public void onMusicReplace(int position) {
+        Intent bgmIntent = new Intent(getContext(), TCMusicActivity.class);
+        bgmIntent.putExtra(UGCKitConstants.MUSIC_POSITION, position);
+        startActivityForResult(bgmIntent, UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE);
+    }
+
+    @Override
+    public void onSetMusicInfoSuccess(MusicInfo musicInfo) {
+        showMusicPanel();
+        if (musicPannel!=null)
+            musicPannel.setMusicInfo(musicInfo);
+    }
+    /** music 部分 begin */
+    @Override
+    public void onMusicVolumChanged(float volume) {
+        liteAvRecode.setVolum(volume);
+    }
+
+    @Override
+    public void onMusicTimeChanged(long startTime, long endTime) {
+        liteAvRecode.musicTimeChanged(startTime,endTime);
+    }
+
+    @Override
+    public void onMusicReplace() {
+        liteAvRecode.onMusicReplace();
+    }
+
+    @Override
+    public void onMusicDelete() {
+        liteAvRecode.onMusicDelete();
+    }
+
+    @Override
+    public void onMusicSelect() {
+        liteAvRecode.onMusicSelect();
+        mMusicPop.dismiss();
+        showNormalPanel();
+    }
+    /** music 部分 end */
+
+    /** 对应 activity 生命周期 */
+    public boolean onBackPress() {
+        int size = VideoRecordSDK.getInstance().getPartManager().getPartsPathList().size();
+        if (size > 0) {
+            liteAvRecode.showGiveupRecordDialog();
+            return true;
+        }
+        return false;
+    }
+
+    public void onActivityStop(){
+        liteAvRecode.pauseRecode();
+    }
+
+    public void onActivityRestart(){
+        liteAvRecode.restart();
+        VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
+    }
+
 
 }

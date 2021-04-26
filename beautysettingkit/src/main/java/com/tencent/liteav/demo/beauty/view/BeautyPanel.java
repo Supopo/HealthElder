@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
     private SeekBar mSeekBarLevel;
     private TextView mTextLevelValue;
     private TextView tvPopTitle;
+    private RelativeLayout meiYDialogLayout;
 
     private BeautyInfo mBeautyInfo;
     private OnBeautyListener mOnBeautyListener;
@@ -220,6 +222,7 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         mScrollItemView = (TCHorizontalScrollView) findViewById(R.id.beauty_horizontal_picker_second);
         LinearLayout llReset = findViewById(R.id.ll_reset);
         tvPopTitle = findViewById(R.id.tv_pop_title);
+        meiYDialogLayout = findViewById(R.id.meiy_dialog_layout);
         llReset.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View list) {
@@ -300,5 +303,14 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
 
     public void setOnCancelClickListener(OnCancelClickListener listener) {
         this.onCancelClickListener = listener;
+    }
+    public void setMeiYDialogBgDraw(Drawable resId) {
+        meiYDialogLayout.setBackgroundDrawable(resId);
+    }
+    public void setMeiYDialogBgRes(int resId) {
+        meiYDialogLayout.setBackgroundResource(resId);
+    }
+    public void setMeiYDialogBgColor(int color) {
+        meiYDialogLayout.setBackgroundColor(color);
     }
 }

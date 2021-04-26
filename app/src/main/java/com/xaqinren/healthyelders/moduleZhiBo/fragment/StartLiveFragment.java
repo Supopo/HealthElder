@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -48,9 +50,12 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
@@ -79,6 +84,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private BeautyPanel mMeiYanControl;
     private BeautyPanel mLvJingControl;
     private QMUIDialog showSelectDialog;
+    private StartLiveUiViewModel liveUiViewModel;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,6 +99,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     @Override
     public void initData() {
         super.initData();
+        liveUiViewModel = ViewModelProviders.of(getActivity()).get(StartLiveUiViewModel.class);
         setMoreTextData("我已阅读并同意", "《健康长老视频号直播功能使用条款》", "及", "《健康长老视频号直播行为规范》");
         //直播间控制类
         mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
@@ -103,6 +110,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.checkLiveInfo();
         initEvent();
     }
+
 
     private void initEvent() {
         binding.ivBack.setOnClickListener(lis -> {
@@ -176,6 +184,21 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 }
             }
 
+        });
+        liveUiViewModel.getCurrentPage().observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
+                if (integer.intValue() == 1) {
+                    //释放
+                    mLiveRoom.stopLocalPreview();
+                    mLiveRoom.stopScreenCapture();
+                    MLVBLiveRoom.destroySharedInstance();
+                }else{
+                    mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
+                    mLiveRoom.startLocalPreview(true, binding.videoView);
+                }
+            }
         });
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
