@@ -299,7 +299,9 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             VideoRecordSDK.getInstance().deleteAllParts();
             recode();
         } else if (currentStatus == STATUS_PAUSE) {
+            VideoRecordSDK.getInstance().getRecorder().resumeBGM();
             VideoRecordSDK.getInstance().resumeRecord();
+            ToastUtils.showShort("已恢复录制");
             recodeLiteListener.onRecodeSuccess();
         } else if (currentStatus == STATUS_RECODE) {
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
@@ -307,6 +309,8 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         } else {
             recode();
         }
+//        VideoRecordSDK.getInstance().deleteAllParts();
+//        recode();
 
     }
     private void recode() {
@@ -333,9 +337,11 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
     public void pauseRecode() {
         VideoRecordSDK.getInstance().stopCameraPreview();
-        VideoRecordSDK.getInstance().pauseRecord();
-        if (VideoRecordSDK.getInstance().getPartManager().getPartsPathList().size() > 0) {
+        VideoRecordSDK.getInstance().getRecorder().stopBGM();
+        if (isIsRecodeStatus()) {
+            VideoRecordSDK.getInstance().pauseRecord();
             currentStatus = STATUS_PAUSE;
+            ToastUtils.showShort("已暂停录制");
         }
     }
 
@@ -349,6 +355,10 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
     public void restart() {
 
+    }
+
+    public boolean isIsRecodeStatus() {
+        return currentStatus == STATUS_RECODE;
     }
 
     public interface RecodeLiteListener{

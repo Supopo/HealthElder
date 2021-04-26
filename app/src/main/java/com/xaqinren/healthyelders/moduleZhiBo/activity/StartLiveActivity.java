@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -26,7 +27,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 /**
  * 开启直播-发小视频页面
  */
-public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, BaseViewModel> {
+public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, BaseViewModel> implements StartLiteAVFragment.OnFragmentStatusListener {
     private List<Fragment> mFragments;
     private TextView oldView;
     private TextView selectView;
@@ -34,6 +35,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private StartLiteAVFragment startLiteAVFragment;
     private StartLiveUiViewModel liveUiViewModel;
     private int currentFragmentPosition = 0;
+    private boolean isLiteAVRecode = false;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_start_live;
@@ -63,6 +66,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private void initFragment() {
         startLiveFragment = new StartLiveFragment();
         startLiteAVFragment = new StartLiteAVFragment();
+        startLiteAVFragment.setOnFragmentStatusListener(this);
         mFragments = new ArrayList<>();
         mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
@@ -121,6 +125,14 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
 
     }
 
+    private boolean canChangePage() {
+        if (isLiteAVRecode) {
+            startLiteAVFragment.onFragmentChange();
+            return false;
+        }
+        return true;
+    }
+
     private void commitAllowingStateLoss(int position) {
         hideAllFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -177,5 +189,17 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void isRecode(boolean is) {
+        isLiteAVRecode = is;
+        if (isLiteAVRecode) {
+            //隐藏
+            binding.llMenu.setVisibility(View.INVISIBLE);
+        }else{
+            //显示
+            binding.llMenu.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -53,6 +54,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
@@ -221,6 +223,25 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             if (!TextUtils.isEmpty(url)) {
                 liveInitInfo.liveRoomCover = url;
                 toStartLive();
+            }
+        });
+
+        liveUiViewModel.getCurrentPage().observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
+                if (integer.intValue() == 1) {
+                    //释放
+                    mLiveRoom.stopLocalPreview();
+                    mLiveRoom.stopScreenCapture();
+                    MLVBLiveRoom.destroySharedInstance();
+//                    liveUiViewModel.getCurrentPage().setValue(11);
+                }else{
+//                    if (integer == 12) {
+                        mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
+                        mLiveRoom.startLocalPreview(true, binding.videoView);
+//                    }
+                }
             }
         });
     }

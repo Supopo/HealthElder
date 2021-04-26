@@ -23,6 +23,13 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     private View recodeView;
     private int tranColor;
 
+    private OnRecordButtonListener onRecordButtonListener;
+
+
+    public void setOnRecordButtonListener(OnRecordButtonListener onRecordButtonListener) {
+        this.onRecordButtonListener = onRecordButtonListener;
+    }
+
     public RecordButton(Context context) {
         super(context);
         initViews();
@@ -54,10 +61,12 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         int action = motionEvent.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-               break;
+                onRecordButtonListener.onRecordStart();
+                break;
             }
             case MotionEvent.ACTION_UP: {
-               break;
+                onRecordButtonListener.onRecordPause();
+                break;
             }
         }
         return true;
@@ -110,5 +119,18 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             }
         });
         animatorSet.start();
+    }
+
+
+    public interface OnRecordButtonListener{
+        /**
+         * 多段录制点击开始
+         */
+        void onRecordStart();
+
+        /**
+         * 多段录制点击暂停
+         */
+        void onRecordPause();
     }
 }

@@ -68,6 +68,7 @@ import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
+import com.xaqinren.healthyelders.widget.RecordButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,6 +95,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private int minRecordTime = 5 * 1000;
     private StartLiveUiViewModel liveUiViewModel;
     private LiteAvRecode liteAvRecode;
+    private OnFragmentStatusListener onFragmentStatusListener;
+
+    public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
+        this.onFragmentStatusListener = onFragmentStatusListener;
+    }
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -167,10 +173,20 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             showMusic();
         });
         //录制
-        binding.recodeBtn.setOnClickListener(view -> {
+        /*binding.recodeBtn.setOnClickListener(view -> {
             startRecode();
-        });
+        });*/
+        binding.recodeBtn.setOnRecordButtonListener(new RecordButton.OnRecordButtonListener() {
+            @Override
+            public void onRecordStart() {
+                startRecode();
+            }
 
+            @Override
+            public void onRecordPause() {
+                pauseRecode();
+            }
+        });
         binding.recordSpeedLayout.setOnRecordSpeedListener(speed -> liteAvRecode.setRecodeSpeed(speed));
 
     }
@@ -405,11 +421,12 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void pauseRecode() {
-        if (isRecord) {
+        liteAvRecode.pauseRecode();
+        /*if (isRecord) {
             VideoRecordSDK.getInstance().pauseRecord();
             RecordMusicManager.getInstance().pauseMusic();
             AudioFocusManager.getInstance().abandonAudioFocus();
-        }
+        }*/
     }
 
     private void restartRecode(){
@@ -426,12 +443,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     @Override
     public void onRecodeSuccess() {
         showRecodePanel();
+        onFragmentStatusListener.isRecode(true);
     }
 
     @Override
     public void onRecodeComplete() {
         ToastUtils.showShort("录制成功");
         showNormalPanel();
+        onFragmentStatusListener.isRecode(false);
     }
 
     @Override
@@ -502,22 +521,20 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private void hidePanel() {
 
         binding.recordSpeedLayout.setVisibility(View.GONE);
-        binding.rightPanel.setVisibility(View.INVISIBLE);
-        binding.selMusic.setVisibility(View.INVISIBLE);
+        binding.rightPanel.setVisibility(View.GONE);
+        binding.selMusic.setVisibility(View.GONE);
         binding.recodeBtn.setVisibility(View.INVISIBLE);
         binding.galleryLayout.setVisibility(View.INVISIBLE);
         binding.recodeTime.setVisibility(View.INVISIBLE);
     }
 
     private void showNormalPanel() {
-        getActivity().runOnUiThread(()->{
             binding.recordSpeedLayout.setVisibility(View.GONE);
-            binding.rightPanel.setVisibility(View.VISIBLE);
+            binding.recodeTime.setVisibility(View.INVISIBLE);
+            binding.galleryLayout.setVisibility(View.VISIBLE);
             binding.selMusic.setVisibility(View.VISIBLE);
             binding.recodeBtn.setVisibility(View.VISIBLE);
-            binding.galleryLayout.setVisibility(View.VISIBLE);
-            binding.recodeTime.setVisibility(View.INVISIBLE);
-        });
+            binding.rightPanel.setVisibility(View.VISIBLE);
     }
 
     private void showRecodePanel() {
@@ -611,5 +628,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
     }
 
+    /**
+     * 正在录制状态中,用户准备切换页面
+     */
+    public void onFragmentChange() {
 
+    }
+
+    public interface OnFragmentStatusListener{
+        void isRecode(boolean isRecode);
+    }
 }
