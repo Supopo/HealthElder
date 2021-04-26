@@ -171,6 +171,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 ToastUtil.toastShortMessage("请输入直播间名称");
                 return;
             }
+            liveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
             if (TextUtils.isEmpty(liveInitInfo.liveRoomCover)) {
                 if (TextUtils.isEmpty(photoPath)) {
                     ToastUtil.toastShortMessage("请先选择照片");
@@ -235,12 +236,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     mLiveRoom.stopLocalPreview();
                     mLiveRoom.stopScreenCapture();
                     MLVBLiveRoom.destroySharedInstance();
-//                    liveUiViewModel.getCurrentPage().setValue(11);
-                }else{
-//                    if (integer == 12) {
-                        mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
-                        mLiveRoom.startLocalPreview(true, binding.videoView);
-//                    }
+                    //                    liveUiViewModel.getCurrentPage().setValue(11);
+                } else {
+                    //                    if (integer == 12) {
+                    mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
+                    mLiveRoom.startLocalPreview(true, binding.videoView);
+                    //                    }
                 }
             }
         });

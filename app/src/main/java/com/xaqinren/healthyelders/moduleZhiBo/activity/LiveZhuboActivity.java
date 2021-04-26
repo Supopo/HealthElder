@@ -66,7 +66,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //打开本地预览
         mLiveRoom.startLocalPreview(true, binding.mTxVideoView);
         //创建直播间
-        mLiveRoom.createRoom("", "", new IMLVBLiveRoomListener.CreateRoomCallback() {
+        mLiveRoom.createRoom(Constant.getRoomId(mLiveInitInfo.liveRoomCode), "", new IMLVBLiveRoomListener.CreateRoomCallback() {
             @Override
             public void onSuccess(String roomId) {
                 Log.v(Constant.TAG_LIVE, "直播间创建成功");
@@ -109,6 +109,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.btnBack.setOnClickListener(lis -> {
             //通知服务器结束直播
             //弹窗提示
+            showDialog();
+            viewModel.closeLive(mLiveInitInfo.liveRoomRecordId);
             stopPublish();
         });
     }

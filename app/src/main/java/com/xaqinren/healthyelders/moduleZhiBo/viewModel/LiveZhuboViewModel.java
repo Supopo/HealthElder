@@ -56,4 +56,9 @@ public class LiveZhuboViewModel extends BaseViewModel {
     public void startLive(LiveInitInfo map) {
         LiveRepository.getInstance().startLive(dismissDialog, liveInitInfo, map);
     }
+
+    //结束直播
+    public void closeLive(String liveRoomId) {
+        LiveRepository.getInstance().overLive(dismissDialog, liveRoomId);
+    }
 }

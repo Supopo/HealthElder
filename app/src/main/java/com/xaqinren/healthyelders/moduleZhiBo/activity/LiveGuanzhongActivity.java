@@ -64,10 +64,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private void startPlay() {
         mLiveRoom.setListener(this);
         LogUtils.v(Constant.TAG_LIVE, "拉流地址：" + liveInitInfo.pullStreamUrl);
-        LogUtils.v(Constant.TAG_LIVE, "房间号：" + Constant.getRoomId(liveInitInfo.userId));
+        LogUtils.v(Constant.TAG_LIVE, "房间号：" + Constant.getRoomId(liveInitInfo.liveRoomCode));
 
         //加入直播间
-        mLiveRoom.enterRoom(liveInitInfo.pullStreamUrl, Constant.getRoomId(liveInitInfo.userId), binding.mTxVideoView, new EnterRoomCallback() {
+        mLiveRoom.enterRoom(liveInitInfo.pullStreamUrl, Constant.getRoomId(liveInitInfo.liveRoomCode), binding.mTxVideoView, new EnterRoomCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间失败：" + errCode);

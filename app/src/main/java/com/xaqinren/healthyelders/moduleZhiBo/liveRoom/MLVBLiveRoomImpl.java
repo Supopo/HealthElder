@@ -670,7 +670,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             return;
         }
         mSelfRoleType = LIVEROOM_ROLE_PLAYER;
-        mCurrRoomID = roomID;
 
         //1.IM进群
         jionIMGroup(roomID, new StandardCallback() {
@@ -681,6 +680,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
             @Override
             public void onSuccess() {
+                mCurrRoomID = roomID;
+
                 //2.在主线程播放CDN流
                 Handler handler = new Handler(mAppContext.getMainLooper());
                 handler.post(new Runnable() {
@@ -737,7 +738,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
 
         mSelfRoleType = LIVEROOM_ROLE_PLAYER;
-        mCurrRoomID = roomID;
         mPlayUrl = playURL;
 
         //1.IM进群
@@ -749,6 +749,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
             @Override
             public void onSuccess() {
+                mCurrRoomID = roomID;
+
                 //有拉流地址说明不是虚拟直播 虚拟直播直接在页面播放了
                 if (!TextUtils.isEmpty(playURL)) {
                     //2.在主线程播放CDN流
