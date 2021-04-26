@@ -22,8 +22,11 @@ public class Constant {
         return "room_" + userId;
     }
 
-    public static String auth = "Basic MTM3ODYxODg2MDYxMzE0NDU3NjprMnF3c2sxNTMzZm1jMGhqdHJiYWowcjk=";
-    public static String mid = "1378618860613144576";
+    public static String HEADER_DEF = "Basic MTM3ODYxODg2MDYxMzE0NDU3NjprMnF3c2sxNTMzZm1jMGhqdHJiYWowcjk=";
+    public static String WX_MID = "1378618860613144576";//微信商户号 登陆需要
+    public static String PlayUrl = "LIVE_PLAYURL";
+    public static String LiveRoomId = "LIVE_ROOMID";
+    public static String LiveInitInfo = "LIVE_INIT_INFO";
 
 
 

@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -57,6 +58,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         setStatusBarTransparent();
         //初始化Fragment
         initFragment();
+        getCacheUserInfo();
+    }
+
+    private void getCacheUserInfo() {
         //获取token
         String accessToken = InfoCache.getInstance().getAccessToken();
         UserInfoBean userInfoBean = InfoCache.getInstance().getLoginUser();
@@ -71,6 +76,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
             }
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getCacheUserInfo();
     }
 
     private void initFragment() {

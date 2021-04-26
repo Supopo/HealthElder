@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.apiserver;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -12,8 +11,6 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
-import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
-import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
@@ -121,7 +118,7 @@ public class UserRepository {
         HashMap<String, String> map = new HashMap<>();
         map.put("mobileNumber", phone);
         map.put("password", code);
-        map.put("clientId", Constant.mid);
+        map.put("clientId", Constant.WX_MID);
         map.put("requestSource", "ANDROID_APP");
         if (!StringUtils.isEmpty(openId)) {
             map.put("openId", openId);
@@ -129,7 +126,7 @@ public class UserRepository {
         map.put("recommendCode", "");
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.phoneLogin(Constant.auth, Constant.mid, body)
+        userApi.phoneLogin(Constant.HEADER_DEF, Constant.WX_MID, body)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -142,13 +139,16 @@ public class UserRepository {
                     public void onNext(MBaseResponse<LoginTokenBean> response) {
                         if (response.isOk()) {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
+                            UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             loginSuccess.postValue(true);
+                        }else {
+                            loginSuccess.postValue(false);
                         }
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        loginSuccess.postValue(false);
                     }
 
                     @Override
@@ -173,7 +173,7 @@ public class UserRepository {
 
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.toWxChatRealLogin(Constant.auth, Constant.mid, body)
+        userApi.toWxChatRealLogin(Constant.HEADER_DEF, Constant.WX_MID, body)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -187,6 +187,7 @@ public class UserRepository {
                         SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                         if (response.isOk()) {
                             InfoCache.getInstance().setTokenInfo(response.getData());
+                            UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             loginStatus.postValue(1);
                         } else {
                             //需要绑定手机号跳转绑定手机号页面

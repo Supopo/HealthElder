@@ -9,32 +9,30 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
-public class LiveZhuboViewModel extends BaseViewModel {
-    public LiveZhuboViewModel(@NonNull Application application) {
+public class LiveGuanzhongViewModel extends BaseViewModel {
+    public LiveGuanzhongViewModel(@NonNull Application application) {
         super(application);
     }
 
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> startLiveSuccess = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
+        //判断登录
         LoginInfo loginInfo = new LoginInfo();
         loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
         loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
-        loginInfo.userSig = "eJw9jksLgkAUhf-LbAudO9fuqNCiTUgE2WOhy2DGuoQxmPko*u*JRsvz*A7nLU7bo2c7x5UVsSIdBlLOR7OxlYiF8qSY9MPczs6xETEMHYwUST0lbOy95oJHADAkQB2i1JFcIIL6D-BlyJvE*rJddfna36uSUnNoc8yybgfWzXDTK*5fz2uQuDRY-sCay*EcEESIRBo*XwReMts_";
+        loginInfo.userSig = "eJw1jtsKgkAYhN9lr8P25B6EbkSIMMSwAr1TXPMnsm2TDKJ3z7QuZ*abYV5ov80887TgDAoIFVJxjBeT*zAOBYh6GM36Xp9La6EeuZFhmgos5wRq0-XQwFQgTAmqOGOSc*lLwn3xH4DTmIdpBvk6j4tNm8TJEClt2a4KXdOmjkXt4Xa8qqpYdiEeVr9iD5fvO0E0x1RT*v4AMdgzHQ__";
         mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
@@ -50,8 +48,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
         });
     }
 
-    //通知服务器
-    public void startLive(HashMap map) {
-        LiveRepository.getInstance().startLive(startLiveSuccess, map);
+    public void joinLive(String liveRoomId) {
+        LiveRepository.getInstance().joinLive(liveInfo, liveRoomId);
     }
 }

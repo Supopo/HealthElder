@@ -730,13 +730,12 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      */
     @Override
     public void enterRoom(final String playURL, final String roomID, final TXCloudVideoView view, final IMLVBLiveRoomListener.EnterRoomCallback callback) {
-        TXCLog.i(TAG, "API -> enterRoom:" + roomID);
-        TXCLog.i(TAG, "API -> playURL:" + playURL);
 
-        if (roomID == null || roomID.length() == 0) {
+        if (TextUtils.isEmpty(roomID)) {
             callbackOnThread(callback, "onError", MLVBCommonDef.LiveRoomErrorCode.ERROR_PARAMETERS_INVALID, "[LiveRoom] 进房失败[房间号为空]");
             return;
         }
+
         mSelfRoleType = LIVEROOM_ROLE_PLAYER;
         mCurrRoomID = roomID;
         mPlayUrl = playURL;
@@ -750,7 +749,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
             @Override
             public void onSuccess() {
-                //为空说明是虚拟直播 点播。不需要再去那地址播放
+                //有拉流地址说明不是虚拟直播 虚拟直播直接在页面播放了
                 if (!TextUtils.isEmpty(playURL)) {
                     //2.在主线程播放CDN流
                     Handler handler = new Handler(mAppContext.getMainLooper());

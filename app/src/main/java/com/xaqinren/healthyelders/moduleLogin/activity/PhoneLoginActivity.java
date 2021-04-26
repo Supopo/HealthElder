@@ -81,11 +81,14 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         super.initViewObservable();
         //监听登录请求状态
         viewModel.loginSuccess.observe(this, isSuccess -> {
-            if (isSuccess) {
+            if (isSuccess != null) {
                 dismissDialog();
-                startActivity(MainActivity.class);
-                finish();
+                if (isSuccess) {
+                    startActivity(MainActivity.class);
+                    finish();
+                }
             }
+
         });
     }
 

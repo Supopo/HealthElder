@@ -4,6 +4,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
 import java.util.List;
 
@@ -75,13 +76,20 @@ public interface ApiServer {
     Observable<MBaseResponse<UserInfoBean>> getUserInfo(@Header("Authorization") String authorization);
 
 
+    //主播-创建直播间
     @Headers({"content-type:application/json"})
     @POST("live/start")
-    Observable<MBaseResponse<Object>> toStartLive(@Header("Authorization") String authorization,
-                                                  @Body RequestBody body);
+    Observable<MBaseResponse<LiveInitInfo>> toStartLive(@Header("Authorization") String authorization,
+                                                        @Body RequestBody body);
 
+    //主播-获取直播间权限信息
     @Headers({"content-type:application/json"})
-    @POST("live/getLiveHomeInfo")
-    Observable<MBaseResponse<Object>> getLiveInfo(@Header("Authorization") String authorization,
-                                                  @Body RequestBody body);
+    @GET("live/findLiveHomeInfo")
+    Observable<MBaseResponse<Object>> getLiveInfo(@Header("Authorization") String authorization);
+
+    //用户-进入直播间
+    @Headers({"content-type:application/json"})
+    @POST("live/inRoom")
+    Observable<MBaseResponse<LiveInitInfo>> toJoinLive(@Header("Authorization") String authorization,
+                                                       @Body RequestBody body);
 }

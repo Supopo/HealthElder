@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,19 +18,25 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.alibaba.fastjson.JSON;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import io.dcloud.common.DHInterface.ICallBack;
 import io.dcloud.feature.sdk.DCUniMPSDK;
@@ -44,6 +51,7 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
 
     private String wgtPath;
     private LoginTokenBean loginTokenBean;
+    private String liveRoomId;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -123,6 +131,32 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
 
         String jsUserInfo = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
         loginTokenBean = JSON.parseObject(jsUserInfo, LoginTokenBean.class);
+
+
+        binding.tvMenu9.setOnClickListener(lis -> {
+            LogUtils.v("--", UserInfoMgr.getInstance().getAccessToken());
+            showEditTextDialog();
+        });
+    }
+
+    private void showEditTextDialog() {
+        final QMUIDialog.EditTextDialogBuilder builder = new QMUIDialog.EditTextDialogBuilder(getActivity());
+        builder.setTitle("进入直播间")
+                .setPlaceholder("在此请填入房间号")
+                .setInputType(InputType.TYPE_CLASS_TEXT)
+                .addAction("取消", (dialog, index) -> dialog.dismiss())
+                .addAction("确定", (dialog, index) -> {
+                    CharSequence text = builder.getEditText().getText();
+                    if (text != null && text.length() > 0) {
+                        Toast.makeText(getActivity(), "您的房间号: " + text, Toast.LENGTH_SHORT).show();
+                        liveRoomId = text.toString();
+                        viewModel.joinLive(liveRoomId);
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(getActivity(), "请填入房间号", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     private void toXCX() {
@@ -149,6 +183,17 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
     public void initViewObservable() {
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
+        });
+        viewModel.liveInfo.observe(this, liveInfo -> {
+            if (liveInfo != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                startActivity(LiveGuanzhongActivity.class, bundle);
+            }
+        });
+        viewModel.loginRoomSuccess.observe(this, loginSuccess -> {
+            //进入直播间接口
+            viewModel.joinLive(liveRoomId);
         });
     }
 
