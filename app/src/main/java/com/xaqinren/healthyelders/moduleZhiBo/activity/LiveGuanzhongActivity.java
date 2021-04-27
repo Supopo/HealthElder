@@ -182,7 +182,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
                 mLiveRoom.setListener(null);
                 isPlaying = false;
-                finish();
             }
 
             @Override
@@ -466,7 +465,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 break;
             case LiveConstants.IMCMD_LIKE:
                 //用户点赞消息
-                toDianZan();
+                showDianZan();
+                break;
+            case LiveConstants.IMCMD_ZB_COMEBACK:
+                //收到主播继续直播的消息
+                mLiveRoom.reStartPlay(mLiveInitInfo.pullStreamUrl, binding.mTxVideoView, null);
                 break;
             default:
                 break;
@@ -474,7 +477,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     @Override
-    public void onRecvC2CCustonMsg(String senderId, String cmd, String message) {
+    public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
 
     }
 

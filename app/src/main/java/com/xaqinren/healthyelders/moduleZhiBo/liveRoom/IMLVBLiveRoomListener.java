@@ -201,7 +201,7 @@ public interface IMLVBLiveRoomListener {
      * @param cmd
      * @param message
      */
-    public void onRecvC2CCustonMsg(String senderId, String cmd, String message);
+    public void onRecvC2CCustomMsg(String senderId, String cmd, String message);
 
     /**
      * 登录结果回调接口

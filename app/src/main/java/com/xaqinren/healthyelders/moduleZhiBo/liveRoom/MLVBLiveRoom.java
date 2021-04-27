@@ -168,6 +168,8 @@ public abstract class MLVBLiveRoom {
 
     public abstract void enterRoom(final String playURL, final String roomID, final TXCloudVideoView view, final IMLVBLiveRoomListener.EnterRoomCallback callback);
 
+    public abstract void reStartPlay(final String playURL, final TXCloudVideoView view, final IMLVBLiveRoomListener.EnterRoomCallback callback);
+
     /**
      * 创建直播间之前先把之前的群推掉
      *

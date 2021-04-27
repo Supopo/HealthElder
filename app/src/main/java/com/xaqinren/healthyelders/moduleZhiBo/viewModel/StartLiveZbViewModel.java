@@ -45,31 +45,6 @@ public class StartLiveZbViewModel extends BaseViewModel {
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
     public MutableLiveData<String> fileUrl = new MutableLiveData<>();
 
-    public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
-        //判断登录
-        LoginInfo loginInfo = new LoginInfo();
-        loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
-        loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
-        loginInfo.sdkAppID = 1400392607;
-        loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
-        loginInfo.userSig = "eJw9jksLgkAUhf-LbAudO9fuqNCiTUgE2WOhy2DGuoQxmPko*u*JRsvz*A7nLU7bo2c7x5UVsSIdBlLOR7OxlYiF8qSY9MPczs6xETEMHYwUST0lbOy95oJHADAkQB2i1JFcIIL6D-BlyJvE*rJddfna36uSUnNoc8yybgfWzXDTK*5fz2uQuDRY-sCay*EcEESIRBo*XwReMts_";
-        mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
-            @Override
-            public void onError(int errCode, String errInfo) {
-                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
-                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errInfo);
-                dismissDialog.postValue(true);
-            }
-
-            @Override
-            public void onSuccess() {
-                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录成功");
-                dismissDialog.postValue(true);
-                loginRoomSuccess.postValue(true);
-            }
-        });
-    }
-
 
     public void checkLiveInfo() {
         LiveRepository.getInstance().checkLiveInfo(dismissDialog, liveInfo);

@@ -792,6 +792,51 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
     }
 
+    @Override
+    public void reStartPlay(String playURL, TXCloudVideoView view, IMLVBLiveRoomListener.EnterRoomCallback callback) {
+        //1. 结束所有加速流的播放
+        cleanPlayers();
+        //2. 结束普通流播放
+        if (mTXLivePlayer != null) {
+            mTXLivePlayer.stopPlay(true);
+            mTXLivePlayer.setPlayerView(null);
+        }
+
+        //3.在主线程重新播放CDN流
+        Handler handler = new Handler(mAppContext.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (view != null) {
+                    view.setVisibility(View.VISIBLE);
+                }
+                //使用自定义的播放流
+                String mixedPlayUrl = playURL;
+                if (mixedPlayUrl != null && mixedPlayUrl.length() > 0) {
+                    int playType = getPlayType(mixedPlayUrl);
+                    mTXLivePlayer.setPlayerView(view);
+                    mTXLivePlayer.startPlay(mixedPlayUrl, playType);
+
+                    if (mHttpRequest != null) {
+                        String userInfo = "";
+                        try {
+                            userInfo = new JSONObject()
+                                    .put("userName", mSelfAccountInfo.userName)
+                                    .put("userAvatar", mSelfAccountInfo.userAvatar)
+                                    .toString();
+                        } catch (JSONException e) {
+                            userInfo = "";
+                        }
+                    }
+                    callbackOnThread(callback, "onSuccess");
+                } else {
+                    callbackOnThread(callback, "onError", MLVBCommonDef.LiveRoomErrorCode.ERROR_PLAY, "[LiveRoom] 未找到CDN播放地址");
+                }
+            }
+        });
+
+    }
+
     /**
      * 离开房间
      *

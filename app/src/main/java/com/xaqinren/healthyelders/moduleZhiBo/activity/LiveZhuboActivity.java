@@ -88,7 +88,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
         showDialog("开启直播间...");
-        //后期判断是否登录，如果已经则登录注入用户信息
+        //后期判断是否登录，如果已经则登录注入用户信息一定要注入的
         viewModel.toLoginRoom(mLiveRoom);
         initEvent();
         initLiveInfo();
@@ -366,20 +366,27 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
             }
         });
+        //开启直播-继续直播通知服务器回调
         viewModel.startLiveInfo.observe(this, liveInitInfo -> {
-            mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
-            //退掉之前的群
-            if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
-                for (String groupId : liveInitInfo.groupIds) {
-                    //判断下不是当前的群
-                    if (!Constant.getRoomId(mLiveInitInfo.liveRoomCode).equals(groupId)) {
-                        //退出之前的的群
-                        mLiveRoom.exitGroup(groupId);
-                    }
+            if (liveInitInfo != null) {
+                if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
+                    //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
+                }
 
+                mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
+                //退掉之前的群
+                if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
+                    for (String groupId : liveInitInfo.groupIds) {
+                        //判断下不是当前的群
+                        if (!Constant.getRoomId(mLiveInitInfo.liveRoomCode).equals(groupId)) {
+                            //退出之前的的群
+                            mLiveRoom.exitGroup(groupId);
+                        }
+
+                    }
                 }
             }
-
         });
     }
 
@@ -480,7 +487,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     @Override
-    public void onRecvC2CCustonMsg(String senderId, String cmd, String message) {
+    public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
 
     }
 

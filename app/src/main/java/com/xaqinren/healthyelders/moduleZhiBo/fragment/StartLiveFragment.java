@@ -262,10 +262,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         getActivity().finish();
     }
 
-    private void toStartLive() {
-        showDialog("开启直播间...");
-        viewModel.toLoginRoom(mLiveRoom);
-    }
 
     private void initRoomInfo() {
         binding.etTitle.setText(mLiveInitInfo.liveRoomName);
