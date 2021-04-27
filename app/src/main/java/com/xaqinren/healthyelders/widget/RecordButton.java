@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 
+import com.afollestad.materialdialogs.color.CircleView;
 import com.tencent.qcloud.ugckit.module.record.RecordModeView;
 import com.xaqinren.healthyelders.R;
 
@@ -21,6 +22,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     private View translucenceView;
     private View whiteView;
     private View recodeView;
+    private ArcView arcView;
     private int tranColor;
 
     private OnRecordButtonListener onRecordButtonListener;
@@ -52,11 +54,11 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         translucenceView = findViewById(R.id.translucence_view);
         whiteView = findViewById(R.id.white_view);
         recodeView = findViewById(R.id.recode_view);
-        tranColor = Color.parseColor("#7f000000");
+        arcView = findViewById(R.id.cir_view);
+        tranColor = Color.parseColor("#a5ffffff");
         translucenceView.setBackground(createCircleGradientDrawable(tranColor));
         whiteView.setBackground(createCircleGradientDrawable(getResources().getColor(R.color.white)));
         translucenceView.setBackground(createCircleGradientDrawable(tranColor));
-//        whiteView.setVisibility(GONE);
     }
 
     @Override
@@ -74,6 +76,15 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             }
         }
         return true;
+    }
+    public void setRecodeMaxTime(int maxTime) {
+        arcView.setMax(maxTime);
+    }
+    public void setRecodeProgress(long progress) {
+        arcView.setProgress(0, progress);
+    }
+    public void setRecodeProgressBarWidth(int width) {
+        arcView.setWidth(width);
     }
 
     private GradientDrawable createCircleGradientDrawable(int color) {
@@ -112,6 +123,8 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             @Override
             public void onAnimationEnd(Animator animation) {
                 onRecordButtonListener.onRecordStart();
+                arcView.setVisibility(View.VISIBLE);
+                arcView.show();
             }
 
             @Override
@@ -152,6 +165,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             @Override
             public void onAnimationEnd(Animator animation) {
                 onRecordButtonListener.onRecordPause();
+                arcView.hide();
             }
 
             @Override
@@ -165,6 +179,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             }
         });
         animatorSet.start();
+        arcView.setVisibility(View.GONE);
     }
 
     public interface OnRecordButtonListener{

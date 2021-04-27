@@ -13,6 +13,12 @@
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:layout_centerInParent="true"/>
+
+    <com.xaqinren.healthyelders.widget.ArcView
+        android:id="@+id/cir_view"
+        android:layout_width="@dimen/dp_110"
+        android:layout_height="@dimen/dp_110"
+        android:layout_centerInParent="true"/>
     <View
         android:id="@+id/white_view"
         android:layout_width="@dimen/dp_80"

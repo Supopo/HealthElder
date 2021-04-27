@@ -13,6 +13,7 @@ import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
@@ -224,14 +225,14 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         LogUtils.i(getClass().getSimpleName(), "onRecordProgress\tl=");
         int s = (int) (milliSecond / 1000);
         if (s < 10) {
-            recodeLiteListener.onRecodeProgress("00:0" + s);
+            recodeLiteListener.onRecodeProgress("00:0" + s, milliSecond);
         }else{
             int min = s / 60;
             int sec = s % 60;
             if (min < 0) {
-                recodeLiteListener.onRecodeProgress("00:" + sec);
+                recodeLiteListener.onRecodeProgress("00:" + sec, milliSecond);
             }else
-                recodeLiteListener.onRecodeProgress("0" + min + ":" + (sec < 10 ? "0"+sec : sec));
+                recodeLiteListener.onRecodeProgress("0" + min + ":" + (sec < 10 ? "0"+sec : sec) , milliSecond);
         }
         currentRecodeTime = milliSecond;
     }
@@ -262,6 +263,10 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             }*/
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
             currentStatus = STATUS_IDLE;
+            if (currentRecodeTime < minRecordTime) {
+                ToastUtil.toastLongMessage("录制最少"+(minRecordTime/1000)+"秒");
+                return;
+            }
             recodeLiteListener.onRecodeComplete();
         } else {
             // 错误处理，错误码定义请参见 TXRecordCommon 中“录制结果回调错误码定义”
@@ -420,7 +425,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         void lightOpen(boolean open);
         void onSetMusicInfoSuccess(MusicInfo musicInfo);
         void onMusicReplace(int position);
-        void onRecodeProgress(String time);
+        void onRecodeProgress(String time,long timeInt);
         void onRecodeComplete();
         void onRecodeSuccess();
     }

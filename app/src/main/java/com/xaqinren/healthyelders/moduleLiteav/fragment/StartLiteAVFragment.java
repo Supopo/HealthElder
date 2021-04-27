@@ -189,6 +189,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 pauseRecode();
             }
         });
+        binding.recodeBtn.setRecodeMaxTime(liteAvRecode.getRecodeConfig().mMaxDuration);
+        binding.recodeBtn.setRecodeProgressBarWidth((int) getResources().getDimension(R.dimen.dp_6));
         binding.recordSpeedLayout.setOnRecordSpeedListener(speed -> liteAvRecode.setRecodeSpeed(speed));
 
     }
@@ -433,8 +435,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     @Override
-    public void onRecodeProgress(String time) {
+    public void onRecodeProgress(String time , long timeInt) {
         binding.recodeTime.setText(time);
+        binding.recodeBtn.setRecodeProgress(timeInt);
     }
 
     @Override
