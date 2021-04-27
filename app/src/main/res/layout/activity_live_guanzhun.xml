@@ -24,6 +24,7 @@
             android:id="@+id/mTxVideoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_10"
             android:layout_above="@id/ll_menu"
             android:visibility="visible" />
 
@@ -31,6 +32,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_menu">
+
+            <RelativeLayout
+                android:id="@+id/rl_showLike"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <!--主播信息-->
             <RelativeLayout
@@ -49,7 +55,6 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:src="@mipmap/login_logo"
-                    app:url = "@{viewModel.liveInitInfo.avatarUrl}"
                     app:qmui_border_color="@color/transparent"
                     app:qmui_is_circle="true" />
 
@@ -63,7 +68,6 @@
                     android:layout_toLeftOf="@id/tv_follow"
                     android:layout_toRightOf="@id/riv_photo"
                     android:singleLine="true"
-                    android:text = "@{viewModel.liveInitInfo.nickname}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
@@ -114,9 +118,9 @@
                 android:layout_marginRight="@dimen/dp_15">
 
                 <Button
-                    android:layout_centerVertical="true"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:background="@mipmap/icon_close"
                     android:onClick="onClick" />
@@ -129,6 +133,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:cacheColorHint="#00000000"
                 android:divider="@null"
                 android:requiresFadingEdge="vertical"
@@ -136,6 +141,12 @@
                 android:scrollbars="none"
                 android:stackFromBottom="true"
                 android:transcriptMode="normal" />
+
+            <com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCHeartLayout
+                android:id="@+id/tcHeartLayout"
+                android:layout_width="@dimen/dp_140"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
         <!--        底部菜单栏-->
         <LinearLayout
@@ -143,7 +154,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -151,6 +164,7 @@
                 android:id="@+id/tv_msg"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_38"
+                android:layout_marginRight="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="@drawable/bg_zbj_menu_msg"
                 android:gravity="start|center_vertical"
@@ -162,62 +176,53 @@
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:orientation="horizontal"
-                android:visibility="visible">
+            <Button
+                android:id="@+id/btn_more"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_more_gz"
+                android:onClick="onClick" />
 
-                <Button
-                    android:id="@+id/btn_more"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:background="@mipmap/zbj_menu_more_gz" />
+            <Button
+                android:id="@+id/btn_jtfz"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_fz"
+                android:onClick="onClick"
+                android:visibility="gone" />
 
+            <Button
+                android:id="@+id/btn_lianmai"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_lianmai_gz"
+                android:onClick="onClick" />
 
-                <Button
-                    android:id="@+id/btn_jtfz"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:background="@mipmap/zbj_menu_fz"
-                    android:visibility="gone" />
+            <Button
+                android:id="@+id/btn_goods"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_goods_gz"
+                android:onClick="onClick" />
 
-                <Button
-                    android:id="@+id/btn_lianmai"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:background="@mipmap/zbj_menu_lianmai_gz" />
+            <Button
+                android:id="@+id/btn_gift"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@mipmap/zbj_menu_gift"
+                android:onClick="onClick" />
 
-
-                <Button
-                    android:id="@+id/btn_goods"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:background="@mipmap/zbj_menu_goods_gz" />
-
-
-                <Button
-                    android:id="@+id/btn_gift"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:background="@mipmap/zbj_menu_gift" />
-
-
-                <Button
-                    android:id="@+id/btn_zan"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:background="@mipmap/zbj_menu_zan" />
-
-
-            </LinearLayout>
-
+            <Button
+                android:id="@+id/btn_zan"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:background="@mipmap/zbj_menu_zan"
+                android:onClick="onClick" />
 
         </LinearLayout>
     </RelativeLayout>

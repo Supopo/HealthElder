@@ -33,7 +33,11 @@
             android:layout_height="match_parent"
             android:layout_above="@id/ll_menu">
 
-            <!--主播信息-->
+            <RelativeLayout
+                android:id="@+id/rl_showLike"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <!-- 主播信息-->
             <RelativeLayout
                 android:layout_width="@dimen/dp_153"
                 android:layout_height="@dimen/dp_40"
@@ -120,6 +124,13 @@
                 android:scrollbars="none"
                 android:stackFromBottom="true"
                 android:transcriptMode="normal" />
+
+            <!-- 点赞-->
+            <com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCHeartLayout
+                android:id="@+id/tcHeartLayout"
+                android:layout_width="@dimen/dp_140"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
 
         <!--底部菜单栏-->
@@ -192,8 +203,8 @@
                 android:id="@+id/btn_back"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:onClick="onClick"
-                android:background="@mipmap/zbj_menu_quit" />
+                android:background="@mipmap/zbj_menu_quit"
+                android:onClick="onClick" />
 
             <Button
                 android:id="@+id/btn_more"
@@ -201,8 +212,8 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
-                android:onClick="onClick"
                 android:background="@mipmap/zbj_menu_more"
+                android:onClick="onClick"
                 android:visibility="visible" />
 
         </LinearLayout>

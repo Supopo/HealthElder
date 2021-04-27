@@ -4,11 +4,9 @@ package com.xaqinren.healthyelders.moduleZhiBo.adapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +18,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -150,15 +150,19 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
 
         spanString = new SpannableString(item.getSenderName() + item.getContent());
         // 判断是否展示文本  展示文本设置展示文本的颜色 提示语 消息文本要设置名字颜色
-        if (item.getType() == LiveConstants.SHOW_TYPE) {
+        if (item.getType() == LiveConstants.TYPE_SHOW) {
             //展示消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorShowMsg));
             holder.sendContext.setText(item.getContent());
-        } else if (item.getType() == LiveConstants.LIWU_TYPE) {
+        } else if (item.getType() == LiveConstants.TYPE_DES) {
+            //展示消息
+            holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.white));
+            holder.sendContext.setText(item.getContent());
+        } else if (item.getType() == LiveConstants.IMCMD_GIFT) {
             //礼物消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorGiftMsg));
             holder.sendContext.setText(item.getSenderName() + " " + item.getContent());
-        } else if (item.getType() == LiveConstants.TEXT_TYPE) {
+        } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
             //文字消息
             spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
                     0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

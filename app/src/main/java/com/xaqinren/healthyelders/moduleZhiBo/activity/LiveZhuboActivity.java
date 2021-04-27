@@ -5,8 +5,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,10 +30,12 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -48,7 +55,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private TCChatMsgListAdapter msgAdapter;
     private String mRoomID;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-
+    private TCFrequeControl mLikeFrequeControl;    //点赞频率控制
+    private int mZanNum;    //本次点赞数量
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -106,9 +114,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //添加一条默认的展示文本消息
         TCChatEntity tcChatEntity = new TCChatEntity();
         tcChatEntity.setSenderName("");
-        tcChatEntity.setType(LiveConstants.SHOW_TYPE);
+        tcChatEntity.setType(LiveConstants.TYPE_SHOW);
         tcChatEntity.setContent("本平台提倡绿色健康直播，严禁在平台内外出现诱导未成年人送礼打赏、诈骗、赌博、非法转移财产、低俗色情、吸烟酗酒等不当行为， 若有违反，平台有权对您采取包括暂停支付收益、冻结或封禁帐号等措施，同时向相关部门依法追究您的法律责任。如因此给平台造成损失，有权向您全额追偿。");
         msgList.add(tcChatEntity);
+        //再添加一条消息展示直播间介绍
+        TCChatEntity tcChatEntity2 = new TCChatEntity();
+        tcChatEntity2.setSenderName("");
+        tcChatEntity2.setType(LiveConstants.TYPE_DES);
+        tcChatEntity2.setContent(mLiveInitInfo.liveRoomIntroduce);
+        msgList.add(tcChatEntity2);
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
@@ -159,6 +173,36 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     public void initEvent() {
+        //双击点赞事件
+        binding.mTxVideoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        System.out.println("---------------按下了-------------------");
+                        before_press_Y = event.getY();
+                        before_press_X = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        System.out.println("--------------抬起了------------------");
+                        long secondTime = System.currentTimeMillis();
+                        if (secondTime - firstClickTime < 500) {
+                            double now_press_Y = event.getY();
+                            double now_press_X = event.getX();
+                            if (now_press_Y - before_press_Y <= 50 && now_press_X - before_press_X <= 50) {
+                                System.out.println("-------------------处理双击事件----------------------");
+                                //双击点赞
+                                double2DianZan((int) now_press_Y + binding.mTxVideoView.getTop(), (int) now_press_X);
+                            }
+                        }
+
+                        firstClickTime = secondTime;
+                        break;
+
+                }
+                return true;
+            }
+        });
         //退出直播
         binding.btnBack.setOnClickListener(this);
         binding.tvMsg.setOnClickListener(this);
@@ -175,7 +219,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         TCChatEntity entity = new TCChatEntity();
         entity.setSenderName("我 : ");
         entity.setContent(msg);
-        entity.setType(LiveConstants.TEXT_TYPE);
+        entity.setType(LiveConstants.IMCMD_TEXT_MSG);
         notifyMsg(entity);
         mLiveRoom.sendRoomTextMsg(msg, null);
     }
@@ -190,7 +234,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         }
         entity.setContent(text);
-        entity.setType(LiveConstants.TEXT_TYPE);
+        entity.setType(LiveConstants.IMCMD_TEXT_MSG);
 
         notifyMsg(entity);
     }
@@ -209,6 +253,97 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 msgAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    //点赞展示
+    private void showDianZan() {
+        //点赞请求限制
+        if (mLikeFrequeControl == null) {
+            mLikeFrequeControl = new TCFrequeControl();
+            mLikeFrequeControl.init(2, 1);
+        }
+        if (mLikeFrequeControl.canTrigger()) {
+            binding.tcHeartLayout.addFavor();
+        }
+    }
+
+    //点赞操作
+    private void toDianZan() {
+        //点赞发送请求限制
+        if (mLikeFrequeControl == null) {
+            mLikeFrequeControl = new TCFrequeControl();
+            mLikeFrequeControl.init(2, 1);
+        }
+        if (mLikeFrequeControl.canTrigger()) {
+            binding.tcHeartLayout.addFavor();
+            //向直播间发送点赞消息
+            mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_LIKE), "", null);
+        }
+        //统计2S内的点赞次数 统一向服务器发送
+
+    }
+
+    //双击点赞
+    private double before_press_Y;
+    private double before_press_X;
+    private long firstClickTime;
+    private int[] drawableIds = new int[]{R.mipmap.dianzan_icon01, R.mipmap.dianzan_icon02, R.mipmap.dianzan_icon03, R.mipmap.dianzan_icon04, R.mipmap.dianzan_icon05};
+    private Random mRandom = new Random();
+
+    private void double2DianZan(int now_press_Y, int now_press_X) {
+        ImageView iv = new ImageView(this);
+        int i = mRandom.nextInt(drawableIds.length - 1);
+        iv.setBackground(getResources().getDrawable(drawableIds[i]));
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.width = (int) getResources().getDimension(R.dimen.dp_40);
+        lp.height = lp.width;
+        lp.setMargins(now_press_X - lp.width / 2, now_press_Y - lp.height / 2, 0, 0);
+        iv.setLayoutParams(lp);
+        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+        binding.rlShowLike.removeAllViews();
+        binding.rlShowLike.addView(iv);
+
+        Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_double_zan_enter);
+        Animation scaleAnimation2 = AnimationUtils.loadAnimation(this, R.anim.zbj_double_zan_exit);
+        iv.startAnimation(scaleAnimation1);
+
+        scaleAnimation1.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                iv.setAnimation(scaleAnimation2);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        scaleAnimation2.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                binding.rlShowLike.removeAllViews();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        toDianZan();
     }
 
     @Override
@@ -309,7 +444,25 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     @Override
     public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel) {
-
+        if (!roomID.equals(mRoomID)) {
+            return;
+        }
+        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
+        int type = Integer.parseInt(cmd);
+        switch (type) {
+            case LiveConstants.IMCMD_ENTER_LIVE:
+                //用户进入房间消息
+                break;
+            case LiveConstants.IMCMD_EXIT_LIVE:
+                //用户退出房间消息
+                break;
+            case LiveConstants.IMCMD_LIKE:
+                //展示用户点赞
+                showDianZan();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

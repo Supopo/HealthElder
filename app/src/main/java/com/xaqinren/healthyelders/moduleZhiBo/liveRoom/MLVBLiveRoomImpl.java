@@ -2118,7 +2118,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
     public void sendRoomCustomMsg(String cmd, Object message, final IMLVBLiveRoomListener.SendRoomCustomMsgCallback callback) {
 
         String content = "";
-        if (cmd.equals(String.valueOf(LiveConstants.IMCMD_SENDPRESENT))) {
+        if (cmd.equals(String.valueOf(LiveConstants.IMCMD_GIFT))) {
             //礼物
             CommonJson<CustomSomeMessage<SendGiftBean>> customMessage = new CommonJson<>();
             CustomSomeMessage<SendGiftBean> cm = new CustomSomeMessage<>();
@@ -3133,7 +3133,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             userAvatar = customMessage.data.userAvatar;
         }
 
-        if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_SENDPRESENT))) {
+        if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_GIFT))) {
             ReceiveGiftsMessage gifsMessage = new Gson().fromJson(message, ReceiveGiftsMessage.class);
             callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel);
         } else if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
