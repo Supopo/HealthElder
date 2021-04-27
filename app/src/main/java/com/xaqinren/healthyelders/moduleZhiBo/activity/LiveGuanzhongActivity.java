@@ -5,8 +5,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -36,11 +39,11 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
  * Created by Lee. on 2021/4/25.
  * 直播间-观众页面
  */
-public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener {
+public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener {
 
     private MLVBLiveRoom mLiveRoom;
     private LiveInitInfo mLiveInitInfo;
-    private List<TCChatEntity> msgList = new ArrayList<>();   // 消息列表
+    private List<TCChatEntity> msgList;   // 消息列表
     private TCChatMsgListAdapter msgAdapter;
     private String mRoomID;
     private Disposable disposable;
@@ -73,11 +76,36 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         super.initData();
         //设置全屏
         setStatusBarTransparent();
-        initEvent();
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
+        //登录直播间IM服务
         viewModel.toLoginRoom(mLiveRoom);
+        initEvent();
+        initLiveInfo();
+        initMsgList();
+    }
 
+    //初始化房间信息
+    private void initLiveInfo() {
+        Glide.with(this).load(mLiveInitInfo.avatarUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.rivPhoto);
+        binding.tvName.setText(mLiveInitInfo.nickname);
+        //禁止送礼
+        if (mLiveInitInfo.getCanGift()) {
+            binding.btnGift.setVisibility(View.GONE);
+        }
+        //禁止连麦
+        if (mLiveInitInfo.getCanMic()) {
+            binding.btnLianmai.setVisibility(View.GONE);
+        }
+        //禁止带货
+        if (mLiveInitInfo.getCanSale()) {
+            binding.btnGoods.setVisibility(View.GONE);
+        }
+    }
+
+    //初始化聊天列表
+    private void initMsgList() {
+        msgList = new ArrayList<>();
         //添加一条默认的展示文本消息
         TCChatEntity tcChatEntity = new TCChatEntity();
         tcChatEntity.setSenderName("");
@@ -88,7 +116,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
     }
-
 
     private void startPlay() {
         mLiveRoom.setListener(this);
@@ -133,12 +160,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     public void initEvent() {
         //退出直播间
-        binding.btnBack.setOnClickListener(lis -> {
-            stopPlay();
-        });
-        binding.tvMsg.setOnClickListener(lis -> {
-            startActivity(ZBEditTextDialogActivity.class);
-        });
+        binding.rlBack.setOnClickListener(this);
+        binding.tvMsg.setOnClickListener(this);
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
                 toSendTextMsg(eventBean.content);
@@ -146,6 +169,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         });
         RxSubscriptions.add(disposable);
     }
+
     //发送文字消息
     private void toSendTextMsg(String msg) {
         TCChatEntity entity = new TCChatEntity();
@@ -282,5 +306,17 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     protected void onDestroy() {
         super.onDestroy();
         disposable.dispose();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_back:
+                stopPlay();
+                break;
+            case R.id.tv_msg:
+                startActivity(ZBEditTextDialogActivity.class);
+                break;
+        }
     }
 }

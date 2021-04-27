@@ -29,6 +29,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInitInfo = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> startLiveInfo = new MutableLiveData<>();
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         LoginInfo loginInfo = new LoginInfo();
@@ -54,7 +55,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
 
     //通知服务器
     public void startLive(LiveInitInfo map) {
-        LiveRepository.getInstance().startLive(dismissDialog, liveInitInfo, map);
+        LiveRepository.getInstance().startLive(dismissDialog, startLiveInfo, map);
     }
 
     //结束直播

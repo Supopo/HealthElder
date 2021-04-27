@@ -13,6 +13,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
@@ -22,11 +23,14 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInitInfo = new MutableLiveData<>();
+
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         //判断登录
         LoginInfo loginInfo = new LoginInfo();
         loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
         loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        LogUtils.v(Constant.TAG_LIVE, "loginInfo.userName: " + loginInfo.userName);
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = "eJw1jtsKgkAYhN9lr8P25B6EbkSIMMSwAr1TXPMnsm2TDKJ3z7QuZ*abYV5ov80887TgDAoIFVJxjBeT*zAOBYh6GM36Xp9La6EeuZFhmgos5wRq0-XQwFQgTAmqOGOSc*lLwn3xH4DTmIdpBvk6j4tNm8TJEClt2a4KXdOmjkXt4Xa8qqpYdiEeVr9iD5fvO0E0x1RT*v4AMdgzHQ__";
