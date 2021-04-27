@@ -147,9 +147,6 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         //        if (mCreateAnimator && mBLiveAnimator) {
         //            playViewAnimator(convertView, position, item);
         //        }
-        if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
-            item.setSenderName(item.getSenderName() + ": ");
-        }
 
         spanString = new SpannableString(item.getSenderName() + item.getContent());
         // 判断是否展示文本  展示文本设置展示文本的颜色 提示语 消息文本要设置名字颜色
@@ -166,9 +163,10 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorGiftMsg));
             holder.sendContext.setText(item.getSenderName() + " " + item.getContent());
         } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
+            spanString = new SpannableString(item.getSenderName() + ": " + item.getContent());
             //文字消息
             spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
-                    0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    0, item.getSenderName().length() + 2, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorTextMsg));
             holder.sendContext.setText(spanString);
         } else {

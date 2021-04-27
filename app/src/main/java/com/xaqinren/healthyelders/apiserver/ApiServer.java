@@ -82,6 +82,10 @@ public interface ApiServer {
     Observable<MBaseResponse<LiveInitInfo>> toStartLive(@Header("Authorization") String authorization,
                                                         @Body RequestBody body);
 
+    //主播-继续直播
+    @GET("live/continue")
+    Observable<MBaseResponse<LiveInitInfo>> reStartLive(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
     //主播-获取直播间权限信息
     @Headers({"content-type:application/json"})
     @GET("live/findLiveHomeInfo")

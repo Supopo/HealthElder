@@ -37,6 +37,12 @@
                 android:id="@+id/rl_showLike"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+            <!-- 点赞-->
+            <com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCHeartLayout
+                android:id="@+id/tcHeartLayout"
+                android:layout_width="@dimen/dp_140"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
             <!-- 主播信息-->
             <RelativeLayout
                 android:layout_width="@dimen/dp_153"
@@ -124,13 +130,6 @@
                 android:scrollbars="none"
                 android:stackFromBottom="true"
                 android:transcriptMode="normal" />
-
-            <!-- 点赞-->
-            <com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCHeartLayout
-                android:id="@+id/tcHeartLayout"
-                android:layout_width="@dimen/dp_140"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true" />
         </RelativeLayout>
 
         <!--底部菜单栏-->

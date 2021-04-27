@@ -38,7 +38,7 @@ public class LiveRepository {
 
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
-    public void startLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInitInfo, LiveInitInfo map) {
+    public void startLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, LiveInitInfo map) {
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toStartLive(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -58,14 +58,37 @@ public class LiveRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
-                        liveInitInfo.postValue(data.getData());
+                        startLiveInfo.postValue(data.getData());
                     }
                 });
     }
 
-    public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomId) {
+    public void reStartLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, String liveRoomRecordId) {
+        userApi.reStartLive(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        startLiveInfo.postValue(data.getData());
+                    }
+                });
+    }
+
+    public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomRecordId) {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("liveRoomId", liveRoomId);
+        hashMap.put("liveRoomId", liveRoomRecordId);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toJoinLive(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -114,7 +137,7 @@ public class LiveRepository {
                 });
     }
 
-    public void overLive(MutableLiveData<Boolean> dismissDialog, String liveRoomId) {
+    public void overLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> exitSuccess, String liveRoomId) {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("liveRoomRecordId", liveRoomId);
         String json = JSON.toJSONString(hashMap);
@@ -136,6 +159,7 @@ public class LiveRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
                         ToastUtil.toastShortMessage("结束成功");
+                        exitSuccess.postValue(true);
                     }
 
                 });

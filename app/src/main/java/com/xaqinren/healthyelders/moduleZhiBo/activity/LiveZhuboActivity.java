@@ -87,8 +87,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         setStatusBarTransparent();
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
-        //开启推流
-        startPublish();
+        showDialog("开启直播间...");
+        //后期判断是否登录，如果已经则登录注入用户信息
+        viewModel.toLoginRoom(mLiveRoom);
         initEvent();
         initLiveInfo();
         initMsgList();
@@ -141,7 +142,12 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //去通知服务器开启直播间
                 LogUtils.v(Constant.TAG_LIVE, mLiveRoom.getPushUrl());
                 mLiveInitInfo.pushUrl = mLiveRoom.getPushUrl();
-                viewModel.startLive(mLiveInitInfo);
+                //判断如果有上次记录就是继续直播，没有就重新开启直播
+                if (TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
+                    viewModel.startLive(mLiveInitInfo);
+                } else {
+                    viewModel.reStartLive(mLiveInitInfo.liveRoomRecordId);
+                }
             }
 
 
@@ -217,7 +223,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     //发送文字消息
     private void toSendTextMsg(String msg) {
         TCChatEntity entity = new TCChatEntity();
-        entity.setSenderName("我 : ");
+        entity.setSenderName("我 ");
         entity.setContent(msg);
         entity.setType(LiveConstants.IMCMD_TEXT_MSG);
         notifyMsg(entity);
@@ -228,7 +234,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     public void toRecvTextMsg(TCUserInfo userInfo, String text, int type) {
         TCChatEntity entity = new TCChatEntity();
         if (TextUtils.isEmpty(userInfo.nickname)) {
-            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid );
+            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid);
         } else {
             entity.setSenderName(userInfo.nickname);
 
@@ -349,6 +355,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.loginRoomSuccess.observe(this, isSuccess -> {
+            //开启推流
+            startPublish();
+        });
         viewModel.dismissDialog.observe(this, dismiss -> {
             if (dismiss != null) {
                 if (dismiss) {

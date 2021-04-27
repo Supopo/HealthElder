@@ -82,7 +82,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private BeautyPanel mMeiYanControl;
     private BeautyPanel mLvJingControl;
     private QMUIDialog showSelectDialog;
-    private LiveInitInfo liveInitInfo = new LiveInitInfo();
+    private LiveInitInfo mLiveInitInfo = new LiveInitInfo();
     private StartLiveUiViewModel liveUiViewModel;
 
     @Override
@@ -108,6 +108,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         showDialog();
         viewModel.checkLiveInfo();
         initEvent();
+        LogUtils.v(Constant.TAG_LIVE, "token:" + UserInfoMgr.getInstance().getAccessToken());
     }
 
     private void initEvent() {
@@ -162,17 +163,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
         //设置
         binding.llSet.setOnClickListener(lis -> {
-            startSettingPop = new ZBStartSettingPop(getActivity(), liveInitInfo);
+            startSettingPop = new ZBStartSettingPop(getActivity(), mLiveInitInfo);
             startSettingPop.showPopupWindow();
-            Log.e("--", "token:" + UserInfoMgr.getInstance().getAccessToken());
         });
         binding.btnStart.setOnClickListener(lis -> {
             if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
                 ToastUtil.toastShortMessage("请输入直播间名称");
                 return;
             }
-            liveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
-            if (TextUtils.isEmpty(liveInitInfo.liveRoomCover)) {
+            mLiveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
+            if (TextUtils.isEmpty(mLiveInitInfo.liveRoomCover)) {
                 if (TextUtils.isEmpty(photoPath)) {
                     ToastUtil.toastShortMessage("请先选择照片");
                     return;
@@ -180,7 +180,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 showDialog("正在上传照片...");
                 viewModel.updatePhoto(photoPath);
             } else {
-                toStartLive();
+                startLiveZhuboActivity();
             }
 
 
@@ -193,10 +193,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.loginRoomSuccess.observe(getActivity(), isSuccess -> {
             if (isSuccess != null) {
                 if (isSuccess) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(Constant.LiveInitInfo, liveInitInfo);
-                    startActivity(LiveZhuboActivity.class, bundle);
-                    getActivity().finish();
+                    startLiveZhuboActivity();
                 }
             }
 
@@ -204,10 +201,19 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
                 //初始化房间信息
-                initRoomInfo(liveInfo);
+                mLiveInitInfo = liveInfo;
+                initRoomInfo();
                 //有上次记录，说明没有结束直播，弹选择框
                 if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId)) {
                     showSelectDialog(liveInfo.liveRoomRecordId);
+                }
+            }
+        });
+        viewModel.exitSuccess.observe(this, exitSuccess -> {
+            if (exitSuccess != null) {
+                if (exitSuccess) {
+                    //退出房间成功，清空上次房间的记录
+                    mLiveInitInfo.liveRoomRecordId = "";
                 }
             }
         });
@@ -222,8 +228,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         viewModel.fileUrl.observe(this, url -> {
             if (!TextUtils.isEmpty(url)) {
-                liveInitInfo.liveRoomCover = url;
-                toStartLive();
+                mLiveInitInfo.liveRoomCover = url;
+                startLiveZhuboActivity();
             }
         });
 
@@ -236,17 +242,24 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     mLiveRoom.stopBGM();
                     mLiveRoom.stopScreenCapture();
                     mLiveRoom.stopLocalPreview();
-//                    MLVBLiveRoom.destroySharedInstance();
+                    //                    MLVBLiveRoom.destroySharedInstance();
                     //                    liveUiViewModel.getCurrentPage().setValue(11);
                 } else {
                     //                    if (integer == 12) {
                     /*mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
                     mLiveRoom.startLocalPreview(true, binding.videoView);*/
                     //                    }
-                    mLiveRoom.startLocalPreview(true,binding.videoView);
+                    mLiveRoom.startLocalPreview(true, binding.videoView);
                 }
             }
         });
+    }
+
+    private void startLiveZhuboActivity() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
+        startActivity(LiveZhuboActivity.class, bundle);
+        getActivity().finish();
     }
 
     private void toStartLive() {
@@ -254,11 +267,10 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.toLoginRoom(mLiveRoom);
     }
 
-    private void initRoomInfo(LiveInitInfo liveInfo) {
-        liveInitInfo = liveInfo;
-        binding.etTitle.setText(liveInfo.liveRoomName);
-        Glide.with(getActivity()).load(liveInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
-        if (TextUtils.isEmpty(liveInfo.roomPassword)) {
+    private void initRoomInfo() {
+        binding.etTitle.setText(mLiveInitInfo.liveRoomName);
+        Glide.with(getActivity()).load(mLiveInitInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
+        if (TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
             binding.tvPwd.setText("公开");
             binding.ivPwd.setBackgroundResource(R.mipmap.icon_gongkai);
         } else {
@@ -274,7 +286,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     .addItems(items, (dialog, which) -> {
                         Toast.makeText(getActivity(), "你选择了 " + items[which], Toast.LENGTH_SHORT).show();
                         if (which == 0) {
-                            //直接进入直播间 省去创建
+                            //直接进入直播间
+                            startLiveZhuboActivity();
                         } else {
                             //调接口结束直播
                             showDialog();
@@ -498,7 +511,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     break;
             }
         } else if (requestCode == 1001) {
-            liveInitInfo.roomPassword = data.getDataString();
+            mLiveInitInfo.roomPassword = data.getDataString();
         }
     }
 

@@ -226,7 +226,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         });
 
         //退出直播间
-        binding.rlBack.setOnClickListener(this);
+        binding.btnBack.setOnClickListener(this);
         binding.tvMsg.setOnClickListener(this);
         binding.btnZan.setOnClickListener(this);
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
@@ -491,7 +491,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_back:
+            case R.id.btn_back:
                 stopPlay();
                 break;
             case R.id.tv_msg:
