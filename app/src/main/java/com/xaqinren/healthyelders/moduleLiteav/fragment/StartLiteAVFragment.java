@@ -1,23 +1,13 @@
 package com.xaqinren.healthyelders.moduleLiteav.fragment;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.icu.util.Measure;
-import android.icu.util.MeasureUnit;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +15,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,48 +26,31 @@ import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
-import com.tencent.qcloud.tim.uikit.utils.PopWindowUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
-import com.tencent.qcloud.ugckit.UGCKitVideoRecord;
-import com.tencent.qcloud.ugckit.basic.ITitleBarLayout;
-import com.tencent.qcloud.ugckit.basic.UGCKitResult;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
-import com.tencent.qcloud.ugckit.module.record.AspectView;
-import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicPannel;
-import com.tencent.qcloud.ugckit.module.record.RecordSpeedLayout;
 import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IRecordMusicPannel;
-import com.tencent.qcloud.ugckit.module.record.interfaces.IVideoRecordKit;
-import com.tencent.qcloud.ugckit.utils.ToastUtil;
-import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEditerActivity;
-import com.tencent.qcloud.xiaoshipin.videorecord.TCVideoRecordActivity;
-import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.ugc.TXRecordCommon;
-import com.tencent.ugc.TXUGCBase;
-import com.tencent.ugc.TXUGCRecord;
-import com.tencent.ugc.TXVideoEditConstants;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
+import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.RecordButton;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
-import me.goldze.mvvmhabit.utils.ConvertUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.goldze.mvvmhabit.utils.Utils;
 
 public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding, BaseViewModel> implements
         LiteAvRecode.RecodeLiteListener, IRecordMusicPannel.MusicChangeListener {
@@ -480,7 +452,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void startEditActivity() {
-        Intent intent = new Intent(getContext(), TCVideoEditerActivity.class);
+        Intent intent = new Intent(getContext(), VideoEditerActivity.class);
         intent.putExtra(UGCKitConstants.VIDEO_PATH, VideoRecordSDK.getInstance().getRecordVideoPath());
         startActivity(intent);
     }

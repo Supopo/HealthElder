@@ -351,6 +351,8 @@ public class UGCKitVideoPublish extends RelativeLayout implements View.OnClickLi
             TCUserMgr.getInstance().request("/upload_ugc", body, new TCUserMgr.HttpCallback("upload_ugc", new TCUserMgr.Callback() {
                 @Override
                 public void onSuccess(JSONObject data) {
+                    Log.e("TAG", data.toString());
+
                     /**
                      * ELK上报：发布视频到服务器
                      */

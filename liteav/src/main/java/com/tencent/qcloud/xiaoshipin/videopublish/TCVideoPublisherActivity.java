@@ -69,9 +69,17 @@ public class TCVideoPublisherActivity extends Activity {
      * 返回主界面
      */
     private void backToMainActivity() {
-        Intent intent = new Intent(TCVideoPublisherActivity.this, TCMainActivity.class);
-        startActivity(intent);
-        finish();
+        try {
+            Class mainClass = Class.forName("com.xaqinren.healthyelders.MainActivity");
+            Intent intent = new Intent(TCVideoPublisherActivity.this, mainClass);
+            startActivity(intent);
+            finish();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+//        Intent intent = new Intent(TCVideoPublisherActivity.this, MainActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 
     @Override

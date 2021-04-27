@@ -13,9 +13,11 @@ import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.liteav.demo.beauty.BeautyParams;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
+import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
@@ -48,7 +50,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
     private boolean cameraSwitch = true;        //是否前置摄像头UI判断
     private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
-    private int minRecordTime = 5 * 1000;
+    private int minRecordTime = 1 * 1000;
     private int maxRecordTime = 10 * 1000;
     private int currentAsp = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;  //屏幕比
 
@@ -84,8 +86,10 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 //                getTitleBar().setVisible(enable, ITitleBarLayout.POSITION.RIGHT);
             }
         });
+        UGCKitRecordConfig config = getRecodeConfig();
         VideoRecordSDK.getInstance().setVideoRecordListener(this);
-        VideoRecordSDK.getInstance().setConfig(getRecodeConfig());
+        VideoRecordSDK.getInstance().setConfig(config);
+        VideoRecordSDK.getInstance().updateBeautyParam(config.mBeautyParams);
     }
 
     public UGCKitRecordConfig getRecodeConfig(){
@@ -96,6 +100,10 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         config.mFrontCamera = true;
         config.mTouchFocus = true;
         config.mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;
+        config.mBeautyParams = new BeautyParams();
+        config.mBeautyParams.mBeautyStyle = 0;
+        config.mBeautyParams.mBeautyLevel = 4;
+        config.mBeautyParams.mWhiteLevel = 1;
         return config;
     }
 

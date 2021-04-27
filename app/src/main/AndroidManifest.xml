@@ -178,6 +178,8 @@
             />
         <activity android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
             android:theme="@style/EditDialogStyle"/>
+        <activity android:name=".moduleLiteav.activity.VideoEditerActivity" />
+        <activity android:name=".moduleLiteav.activity.VideoPublishActivity" />
 
     </application>
 

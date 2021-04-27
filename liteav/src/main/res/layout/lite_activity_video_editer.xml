@@ -14,6 +14,7 @@
         android:id="@+id/video_edit_layout"
         layout="@layout/ugckit_video_cutt_kit"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        />
 </RelativeLayout>

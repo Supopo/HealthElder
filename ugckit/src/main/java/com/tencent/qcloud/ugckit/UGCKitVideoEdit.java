@@ -178,7 +178,7 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
     /**
      * 显示发布对话框
      */
-    private void showPublishDialog() {
+    public void showPublishDialog() {
         ActionSheetDialog actionSheetDialog = new ActionSheetDialog(getContext());
         actionSheetDialog.builder();
         actionSheetDialog.setCancelable(false);
