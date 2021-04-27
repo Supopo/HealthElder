@@ -1,15 +1,5 @@
 <resources>
     <string name="app_name">健康长老</string>
-    <string name="login_name">账号 :</string>
-    <string name="yourPhone">您的手机号</string>
-    <string name="login_pass">密码 :</string>
-    <string name="yourPass">请输入密码</string>
-    <string name="text_upload">登录</string>
-    <string name="text_register">注册</string>
-    <string name="text_next">下一步</string>
-
-    <string name="home_menu1">AA</string>
-    <string name="home_menu2">BB</string>
-    <string name="home_menu3">CC</string>
-    <string name="home_menu4">DD</string>
+    <item name="tag_first" type="id"></item>
+    <item name="tag_second" type="id"></item>
 </resources>

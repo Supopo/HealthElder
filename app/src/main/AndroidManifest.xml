@@ -155,15 +155,29 @@
         <activity android:name=".moduleZhiBo.activity.SettingRoomPwdActivity" />
         <activity
             android:name=".moduleZhiBo.activity.StartLiveActivity"
+            android:theme="@style/AnimTheme"
          />
-        <activity android:name=".moduleZhiBo.activity.StartRenZhengActivity" />
-
-        <activity android:name=".moduleLogin.activity.PhoneLoginActivity" />
-        <activity android:name=".moduleZhiBo.activity.StartRenZheng2Activity" />
-        <activity android:name=".moduleZhiBo.activity.RenZhengSuccessActivity" />
-        <activity android:name=".moduleLiteav.activity.LiveAVActivity" />
+        <activity android:name=".moduleZhiBo.activity.StartRenZhengActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleLogin.activity.PhoneLoginActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleZhiBo.activity.StartRenZheng2Activity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleZhiBo.activity.RenZhengSuccessActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleLiteav.activity.LiveAVActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleZhiBo.activity.LiveZhuboActivity" />
-        <activity android:name=".moduleZhiBo.activity.LiveGuanzhongActivity" />
+        <activity android:name=".moduleZhiBo.activity.LiveGuanzhongActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
+            android:theme="@style/EditDialogStyle"/>
 
     </application>
 

@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tencent.imsdk.TIMSdkConfig;
 import com.tencent.imsdk.TIMUserProfile;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.liteav.basic.log.TXCLog;
@@ -2075,19 +2074,19 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         customMessage.userName = mSelfAccountInfo.userName;
         customMessage.userAvatar = mSelfAccountInfo.userAvatar;
         customMessage.userLevel = mSelfAccountInfo.userLevel;
-        if (cmd.equals(String.valueOf(TCConstants.IMCMD_SHOW_GOODS))) {
+        if (cmd.equals(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS))) {
             customMessage.cmd = "CustomProductMsg";
             customMessage.commodityInformation = new Gson().fromJson(message, GoodsBean.class);
-        } else if (cmd.equals(String.valueOf(TCConstants.IMCMD_FORBIDDER_TALK))) {
+        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_FORBIDDER_TALK))) {
             customMessage.cmd = "CustomCmdMsg";
             customMessage.reviceID = message;
-        } else if (cmd.equals(String.valueOf(TCConstants.IMCMD_CANCEL_FORBIDDER_TALK))) {
+        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_CANCEL_FORBIDDER_TALK))) {
             customMessage.cmd = "CustomCmdMsg";
             customMessage.reviceID = message;
-        } else if (cmd.equals(String.valueOf(TCConstants.IMCMD_PUT_BLACK))) {
+        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_PUT_BLACK))) {
             customMessage.cmd = "CustomCmdMsg";
             customMessage.reviceID = message;
-        } else if (cmd.equals(String.valueOf(TCConstants.IMCMD_CANCEL_PUT_BLACK))) {
+        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_CANCEL_PUT_BLACK))) {
             customMessage.cmd = "CustomCmdMsg";
             customMessage.reviceID = message;
         } else {
@@ -2119,7 +2118,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
     public void sendRoomCustomMsg(String cmd, Object message, final IMLVBLiveRoomListener.SendRoomCustomMsgCallback callback) {
 
         String content = "";
-        if (cmd.equals(String.valueOf(TCConstants.IMCMD_SENDPRESENT))) {
+        if (cmd.equals(String.valueOf(LiveConstants.IMCMD_SENDPRESENT))) {
             //礼物
             CommonJson<CustomSomeMessage<SendGiftBean>> customMessage = new CommonJson<>();
             CustomSomeMessage<SendGiftBean> cm = new CustomSomeMessage<>();
@@ -2133,7 +2132,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             cm.msg = sendGiftBean;
             content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomSomeMessage<SendGiftBean>>>() {
             }.getType());
-        } else if (cmd.equals(String.valueOf(TCConstants.IMCMD_TO_LINK))) {
+        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
             //发送去连麦的消息
             CommonJson<CustomSomeMessage<String>> customMessage = new CommonJson<>();
             CustomSomeMessage<String> cm = new CustomSomeMessage<>();
@@ -2256,7 +2255,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         String content = "";
         try {
             //例子-------
-            if (cmd.equals(String.valueOf(TCConstants.IMCMD_TO_LINK))) {
+            if (cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
                 CommonJson<CustomSomeMessage<SendUserLinkBean>> customMessage = new CommonJson<>();
                 CustomSomeMessage<SendUserLinkBean> cm = new CustomSomeMessage<>();
 
@@ -3134,10 +3133,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             userAvatar = customMessage.data.userAvatar;
         }
 
-        if (customMessage.data.cmd.equals(String.valueOf(TCConstants.IMCMD_SENDPRESENT))) {
+        if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_SENDPRESENT))) {
             ReceiveGiftsMessage gifsMessage = new Gson().fromJson(message, ReceiveGiftsMessage.class);
             callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel);
-        } else if (customMessage.data.cmd.equals(String.valueOf(TCConstants.IMCMD_TO_LINK))) {
+        } else if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
             ReceiveLinkMessage linkMessage = new Gson().fromJson(message, ReceiveLinkMessage.class);
             callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, linkMessage.data.cmd, linkMessage.data.msg, linkMessage.userLevel);
         } else {

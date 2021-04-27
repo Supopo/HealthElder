@@ -6,6 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AnimTheme" parent="QMUI.Compat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/ActivityRightEnterAnim</item>
     </style>
 
@@ -88,6 +95,28 @@
     <style name="animationRight" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/pop_right_2enter</item>
         <item name="android:windowExitAnimation">@anim/pop_right_2exit</item>
+    </style>
+
+    <!--可输入对话框的样式 -->
+    <style name="EditDialogStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        //设置背景
+        <item name="android:windowBackground">@android:color/transparent</item>
+        //键盘焦点
+        <item name="android:windowSoftInputMode">adjustResize|stateHidden</item>
+        //Dialog的windowFrame框为无
+        <item name="android:windowFrame">@null</item>
+        //是否显示标题，true则去掉默认的标题栏
+        <item name="android:windowNoTitle">true</item>
+        //是否浮现在activity之上，false的话会被软键盘覆盖
+        <item name="android:windowIsFloating">true</item>
+        //是否半透明，为false时背景为黑色不透明
+        <item name="android:windowIsTranslucent">true</item>
+        //是否有覆盖
+        <item name="android:windowContentOverlay">@null</item>
+        //背景是否模糊显示，为false时效果为全透明
+        <item name="android:backgroundDimEnabled">true</item>
+        //点击空白处时是否销毁Activity
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
 </resources>
