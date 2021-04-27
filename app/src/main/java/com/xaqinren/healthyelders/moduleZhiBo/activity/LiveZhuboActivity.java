@@ -102,7 +102,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.tvName.setText(mLiveInitInfo.nickname);
 
         //禁止带货
-        if (mLiveInitInfo.getCanSale()) {
+        if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
 
@@ -225,16 +225,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     //接受处理文字消息
-    public void toRecvTextMsg(TCUserInfo userInfo, String text) {
+    public void toRecvTextMsg(TCUserInfo userInfo, String text, int type) {
         TCChatEntity entity = new TCChatEntity();
         if (TextUtils.isEmpty(userInfo.nickname)) {
-            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid + ": ");
+            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid );
         } else {
-            entity.setSenderName(userInfo.nickname + ": ");
+            entity.setSenderName(userInfo.nickname);
 
         }
         entity.setContent(text);
-        entity.setType(LiveConstants.IMCMD_TEXT_MSG);
+        entity.setType(type);
 
         notifyMsg(entity);
     }
@@ -358,6 +358,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         });
         viewModel.startLiveInfo.observe(this, liveInitInfo -> {
             mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
+            //退掉之前的群
             if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
                 for (String groupId : liveInitInfo.groupIds) {
                     //判断下不是当前的群
@@ -405,7 +406,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     @Override
     public void onAudienceEnter(AudienceInfo audienceInfo) {
-
+        LogUtils.v(Constant.TAG_LIVE, "onAudienceEnter：来人了");
     }
 
     @Override
@@ -439,7 +440,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             return;
         }
         TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
-        toRecvTextMsg(userInfo, message);
+        toRecvTextMsg(userInfo, message, LiveConstants.IMCMD_TEXT_MSG);
     }
 
     @Override
@@ -451,10 +452,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_ENTER_LIVE:
+                LogUtils.v(Constant.TAG_LIVE, "onRecvRoomCustomMsg：来人了");
                 //用户进入房间消息
+                toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
                 break;
             case LiveConstants.IMCMD_EXIT_LIVE:
                 //用户退出房间消息
+                toRecvTextMsg(userInfo, LiveConstants.SHOW_EXIT_LIVE, type);
                 break;
             case LiveConstants.IMCMD_LIKE:
                 //展示用户点赞

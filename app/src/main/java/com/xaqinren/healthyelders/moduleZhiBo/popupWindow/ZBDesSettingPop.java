@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -46,6 +47,8 @@ public class ZBDesSettingPop extends BasePopupWindow {
         sbKQJS.setChecked(liveInitInfo.getHasIntroduce());
         btnSave.setOnClickListener(lis -> {
             liveInitInfo.liveRoomIntroduce = etContent.getText().toString().trim();
+            ToastUtil.toastShortMessage("保存成功");
+            dismiss();
         });
     }
 

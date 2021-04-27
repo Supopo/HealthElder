@@ -94,21 +94,33 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         initMsgList();
     }
 
-
     //初始化房间信息
     private void initLiveInfo() {
+
+        //退掉之前的群
+        if (mLiveInitInfo.groupIds != null && mLiveInitInfo.groupIds.length > 0) {
+            for (String groupId : mLiveInitInfo.groupIds) {
+                //判断下不是当前的群
+                if (!Constant.getRoomId(mLiveInitInfo.liveRoomCode).equals(groupId)) {
+                    //退出之前的的群
+                    mLiveRoom.exitGroup(groupId);
+                }
+
+            }
+        }
+
         Glide.with(this).load(mLiveInitInfo.avatarUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.rivPhoto);
         binding.tvName.setText(mLiveInitInfo.nickname);
         //禁止送礼
-        if (mLiveInitInfo.getCanGift()) {
+        if (!mLiveInitInfo.getCanGift()) {
             binding.btnGift.setVisibility(View.GONE);
         }
         //禁止连麦
-        if (mLiveInitInfo.getCanMic()) {
+        if (!mLiveInitInfo.getCanMic()) {
             binding.btnLianmai.setVisibility(View.GONE);
         }
         //禁止带货
-        if (mLiveInitInfo.getCanSale()) {
+        if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
     }
@@ -150,10 +162,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             public void onSuccess() {
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间成功");
                 //群发进入直播间的消息
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ENTER_LIVE), "", null);
+                isPlaying = true;
             }
         });
 
     }
+
+    private boolean isPlaying;
 
     private void stopPlay() {
         mLiveRoom.exitRoom(new ExitRoomCallback() {
@@ -161,8 +177,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             public void onSuccess() {
                 Log.v(Constant.TAG_LIVE, "直播间退出成功");
                 //群发退出直播间的消息
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
                 //去通知服务器离开直播间
+
                 mLiveRoom.setListener(null);
+                isPlaying = false;
                 finish();
             }
 
@@ -229,16 +248,16 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     //接受处理文字消息
-    public void toRecvTextMsg(TCUserInfo userInfo, String text) {
+    public void toRecvTextMsg(TCUserInfo userInfo, String text, int type) {
         TCChatEntity entity = new TCChatEntity();
         if (TextUtils.isEmpty(userInfo.nickname)) {
-            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid + ": ");
+            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid);
         } else {
-            entity.setSenderName(userInfo.nickname + ": ");
+            entity.setSenderName(userInfo.nickname);
 
         }
         entity.setContent(text);
-        entity.setType(LiveConstants.IMCMD_TEXT_MSG);
+        entity.setType(type);
 
         notifyMsg(entity);
     }
@@ -272,6 +291,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             binding.tcHeartLayout.addFavor();
         }
     }
+
     //点赞操作
     private void toDianZan() {
         //点赞发送请求限制
@@ -393,12 +413,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onAudienceEnter(AudienceInfo audienceInfo) {
-
+        //暂时没用
     }
 
     @Override
     public void onAudienceExit(AudienceInfo audienceInfo) {
-
+        //暂时没用
     }
 
     @Override
@@ -427,7 +447,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             return;
         }
         TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
-        toRecvTextMsg(userInfo, message);
+        toRecvTextMsg(userInfo, message, LiveConstants.IMCMD_TEXT_MSG);
     }
 
 
@@ -438,9 +458,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         switch (type) {
             case LiveConstants.IMCMD_ENTER_LIVE:
                 //用户进入房间消息
+                toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
                 break;
             case LiveConstants.IMCMD_EXIT_LIVE:
                 //用户退出房间消息
+                toRecvTextMsg(userInfo, LiveConstants.SHOW_EXIT_LIVE, type);
                 break;
             case LiveConstants.IMCMD_LIKE:
                 //用户点赞消息
@@ -456,10 +478,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         disposable.dispose();
+        if (isPlaying) {
+            stopPlay();
+        }
     }
 
     @Override
@@ -472,8 +498,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 startActivity(ZBEditTextDialogActivity.class);
                 break;
             case R.id.btn_zan:
-                //点赞展示
-                showDianZan();
+                toDianZan();
                 break;
             default:
                 break;

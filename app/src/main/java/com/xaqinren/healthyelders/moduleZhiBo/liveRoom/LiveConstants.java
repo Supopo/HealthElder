@@ -7,6 +7,8 @@ package com.xaqinren.healthyelders.moduleZhiBo.liveRoom;
  */
 public class LiveConstants {
     public static final String NIKENAME = "用户";
+    public static final String SHOW_ENTER_LIVE = "进入了直播间";
+    public static final String SHOW_EXIT_LIVE = "退出了直播间";
     public static final int DISMISS_ET = 1002;
     public static final int SHOW_ET = 1001;
     public static final int SEND_MSG = 10011;
@@ -48,5 +50,6 @@ public class LiveConstants {
     public static final int IMCMD_RESH_HOME_INFO = 25;   //通知观众们刷新信息
     public static final int IMCMD_MORE_ANCHOR_JY = 26;   //多人连麦-静音
     public static final int IMCMD_MORE_ANCHOR_QXJY = 27;   //多人连麦-取消静音
+    public static final int IMCMD_ZB_COMEBACK = 28;   //主播断开重新回来了 通知大家重新拉一下流
 }
 
