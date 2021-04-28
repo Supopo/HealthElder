@@ -9,6 +9,7 @@ public class LiveConstants {
     public static final String NIKENAME = "用户";
     public static final String SHOW_ENTER_LIVE = "进入了直播间";
     public static final String SHOW_EXIT_LIVE = "退出了直播间";
+    public static final String SHOW_FOLLOW = "关注了主播";
     public static final int DISMISS_ET = 1002;
     public static final int SHOW_ET = 1001;
     public static final int SEND_MSG = 10011;

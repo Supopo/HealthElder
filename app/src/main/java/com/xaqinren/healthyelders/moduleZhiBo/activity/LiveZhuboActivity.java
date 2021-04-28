@@ -490,7 +490,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_ENTER_LIVE:
-                LogUtils.v(Constant.TAG_LIVE, "onRecvRoomCustomMsg：来人了");
                 //用户进入房间消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
                 break;
@@ -501,6 +500,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_LIKE:
                 //展示用户点赞
                 showDianZan();
+                break;
+            case LiveConstants.IMCMD_FOLLOW:
+                //展示关注消息
+                toRecvTextMsg(userInfo,LiveConstants.SHOW_FOLLOW, type);
                 break;
             default:
                 break;

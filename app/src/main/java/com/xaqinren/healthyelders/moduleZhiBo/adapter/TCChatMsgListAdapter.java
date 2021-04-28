@@ -148,7 +148,6 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         //            playViewAnimator(convertView, position, item);
         //        }
 
-        spanString = new SpannableString(item.getSenderName() + item.getContent());
         // 判断是否展示文本  展示文本设置展示文本的颜色 提示语 消息文本要设置名字颜色
         if (item.getType() == LiveConstants.TYPE_SHOW) {
             //展示消息

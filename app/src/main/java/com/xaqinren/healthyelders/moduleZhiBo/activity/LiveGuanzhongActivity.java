@@ -17,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
@@ -226,6 +227,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         binding.btnBack.setOnClickListener(this);
         binding.tvMsg.setOnClickListener(this);
         binding.btnZan.setOnClickListener(this);
+        binding.tvFollow.setOnClickListener(this);
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
                 toSendTextMsg(eventBean.content);
@@ -236,12 +238,16 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     //发送文字消息
     private void toSendTextMsg(String msg) {
-        TCChatEntity entity = new TCChatEntity();
-        entity.setSenderName("我 : ");
-        entity.setContent(msg);
-        entity.setType(LiveConstants.IMCMD_TEXT_MSG);
-        notifyMsg(entity);
+        addMsg2List("我 ", msg, LiveConstants.IMCMD_TEXT_MSG);
         mLiveRoom.sendRoomTextMsg(msg, null);
+    }
+
+    private void addMsg2List(String sendName, String msg, int type) {
+        TCChatEntity entity = new TCChatEntity();
+        entity.setSenderName(sendName);
+        entity.setContent(msg);
+        entity.setType(type);
+        notifyMsg(entity);
     }
 
     //接受处理文字消息
@@ -480,6 +486,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //主播暂时离开直播间的消息
                 //展示主播离开的背景
                 break;
+            case LiveConstants.IMCMD_FOLLOW:
+                //展示关注消息
+                toRecvTextMsg(userInfo, LiveConstants.SHOW_FOLLOW, type);
+                break;
             default:
                 break;
         }
@@ -511,6 +521,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 break;
             case R.id.btn_zan:
                 toDianZan();
+                break;
+            case R.id.tv_follow:
+                //关注主播
+                //通知服务器-成功
+                binding.tvFollow.setText("已关注");
+                //群发关注消息
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_FOLLOW), "", null);
+                addMsg2List(UserInfoMgr.getInstance().getUserInfo().getNickname(), LiveConstants.SHOW_FOLLOW, LiveConstants.IMCMD_FOLLOW);
                 break;
             default:
                 break;
