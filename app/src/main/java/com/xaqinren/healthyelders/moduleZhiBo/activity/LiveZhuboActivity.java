@@ -13,6 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tencent.liteav.demo.beauty.BeautyParams;
@@ -22,6 +24,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
@@ -35,6 +38,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -58,6 +62,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private TCFrequeControl mLikeFrequeControl;    //点赞频率控制
     private int mZanNum;    //本次点赞数量
+    private TopUserHeadAdapter topHeadAdapter;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -88,7 +93,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         setStatusBarTransparent();
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
-        showDialog("开启直播间...");
+        showDialog();
         //后期判断是否登录，如果已经则登录注入用户信息一定要注入的
         viewModel.toLoginRoom(mLiveRoom);
         initEvent();
@@ -107,7 +112,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
-
+        topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
+        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvAvatar.setAdapter(topHeadAdapter);
     }
 
     //初始化聊天列表
@@ -277,26 +284,44 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //点赞请求限制
         if (mLikeFrequeControl == null) {
             mLikeFrequeControl = new TCFrequeControl();
-            mLikeFrequeControl.init(2, 1);
+            mLikeFrequeControl.init(Constant.MAX_DIAN_ZAN, 1);
         }
         if (mLikeFrequeControl.canTrigger()) {
             binding.tcHeartLayout.addFavor();
         }
     }
 
+    private boolean isDianZaning;//表示正在点赞请求操作 2S保护
     //点赞操作
     private void toDianZan() {
+
         //点赞发送请求限制
         if (mLikeFrequeControl == null) {
             mLikeFrequeControl = new TCFrequeControl();
-            mLikeFrequeControl.init(2, 1);
+            mLikeFrequeControl.init(Constant.MAX_DIAN_ZAN, 1);
         }
         if (mLikeFrequeControl.canTrigger()) {
+            mZanNum++;
             binding.tcHeartLayout.addFavor();
             //向直播间发送点赞消息
             mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_LIKE), "", null);
         }
-        //统计2S内的点赞次数 统一向服务器发送
+        if (!isDianZaning) {
+            //统计2S内的点赞次数 统一向服务器发送
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //向服务器发送
+                    if (mZanNum == 0) {
+                        return;
+                    }
+                    viewModel.toZanLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(mZanNum));
+                    mZanNum = 0;
+                    isDianZaning = false;
+                }
+            }, 2000);
+        }
+        isDianZaning = true;
 
     }
 
@@ -363,54 +388,17 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         toDianZan();
     }
 
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-        viewModel.loginRoomSuccess.observe(this, isSuccess -> {
-            //开启推流
-            startPublish();
-        });
-        viewModel.dismissDialog.observe(this, dismiss -> {
-            if (dismiss != null) {
-                if (dismiss) {
-                    dismissDialog();
-                }
-            }
-        });
-        //开启直播-继续直播通知服务器回调
-        viewModel.startLiveInfo.observe(this, liveInitInfo -> {
-            if (liveInitInfo != null) {
-                if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
-                    //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
-                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
-                }
 
-                mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
-                //退掉之前的群
-                if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
-                    for (String groupId : liveInitInfo.groupIds) {
-                        //判断下不是当前的群
-                        if (!Constant.getRoomId(mLiveInitInfo.liveRoomCode).equals(groupId)) {
-                            //退出之前的的群
-                            mLiveRoom.exitGroup(groupId);
-                        }
+    private long lastRushTime;//上次刷新接口2S内不再刷新
 
-                    }
-                }
-            }
-        });
-
-        //关闭直播-通知服务器回调-跳转直播结算页面
-        viewModel.exitSuccess.observe(this, exitSuccess -> {
-            if (exitSuccess != null) {
-                if (exitSuccess) {
-                    startActivity(ZhiboOverActivity.class);
-                    finish();
-                }
-            }
-        });
+    private void toRushLiveInfo() {
+        long secondTime = System.currentTimeMillis();
+        if (secondTime - lastRushTime < Constant.TIME_RUSH_LIVEINFO) {
+            return;
+        }
+        viewModel.rushLiveInfo(mLiveInitInfo.liveRoomRecordId);
+        lastRushTime = secondTime;
     }
-
 
     @Override
     public void onError(int errCode, String errMsg, Bundle extraInfo) {
@@ -492,6 +480,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_ENTER_LIVE:
                 //用户进入房间消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
+                //调用刷新接口
+                toRushLiveInfo();
                 break;
             case LiveConstants.IMCMD_EXIT_LIVE:
                 //用户退出房间消息
@@ -500,15 +490,23 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_LIKE:
                 //展示用户点赞
                 showDianZan();
+                //延迟3S再去刷新，用户端是延迟2S刷新的
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toRushLiveInfo();
+                    }
+                }, Constant.TIME_DIAN_ZAN_WAIT + 1000);
                 break;
             case LiveConstants.IMCMD_FOLLOW:
                 //展示关注消息
-                toRecvTextMsg(userInfo,LiveConstants.SHOW_FOLLOW, type);
+                toRecvTextMsg(userInfo, LiveConstants.SHOW_FOLLOW, type);
                 break;
             default:
                 break;
         }
     }
+
 
     @Override
     public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
@@ -534,5 +532,76 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 startActivity(ZBEditTextDialogActivity.class);
                 break;
         }
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.loginRoomSuccess.observe(this, isSuccess -> {
+            //开启推流
+            startPublish();
+        });
+        viewModel.dismissDialog.observe(this, dismiss -> {
+            if (dismiss != null) {
+                if (dismiss) {
+                    dismissDialog();
+                }
+            }
+        });
+        //开启直播-继续直播通知服务器回调
+        viewModel.startLiveInfo.observe(this, liveInitInfo -> {
+            if (liveInitInfo != null) {
+                if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
+                    //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
+                }
+
+                mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
+                //退掉之前的群
+                if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
+                    for (String groupId : liveInitInfo.groupIds) {
+                        //判断下不是当前的群
+                        if (!Constant.getRoomId(mLiveInitInfo.liveRoomCode).equals(groupId)) {
+                            //退出之前的的群
+                            mLiveRoom.exitGroup(groupId);
+                        }
+
+                    }
+                }
+            }
+        });
+
+        //关闭直播-通知服务器回调-跳转直播结算页面
+        viewModel.exitSuccess.observe(this, exitSuccess -> {
+            if (exitSuccess != null) {
+                if (exitSuccess) {
+                    startActivity(ZhiboOverActivity.class);
+                    finish();
+                }
+            }
+        });
+
+        //更新点赞数和直播间人数
+        viewModel.liveHeaderInfo.observe(this, liveHeaderInfo -> {
+            if (liveHeaderInfo != null) {
+                //更新点赞人数
+                binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
+                //更新榜单头像
+                if (liveHeaderInfo.liveRoomUsers != null) {
+                    Collections.reverse(liveHeaderInfo.liveRoomUsers);
+                    topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);
+                }
+                //更新总人数
+                binding.tvMembersNum.setText(liveHeaderInfo.totalPeopleNum);
+            }
+        });
+
+        viewModel.zanSuccess.observe(this, zanSuccess -> {
+            if (zanSuccess != null) {
+                if (zanSuccess) {
+                    toRushLiveInfo();
+                }
+            }
+        });
     }
 }

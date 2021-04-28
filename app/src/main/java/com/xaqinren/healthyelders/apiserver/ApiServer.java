@@ -4,6 +4,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
 import java.util.List;
@@ -106,4 +107,14 @@ public interface ApiServer {
     //上传文件
     @POST("merchant/fileUpload")
     Observable<MBaseResponse<String>> uploadFile(@Header("Authorization") String token, @Body RequestBody requestBody);
+
+    //直播间信息刷新接口-点赞数-观众数-榜单
+    @GET("live/findLiveRoomRefreshParams")
+    Observable<MBaseResponse<LiveHeaderInfo>> refreshLiveRoomInfo(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //直播间点赞
+    @Headers({"content-type:application/json"})
+    @POST("live/live/zan")
+    Observable<MBaseResponse<Object>> toZanLive(@Header("Authorization") String authorization,
+                                                 @Body RequestBody body);
 }

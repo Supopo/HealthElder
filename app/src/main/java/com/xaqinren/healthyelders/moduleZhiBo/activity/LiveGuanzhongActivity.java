@@ -12,6 +12,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xaqinren.healthyelders.BR;
@@ -21,6 +23,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
@@ -34,6 +37,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -57,6 +61,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private TCFrequeControl mLikeFrequeControl;    //点赞频率控制
     private int mZanNum;    //本次点赞数量
+    private TopUserHeadAdapter topHeadAdapter;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -123,6 +128,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
+
+        topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
+        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvAvatar.setAdapter(topHeadAdapter);
     }
 
     //初始化聊天列表
@@ -288,26 +297,43 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         //点赞请求限制
         if (mLikeFrequeControl == null) {
             mLikeFrequeControl = new TCFrequeControl();
-            mLikeFrequeControl.init(2, 1);
+            mLikeFrequeControl.init(Constant.MAX_DIAN_ZAN, 1);
         }
         if (mLikeFrequeControl.canTrigger()) {
             binding.tcHeartLayout.addFavor();
         }
     }
 
+    private boolean isDianZaning;//表示正在点赞请求操作 2S保护
     //点赞操作
     private void toDianZan() {
         //点赞发送请求限制
         if (mLikeFrequeControl == null) {
             mLikeFrequeControl = new TCFrequeControl();
-            mLikeFrequeControl.init(2, 1);
+            mLikeFrequeControl.init(Constant.MAX_DIAN_ZAN, 1);
         }
         if (mLikeFrequeControl.canTrigger()) {
+            mZanNum++;
             binding.tcHeartLayout.addFavor();
             //向直播间发送点赞消息
             mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_LIKE), "", null);
         }
-        //统计2S内的点赞次数 统一向服务器发送
+        if (!isDianZaning) {
+            //统计2S内的点赞次数 统一向服务器发送
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //向服务器发送
+                    if (mZanNum == 0) {
+                        return;
+                    }
+                    viewModel.toZanLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(mZanNum));
+                    mZanNum = 0;
+                    isDianZaning = false;
+                }
+            }, Constant.TIME_DIAN_ZAN_WAIT);
+        }
+        isDianZaning = true;
 
     }
 
@@ -374,15 +400,17 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         toDianZan();
     }
 
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-        viewModel.loginRoomSuccess.observe(this, loginSuccess -> {
-            if (loginSuccess) {
-                startPlay();
-            }
-        });
+    private long lastRushTime;//上次刷新接口2S内不再刷新
+
+    private void toRushLiveInfo() {
+        long secondTime = System.currentTimeMillis();
+        if (secondTime - lastRushTime < Constant.TIME_RUSH_LIVEINFO) {
+            return;
+        }
+        viewModel.rushLiveInfo(mLiveInitInfo.liveRoomRecordId);
+        lastRushTime = secondTime;
     }
+
 
     @Override
     public void onError(int errCode, String errMsg, Bundle extraInfo) {
@@ -476,6 +504,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             case LiveConstants.IMCMD_LIKE:
                 //用户点赞消息
                 showDianZan();
+                //延迟3S再去刷新，用户端是延迟2S刷新的
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toRushLiveInfo();
+                    }
+                }, Constant.TIME_DIAN_ZAN_WAIT + 1000);
                 break;
             case LiveConstants.IMCMD_ZB_COMEBACK:
                 //收到主播继续直播的消息
@@ -533,5 +568,37 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             default:
                 break;
         }
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.loginRoomSuccess.observe(this, loginSuccess -> {
+            if (loginSuccess) {
+                startPlay();
+                toRushLiveInfo();
+            }
+        });
+        //更新点赞数和直播间人数
+        viewModel.liveHeaderInfo.observe(this, liveHeaderInfo -> {
+            if (liveHeaderInfo != null) {
+                //更新点赞人数
+                binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
+                //更新榜单头像
+                if (liveHeaderInfo.liveRoomUsers != null) {
+                    Collections.reverse(liveHeaderInfo.liveRoomUsers);
+                    topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);
+                }
+                //更新总人数
+                binding.tvMembersNum.setText(liveHeaderInfo.totalPeopleNum);
+            }
+        });
+        viewModel.zanSuccess.observe(this, zanSuccess -> {
+            if (zanSuccess != null) {
+                if (zanSuccess) {
+                    toRushLiveInfo();
+                }
+            }
+        });
     }
 }

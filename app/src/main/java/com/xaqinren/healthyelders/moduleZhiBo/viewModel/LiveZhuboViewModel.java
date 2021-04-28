@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
@@ -29,7 +30,9 @@ public class LiveZhuboViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> exitSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> zanSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> startLiveInfo = new MutableLiveData<>();
+    public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         LoginInfo loginInfo = new LoginInfo();
@@ -66,5 +69,15 @@ public class LiveZhuboViewModel extends BaseViewModel {
     //结束直播
     public void closeLive(String liveRoomRecordId) {
         LiveRepository.getInstance().overLive(dismissDialog, exitSuccess, liveRoomRecordId);
+    }
+
+    //刷新直播间顶部信息
+    public void rushLiveInfo(String liveRoomRecordId) {
+        LiveRepository.getInstance().rushLiveInfo(dismissDialog, liveHeaderInfo, liveRoomRecordId);
+    }
+
+    //直播间点赞
+    public void toZanLive(String liveRoomRecordId, String count) {
+        LiveRepository.getInstance().toZanLive(dismissDialog, zanSuccess, liveRoomRecordId, count);
     }
 }

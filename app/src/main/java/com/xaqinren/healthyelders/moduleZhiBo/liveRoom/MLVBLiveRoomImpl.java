@@ -2208,8 +2208,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             if (zbUserListBean.nickname != null) {
                 userResponse.userName = zbUserListBean.nickname;
             }
-            if (zbUserListBean.headPortrait != null) {
-                userResponse.userHeadImageUrl = zbUserListBean.headPortrait;
+            if (zbUserListBean.avatarUrl != null) {
+                userResponse.userHeadImageUrl = zbUserListBean.avatarUrl;
             }
 
             //上麦者的座位号
@@ -2223,7 +2223,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             cm.msg = msg;
             customMessage.data = cm;
             customMessage.userName = zbUserListBean.nickname;
-            customMessage.userAvatar = zbUserListBean.headPortrait;
+            customMessage.userAvatar = zbUserListBean.avatarUrl;
             customMessage.userLevel = zbUserListBean.userId.toString();
             customMessage.cmd = "CustomCmdMsg";
 
@@ -2330,8 +2330,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 if (zbUserListBean.nickname != null) {
                     userResponse.userName = zbUserListBean.nickname;
                 }
-                if (zbUserListBean.headPortrait != null) {
-                    userResponse.userHeadImageUrl = zbUserListBean.headPortrait;
+                if (zbUserListBean.avatarUrl != null) {
+                    userResponse.userHeadImageUrl = zbUserListBean.avatarUrl;
                 }
 
                 cm.msg = userResponse;

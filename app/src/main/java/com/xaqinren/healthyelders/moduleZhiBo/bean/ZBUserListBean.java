@@ -4,17 +4,25 @@ package com.xaqinren.healthyelders.moduleZhiBo.bean;
  * 主播用户列表
  */
 public class ZBUserListBean {
-    public Integer id;//: Long?,
-    public Integer liveHomeId;//: Long?,
-    public Integer sceneId;//: Long?,
-    public Integer userId;//: Long?,
-    public String nickname;//: String?,
-    public Integer sex;//: Int?,
-    public String headPortrait;//: String?,
-    public Integer isSpeech;//: Int?, //1没禁言 2 是
-    public String joinTime;//: String?,
-    public Integer del;//: Int?
-    public int showTime;//:
-    public boolean isSelect;//:
-    public int linkPosition;//:
+    public String id;
+    public Object createdAt;
+    public String merchantId;
+    public String liveRoomId;
+    public String liveRecordId;
+    public String userId;
+    public String nickname;
+    public String avatarUrl;
+    public int sortOrder;
+    public boolean hasSpeech;
+    public boolean hasAway;
+    public String identity;
+    public boolean hasMic;
+    public boolean hasProsody;
+    public String sex;//"MALE",
+    public String leaveTime;//"MALE",
+    public String identityName;//"陌生人"
+
+
+    public int linkPosition;
+
 }

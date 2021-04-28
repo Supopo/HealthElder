@@ -45,6 +45,7 @@
                 android:layout_alignParentRight="true" />
             <!-- 主播信息-->
             <RelativeLayout
+                android:id="@+id/rl_zbInfo"
                 android:layout_width="@dimen/dp_153"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -96,7 +97,6 @@
                     android:layout_toLeftOf="@id/tv_follow"
                     android:layout_toRightOf="@id/iv_zan"
                     android:singleLine="true"
-                    android:text="1000.91万"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_10" />
 
@@ -113,6 +113,43 @@
                     android:textSize="@dimen/sp_12" />
 
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_toRightOf="@id/rl_zbInfo">
+
+                <!--        榜单头像展示-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_avatar"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/tv_members_num"
+                    android:overScrollMode="never"
+                    android:visibility="visible" />
+
+                <!--        观众人数显示-->
+                <TextView
+                    android:id="@+id/tv_members_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/bg_zhibo_people_num"
+                    android:gravity="center"
+                    android:minWidth="@dimen/dp_32"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_4"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
 
             <!-- 消息列表-->
             <ListView
