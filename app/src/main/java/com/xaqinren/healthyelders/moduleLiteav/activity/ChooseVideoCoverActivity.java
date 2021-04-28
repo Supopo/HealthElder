@@ -1,6 +1,9 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.tv.TvView;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -8,9 +11,11 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.nostra13.dcloudimageloader.utils.L;
+import com.tencent.qcloud.tim.uikit.utils.ImageUtil;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
+import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.tencent.qcloud.xiaoshipin.play.TCVideoPreviewActivity;
 import com.tencent.ugc.TXVideoEditConstants;
 import com.tencent.ugc.TXVideoEditer;
@@ -22,10 +27,13 @@ import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseVideoCoverViewMod
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.VideoPublishCoverLayout;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.ImageUtils;
 
 public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCoverBinding, ChooseVideoCoverViewModel> implements VideoPublishCoverLayout.OnCoverChangeListener {
     private String mVideoPath = null;
@@ -33,6 +41,7 @@ public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCo
     int thumbnailCount = 10;  //可以根据视频时长生成缩略图个数
     private List<Bitmap> bitmaps = new ArrayList<>();
     private List<Long> timeMsList = new ArrayList<>();
+
 
     private TXVideoEditer.TXThumbnailListener mThumbnailListener = new TXVideoEditer.TXThumbnailListener() {
         @Override
@@ -82,6 +91,7 @@ public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCo
         binding.cancel.setOnClickListener(view -> finish());
         binding.save.setOnClickListener(view -> {
             //选择成功
+            saveBitmapCover();
         });
 
         showEditer();
@@ -123,24 +133,41 @@ public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCo
         thumbnail.width = 100;   // 输出缩略图宽
         thumbnail.height = 100;  // 输出缩略图高
         txVideoEditer.setThumbnail(thumbnail);
-
-//        TXVideoEditConstants.TXPreviewParam previewParam = new TXVideoEditConstants.TXPreviewParam();
-//        previewParam.videoView = binding.coverView;
-        //public final static int PREVIEW_RENDER_MODE_FILL_SCREEN = 1;   // 填充模式，尽可能充满屏幕不留黑边，所以可能会裁剪掉一部分画面
-        //public final static int PREVIEW_RENDER_MODE_FILL_EDGE = 2;        // 适应模式，尽可能保持画面完整，但当宽高比不合适时会有黑边出现
-//        previewParam.renderMode = 1;
-//        txVideoEditer.initWithPreview(previewParam);
         txVideoEditer.processVideo();
 
     }
 
+    private void saveBitmapCover(){
+        new Thread(() -> {
+            binding.coverView.setDrawingCacheEnabled(true);
+            binding.coverView.buildDrawingCache();
+            Bitmap bitmap = binding.coverView.getDrawingCache();
+            try {
+                String name = "cover" + System.currentTimeMillis() + ".png";
+                ImageUtils.saveImage(this, name, bitmap);
+                String path = getFilesDir() + File.separator + name;
+                LogUtils.i("CoverPath", path);
+                runOnUiThread(()->{
+                    Intent intent = new Intent();
+                    intent.putExtra("path", path);
+                    setResult(Activity.RESULT_OK,intent);
+                    finish();
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void addCoverToLayout() {
         runOnUiThread(()->{
+            TXVideoEditConstants.TXVideoInfo info = TXVideoInfoReader.getInstance(UGCKit.getAppContext()).getVideoFileInfo(mVideoPath);
             binding.coverListView.setOnCoverChangeListener(this);
             binding.coverListView.setMaxSize(thumbnailCount);
             binding.coverListView.setData(bitmaps);
             binding.coverListView.setLiftRightMarginDp((int) getResources().getDimension(R.dimen.dp_19));
             binding.coverListView.layout();
+            onChange(0);
         });
     }
 

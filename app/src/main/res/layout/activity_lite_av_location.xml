@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseLocationViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/search_view"
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="@dimen/dp_40"
+            android:background="@drawable/bg_search_edit"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_38"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/color_252525"
+            android:textColorHint="@color/gray_999"
+            android:singleLine="true"
+            android:paddingRight="@dimen/dp_16"
+            android:imeOptions="actionSearch"
+            android:hint="搜索位置"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:src="@mipmap/icon_search_weiz"
+            android:layout_alignTop="@id/search_view"
+            android:layout_alignBottom="@id/search_view"
+            android:layout_alignLeft="@id/search_view"
+            android:layout_marginLeft="@dimen/dp_13"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/search_view"
+            android:layout_alignBottom="@id/search_view"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="搜索"
+            android:gravity="center"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/color_F81E4D"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/location_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/search_view"
+            android:layout_marginTop="@dimen/dp_12"/>
+    </RelativeLayout>
+</layout>

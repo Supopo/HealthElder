@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleLiteav.bean.SelLocationBean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/des_name_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="@color/color_252525"
+            android:textSize="@dimen/sp_16"
+            android:text="@{viewModel.desName}"
+            />
+        <TextView
+            android:id="@+id/address_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_9"
+            android:layout_below="@id/des_name_view"
+            android:textColor="@color/gray_999"
+            android:textSize="@dimen/sp_14"
+            android:text="@{viewModel.address}"
+            />
+
+        <TextView
+            android:id="@+id/distance_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@id/des_name_view"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/gray_999"
+            android:textSize="@dimen/sp_13"
+            android:text="@{viewModel.distance}"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@id/address_view"
+            android:layout_marginTop="@dimen/dp_18"
+            android:background="@color/color_EAEA"/>
+    </RelativeLayout>
+</layout>

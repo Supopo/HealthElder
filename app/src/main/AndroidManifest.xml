@@ -186,6 +186,7 @@
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
             android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleLiteav.activity.ChooseLocationActivity" />
     </application>
 
 </manifest>

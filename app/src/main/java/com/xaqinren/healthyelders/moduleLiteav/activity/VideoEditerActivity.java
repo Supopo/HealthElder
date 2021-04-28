@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -15,8 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.tencent.bugly.proguard.A;
 import com.tencent.qcloud.tim.uikit.utils.PopWindowUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
@@ -30,15 +34,13 @@ import com.tencent.qcloud.ugckit.module.editer.IVideoEditKit;
 import com.tencent.qcloud.ugckit.module.editer.UGCKitEditConfig;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
-import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEffectActivity;
-import com.tencent.qcloud.xiaoshipin.videopublish.TCVideoPublisherActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoEditerBinding;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoEditerViewModel;
-import com.xaqinren.healthyelders.widget.BottomDialog;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -69,6 +71,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     private IVideoEditKit.OnEditListener mOnVideoEditListener = new IVideoEditKit.OnEditListener() {
         @Override
         public void onEditCompleted(UGCKitResult ugcKitResult) {
+            LogUtils.e(TAG, "onEditCompleted");
             if (ugcKitResult.errorCode == 0) {
                 startPreviewActivity(ugcKitResult);
             } else {
@@ -170,6 +173,16 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onRestart() {
         super.onRestart();
+        UGCKitEditConfig config = new UGCKitEditConfig();
+        config.isPublish = true;
+        mUGCKitVideoEdit.setConfig(config);
+        mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
+        if (!TextUtils.isEmpty(mVideoPath)) {
+            mUGCKitVideoEdit.setVideoPath(mVideoPath);
+        }
+        mUGCKitVideoEdit.initPlayer();
+        mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
+        mUGCKitVideoEdit.start();
     }
 
     @Override
@@ -197,7 +210,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             startActivity(intent);
             finish();
         }
-        startActivity(intent);
     }
 
     @Override
@@ -255,4 +267,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         intent.putExtra(UGCKitConstants.KEY_FRAGMENT, effectType);
         startActivityForResult(intent, UGCKitConstants.ACTIVITY_OTHER_REQUEST_CODE);
     }
+
+
 }
