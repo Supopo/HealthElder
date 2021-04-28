@@ -61,6 +61,11 @@ public class LiveInitInfo implements Serializable {
 
     //开启直播间外面设置的一些参数
     public boolean isMirror;//是否开启观众端镜像 需要推流成功后设置才有效果
+    public int beautyStyle;//美颜类型
+    public int beautyLevel;//美颜等级
+    public int whitenessLevel;//美白等级
+    public int ruddinessLevel;//红润等级
+
 
     public void setHasNotice(Boolean hasNotice) {
         this.hasNotice = hasNotice;

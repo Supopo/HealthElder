@@ -3,7 +3,6 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 

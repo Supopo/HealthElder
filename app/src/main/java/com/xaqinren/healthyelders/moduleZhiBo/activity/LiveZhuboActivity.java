@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.tencent.liteav.demo.beauty.BeautyParams;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -132,8 +133,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private void startPublish() {
         mLiveRoom.setListener(this);
         //启动本地预览
-        //打开本地预览
         mLiveRoom.startLocalPreview(true, binding.mTxVideoView);
+
+        //美颜参数-开启本地预览之后再设置
+        mLiveRoom.getBeautyManager().setBeautyStyle(mLiveInitInfo.beautyStyle);
+        mLiveRoom.getBeautyManager().setBeautyLevel(mLiveInitInfo.beautyLevel);
+        mLiveRoom.getBeautyManager().setWhitenessLevel(mLiveInitInfo.whitenessLevel);
+        mLiveRoom.getBeautyManager().setRuddyLevel(mLiveInitInfo.ruddinessLevel);
+
         //创建直播间
         mLiveRoom.createRoom(Constant.getRoomId(mLiveInitInfo.liveRoomCode), "", new IMLVBLiveRoomListener.CreateRoomCallback() {
             @Override
@@ -393,10 +400,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             }
         });
 
-        //关闭直播-通知服务器回调
+        //关闭直播-通知服务器回调-跳转直播结算页面
         viewModel.exitSuccess.observe(this, exitSuccess -> {
             if (exitSuccess != null) {
                 if (exitSuccess) {
+                    startActivity(ZhiboOverActivity.class);
                     finish();
                 }
             }

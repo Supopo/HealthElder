@@ -27,7 +27,7 @@ public class LiveConstants {
     public static final int IMCMD_ENTER_LIVE = 2;   // 用户加入直播
     public static final int IMCMD_EXIT_LIVE = 3;   // 用户退出直播
     public static final int IMCMD_GIFT = 4;   // 礼物消息
-    public static final int IMCMD_FOLLOW = 5;   // 用户关注
+    public static final int IMCMD_FOLLOW = 5;   // 用户关注主播
     public static final int IMCMD_SHOW_GOODS = 6;   // 商品讲解
     public static final int IMCMD_SHOW_GOODS_CANCEL = 7;   // 取消讲解
     public static final int IMCMD_FORBIDDER_TALK = 8;   // 禁言

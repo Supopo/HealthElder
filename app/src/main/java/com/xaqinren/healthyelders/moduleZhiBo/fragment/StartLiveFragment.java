@@ -255,6 +255,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     }
 
     private void startLiveZhuboActivity() {
+        //设置美颜的参数传进去
+        mLiveInitInfo.beautyStyle = mBeautyStyle;
+        mLiveInitInfo.beautyLevel = mBeautyLevel;
+        mLiveInitInfo.whitenessLevel = mWhitenessLevel;
+        mLiveInitInfo.ruddinessLevel = mRuddinessLevel;
+
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
         startActivity(LiveZhuboActivity.class, bundle);
@@ -306,7 +312,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                Log.e("--", "点击了：" + menus.get(position).menuName);
+                LogUtils.v("--", "点击了：" + menus.get(position).menuName);
             }
         });
         listBottomPopup.showPopupWindow();
@@ -336,22 +342,31 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
             @Override
             public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
+                if (itemPosition < 3) {
+                    mBeautyStyle = itemPosition;
+                }
                 return false;
             }
 
             @Override
             public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
+                if (itemPosition < 3) {
+                    mBeautyStyle = itemPosition;
+                    mBeautyLevel = beautyLevel;
+                } else if (itemPosition == 3) {
+                    mWhitenessLevel = beautyLevel;
+                } else {
+                    mRuddinessLevel = beautyLevel;
+                }
                 return false;
             }
         });
-        mMeiYanPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
-            @Override
-            public void onBottomItemClick(BottomDialog dialog, View view) {
-
-            }
-        });
-
     }
+
+    private int mBeautyStyle = 2;//美颜风格，三种美颜风格 默认第三种
+    private int mBeautyLevel = 4;//美颜级别，取值范围 0 - 9
+    private int mWhitenessLevel = 1;//美白级别，取值范围
+    private int mRuddinessLevel;//红润级别，取值范围
 
     //滤镜设置弹窗
     private void showLJPop() {
@@ -390,12 +405,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             @Override
             public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
                 return false;
-            }
-        });
-        mLvJingPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
-            @Override
-            public void onBottomItemClick(BottomDialog dialog, View view) {
-
             }
         });
     }
