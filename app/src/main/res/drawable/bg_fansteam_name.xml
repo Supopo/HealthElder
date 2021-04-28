@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="@dimen/dp_8" />
+    <!--    渐变色背景  angle设置方向-->
+    <gradient
+        android:angle="0"
+        android:endColor="#FFFFAF58"
+        android:startColor="#FFD97811" />
+</shape>

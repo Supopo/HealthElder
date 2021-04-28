@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/ll_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_6">
+
+            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="@dimen/dp_42"
+                android:layout_height="@dimen/dp_42"
+                app:url = "@{viewModel.avatarUrl}"
+                app:qmui_border_color="@color/qmui_s_transparent"
+                app:qmui_is_circle="true" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_9"
+                android:layout_weight="1"
+                android:text="名字"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_15" />
+
+            <TextView
+                android:id="@+id/tv_yq"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="@dimen/dp_28"
+                android:background="@drawable/btn_jslm"
+                android:gravity="center"
+                android:text="邀请"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

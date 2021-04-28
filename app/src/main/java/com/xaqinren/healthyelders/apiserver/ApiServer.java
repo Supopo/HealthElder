@@ -1,11 +1,13 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.util.List;
 
@@ -116,5 +118,28 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("live/live/zan")
     Observable<MBaseResponse<Object>> toZanLive(@Header("Authorization") String authorization,
-                                                 @Body RequestBody body);
+                                                @Body RequestBody body);
+
+    //直播间用户列表
+    @GET("live/queryLiveUserPage")
+    Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getZBUserList(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId, @Query("page") int page, @Query("pageSize") int pageSize);
+
+    //直播间禁言
+    @Headers({"content-type:application/json"})
+    @POST("live/bannedUser")
+    Observable<MBaseResponse<Object>> setUserSpeech(@Header("Authorization") String authorization,
+                                                    @Body RequestBody body);
+
+    //用户关注
+    @Headers({"content-type:application/json"})
+    @POST("user/attentionUser")
+    Observable<MBaseResponse<Object>> setUserFollow(@Header("Authorization") String authorization,
+                                                    @Body RequestBody body);
+
+
+    //直播间拉黑
+    @Headers({"content-type:application/json"})
+    @POST("live/shieldingUser")
+    Observable<MBaseResponse<Object>> setUserBlack(@Header("Authorization") String authorization,
+                                                    @Body RequestBody body);
 }

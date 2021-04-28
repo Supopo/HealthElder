@@ -586,7 +586,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
                 //更新榜单头像
                 if (liveHeaderInfo.liveRoomUsers != null) {
-                    Collections.reverse(liveHeaderInfo.liveRoomUsers);
                     topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);
                 }
                 //更新总人数

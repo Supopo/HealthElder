@@ -33,6 +33,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -63,6 +64,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private TCFrequeControl mLikeFrequeControl;    //点赞频率控制
     private int mZanNum;    //本次点赞数量
     private TopUserHeadAdapter topHeadAdapter;
+    private ZBUserListPop zbUserListPop;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -230,6 +232,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //退出直播
         binding.btnBack.setOnClickListener(this);
         binding.tvMsg.setOnClickListener(this);
+        binding.tvMembersNum.setOnClickListener(this);
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
                 toSendTextMsg(eventBean.content);
@@ -292,6 +295,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private boolean isDianZaning;//表示正在点赞请求操作 2S保护
+
     //点赞操作
     private void toDianZan() {
 
@@ -522,6 +526,12 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_members_num:
+                if (zbUserListPop == null) {
+                    zbUserListPop = new ZBUserListPop(this, mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.liveRoomId, "婆婆酥的守护团");
+                }
+                zbUserListPop.showPopupWindow();
+                break;
             case R.id.btn_back:
                 //通知服务器结束直播
                 //弹窗提示
@@ -588,7 +598,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
                 //更新榜单头像
                 if (liveHeaderInfo.liveRoomUsers != null) {
-                    Collections.reverse(liveHeaderInfo.liveRoomUsers);
                     topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);
                 }
                 //更新总人数

@@ -13,6 +13,12 @@ public class LiveConstants {
     public static final int DISMISS_ET = 1002;
     public static final int SHOW_ET = 1001;
     public static final int SEND_MSG = 10011;
+    public static final int ZB_LINK_YQ = 2001;
+    public static final int ZB_LINK_GB = 20010;//关闭连麦
+    public static final int ZB_USER_SET = 2002;//用禁言 拉黑设置
+    public static final int ZB_SEND_GIFT = 2003;//发送礼物通知
+    public static final int SETTING_JINYAN = 1;//禁言
+    public static final int SETTING_LAHEI = 2;//拉黑
 
 
     //  本地消息类型区别
