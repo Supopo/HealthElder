@@ -851,8 +851,24 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         // 停止 BGM
         stopBGM();
 
-        if (mSelfRoleType == LIVEROOM_ROLE_PLAYER) {
-            //观众通知主播自己离开
+        if (mSelfRoleType == LIVEROOM_ROLE_PUSHER) {
+            //2. 如果是大主播，则销毁群
+            IMMessageMgr imMessageMgr = mIMMessageMgr;
+            if (imMessageMgr != null) {
+                imMessageMgr.destroyGroup(mCurrRoomID, new IMMessageMgr.Callback() {
+                    @Override
+                    public void onError(int code, String errInfo) {
+                        TXCLog.e(TAG, "[IM] 销毁群失败:" + code + ":" + errInfo);
+                    }
+
+                    @Override
+                    public void onSuccess(Object... args) {
+                        TXCLog.d(TAG, "[IM] 销毁群成功");
+                    }
+                });
+            }
+        } else {
+            //通知房间内其他主播
             notifyPusherChange();
             //2. 调用IM的quitGroup
             IMMessageMgr imMessageMgr = mIMMessageMgr;
@@ -871,7 +887,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 });
             }
         }
-
 
         Runnable runnable = new Runnable() {
             @Override

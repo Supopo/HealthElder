@@ -169,14 +169,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             @Override
             public void onSuccess() {
                 //去通知服务器退出了直播
-                Log.v(Constant.TAG_LIVE, "直播间退出成功");
-                finish();
+                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId);
+                LogUtils.v(Constant.TAG_LIVE, "直播间退出成功");
             }
 
             @Override
             public void onError(int errCode, String e) {
-                Log.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
-                Log.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
+                LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
+                LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
             }
         });
         mLiveRoom.setListener(null);
@@ -392,6 +392,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
             }
         });
+
+        //关闭直播-通知服务器回调
+        viewModel.exitSuccess.observe(this, exitSuccess -> {
+            if (exitSuccess != null) {
+                if (exitSuccess) {
+                    finish();
+                }
+            }
+        });
     }
 
 
@@ -427,12 +436,12 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     @Override
     public void onAudienceEnter(AudienceInfo audienceInfo) {
-        LogUtils.v(Constant.TAG_LIVE, "onAudienceEnter：来人了");
+        //用户进群提醒 暂时没用
     }
 
     @Override
     public void onAudienceExit(AudienceInfo audienceInfo) {
-
+        //用户退群提醒 暂时没用
     }
 
     @Override
@@ -508,7 +517,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //通知服务器结束直播
                 //弹窗提示
                 showDialog();
-                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId);
                 stopPublish();
                 break;
             case R.id.tv_msg:

@@ -51,5 +51,6 @@ public class LiveConstants {
     public static final int IMCMD_MORE_ANCHOR_JY = 26;   //多人连麦-静音
     public static final int IMCMD_MORE_ANCHOR_QXJY = 27;   //多人连麦-取消静音
     public static final int IMCMD_ZB_COMEBACK = 28;   //主播断开重新回来了 通知大家重新拉一下流
+    public static final int IMCMD_ZB_EXIT = 29;   //主播暂时离开直播间 观众端关闭流切换背景图
 }
 

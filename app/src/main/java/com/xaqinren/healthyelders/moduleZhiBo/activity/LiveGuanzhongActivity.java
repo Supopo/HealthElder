@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -175,19 +176,18 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         mLiveRoom.exitRoom(new ExitRoomCallback() {
             @Override
             public void onSuccess() {
-                Log.v(Constant.TAG_LIVE, "直播间退出成功");
+                LogUtils.v(Constant.TAG_LIVE, "直播间退出成功");
                 //群发退出直播间的消息
                 mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
                 //去通知服务器离开直播间
-
                 mLiveRoom.setListener(null);
                 isPlaying = false;
             }
 
             @Override
             public void onError(int errCode, String e) {
-                Log.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
-                Log.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
+                LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
+                LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
             }
         });
     }
@@ -397,7 +397,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onRoomDestroy(String roomID) {
-
+        if (!roomID.equals(mRoomID)) {
+            return;
+        }
+        //主播关闭直播，解散了群
+        //跳转结算页面
+        startActivity(ZhiboOverActivity.class);
+        finish();
     }
 
     @Override
@@ -471,6 +477,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //收到主播继续直播的消息
                 //重新拉流
                 mLiveRoom.reStartPlay(mLiveInitInfo.pullStreamUrl, binding.mTxVideoView, null);
+                break;
+            case LiveConstants.IMCMD_ZB_EXIT:
+                //主播暂时离开直播间的消息
+                //展示主播离开的背景
                 break;
             default:
                 break;
