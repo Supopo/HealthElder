@@ -130,6 +130,19 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
     }
 
     /**
+     * 点击返回,自定义弹窗
+     */
+    public void backPressedNoAlert() {
+        PlayerManagerKit.getInstance().stopPlay();
+        // 取消设置的特效
+        VideoEditerSDK.getInstance().releaseSDK();
+        VideoEditerSDK.getInstance().clear();
+        if (mOnEditListener != null) {
+            mOnEditListener.onEditCanceled();
+        }
+    }
+
+    /**
      * 快速导入始终 {@code setVideoPath}
      * 全功能导入不使用此方法
      *

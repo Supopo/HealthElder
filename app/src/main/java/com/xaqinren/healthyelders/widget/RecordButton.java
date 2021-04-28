@@ -137,6 +137,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
 
             }
         });
+        whiteView.setVisibility(VISIBLE);
         animatorSet.start();
     }
 
@@ -180,6 +181,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         });
         animatorSet.start();
         arcView.setVisibility(View.GONE);
+        whiteView.setVisibility(GONE);
     }
 
     public interface OnRecordButtonListener{

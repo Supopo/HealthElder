@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseVideoCoverViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_44"
+            android:gravity="center_vertical"
+            android:text="取消"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"/>
+        <TextView
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_44"
+            android:gravity="center_vertical"
+            android:text="保存"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"/>
+
+        <ImageView
+            android:id="@+id/cover_view"
+            android:layout_width="@dimen/dp_236"
+            android:layout_height="@dimen/dp_420"
+            android:layout_marginTop="@dimen/dp_22"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/cancel"/>
+
+        <LinearLayout
+            android:id="@+id/cover_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginLeft="@dimen/dp_19"
+            android:layout_marginRight="@dimen/dp_19"
+            android:layout_marginTop="@dimen/dp_34"
+            android:layout_below="@id/cover_view"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

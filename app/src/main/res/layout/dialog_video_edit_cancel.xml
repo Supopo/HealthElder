@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_pop_bottom">
+
+    <TextView
+        android:id="@+id/confirm_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/color_252525"
+        android:gravity="center"
+        android:text="清空效果并返回"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_6"
+        android:background="@color/color_EEE"/>
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:textSize="@dimen/sp_18"
+        android:textColor="@color/color_252525"
+        android:gravity="center"
+        android:text="取消"
+        />
+</LinearLayout>

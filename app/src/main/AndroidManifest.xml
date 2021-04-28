@@ -174,7 +174,9 @@
             android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
             android:theme="@style/EditDialogStyle" />
         <activity android:name=".moduleLiteav.activity.VideoEditerActivity" />
-        <activity android:name=".moduleLiteav.activity.VideoPublishActivity" />
+        <activity android:name=".moduleLiteav.activity.VideoPublishActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".moduleLiteav.activity.ChooseVideoCoverActivity" />
         <activity
             android:name=".moduleLogin.activity.SelectLoginActivity"
             android:theme="@style/AnimTheme" />

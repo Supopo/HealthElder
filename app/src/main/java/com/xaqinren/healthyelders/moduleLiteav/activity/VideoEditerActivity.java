@@ -1,18 +1,24 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.tencent.bugly.proguard.A;
+import com.tencent.qcloud.tim.uikit.utils.PopWindowUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.UGCKitVideoEdit;
 import com.tencent.qcloud.ugckit.basic.UGCKitResult;
@@ -32,6 +38,7 @@ import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoEditerBinding;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoEditerViewModel;
+import com.xaqinren.healthyelders.widget.BottomDialog;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -128,7 +135,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
         binding.videoEdit.getTitleBar().setVisibility(View.GONE);
 
-        backIv.setOnClickListener(view -> mUGCKitVideoEdit.backPressed());
+        backIv.setOnClickListener(view ->  showCancelAlert());
 
         binding.publish.setOnClickListener(view -> {
             mUGCKitVideoEdit.showPublishDialog();
@@ -189,7 +196,32 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
     @Override
     public void onBackPressed() {
-        mUGCKitVideoEdit.backPressed();
+        showCancelAlert();
+    }
+
+    private void showCancelAlert() {
+        View view = View.inflate(this, R.layout.dialog_video_edit_cancel, null);
+        PopupWindow popupWindow = new PopupWindow(view,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setAnimationStyle(R.style.DialogBottomAnimation);
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(binding.rlContainer, Gravity.BOTTOM, 0, 0);
+        TextView confirmCancel = view.findViewById(R.id.confirm_cancel);
+        TextView cancel = view.findViewById(R.id.cancel);
+        confirmCancel.setOnClickListener(view1 -> {
+            popupWindow.dismiss();
+            mUGCKitVideoEdit.backPressedNoAlert();
+        });
+        cancel.setOnClickListener(view1 -> popupWindow.dismiss());
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.BottomDialog);
+        builder.setView(view);
+        TextView confirmCancel = view.findViewById(R.id.confirm_cancel);
+        TextView cancel = view.findViewById(R.id.cancel);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        */
+
     }
 
     @Override

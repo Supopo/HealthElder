@@ -423,6 +423,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         ToastUtils.showShort("录制成功");
         showNormalPanel();
         onFragmentStatusListener.isRecode(false);
+        binding.recodeTime.setText(null);
+        binding.recodeBtn.setRecodeProgress(0);
         startEditActivity();
     }
 

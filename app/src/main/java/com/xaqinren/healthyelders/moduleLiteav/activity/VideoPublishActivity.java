@@ -1,10 +1,13 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.UGCKitVideoPublish;
 import com.xaqinren.healthyelders.BR;
@@ -58,10 +61,18 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         publishLocationAdapter = new PublishLocationAdapter(R.layout.item_publish_location);
         LinearLayoutManager locManager = new LinearLayoutManager(this);
         locManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.locationList.setLayoutManager(locManager);
-        binding.locationList.setAdapter(publishLocationAdapter);
+        binding.includePublish.locationList.setLayoutManager(locManager);
+        binding.includePublish.locationList.setAdapter(publishLocationAdapter);
         publishLocationAdapter.addData(locationBeans);
-
+        //选择封面
+        binding.selCover.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ChooseVideoCoverActivity.class);
+            intent.putExtra(UGCKitConstants.VIDEO_PATH, mVideoPath);
+            if (!TextUtils.isEmpty(mCoverPath)) {
+                intent.putExtra(UGCKitConstants.VIDEO_COVERPATH, mCoverPath);
+            }
+            startActivity(intent);
+        });
     }
 
     private void testData() {

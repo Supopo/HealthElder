@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/video_publish_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/location_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:src="@mipmap/icon_ship_fab_dw" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="你在哪里"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_14"
+                android:layout_marginLeft="@dimen/dp_46"
+                android:layout_marginTop="@dimen/dp_24" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/icon_advance"
+                android:layout_marginTop="@dimen/dp_27"
+                android:layout_marginRight="@dimen/dp_14"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/location_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_layout"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_17" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_list">
+
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:src="@mipmap/icon_ship_fab_gk" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="公开"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_14"
+                android:layout_marginLeft="@dimen/dp_46"
+                android:layout_marginTop="@dimen/dp_24" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/icon_advance"
+                android:layout_marginTop="@dimen/dp_27"
+                android:layout_marginRight="@dimen/dp_14"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_44"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_draft_shape"
+                android:layout_marginRight="@dimen/dp_11"
+                android:text="草稿"
+                android:textColor="@color/color_252525"
+                android:textSize="14sp" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_44"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_comfrim_shape"
+                android:text="发布"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
