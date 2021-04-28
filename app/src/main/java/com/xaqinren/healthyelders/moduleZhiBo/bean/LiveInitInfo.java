@@ -59,6 +59,9 @@ public class LiveInitInfo implements Serializable {
     public String address;
     public String pushUrl;
 
+    //开启直播间外面设置的一些参数
+    public boolean isMirror;//是否开启观众端镜像 需要推流成功后设置才有效果
+
     public void setHasNotice(Boolean hasNotice) {
         this.hasNotice = hasNotice;
     }

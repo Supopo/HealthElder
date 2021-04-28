@@ -469,6 +469,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 break;
             case LiveConstants.IMCMD_ZB_COMEBACK:
                 //收到主播继续直播的消息
+                //重新拉流
                 mLiveRoom.reStartPlay(mLiveInitInfo.pullStreamUrl, binding.mTxVideoView, null);
                 break;
             default:
@@ -495,7 +496,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_back:
-                stopPlay();
+                finish();
                 break;
             case R.id.tv_msg:
                 startActivity(ZBEditTextDialogActivity.class);

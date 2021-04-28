@@ -73,7 +73,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private List<LocalMedia> selectList;
     private String photoPath;
     private boolean isAgree = true;
-    private boolean isJingXiangRight;//是否镜像翻转
     private boolean isBackCamera;//是否后置摄像头
     private boolean isOpenRoom = true;//是否公开
     private ZBStartSettingPop startSettingPop;
@@ -134,9 +133,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
         //镜头翻转
         binding.llJx.setOnClickListener(lis -> {
-            isJingXiangRight = !isJingXiangRight;
-            mLiveRoom.setMirror(isJingXiangRight);
-            if (isJingXiangRight) {
+            //开启之后设置才有用，需要传参进去设置
+            mLiveInitInfo.isMirror = !mLiveInitInfo.isMirror;
+            if (mLiveInitInfo.isMirror) {
                 binding.ivJx.setBackgroundResource(R.mipmap.icon_jingxiang_fz);
             } else {
                 binding.ivJx.setBackgroundResource(R.mipmap.icon_jingxiang);

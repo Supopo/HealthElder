@@ -148,6 +148,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 } else {
                     viewModel.reStartLive(mLiveInitInfo.liveRoomRecordId);
                 }
+                //如果外面开启了观众端镜像，这里需要设置一下
+                if (mLiveInitInfo.isMirror) {
+                    mLiveRoom.setMirror(true);
+                }
             }
 
 
