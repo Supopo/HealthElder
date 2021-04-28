@@ -73,6 +73,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         this.onFragmentStatusListener = onFragmentStatusListener;
     }
 
+
+
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return R.layout.fragment_start_lite_av;
@@ -588,10 +590,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     /** 对应 activity 生命周期 */
     public boolean onBackPress() {
         int size = VideoRecordSDK.getInstance().getPartManager().getPartsPathList().size();
-        if (size > 0) {
+        /*if (size > 0) {
             liteAvRecode.showGiveupRecordDialog();
             return true;
-        }
+        }*/
+        VideoRecordSDK.getInstance().deleteAllParts();
         return false;
     }
 

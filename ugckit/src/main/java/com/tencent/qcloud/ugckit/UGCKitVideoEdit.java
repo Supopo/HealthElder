@@ -57,8 +57,8 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
     }
 
     private void initDefault() {
+        TelephonyUtil.getInstance().uninitPhoneListener();
         mProgressFragmentUtil = new ProgressFragmentUtil((FragmentActivity) getContext());
-
         // 点击"完成"
         getTitleBar().setTitle(getResources().getString(R.string.ugckit_complete), ITitleBarLayout.POSITION.RIGHT);
         getTitleBar().setOnBackClickListener(new View.OnClickListener() {
@@ -309,7 +309,7 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
         });
         PlayerManagerKit.getInstance().stopPlay();
 
-        VideoGenerateKit.getInstance().addTailWaterMark();
+        //VideoGenerateKit.getInstance().addTailWaterMark();
         VideoGenerateKit.getInstance().startGenerate();
     }
 

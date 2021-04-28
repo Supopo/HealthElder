@@ -21,7 +21,8 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_50"/>
         <TextView
             android:id="@+id/save"
             android:layout_width="wrap_content"
@@ -32,7 +33,8 @@
             android:textSize="@dimen/sp_16"
             android:layout_alignParentRight="true"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_50"/>
 
         <ImageView
             android:id="@+id/cover_view"
@@ -41,17 +43,22 @@
             android:layout_marginTop="@dimen/dp_22"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/cancel"/>
+        <!--<FrameLayout
+            android:id="@+id/cover_view"
+            android:layout_width="@dimen/dp_236"
+            android:layout_height="@dimen/dp_420"
+            android:layout_marginTop="@dimen/dp_22"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/cancel" />-->
 
-        <LinearLayout
+        <com.xaqinren.healthyelders.widget.VideoPublishCoverLayout
             android:id="@+id/cover_list_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginLeft="@dimen/dp_19"
-            android:layout_marginRight="@dimen/dp_19"
             android:layout_marginTop="@dimen/dp_34"
             android:layout_below="@id/cover_view"
             android:orientation="horizontal">
 
-        </LinearLayout>
+        </com.xaqinren.healthyelders.widget.VideoPublishCoverLayout>
     </RelativeLayout>
 </layout>

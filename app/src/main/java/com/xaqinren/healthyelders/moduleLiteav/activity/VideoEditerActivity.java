@@ -85,10 +85,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initWindowParam();
         setTheme(com.hjyy.liteav.R.style.EditerActivityTheme);
         super.onCreate(savedInstanceState);
-        setStatusBarTransparent();
     }
 
     @Override
@@ -104,6 +102,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     public void initData() {
         super.initData();
+        setStatusBarTransparent();
         initView();
     }
 
@@ -163,15 +162,20 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
     @Override
     protected void onPause() {
-        super.onPause();
         mUGCKitVideoEdit.stop();
         mUGCKitVideoEdit.setOnVideoEditListener(null);
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mUGCKitVideoEdit.release();
+        super.onDestroy();
     }
 
     private void startPreviewActivity(UGCKitResult ugcKitResult) {
@@ -187,11 +191,13 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
                 intent.putExtra(UGCKitConstants.VIDEO_COVERPATH, ugcKitResult.coverPath);
             }
             intent.putExtra(UGCKitConstants.VIDEO_RECORD_DURATION, duration);
+            startActivity(intent);
         } else {
             intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }
         startActivity(intent);
-        finish();
     }
 
     @Override
@@ -214,14 +220,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             mUGCKitVideoEdit.backPressedNoAlert();
         });
         cancel.setOnClickListener(view1 -> popupWindow.dismiss());
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.BottomDialog);
-        builder.setView(view);
-        TextView confirmCancel = view.findViewById(R.id.confirm_cancel);
-        TextView cancel = view.findViewById(R.id.cancel);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        */
-
     }
 
     @Override

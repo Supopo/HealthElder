@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +41,7 @@ import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -538,6 +540,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             return path;
         }
         return null;
+    }
+
+    public void onActivityStop(){
+        mLiveRoom.stopBGM();
+        mLiveRoom.stopLocalPreview();
+        mLiveRoom.stopScreenCapture();
+    }
+
+    public void onActivityRestart(){
+        mLiveRoom.startLocalPreview(true, binding.videoView);
     }
 
 }

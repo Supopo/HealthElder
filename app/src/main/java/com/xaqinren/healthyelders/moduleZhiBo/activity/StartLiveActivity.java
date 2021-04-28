@@ -175,6 +175,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         super.onStop();
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityStop();
+        } else if (currentFragmentPosition == 0) {
+            startLiveFragment.onActivityStop();
         }
     }
 
@@ -183,11 +185,14 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         super.onRestart();
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityRestart();
+        } else if (currentFragmentPosition == 0) {
+            startLiveFragment.onActivityRestart();
         }
     }
 
     @Override
     protected void onDestroy() {
+        startLiteAVFragment.setOnFragmentStatusListener(null);
         super.onDestroy();
     }
 

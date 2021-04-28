@@ -1,5 +1,6 @@
 package com.tencent.qcloud.ugckit.component.dialogfragment;
 
+import android.content.Context;
 import android.view.View;
 
 
@@ -8,13 +9,17 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
 
+import java.lang.ref.WeakReference;
+
 public class ProgressFragmentUtil {
     private String                    mTitle;
-    private FragmentActivity mActivity;
+//    private FragmentActivity mActivity;
     private VideoWorkProgressFragment mLoadingProgress;
+    private WeakReference <FragmentActivity> mActivity ;
 
     public ProgressFragmentUtil(FragmentActivity context) {
-        mActivity = context;
+//        mActivity = context;
+        mActivity = new WeakReference<FragmentActivity>(context);
     }
 
     /**
@@ -24,7 +29,7 @@ public class ProgressFragmentUtil {
      * @param title
      */
     public ProgressFragmentUtil(FragmentActivity context, String title) {
-        mActivity = context;
+        mActivity = new WeakReference<FragmentActivity>(context);
         mTitle = title;
     }
 
@@ -47,7 +52,7 @@ public class ProgressFragmentUtil {
         mLoadingProgress.setProgress(0);
         mLoadingProgress.setCancelable(false);
 
-        mLoadingProgress.show(mActivity.getSupportFragmentManager(), "progress_dialog");
+        mLoadingProgress.show(mActivity.get().getSupportFragmentManager(), "progress_dialog");
     }
 
     /**
