@@ -26,6 +26,7 @@ public class ZBUserListBean {
     public String levelName;//
     public String fansTeamName;//粉丝团名字
     public int active;//活跃度
+    public String viewerDuration;//用户看播时间
 
     public String getLevelCode() {
         if (levelCode == null) {

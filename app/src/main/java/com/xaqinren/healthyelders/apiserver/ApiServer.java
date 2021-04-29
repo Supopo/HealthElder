@@ -7,6 +7,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.util.List;
@@ -142,4 +143,12 @@ public interface ApiServer {
     @POST("live/shieldingUser")
     Observable<MBaseResponse<Object>> setUserBlack(@Header("Authorization") String authorization,
                                                     @Body RequestBody body);
+
+    //观众-离开直播间
+    @GET("live/leaveRoom")
+    Observable<MBaseResponse<Object>> leaveLive(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //直播间结束统计
+    @GET("live/overStatistical")
+    Observable<MBaseResponse<LiveOverInfo>> liveOverInfo(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
 }

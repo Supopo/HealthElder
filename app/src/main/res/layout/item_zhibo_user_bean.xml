@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean" />
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean" />
     </data>
 
     <RelativeLayout
@@ -18,24 +18,26 @@
 
 
         <FrameLayout
-            android:layout_centerHorizontal="true"
             android:id="@+id/fl_photo"
             android:layout_width="@dimen/dp_54"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
 
             <com.qmuiteam.qmui.widget.QMUIRadiusImageView
-                android:layout_marginLeft="@dimen/dp_5"
                 android:id="@+id/riv_photo"
                 android:layout_width="@dimen/dp_44"
                 android:layout_height="@dimen/dp_44"
-                android:src="@drawable/ic_avatar"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:src="@color/gray_999"
                 app:qmui_border_color="@color/transparent"
-                app:qmui_is_circle="true" />
+                app:qmui_is_circle="true"
+                app:url="@{viewModel.avatarUrl}" />
+
             <RelativeLayout
-                android:layout_marginTop="@dimen/dp_3"
-                android:layout_marginLeft="@dimen/dp_38"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_38"
+                android:layout_marginTop="@dimen/dp_3"
                 android:background="@mipmap/pm_bg">
 
                 <TextView
@@ -69,7 +71,7 @@
             android:layout_below="@id/tv_name"
             android:layout_centerHorizontal="true"
             android:singleLine="true"
-            android:text="60分钟"
+            android:text="@{viewModel.viewerDuration}"
             android:textColor="@color/color_FF525461"
             android:textSize="@dimen/sp_11" />
 

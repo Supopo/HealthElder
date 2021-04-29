@@ -68,8 +68,8 @@ public class LiveZhuboViewModel extends BaseViewModel {
     }
 
     //结束直播
-    public void closeLive(String liveRoomRecordId) {
-        LiveRepository.getInstance().overLive(dismissDialog, exitSuccess, liveRoomRecordId);
+    public void closeLive(String liveRoomRecordId, String commentPeopleNum) {
+        LiveRepository.getInstance().overLive(dismissDialog, exitSuccess, liveRoomRecordId, commentPeopleNum);
     }
 
     //刷新直播间顶部信息

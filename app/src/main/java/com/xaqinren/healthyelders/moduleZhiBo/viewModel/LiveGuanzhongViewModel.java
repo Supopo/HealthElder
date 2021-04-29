@@ -24,6 +24,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> exitSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> zanSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
@@ -60,5 +61,10 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     //直播间点赞
     public void toZanLive(String liveRoomRecordId, String count) {
         LiveRepository.getInstance().toZanLive(dismissDialog, zanSuccess, liveRoomRecordId, count);
+    }
+
+    //离开直播间
+    public void leaveLive(String liveRoomRecordId) {
+        LiveRepository.getInstance().leaveLive(dismissDialog, exitSuccess, liveRoomRecordId);
     }
 }

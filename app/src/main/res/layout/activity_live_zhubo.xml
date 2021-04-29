@@ -85,7 +85,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_toRightOf="@id/riv_photo"
-                    android:background="@mipmap/zbj_info_zan" />
+                    android:background="@mipmap/zbj_info_zan"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_zan_num"
@@ -125,9 +126,9 @@
                 <!--        榜单头像展示-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_avatar"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/tv_members_num"
                     android:overScrollMode="never"
                     android:visibility="visible" />
@@ -137,17 +138,17 @@
                     android:id="@+id/tv_members_num"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_32"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:background="@drawable/bg_zhibo_people_num"
                     android:gravity="center"
                     android:minWidth="@dimen/dp_32"
+                    android:onClick="onClick"
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="0"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14"
-                    android:onClick="onClick"/>
+                    android:textSize="@dimen/sp_14" />
             </RelativeLayout>
 
 

@@ -40,7 +40,6 @@ public class StartLiveZbViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
-    public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> exitSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
     public MutableLiveData<String> fileUrl = new MutableLiveData<>();
@@ -50,8 +49,8 @@ public class StartLiveZbViewModel extends BaseViewModel {
         LiveRepository.getInstance().checkLiveInfo(dismissDialog, liveInfo);
     }
 
-    public void closeLastLive(String liveRoomId) {
-        LiveRepository.getInstance().overLive(dismissDialog, exitSuccess, liveRoomId);
+    public void closeLastLive(String liveRoomRecordId) {
+        LiveRepository.getInstance().overLive(dismissDialog, exitSuccess, liveRoomRecordId, "0");
     }
 
     public void updatePhoto(String filePath) {

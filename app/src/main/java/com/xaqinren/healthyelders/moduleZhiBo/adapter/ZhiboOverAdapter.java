@@ -10,6 +10,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemZhiboUserBeanBinding;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 
 import java.util.List;
@@ -18,13 +19,13 @@ import java.util.List;
 /**
  * 直播结束页面Top榜单头像列表
  */
-public class ZhiboOverAdapter extends BaseQuickAdapter<ZhiboUserBean, BaseViewHolder> implements LoadMoreModule {
+public class ZhiboOverAdapter extends BaseQuickAdapter<ZBUserListBean, BaseViewHolder> implements LoadMoreModule {
     public ZhiboOverAdapter(int layoutResId) {
         super(layoutResId);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ZhiboUserBean item) {
+    protected void convert(BaseViewHolder helper, ZBUserListBean item) {
 
         //注意 ItemBinding 改为自己item_layout的名字 ItemXxxBinding
         ItemZhiboUserBeanBinding binding = DataBindingUtil.bind(helper.itemView);
@@ -44,7 +45,7 @@ public class ZhiboOverAdapter extends BaseQuickAdapter<ZhiboUserBean, BaseViewHo
 
     //局部刷新用的
     @Override
-    protected void convert(BaseViewHolder helper, ZhiboUserBean item, List<?> payloads) {
+    protected void convert(BaseViewHolder helper, ZBUserListBean item, List<?> payloads) {
         super.convert(helper, item, payloads);
         if (payloads.size() > 0 && payloads.get(0) instanceof Integer) {
             //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新

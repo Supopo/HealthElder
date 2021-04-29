@@ -146,7 +146,7 @@ public class ZBUserListPop extends BasePopupWindow {
             setUserSpeechStatus(userId, !usersAdapter.getData().get(nowPosition).hasSpeech);
         } else if (pos == 1) {
             //拉黑
-            setUserBlackStatus(userId, true);
+            setUserBlackStatus(userId);
         } else {
             //踢出
             RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_TICHU,
@@ -230,11 +230,11 @@ public class ZBUserListPop extends BasePopupWindow {
     }
 
     //通知后台拉黑操作
-    private void setUserBlackStatus(String userId, boolean status) {
+    private void setUserBlackStatus(String userId) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("targetId", userId);
         hashMap.put("liveRoomId", liveRoomId);
-        hashMap.put("status", status);
+        hashMap.put("status", true);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         RetrofitClient.getInstance().create(ApiServer.class).setUserBlack(
@@ -255,7 +255,13 @@ public class ZBUserListPop extends BasePopupWindow {
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
-                        usersAdapter.remove(nowPosition);
+                        //更新列表
+                        rvUsers.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                usersAdapter.remove(nowPosition);
+                            }
+                        });
                         //通知主播页面拉黑操作了
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_LAHEI,
                                 userId, usersAdapter.getData().get(nowPosition).nickname));

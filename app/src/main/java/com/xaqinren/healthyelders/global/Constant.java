@@ -16,7 +16,7 @@ public class Constant {
     public static String USER_ID = "user_id";
     public static String API_HEADER = "Bearer ";//用户接口传token时候前面拼接的字符串
     public static String TAG_LIVE = "Live-zb";
-    public static int TIME_RUSH_LIVEINFO = 3000;//刷新直播间信息接口保护时间
+    public static int TIME_RUSH_LIVEINFO = 2000;//刷新直播间信息接口保护时间
     public static int TIME_DIAN_ZAN_WAIT = 2000;//点赞请求保护时间
     public static int MAX_DIAN_ZAN = 2;//点赞限制器 1s 2次
 

@@ -86,6 +86,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_toRightOf="@id/riv_photo"
+                    android:visibility="gone"
                     android:background="@mipmap/zbj_info_zan" />
 
                 <TextView

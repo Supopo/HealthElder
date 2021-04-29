@@ -5,6 +5,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 public class ZhiboOverViewModel extends BaseViewModel {
 
     public MutableLiveData<List<ZhiboUserBean>> dataList = new MutableLiveData<>();
+    public MutableLiveData<LiveOverInfo> liveOverInfo = new MutableLiveData<>();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
 
     public ZhiboOverViewModel(@NonNull Application application) {
         super(application);
@@ -29,6 +33,10 @@ public class ZhiboOverViewModel extends BaseViewModel {
             objects.add(zhiboUserBean);
         }
         dataList.setValue(objects);
+    }
+
+    public void getLiveOverInfo(String liveRoomRecordId) {
+        LiveRepository.getInstance().liveOverInfo(dismissDialog, liveOverInfo, liveRoomRecordId);
     }
 
 }

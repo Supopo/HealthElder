@@ -72,7 +72,19 @@
                 android:layout_below="@id/tv_title"
                 android:layout_marginTop="@dimen/dp_15"
                 android:includeFontPadding="false"
-                android:text="14:00-16:00 共2小时"
+                android:text="@{viewModel.liveOverInfo.liveTimeStr}"
+                android:textColor="@color/color_FF9C9C9C"
+                android:textSize="@dimen/sp_14" />
+            <TextView
+                android:layout_marginLeft="@dimen/dp_5"
+                android:id="@+id/tv_time2"
+                android:layout_toRightOf="@id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_title"
+                android:layout_marginTop="@dimen/dp_15"
+                android:includeFontPadding="false"
+                android:text="@{viewModel.liveOverInfo.liveDurationStr}"
                 android:textColor="@color/color_FF9C9C9C"
                 android:textSize="@dimen/sp_14" />
 
@@ -103,7 +115,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="44%"
+                        android:text="@{viewModel.liveOverInfo.beyondPercentage}"
                         android:textColor="@color/color_FFFFE400"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
@@ -156,7 +168,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="400"
+                            android:text="@{viewModel.liveOverInfo.giftCount}"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_16" />
 
@@ -182,7 +194,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="400"
+                            android:text="@{viewModel.liveOverInfo.userCount}"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_16" />
 
@@ -208,7 +220,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="3209"
+                            android:text="@{viewModel.liveOverInfo.newFansCount}"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_16" />
 
@@ -245,7 +257,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="12"
+                            android:text="@{viewModel.liveOverInfo.payUserCount}"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_16" />
 
@@ -271,7 +283,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="345"
+                            android:text="@{viewModel.liveOverInfo.commentUserCount}"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_16" />
 
@@ -297,7 +309,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
-                            android:text="2092"
+                            android:text="@{viewModel.liveOverInfo.favoriteCount}"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_16" />
 

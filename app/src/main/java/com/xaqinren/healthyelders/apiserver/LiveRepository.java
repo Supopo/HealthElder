@@ -8,6 +8,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
 
 import java.util.HashMap;
 
@@ -138,9 +139,10 @@ public class LiveRepository {
                 });
     }
 
-    public void overLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> exitSuccess, String liveRoomRecordId) {
+    public void overLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> exitSuccess, String liveRoomRecordId, String commentPeopleNum) {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("liveRoomRecordId", liveRoomRecordId);
+        hashMap.put("commentPeopleNum", commentPeopleNum);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toOverLive(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -217,5 +219,50 @@ public class LiveRepository {
                 });
     }
 
+    public void leaveLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> exitSuccess, String liveRoomRecordId) {
+        userApi.leaveLive(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        exitSuccess.postValue(true);
+                    }
+
+                });
+    }
+
+    public void liveOverInfo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveOverInfo> liveOverInfo, String liveRoomRecordId) {
+        userApi.liveOverInfo(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<LiveOverInfo>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<LiveOverInfo> data) {
+                        liveOverInfo.postValue(data.getData());
+                    }
+
+                });
+    }
 
 }

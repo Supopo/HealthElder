@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityZhiboOverBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZhiboOverAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZB2LinkSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverViewModel;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -22,6 +24,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, ZhiboOverViewModel> {
 
     private ZhiboOverAdapter mAdapter;
+    private String liveRoomRecordId;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -34,6 +37,12 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
         return com.xaqinren.healthyelders.BR.viewModel;
     }
 
+    @Override
+    public void initParam() {
+        super.initParam();
+        Bundle extras = getIntent().getExtras();
+        liveRoomRecordId = (String) extras.get("liveRoomRecordId");
+    }
 
     //页面数据初始化方法
     @Override
@@ -41,14 +50,9 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
         rlTitle.setVisibility(View.GONE);
         setStatusBarTransparent();
         initAdapter();
-        viewModel.getTopUserList();
+        viewModel.getLiveOverInfo(liveRoomRecordId);
         binding.ivClose.setOnClickListener(lis -> {
-            ZB2LinkSettingPop zb2LinkSettingPop = new ZB2LinkSettingPop(this);
-            zb2LinkSettingPop.showPopupWindow();
-        });
-        binding.tvTitle.setOnClickListener(lis -> {
-            ZBUserInfoPop zbUserInfoPop = new ZBUserInfoPop(this);
-            zbUserInfoPop.showPopupWindow();
+            finish();
         });
     }
 
@@ -58,13 +62,9 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
     public void initViewObservable() {
 
         //往adapter里面加载数据
-        viewModel.dataList.observe(this, dataList -> {
-            if (dataList != null) {
-                mAdapter.setList(dataList);
-                if (dataList.size() == 0) {
-                    //创建适配器.空布局，没有数据时候默认展示的
-                    mAdapter.setEmptyView(R.layout.list_empty);
-                }
+        viewModel.liveOverInfo.observe(this, liveOverInfo -> {
+            if (liveOverInfo != null && liveOverInfo.liveRoomUsers != null) {
+                mAdapter.setNewInstance(liveOverInfo.liveRoomUsers);
             }
         });
 

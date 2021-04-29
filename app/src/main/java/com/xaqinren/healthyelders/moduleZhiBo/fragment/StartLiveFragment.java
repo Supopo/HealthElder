@@ -85,6 +85,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private QMUIDialog showSelectDialog;
     private LiveInitInfo mLiveInitInfo = new LiveInitInfo();
     private StartLiveUiViewModel liveUiViewModel;
+    private boolean checkInfo;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -191,16 +192,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.loginRoomSuccess.observe(getActivity(), isSuccess -> {
-            if (isSuccess != null) {
-                if (isSuccess) {
-                    startLiveZhuboActivity();
-                }
-            }
-
-        });
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
+                checkInfo = true;
                 //初始化房间信息
                 mLiveInitInfo = liveInfo;
                 initRoomInfo();
@@ -257,6 +251,10 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     }
 
     private void startLiveZhuboActivity() {
+        if (!checkInfo) {
+            return;
+        }
+
         //设置美颜的参数传进去
         mLiveInitInfo.beautyStyle = mBeautyStyle;
         mLiveInitInfo.beautyLevel = mBeautyLevel;
@@ -542,13 +540,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         return null;
     }
 
-    public void onActivityStop(){
+    public void onActivityStop() {
         mLiveRoom.stopBGM();
         mLiveRoom.stopLocalPreview();
         mLiveRoom.stopScreenCapture();
     }
 
-    public void onActivityRestart(){
+    public void onActivityRestart() {
         mLiveRoom.startLocalPreview(true, binding.videoView);
     }
 

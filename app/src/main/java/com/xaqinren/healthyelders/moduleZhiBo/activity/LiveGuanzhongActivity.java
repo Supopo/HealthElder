@@ -201,12 +201,15 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //去通知服务器离开直播间
                 mLiveRoom.setListener(null);
                 isPlaying = false;
+                finish();
+                dismissDialog();
             }
 
             @Override
             public void onError(int errCode, String e) {
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
+                dismissDialog();
             }
         });
     }
@@ -440,7 +443,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         }
         //主播关闭直播，解散了群
         //跳转结算页面
-        startActivity(ZhiboOverActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+        startActivity(ZhiboOverActivity.class, bundle);
         finish();
     }
 
@@ -617,6 +622,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         super.onDestroy();
         disposable.dispose();
         if (isPlaying) {
+            viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
             stopPlay();
         }
     }
@@ -625,7 +631,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_back:
-                finish();
+                showDialog("离开直播间...");
+                viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
                 break;
             case R.id.tv_msg:
                 //判断是否被禁言
@@ -683,6 +690,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             if (zanSuccess != null) {
                 if (zanSuccess) {
                     toRushLiveInfo();
+                }
+            }
+        });
+        viewModel.exitSuccess.observe(this, exitSuccess -> {
+            if (exitSuccess != null) {
+                if (exitSuccess) {
+                    stopPlay();
                 }
             }
         });

@@ -66,6 +66,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private int mZanNum;    //本次点赞数量
     private TopUserHeadAdapter topHeadAdapter;
     private ZBUserListPop zbUserListPop;
+    private int commentPeopleNum = 0;//评论人数
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -188,7 +189,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             @Override
             public void onSuccess() {
                 //去通知服务器退出了直播
-                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId);
+                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentPeopleNum));
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出成功");
             }
 
@@ -487,6 +488,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_EXIT_LIVE:
                 //用户退出房间消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_EXIT_LIVE, type);
+                //调用刷新接口
+                toRushLiveInfo();
                 break;
             case LiveConstants.IMCMD_LIKE:
                 //展示用户点赞
@@ -532,7 +535,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case R.id.btn_back:
                 //通知服务器结束直播
                 //弹窗提示
-                showDialog();
+                showDialog("结束直播...");
                 stopPublish();
                 break;
             case R.id.tv_msg:
@@ -638,7 +641,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         viewModel.exitSuccess.observe(this, exitSuccess -> {
             if (exitSuccess != null) {
                 if (exitSuccess) {
-                    startActivity(ZhiboOverActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                    startActivity(ZhiboOverActivity.class, bundle);
                     finish();
                 }
             }
