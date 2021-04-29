@@ -26,6 +26,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
@@ -136,6 +137,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu9.setOnClickListener(lis -> {
             LogUtils.v("--", UserInfoMgr.getInstance().getAccessToken());
             showEditTextDialog();
+        });
+        binding.tvMenu102.setOnClickListener(view -> {
+            startActivity(ChooseUnLookActivity.class);
         });
     }
 

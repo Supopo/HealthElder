@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@+id/video_publish_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+       >
 
         <RelativeLayout
             android:id="@+id/location_layout"
@@ -50,6 +51,7 @@
             android:layout_marginTop="@dimen/dp_17" />
 
         <RelativeLayout
+            android:id="@+id/video_open_mode_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/location_list">
@@ -84,7 +86,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16">
 

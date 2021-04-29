@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -35,6 +36,7 @@ import com.tencent.qcloud.ugckit.module.editer.UGCKitEditConfig;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEffectActivity;
+import com.tencent.ugc.TXVideoEditer;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -43,7 +45,9 @@ import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoEditerViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
-
+/**
+ * 录制完编辑
+ */
 public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding, VideoEditerViewModel> implements View.OnClickListener {
     private static final String TAG = "TCVideoEditerActivity";
     /**
@@ -145,11 +149,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
     }
 
-    private void initWindowParam() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -173,16 +172,64 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onRestart() {
         super.onRestart();
-        UGCKitEditConfig config = new UGCKitEditConfig();
-        config.isPublish = true;
-        mUGCKitVideoEdit.setConfig(config);
-        mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
-        if (!TextUtils.isEmpty(mVideoPath)) {
-            mUGCKitVideoEdit.setVideoPath(mVideoPath);
-        }
-        mUGCKitVideoEdit.initPlayer();
-        mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
-        mUGCKitVideoEdit.start();
+        startOnRestart();
+//        mUGCKitVideoEdit.initPlayer();
+        /*TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
+        if (editer == null) {
+
+            LogUtils.e(TAG, "" + System.currentTimeMillis());
+//            mUGCKitVideoEdit.setVideoPath(mVideoPath);
+            LogUtils.e(TAG, "" + System.currentTimeMillis());
+
+            mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
+            LogUtils.e(TAG, "" + System.currentTimeMillis());
+            mUGCKitVideoEdit.start();
+            LogUtils.e(TAG, "" + System.currentTimeMillis());
+//            startOnRestart();
+        }else{
+            mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
+            mUGCKitVideoEdit.start();
+        }*/
+
+//        UGCKitEditConfig config = new UGCKitEditConfig();
+//        config.isPublish = true;
+//        mUGCKitVideoEdit.setConfig(config);
+//        mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
+//        if (!TextUtils.isEmpty(mVideoPath)) {
+//            mUGCKitVideoEdit.setVideoPath(mVideoPath);
+//        }
+//        mUGCKitVideoEdit.initPlayer();
+//        mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
+//        mUGCKitVideoEdit.start();
+
+
+    }
+
+    private void startOnRestart() {
+        AsyncTask asyncTask = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                VideoEditerSDK.getInstance().resetDuration();
+                mUGCKitVideoEdit.setVideoPath(mVideoPath);
+                return objects;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                showDialog();
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                dismissDialog();
+                mUGCKitVideoEdit.initPlayer();
+                mUGCKitVideoEdit.start();
+            }
+
+        };
+        asyncTask.execute("");
     }
 
     @Override

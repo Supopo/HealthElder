@@ -119,4 +119,11 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
+    <style name="lineMarginDp16">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp_1</item>
+        <item name="android:layout_marginLeft">@dimen/dp_16</item>
+        <item name="android:layout_marginRight">@dimen/dp_16</item>
+        <item name="android:background">@color/color_EAEA</item>
+    </style>
 </resources>

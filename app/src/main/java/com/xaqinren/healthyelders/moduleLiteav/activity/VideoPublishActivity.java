@@ -2,8 +2,13 @@ package com.xaqinren.healthyelders.moduleLiteav.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -12,7 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
-import com.tencent.qcloud.ugckit.UGCKitVideoPublish;
+import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
+import com.tencent.ugc.TXVideoEditer;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoPublishBinding;
@@ -22,6 +28,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -29,6 +36,9 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
+/**
+ * 发布
+ */
 public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBinding, VideoPublishViewModel> {
     private String mVideoPath = null;
     private String mCoverPath = null;
@@ -88,6 +98,18 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             Intent intent = new Intent(this, ChooseLocationActivity.class);
             startActivityForResult(intent, 777);
         });
+        binding.includePublish.videoOpenModeLayout.setOnClickListener(view -> {
+            showOpenModeDialog();
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
+        if (editer == null) {
+            VideoEditerSDK.getInstance().initSDK();
+        }
+        super.onBackPressed();
     }
 
     private void testData() {
@@ -110,6 +132,25 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             Glide.with(this).asBitmap().load(path).into(binding.coverView);
             mCoverPath = path;
         }
+    }
+    private LiteAvOpenModePopupWindow openModePop;
+    private void showOpenModeDialog() {
+        if (openModePop == null) {
+            openModePop = new LiteAvOpenModePopupWindow(this);
+            openModePop.setOnItemSelListener(new LiteAvOpenModePopupWindow.OnItemSelListener() {
+                @Override
+                public void onItemSel(int mode) {
+                    switch (mode) {
+                        case LiteAvOpenModePopupWindow.HIDE_MODE: {
+                            Intent intent = new Intent(VideoPublishActivity.this, ChooseUnLookActivity.class);
+                            startActivity(intent);
+                        }break;
+                    }
+                }
+            });
+
+        }
+        openModePop.showPopupWindow();
     }
 
 }

@@ -160,6 +160,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
             @Override
             public void onRecordPause() {
+                showDialog();
+                //手指松开,录制完成
                 pauseRecode();
             }
         });
@@ -405,6 +407,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         }else{
             liteAvRecode.shortPauseRecode();
         }
+        if (onFragmentStatusListener!=null)
         onFragmentStatusListener.isRecode(false);
     }
 
@@ -416,14 +419,18 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     @Override
     public void onRecodeSuccess() {
+        //开始录制成功
         showRecodePanel();
+        if (onFragmentStatusListener!=null)
         onFragmentStatusListener.isRecode(true);
     }
 
     @Override
     public void onRecodeComplete() {
+        //录制成功
         ToastUtils.showShort("录制成功");
         showNormalPanel();
+        if (onFragmentStatusListener!=null)
         onFragmentStatusListener.isRecode(false);
         binding.recodeTime.setText(null);
         binding.recodeBtn.setRecodeProgress(0);
@@ -459,6 +466,12 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         Intent intent = new Intent(getContext(), VideoEditerActivity.class);
         intent.putExtra(UGCKitConstants.VIDEO_PATH, VideoRecordSDK.getInstance().getRecordVideoPath());
         startActivity(intent);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dismissDialog();
     }
 
     @Override
@@ -589,11 +602,6 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     /** 对应 activity 生命周期 */
     public boolean onBackPress() {
-        int size = VideoRecordSDK.getInstance().getPartManager().getPartsPathList().size();
-        /*if (size > 0) {
-            liteAvRecode.showGiveupRecordDialog();
-            return true;
-        }*/
         VideoRecordSDK.getInstance().deleteAllParts();
         return false;
     }

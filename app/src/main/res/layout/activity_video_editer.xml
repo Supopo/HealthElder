@@ -205,7 +205,7 @@
             android:layout_height="@dimen/dp_44"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_40"
             android:background="@mipmap/icon_ship_next_bg"
             android:gravity="center"
             android:textColor="@color/white"

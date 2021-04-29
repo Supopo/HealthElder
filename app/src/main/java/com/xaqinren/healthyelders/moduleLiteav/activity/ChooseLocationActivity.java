@@ -24,6 +24,9 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
+/**
+ * 选择地址
+ */
 public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationBinding, ChooseLocationViewModel> implements AMapLocationListener {
     private ChooseLocationAdapter adapter;
     private List<SelLocationBean> selLocationBeans = new ArrayList<>();

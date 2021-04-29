@@ -50,7 +50,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
     private boolean cameraSwitch = true;        //是否前置摄像头UI判断
     private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
-    private int minRecordTime = 1 * 1000;
+    private int minRecordTime = 100;
     private int maxRecordTime = 10 * 1000;
     private int currentAsp = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;  //屏幕比
 
@@ -98,7 +98,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         config.mMaxDuration = maxRecordTime;
         config.mQuality = TXRecordCommon.VIDEO_QUALITY_HIGH;
         config.mFrontCamera = true;
-        config.mTouchFocus = true;
+        config.mTouchFocus = false;
         config.mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;
         config.mBeautyParams = new BeautyParams();
         config.mBeautyParams.mBeautyStyle = 0;

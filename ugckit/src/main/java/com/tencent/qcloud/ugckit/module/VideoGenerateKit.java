@@ -195,7 +195,7 @@ public class VideoGenerateKit extends BaseGenerateKit implements TXVideoGenerate
         }
     }
 
-    private void release() {
+    private void              release() {
         // SDK释放资源
         TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
         if (editer != null) {

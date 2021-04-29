@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/dp_10"
+        >
+
+        <com.xaqinren.healthyelders.widget.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/dp_34"
+            android:layout_height="@dimen/dp_34"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+</layout>

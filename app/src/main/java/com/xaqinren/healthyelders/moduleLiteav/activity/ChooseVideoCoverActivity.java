@@ -34,7 +34,9 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ImageUtils;
-
+/**
+ * 选择封面
+ */
 public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCoverBinding, ChooseVideoCoverViewModel> implements VideoPublishCoverLayout.OnCoverChangeListener {
     private String mVideoPath = null;
     private String mCoverPath = null;
