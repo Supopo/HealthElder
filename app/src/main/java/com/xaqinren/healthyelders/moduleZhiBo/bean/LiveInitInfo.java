@@ -39,7 +39,7 @@ public class LiveInitInfo implements Serializable {
     public Boolean hasIntroduce;//":true, 是否开启介绍
     public Boolean canSale;//false, // 是否允许卖货，0：否；1：是
     public Boolean canMic;//true,//  是否允许连麦  0: 否; 1:是
-    public Boolean canComment;//true,// 是否允许评论，0：否；1：是
+    public Boolean canComment;//true,// 是否允许评论，0：否；1：是                    -房间属性
     public Boolean canGift;//true,// 是否允许送礼物，0：否；1：是
     public Boolean canRecordVideo;//true, // 是否允许观众录制，0：否；1：是
     public Boolean hasVertical;//true,// 是否竖屏，0：否；1：是 , 默认竖屏
@@ -49,7 +49,7 @@ public class LiveInitInfo implements Serializable {
     public Boolean adminMicAuth;//true,// 管理员对连线嘉宾有操作权限，0：否；1：是
     public Boolean canMicIng;//false, // 连麦状态 0：未开启 1：连麦中
     public Boolean hasFollow;//false,// 是否已关注
-    public Boolean hasSpeech;//false, // 是否静音
+    public Boolean hasSpeech;//false, // 用户能否发言
     public Boolean hasAdmin;//false, // 是否是管理员
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
 

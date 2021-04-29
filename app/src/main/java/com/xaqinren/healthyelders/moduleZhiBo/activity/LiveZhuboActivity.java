@@ -25,6 +25,7 @@ import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
@@ -95,7 +96,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         setStatusBarTransparent();
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
-        showDialog();
+        showDialog("进入中...");
         //后期判断是否登录，如果已经则登录注入用户信息一定要注入的
         viewModel.toLoginRoom(mLiveRoom);
         initEvent();
@@ -154,11 +155,12 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         mLiveRoom.createRoom(Constant.getRoomId(mLiveInitInfo.liveRoomCode), "", new IMLVBLiveRoomListener.CreateRoomCallback() {
             @Override
             public void onSuccess(String roomId) {
-                Log.v(Constant.TAG_LIVE, "直播间创建成功");
+                LogUtils.v(Constant.TAG_LIVE, "直播间创建成功");
                 //去通知服务器开启直播间
                 LogUtils.v(Constant.TAG_LIVE, mLiveRoom.getPushUrl());
                 mLiveInitInfo.pushUrl = mLiveRoom.getPushUrl();
                 //判断如果有上次记录就是继续直播，没有就重新开启直播
+                showDialog("连接服务器...");
                 if (TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
                     viewModel.startLive(mLiveInitInfo);
                 } else {
@@ -173,6 +175,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             @Override
             public void onError(int errCode, String e) {
+                dismissDialog();
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + errCode);
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + e);
             }
@@ -233,12 +236,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.btnBack.setOnClickListener(this);
         binding.tvMsg.setOnClickListener(this);
         binding.tvMembersNum.setOnClickListener(this);
-        disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
-            if (eventBean.msgId == LiveConstants.SEND_MSG) {
-                toSendTextMsg(eventBean.content);
-            }
-        });
-        RxSubscriptions.add(disposable);
     }
 
     //发送文字消息
@@ -323,7 +320,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     mZanNum = 0;
                     isDianZaning = false;
                 }
-            }, 2000);
+            }, Constant.TIME_DIAN_ZAN_WAIT);
         }
         isDianZaning = true;
 
@@ -547,7 +544,62 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            switch (eventBean.msgId) {
+                case LiveConstants.SEND_MSG:
+                    toSendTextMsg(eventBean.content);
+                    break;
+                case LiveConstants.ZB_USER_SET:
+                    if (eventBean.msgType == LiveConstants.SETTING_JINYAN) {      //禁言-取消禁言
+                        if (eventBean.status == 1) {
+                            //禁言
+                            mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_FORBIDDER_TALK), LiveConstants.SHOW_JINYAN, null);
+                        } else {
+                            //取消禁言
+                            mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_CANCEL_FORBIDDER_TALK), LiveConstants.SHOW_QXJINYAN, null);
+                        }
+                    } else if (eventBean.msgType == LiveConstants.SETTING_LAHEI) {      //拉黑
+                        mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_PUT_BLACK), LiveConstants.SHOW_LAHEI, new IMLVBLiveRoomListener.SendC2CCustomMsgCallback() {
+
+                            @Override
+                            public void onError(int errCode, String errInfo) {
+
+                            }
+
+                            @Override
+                            public void onSuccess() {
+                                toRushLiveInfo();
+                                //群发公告消息-拉黑
+                                String jsonMsg = JsonMsgBean.json("0", eventBean.nickname, LiveConstants.GONGGAO_TICHU);
+                                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_GONGGAO_MSG), jsonMsg, null);
+                                LogUtils.v(Constant.TAG_LIVE, "拉黑成功");
+                            }
+                        });
+                    } else if (eventBean.msgType == LiveConstants.SETTING_TICHU) {      //踢出
+                        mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_PUT_BLACK), LiveConstants.SHOW_TICHU, new IMLVBLiveRoomListener.SendC2CCustomMsgCallback() {
+
+                            @Override
+                            public void onError(int errCode, String errInfo) {
+
+                            }
+
+                            @Override
+                            public void onSuccess() {
+                                toRushLiveInfo();
+                                //群发公告消息-拉黑
+                                String jsonMsg = JsonMsgBean.json("1", eventBean.nickname, LiveConstants.GONGGAO_TICHU);
+                                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_GONGGAO_MSG), jsonMsg, null);
+                                LogUtils.v(Constant.TAG_LIVE, "踢出成功");
+                            }
+                        });
+                    }
+                    break;
+            }
+        });
+        RxSubscriptions.add(disposable);
+
         viewModel.loginRoomSuccess.observe(this, isSuccess -> {
+            showDialog("创建直播间...");
             //开启推流
             startPublish();
         });
@@ -566,6 +618,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
                 }
 
+                mLiveInitInfo.liveRoomId = liveInitInfo.liveRoomId;
                 mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
                 //退掉之前的群
                 if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {

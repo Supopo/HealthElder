@@ -50,7 +50,6 @@ public class ZBUserListPop extends BasePopupWindow {
     private int nowPosition;
     private BaseLoadMoreModule loadMore;
     private QMUIBottomSheet menuDialog;
-    private int isSpeech;
     private QMUITipDialog dialog;
 
     public ZBUserListPop(Context context) {
@@ -150,6 +149,9 @@ public class ZBUserListPop extends BasePopupWindow {
             setUserBlackStatus(userId, true);
         } else {
             //踢出
+            RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_TICHU,
+                    userId, usersAdapter.getData().get(nowPosition).nickname));
+            usersAdapter.remove(nowPosition);
         }
     }
 
@@ -220,7 +222,7 @@ public class ZBUserListPop extends BasePopupWindow {
                         usersAdapter.getData().get(nowPosition).hasSpeech = status;
                         //刷新item
                         usersAdapter.notifyItemChanged(nowPosition, 99);
-                        //通知主播页面禁言操作了
+                        //通知主播页面禁言操作了 1禁言 0没有禁言
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_JINYAN,
                                 userId, status ? 1 : 0));
                     }
@@ -256,7 +258,7 @@ public class ZBUserListPop extends BasePopupWindow {
                         usersAdapter.remove(nowPosition);
                         //通知主播页面拉黑操作了
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_LAHEI,
-                                userId, 0));
+                                userId, usersAdapter.getData().get(nowPosition).nickname));
                     }
                 });
     }

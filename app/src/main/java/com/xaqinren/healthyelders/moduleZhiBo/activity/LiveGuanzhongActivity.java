@@ -14,8 +14,10 @@ import android.widget.RelativeLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -24,6 +26,7 @@ import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
@@ -34,12 +37,14 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.Anchor
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -62,6 +67,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private TCFrequeControl mLikeFrequeControl;    //点赞频率控制
     private int mZanNum;    //本次点赞数量
     private TopUserHeadAdapter topHeadAdapter;
+    private Timer ggTimer;
+    private TimerTask ggAnimTask;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -93,6 +100,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
         //登录直播间IM服务
+        showDialog("进入中...");
         viewModel.toLoginRoom(mLiveRoom);
         initEvent();
         initLiveInfo();
@@ -155,6 +163,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private void startPlay() {
+        showDialog("加载画面...");
         mLiveRoom.setListener(this);
         LogUtils.v(Constant.TAG_LIVE, "拉流地址：" + mLiveInitInfo.pullStreamUrl);
         LogUtils.v(Constant.TAG_LIVE, "房间号：" + Constant.getRoomId(mLiveInitInfo.liveRoomCode));
@@ -163,12 +172,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         mLiveRoom.enterRoom(mLiveInitInfo.pullStreamUrl, Constant.getRoomId(mLiveInitInfo.liveRoomCode), binding.mTxVideoView, new EnterRoomCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
+                dismissDialog();
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间失败：" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间失败：" + errInfo);
             }
 
             @Override
             public void onSuccess() {
+                dismissDialog();
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间成功");
                 //群发进入直播间的消息
                 mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ENTER_LIVE), "", null);
@@ -237,12 +248,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         binding.tvMsg.setOnClickListener(this);
         binding.btnZan.setOnClickListener(this);
         binding.tvFollow.setOnClickListener(this);
-        disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
-            if (eventBean.msgId == LiveConstants.SEND_MSG) {
-                toSendTextMsg(eventBean.content);
-            }
-        });
-        RxSubscriptions.add(disposable);
     }
 
     //发送文字消息
@@ -305,6 +310,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private boolean isDianZaning;//表示正在点赞请求操作 2S保护
+
     //点赞操作
     private void toDianZan() {
         //点赞发送请求限制
@@ -490,6 +496,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel) {
+        if (!roomID.equals(mRoomID)) {
+            return;
+        }
         TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
         int type = Integer.parseInt(cmd);
         switch (type) {
@@ -517,13 +526,62 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //重新拉流
                 mLiveRoom.reStartPlay(mLiveInitInfo.pullStreamUrl, binding.mTxVideoView, null);
                 break;
-            case LiveConstants.IMCMD_ZB_EXIT:
-                //主播暂时离开直播间的消息
-                //展示主播离开的背景
-                break;
             case LiveConstants.IMCMD_FOLLOW:
                 //展示关注消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_FOLLOW, type);
+                break;
+            case LiveConstants.IMCMD_GONGGAO_MSG:
+                //公告消息 顶部展示
+                String jsonMsg = (String) message;
+                LogUtils.v(Constant.TAG_LIVE, "jsonMsg: " + jsonMsg);
+                JsonMsgBean jsonMsgBean = JSON.parseObject(jsonMsg, JsonMsgBean.class);
+                binding.tvGgtype.setText("用户");
+                binding.tvGgname.setText(jsonMsgBean.nickname);
+                binding.tvGgcontent.setText(jsonMsgBean.content);
+
+                binding.llGonggao.setVisibility(View.VISIBLE);
+                //公告进入动画
+                binding.llGonggao.startAnimation(AnimUtils.getAnimation(this, R.anim.anim_slice_in_left));
+
+                if (ggTimer == null) {
+                    ggTimer = new Timer();
+                }
+                if (ggAnimTask != null) {
+                    ggAnimTask.cancel();
+                }
+                ggAnimTask = new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        //公告退出动画
+                        Animation hideAnim = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_out_left);
+                        binding.llGonggao.startAnimation(hideAnim);
+
+                        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                binding.llGonggao.setVisibility(View.GONE);
+                                ggAnimTask.cancel();
+                                ggTimer.cancel();
+                                ggTimer.purge();
+                                ggAnimTask = null;
+                                ggTimer = null;
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                    }
+                };
+                ggTimer.schedule(ggAnimTask, 3000);
+
                 break;
             default:
                 break;
@@ -532,7 +590,25 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
-
+        LogUtils.v(Constant.TAG_LIVE, cmd + "-" + message);
+        int type = Integer.parseInt(cmd);
+        switch (type) {
+            case LiveConstants.IMCMD_FORBIDDER_TALK://禁言
+                //判断是不是主播或者管理员发的
+                mLiveInitInfo.setHasSpeech(true);
+                ToastUtil.toastShortMessage(message);
+                break;
+            case LiveConstants.IMCMD_CANCEL_FORBIDDER_TALK://取消禁言
+                //判断是不是主播或者管理员发的
+                mLiveInitInfo.setHasSpeech(false);
+                ToastUtil.toastShortMessage(message);
+                break;
+            case LiveConstants.IMCMD_PUT_BLACK://拉黑/踢出
+                //判断是不是主播或者管理员发的
+                ToastUtil.toastShortMessage(message);
+                finish();
+                break;
+        }
     }
 
 
@@ -552,7 +628,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 finish();
                 break;
             case R.id.tv_msg:
-                startActivity(ZBEditTextDialogActivity.class);
+                //判断是否被禁言
+                if (!mLiveInitInfo.hasSpeech) {
+                    startActivity(ZBEditTextDialogActivity.class);
+                } else {
+                    ToastUtil.toastShortMessage(LiveConstants.SHOW_JINYAN);
+                }
                 break;
             case R.id.btn_zan:
                 toDianZan();
@@ -573,6 +654,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean.msgId == LiveConstants.SEND_MSG) {
+                toSendTextMsg(eventBean.content);
+            }
+        });
+        RxSubscriptions.add(disposable);
         viewModel.loginRoomSuccess.observe(this, loginSuccess -> {
             if (loginSuccess) {
                 startPlay();

@@ -2100,7 +2100,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
         IMMessageMgr imMessageMgr = mIMMessageMgr;
         if (imMessageMgr != null) {
-            Log.e("--", "mSelfAccountInfo.userName:" + mSelfAccountInfo.userName);
             imMessageMgr.sendGroupTextMessage(mSelfAccountInfo.userName, mSelfAccountInfo.userAvatar, message, new IMMessageMgr.Callback() {
                 @Override
                 public void onError(final int code, final String errInfo) {
@@ -2137,18 +2136,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         if (cmd.equals(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS))) {
             customMessage.cmd = "CustomProductMsg";
             customMessage.commodityInformation = new Gson().fromJson(message, GoodsBean.class);
-        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_FORBIDDER_TALK))) {
-            customMessage.cmd = "CustomCmdMsg";
-            customMessage.reviceID = message;
-        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_CANCEL_FORBIDDER_TALK))) {
-            customMessage.cmd = "CustomCmdMsg";
-            customMessage.reviceID = message;
-        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_PUT_BLACK))) {
-            customMessage.cmd = "CustomCmdMsg";
-            customMessage.reviceID = message;
-        } else if (cmd.equals(String.valueOf(LiveConstants.IMCMD_CANCEL_PUT_BLACK))) {
-            customMessage.cmd = "CustomCmdMsg";
-            customMessage.reviceID = message;
         } else {
             customMessage.cmd = "CustomCmdMsg";
             cm.msg = message;
@@ -2156,7 +2143,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         final String content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
         }.getType());
 
-        Log.e("--", "自定义消息：" + content);
         IMMessageMgr imMessageMgr = mIMMessageMgr;
         if (imMessageMgr != null) {
             imMessageMgr.sendGroupCustomMessage(content, new IMMessageMgr.Callback() {
@@ -2217,7 +2203,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
             String msg = new Gson().toJson(userResponse, new TypeToken<SendUserLinkBean>() {
             }.getType());
-            Log.e("--", "发送自定义群msg：" + msg);
 
             cm.cmd = cmd;
             cm.msg = msg;
@@ -2232,7 +2217,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
 
 
-        Log.e("--", "发送自定义群消息：" + content);
         IMMessageMgr imMessageMgr = mIMMessageMgr;
         if (imMessageMgr != null) {
             imMessageMgr.sendGroupCustomMessage(content, new IMMessageMgr.Callback() {
@@ -2274,27 +2258,18 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             customMessage.cmd = "C2CMsg";
             content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
             }.getType());
-            //                CommonJson<CustomMessage> customMessage = new CommonJson<>();
-            //                CustomMessage cm = new CustomMessage();
-            //                cm.msg = message;
-            //                customMessage.data = cm;
-            //                customMessage.cmd = cmd;
-            //                content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
-            //                }.getType());
 
-            //            String content = new Gson().toJson(response);
-            Log.e("--", "sendC2CCustomMsg:" + recUserId + content);
             IMMessageMgr imMessageMgr = mIMMessageMgr;
             if (imMessageMgr != null) {
                 imMessageMgr.sendC2CCustomMessage(recUserId, content, new IMMessageMgr.Callback() {
                     @Override
                     public void onError(final int code, final String errInfo) {
-                        Log.e("--", "发送失败了");
+                        callbackOnThread(callback, "onError", code, errInfo);
                     }
 
                     @Override
                     public void onSuccess(Object... args) {
-                        Log.e("--", "发送成功了");
+                        callbackOnThread(callback, "onSuccess");
                     }
                 });
             }
@@ -3273,7 +3248,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         } else if (cmd.equalsIgnoreCase("pk")) {
             onRecvPKMessage(message);
         } else {
-            callbackOnThread(mListener, "onRecvC2CCustonMsg", sendID, cmd, message);
+            callbackOnThread(mListener, "onRecvC2CCustomMsg", sendID, cmd, message);
         }
 
 

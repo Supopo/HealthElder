@@ -115,6 +115,63 @@
 
             </RelativeLayout>
 
+            <!--公告消息-->
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/ll_gonggao"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_below="@id/rl_zbInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_26"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_12"
+                android:background="@drawable/bg_zbj_gonggao"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_13"
+                    android:background="@mipmap/icon_gonggao"
+                    />
+                <TextView
+                    android:id="@+id/tv_ggtype"
+                    android:layout_marginLeft="@dimen/dp_6"
+                    android:layout_marginRight="@dimen/dp_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_12"
+                    android:textColor="#99ffffff"
+                    android:textStyle="bold"
+                    android:text="用户"
+                    />
+                <TextView
+                    android:id="@+id/tv_ggname"
+                    android:layout_marginLeft="@dimen/dp_6"
+                    android:layout_marginRight="@dimen/dp_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_FE509"
+                    android:text="昵称"
+                    />
+                <TextView
+                    android:id="@+id/tv_ggcontent"
+                    android:layout_marginLeft="@dimen/dp_6"
+                    android:layout_marginRight="@dimen/dp_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:text="被主播踢出房间"
+                    />
+
+            </LinearLayout>
+
+            <!--头像 人数-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_40"

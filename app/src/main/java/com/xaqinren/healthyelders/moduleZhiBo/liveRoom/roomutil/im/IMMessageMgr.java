@@ -37,7 +37,9 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.liteav.basic.log.TXCLog;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.FormatFlagsConversionMismatchException;
@@ -703,15 +705,8 @@ public class IMMessageMgr implements TIMMessageListener {
                             printDebugLog("userData == null");
                             break;
                         }
-                        //userId为空时候重新取一次
-                        if (TextUtils.isEmpty(mSelfUserID)) {
-                            mSelfUserID = SPUtils.getInstance().getString(Constant.IM_USERID);
-                            if (TextUtils.isEmpty(mSelfUserID)) {
-                                mSelfUserID = SPUtils.getInstance().getString(Constant.USER_ID);
-                            }
-                        }
-
                         String data = new String(userData);
+                        LogUtils.v(Constant.TAG_LIVE, data);
                         try {
                             CommonJson<Object> commonJson = new Gson().fromJson(data, new TypeToken<CommonJson<Object>>() {
                             }.getType());

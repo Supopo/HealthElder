@@ -15,6 +15,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,13 +45,13 @@ public class LiveZhuboViewModel extends BaseViewModel {
         mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
-                Log.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
-                Log.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errInfo);
+                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
+                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errInfo);
             }
 
             @Override
             public void onSuccess() {
-                Log.v(Constant.TAG_LIVE, "LiveRoom登录成功");
+                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录成功");
                 loginRoomSuccess.postValue(true);
             }
         });
