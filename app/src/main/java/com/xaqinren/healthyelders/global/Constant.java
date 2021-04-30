@@ -20,6 +20,7 @@ public class Constant {
     public static int TIME_DIAN_ZAN_WAIT = 2000;//点赞请求保护时间
     public static int MAX_DIAN_ZAN = 2;//点赞限制器 1s 2次
 
+
     //生成roomId
     public static String getRoomId(String userId) {
         return "room_" + userId;

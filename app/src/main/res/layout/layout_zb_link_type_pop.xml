@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.xaqinren.healthyelders.widget.RadiusCardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_195"
+        android:background="@color/white"
+        app:rcv_topLeftRadiu="@dimen/dp_18"
+        app:rcv_topRightRadiu="@dimen/dp_18">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_195"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_13"
+                android:layout_marginBottom="@dimen/dp_17"
+                android:gravity="center"
+                android:text="观众连线"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_18" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/dp_14"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/rl_one"
+                    android:layout_width="@dimen/dp_168"
+                    android:layout_height="@dimen/dp_126"
+                    android:background="@mipmap/yuyinlm_sr_bg">
+
+                    <ImageView
+                        android:id="@+id/iv_img2"
+                        android:layout_width="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_41"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dp_15"
+                        android:background="@mipmap/icon_srl" />
+
+                    <TextView
+                        android:id="@+id/tv_name2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_img2"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="双人聊"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/dp_19"
+                        android:text="仅支持一个观众连线"
+                        android:textColor="#fffff8dc"
+                        android:textSize="@dimen/sp_12" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_more"
+                    android:layout_width="@dimen/dp_168"
+                    android:layout_height="@dimen/dp_126"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:background="@mipmap/yuyinlm_lts_bg">
+
+                    <ImageView
+                        android:id="@+id/iv_img"
+                        android:layout_width="@dimen/dp_44"
+                        android:layout_height="@dimen/dp_33"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dp_17"
+                        android:background="@mipmap/icon_lts" />
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/iv_img"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:text="聊天室"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/dp_19"
+                        android:text="最多支持6个观众连线"
+                        android:textColor="#FFB3D1FF"
+                        android:textSize="@dimen/sp_12" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </com.xaqinren.healthyelders.widget.RadiusCardView>
+
+
+</layout>

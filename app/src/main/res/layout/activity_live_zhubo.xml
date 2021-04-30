@@ -21,13 +21,62 @@
             android:scaleType="centerCrop"
             android:src="@mipmap/zbj_bg" />
 
-        <com.tencent.rtmp.ui.TXCloudVideoView
-            android:id="@+id/mTxVideoView"
+        <!--视频区域-->
+        <LinearLayout
+            android:id="@+id/ll_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_menu"
-            android:visibility="visible" />
+            android:orientation="horizontal">
 
+            <RelativeLayout
+                android:id="@+id/rl_anchor"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone">
+
+                <com.tencent.rtmp.ui.TXCloudVideoView
+                    android:id="@+id/mTxVideoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_moreLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/dp_3"
+                    android:layout_marginBottom="@dimen/dp_54"
+                    android:overScrollMode="never"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_anchor2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_anchor2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <com.tencent.rtmp.ui.TXCloudVideoView
+                    android:id="@+id/anchor2TxVideoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <!--展示层-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -85,8 +134,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_toRightOf="@id/riv_photo"
-                    android:text="本场点赞"
                     android:singleLine="true"
+                    android:text="本场点赞"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_10" />
 
@@ -222,7 +271,7 @@
                 android:layout_marginRight="@dimen/dp_8">
 
                 <Button
-                    android:id="@+id/btn_lm"
+                    android:id="@+id/btn_lianmai"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
                     android:background="@mipmap/zbj_menu_lianmai" />
@@ -245,7 +294,8 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
-                android:background="@mipmap/zbj_menu_goods" />
+                android:background="@mipmap/zbj_menu_goods"
+                android:onClick="onClick" />
 
             <Button
                 android:id="@+id/btn_back"

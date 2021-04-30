@@ -1,22 +1,32 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.Manifest;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -30,6 +40,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -47,9 +58,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/4/25.
@@ -69,6 +82,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private TopUserHeadAdapter topHeadAdapter;
     private Timer ggTimer;
     private TimerTask ggAnimTask;
+    private Animation ggAnimation;
+    private int linkStatus;//1未连麦 2申请中 3连麦中
+    private int linkType;//0 双人连麦 1多人连麦
+    private QMUIDialog closeLinkDialog;
+    private Dialog waitLinkDialog;
+    private Dialog selectLinkDialog;
+    private QMUITipDialog linkWaitTip;
+
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -143,7 +164,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         }
 
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
-        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, true));
+        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
     }
 
@@ -195,6 +216,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private boolean isPlaying;
+
     private void stopPlay() {
         mLiveRoom.exitRoom(new ExitRoomCallback() {
             @Override
@@ -207,7 +229,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     Bundle bundle = new Bundle();
                     bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
                     startActivity(ZhiboOverActivity.class, bundle);
-                }else {
+                } else {
                     //群发退出直播间的消息
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
                 }
@@ -261,6 +283,23 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         binding.tvMsg.setOnClickListener(this);
         binding.btnZan.setOnClickListener(this);
         binding.tvFollow.setOnClickListener(this);
+        binding.btnLianmai.setOnClickListener(this);
+    }
+
+    //是否关闭连麦dialog
+    public void showCloseLinkDialog() {
+        closeLinkDialog = new QMUIDialog.MessageDialogBuilder(this)
+                .setTitle("关闭提示")
+                .setMessage("确定要关闭连麦吗？")
+                .addAction("取消", (dialog, index) -> dialog.dismiss())
+                .addAction("确定", (dialog, index) -> {
+                    dialog.dismiss();
+                    //关闭自己的连麦
+                    stopLinkLayout();
+                    //关闭多人连麦的设置弹窗
+                })
+                .show();
+
     }
 
     //发送文字消息
@@ -276,6 +315,365 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         entity.setType(type);
         notifyMsg(entity);
     }
+
+    //发送申请连麦的消息
+    private void toSendLinkMsg() {
+        ZBUserListBean userListBean = new ZBUserListBean();
+        userListBean.userId = UserInfoMgr.getInstance().getUserInfo().getId();
+        userListBean.avatarUrl = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
+        userListBean.nickname = UserInfoMgr.getInstance().getUserInfo().getNickname();
+
+        //发送申请连麦自定义消息
+        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TO_LINK), userListBean, new SendRoomCustomMsgCallback() {
+            @Override
+            public void onError(int errCode, String errInfo) {
+
+            }
+
+            @Override
+            public void onSuccess() {
+                waitLinkDialog();
+            }
+        });
+
+    }
+
+    //等待同意连麦的dialog
+    private int recLenWait = LiveConstants.TO_LINK_TIME;//自己申请连麦倒计时
+    private Timer waitLinkTimer;
+    private TimerTask waitLinkTask;
+
+    private void waitLinkDialog() {
+        linkStatus = 2;
+        if (waitLinkTimer != null) {
+            waitLinkTimer.cancel();
+            waitLinkTimer.purge();
+        }
+        waitLinkTimer = new Timer();
+        waitLinkDialog = new Dialog(this, R.style.CustomerDialog);
+        //填充对话框的布局
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_link_wait_pop, null);
+        //初始化控件
+        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
+        TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
+        tvTime.setText(LiveConstants.TO_LINK_TIME + "S");
+
+        tvCancel.setOnClickListener(lis -> {
+            //给主播发消息取消连麦
+            mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_CANCEL_LINK), "取消连麦", new SendC2CCustomMsgCallback() {
+                @Override
+                public void onError(int errCode, String errInfo) {
+
+                }
+
+                @Override
+                public void onSuccess() {
+                    linkStatus = 1;
+                    //取消
+                    disWaitLinkDialog();
+                }
+            });
+
+
+        });
+
+        //点击外部不可dismiss
+        waitLinkDialog.setCancelable(false);
+        //将布局设置给Dialog
+        waitLinkDialog.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = waitLinkDialog.getWindow();
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        dialogWindow.setWindowAnimations(R.style.DialogBottomAnimation);
+        //获得窗体的属性
+        WindowManager.LayoutParams params = dialogWindow.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;//设置宽高模式，
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;//设置宽高模式，
+        dialogWindow.setAttributes(params);
+        waitLinkDialog.show();//显示对话框
+        recLenWait = LiveConstants.TO_LINK_TIME;
+        //倒计时
+        if (waitLinkTask != null) {
+            waitLinkTask.cancel();
+        }
+        waitLinkTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() { // UI thread
+                    @Override
+                    public void run() {
+                        recLenWait--;
+                        tvTime.setText(recLenWait + "S");
+                        if (recLenWait < 1) {
+                            //不在连麦中的状态下才让状态变回1
+                            if (linkStatus != 3) {
+                                linkStatus = 1;
+                                ToastUtils.showShort("对方未答应");
+                            }
+                            //取消
+                            disWaitLinkDialog();
+                        }
+                    }
+                });
+            }
+        };
+
+        waitLinkTimer.schedule(waitLinkTask, 2000, 1000);//等待时间2秒，停顿时间一秒
+
+    }
+
+    private void disWaitLinkDialog() {
+        if (waitLinkTask != null) {
+            waitLinkTask.cancel();
+            waitLinkTask = null;
+        }
+        if (waitLinkTimer != null) {
+            waitLinkTimer.cancel();
+            waitLinkTimer.purge();
+            waitLinkTimer = null;
+        }
+
+        if (waitLinkDialog != null && waitLinkDialog.isShowing()) {
+            waitLinkDialog.dismiss();
+        }
+    }
+
+    //新的同意拒绝dialog
+    private int recLen = 10;//主播邀请倒计时
+    private Timer selectLinkTimer;
+    private TimerTask selectLinkTask;
+
+    private void selectLinkDialog() {
+        if (selectLinkTimer != null) {
+            selectLinkTimer.cancel();
+            selectLinkTimer.purge();
+        }
+        selectLinkTimer = new Timer();
+        selectLinkDialog = new Dialog(this, R.style.CustomerDialog);
+        //填充对话框的布局
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_link_select_pop, null);
+        //初始化控件
+        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
+        TextView tvSure = (TextView) view.findViewById(R.id.tv_sure);
+        TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
+
+        tvCancel.setOnClickListener(lis -> {
+            //拒绝主播
+            //向主播发消息
+            mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_REFUSE_LINK), "用户拒绝了您的请求", new SendC2CCustomMsgCallback() {
+                @Override
+                public void onError(int errCode, String errInfo) {
+
+                }
+
+                @Override
+                public void onSuccess() {
+                    disSelectLinkDialog();
+                }
+            });
+        });
+        tvSure.setOnClickListener(lis -> {
+            //同意主播
+            //向主播发连麦请求
+            disposable = permissions.request(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+                    .subscribe(granted -> {
+                        if (granted) {
+                            //连麦操作
+                            toSQIMLink();
+                            disSelectLinkDialog();
+                        } else {
+                            ToastUtils.showShort("请先打开摄像头与麦克风权限");
+                        }
+
+                    });
+
+        });
+        //点击外部不可dismiss
+        selectLinkDialog.setCancelable(false);
+        //将布局设置给Dialog
+        selectLinkDialog.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = selectLinkDialog.getWindow();
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        dialogWindow.setWindowAnimations(R.style.DialogBottomAnimation);
+        //获得窗体的属性
+        WindowManager.LayoutParams params = dialogWindow.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;//设置宽高模式，
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;//设置宽高模式，
+        dialogWindow.setAttributes(params);
+        selectLinkDialog.show();//显示对话框
+        recLen = 10;
+        //倒计时
+        selectLinkTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() { // UI thread
+                    @Override
+                    public void run() {
+                        recLen--;
+                        tvTime.setText(recLen + "S");
+                        if (recLen < 1) {
+                            //到时间默认向主播发拒绝消息
+                            mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_REFUSE_LINK), "用户拒绝了您的请求", null);
+                            disSelectLinkDialog();
+                        }
+                    }
+                });
+            }
+        };
+
+        selectLinkTimer.schedule(selectLinkTask, 1000, 1000);//等待时间一秒，停顿时间一秒
+
+    }
+
+    private void disSelectLinkDialog() {
+        if (selectLinkTask != null) {
+            selectLinkTask.cancel();
+            selectLinkTask = null;
+        }
+
+        if (selectLinkTimer != null) {
+            selectLinkTimer.cancel();
+            selectLinkTimer.purge();
+            selectLinkTimer = null;
+        }
+
+        if (selectLinkDialog != null && selectLinkDialog.isShowing()) {
+            selectLinkDialog.dismiss();
+        }
+    }
+
+    //1主播同意连麦会走此法 2主播邀请观众接受会走此法
+    private void toSQIMLink() {
+        if (linkWaitTip == null) {
+            linkWaitTip = new QMUITipDialog.Builder(this)
+                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                    .setTipWord("正在连接中，请等待...")
+                    .create();
+        }
+        linkWaitTip.show();
+
+        //用户请求连麦
+        mLiveRoom.requestJoinAnchor(mLiveInitInfo.userId, new RequestJoinAnchorCallback() {
+            @Override
+            public void onAccept() {
+                if (linkWaitTip != null && linkWaitTip.isShowing()) {
+                    linkWaitTip.dismiss();
+                }
+                Toast.makeText(LiveGuanzhongActivity.this, "主播接受了您的连麦请求，开始连麦", Toast.LENGTH_SHORT).show();
+                //取消等待dialog及定时任务
+                disWaitLinkDialog();
+                //切换布局  主播页面 一分为二
+                startLinkLayout();
+            }
+
+            //拒绝连麦
+            @Override
+            public void onReject(String reason) {
+                if (linkWaitTip != null && linkWaitTip.isShowing()) {
+                    linkWaitTip.dismiss();
+                }
+                linkStatus = 1;
+                Toast.makeText(LiveGuanzhongActivity.this, reason, Toast.LENGTH_SHORT).show();
+                //取消等待dialog的定时任务
+                disWaitLinkDialog();
+            }
+
+            @Override
+            public void onTimeOut() {
+                if (linkWaitTip != null && linkWaitTip.isShowing()) {
+                    linkWaitTip.dismiss();
+                }
+                linkStatus = 1;
+                Toast.makeText(LiveGuanzhongActivity.this, "连麦请求超时，主播没有做出回应", Toast.LENGTH_SHORT).show();
+                disWaitLinkDialog();
+            }
+
+            @Override
+            public void onError(int code, String errInfo) {
+                if (linkWaitTip != null && linkWaitTip.isShowing()) {
+                    linkWaitTip.dismiss();
+                }
+                linkStatus = 1;
+                Toast.makeText(LiveGuanzhongActivity.this, "连麦请求发生错误，" + errInfo, Toast.LENGTH_SHORT).show();
+                disWaitLinkDialog();
+            }
+        });
+    }
+
+    private void startLinkLayout() {
+        //1v1视频连麦切分主播屏幕
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.llVideo.getLayoutParams();
+        lp.height = (int) getResources().getDimension(R.dimen.dp_320);
+        lp.setMargins(0, (int) getResources().getDimension(R.dimen.dp_148), 0, 0);
+        binding.rlAnchor2.setVisibility(View.VISIBLE);
+
+        //设置小主播高斯模糊背景
+        Glide.with(this)
+                .load(UserInfoMgr.getInstance().getUserInfo().getAvatarUrl())
+                .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))
+                .into(binding.ivAnchor2);
+
+        mLiveRoom.startLocalPreview(true, binding.anchor2TxVideoView);
+        //  setCameraMuteImage
+
+        mLiveRoom.joinAnchor(linkType, new JoinAnchorCallback() {
+            @Override
+            public void onError(int errCode, String errInfo) {
+                Toast.makeText(LiveGuanzhongActivity.this, "连麦失败：" + errInfo, Toast.LENGTH_SHORT).show();
+                //停止连麦
+                stopLinkLayout();
+            }
+
+            @Override
+            public void onSuccess() {
+                linkStatus = 3;
+                //如果本来禁止连麦 主播发起连麦 需要设置状态带改
+                binding.btnLianmai.setVisibility(View.VISIBLE);
+                binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmaiing_gz);
+                //展示镜头翻转按钮
+                binding.btnJtfz.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+    }
+
+    private void stopIMLink() {
+        mLiveRoom.quitJoinAnchor(linkType, new QuitAnchorCallback() {
+            @Override
+            public void onError(int errCode, String errInfo) {
+                //退出失败
+            }
+
+            @Override
+            public void onSuccess() {
+                stopLinkLayout();
+            }
+        });
+    }
+
+    private void stopLinkLayout() {
+        linkStatus = 1;
+        binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmai_gz);
+
+        mLiveRoom.stopLocalPreview();
+
+        //切回主播屏幕
+        binding.rlAnchor2.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(0, 0, 0, 0);
+        binding.llVideo.setLayoutParams(lp);
+
+        binding.btnJtfz.setVisibility(View.GONE);
+
+        stopIMLink();
+    }
+
 
     //接受处理文字消息
     public void toRecvTextMsg(TCUserInfo userInfo, String text, int type) {
@@ -308,7 +706,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             }
         });
     }
-
 
     //点赞展示
     private void showDianZan() {
@@ -430,7 +827,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         lastRushTime = secondTime;
     }
 
-
     @Override
     public void onError(int errCode, String errMsg, Bundle extraInfo) {
 
@@ -446,7 +842,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
-    private boolean roomDestroy;
+    private boolean roomDestroy;//房间是否被解散，意味着是否要跳结束页面
 
     @Override
     public void onRoomDestroy(String roomID) {
@@ -506,7 +902,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         toRecvTextMsg(userInfo, message, LiveConstants.IMCMD_TEXT_MSG);
     }
 
-
     @Override
     public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel) {
         if (!roomID.equals(mRoomID)) {
@@ -535,8 +930,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 }, Constant.TIME_DIAN_ZAN_WAIT + 1000);
                 break;
             case LiveConstants.IMCMD_ZB_COMEBACK:
-                //收到主播继续直播的消息
-                //重新拉流
+                //收到主播继续直播的消息重新拉流
                 mLiveRoom.reStartPlay(mLiveInitInfo.pullStreamUrl, binding.mTxVideoView, null);
                 break;
             case LiveConstants.IMCMD_FOLLOW:
@@ -552,48 +946,71 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 binding.tvGgname.setText(jsonMsgBean.nickname);
                 binding.tvGgcontent.setText(jsonMsgBean.content);
 
+                binding.llGonggao.clearAnimation();
                 binding.llGonggao.setVisibility(View.VISIBLE);
-                //公告进入动画
-                binding.llGonggao.startAnimation(AnimUtils.getAnimation(this, R.anim.anim_slice_in_left));
 
-                if (ggTimer == null) {
-                    ggTimer = new Timer();
+                if (ggAnimation == null) {
+                    ggAnimation = AnimUtils.getAnimation(this, R.anim.anim_zbj_gonggao);
                 }
-                if (ggAnimTask != null) {
-                    ggAnimTask.cancel();
-                }
-                ggAnimTask = new TimerTask() {
+
+                //公告进入动画
+                binding.llGonggao.startAnimation(ggAnimation);
+                ggAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
 
                     @Override
-                    public void run() {
-                        //公告退出动画
-                        Animation hideAnim = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_out_left);
-                        binding.llGonggao.startAnimation(hideAnim);
-
-                        hideAnim.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                binding.llGonggao.setVisibility(View.GONE);
-                                ggAnimTask.cancel();
-                                ggTimer.cancel();
-                                ggTimer.purge();
-                                ggAnimTask = null;
-                                ggTimer = null;
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
+                    public void onAnimationEnd(Animation animation) {
+                        binding.llGonggao.setVisibility(View.GONE);
                     }
-                };
-                ggTimer.schedule(ggAnimTask, 3000);
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+
+                //                if (ggTimer == null) {
+                //                    ggTimer = new Timer();
+                //                }
+                //                if (ggAnimTask != null) {
+                //                    ggAnimTask.cancel();
+                //                }
+                //                ggAnimTask = new TimerTask() {
+                //
+                //                    @Override
+                //                    public void run() {
+                //                        //公告退出动画
+                //                        Animation hideAnim = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_out_left);
+                //                        binding.llGonggao.startAnimation(hideAnim);
+                //
+                //                        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+                //                            @Override
+                //                            public void onAnimationStart(Animation animation) {
+                //
+                //                            }
+                //
+                //                            @Override
+                //                            public void onAnimationEnd(Animation animation) {
+                //                                binding.llGonggao.setVisibility(View.GONE);
+                //                                ggAnimTask.cancel();
+                //                                ggTimer.cancel();
+                //                                ggTimer.purge();
+                //                                ggAnimTask = null;
+                //                                ggTimer = null;
+                //                            }
+                //
+                //                            @Override
+                //                            public void onAnimationRepeat(Animation animation) {
+                //
+                //                            }
+                //                        });
+                //                    }
+                //                };
+                //                ggTimer.schedule(ggAnimTask, 3000);
 
                 break;
             default:
@@ -621,9 +1038,25 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 ToastUtil.toastShortMessage(message);
                 finish();
                 break;
+            case LiveConstants.IMCMD_INVITE_LINK://主播邀请连麦
+                //判断是不是当前主播发的
+                if (mLiveInitInfo.userId.equals(senderId)) {
+                    if (message.contains("邀请连麦")) {
+                        //判断是否在要在邀请中
+                        if (selectLinkDialog == null || !selectLinkDialog.isShowing()) {
+                            selectLinkDialog();
+                        }
+                    } else if (message.contains("同意连麦")) {
+                        //说明是用户发起了 主播接受之后的
+                        disWaitLinkDialog();
+                        toSQIMLink();
+                    }
+
+                }
+                break;
+
         }
     }
-
 
     @Override
     protected void onDestroy() {
@@ -634,6 +1067,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             stopPlay();
         }
     }
+
+    private double firstClickLMTime;
 
     @Override
     public void onClick(View v) {
@@ -654,10 +1089,35 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 toDianZan();
                 break;
             case R.id.tv_follow:
-                //关注主播
-                //通知服务器-成功
+                //关注主播 通知服务器
                 showDialog();
                 viewModel.toFollow(mLiveInitInfo.userId);
+                break;
+            case R.id.btn_lianmai:
+                //按钮时间限流
+                long secondTime = System.currentTimeMillis();
+                if (secondTime - firstClickLMTime > 500) {
+                    //如果两次时间间隔大于500毫秒，则去请求
+                    firstClickLMTime = secondTime;
+                    if (linkStatus == 1) {
+                        disposable = permissions.request(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+                                .subscribe(granted -> {
+                                    if (granted) {
+                                        if (linkType == 0) {
+                                            toSendLinkMsg();
+                                        } else {
+                                            //申请多人连麦的pop
+                                        }
+                                    } else {
+                                        ToastUtils.showShort("请先打开摄像头与麦克风权限");
+                                    }
+
+                                });
+                    } else if (linkStatus == 3) {
+                        showCloseLinkDialog();
+                    }
+
+                }
                 break;
             default:
                 break;

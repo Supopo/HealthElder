@@ -218,5 +218,9 @@ dependencies {
     //BasePopupWindow
     api rootProject.ext.dependencies.BasePopup
 
+    //高斯模糊
+    implementation 'jp.wasabeef:glide-transformations:3.3.0'
+
+
 }
 

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+        <com.xaqinren.healthyelders.widget.RadiusCardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_166"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            app:rcv_topLeftRadiu="@dimen/dp_18"
+            app:rcv_topRightRadiu="@dimen/dp_18">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_166"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_28"
+                        android:gravity="center"
+                        android:text="主播正在邀请你连麦"
+                        android:textColor="@color/color_252525"
+                        android:textSize="@dimen/sp_18"
+                        android:textStyle="bold" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="10S"
+                            android:textColor="@color/color_DC3530"
+                            android:textSize="@dimen/sp_14" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="  后自动拒绝邀请"
+                            android:textColor="@color/gray_999"
+                            android:textSize="@dimen/sp_14" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@color/color_EAEAEA" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_52">
+
+                    <TextView
+                        android:id="@+id/tv_cancel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="拒绝"
+                        android:textColor="@color/color_252525"
+                        android:textSize="@dimen/sp_18" />
+
+                    <View
+                        android:layout_width="@dimen/dp_1"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/color_EAEAEA" />
+
+                    <TextView
+                        android:id="@+id/tv_sure"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="接受"
+                        android:textColor="@color/color_DC3530"
+                        android:textSize="@dimen/sp_18" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </com.xaqinren.healthyelders.widget.RadiusCardView>
+
+
+</layout>
