@@ -136,7 +136,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         }
         cutStr = cutStr.substring(lastTopic);
         Matcher matcher = patternTopic.matcher(cutStr);
-        LogUtils.e("VideoPublishEditTextView", "find -> " + cutStr);
         if (matcher.find()) {
             //找到符合规则的
             if (matcher.end() != cutStr.length()) {
@@ -149,7 +148,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     }
 
     private void watchText(Editable text, int start, int lengthBefore, int lengthAfter) {
-        LogUtils.e("VideoPublishEditTextView", "text = " + text.toString() + "\tstart =\t"+start+ "\tlengthBefore =\t"+lengthBefore+ "\tlengthAfter =\t"+lengthAfter);
+//        LogUtils.e("VideoPublishEditTextView", "text = " + text.toString() + "\tstart =\t"+start+ "\tlengthBefore =\t"+lengthBefore+ "\tlengthAfter =\t"+lengthAfter);
         checkTopic(text, start, lengthBefore, lengthAfter);
         checkFriend(text, start, lengthBefore, lengthAfter);
         if (prepareTopic) {
@@ -190,11 +189,42 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
      */
     public void setTopicStr(String topicStr) {
         //提交了一个热点话题，理所应当从当前#开始网后面替换topicStr的文字内容
-        textStart = getSelectionStart();
+        String currentStr = getText().toString();
+
+        //光标位置
+        int selStart = getSelectionStart();
+        String cutStr = currentStr.substring(0, selStart);
+        int textLast = cutStr.lastIndexOf("#");
+        if (textLast==-1)return;
+        if (selStart < textLast) {
+            //光标在#左边
+            return;
+        }
+
+        int currentLast = currentStr.lastIndexOf("#");
+        if (textLast != currentLast) {
+            //不是最后一个topic,不给粘贴
+            return;
+        }
+
+        cutStr = cutStr.substring(textLast);
+        Matcher matcher = patternTopic.matcher(cutStr);
+        if (matcher.find()) {
+            //找到符合规则的
+            if (matcher.end() != cutStr.length()) {
+                //长度不一致，说明中间有符号阻断了
+                return;
+            }
+        }
+
+        textStart = textLast + topicStr.length() - 1;
         textLengthBefore = 0;
         getTextLengthAfter = topicStr.length();
 
-        watchText(getText(), textStart, textLengthBefore, getTextLengthAfter);
+        //可粘贴,在textLast位置,z粘贴topicStr.length - 1
+        Editable editable = getText().replace(textLast, selStart, topicStr);
+//        setText(editable);
+        watchText(editable, textStart, textLengthBefore, getTextLengthAfter);
     }
 
     private void changeTextColor(Editable text,int color,int lengtStart, int lengthBefore, int lengthAfter) {
@@ -205,7 +235,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         }
 
         text.replace(0, text.length(), spanColor);
-        if (lengthBefore > 0) {
+        if (lengthBefore > 0 && lengthAfter == 0) {
             //删除文字，需要吧光标放在删除位置
             setSelection(lengtStart);
         } else if (lengtStart != text.length() - 1 + lengthAfter) {

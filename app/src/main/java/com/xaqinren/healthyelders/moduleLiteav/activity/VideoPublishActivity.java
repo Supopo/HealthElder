@@ -90,12 +90,15 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         publishLocationAdapter.addData(locationBeans);
         //选择封面
         binding.selCover.setOnClickListener(view -> {
-            Intent intent = new Intent(this, ChooseVideoCoverActivity.class);
+            /*Intent intent = new Intent(this, ChooseVideoCoverActivity.class);
             intent.putExtra(UGCKitConstants.VIDEO_PATH, mVideoPath);
             if (!TextUtils.isEmpty(mCoverPath)) {
                 intent.putExtra(UGCKitConstants.VIDEO_COVERPATH, mCoverPath);
             }
-            startActivityForResult(intent, 666);
+            startActivityForResult(intent, 666);*/
+
+            binding.desText.setTopicStr("#你好呀 ");
+
         });
         //选择地址
         binding.includePublish.locationLayout.setOnClickListener(view -> {
@@ -109,12 +112,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.desText.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
             @Override
             public void inputTopic(String str) {
-                Log.e(TAG, "inputTopic -> " + str);
+                Log.e(TAG, "inputTopic 提出话题弹窗 -> " + str);
             }
 
             @Override
             public void inputNoTopic() {
-                Log.e(TAG, "inputNoTopic -> " );
+                Log.e(TAG, "inputNoTopic 隐藏话题弹窗 -> " );
             }
 
             @Override
