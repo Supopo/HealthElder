@@ -110,14 +110,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     //初始化房间信息
     private void initLiveInfo() {
         Glide.with(this).load(mLiveInitInfo.avatarUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.rivPhoto);
-        binding.tvName.setText(mLiveInitInfo.nickname);
 
         //禁止带货
         if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
-        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
     }
 
@@ -156,6 +155,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         mLiveRoom.createRoom(Constant.getRoomId(mLiveInitInfo.liveRoomCode), "", new IMLVBLiveRoomListener.CreateRoomCallback() {
             @Override
             public void onSuccess(String roomId) {
+                isPlaying = true;
                 LogUtils.v(Constant.TAG_LIVE, "直播间创建成功");
                 //去通知服务器开启直播间
                 LogUtils.v(Constant.TAG_LIVE, mLiveRoom.getPushUrl());
@@ -184,22 +184,28 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     }
 
+    private boolean isPlaying;
     private void stopPublish() {
         mLiveRoom.exitRoom(new ExitRoomCallback() {
             @Override
             public void onSuccess() {
-                //去通知服务器退出了直播
-                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentPeopleNum));
+                isPlaying = false;
+                dismissDialog();
+                mLiveRoom.setListener(null);
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出成功");
+                Bundle bundle = new Bundle();
+                bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                startActivity(ZhiboOverActivity.class, bundle);
+                finish();
             }
 
             @Override
             public void onError(int errCode, String e) {
+                dismissDialog();
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
             }
         });
-        mLiveRoom.setListener(null);
     }
 
     public void initEvent() {
@@ -521,6 +527,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     protected void onDestroy() {
         super.onDestroy();
         disposable.dispose();
+        if (isPlaying) {
+            viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentPeopleNum));
+            stopPublish();
+        }
     }
 
     @Override
@@ -536,7 +546,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //通知服务器结束直播
                 //弹窗提示
                 showDialog("结束直播...");
-                stopPublish();
+                //去通知服务器退出了直播
+                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentPeopleNum));
                 break;
             case R.id.tv_msg:
                 startActivity(ZBEditTextDialogActivity.class);
@@ -641,10 +652,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         viewModel.exitSuccess.observe(this, exitSuccess -> {
             if (exitSuccess != null) {
                 if (exitSuccess) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
-                    startActivity(ZhiboOverActivity.class, bundle);
-                    finish();
+                    //退出房间
+                    showDialog("退出房间...");
+                    stopPublish();
                 }
             }
         });

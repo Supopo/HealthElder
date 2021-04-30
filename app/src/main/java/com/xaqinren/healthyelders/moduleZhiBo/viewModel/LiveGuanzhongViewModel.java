@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
@@ -26,6 +27,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> exitSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> zanSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> followSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
 
@@ -66,5 +68,15 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     //离开直播间
     public void leaveLive(String liveRoomRecordId) {
         LiveRepository.getInstance().leaveLive(dismissDialog, exitSuccess, liveRoomRecordId);
+    }
+
+    //用户关注
+    public void toFollow(String userId) {
+        UserRepository.getInstance().toFollow(followSuccess, dismissDialog, userId);
+    }
+
+    //新增粉丝统计
+    public void addFansCount(String liveRoomRecordId) {
+        LiveRepository.getInstance().addFansCount(liveRoomRecordId);
     }
 }

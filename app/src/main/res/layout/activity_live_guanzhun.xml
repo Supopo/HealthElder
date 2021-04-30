@@ -79,26 +79,27 @@
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/iv_zan"
-                    android:layout_width="@dimen/dp_12"
-                    android:layout_height="@dimen/dp_12"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/dp_5"
-                    android:layout_toRightOf="@id/riv_photo"
-                    android:visibility="gone"
-                    android:background="@mipmap/zbj_info_zan" />
 
                 <TextView
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_toRightOf="@id/riv_photo"
                     android:id="@+id/tv_zan_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp_5"
-                    android:layout_toLeftOf="@id/tv_follow"
-                    android:layout_toRightOf="@id/iv_zan"
                     android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10" />
+                <TextView
+                    android:layout_toRightOf="@id/tv_zan_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/tv_follow"
+                    android:singleLine="true"
+                    android:text="本场点赞"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_10" />
 

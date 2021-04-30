@@ -136,9 +136,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
+        if (mLiveInitInfo.hasFollow) {
+            binding.tvFollow.setText("已关注");
+        } else {
+            binding.tvFollow.setText("关注");
+        }
 
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
-        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
     }
 
@@ -190,19 +195,24 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private boolean isPlaying;
-
     private void stopPlay() {
         mLiveRoom.exitRoom(new ExitRoomCallback() {
             @Override
             public void onSuccess() {
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出成功");
-                //群发退出直播间的消息
-                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
-                //去通知服务器离开直播间
-                mLiveRoom.setListener(null);
-                isPlaying = false;
-                finish();
                 dismissDialog();
+                isPlaying = false;
+                if (roomDestroy) {
+                    //跳转结算页面
+                    Bundle bundle = new Bundle();
+                    bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                    startActivity(ZhiboOverActivity.class, bundle);
+                }else {
+                    //群发退出直播间的消息
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
+                }
+                mLiveRoom.setListener(null);
+                finish();
             }
 
             @Override
@@ -436,17 +446,15 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
+    private boolean roomDestroy;
+
     @Override
     public void onRoomDestroy(String roomID) {
         if (!roomID.equals(mRoomID)) {
             return;
         }
-        //主播关闭直播，解散了群
-        //跳转结算页面
-        Bundle bundle = new Bundle();
-        bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
-        startActivity(ZhiboOverActivity.class, bundle);
-        finish();
+        roomDestroy = true;
+        viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
     }
 
     @Override
@@ -648,10 +656,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             case R.id.tv_follow:
                 //关注主播
                 //通知服务器-成功
-                binding.tvFollow.setText("已关注");
-                //群发关注消息
-                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_FOLLOW), "", null);
-                addMsg2List(UserInfoMgr.getInstance().getUserInfo().getNickname(), LiveConstants.SHOW_FOLLOW, LiveConstants.IMCMD_FOLLOW);
+                showDialog();
+                viewModel.toFollow(mLiveInitInfo.userId);
                 break;
             default:
                 break;
@@ -667,6 +673,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             }
         });
         RxSubscriptions.add(disposable);
+        viewModel.dismissDialog.observe(this, dismissDialog -> {
+            if (dismissDialog != null) {
+                if (dismissDialog) {
+                    dismissDialog();
+                }
+            }
+        });
         viewModel.loginRoomSuccess.observe(this, loginSuccess -> {
             if (loginSuccess) {
                 startPlay();
@@ -697,6 +710,22 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             if (exitSuccess != null) {
                 if (exitSuccess) {
                     stopPlay();
+                }
+            }
+        });
+        viewModel.followSuccess.observe(this, isFollow -> {
+            if (isFollow != null) {
+                if (isFollow) {
+                    mLiveInitInfo.hasFollow = !mLiveInitInfo.hasFollow;
+                    if (mLiveInitInfo.hasFollow) {
+                        binding.tvFollow.setText("已关注");
+                        //群发关注消息
+                        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_FOLLOW), "", null);
+                        addMsg2List(UserInfoMgr.getInstance().getUserInfo().getNickname(), LiveConstants.SHOW_FOLLOW, LiveConstants.IMCMD_FOLLOW);
+                    } else {
+                        binding.tvFollow.setText("关注");
+                    }
+                    viewModel.addFansCount(mLiveInitInfo.liveRoomRecordId);
                 }
             }
         });

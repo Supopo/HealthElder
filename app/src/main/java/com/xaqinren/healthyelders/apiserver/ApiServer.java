@@ -151,4 +151,8 @@ public interface ApiServer {
     //直播间结束统计
     @GET("live/overStatistical")
     Observable<MBaseResponse<LiveOverInfo>> liveOverInfo(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //直播新增粉丝统计
+    @GET("live/live/attentionCount")
+    Observable<MBaseResponse<Object>> addFansCount(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
 }

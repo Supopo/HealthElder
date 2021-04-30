@@ -265,4 +265,25 @@ public class LiveRepository {
                 });
     }
 
+    public void addFansCount(String liveRoomRecordId) {
+        userApi.addFansCount(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                    }
+
+                });
+    }
+
 }

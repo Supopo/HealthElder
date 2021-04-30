@@ -8,12 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityZhiboOverBinding;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZhiboOverAdapter;
-import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZB2LinkSettingPop;
-import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverViewModel;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 

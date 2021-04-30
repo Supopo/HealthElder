@@ -22,12 +22,12 @@ public class LiveConstants {
     public static final int SHOW_ET = 1001;                     // 直播间发送弹窗展示
     public static final int SEND_MSG = 10011;                   // 直播间发送消息
     public static final int ZB_LINK_YQ = 2001;                  // 邀请连麦按钮
-    public static final int ZB_LINK_GB = 20010;                 // 关闭全部连麦按钮
+    public static final int ZB_LINK_GB = 200101;                 // 关闭全部连麦按钮
     public static final int ZB_USER_SET = 2002;                 // 用禁言 拉黑设置
     public static final int ZB_SEND_GIFT = 2003;                // 发送礼物通知
-    public static final int SETTING_JINYAN = 1;                 // 禁言
-    public static final int SETTING_LAHEI = 2;                  // 拉黑
-    public static final int SETTING_TICHU = 3;                  // 踢出
+    public static final int SETTING_JINYAN = 200201;                 // 禁言
+    public static final int SETTING_LAHEI = 200202;                  // 拉黑
+    public static final int SETTING_TICHU = 200203;                  // 踢出
     public static final int TYPE_SHOW = 0;                      // 直播间消息列表消息类型 - 展示消息
     public static final int TYPE_DES = -1;                      // 直播间消息列表消息类型 - 介绍消息
 

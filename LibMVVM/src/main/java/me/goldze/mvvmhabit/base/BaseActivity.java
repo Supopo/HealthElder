@@ -302,9 +302,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
                 .setTipWord(TextUtils.isEmpty(title) ? "请稍后" : title)
                 .create();
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
+        dialog.show();
     }
 
     public void showDialog() {
@@ -316,9 +314,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
                 .setTipWord("请稍后")
                 .create();
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
+        dialog.show();
     }
 
     public void dismissDialog() {
