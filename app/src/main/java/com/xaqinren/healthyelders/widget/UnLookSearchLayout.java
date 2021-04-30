@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.tencent.cos.xml.model.tag.CopyObject;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUnLookAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
@@ -30,9 +31,14 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
     private float recyclerMaxWidth;
     private float recyclerItemSize;
     private ChooseUnLookAdapter adapter;
+    private OnSearchChangeListener onSearchChangeListener;
 
     private float layoutWidth;
     private boolean isResize;
+
+    public void setOnSearchChangeListener(OnSearchChangeListener onSearchChangeListener) {
+        this.onSearchChangeListener = onSearchChangeListener;
+    }
 
     public UnLookSearchLayout(@NonNull Context context) {
         super(context);
@@ -108,12 +114,26 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         adapter.remove(bean);
         //需要通知edittext移除
         editText.removeUser();
+        onSearchChangeListener.onUserRemove(bean.id);
         resize();
+    }
+    public void removeUser(int id) {
+        if (liteAvUserBeans.isEmpty())return;
+        for (LiteAvUserBean liteAvUserBean : liteAvUserBeans) {
+            if (liteAvUserBean.id == id) {
+                adapter.remove(liteAvUserBean);
+                liteAvUserBeans.remove(liteAvUserBean);
+                editText.removeUser();
+                resize();
+                return;
+            }
+        }
     }
 
     @Override
     public void onTextChange(String text) {
         //告诉activity，需要搜索内容了
+        onSearchChangeListener.onTextChange(text);
     }
 
     @Override
@@ -154,9 +174,17 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        liteAvUserBeans.remove(position);
+        LiteAvUserBean bean = liteAvUserBeans.remove(position);
         adapter.removeAt(position);
         editText.removeUser();
+        onSearchChangeListener.onUserRemove(bean.id);
         resize();
+    }
+
+
+
+    public interface OnSearchChangeListener{
+        void onTextChange(String text);
+        void onUserRemove(int uId);
     }
 }

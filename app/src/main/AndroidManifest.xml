@@ -187,8 +187,8 @@
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleLiteav.activity.ChooseLocationActivity" />
-        <activity android:name=".moduleLiteav.activity.ChooseLookModeActivity" />
-        <activity android:name=".moduleLiteav.activity.ChooseUnLookActivity" />
+        <activity android:name=".moduleLiteav.activity.ChooseUnLookActivity"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>

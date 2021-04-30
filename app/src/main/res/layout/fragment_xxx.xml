@@ -126,5 +126,14 @@
             android:gravity="center"
             android:text="短视频不给他看"
             android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/tv_menu103"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_30"
+            android:background="@color/green"
+            android:gravity="center"
+            android:text="短视频发布"
+            android:textColor="@color/white" />
     </LinearLayout>
 </layout>
