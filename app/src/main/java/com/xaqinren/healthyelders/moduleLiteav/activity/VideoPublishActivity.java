@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,6 +31,7 @@ import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     private List<TopicBean> topicBeans = new ArrayList<>();
     private PublishLocationAdapter publishLocationAdapter;
     private List<LocationBean> locationBeans = new ArrayList<>();
+    private String TAG = "VideoPublishActivity";
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_video_publish;
@@ -95,12 +99,35 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         //选择地址
         binding.includePublish.locationLayout.setOnClickListener(view -> {
-            Intent intent = new Intent(this, ChooseLocationActivity.class);
-            startActivityForResult(intent, 777);
+//            Intent intent = new Intent(this, ChooseLocationActivity.class);
+//            startActivityForResult(intent, 777);
+            binding.desText.getTopicList();
         });
         binding.includePublish.videoOpenModeLayout.setOnClickListener(view -> {
             showOpenModeDialog();
         });
+        binding.desText.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
+            @Override
+            public void inputTopic(String str) {
+                Log.e(TAG, "inputTopic -> " + str);
+            }
+
+            @Override
+            public void inputNoTopic() {
+                Log.e(TAG, "inputNoTopic -> " );
+            }
+
+            @Override
+            public void inputAt(String str) {
+
+            }
+
+            @Override
+            public void inputNoAt() {
+
+            }
+        });
+
     }
 
     @Override
