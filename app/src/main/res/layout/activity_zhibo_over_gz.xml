@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/zhub_zhibjs_bg"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_64"
+                android:background="@mipmap/icon_close" />
+
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_64"
+                android:text="直播结束"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="本场累计观看人次 : 12.3W"
+                android:textColor="#ffe5e5e5"
+                android:textSize="@dimen/sp_14" />
+
+            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                android:id="@+id/riv_photo"
+                android:layout_width="@dimen/dp_78"
+                android:layout_height="@dimen/dp_78"
+                android:layout_below="@id/tv_count"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_23"
+                android:layout_marginBottom="@dimen/dp_7"
+                android:src="@color/gray_999"
+                app:qmui_border_color="@color/white"
+                app:qmui_border_width="@dimen/dp_1"
+                app:qmui_is_circle="true" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/riv_photo"
+                android:layout_centerHorizontal="true"
+                android:text="苏婆婆"
+                android:textColor="#ffe5e5e5"
+                android:textSize="@dimen/sp_16" />
+
+            <TextView
+                android:id="@+id/tv_giftNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:text="10025"
+                android:textColor="#FFFFEA10"
+                android:textSize="@dimen/sp_16" />
+
+            <TextView
+                android:id="@+id/tv_gift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_giftNum"
+                android:layout_centerHorizontal="true"
+                android:text="获得礼物"
+                android:textColor="#FF787A86"
+                android:textSize="@dimen/sp_12" />
+
+            <LinearLayout
+                android:id="@+id/ll_info1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_gift"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_32"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:layout_width="@dimen/dp_62"
+                    android:layout_height="@dimen/dp_62"
+                    android:src="@color/gray_999"
+                    app:qmui_border_color="@color/white"
+                    app:qmui_border_width="@dimen/dp_1"
+                    app:qmui_is_circle="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:text="桃几"
+                    android:textColor="#FFE5E5E5"
+                    android:textSize="@dimen/sp_13" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_26"
+                    android:background="@drawable/btn_zbjs_gxz"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:text="贡献值2.1W"
+                    android:textColor="#FFE5E5E5"
+                    android:textSize="@dimen/sp_11" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="@dimen/dp_0_5"
+                android:layout_height="@dimen/dp_95"
+                android:layout_alignBottom="@id/ll_info1"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="33dp"
+                android:layout_toLeftOf="@id/ll_info1"
+                android:background="#FFE5E5E5" />
+
+            <LinearLayout
+                android:id="@+id/ll_info2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/ll_info1"
+                android:layout_marginRight="@dimen/dp_23"
+                android:layout_toLeftOf="@id/line1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    android:src="@color/gray_999"
+                    app:qmui_border_color="@color/white"
+                    app:qmui_border_width="@dimen/dp_1"
+                    app:qmui_is_circle="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:text="桃几"
+                    android:textColor="#FFE5E5E5"
+                    android:textSize="@dimen/sp_13" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_26"
+                    android:background="@drawable/btn_zbjs_gxz"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:text="贡献值2.1W"
+                    android:textColor="#FFE5E5E5"
+                    android:textSize="@dimen/sp_11" />
+
+            </LinearLayout>
+
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="@dimen/dp_0_5"
+                android:layout_height="@dimen/dp_95"
+                android:layout_alignBottom="@id/ll_info1"
+                android:layout_marginLeft="@dimen/dp_31"
+                android:layout_toRightOf="@id/ll_info1"
+                android:background="#FFE5E5E5" />
+
+            <LinearLayout
+                android:id="@+id/ll_info3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/ll_info1"
+                android:layout_marginLeft="@dimen/dp_23"
+                android:layout_toRightOf="@id/line2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    android:src="@color/gray_999"
+                    app:qmui_border_color="@color/white"
+                    app:qmui_border_width="@dimen/dp_1"
+                    app:qmui_is_circle="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:text="桃几"
+                    android:textColor="#FFE5E5E5"
+                    android:textSize="@dimen/sp_13" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_26"
+                    android:background="@drawable/btn_zbjs_gxz"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:text="贡献值2.1W"
+                    android:textColor="#FFE5E5E5"
+                    android:textSize="@dimen/sp_11" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_info1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_45"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:text="猜你喜欢"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18" />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never" />
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

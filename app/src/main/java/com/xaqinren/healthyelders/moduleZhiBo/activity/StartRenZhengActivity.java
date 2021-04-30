@@ -30,6 +30,7 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzhengBinding;
@@ -38,7 +39,9 @@ import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -235,6 +238,8 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     private String cid;
     private String name;
 
+    private Map<String, String> hashMap = new HashMap<>();
+
     private void recIDCard(String idCardSide, String filePath) {
         IDCardParams param = new IDCardParams();
         param.setImageFile(new File(filePath));
@@ -250,17 +255,48 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             public void onResult(IDCardResult result) {
                 if (result != null) {
                     LogUtils.v(Constant.TAG_LIVE, result.toString());
-                    cid = result.getIdNumber().toString();
-                    name = result.getName().toString();
-                    LogUtils.v(Constant.TAG_LIVE, cid);
-                    LogUtils.v(Constant.TAG_LIVE, name);
+                    if (result.getImageStatus().equals("normal")) {
+                        if (selectType == 1) {
+                            if (result.getAddress() != null) {
+                                hashMap.put("address", result.getAddress().toString());
+                            }
+                            if (result.getIdNumber() != null) {
+                                hashMap.put("idNumber", result.getIdNumber().toString());
+                            }
+                            if (result.getBirthday() != null) {
+                                hashMap.put("birthday", result.getBirthday().toString());
+                            }
+                            if (result.getName() != null) {
+                                hashMap.put("name", result.getName().toString());
+                            }
+                            if (result.getGender() != null) {
+                                hashMap.put("gender", result.getGender().toString());
+                            }
+                            if (result.getEthnic() != null) {
+                                hashMap.put("ethnic", result.getEthnic().toString());
+                            }
 
+                        }else {
+                            if (result.getIssueAuthority() != null) {
+                                hashMap.put("issueAuthority", result.getIssueAuthority().toString());
+                            }
+                            if (result.getSignDate() != null) {
+                                hashMap.put("signDate", result.getSignDate().toString());
+                            }
+                            if (result.getExpiryDate() != null) {
+                                hashMap.put("expiryDate", result.getExpiryDate().toString());
+                            }
+                        }
+                    }else {
+                        ToastUtil.toastShortMessage("身份证识别失败");
+                    }
                 }
             }
 
             @Override
             public void onError(OCRError error) {
                 LogUtils.v(Constant.TAG_LIVE, error.getMessage());
+                ToastUtil.toastShortMessage("身份证识别失败");
             }
         });
     }

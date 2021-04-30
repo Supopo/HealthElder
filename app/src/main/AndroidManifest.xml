@@ -174,8 +174,9 @@
             android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
             android:theme="@style/EditDialogStyle" />
         <activity android:name=".moduleLiteav.activity.VideoEditerActivity" />
-        <activity android:name=".moduleLiteav.activity.VideoPublishActivity"
-            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".moduleLiteav.activity.VideoPublishActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".moduleLiteav.activity.ChooseVideoCoverActivity" />
         <activity
             android:name=".moduleLogin.activity.SelectLoginActivity"
@@ -187,8 +188,12 @@
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleLiteav.activity.ChooseLocationActivity" />
-        <activity android:name=".moduleLiteav.activity.ChooseUnLookActivity"
-            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".moduleLiteav.activity.ChooseUnLookActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".moduleZhiBo.activity.ZhiboOverGZActivity"
+            android:theme="@style/AnimTheme" />
     </application>
 
 </manifest>
