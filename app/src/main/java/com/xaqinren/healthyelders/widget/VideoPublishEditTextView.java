@@ -40,8 +40,8 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private static Pattern pattern = Pattern.compile("[^\\u4e00-\\u9fa5a-zA-Z0-9]");
     //匹配 #符号和后一个非符号
     private static Pattern patternTopic = Pattern.compile("#[\\u4e00-\\u9fa5a-zA-Z0-9]+");
-    //正常字符
-    private static Pattern patternNormal = Pattern.compile("[^#@][\\u4e00-\\u9fa5a-zA-Z0-9]+[#@]");
+    //@XXX
+    private static Pattern patternAt = Pattern.compile("[@][\\u4e00-\\u9fa5a-zA-Z0-9]+");
     //记录bean
     private List<VideoPublishEditBean> videoPublishEditBeans = new ArrayList<>();
 
@@ -88,21 +88,52 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     @Override
     public void afterTextChanged(Editable editable) {
         if (editable.length() > 0) {
-            //记录最后一个字符
-            /*if (lengthBefore == lengthAfter) {
-                //重新生成的文字
-                return;
-            }*/
             if (prepareTopic){
                 return;
             }
             removeTextChangedListener(this);
             watchText(editable, textStart, textLengthBefore, getTextLengthAfter);
             sendBackTopic(editable);
+            sendBackAt(editable);
             addTextChangedListener(this);
         }
     }
 
+    private void sendBackAt(Editable editable) {
+        char last = editable.charAt(editable.length() - 1);
+        if (last == '@') {
+            //唤起
+            onTextChangeListener.inputAt("@");
+            return;
+        }
+        String text = editable.toString();
+        int lastTopic = text.lastIndexOf("@");
+        if (lastTopic == -1) {
+            //没找到@
+            onTextChangeListener.inputNoAt();
+            return;
+        }
+        //光标位置
+        int lastPoint = text.length();
+        int selStart = getSelectionStart();
+        String cut = text.substring(selStart, lastPoint);
+        if (cut.lastIndexOf("@") != -1) {
+            //说明后面有@符号，则这个属于前面的
+            onTextChangeListener.inputNoAt();
+            return;
+        }
+
+        cut = text.substring(lastTopic, lastPoint);
+        Matcher matcher = patternAt.matcher(cut);
+        if (matcher.find()) {
+            if (matcher.end() != cut.length()) {
+                //长度不一致，说明中间有符号阻断了
+                onTextChangeListener.inputNoAt();
+                return;
+            }
+            onTextChangeListener.inputAt(cut);
+        }
+    }
     /**
      * 向上层发送输入#事件或移动到#XXX范围内
      */
@@ -147,40 +178,53 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         }
     }
 
-    private void watchText(Editable text, int start, int lengthBefore, int lengthAfter) {
-//        LogUtils.e("VideoPublishEditTextView", "text = " + text.toString() + "\tstart =\t"+start+ "\tlengthBefore =\t"+lengthBefore+ "\tlengthAfter =\t"+lengthAfter);
-        checkTopic(text, start, lengthBefore, lengthAfter);
-        checkFriend(text, start, lengthBefore, lengthAfter);
-        if (prepareTopic) {
-            changeTextColor(text,  colorTopic, start, lengthBefore, lengthAfter);
-        }
-        prepareTopic = false;
-        videoPublishEditBeans.clear();
-    }
-
-    private void checkTopic(Editable text, int start, int lengthBefore, int lengthAfter) {
-        Matcher matcher = patternTopic.matcher(text);
-        while (matcher.find()) {
-            int s = matcher.start();
-            int e = matcher.end();
-            prepareTopic = true;
-            VideoPublishEditBean bean = new VideoPublishEditBean();
-            bean.setStartPoint(s);
-            bean.setEndPoint(e);
-            videoPublishEditBeans.add(bean);
-        }
-    }
-
-    private void checkFriend(Editable text, int start, int lengthBefore, int lengthAfter) {
-
-    }
-
     /**
      * 提交@XXX
      * @param atStr
      */
     public void setAtStr(String atStr) {
+        //提交了一个热点话题，理所应当从当前#开始网后面替换topicStr的文字内容
+        String currentStr = getText().toString();
 
+        //光标位置
+        int selStart = getSelectionStart();
+        String cutStr = currentStr.substring(0, selStart);
+        int textLast = cutStr.lastIndexOf("@");
+        if (textLast==-1)return;
+        if (selStart < textLast) {
+            //光标在#左边
+            return;
+        }
+
+        int currentLast = currentStr.lastIndexOf("@");
+        if (textLast != currentLast) {
+            //不是最后一个topic,不给粘贴
+            return;
+        }
+
+        cutStr = cutStr.substring(textLast);
+        Matcher matcher = patternAt.matcher(cutStr);
+        if (matcher.find()) {
+            //找到符合规则的
+            if (matcher.end() != cutStr.length()) {
+                //长度不一致，说明中间有符号阻断了
+                return;
+            }
+        }
+
+        textStart = textLast + atStr.length() - 1;
+        textLengthBefore = 0;
+        getTextLengthAfter = atStr.length();
+
+        VideoPublishEditBean bean = new VideoPublishEditBean();
+        bean.setStartPoint(textStart);
+        bean.setEndPoint(textStart + atStr.length());
+        bean.setTextType(VideoPublishEditBean.AT_TYPE);
+        bean.setContent(atStr);
+        videoPublishEditBeans.add(bean);
+        //可粘贴,在textLast位置,z粘贴topicStr.length - 1
+
+        getText().replace(textLast, selStart, atStr);
     }
 
     /**
@@ -220,11 +264,37 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         textStart = textLast + topicStr.length() - 1;
         textLengthBefore = 0;
         getTextLengthAfter = topicStr.length();
-
         //可粘贴,在textLast位置,z粘贴topicStr.length - 1
-        Editable editable = getText().replace(textLast, selStart, topicStr);
-//        setText(editable);
-        watchText(editable, textStart, textLengthBefore, getTextLengthAfter);
+        getText().replace(textLast, selStart, topicStr);
+    }
+
+
+    private void watchText(Editable text, int start, int lengthBefore, int lengthAfter) {
+//        LogUtils.e("VideoPublishEditTextView", "text = " + text.toString() + "\tstart =\t"+start+ "\tlengthBefore =\t"+lengthBefore+ "\tlengthAfter =\t"+lengthAfter);
+        checkTopic(text, start, lengthBefore, lengthAfter);
+        checkFriend(text, start, lengthBefore, lengthAfter);
+        if (prepareTopic) {
+            changeTextColor(text,  colorTopic, start, lengthBefore, lengthAfter);
+        }
+        prepareTopic = false;
+        videoPublishEditBeans.clear();
+    }
+
+    private void checkTopic(Editable text, int start, int lengthBefore, int lengthAfter) {
+        Matcher matcher = patternTopic.matcher(text);
+        while (matcher.find()) {
+            int s = matcher.start();
+            int e = matcher.end();
+            prepareTopic = true;
+            VideoPublishEditBean bean = new VideoPublishEditBean();
+            bean.setStartPoint(s);
+            bean.setEndPoint(e);
+            videoPublishEditBeans.add(bean);
+        }
+    }
+
+    private void checkFriend(Editable text, int start, int lengthBefore, int lengthAfter) {
+
     }
 
     private void changeTextColor(Editable text,int color,int lengtStart, int lengthBefore, int lengthAfter) {
@@ -260,6 +330,25 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             LogUtils.e(TAG, "热点话题 -> " + str);
             bean.setContent(str);
             bean.setTextType(VideoPublishEditBean.TOPIC_TYPE);
+            videoPublishEditBeans.add(bean);
+        }
+        return videoPublishEditBeans;
+    }
+
+    /**
+     * 获取@列表
+     * @return
+     */
+    public List<VideoPublishEditBean> getAtList() {
+        String text = getText().toString();
+        Matcher matcher = patternAt.matcher(text);
+        List<VideoPublishEditBean> videoPublishEditBeans = new ArrayList<>();
+        while (matcher.find()) {
+            VideoPublishEditBean bean = new VideoPublishEditBean();
+            String str = text.substring(matcher.start(), matcher.end());
+            LogUtils.e(TAG, "@用户 -> " + str);
+            bean.setContent(str);
+            bean.setTextType(VideoPublishEditBean.AT_TYPE);
             videoPublishEditBeans.add(bean);
         }
         return videoPublishEditBeans;

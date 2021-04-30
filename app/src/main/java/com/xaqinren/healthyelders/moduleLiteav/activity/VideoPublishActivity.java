@@ -97,14 +97,14 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             }
             startActivityForResult(intent, 666);*/
 
-            binding.desText.setTopicStr("#你好呀 ");
+            binding.desText.setAtStr("@你好 ");
 
         });
         //选择地址
         binding.includePublish.locationLayout.setOnClickListener(view -> {
 //            Intent intent = new Intent(this, ChooseLocationActivity.class);
 //            startActivityForResult(intent, 777);
-            binding.desText.getTopicList();
+            binding.desText.getAtList();
         });
         binding.includePublish.videoOpenModeLayout.setOnClickListener(view -> {
             showOpenModeDialog();
@@ -122,12 +122,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
             @Override
             public void inputAt(String str) {
-
+                Log.e(TAG, "inputTopic 提出@弹窗 -> " + str);
             }
 
             @Override
             public void inputNoAt() {
-
+                Log.e(TAG, "inputNoTopic 隐藏@弹窗 -> " );
             }
         });
 
