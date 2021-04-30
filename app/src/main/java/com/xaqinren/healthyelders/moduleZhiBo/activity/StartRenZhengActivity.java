@@ -19,6 +19,12 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.baidu.ocr.sdk.OCR;
+import com.baidu.ocr.sdk.OnResultListener;
+import com.baidu.ocr.sdk.exception.OCRError;
+import com.baidu.ocr.sdk.model.AccessToken;
+import com.baidu.ocr.sdk.model.IDCardParams;
+import com.baidu.ocr.sdk.model.IDCardResult;
 import com.bumptech.glide.Glide;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -27,8 +33,11 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzhengBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.utils.GlideEngine;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.io.File;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -62,6 +71,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         tvTitle.setText("实名认证");
         setMoreTextData("我已阅读并同意", "《健康长老视频号直播功能使用条款》", "及", "《健康长老视频号直播行为规范》");
         initEvent();
+        initAccessToken();
     }
 
     private void initEvent() {
@@ -83,8 +93,29 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             selectImage();
         });
         binding.btnNext.setOnClickListener(lis -> {
-            startActivity(StartRenZheng2Activity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("cid", cid);
+            bundle.putString("name", name);
+            startActivity(StartRenZheng2Activity.class, bundle);
         });
+    }
+
+    /**
+     * 以license文件方式初始化
+     */
+    private void initAccessToken() {
+        OCR.getInstance(this).initAccessToken(new OnResultListener<AccessToken>() {
+            @Override
+            public void onResult(AccessToken accessToken) {
+                String token = accessToken.getAccessToken();
+            }
+
+            @Override
+            public void onError(OCRError error) {
+                error.printStackTrace();
+                LogUtils.v(Constant.TAG_LIVE, "licence方式获取token失败" + error.getMessage());
+            }
+        }, getApplicationContext());
     }
 
     //设置一段文字多种点击事件
@@ -189,14 +220,49 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                         if (selectType == 1) {
                             zmPath = photoPath;
                             Glide.with(this).load(photoPath).into(binding.ivZm);
+                            recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, photoPath);
                         } else if (selectType == 2) {
                             fmPath = photoPath;
                             Glide.with(this).load(photoPath).into(binding.ivFm);
+                            recIDCard(IDCardParams.ID_CARD_SIDE_BACK, photoPath);
                         }
                     }
                     break;
             }
         }
+    }
+
+    private String cid;
+    private String name;
+
+    private void recIDCard(String idCardSide, String filePath) {
+        IDCardParams param = new IDCardParams();
+        param.setImageFile(new File(filePath));
+        // 设置身份证正反面
+        param.setIdCardSide(idCardSide);
+        // 设置方向检测
+        param.setDetectDirection(true);
+        // 设置图像参数压缩质量0-100, 越大图像质量越好但是请求时间越长。 不设置则默认值为20
+        param.setImageQuality(20);
+
+        OCR.getInstance(this).recognizeIDCard(param, new OnResultListener<IDCardResult>() {
+            @Override
+            public void onResult(IDCardResult result) {
+                if (result != null) {
+                    LogUtils.v(Constant.TAG_LIVE, result.toString());
+                    cid = result.getIdNumber().toString();
+                    name = result.getName().toString();
+                    LogUtils.v(Constant.TAG_LIVE, cid);
+                    LogUtils.v(Constant.TAG_LIVE, name);
+
+                }
+            }
+
+            @Override
+            public void onError(OCRError error) {
+                LogUtils.v(Constant.TAG_LIVE, error.getMessage());
+            }
+        });
     }
 
     private String getFilePathByUri(Uri uri, Context context) {

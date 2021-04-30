@@ -49,12 +49,12 @@
                 android:textSize="@dimen/sp_14" />
 
             <EditText
+                android:id="@+id/et_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical|right"
-                android:text="桃几"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
@@ -85,6 +85,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <EditText
+                android:id="@+id/et_cid"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -93,7 +94,6 @@
                 android:maxLength="18"
                 android:inputType="numberSigned"
                 android:digits="0123456789xX"
-                android:text="610328199207140714"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 

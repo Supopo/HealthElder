@@ -15,6 +15,8 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
  */
 public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2Binding, BaseViewModel> {
 
+    private Bundle extras;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_start_renzheng2;
@@ -26,8 +28,16 @@ public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2B
     }
 
     @Override
+    public void initParam() {
+        super.initParam();
+        extras = getIntent().getExtras();
+    }
+
+    @Override
     public void initData() {
         super.initData();
+        binding.etCid.setText((String) extras.get("cid"));
+        binding.etName.setText((String) extras.get("name"));
         tvTitle.setText("实名认证");
         binding.btnNext.setOnClickListener(lis -> {
             startActivity(RenZhengSuccessActivity.class);

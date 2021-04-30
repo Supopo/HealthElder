@@ -221,6 +221,9 @@ dependencies {
     //高斯模糊
     implementation 'jp.wasabeef:glide-transformations:3.3.0'
 
+    //文字识别
+    implementation files('libs/ocr-sdk.jar')
+
 
 }
 
