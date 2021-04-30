@@ -1,10 +1,14 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.app.Service;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,12 +16,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tencent.liteav.demo.beauty.BeautyParams;
+import com.tencent.rtmp.TXVodPlayer;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -39,10 +45,13 @@ import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -66,7 +75,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private int mZanNum;    //本次点赞数量
     private TopUserHeadAdapter topHeadAdapter;
     private ZBUserListPop zbUserListPop;
-    private int commentPeopleNum = 0;//评论人数
+    private Set<String> commentSet = new HashSet();
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -116,7 +125,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             binding.btnGoods.setVisibility(View.GONE);
         }
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
-        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, true));
+        binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
     }
 
@@ -185,6 +194,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private boolean isPlaying;
+
     private void stopPublish() {
         mLiveRoom.exitRoom(new ExitRoomCallback() {
             @Override
@@ -473,6 +483,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         if (!roomID.equals(mRoomID)) {
             return;
         }
+        //统计评论人数
+        commentSet.add(userName);
         TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
         toRecvTextMsg(userInfo, message, LiveConstants.IMCMD_TEXT_MSG);
     }
@@ -528,7 +540,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         super.onDestroy();
         disposable.dispose();
         if (isPlaying) {
-            viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentPeopleNum));
+            viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
             stopPublish();
         }
     }
@@ -547,7 +559,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //弹窗提示
                 showDialog("结束直播...");
                 //去通知服务器退出了直播
-                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentPeopleNum));
+                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
                 break;
             case R.id.tv_msg:
                 startActivity(ZBEditTextDialogActivity.class);
@@ -560,6 +572,19 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         super.initViewObservable();
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             switch (eventBean.msgId) {
+                case Constant.NET_SPEED:
+                    if (eventBean.msgType == 1) {
+                        binding.tvNet.setText("网络良好");
+                        binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluolh));
+                    } else if (eventBean.msgType == 2) {
+                        binding.tvNet.setText("网络一般");
+                        binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluoyb));
+                    } else if (eventBean.msgType == 3) {
+                        binding.tvNet.setText("网络卡顿");
+                        binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluokd));
+                    }
+                    break;
+
                 case LiveConstants.SEND_MSG:
                     toSendTextMsg(eventBean.content);
                     break;
@@ -680,5 +705,30 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
             }
         });
+    }
+
+    /**
+     * 二次点击（返回键）退出
+     */
+    private double firstTime;
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                long secondTime = System.currentTimeMillis();
+                if (secondTime - firstTime > 2000) {
+                    //如果两次按键时间间隔大于2秒，则不退出
+                    Toast.makeText(this, "再按一次直播间~", Toast.LENGTH_SHORT).show();
+                    firstTime = secondTime;//更新firstTime
+                    return true;
+                } else {
+                    //弹窗提示
+                    showDialog("结束直播...");
+                    //去通知服务器退出了直播
+                    viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
+                }
+                break;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }
