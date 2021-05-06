@@ -35,6 +35,7 @@ import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -89,6 +90,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.includePublish.locationList.setAdapter(publishLocationAdapter);
         publishLocationAdapter.addData(locationBeans);
         //选择封面
+        Random random = new Random();
         binding.selCover.setOnClickListener(view -> {
             /*Intent intent = new Intent(this, ChooseVideoCoverActivity.class);
             intent.putExtra(UGCKitConstants.VIDEO_PATH, mVideoPath);
@@ -97,7 +99,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             }
             startActivityForResult(intent, 666);*/
 
-            binding.desText.setAtStr("@你好 ");
+            binding.desText.setAtStr("@你好" + random.nextInt(100)+" ");
 
         });
         //选择地址

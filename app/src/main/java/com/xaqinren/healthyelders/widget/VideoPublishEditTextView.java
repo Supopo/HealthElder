@@ -9,8 +9,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatEditText;
@@ -33,6 +36,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
 
     //特殊文字颜色
     private int colorTopic = Color.parseColor("#FF004E");
+    private int colorBlock = Color.parseColor("#00004E");
     private int colorNormal = Color.parseColor("#252525");
     //标记是否正在记录topic内容
     private boolean prepareTopic = false;
@@ -44,6 +48,13 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private static Pattern patternAt = Pattern.compile("[@][\\u4e00-\\u9fa5a-zA-Z0-9]+");
     //记录bean
     private List<VideoPublishEditBean> videoPublishEditBeans = new ArrayList<>();
+    //记录临时@列表一般只有单个
+    private List<VideoPublishEditBean> videoAtEditBeans = new ArrayList<>();
+    //当前删除用的@XX文字集合
+    private int currentDelAtIndex = -1;
+    private boolean isOptionDelAt = false;
+    private boolean isOptionSelection = false;
+
 
     private int textStart,textLengthBefore, getTextLengthAfter;
 
@@ -66,10 +77,27 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     public VideoPublishEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
+
     }
 
     private void initView() {
         addTextChangedListener(this);
+        setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN &&  keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL) {
+                    //删除键
+                    if (checkDelAt()){
+                        return true;
+                    }else{
+                        clearAtOption();
+                        removeAtBean();
+                    }
+                }
+                return false;
+            }
+        });
+
     }
 
 
@@ -83,20 +111,155 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         textStart = start;
         textLengthBefore = lengthBefore;
         getTextLengthAfter = lengthAfter;
+        if (isOptionDelAt) {
+            VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
+            if (start < bean.getStartPoint() || start > bean.getEndPoint()) {
+                isOptionDelAt = false;
+            }
+        }
+
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
         if (editable.length() > 0) {
-            if (prepareTopic){
+            if (prepareTopic || isOptionDelAt){
                 return;
             }
             removeTextChangedListener(this);
+            clearAtOptionNoColor();
             watchText(editable, textStart, textLengthBefore, getTextLengthAfter);
             sendBackTopic(editable);
             sendBackAt(editable);
             addTextChangedListener(this);
         }
+    }
+    private void clearAtOptionNoColor() {
+        if (currentDelAtIndex != -1) {
+            VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
+            bean.setBlock(false);
+        }
+        isOptionDelAt = false;
+        currentDelAtIndex = -1;
+    }
+    /**
+     * 清理@选中操作
+     */
+    private void clearAtOption() {
+        if (currentDelAtIndex != -1) {
+            VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
+            bean.setBlock(false);
+            changeTextAtBlockColor(colorBlock, colorTopic);
+        }
+        isOptionDelAt = false;
+        currentDelAtIndex = -1;
+    }
+
+    private void removeAtBean() {
+        if (currentDelAtIndex != -1) {
+            videoAtEditBeans.remove(currentDelAtIndex);
+        }
+    }
+
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        super.onSelectionChanged(selStart, selEnd);
+        /*if (prepareTopic)return;
+        if (isOptionDelAt) {
+            if (currentDelAtIndex == -1) {
+                isOptionDelAt = false;
+                return;
+            }
+            if (isOptionSelection){
+                isOptionSelection = false;
+                return;
+            }
+             VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
+             if (selStart <= bean.getStartPoint() || selStart > bean.getEndPoint() + 2) {
+                isOptionSelection = true;
+                clearAtOption();
+            }
+        }*/
+    }
+
+    private boolean checkDelAt() {
+        if (isOptionDelAt) {
+            VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
+            //整体删除操作
+            removeAtBean();
+            isOptionDelAt = false;
+            prepareTopic = false;
+            currentDelAtIndex = -1;
+            getText().delete(bean.getStartPoint(), bean.getStartPoint() + bean.getStrLength());
+            setSelection(bean.getStartPoint());
+            return true;
+        }
+        //文字内容
+        String currentStr = getText().toString();
+        //光标位置
+        int selStart = getSelectionStart();
+        String cutStr = currentStr.substring(0, selStart);
+        int textLast = cutStr.lastIndexOf("@");
+        if (textLast==-1){
+            clearAtOption();
+            return false;//非@区间
+        }
+        cutStr = currentStr.substring(textLast, currentStr.length());
+
+        //获取合法的@XX区间
+        Matcher matcher = patternAt.matcher(cutStr);
+        //跟matcher找到的@数量一一对应
+        while (matcher.find()) {
+            /*if (i > videoAtEditBeans.size() - 1) {
+                return false;
+            }*/
+            int i = 0;
+            int s = matcher.start();
+            int e = matcher.end();
+            for (VideoPublishEditBean bean : videoAtEditBeans) {
+                    cutStr = cutStr.substring(s, e);
+                    if (!bean.getContent().trim().startsWith(cutStr.trim())) {
+                        i++;
+                        continue;
+                    }
+                    if (selStart - textLast > bean.getStrLength()) {
+                        i++;
+                        continue;
+                    }
+                    //找到相对应的
+                    bean.setIsBlock(true);
+                    isOptionDelAt = true;
+                    prepareTopic = true;
+                    currentDelAtIndex = i;
+                    changeTextAtBlockColor(colorBlock, colorTopic);
+                    setSelection(bean.getEndPoint());
+                    return true;
+            }
+
+            /*if (s == textLast) {
+                //找到@起始位置,结束位置,检测匹配beanlist的位置,锁住block状态
+                cutStr = currentStr.substring(s, e);
+                VideoPublishEditBean bean = videoAtEditBeans.get(i);
+                if (!bean.getContent().trim().startsWith(cutStr.trim())) {
+                    continue;
+                }
+                if (s < selStart && selStart < e) {
+                    //必须在选择范围内
+                    clearAtOption();
+                    return false;
+                }
+
+                bean.setIsBlock(true);
+                currentDelAtIndex = i;
+                isOptionDelAt = true;
+                prepareTopic = true;
+                changeTextAtBlockColor(colorBlock, colorTopic);
+                setSelection(bean.getEndPoint());
+                return true;
+            }
+            i++;*/
+        }
+        return isOptionDelAt;
     }
 
     private void sendBackAt(Editable editable) {
@@ -212,7 +375,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             }
         }
 
-        textStart = textLast + atStr.length() - 1;
+        textStart = textLast;
         textLengthBefore = 0;
         getTextLengthAfter = atStr.length();
 
@@ -221,10 +384,10 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         bean.setEndPoint(textStart + atStr.length());
         bean.setTextType(VideoPublishEditBean.AT_TYPE);
         bean.setContent(atStr);
-        videoPublishEditBeans.add(bean);
-        //可粘贴,在textLast位置,z粘贴topicStr.length - 1
-
-        getText().replace(textLast, selStart, atStr);
+        bean.setStrLength(getTextLengthAfter);
+        videoAtEditBeans.add(bean);
+        //TODO @功能添加字体颜色未改变
+        getText().replace(textLast, currentStr.length(), atStr);
     }
 
     /**
@@ -274,7 +437,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         checkTopic(text, start, lengthBefore, lengthAfter);
         checkFriend(text, start, lengthBefore, lengthAfter);
         if (prepareTopic) {
-            changeTextColor(text,  colorTopic, start, lengthBefore, lengthAfter);
+            changeTextColor(videoPublishEditBeans, text, colorTopic, start, lengthBefore, lengthAfter);
         }
         prepareTopic = false;
         videoPublishEditBeans.clear();
@@ -294,13 +457,40 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     }
 
     private void checkFriend(Editable text, int start, int lengthBefore, int lengthAfter) {
-
+        if (!videoAtEditBeans.isEmpty()) {
+            prepareTopic = true;
+            Matcher matcher = patternAt.matcher(text);
+            //跟matcher找到的@数量一一对应
+            int i = 0;
+            while (matcher.find()) {
+                if (i>videoAtEditBeans.size()-1)break;
+                int s = matcher.start();
+                int e = matcher.end();
+                String cutStr = text.toString().substring(s, e);
+                VideoPublishEditBean videoAtEditBean = videoAtEditBeans.get(i);
+                if (!videoAtEditBean.getContent().trim().startsWith(cutStr.trim())) {
+                    continue;
+                }
+                videoAtEditBean.setStartPoint(s);
+                videoAtEditBean.setEndPoint(e);
+                i++;
+            }
+            for (VideoPublishEditBean bean : videoAtEditBeans) {
+                videoPublishEditBeans.add(bean);
+            }
+        }
     }
 
-    private void changeTextColor(Editable text,int color,int lengtStart, int lengthBefore, int lengthAfter) {
+    private void changeTextColor(List<VideoPublishEditBean> videoPublishEditBeans,Editable text,int color,int lengtStart, int lengthBefore, int lengthAfter) {
         SpannableStringBuilder spanColor = new SpannableStringBuilder(text);
         spanColor.setSpan(new ForegroundColorSpan(colorNormal), 0, text.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         for (VideoPublishEditBean editBean : videoPublishEditBeans) {
+            if (editBean.isBlock()) {
+                //正在操作
+                spanColor.setSpan(new BackgroundColorSpan(colorBlock), editBean.getStartPoint(), editBean.getEndPoint(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            }else{
+                spanColor.setSpan(new BackgroundColorSpan(0), editBean.getStartPoint(), editBean.getEndPoint(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
             spanColor.setSpan(new ForegroundColorSpan(color), editBean.getStartPoint(), editBean.getEndPoint(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
 
@@ -314,6 +504,23 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         } else {
             setSelection(text.length());
         }
+    }
+
+    private void changeTextAtBlockColor(int blockColor,int atColor) {
+        VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
+        SpannableStringBuilder spanColor = new SpannableStringBuilder(bean.getContent());
+        if (isOptionDelAt) {
+            //正在操作
+            spanColor.setSpan(new ForegroundColorSpan(atColor), 0, bean.getStrLength(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            spanColor.setSpan(new BackgroundColorSpan(blockColor), 0, bean.getStrLength(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }else{
+            //全部换回默认@色
+            spanColor.setSpan(new BackgroundColorSpan(0), 0, bean.getStrLength(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            spanColor.setSpan(new ForegroundColorSpan(atColor), 0, bean.getStrLength(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        prepareTopic = false;
+        getText().replace(bean.getStartPoint(), bean.getEndPoint(), spanColor);
+
     }
 
     /**

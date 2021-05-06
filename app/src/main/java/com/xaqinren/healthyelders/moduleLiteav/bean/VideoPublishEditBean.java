@@ -6,10 +6,26 @@ public class VideoPublishEditBean {
     private int textType;
     private boolean isBlock;
     private String content;
+    private int strLength;
 
     public static final int TOPIC_TYPE = 1;
     public static final int AT_TYPE = 2;
 
+    public boolean isBlock() {
+        return isBlock;
+    }
+
+    public void setBlock(boolean block) {
+        isBlock = block;
+    }
+
+    public int getStrLength() {
+        return strLength;
+    }
+
+    public void setStrLength(int strLength) {
+        this.strLength = strLength;
+    }
 
     public String getContent() {
         return content;
