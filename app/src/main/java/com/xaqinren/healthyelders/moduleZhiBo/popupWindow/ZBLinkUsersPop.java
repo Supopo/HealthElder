@@ -18,11 +18,13 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkShowAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkUsersAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 
@@ -208,38 +210,39 @@ public class ZBLinkUsersPop extends BasePopupWindow {
 
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<ZBUserListBean>>>>() {
                     @Override
                     protected void dismissDialog() {
 
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<Object> data) {
-                        //                        if (page == 1) {
-                        //                            usersAdapter.setNewInstance(bean.getResult().list);
-                        //                        } else {
-                        //                            usersAdapter.addData(bean.getResult().list);
-                        //                        }
-                        //                        if (bean.getResult().list.size() == 0) {
-                        //                            loadMore.loadMoreEnd(true);
-                        //                        } else {
-                        //                            loadMore.loadMoreComplete();
-                        //                        }
-                        //                        if (isLinking) {
-                        //                            for (int i = 0; i < usersAdapter.getData().size(); i++) {
-                        //                                for (AnchorInfo anchorInfo : pusherList) {
-                        //                                    if (usersAdapter.getData().get(i).userId.toString().equals(anchorInfo.userID)) {
-                        //                                        linkPosList.add(i);
-                        //                                    }
-                        //                                }
-                        //
-                        //                            }
-                        //                            for (Integer pos : linkPosList) {
-                        //                                usersAdapter.getData().get(pos).isSelect = true;
-                        //                                usersAdapter.notifyItemChanged(pos, 99);
-                        //                            }
-                        //                        }
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<ZBUserListBean>>> data) {
+                        if (page == 1) {
+                            usersAdapter.setNewInstance(data.getData().content);
+                        } else {
+                            usersAdapter.addData(data.getData().content);
+                        }
+                        if (data.getData().content.size() == 0) {
+                            loadMore.loadMoreEnd(true);
+                        } else {
+                            loadMore.loadMoreComplete();
+                        }
+
+                        if (isLinking) {
+                            for (int i = 0; i < usersAdapter.getData().size(); i++) {
+                                for (AnchorInfo anchorInfo : pusherList) {
+                                    if (usersAdapter.getData().get(i).userId.toString().equals(anchorInfo.userID)) {
+                                        linkPosList.add(i);
+                                    }
+                                }
+
+                            }
+                            for (Integer pos : linkPosList) {
+                                usersAdapter.getData().get(pos).isSelect = true;
+                                usersAdapter.notifyItemChanged(pos, 99);
+                            }
+                        }
                     }
                 });
     }

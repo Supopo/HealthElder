@@ -39,7 +39,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
         LogUtils.v(Constant.TAG_LIVE, "loginInfo.userName: " + loginInfo.userName);
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
-        loginInfo.userSig = "eJw1jtsKgkAYhN9lr8P25B6EbkSIMMSwAr1TXPMnsm2TDKJ3z7QuZ*abYV5ov80887TgDAoIFVJxjBeT*zAOBYh6GM36Xp9La6EeuZFhmgos5wRq0-XQwFQgTAmqOGOSc*lLwn3xH4DTmIdpBvk6j4tNm8TJEClt2a4KXdOmjkXt4Xa8qqpYdiEeVr9iD5fvO0E0x1RT*v4AMdgzHQ__";
+        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
         mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

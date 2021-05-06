@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -83,7 +84,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private Timer ggTimer;
     private TimerTask ggAnimTask;
     private Animation ggAnimation;
-    private int linkStatus;//1未连麦 2申请中 3连麦中
+    private int linkStatus = 1;//1未连麦 2申请中 3连麦中
     private int linkType;//0 双人连麦 1多人连麦
     private QMUIDialog closeLinkDialog;
     private Dialog waitLinkDialog;
@@ -246,46 +247,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         });
     }
 
-    public void initEvent() {
-        //双击点赞事件
-        binding.mTxVideoView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        System.out.println("---------------按下了-------------------");
-                        before_press_Y = event.getY();
-                        before_press_X = event.getX();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        System.out.println("--------------抬起了------------------");
-                        long secondTime = System.currentTimeMillis();
-                        if (secondTime - firstClickTime < 500) {
-                            double now_press_Y = event.getY();
-                            double now_press_X = event.getX();
-                            if (now_press_Y - before_press_Y <= 50 && now_press_X - before_press_X <= 50) {
-                                System.out.println("-------------------处理双击事件----------------------");
-                                //双击点赞
-                                double2DianZan((int) now_press_Y + binding.mTxVideoView.getTop(), (int) now_press_X);
-                            }
-                        }
-
-                        firstClickTime = secondTime;
-                        break;
-
-                }
-                return true;
-            }
-        });
-
-        //退出直播间
-        binding.btnBack.setOnClickListener(this);
-        binding.tvMsg.setOnClickListener(this);
-        binding.btnZan.setOnClickListener(this);
-        binding.tvFollow.setOnClickListener(this);
-        binding.btnLianmai.setOnClickListener(this);
-    }
-
     //是否关闭连麦dialog
     public void showCloseLinkDialog() {
         closeLinkDialog = new QMUIDialog.MessageDialogBuilder(this)
@@ -295,7 +256,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 .addAction("确定", (dialog, index) -> {
                     dialog.dismiss();
                     //关闭自己的连麦
-                    stopLinkLayout();
+                    stopIMLink();
                     //关闭多人连麦的设置弹窗
                 })
                 .show();
@@ -327,11 +288,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TO_LINK), userListBean, new SendRoomCustomMsgCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
-
+                LogUtils.v(Constant.TAG_LIVE, "申请连麦消息：" + errInfo);
             }
 
             @Override
             public void onSuccess() {
+                LogUtils.v(Constant.TAG_LIVE, "申请连麦消息成功");
                 waitLinkDialog();
             }
         });
@@ -561,6 +523,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         mLiveRoom.requestJoinAnchor(mLiveInitInfo.userId, new RequestJoinAnchorCallback() {
             @Override
             public void onAccept() {
+                LogUtils.v(Constant.TAG_LIVE, "主播同意了");
                 if (linkWaitTip != null && linkWaitTip.isShowing()) {
                     linkWaitTip.dismiss();
                 }
@@ -607,10 +570,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     private void startLinkLayout() {
         //1v1视频连麦切分主播屏幕
+        binding.rlAnchor2.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.llVideo.getLayoutParams();
         lp.height = (int) getResources().getDimension(R.dimen.dp_320);
         lp.setMargins(0, (int) getResources().getDimension(R.dimen.dp_148), 0, 0);
-        binding.rlAnchor2.setVisibility(View.VISIBLE);
+        binding.llVideo.setLayoutParams(lp);
 
         //设置小主播高斯模糊背景
         Glide.with(this)
@@ -661,8 +625,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         linkStatus = 1;
         binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmai_gz);
 
-        mLiveRoom.stopLocalPreview();
-
         //切回主播屏幕
         binding.rlAnchor2.setVisibility(View.GONE);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -670,8 +632,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         binding.llVideo.setLayoutParams(lp);
 
         binding.btnJtfz.setVisibility(View.GONE);
-
-        stopIMLink();
     }
 
 
@@ -880,7 +840,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onKickoutJoinAnchor() {
-
+        stopIMLink();
     }
 
     @Override
@@ -1020,21 +980,29 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
-        LogUtils.v(Constant.TAG_LIVE, cmd + "-" + message);
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_FORBIDDER_TALK://禁言
                 //判断是不是主播或者管理员发的
+                if (!senderId.equals(mLiveInitInfo.userId)) {
+                    return;
+                }
                 mLiveInitInfo.setHasSpeech(true);
                 ToastUtil.toastShortMessage(message);
                 break;
             case LiveConstants.IMCMD_CANCEL_FORBIDDER_TALK://取消禁言
                 //判断是不是主播或者管理员发的
+                if (!senderId.equals(mLiveInitInfo.userId)) {
+                    return;
+                }
                 mLiveInitInfo.setHasSpeech(false);
                 ToastUtil.toastShortMessage(message);
                 break;
             case LiveConstants.IMCMD_PUT_BLACK://拉黑/踢出
                 //判断是不是主播或者管理员发的
+                if (!senderId.equals(mLiveInitInfo.userId)) {
+                    return;
+                }
                 ToastUtil.toastShortMessage(message);
                 finish();
                 break;
@@ -1069,6 +1037,47 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private double firstClickLMTime;
+
+    public void initEvent() {
+        //双击点赞事件
+        binding.mTxVideoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        System.out.println("---------------按下了-------------------");
+                        before_press_Y = event.getY();
+                        before_press_X = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        System.out.println("--------------抬起了------------------");
+                        long secondTime = System.currentTimeMillis();
+                        if (secondTime - firstClickTime < 500) {
+                            double now_press_Y = event.getY();
+                            double now_press_X = event.getX();
+                            if (now_press_Y - before_press_Y <= 50 && now_press_X - before_press_X <= 50) {
+                                System.out.println("-------------------处理双击事件----------------------");
+                                //双击点赞
+                                double2DianZan((int) now_press_Y + binding.mTxVideoView.getTop(), (int) now_press_X);
+                            }
+                        }
+
+                        firstClickTime = secondTime;
+                        break;
+
+                }
+                return true;
+            }
+        });
+
+        //退出直播间
+        binding.btnBack.setOnClickListener(this);
+        binding.tvMsg.setOnClickListener(this);
+        binding.btnZan.setOnClickListener(this);
+        binding.tvFollow.setOnClickListener(this);
+        binding.btnLianmai.setOnClickListener(this);
+        binding.btnJtfz.setOnClickListener(this);
+    }
 
     @Override
     public void onClick(View v) {
@@ -1118,6 +1127,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     }
 
                 }
+                break;
+            case R.id.btn_jtfz:
+                    mLiveRoom.switchCamera();
                 break;
             default:
                 break;

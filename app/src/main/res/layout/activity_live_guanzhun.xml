@@ -25,15 +25,15 @@
             android:id="@+id/ll_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/ll_menu"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/dp_54"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:id="@+id/rl_anchor"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="gone">
+                android:layout_weight="1">
 
                 <com.tencent.rtmp.ui.TXCloudVideoView
                     android:id="@+id/mTxVideoView"
@@ -318,8 +318,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
-                android:background="@mipmap/zbj_menu_more_gz"
-                android:onClick="onClick" />
+                android:background="@mipmap/zbj_menu_more_gz" />
 
             <Button
                 android:id="@+id/btn_jtfz"
@@ -327,7 +326,6 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@mipmap/zbj_menu_fz"
-                android:onClick="onClick"
                 android:visibility="gone" />
 
             <Button
@@ -336,7 +334,7 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@mipmap/zbj_menu_lianmai_gz"
-                android:onClick="onClick" />
+                />
 
             <Button
                 android:id="@+id/btn_goods"
@@ -344,7 +342,7 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@mipmap/zbj_menu_goods_gz"
-                android:onClick="onClick" />
+                 />
 
             <Button
                 android:id="@+id/btn_gift"
@@ -352,14 +350,14 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@mipmap/zbj_menu_gift"
-                android:onClick="onClick" />
+                 />
 
             <Button
                 android:id="@+id/btn_zan"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:background="@mipmap/zbj_menu_zan"
-                android:onClick="onClick" />
+                 />
 
         </LinearLayout>
     </RelativeLayout>

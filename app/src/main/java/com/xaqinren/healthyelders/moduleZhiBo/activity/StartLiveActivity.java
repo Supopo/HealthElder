@@ -176,7 +176,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityStop();
         } else if (currentFragmentPosition == 0) {
-            startLiveFragment.onActivityStop();
+            //不能关闭 关闭会影响直播页面的推流
+//            startLiveFragment.onActivityStop();
         }
     }
 
@@ -186,7 +187,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityRestart();
         } else if (currentFragmentPosition == 0) {
-            startLiveFragment.onActivityRestart();
+//            startLiveFragment.onActivityRestart();
         }
     }
 

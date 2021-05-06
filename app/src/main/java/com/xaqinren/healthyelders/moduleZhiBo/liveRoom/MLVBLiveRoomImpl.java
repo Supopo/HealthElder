@@ -43,6 +43,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.RoomIn
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.http.HttpRequests;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.http.HttpResponse;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im.IMMessageMgr;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -124,6 +125,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
     private long mTimeDiff = 0; //客户端和服务器时间差，用户连麦和PK请求超时处理
     private String mPlayUrl;
+    private String mPusherID;//当前主播id
 
     public static MLVBLiveRoom sharedInstance(Context context) {
         synchronized (MLVBLiveRoomImpl.class) {
@@ -480,6 +482,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     final String pushURL = data.pushURL;
                     mSelfPushUrl = data.pushURL;
                     mSelfAccelerateURL = data.accelerateURL;
+                    LogUtils.v(Constant.TAG_LIVE, "主播自己的加速流：" + mSelfAccelerateURL);
                     //3.开始推流
                     startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
                         @Override
@@ -1083,11 +1086,12 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             String content = new Gson().toJson(request, new TypeToken<CommonJson<JoinAnchorRequest>>() {
             }.getType());
             //因为不是按照系统方法创建的所以getRoomCreator可能查不到主播id
-            String toUserID = getRoomCreator(mCurrRoomID) == null ? reason : getRoomCreator(mCurrRoomID);
+            // mPusherID = getRoomCreator(mCurrRoomID) == null ? reason : getRoomCreator(mCurrRoomID);
+            mPusherID = reason;
 
             IMMessageMgr imMessageMgr = mIMMessageMgr;
             if (imMessageMgr != null) {
-                imMessageMgr.sendC2CCustomMessage(toUserID, content, new IMMessageMgr.Callback() {
+                imMessageMgr.sendC2CCustomMessage(mPusherID, content, new IMMessageMgr.Callback() {
                     @Override
                     public void onError(final int code, final String errInfo) {
                         callbackOnThread(new Runnable() {
@@ -1143,18 +1147,15 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             response.data.timestamp = System.currentTimeMillis() - mTimeDiff;
             String content = new Gson().toJson(response, new TypeToken<CommonJson<JoinAnchorResponse>>() {
             }.getType());
-            Log.d("主播处理连麦请求============", content);
             IMMessageMgr imMessageMgr = mIMMessageMgr;
             if (imMessageMgr != null) {
                 imMessageMgr.sendC2CCustomMessage(userID, content, new IMMessageMgr.Callback() {
                     @Override
                     public void onError(final int code, final String errInfo) {
-
                     }
 
                     @Override
                     public void onSuccess(Object... args) {
-                        Log.d("-----------", "发送成功了");
                     }
                 });
             }
@@ -1191,7 +1192,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 //这一步很关键 如过不设置这样 连麦用户（小主播）这边加载的是混流后的直播
                 if (retcode == 0) {
                     String accelerateURL = roomCreator.accelerateURL;
-
+                    LogUtils.v(Constant.TAG_LIVE, "加速流：" + accelerateURL);
                     if (accelerateURL != null && accelerateURL.length() > 0) {
                         mTXLivePlayer.stopPlay(true);
                         mTXLivePlayer.startPlay(accelerateURL, TXLivePlayer.PLAY_TYPE_LIVE_RTMP_ACC);
@@ -1295,7 +1296,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     mTXLivePlayer.stopPlay(true);
                     if (!mBackground) {
                         String mixedPlayUrl = getMixedPlayUrlByRoomID(mCurrRoomID) == null ? mPlayUrl : getMixedPlayUrlByRoomID(mCurrRoomID);
-                        if (mPlayUrl != null && mixedPlayUrl.length() > 0) {
+                        if (mPlayUrl != null && mixedPlayUrl != null) {
                             int playType = getPlayType(mixedPlayUrl);
                             mTXLivePlayer.startPlay(mixedPlayUrl, playType);
                         }
@@ -1311,7 +1312,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             mTXLivePlayer.stopPlay(true);
             if (!mBackground) {
                 String mixedPlayUrl = getMixedPlayUrlByRoomID(mCurrRoomID) == null ? mPlayUrl : getMixedPlayUrlByRoomID(mCurrRoomID);
-                if (mPlayUrl != null && mixedPlayUrl.length() > 0) {
+                if (mPlayUrl != null  && mixedPlayUrl != null) {
                     int playType = getPlayType(mixedPlayUrl);
                     mTXLivePlayer.startPlay(mixedPlayUrl, playType);
                 }
@@ -2151,6 +2152,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         final String content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
         }.getType());
 
+        LogUtils.v(Constant.TAG_LIVE, content);
         IMMessageMgr imMessageMgr = mIMMessageMgr;
         if (imMessageMgr != null) {
             imMessageMgr.sendGroupCustomMessage(content, new IMMessageMgr.Callback() {
@@ -2704,16 +2706,14 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             List<AnchorInfo> anchorList = data.pushers;
 
             for (AnchorInfo anchorInfo : anchorList) {
-
                 //判断是主播
-                if (Constant.getRoomId(anchorInfo.userID).equals(mCurrRoomID)) {
+                if (anchorInfo.userID.equals(mPusherID)) {
                     roomCreator = anchorInfo; //把主播信息传回去
                 }
-
             }
 
 
-            // 旧的判断解析有问题
+            // 旧的判断判断有问题 现在不拿房间列表了
             //            if (excludeRoomCreator) {
             //
             //                if (anchorList != null && anchorList.size() > 0) {

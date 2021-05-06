@@ -19,6 +19,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.ocr.sdk.OCR;
 import com.baidu.ocr.sdk.OnResultListener;
 import com.baidu.ocr.sdk.exception.OCRError;
@@ -57,6 +58,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     private String fmPath;
     private int selectType;//1正面 2反面
     private boolean isAgree = true;
+    private Map<String, String> hashMap = new HashMap<>();
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -97,8 +99,8 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         });
         binding.btnNext.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
-            bundle.putString("cid", cid);
-            bundle.putString("name", name);
+            String json = JSON.toJSONString(hashMap);
+            bundle.putString("json", json);
             startActivity(StartRenZheng2Activity.class, bundle);
         });
     }
@@ -235,11 +237,6 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         }
     }
 
-    private String cid;
-    private String name;
-
-    private Map<String, String> hashMap = new HashMap<>();
-
     private void recIDCard(String idCardSide, String filePath) {
         IDCardParams param = new IDCardParams();
         param.setImageFile(new File(filePath));
@@ -276,7 +273,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                                 hashMap.put("ethnic", result.getEthnic().toString());
                             }
 
-                        }else {
+                        } else {
                             if (result.getIssueAuthority() != null) {
                                 hashMap.put("issueAuthority", result.getIssueAuthority().toString());
                             }
@@ -287,7 +284,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                                 hashMap.put("expiryDate", result.getExpiryDate().toString());
                             }
                         }
-                    }else {
+                    } else {
                         ToastUtil.toastShortMessage("身份证识别失败");
                     }
                 }
