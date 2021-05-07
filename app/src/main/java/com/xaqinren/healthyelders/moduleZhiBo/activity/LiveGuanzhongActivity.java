@@ -92,6 +92,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private Dialog waitLinkDialog;
     private Dialog selectLinkDialog;
     private QMUITipDialog linkWaitTip;
+    private QMUITipDialog showLinkTip;
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
     private int mLinkPos;//多人连麦自己的座位号
@@ -191,7 +192,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         moreLinkList = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             ZBUserListBean userInfoBean = new ZBUserListBean();
-            userInfoBean.nickname = "邀请上麦";
+            userInfoBean.nickname = "请求上麦";
             moreLinkList.add(userInfoBean);
         }
         moreLinkAdapter.setNewInstance(moreLinkList);
@@ -334,6 +335,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private TimerTask waitLinkTask;
 
     private void waitLinkDialog() {
+        if (waitLinkDialog != null && waitLinkDialog.isShowing()) {
+            return;
+        }
+
         linkStatus = 2;
         if (waitLinkTimer != null) {
             waitLinkTimer.cancel();
@@ -436,6 +441,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private TimerTask selectLinkTask;
 
     private void selectLinkDialog() {
+        if (selectLinkDialog != null && selectLinkDialog.isShowing()) {
+            return;
+        }
+
         if (selectLinkTimer != null) {
             selectLinkTimer.cancel();
             selectLinkTimer.purge();
@@ -619,9 +628,19 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         //TODO  setCameraMuteImage
 
 
+        if (showLinkTip == null) {
+            showLinkTip = new QMUITipDialog.Builder(this)
+                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                    .setTipWord("正在连接中...")
+                    .create();
+        }
+        showLinkTip.show();
         mLiveRoom.joinAnchor(linkType, new JoinAnchorCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
+                if (showLinkTip != null && showLinkTip.isShowing()) {
+                    showLinkTip.dismiss();
+                }
                 Toast.makeText(LiveGuanzhongActivity.this, "连麦失败：" + errInfo, Toast.LENGTH_SHORT).show();
                 //停止连麦
                 stopLinkLayout();
@@ -629,6 +648,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
             @Override
             public void onSuccess() {
+                if (showLinkTip != null && showLinkTip.isShowing()) {
+                    showLinkTip.dismiss();
+                }
                 linkStatus = 3;
                 //如果本来禁止连麦 主播发起连麦 需要设置状态带改
                 binding.btnLianmai.setVisibility(View.VISIBLE);
@@ -677,14 +699,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             //关闭1v1视频连麦，切回主播屏幕
             binding.rlAnchor2.setVisibility(View.GONE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            lp.setMargins(0, 0, 0, 0);
+            lp.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.dp_54));
             binding.llVideo.setLayoutParams(lp);
             binding.btnJtfz.setVisibility(View.GONE);
         } else {
-            //关闭多人连麦
-            linkType = 0;
-            binding.rvMoreLink.setVisibility(View.GONE);
-            initMoreLinkData();
+            updateLinkerPos(mLinkPos, null, "请求上麦", null);
         }
 
     }

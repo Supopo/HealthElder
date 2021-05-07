@@ -108,8 +108,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private String waitLinkUserId;//1v1 连麦 操作连麦者
     private Timer toLinkTimer;//连麦等待计时器
     private TimerTask toLinkTask;
-    private QMUITipDialog waitLinkTip;
-    private int linkStatus;//1未邀请 2邀请中
+    private QMUITipDialog waitLinkTip;//等待用户接受连麦
+    private QMUITipDialog showLinkTip;//连麦请求
+    private int linkStatus;//0未操作 1邀请中 2接受邀请连接中
     private boolean mPendingRequest;//是否在操作连麦请求
     private QMUIDialog showCloseLinkDialog;
     private MoreLinkAdapter moreLinkAdapter;
@@ -249,7 +250,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             //切回主播屏幕
             binding.rlAnchor2.setVisibility(View.GONE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            lp.setMargins(0, 0, 0, 0);
+            lp.setMargins(0, 0, 0, (int) getResources().getDimension(R.dimen.dp_54));
             binding.llVideo.setLayoutParams(lp);
         } else {
             //TODO 通知服务器移除某人位置
@@ -307,7 +308,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         @Override
                         public void run() {
                             //20S没有答复关闭等待dialog
-                            if (linkStatus == 2) {
+                            if (linkStatus == 1) {
                                 ToastUtils.showShort("对方未答应");
                                 disWaitTip();
                             }
@@ -420,7 +421,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     }
 
-    private boolean isPlaying;
+    private boolean isPlaying;//直播中
 
     private void stopPublish() {
         mLiveRoom.exitRoom(new ExitRoomCallback() {
@@ -687,7 +688,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     //观众上麦
     @Override
     public void onAnchorEnter(AnchorInfo anchorInfo) {
-        disWaitTip();
+        disLinkTip();
+
         if (mPusherList != null) {
             boolean exist = false;
             for (AnchorInfo item : mPusherList) {
@@ -738,6 +740,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             return;
         }
         mLiveRoom.responseJoinAnchor(anchorInfo.userID, true, "");
+        showLinkTip();
+
         mPendingRequest = true;
     }
 
@@ -1079,8 +1083,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         mLiveRoom.sendC2CCustomMsg(zbUserListBean.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_YQ), String.valueOf(tempKey), null);
                     }
 
-
-                    waitLinkUserId = eventBean.content;
+                    waitLinkUserId = zbUserListBean.userId;
                     showWaitTip();
                     if (toLinkTimer != null) {
                         toLinkTimer.cancel();
@@ -1094,8 +1097,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         @Override
                         public void run() {
                             //主播邀请时间到了
-                            ToastUtil.toastShortMessage("对方未答应");
-                            disWaitTip();
+                            if (linkStatus == 1) {
+                                ToastUtil.toastShortMessage("对方未答应");
+                                disWaitTip();
+                            }
+
                         }
                     };
                     toLinkTimer.schedule(toLinkTask, 11000);//11秒后关闭 比观众端延迟1S
@@ -1297,7 +1303,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private void disWaitTip() {
-        linkStatus = 1;
+        linkStatus = 0;
         waitLinkUserId = "";
         if (toLinkTask != null) {
             toLinkTask.cancel();
@@ -1315,13 +1321,33 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private void showWaitTip() {
-        linkStatus = 2;
+        linkStatus = 1;
         waitLinkTip = new QMUITipDialog.Builder(this)
                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
                 .setTipWord("正在连接中，请等待...")
                 .create();
         waitLinkTip.show();
     }
+
+    private void showLinkTip() {
+        disWaitTip();
+
+        linkStatus = 2;
+        showLinkTip = new QMUITipDialog.Builder(this)
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                .setTipWord("正在连接中...")
+                .create();
+        showLinkTip.show();
+    }
+
+    private void disLinkTip() {
+        linkStatus = 0;
+        if (showLinkTip != null && showLinkTip.isShowing()) {
+            showLinkTip.dismiss();
+        }
+        mPendingRequest = false;
+    }
+
 
     /**
      * 二次点击（返回键）退出
