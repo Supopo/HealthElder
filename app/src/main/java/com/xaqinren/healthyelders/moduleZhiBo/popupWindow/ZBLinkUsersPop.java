@@ -52,9 +52,9 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private TextView tvCloseLink;
     private View line1;
     private View line2;
-    private int type;//0表示点开始申请消息 1表示是邀请连麦
+    private int showType;//0表示点开始申请消息 1表示是邀请连麦
     private int page = 1;
-    private int openType;//1从底部打开 2从多人连麦的座位打开
+    private int openType;//0从底部打开 1从多人连麦的座位打开
     private String liveSceneId;
     private List<AnchorInfo> pusherList;
     private boolean isLinking;
@@ -63,15 +63,16 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private Context context;
     private BaseLoadMoreModule loadMore;
     private TextView tvSetting;
+    private List<Integer> temp;
 
-    public ZBLinkUsersPop(int openType, Context context, String liveSceneId, int type, ZBLinkShowAdapter linksShowAdapter, List<AnchorInfo> pusherList, boolean isLinking) {
+    public ZBLinkUsersPop(int openType, Context context, String liveSceneId, int showType, ZBLinkShowAdapter linksShowAdapter, List<AnchorInfo> pusherList, boolean isLinking) {
         super(context);
         this.openType = openType;
         this.pusherList = pusherList;
         this.isLinking = isLinking;
         this.linksShowAdapter = linksShowAdapter;
         this.context = context;
-        this.type = type;
+        this.showType = showType;
         this.liveSceneId = liveSceneId;
         initView();
         if (linksShowAdapter != null && linksShowAdapter.getData().size() == 0) {
@@ -123,7 +124,7 @@ public class ZBLinkUsersPop extends BasePopupWindow {
         rvLinks.setLayoutManager(new LinearLayoutManager(context));
         rvLinks.setAdapter(linksShowAdapter);
 
-        if (type == 1) {
+        if (showType == 1) {
             showYQLM(context);
         } else {
             showSQXX(context);
@@ -158,7 +159,7 @@ public class ZBLinkUsersPop extends BasePopupWindow {
                     if (usersAdapter.getData().get(position).isSelect) {
                         return;
                     }
-                    RxBus.getDefault().post(new EventBean(LiveConstants.ZB_LINK_YQ, String.valueOf(usersAdapter.getData().get(position).userId), openType));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.ZB_LINK_YQ, usersAdapter.getData().get(position), openType));
                 }
             }
         });
@@ -173,6 +174,7 @@ public class ZBLinkUsersPop extends BasePopupWindow {
         rvUsers.setVisibility(View.VISIBLE);
         rvLinks.setVisibility(View.GONE);
         if (usersAdapter.getData().size() == 0) {
+            page = 1;
             getUserList();
         }
     }
@@ -187,8 +189,6 @@ public class ZBLinkUsersPop extends BasePopupWindow {
         rvLinks.setVisibility(View.VISIBLE);
     }
 
-
-    private List<Integer> linkPosList = new ArrayList<>();
 
     private void getUserList() {
         RetrofitClient.getInstance().create(ApiServer.class).getZBUserList(
@@ -221,15 +221,18 @@ public class ZBLinkUsersPop extends BasePopupWindow {
                         }
 
                         if (isLinking) {
+                            temp = new ArrayList<>();
+
                             for (int i = 0; i < usersAdapter.getData().size(); i++) {
                                 for (AnchorInfo anchorInfo : pusherList) {
-                                    if (usersAdapter.getData().get(i).userId.toString().equals(anchorInfo.userID)) {
-                                        linkPosList.add(i);
+                                    if (usersAdapter.getData().get(i).userId.equals(anchorInfo.userID)) {
+                                        temp.add(i);
                                     }
                                 }
 
                             }
-                            for (Integer pos : linkPosList) {
+                            //刷新已邀请的按钮
+                            for (Integer pos : temp) {
                                 usersAdapter.getData().get(pos).isSelect = true;
                                 usersAdapter.notifyItemChanged(pos, 99);
                             }

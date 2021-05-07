@@ -2,7 +2,6 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -94,6 +94,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private QMUITipDialog linkWaitTip;
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
+    private int mLinkPos;//多人连麦自己的座位号
 
 
     @Override
@@ -459,7 +460,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
                 @Override
                 public void onSuccess() {
-                    disSelectLinkDialog();
+                    dismissSelectLinkDialog();
                 }
             });
         });
@@ -471,7 +472,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                         if (granted) {
                             //连麦操作
                             toSQIMLink();
-                            disSelectLinkDialog();
+                            dismissSelectLinkDialog();
                         } else {
                             ToastUtils.showShort("请先打开摄像头与麦克风权限");
                         }
@@ -508,7 +509,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                         if (recLen < 1) {
                             //到时间默认向主播发拒绝消息
                             mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_REFUSE_LINK), "用户拒绝了您的请求", null);
-                            disSelectLinkDialog();
+                            dismissSelectLinkDialog();
                         }
                     }
                 });
@@ -519,7 +520,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
-    private void disSelectLinkDialog() {
+    private void dismissSelectLinkDialog() {
         if (selectLinkTask != null) {
             selectLinkTask.cancel();
             selectLinkTask = null;
@@ -557,7 +558,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 Toast.makeText(LiveGuanzhongActivity.this, "主播接受了您的连麦请求，开始连麦", Toast.LENGTH_SHORT).show();
                 //取消等待dialog及定时任务
                 disWaitLinkDialog();
-                //切换布局  主播页面 一分为二
+                //开启连麦
                 startLinkLayout();
             }
 
@@ -596,21 +597,27 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private void startLinkLayout() {
-        //1v1视频连麦切分主播屏幕
-        binding.rlAnchor2.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.llVideo.getLayoutParams();
-        lp.height = (int) getResources().getDimension(R.dimen.dp_320);
-        lp.setMargins(0, (int) getResources().getDimension(R.dimen.dp_148), 0, 0);
-        binding.llVideo.setLayoutParams(lp);
+        if (linkType == 0) {
+            //1v1视频连麦切分主播屏幕
+            binding.rlAnchor2.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.llVideo.getLayoutParams();
+            lp.height = (int) getResources().getDimension(R.dimen.dp_320);
+            lp.setMargins(0, (int) getResources().getDimension(R.dimen.dp_148), 0, 0);
+            binding.llVideo.setLayoutParams(lp);
 
-        //设置小主播高斯模糊背景
-        Glide.with(this)
-                .load(UserInfoMgr.getInstance().getUserInfo().getAvatarUrl())
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))
-                .into(binding.ivAnchor2);
+            //设置小主播高斯模糊背景
+            Glide.with(this)
+                    .load(UserInfoMgr.getInstance().getUserInfo().getAvatarUrl())
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))
+                    .into(binding.ivAnchor2);
 
-        mLiveRoom.startLocalPreview(true, binding.anchor2TxVideoView);
-        //  setCameraMuteImage
+            mLiveRoom.startLocalPreview(true, binding.anchor2TxVideoView);
+        } else { //多人连麦
+            TXCloudVideoView txCloudVideoView = (TXCloudVideoView) moreLinkAdapter.getViewByPosition(mLinkPos, R.id.anchor_video_view);
+            mLiveRoom.startLocalPreview(txCloudVideoView);//不传第一个参数 为纯音频
+        }
+        //TODO  setCameraMuteImage
+
 
         mLiveRoom.joinAnchor(linkType, new JoinAnchorCallback() {
             @Override
@@ -626,12 +633,26 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //如果本来禁止连麦 主播发起连麦 需要设置状态带改
                 binding.btnLianmai.setVisibility(View.VISIBLE);
                 binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmaiing_gz);
-                //展示镜头翻转按钮
-                binding.btnJtfz.setVisibility(View.VISIBLE);
+                if (linkType == 0) {
+                    //展示镜头翻转按钮
+                    binding.btnJtfz.setVisibility(View.VISIBLE);
+                }
+                //刷新座位列表
+                updateLinkerPos(mLinkPos, UserInfoMgr.getInstance().getUserInfo().getId(),
+                        UserInfoMgr.getInstance().getUserInfo().getNickname(),
+                        UserInfoMgr.getInstance().getUserInfo().getAvatarUrl());
+
             }
         });
 
 
+    }
+
+    private void updateLinkerPos(int linkerPos, String userId, String nickName, String avatar) {
+        moreLinkAdapter.getData().get(linkerPos).nickname = nickName;
+        moreLinkAdapter.getData().get(linkerPos).avatarUrl = avatar;
+        moreLinkAdapter.getData().get(linkerPos).userId = userId;
+        moreLinkAdapter.notifyItemChanged(linkerPos);
     }
 
     private void stopIMLink() {
@@ -659,7 +680,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             lp.setMargins(0, 0, 0, 0);
             binding.llVideo.setLayoutParams(lp);
             binding.btnJtfz.setVisibility(View.GONE);
-        }else {
+        } else {
             //关闭多人连麦
             linkType = 0;
             binding.rvMoreLink.setVisibility(View.GONE);
@@ -1017,7 +1038,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 if (linkStatus == 3) {
                     //退出连麦
                     stopIMLink();
-                }else {
+                } else {
                     linkType = 0;
                     binding.rvMoreLink.setVisibility(View.GONE);
                     initMoreLinkData();
@@ -1071,6 +1092,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                         toSQIMLink();
                     }
 
+                }
+                break;
+            case LiveConstants.IMCMD_MORE_LINK_YQ://主播邀请多人连麦
+                //主播邀请来上多人语音连麦
+                //储存自己的座位号
+                mLinkPos = Integer.parseInt(message);
+                if (selectLinkDialog == null || !selectLinkDialog.isShowing()) {
+                    selectLinkDialog();
                 }
                 break;
 
@@ -1180,7 +1209,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 }
                 break;
             case R.id.btn_jtfz:
-                    mLiveRoom.switchCamera();
+                mLiveRoom.switchCamera();
                 break;
             default:
                 break;

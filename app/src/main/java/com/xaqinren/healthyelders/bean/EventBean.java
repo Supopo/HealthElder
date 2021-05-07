@@ -11,6 +11,7 @@ public class EventBean<T> {
     public int status;
     public boolean doIt;
     public String content;
+    public Object object;
     public String nickname;
     public T data;
 
@@ -36,9 +37,9 @@ public class EventBean<T> {
     }
 
 
-    public EventBean(int msgId, String content, int status) {
+    public EventBean(int msgId, Object object, int status) {
         this.msgId = msgId;
-        this.content = content;
+        this.object = object;
         this.status = status;
     }
 

@@ -1,8 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -34,6 +32,7 @@ import com.google.gson.Gson;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
+import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -44,7 +43,6 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkShowAdapter;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ChatRoomStatusManageDto;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.SendUserLinkBean;
@@ -64,9 +62,11 @@ import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
@@ -100,12 +100,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private Dialog selectLinkTypeDialog;
     private int linkType = 0;//连麦类型 0-双人 1-多人
     private ZBLinkUsersPop userLinkPopShow;
-    private ZBLinkShowAdapter linksShowAdapter;
+    private ZBLinkShowAdapter waitLinkAdapter;
+    private ZBLinkShowAdapter linksShowAdapter;//连麦消息展示adapter
     private List<AnchorInfo> mPusherList = new ArrayList<>();            // 当前在麦上的主播
     private boolean isLianMai;
-    private boolean hasLinkMsg;
+    private boolean hasLinkMsg;//是否有连麦申请消息
     private String waitLinkUserId;//1v1 连麦 操作连麦者
-    private Timer toLinkTimer;
+    private Timer toLinkTimer;//连麦等待计时器
     private TimerTask toLinkTask;
     private QMUITipDialog waitLinkTip;
     private int linkStatus;//1未邀请 2邀请中
@@ -113,7 +114,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private QMUIDialog showCloseLinkDialog;
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
-    private int setType;//直播间设置类型
+    private int setType;//直播间设置类型 1聊天室
+    private Map<Integer, ZBUserListBean> posMap = new HashMap<>();//多人连麦座位表
+    private int selectLinkPos;//多人连麦-主播自己邀请选择的座位号
+    private Integer linkerPos;//当前上麦者所在位置
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -153,33 +157,58 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         initLinkMsgManger();
     }
 
+    private TXCloudVideoView txCloudVideoView;
+
     private void startLinkLayout(AnchorInfo anchorInfo) {
+
         if (userLinkPopShow != null && userLinkPopShow.isShowing()) {
             userLinkPopShow.dismiss();
         }
 
-        //1v1视频连麦切分主播屏幕
-        binding.rlAnchor2.setVisibility(View.VISIBLE);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.llVideo.getLayoutParams();
-        lp.height = (int) getResources().getDimension(R.dimen.dp_320);
-        lp.setMargins(0, (int) getResources().getDimension(R.dimen.dp_148), 0, 0);
-        binding.llVideo.setLayoutParams(lp);
+        if (linkType == 0) {
+            //1v1视频连麦切分主播屏幕
+            binding.rlAnchor2.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.llVideo.getLayoutParams();
+            lp.height = (int) getResources().getDimension(R.dimen.dp_320);
+            lp.setMargins(0, (int) getResources().getDimension(R.dimen.dp_148), 0, 0);
+            binding.llVideo.setLayoutParams(lp);
 
-        //设置小主播高斯模糊背景
-        Glide.with(this)
-                .load(UserInfoMgr.getInstance().getUserInfo().getAvatarUrl())
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))
-                .into(binding.ivAnchor2);
+            //设置小主播高斯模糊背景
+            Glide.with(this)
+                    .load(UserInfoMgr.getInstance().getUserInfo().getAvatarUrl())
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))
+                    .into(binding.ivAnchor2);
+            txCloudVideoView = binding.anchor2TxVideoView;
+
+        } else {
+            //查询当前上麦者所在座位
+            linkerPos = getMapKey(anchorInfo.userID);
+            if (linkerPos != null) {
+                moreLinkAdapter.getData().get(linkerPos).userId = anchorInfo.userID;
+                moreLinkAdapter.getData().get(linkerPos).nickname = anchorInfo.userName;
+                moreLinkAdapter.getData().get(linkerPos).avatarUrl = anchorInfo.userAvatar;
+                moreLinkAdapter.getData().get(linkerPos).intMuteStatus = 1;
+                moreLinkAdapter.notifyItemChanged(linkerPos);
+
+                //TODO 通知服务器更新座位表
+            } else {
+                return;
+            }
+
+            txCloudVideoView = (TXCloudVideoView) moreLinkAdapter.getViewByPosition(linkerPos, R.id.anchor_video_view);
+        }
 
 
         //开启远端视频渲染
-        mLiveRoom.startRemoteView(anchorInfo, binding.anchor2TxVideoView, new IMLVBLiveRoomListener.PlayCallback() {
+        mLiveRoom.startRemoteView(anchorInfo, txCloudVideoView, new IMLVBLiveRoomListener.PlayCallback() {
             @Override
             public void onBegin() {
                 isLianMai = true;
                 binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmaiing);
-                //群发消息通知大家关闭连麦等待dialog
-                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_LINKING), "", null);
+                if (linkType == 0) {
+                    //群发消息通知大家关闭连麦等待dialog
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_LINKING), "", null);
+                }
             }
 
             @Override
@@ -194,6 +223,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             }
         });
+
     }
 
     //退出连麦操作
@@ -221,6 +251,23 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             lp.setMargins(0, 0, 0, 0);
             binding.llVideo.setLayoutParams(lp);
+        } else {
+            //TODO 通知服务器移除某人位置
+
+            Integer linkPos = getMapKey(anchorInfo.userID);
+            if (linkPos != null) {
+                moreLinkAdapter.getData().get(linkPos).nickname = "邀请上麦";
+                moreLinkAdapter.getData().get(linkPos).avatarUrl = null;
+                moreLinkAdapter.getData().get(linkPos).userId = null;
+                moreLinkAdapter.notifyItemChanged(linkPos);
+                //移除某个座位的人
+                posMap.put(linkPos, null);
+            }
+
+            if (mPusherList.size() == 0) {
+                isLianMai = false;
+                binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmai);
+            }
         }
 
     }
@@ -237,6 +284,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
 
+        waitLinkAdapter = new ZBLinkShowAdapter(R.layout.item_zb_link_show);
         //展示观众申请消息
         linksShowAdapter = new ZBLinkShowAdapter(R.layout.item_zb_link_show);
         linksShowAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
@@ -281,6 +329,17 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         });
         binding.rvMoreLink.setAdapter(moreLinkAdapter);
         initMoreLinkData();
+
+        moreLinkAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            selectLinkPos = position;
+            //判断当前位置是否有人
+            if (TextUtils.isEmpty(moreLinkAdapter.getData().get(position).userId)) {
+                //没人则打开用户连麦弹窗
+                showUserLinkPopShow(1, 1);
+            } else {
+                //TODO 打开用户资料Pop
+            }
+        }));
     }
 
     //初始化多人连麦数据
@@ -290,8 +349,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             ZBUserListBean userInfoBean = new ZBUserListBean();
             userInfoBean.nickname = "邀请上麦";
             moreLinkList.add(userInfoBean);
+            //初始化座位表
+            posMap.put(i + 1, null);
         }
         moreLinkAdapter.setNewInstance(moreLinkList);
+
     }
 
     //初始化聊天列表
@@ -400,7 +462,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             selectLinkTypeDialog.dismiss();
             //TODO 通知服务器关闭多人连麦-群发消息关闭多人连麦
             linkType = 0;
-            showUserLinkPopShow(1);
+            showUserLinkPopShow(0, 1);
         });
         rlMore.setOnClickListener(lis -> {
             //开启多人语音聊天模式
@@ -434,8 +496,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     //展示邀请用户连麦的列表
-    private void showUserLinkPopShow(int openType) {
-        userLinkPopShow = new ZBLinkUsersPop(openType, this, String.valueOf(mLiveInitInfo.liveRoomRecordId), linkType, linksShowAdapter, mPusherList, isLianMai);
+    private void showUserLinkPopShow(int openType, int showType) {
+        userLinkPopShow = new ZBLinkUsersPop(openType, this, String.valueOf(mLiveInitInfo.liveRoomRecordId), showType, linksShowAdapter, mPusherList, isLianMai);
         userLinkPopShow.showPopupWindow();
     }
 
@@ -639,24 +701,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             }
         }
         startLinkLayout(anchorInfo);
+        //从等待列表移除，不用取消座位
+        removeMoreLinkList(anchorInfo.userID);
     }
 
     //观众下麦
     @Override
     public void onAnchorExit(AnchorInfo anchorInfo) {
-        if (linkType == 0) {
-            stopLinkLayout(anchorInfo);
-        }
-        if (mPusherList != null) {
-            Iterator<AnchorInfo> it = mPusherList.iterator();
-            while (it.hasNext()) {
-                AnchorInfo item = it.next();
-                if (anchorInfo.userID.equalsIgnoreCase(item.userID)) {
-                    it.remove();
-                    break;
-                }
-            }
-        }
+        stopLinkLayout(anchorInfo);
     }
 
     @Override
@@ -785,13 +837,18 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
     }
 
-
     @Override
     public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_REFUSE_LINK://观众拒绝主播邀请连麦
                 ToastUtil.toastShortMessage("对方拒绝了您的请求");
+                if (linkType == 1) {
+                    //用户拒绝了上麦从座位表清除
+                    posMap.put(getMapKey(senderId), null);
+                    //从等待列表移除
+                    removeMoreLinkList(senderId);
+                }
                 disWaitTip();
                 break;
             case LiveConstants.IMCMD_CANCEL_LINK://观众取消连麦申请
@@ -878,16 +935,48 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case R.id.btn_lianmai:
                 if (isLianMai || hasLinkMsg) {
                     //有申请消息
-                    showUserLinkPopShow(1);
+                    showUserLinkPopShow(0, hasLinkMsg ? 0 : 1);
                 } else {
                     //没连麦消息或者没连麦时候展示选择类型pop
                     if (linkType == 1) {
-                        showUserLinkPopShow(1);
+                        showUserLinkPopShow(0, 1);
                     } else {
                         selectLinkTypePop();
                     }
                 }
                 break;
+        }
+    }
+
+    //加入等待列表 15S未上麦者会从座位清掉
+    private void addWaitMoreLinkList(ZBUserListBean zbUserListBean) {
+        //15S未上麦会自动踢出座位
+        zbUserListBean.showTime = LiveConstants.WAIT_MORE_LINK;
+
+        //判断是否在列表中
+        boolean hasUser = false;
+        for (int i = 0; i < waitLinkAdapter.getData().size(); i++) {
+            if (waitLinkAdapter.getData().get(i).userId.equals(zbUserListBean.userId)) {
+                hasUser = true;
+            }
+        }
+        if (!hasUser) {
+            //通过申请消息列表的handler一并统计时间
+            //向adapter添加一条数据
+            waitLinkAdapter.addData(zbUserListBean);
+        }
+    }
+
+    //从等待席位移除
+    private void removeMoreLinkList(String userId) {
+        Integer temp = null;
+        for (int i = 0; i < waitLinkAdapter.getData().size(); i++) {
+            if (waitLinkAdapter.getData().get(i).userId.equals(userId)) {
+                temp = i;
+            }
+        }
+        if (temp != null) {
+            waitLinkAdapter.remove(temp);
         }
     }
 
@@ -961,14 +1050,37 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         ToastUtil.toastShortMessage("您正在连麦~");
                         return;
                     }
-                    //邀请用户连麦
+                    ZBUserListBean zbUserListBean = (ZBUserListBean) eventBean.object;
+
+                    //1v1视频连麦
                     if (linkType == 0) {
                         //发自定义消息通知用户来申请连麦
-                        mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_INVITE_LINK), "邀请连麦", null);
-                        waitLinkUserId = eventBean.content;
-                    } else {
-                        //计算空位 发生邀请多人连麦消息
+                        mLiveRoom.sendC2CCustomMsg(zbUserListBean.userId, String.valueOf(LiveConstants.IMCMD_INVITE_LINK), "邀请连麦", null);
+                    } else {//多人连麦
+                        Integer tempKey;
+                        //从座位列表邀请的
+                        if (eventBean.status == 1) {
+                            tempKey = selectLinkPos;
+                            //说明位置没人
+                            if (posMap.get(tempKey) != null) {
+                                tempKey = getEmptyPos();
+                            }
+                        } else {//从底部邀请
+                            tempKey = getEmptyPos();
+                        }
+                        if (tempKey == null) {
+                            ToastUtil.toastShortMessage("没有位置啦");
+                            return;
+                        }
+                        posMap.put(tempKey, zbUserListBean);
+                        //加入占座队列时间到了还未上麦从座位踢出
+                        addWaitMoreLinkList(zbUserListBean);
+                        //通知用户来上麦 并发送座位号
+                        mLiveRoom.sendC2CCustomMsg(zbUserListBean.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_YQ), String.valueOf(tempKey), null);
                     }
+
+
+                    waitLinkUserId = eventBean.content;
                     showWaitTip();
                     if (toLinkTimer != null) {
                         toLinkTimer.cancel();
@@ -1115,6 +1227,32 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         });
     }
 
+    //计算多人连麦当前空位置 此处应该加锁
+    private Integer getEmptyPos() {
+        Integer emptyPos = null;
+        for (Integer key : posMap.keySet()) {
+            if (posMap.get(key) == null) {
+                return key;
+            }
+        }
+        return emptyPos;
+    }
+
+    //通过值获取座位
+    private Integer getMapKey(String value) {
+        Integer key = null;
+        for (Integer getKey : posMap.keySet()) {
+            if (posMap.get(getKey) != null) {
+                ZBUserListBean bean = (ZBUserListBean) posMap.get(getKey);
+                if (bean.userId.equals(value)) {
+                    return getKey;
+                }
+            }
+
+        }
+        return key;
+    }
+
     //是否关闭连麦dialog
     public void showCloseLinkDialog() {
         if (showCloseLinkDialog != null) {
@@ -1237,21 +1375,19 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
 
 
-                //                if (linkType == 1) {
-                //                    //等待用户连麦操作倒计时
-                //                    for (int i = 0; i < waitLinkAdapter.getData().size(); i++) {
-                //                        ZBUserListBean bean = waitLinkAdapter.getData().get(i);
-                //                        Log.e("--", "WaitUserId: " + bean.userId);
-                //                        Log.e("--", "WaitTime: " + bean.showTime);
-                //                        if (bean.showTime > 0) {
-                //                            bean.showTime = bean.showTime - 1;
-                //                        } else {
-                //                            waitLinkAdapter.remove(i);
-                //                            //清除座位表
-                //                            posMap.put(getMapKey(String.valueOf(bean.userId)), "");
-                //                        }
-                //                    }
-                //                }
+                if (linkType == 1) {
+                    //等待用户连麦操作倒计时
+                    for (int i = 0; i < waitLinkAdapter.getData().size(); i++) {
+                        ZBUserListBean bean = waitLinkAdapter.getData().get(i);
+                        if (bean.showTime > 0) {
+                            bean.showTime = bean.showTime - 1;
+                        } else {
+                            waitLinkAdapter.remove(i);
+                            //清除座位表
+                            posMap.put(getMapKey(bean.userId), null);
+                        }
+                    }
+                }
 
 
                 mHandler.postDelayed(runnable, 1000L);

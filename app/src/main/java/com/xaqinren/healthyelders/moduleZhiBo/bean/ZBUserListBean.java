@@ -1,9 +1,11 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import java.io.Serializable;
+
 /**
  * 主播用户列表
  */
-public class ZBUserListBean {
+public class ZBUserListBean implements Serializable {
     public String id;
     public Object createdAt;
     public String merchantId;
