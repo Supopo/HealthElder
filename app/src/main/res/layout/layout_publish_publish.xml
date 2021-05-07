@@ -31,9 +31,16 @@
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14"
                 android:layout_marginLeft="@dimen/dp_46"
-                android:layout_marginTop="@dimen/dp_24" />
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_toLeftOf="@id/right_icon"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/dp_6"
+                android:singleLine="true"
+                android:ellipsize="end"
+                />
 
             <ImageView
+                android:id="@+id/right_icon"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:src="@mipmap/icon_advance"

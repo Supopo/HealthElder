@@ -34,6 +34,7 @@ import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.nostra13.dcloudimageloader.utils.L;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -47,20 +48,15 @@ import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseLocationViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import io.dcloud.common.adapter.util.PermissionUtil;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
-import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.goldze.mvvmhabit.utils.Utils;
 
 /**
  * 选择地址
@@ -80,6 +76,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private Inputtips inputTips ;
     private Disposable eventDisposable;
     private PoiSearch poiSearch;
+    private int locationPageIndex = 1;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -132,6 +129,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                 if (editable.length() > 0) {
                     searchAddress(editable.toString());
                 }else{
+                    locationPageIndex = 1;
                     adapter.setList(selLocationBeans);
                 }
             }
@@ -144,6 +142,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             setResult(Activity.RESULT_OK, intent);
             finish();
         });
+        adapter.getLoadMoreModule().setEnableLoadMore(true);
+        adapter.getLoadMoreModule().setAutoLoadMore(true);
+        adapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
+            getAddressList();
+        });
     }
 
     @Override
@@ -153,8 +156,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         eventDisposable.dispose();
+        poiSearch.setOnPoiSearchListener(null);
+        poiSearch = null;
+        inputTips = null;
+        super.onDestroy();
     }
 
     @Override
@@ -188,15 +194,13 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     }
 
 
-
-
     /**
      * 定位成功后，获取周边地址列表
      */
     private void getAddressList() {
         PoiSearch.Query query = new PoiSearch.Query(poiName, "", cityCode);
-        query.setPageSize(20);// 设置每页最多返回多少条poiitem
-        query.setPageNum(1);//设置查询页码
+        query.setPageSize(15);// 设置每页最多返回多少条poiitem
+        query.setPageNum(locationPageIndex);//设置查询页码
         poiSearch = new PoiSearch(this,query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(lat, lon), 1000));//设置周边搜索的中心点以及半径
@@ -204,7 +208,6 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     }
 
     private void searchAddress(String keyWord) {
-//        showDialog();
         InputtipsQuery inputquery = new InputtipsQuery(keyWord, cityName);
         inputquery.setCityLimit(true);//限制在当前城市
         if (inputTips == null) {
@@ -221,7 +224,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     public void onPoiSearched(PoiResult poiResult, int i) {
         LogUtils.e("Location", JSON.toJSONString(poiResult));
         dismissDialog();
-        selLocationBeans.clear();
+        if (locationPageIndex == 1) selLocationBeans.clear();
         for (PoiItem item : poiResult.getPois()) {
             LocationBean bean = new LocationBean();
             bean.address = item.getSnippet();
@@ -231,7 +234,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             bean.lon = item.getLatLonPoint().getLongitude();
             selLocationBeans.add(bean);
         }
+        locationPageIndex++;
         adapter.setList(selLocationBeans);
+        if (poiResult.getPois().isEmpty()) {
+            adapter.getLoadMoreModule().loadMoreEnd();
+        }
     }
 
     @Override
@@ -242,8 +249,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     @Override
     public void onGetInputtips(List<Tip> list, int i) {
         LogUtils.e("Location", JSON.toJSONString(list));
-        selLocationTipBeans.clear();
         LatLng latLng1 = new LatLng(lat,lon);
+
         for (Tip item : list) {
             LocationBean bean = new LocationBean();
             bean.desName = item.getName();
