@@ -12,6 +12,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_28"
             android:maxWidth="@dimen/dp_160"
@@ -19,11 +20,12 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_11"
             android:paddingRight="@dimen/dp_11"
+            android:textColor="@drawable/color_publish_location"
             android:background="@drawable/bg_publish_location"
-            android:text="@{viewModel.location}"
+            android:text="@{viewModel.desName}"
             android:singleLine="true"
+            android:drawablePadding="@dimen/dp_5"
             android:textSize="@dimen/sp_13"
-            android:textColor="@color/gray_666"
             android:layout_marginRight="@dimen/dp_8"/>
     </RelativeLayout>
 </layout>

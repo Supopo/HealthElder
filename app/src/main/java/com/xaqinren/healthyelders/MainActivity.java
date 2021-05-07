@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -20,6 +21,7 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
@@ -32,6 +34,7 @@ import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -62,6 +65,24 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //初始化Fragment
         initFragment();
         getCacheUserInfo();
+        //开启定位服务
+        boolean check = PermissionUtils.checkPermission(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+        });
+        if (check)
+            LocationService.startService(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean check = PermissionUtils.checkPermissionAllGranted(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+        });
+        if (check)
+            LocationService.startService(this);
     }
 
     private void getCacheUserInfo() {

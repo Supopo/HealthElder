@@ -51,7 +51,10 @@ public class CodeTable {
      * 微信登录成功
      */
     public static final int WX_LOGIN_SUCCESS = 0x100014;
-
+    /**
+     * 定位成功
+     */
+    public static final int LOCATION_SUCCESS = 0x100015;
 
 
 }

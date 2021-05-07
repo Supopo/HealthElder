@@ -91,9 +91,10 @@
         <!-- Maps(高德地图) begin -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="1245f55df04583e53eb0fbf511be9a08" />
+            android:value="c7e12ebf28500a8715e6a77a418f3cb2" />
 
         <service android:name="com.amap.api.location.APSService" />
+        <service android:name=".moduleLiteav.service.LocationService" />
         <!-- 微信分享 配置begin -->
         <meta-data
             android:name="WX_APPID"

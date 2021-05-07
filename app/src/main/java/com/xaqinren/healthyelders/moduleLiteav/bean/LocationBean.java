@@ -1,9 +1,15 @@
 package com.xaqinren.healthyelders.moduleLiteav.bean;
 
-public class LocationBean {
-    public String location;
+import java.io.Serializable;
 
-    public LocationBean(String location) {
-        this.location = location;
-    }
+public class LocationBean implements Serializable {
+    public String desName;
+    public String address;
+    public String distance;
+    public String cityName;
+    public String cityCode;
+    public double lat;
+    public double lon;
+    public boolean isSelLocation;
+    public boolean isLookMore;
 }

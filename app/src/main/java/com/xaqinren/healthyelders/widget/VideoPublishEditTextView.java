@@ -56,6 +56,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private int currentDelAtIndex = -1;
     private boolean isOptionDelAt = false;
     private boolean isOptionSelection = false;
+    private boolean initView = false;
     private int inputMax = 55;
 
     private int textStart,textLengthBefore, getTextLengthAfter;
@@ -106,7 +107,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 return false;
             }
         });
-
+        initView = true;
     }
 
 
@@ -176,6 +177,22 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
+        if (!initView){
+            return;
+        }
+        if (isOptionSelection){
+            isOptionSelection = false;
+            return;
+        }
+        //不让光标移动到@XX中间,如果移动到了需要放到@XX最末尾
+        for (VideoPublishEditBean videoAtEditBean : videoAtEditBeans) {
+            int start = videoAtEditBean.getStartPoint();
+            int end = videoAtEditBean.getEndPoint();
+            if (selStart > start && selStart < end) {
+                isOptionSelection = true;
+                setSelection(end);
+            }
+        }
     }
 
     /**
@@ -457,14 +474,13 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             while (matcher.find()) {
                 if (i>videoAtEditBeans.size()-1)break;
                 int s = matcher.start();
-                int e = matcher.end();
-                String cutStr = text.toString().substring(s, e);
                 VideoPublishEditBean videoAtEditBean = videoAtEditBeans.get(i);
+                String cutStr = text.toString().substring(s, s + videoAtEditBean.getStrLength());
                 if (!videoAtEditBean.getContent().trim().equals(cutStr.trim())) {
                     continue;
                 }
                 videoAtEditBean.setStartPoint(s);
-                videoAtEditBean.setEndPoint(e);
+                videoAtEditBean.setEndPoint(s + videoAtEditBean.getStrLength());
                 i++;
             }
             for (VideoPublishEditBean bean : videoAtEditBeans) {

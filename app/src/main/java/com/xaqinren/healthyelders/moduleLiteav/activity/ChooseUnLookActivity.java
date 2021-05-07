@@ -46,20 +46,12 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     public void initData() {
         super.initData();
         rlTitle.setVisibility(View.GONE);
+        testData();
         initView();
     }
 
     private void initView() {
 
-        for (int i = 0; i < 30; i++) {
-            LiteAvUserBean bean = new LiteAvUserBean("name", "avatar", i);
-            if (i % 10 == 0) {
-                bean.viewType = 0;
-            }else{
-                bean.viewType = 1;
-            }
-            liteAvUserBeans.add(bean);
-        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -71,6 +63,18 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         userAdapter.setOnItemClickListener(this);
     }
 
+    private void testData() {
+        for (int i = 0; i < 30; i++) {
+            LiteAvUserBean bean = new LiteAvUserBean("name", "avatar", i);
+            if (i % 10 == 0) {
+                bean.viewType = 0;
+            }else{
+                bean.viewType = 1;
+            }
+            liteAvUserBeans.add(bean);
+        }
+
+    }
     @Override
     public void onTextChange(String text) {
         if (!StringUtils.isEmpty(text)) {
