@@ -39,6 +39,8 @@
                     android:id="@+id/mTxVideoView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_alignTop="@id/rv_moreLink"
+                    android:layout_toLeftOf="@id/rv_moreLink"
                     android:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -48,7 +50,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/dp_3"
-                    android:layout_marginBottom="@dimen/dp_54"
                     android:overScrollMode="never"
                     android:visibility="gone" />
 
@@ -223,6 +224,7 @@
 
             <!--头像 人数-->
             <RelativeLayout
+                android:id="@+id/rl_count"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentRight="true"
@@ -268,6 +270,34 @@
                     android:background="@mipmap/icon_close"
                     android:onClick="onClick" />
             </RelativeLayout>
+
+            <!-- 更多展示-->
+            <LinearLayout
+                android:id="@+id/ll_moreZb"
+                android:layout_width="@dimen/dp_104"
+                android:layout_height="@dimen/dp_24"
+                android:layout_below="@id/rl_count"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@drawable/bg_more_zb"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="@dimen/dp_7"
+                    android:layout_width="@dimen/dp_17"
+                    android:layout_height="@dimen/dp_10"
+                    android:background="@mipmap/icon_gdzb"
+                    android:layout_marginRight="@dimen/dp_5" />
+
+                <TextView
+                    android:text="更多直播"
+                    android:id="@+id/tv_net"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_DDDBDB"
+                    android:textSize="@dimen/sp_12" />
+            </LinearLayout>
             <!-- 消息列表-->
             <ListView
                 android:id="@+id/lv_msg"
@@ -293,7 +323,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

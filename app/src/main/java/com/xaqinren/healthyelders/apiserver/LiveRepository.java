@@ -9,6 +9,7 @@ import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 
 import java.util.HashMap;
 
@@ -285,5 +286,31 @@ public class LiveRepository {
 
                 });
     }
+
+    public void setZBStatus(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> setSuccess, ZBSettingBean zbSettingBean) {
+        String json = JSON.toJSONString(zbSettingBean);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setZBStatus(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        setSuccess.postValue(true);
+                    }
+
+                });
+    }
+
 
 }

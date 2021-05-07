@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,14 +40,17 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkShowAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ChatRoomStatusManageDto;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.SendUserLinkBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
@@ -107,6 +111,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private int linkStatus;//1未邀请 2邀请中
     private boolean mPendingRequest;//是否在操作连麦请求
     private QMUIDialog showCloseLinkDialog;
+    private MoreLinkAdapter moreLinkAdapter;
+    private List<ZBUserListBean> moreLinkList;
+    private int setType;//直播间设置类型
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -262,6 +269,29 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             }
         });
+
+        //初始化多人连麦座位表
+        moreLinkAdapter = new MoreLinkAdapter(R.layout.item_more_link);
+        //垂直布局 禁止滑动
+        binding.rvMoreLink.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        binding.rvMoreLink.setAdapter(moreLinkAdapter);
+        initMoreLinkData();
+    }
+
+    //初始化多人连麦数据
+    private void initMoreLinkData() {
+        moreLinkList = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            ZBUserListBean userInfoBean = new ZBUserListBean();
+            userInfoBean.nickname = "邀请上麦";
+            moreLinkList.add(userInfoBean);
+        }
+        moreLinkAdapter.setNewInstance(moreLinkList);
     }
 
     //初始化聊天列表
@@ -368,12 +398,20 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         RelativeLayout rlMore = (RelativeLayout) view.findViewById(R.id.rl_more);
         rlOne.setOnClickListener(lis -> {
             selectLinkTypeDialog.dismiss();
-            //通知服务器关闭多人连麦-群发消息关闭多人连麦
+            //TODO 通知服务器关闭多人连麦-群发消息关闭多人连麦
             linkType = 0;
             showUserLinkPopShow(1);
         });
         rlMore.setOnClickListener(lis -> {
-
+            //开启多人语音聊天模式
+            //1.用户选位置上号 2.用户随机上位 3.主播按位置邀请 4.主播随机邀请上位
+            //先向服务器发送请求
+            setType = LiveConstants.ZBJ_SET_KQLTS;
+            ZBSettingBean zbSettingBean = new ZBSettingBean();
+            zbSettingBean.setLiveRoomId(mLiveInitInfo.liveRoomId);
+            zbSettingBean.setCanMicIng(true);
+            showDialog();
+            viewModel.setZBStatus(zbSettingBean);
         });
 
         //点击外部不dismiss
@@ -829,7 +867,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 zbUserListPop.showPopupWindow();
                 break;
             case R.id.btn_back:
-                //通知服务器结束直播
                 //弹窗提示
                 showDialog("结束直播...");
                 //去通知服务器退出了直播
@@ -925,11 +962,12 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         return;
                     }
                     //邀请用户连麦
-                    //视频连麦
                     if (linkType == 0) {
                         //发自定义消息通知用户来申请连麦
                         mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_INVITE_LINK), "邀请连麦", null);
                         waitLinkUserId = eventBean.content;
+                    } else {
+                        //计算空位 发生邀请多人连麦消息
                     }
                     showWaitTip();
                     if (toLinkTimer != null) {
@@ -1028,6 +1066,53 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
             }
         });
+
+        viewModel.setSuccess.observe(this, setSuccess -> {
+            if (setSuccess != null && setSuccess) {
+                switch (setType) {
+                    case LiveConstants.ZBJ_SET_KQLTS:
+                        if (selectLinkTypeDialog != null && selectLinkTypeDialog.isShowing()) {
+                            selectLinkTypeDialog.dismiss();
+                        }
+                        //开启多人聊天
+                        linkType = 1;
+                        binding.rvMoreLink.setVisibility(View.VISIBLE);
+                        //群发消息
+                        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_OPEN_MORE_LINK), "", null);
+
+                        break;
+                    case LiveConstants.ZBJ_SET_GBLTS:
+                        if (userLinkPopShow != null && userLinkPopShow.isShowing()) {
+                            userLinkPopShow.dismiss();
+                        }
+                        //关闭连麦操作
+                        if (mPusherList.size() > 0) {
+                            String ids = "";
+                            //不能再便利中移除list故此用新的
+                            List<AnchorInfo> tempList = new ArrayList<>();
+                            tempList.addAll(mPusherList);
+                            for (AnchorInfo anchorInfo : tempList) {
+                                //踢掉连麦者
+                                mLiveRoom.kickoutJoinAnchor(anchorInfo.userID);
+                                anchorInfo.isLeave = true;//统一上传服务器，在onAnchorExit中不用再通知服务器
+                                onAnchorExit(anchorInfo);
+                                ids = anchorInfo.userID + "," + ids;
+                            }
+                        }
+
+                        //关闭多人聊天
+                        linkType = 0;
+                        binding.rvMoreLink.setVisibility(View.GONE);
+                        //群发消息关闭多人连麦
+                        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_CLOSE_MORE_LINK), "", null);
+
+                        //刷新adapter状态
+                        initMoreLinkData();
+                        break;
+                }
+                setType = 0;
+            }
+        });
     }
 
     //是否关闭连麦dialog
@@ -1040,43 +1125,33 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     .setMessage("确定关闭连麦吗？")
                     .addAction("取消", (dialog, index) -> dialog.dismiss())
                     .addAction("确定", (dialog, index) -> {
+
+                        if (linkType == 1) {
+                            //是多人连麦需先通知服务器关闭多人连麦状态
+                            setType = LiveConstants.ZBJ_SET_GBLTS;
+                            ZBSettingBean zbSettingBean = new ZBSettingBean();
+                            zbSettingBean.setCanMicIng(false);
+                            zbSettingBean.setLiveRoomId(mLiveInitInfo.liveRoomId);
+                            viewModel.setZBStatus(zbSettingBean);
+                        }
+
+
                         //关闭连麦操作
                         if (userLinkPopShow.isShowing()) {
                             userLinkPopShow.dismiss();
                         }
 
-                        String ids = "";
-                        //不能再便利中移除list故此用新的
-                        List<AnchorInfo> tempList = new ArrayList<>();
-                        tempList.addAll(mPusherList);
-                        for (AnchorInfo anchorInfo : tempList) {
-                            //踢掉连麦者
-                            mLiveRoom.kickoutJoinAnchor(anchorInfo.userID);
-                            anchorInfo.isLeave = true;//统一上传服务器，在onAnchorExit中不用再通知服务器
-                            onAnchorExit(anchorInfo);
-                            ids = anchorInfo.userID + "," + ids;
+                        if (mPusherList.size() > 0) {
+                            //不能再遍历中移除list故此用新的
+                            List<AnchorInfo> tempList = new ArrayList<>();
+                            tempList.addAll(mPusherList);
+                            for (AnchorInfo anchorInfo : tempList) {
+                                //踢掉连麦者
+                                mLiveRoom.kickoutJoinAnchor(anchorInfo.userID);
+                                onAnchorExit(anchorInfo);
+                            }
                         }
 
-                        if (linkType == 1) {
-                            //                        //通知服务器修改多人的座位号
-                            //                        updateLinkPosition("leave", ids, 0);
-                            //                        //关闭多人连麦
-                            //                        linkType = 0;
-                            //                        rvMoreLink.setVisibility(View.GONE);
-                            //                        //群发消息关闭多人连麦
-                            //                        mLiveRoom.sendRoomCustomMsg(String.valueOf(TCConstants.IMCMD_CLOSE_MORE_LINK), "", null);
-                            //                        setMoreLinkStatus();
-                            //
-                            //                        //刷新adapter状态
-                            //                        moreLinkList = new ArrayList<>();
-                            //                        for (int i = 0; i < 6; i++) {
-                            //                            UserInfoBean userInfoBean = new UserInfoBean();
-                            //                            userInfoBean.nickname = "邀请上麦";
-                            //                            userInfoBean.intMuteStatus = 1;
-                            //                            moreLinkList.add(userInfoBean);
-                            //                        }
-                            //                        moreLinkAdapter.setNewInstance(moreLinkList);
-                        }
                         dialog.dismiss();
                     })
                     .show();

@@ -11,6 +11,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -32,6 +33,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> exitSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> zanSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> setSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> startLiveInfo = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
 
@@ -44,7 +46,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
         //3887
         loginInfo.userSig = "eJw9Tk0LgjAY-i87h73bcptCh4i6GJQkVtBF2ooXWzodEUT-vaHR8fl*3qTY7CPzarEzJGVCqhnAZCCfpiMpYRGQEfe6rtoWNUlp8PCECZCjgto8PF5xCFCuBOVScZAJxJxT9i-AW9CbjLv8mDXnael7BdXF2*RgEXPn3L3EYh1vdyfWrBZ2Wc9-SY82vKOCAVNhXHy*YwYz4w__";
         //4545
-//        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
+        //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
         mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
@@ -83,5 +85,10 @@ public class LiveZhuboViewModel extends BaseViewModel {
     //直播间点赞
     public void toZanLive(String liveRoomRecordId, String count) {
         LiveRepository.getInstance().toZanLive(dismissDialog, zanSuccess, liveRoomRecordId, count);
+    }
+
+    //直播间设置
+    public void setZBStatus(ZBSettingBean zbSettingBean) {
+        LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, zbSettingBean);
     }
 }

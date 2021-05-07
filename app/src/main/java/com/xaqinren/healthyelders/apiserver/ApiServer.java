@@ -142,7 +142,7 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("live/shieldingUser")
     Observable<MBaseResponse<Object>> setUserBlack(@Header("Authorization") String authorization,
-                                                    @Body RequestBody body);
+                                                   @Body RequestBody body);
 
     //观众-离开直播间
     @GET("live/leaveRoom")
@@ -155,4 +155,10 @@ public interface ApiServer {
     //直播新增粉丝统计
     @GET("live/live/attentionCount")
     Observable<MBaseResponse<Object>> addFansCount(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //直播间设置
+    @Headers({"content-type:application/json"})
+    @POST("/live/updateLiveHomeSetting")
+    Observable<MBaseResponse<Object>> setZBStatus(@Header("Authorization") String authorization,
+                                                  @Body RequestBody body);
 }

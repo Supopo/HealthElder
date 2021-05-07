@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
@@ -35,6 +36,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
@@ -90,6 +92,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private Dialog waitLinkDialog;
     private Dialog selectLinkDialog;
     private QMUITipDialog linkWaitTip;
+    private MoreLinkAdapter moreLinkAdapter;
+    private List<ZBUserListBean> moreLinkList;
 
 
     @Override
@@ -167,6 +171,29 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
+
+        //初始化多人连麦座位表
+        moreLinkAdapter = new MoreLinkAdapter(R.layout.item_more_link);
+        //垂直布局 禁止滑动
+        binding.rvMoreLink.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        binding.rvMoreLink.setAdapter(moreLinkAdapter);
+        initMoreLinkData();
+    }
+
+    //初始化多人连麦数据
+    private void initMoreLinkData() {
+        moreLinkList = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            ZBUserListBean userInfoBean = new ZBUserListBean();
+            userInfoBean.nickname = "邀请上麦";
+            moreLinkList.add(userInfoBean);
+        }
+        moreLinkAdapter.setNewInstance(moreLinkList);
     }
 
     //初始化聊天列表
@@ -625,13 +652,20 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         linkStatus = 1;
         binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmai_gz);
 
-        //切回主播屏幕
-        binding.rlAnchor2.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(0, 0, 0, 0);
-        binding.llVideo.setLayoutParams(lp);
+        if (linkType == 0) {
+            //关闭1v1视频连麦，切回主播屏幕
+            binding.rlAnchor2.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            lp.setMargins(0, 0, 0, 0);
+            binding.llVideo.setLayoutParams(lp);
+            binding.btnJtfz.setVisibility(View.GONE);
+        }else {
+            //关闭多人连麦
+            linkType = 0;
+            binding.rvMoreLink.setVisibility(View.GONE);
+            initMoreLinkData();
+        }
 
-        binding.btnJtfz.setVisibility(View.GONE);
     }
 
 
@@ -971,6 +1005,23 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //                    }
                 //                };
                 //                ggTimer.schedule(ggAnimTask, 3000);
+
+                break;
+            case LiveConstants.IMCMD_OPEN_MORE_LINK://主播开启多人连麦
+                linkType = 1;
+                initMoreLinkData();
+                binding.rvMoreLink.setVisibility(View.VISIBLE);
+                break;
+            case LiveConstants.IMCMD_CLOSE_MORE_LINK://主播关闭多人连麦
+                //判断如果在连麦状态先退出连麦
+                if (linkStatus == 3) {
+                    //退出连麦
+                    stopIMLink();
+                }else {
+                    linkType = 0;
+                    binding.rvMoreLink.setVisibility(View.GONE);
+                    initMoreLinkData();
+                }
 
                 break;
             default:

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean" />
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_item"
+        android:layout_width="@dimen/dp_93"
+        android:layout_height="@dimen/dp_93"
+       >
+
+        <com.tencent.rtmp.ui.TXCloudVideoView
+            android:id="@+id/anchor_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="@dimen/dp_93"
+            android:layout_height="@dimen/dp_93"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/yp_tx_bg_w" />
+
+
+        <RelativeLayout
+            android:id="@+id/rl_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_18">
+
+
+            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                android:id="@+id/riv_avatar"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:layout_centerHorizontal="true"
+                android:visibility="@{viewModel.isLink?View.VISIBLE:View.GONE}"
+                app:qmui_is_circle="true" />
+
+            <ImageView
+                android:id="@+id/iv_jy"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_13"
+                android:layout_alignBottom="@id/riv_avatar"
+                android:layout_centerHorizontal="true"
+                android:background="@mipmap/dryuy_jy"
+                android:visibility="@{viewModel.getMuteStatus()?View.VISIBLE:View.GONE}" />
+
+
+            <ImageView
+                android:id="@+id/iv_yq"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_34"
+                android:layout_centerHorizontal="true"
+                android:background="@mipmap/yp_tx_nor"
+                android:visibility="@{viewModel.isLink?View.GONE:View.VISIBLE}" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_photo"
+            android:layout_centerHorizontal="true"
+            android:text="@{viewModel.nickname}"
+            android:textColor="@color/color_FFACA1B0"
+            android:textSize="@dimen/sp_11" />
+
+
+    </RelativeLayout>
+</layout>

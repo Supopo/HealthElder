@@ -36,10 +36,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
+
                 <com.tencent.rtmp.ui.TXCloudVideoView
                     android:id="@+id/mTxVideoView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_alignTop="@id/rv_moreLink"
+                    android:layout_toLeftOf="@id/rv_moreLink"
                     android:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -49,7 +52,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/dp_3"
-                    android:layout_marginBottom="@dimen/dp_54"
                     android:overScrollMode="never"
                     android:visibility="gone" />
 
@@ -98,7 +100,7 @@
                 android:layout_width="@dimen/dp_153"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_30"
                 android:background="@drawable/bg_zbj_info"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -154,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_toRightOf="@id/rl_zbInfo">
 
@@ -186,6 +188,7 @@
                     android:textSize="@dimen/sp_14" />
             </RelativeLayout>
 
+            <!-- 网速展示-->
             <LinearLayout
                 android:id="@+id/ll_net"
                 android:layout_width="wrap_content"

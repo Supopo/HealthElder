@@ -19,6 +19,9 @@ public class LiveConstants {
     public static int TO_LINK_TIME = 30;//申请连麦的时间
 
 
+    public static final int ZBJ_SET_KQLTS = 101;                  // 直播间设置-开启聊天室
+    public static final int ZBJ_SET_GBLTS = 102;                  // 直播间设置-关闭聊天室
+
     public static final int DISMISS_ET = 1002;                  // 直播间发送弹窗关闭
     public static final int SHOW_ET = 1001;                     // 直播间发送弹窗展示
     public static final int SEND_MSG = 10011;                   // 直播间发送消息

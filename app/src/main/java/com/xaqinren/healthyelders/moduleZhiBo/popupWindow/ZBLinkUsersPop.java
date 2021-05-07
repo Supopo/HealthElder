@@ -54,7 +54,7 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private View line2;
     private int type;//0表示点开始申请消息 1表示是邀请连麦
     private int page = 1;
-    private int openType;//1从底部打开 2从邀请拦打开
+    private int openType;//1从底部打开 2从多人连麦的座位打开
     private String liveSceneId;
     private List<AnchorInfo> pusherList;
     private boolean isLinking;
@@ -63,15 +63,6 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private Context context;
     private BaseLoadMoreModule loadMore;
     private TextView tvSetting;
-
-    public ZBLinkUsersPop(Context context, String liveSceneId, int type, ZBLinkShowAdapter linksShowAdapter) {
-        super(context);
-        this.linksShowAdapter = linksShowAdapter;
-        this.context = context;
-        this.type = type;
-        this.liveSceneId = liveSceneId;
-        initView();
-    }
 
     public ZBLinkUsersPop(int openType, Context context, String liveSceneId, int type, ZBLinkShowAdapter linksShowAdapter, List<AnchorInfo> pusherList, boolean isLinking) {
         super(context);
