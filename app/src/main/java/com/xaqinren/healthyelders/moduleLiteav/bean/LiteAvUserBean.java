@@ -8,6 +8,7 @@ public class LiteAvUserBean implements MultiItemEntity {
     public int id;
     public int viewType;
     public boolean isSel;
+    public boolean readOnly;
     public LiteAvUserBean(String name, String avatar, int id) {
         this.name = name;
         this.avatar = avatar;

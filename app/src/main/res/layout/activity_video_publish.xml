@@ -103,11 +103,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/line">
+
             <include layout="@layout/layout_publish_publish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/include_publish"
                 android:layout_marginBottom="@dimen/dp_6"/>
+<!--            热点话题view-->
+            <include
+                android:id="@+id/include_list_at"
+                layout="@layout/layout_publish_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+            <include
+                android:id="@+id/include_list_topic"
+                layout="@layout/layout_publish_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
         </FrameLayout>
     </RelativeLayout>
 </layout>

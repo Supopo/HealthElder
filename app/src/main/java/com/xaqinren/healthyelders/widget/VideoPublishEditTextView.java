@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.text.Editable;
@@ -20,6 +21,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoPublishEditBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -54,11 +56,19 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private int currentDelAtIndex = -1;
     private boolean isOptionDelAt = false;
     private boolean isOptionSelection = false;
-
+    private int inputMax = 55;
 
     private int textStart,textLengthBefore, getTextLengthAfter;
 
     private OnTextChangeListener onTextChangeListener;
+
+    public void setInputMax(int inputMax) {
+        this.inputMax = inputMax;
+    }
+
+    public int getInputMax() {
+        return inputMax;
+    }
 
     public void setOnTextChangeListener(OnTextChangeListener onTextChangeListener) {
         this.onTextChangeListener = onTextChangeListener;
@@ -66,21 +76,20 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
 
     public VideoPublishEditTextView(Context context) {
         super(context);
-        initView();
+        initView(null, 0);
     }
 
     public VideoPublishEditTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initView();
+        initView(attrs, 0);
     }
 
     public VideoPublishEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView();
-
+        initView(attrs, defStyleAttr);
     }
 
-    private void initView() {
+    private void initView(AttributeSet attrs, int defStyleAttr) {
         addTextChangedListener(this);
         setOnKeyListener(new OnKeyListener() {
             @Override
@@ -132,6 +141,9 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             sendBackTopic(editable);
             sendBackAt(editable);
             addTextChangedListener(this);
+        }else{
+            onTextChangeListener.inputNoTopic();
+            onTextChangeListener.inputNoAt();
         }
     }
     private void clearAtOptionNoColor() {
@@ -164,24 +176,12 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
-        /*if (prepareTopic)return;
-        if (isOptionDelAt) {
-            if (currentDelAtIndex == -1) {
-                isOptionDelAt = false;
-                return;
-            }
-            if (isOptionSelection){
-                isOptionSelection = false;
-                return;
-            }
-             VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
-             if (selStart <= bean.getStartPoint() || selStart > bean.getEndPoint() + 2) {
-                isOptionSelection = true;
-                clearAtOption();
-            }
-        }*/
     }
 
+    /**
+     * 检查删除键
+     * @return
+     */
     private boolean checkDelAt() {
         if (isOptionDelAt) {
             VideoPublishEditBean bean = videoAtEditBeans.get(currentDelAtIndex);
@@ -210,15 +210,12 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         Matcher matcher = patternAt.matcher(cutStr);
         //跟matcher找到的@数量一一对应
         while (matcher.find()) {
-            /*if (i > videoAtEditBeans.size() - 1) {
-                return false;
-            }*/
             int i = 0;
             int s = matcher.start();
             int e = matcher.end();
             for (VideoPublishEditBean bean : videoAtEditBeans) {
-                    cutStr = cutStr.substring(s, e);
-                    if (!bean.getContent().trim().startsWith(cutStr.trim())) {
+                    String cut = cutStr.substring(s, e);
+                    if (!bean.getContent().trim().equals(cut.trim())) {
                         i++;
                         continue;
                     }
@@ -235,29 +232,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                     setSelection(bean.getEndPoint());
                     return true;
             }
-
-            /*if (s == textLast) {
-                //找到@起始位置,结束位置,检测匹配beanlist的位置,锁住block状态
-                cutStr = currentStr.substring(s, e);
-                VideoPublishEditBean bean = videoAtEditBeans.get(i);
-                if (!bean.getContent().trim().startsWith(cutStr.trim())) {
-                    continue;
-                }
-                if (s < selStart && selStart < e) {
-                    //必须在选择范围内
-                    clearAtOption();
-                    return false;
-                }
-
-                bean.setIsBlock(true);
-                currentDelAtIndex = i;
-                isOptionDelAt = true;
-                prepareTopic = true;
-                changeTextAtBlockColor(colorBlock, colorTopic);
-                setSelection(bean.getEndPoint());
-                return true;
-            }
-            i++;*/
         }
         return isOptionDelAt;
     }
@@ -353,6 +327,10 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         int selStart = getSelectionStart();
         String cutStr = currentStr.substring(0, selStart);
         int textLast = cutStr.lastIndexOf("@");
+        if (currentStr.length() + atStr.length() > inputMax) {
+            //超过最大输入限制
+            return;
+        }
         if (textLast==-1)return;
         if (selStart < textLast) {
             //光标在#左边
@@ -364,7 +342,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             //不是最后一个topic,不给粘贴
             return;
         }
-
         cutStr = cutStr.substring(textLast);
         Matcher matcher = patternAt.matcher(cutStr);
         if (matcher.find()) {
@@ -378,16 +355,25 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         textStart = textLast;
         textLengthBefore = 0;
         getTextLengthAfter = atStr.length();
-
         VideoPublishEditBean bean = new VideoPublishEditBean();
         bean.setStartPoint(textStart);
         bean.setEndPoint(textStart + atStr.length());
         bean.setTextType(VideoPublishEditBean.AT_TYPE);
         bean.setContent(atStr);
         bean.setStrLength(getTextLengthAfter);
+        if (bean.getEndPoint() > inputMax) {
+            bean.setEndPoint(inputMax);
+        }
         videoAtEditBeans.add(bean);
         //TODO @功能添加字体颜色未改变
         getText().replace(textLast, currentStr.length(), atStr);
+    }
+
+    /**
+     * 添加一个空格键以锁定光标位置
+     */
+    public void addBlackKey() {
+        append(" ");
     }
 
     /**
@@ -402,6 +388,12 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         int selStart = getSelectionStart();
         String cutStr = currentStr.substring(0, selStart);
         int textLast = cutStr.lastIndexOf("#");
+
+        if (currentStr.length() + topicStr.length() > inputMax) {
+            //超过最大输入限制
+            return;
+        }
+
         if (textLast==-1)return;
         if (selStart < textLast) {
             //光标在#左边
@@ -468,7 +460,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 int e = matcher.end();
                 String cutStr = text.toString().substring(s, e);
                 VideoPublishEditBean videoAtEditBean = videoAtEditBeans.get(i);
-                if (!videoAtEditBean.getContent().trim().startsWith(cutStr.trim())) {
+                if (!videoAtEditBean.getContent().trim().equals(cutStr.trim())) {
                     continue;
                 }
                 videoAtEditBean.setStartPoint(s);
@@ -484,7 +476,12 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private void changeTextColor(List<VideoPublishEditBean> videoPublishEditBeans,Editable text,int color,int lengtStart, int lengthBefore, int lengthAfter) {
         SpannableStringBuilder spanColor = new SpannableStringBuilder(text);
         spanColor.setSpan(new ForegroundColorSpan(colorNormal), 0, text.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        int length = text.length();
         for (VideoPublishEditBean editBean : videoPublishEditBeans) {
+            if (editBean.getStartPoint() >= length || editBean.getEndPoint() > length) {
+                //说明已经删除了文字，bean还未删除
+                continue;
+            }
             if (editBean.isBlock()) {
                 //正在操作
                 spanColor.setSpan(new BackgroundColorSpan(colorBlock), editBean.getStartPoint(), editBean.getEndPoint(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -547,18 +544,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
      * @return
      */
     public List<VideoPublishEditBean> getAtList() {
-        String text = getText().toString();
-        Matcher matcher = patternAt.matcher(text);
-        List<VideoPublishEditBean> videoPublishEditBeans = new ArrayList<>();
-        while (matcher.find()) {
-            VideoPublishEditBean bean = new VideoPublishEditBean();
-            String str = text.substring(matcher.start(), matcher.end());
-            LogUtils.e(TAG, "@用户 -> " + str);
-            bean.setContent(str);
-            bean.setTextType(VideoPublishEditBean.AT_TYPE);
-            videoPublishEditBeans.add(bean);
-        }
-        return videoPublishEditBeans;
+        return videoAtEditBeans;
     }
 
     public interface OnTextChangeListener{
@@ -566,5 +552,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         void inputNoTopic();
         void inputAt(String str);
         void inputNoAt();
+        void maxInput();
     }
 }
