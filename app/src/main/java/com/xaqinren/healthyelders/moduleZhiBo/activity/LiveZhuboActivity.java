@@ -274,6 +274,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             Integer linkPos = getMapKey(anchorInfo.userID);
             if (linkPos != null) {
                 moreLinkAdapter.getData().get(linkPos).nickname = "邀请上麦";
+                moreLinkAdapter.getData().get(linkPos).position = 0;
+                moreLinkAdapter.getData().get(linkPos).hasProsody = false;
                 moreLinkAdapter.getData().get(linkPos).avatarUrl = null;
                 moreLinkAdapter.getData().get(linkPos).userId = null;
                 moreLinkAdapter.notifyItemChanged(linkPos);
@@ -804,6 +806,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     @Override
     public void onRequestJoinAnchor(AnchorInfo anchorInfo, String reason) {
+        boolean hasUser = false;
         if (linkType == 0) {
             //判断下当前是不是刚才主播同意或者邀请的人
             if (!anchorInfo.userID.equals(waitLinkUserId)) {
@@ -812,15 +815,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             }
         } else if (linkType == 1) {
             //判断座位表有当前用户没有
-            boolean hasUser = false;
             for (ZBUserListBean bean : posMap.values()) {
                 if (bean != null && bean.userId.equals(anchorInfo.userID)) {
                     hasUser = true;
                 }
-            }
-            if (!hasUser) {
-                mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "请稍后，主播正在处理其它人的连麦请求");
-                return;
             }
         }
 
@@ -833,7 +831,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             return;
         }
         mLiveRoom.responseJoinAnchor(anchorInfo.userID, true, "");
-        showLinkTip();
+
+        if (!hasUser) {
+            showLinkTip();
+        }
 
         mPendingRequest = true;
     }
@@ -1055,12 +1056,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private Integer getMapKey(String value) {
         Integer key = null;
         for (Integer getKey : posMap.keySet()) {
-            if (getPosMapBean(getKey) != null) {
-                ZBUserListBean bean = getPosMapBean(getKey);
-                if (bean.userId.equals(value)) {
-                    return getKey;
+            if (getKey != null) {
+                if (getPosMapBean(getKey) != null) {
+                    ZBUserListBean bean = getPosMapBean(getKey);
+                    if (bean.userId.equals(value)) {
+                        return getKey;
+                    }
                 }
             }
+
 
         }
         return key;
@@ -1446,6 +1450,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 if (micAnchorInfo.netStatus == 1 || micAnchorInfo.netStatus == 2) {
                     //群发消息刷新
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_RESH_MORELINK_INFO), "", null);
+                    viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
                 }
             }
         });
@@ -1456,7 +1461,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 moreLinkList = new ArrayList<>();
                 for (int i = 0; i < 6; i++) {
                     ZBUserListBean userInfoBean = new ZBUserListBean();
-                    userInfoBean.nickname = "请求上麦";
+                    userInfoBean.nickname = "邀请上麦";
                     moreLinkList.add(userInfoBean);
                 }
 

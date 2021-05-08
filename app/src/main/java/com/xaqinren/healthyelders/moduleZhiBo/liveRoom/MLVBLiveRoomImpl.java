@@ -2208,9 +2208,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 userResponse.userHeadImageUrl = zbUserListBean.avatarUrl;
             }
 
-            //上麦者的座位号
-            userResponse.linkPosition = String.valueOf(zbUserListBean.linkPosition);
-
             String msg = new Gson().toJson(userResponse, new TypeToken<SendUserLinkBean>() {
             }.getType());
 
@@ -2219,7 +2216,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             customMessage.data = cm;
             customMessage.userName = zbUserListBean.nickname;
             customMessage.userAvatar = zbUserListBean.avatarUrl;
-            customMessage.userLevel = zbUserListBean.userId.toString();
+            customMessage.userLevel = zbUserListBean.userId;
             customMessage.cmd = "CustomCmdMsg";
 
             content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomSomeMessage<SendUserLinkBean>>>() {

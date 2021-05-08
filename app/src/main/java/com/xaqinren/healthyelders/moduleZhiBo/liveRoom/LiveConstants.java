@@ -59,7 +59,7 @@ public class LiveConstants {
     public static final int IMCMD_CANCEL_FORBIDDER_TALK = 9;     // 取消禁言
     public static final int IMCMD_PUT_BLACK = 10;                // 拉黑
     public static final int IMCMD_SHOW_MIC = 11;                 // 观众可以连麦
-    public static final int IMCMD_TO_LINK = 19;                  // 用户去申请连麦
+    public static final int IMCMD_TO_LINK = 19;                  // 用户发送申请连麦消息
     public static final int IMCMD_FORBIDDEN_MIC = 12;            // 观众禁止连麦
     public static final int IMCMD_CANCEL_LINK = 13;              // 观众取消连麦
     public static final int IMCMD_REFUSE_LINK = 14;              // 观众拒绝连麦

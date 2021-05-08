@@ -262,6 +262,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     private void showMoreLinkSettingPop(int postion) {
+        if (moreLinkSettingDialog != null && moreLinkSettingDialog.isShowing()) {
+            return;
+        }
+
         String userId = moreLinkAdapter.getData().get(postion).userId;
         String nickName = moreLinkAdapter.getData().get(postion).nickname;
         boolean voiceMicMute = moreLinkAdapter.getData().get(postion).hasProsody;
@@ -1399,6 +1403,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         }
     }
 
+   private boolean isFirst = true;
+   private boolean needToLink = false;//判断是否连麦中闪退
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -1487,13 +1493,34 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 }
 
                 for (ZBUserListBean bean : linkerList) {
+                    if (bean.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                        if (isFirst) {
+                            if (linkStatus == 1) {
+                                needToLink = true;
+                                mLinkPos = bean.position;
+                            }
+                            if (linkStatus == 3) {
+                                mLiveRoom.muteLocalAudio(bean.hasProsody);
+                            }
+                        }
+                    }
                     moreLinkList.remove(bean.position);
                     moreLinkList.add(bean.position, bean);
                 }
-
                 moreLinkAdapter.setNewInstance(moreLinkList);
 
-                //TODO 判断有没有自己 若有开启重连
+                if (needToLink) {
+                    //去重连 走主动上麦的路线
+                    //告诉主播自己想要上的位置
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), String.valueOf(mLinkPos), null);
+                            needToLink = false;
+                        }
+                    }, 2000);
+                }
+                isFirst = false;
             }
         });
     }
