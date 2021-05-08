@@ -2,6 +2,8 @@ package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
@@ -161,4 +163,8 @@ public interface ApiServer {
     @POST("/live/updateLiveHomeSetting")
     Observable<MBaseResponse<Object>> setZBStatus(@Header("Authorization") String authorization,
                                                   @Body RequestBody body);
+
+    //短视频发布页面->自己好友,关注,粉丝
+    @GET("user/queryAttentionUserInfoPage")
+    Observable<MBaseResponse<PublishAtMyBean>> getLiteAvPublishMyAtList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
 }

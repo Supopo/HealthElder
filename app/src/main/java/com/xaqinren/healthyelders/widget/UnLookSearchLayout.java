@@ -21,6 +21,7 @@ import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUnLookAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class UnLookSearchLayout extends FrameLayout implements SearchEditText.OnTextChangeListener, OnItemClickListener {
     private String TAG = "UnLookSearchLayout";
@@ -106,6 +107,22 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         resize();
         recyclerView.scrollBy(Integer.MAX_VALUE, 0);
     }
+    /**
+     * 选中用户添加到表中
+     * @param liteAvUserBean
+     */
+    public void addData(List<LiteAvUserBean> liteAvUserBean) {
+        if (this.liteAvUserBeans == null) {
+            this.liteAvUserBeans = new LinkedList<>();
+        }
+        this.liteAvUserBeans.addAll(liteAvUserBean);
+        adapter.addData(liteAvUserBean);
+        //需要通知edittext添加
+        editText.addUser();
+        resize();
+        recyclerView.scrollBy(Integer.MAX_VALUE, 0);
+    }
+
 
     public void removeUser() {
         //edittext 按下 删除键,移除最后一条用户
@@ -114,10 +131,10 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         adapter.remove(bean);
         //需要通知edittext移除
         editText.removeUser();
-        onSearchChangeListener.onUserRemove(bean.id);
+        onSearchChangeListener.onUserRemove(bean.userId);
         resize();
     }
-    public void removeUser(int id) {
+    public void removeUser(long id) {
         if (liteAvUserBeans.isEmpty())return;
         for (LiteAvUserBean liteAvUserBean : liteAvUserBeans) {
             if (liteAvUserBean.id == id) {
@@ -177,7 +194,7 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         LiteAvUserBean bean = liteAvUserBeans.remove(position);
         adapter.removeAt(position);
         editText.removeUser();
-        onSearchChangeListener.onUserRemove(bean.id);
+        onSearchChangeListener.onUserRemove(bean.userId);
         resize();
     }
 
@@ -185,6 +202,6 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
 
     public interface OnSearchChangeListener{
         void onTextChange(String text);
-        void onUserRemove(int uId);
+        void onUserRemove(long uId);
     }
 }

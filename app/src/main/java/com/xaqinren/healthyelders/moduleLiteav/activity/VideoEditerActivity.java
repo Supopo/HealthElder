@@ -70,6 +70,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     // 返回键
     private ImageView backIv;
     private boolean              mIsPublish;
+    private int publish_code = 1001;
 
 
     private IVideoEditKit.OnEditListener mOnVideoEditListener = new IVideoEditKit.OnEditListener() {
@@ -152,7 +153,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mUGCKitVideoEdit.initPlayer();
+        if (requestCode == publish_code) {
+            startOnRestart();
+        }else
+            mUGCKitVideoEdit.initPlayer();
     }
 
     @Override
@@ -172,37 +176,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onRestart() {
         super.onRestart();
-        startOnRestart();
-//        mUGCKitVideoEdit.initPlayer();
-        /*TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
-        if (editer == null) {
-
-            LogUtils.e(TAG, "" + System.currentTimeMillis());
-//            mUGCKitVideoEdit.setVideoPath(mVideoPath);
-            LogUtils.e(TAG, "" + System.currentTimeMillis());
-
-            mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
-            LogUtils.e(TAG, "" + System.currentTimeMillis());
-            mUGCKitVideoEdit.start();
-            LogUtils.e(TAG, "" + System.currentTimeMillis());
-//            startOnRestart();
-        }else{
-            mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
-            mUGCKitVideoEdit.start();
-        }*/
-
-//        UGCKitEditConfig config = new UGCKitEditConfig();
-//        config.isPublish = true;
-//        mUGCKitVideoEdit.setConfig(config);
-//        mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
-//        if (!TextUtils.isEmpty(mVideoPath)) {
-//            mUGCKitVideoEdit.setVideoPath(mVideoPath);
-//        }
-//        mUGCKitVideoEdit.initPlayer();
-//        mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
-//        mUGCKitVideoEdit.start();
-
-
     }
 
     private void startOnRestart() {
@@ -251,7 +224,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
                 intent.putExtra(UGCKitConstants.VIDEO_COVERPATH, ugcKitResult.coverPath);
             }
             intent.putExtra(UGCKitConstants.VIDEO_RECORD_DURATION, duration);
-            startActivity(intent);
+            startActivityForResult(intent, publish_code);
         } else {
             intent = new Intent(this, MainActivity.class);
             startActivity(intent);

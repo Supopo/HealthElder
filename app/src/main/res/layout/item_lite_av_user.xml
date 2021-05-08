@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@color/gray_999" />
+            />
 
         <TextView
             android:id="@+id/user_name_tv"
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/color_252525"
-            android:text="dslfdf"
+            android:text="@{viewModel.nickname}"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
             android:singleLine="true"
@@ -42,6 +42,7 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_16"
-            android:src="@mipmap/rad_py_nor" />
+            android:src="@mipmap/rad_py_nor"
+            android:visibility="@{ viewModel.readOnly ? View.GONE : View.VISIBLE}"/>
     </LinearLayout>
 </layout>

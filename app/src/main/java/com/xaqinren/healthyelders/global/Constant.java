@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.global;
 
+import me.goldze.mvvmhabit.utils.StringUtils;
+
 /**
  * Description: 常量
  */
@@ -19,6 +21,9 @@ public class Constant {
     public static int TIME_RUSH_LIVEINFO = 2000;//刷新直播间信息接口保护时间
     public static int TIME_DIAN_ZAN_WAIT = 2000;//点赞请求保护时间
     public static int MAX_DIAN_ZAN = 2;//点赞限制器 1s 2次
+
+    public static String DraftId = "DRAFT_ID";//草稿箱id
+    public static String UnLookList = "UN_LOOK_LIST";//屏蔽用户
 
 
     //生成roomId

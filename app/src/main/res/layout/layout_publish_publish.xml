@@ -72,6 +72,7 @@
                 android:src="@mipmap/icon_ship_fab_gk" />
 
             <TextView
+                android:id="@+id/open_mode_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="公开"
@@ -98,6 +99,7 @@
             android:layout_marginRight="@dimen/dp_16">
 
             <Button
+                android:id="@+id/save_draft_btn"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_44"
                 android:layout_weight="1"
@@ -108,6 +110,7 @@
                 android:textSize="14sp" />
 
             <Button
+                android:id="@+id/publish_btn"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_44"
                 android:layout_weight="1"

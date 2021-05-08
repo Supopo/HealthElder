@@ -7,9 +7,18 @@ public class VideoPublishEditBean {
     private boolean isBlock;
     private String content;
     private int strLength;
+    private long id;
 
     public static final int TOPIC_TYPE = 1;
     public static final int AT_TYPE = 2;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public boolean isBlock() {
         return isBlock;

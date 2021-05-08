@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.alibaba.fastjson.JSON;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -144,6 +145,11 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         });
         binding.tvMenu103.setOnClickListener(view -> {
             startActivity(VideoPublishActivity.class);
+        });
+        binding.tvMenu104.setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constant.DraftId , 1620460768);
+            startActivity(VideoPublishActivity.class, bundle);
         });
     }
 

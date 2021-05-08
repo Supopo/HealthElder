@@ -203,7 +203,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         query.setPageNum(locationPageIndex);//设置查询页码
         poiSearch = new PoiSearch(this,query);
         poiSearch.setOnPoiSearchListener(this);
-        poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(lat, lon), 1000));//设置周边搜索的中心点以及半径
+        poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(lat, lon), 500));//设置周边搜索的中心点以及半径
         poiSearch.searchPOIAsyn();
     }
 
