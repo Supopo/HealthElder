@@ -187,7 +187,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
         if (mIMMessageMgr != null) {
             if (mIMMessageMgr.getLoginStatus() == 1) {
-                mIMMessageMgr.setLoginSuccess();
+                mIMMessageMgr.setLoginSuccess(mSelfAccountInfo);
                 callbackOnThread(callback, "onSuccess");
                 return;
             }
@@ -1312,7 +1312,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             mTXLivePlayer.stopPlay(true);
             if (!mBackground) {
                 String mixedPlayUrl = getMixedPlayUrlByRoomID(mCurrRoomID) == null ? mPlayUrl : getMixedPlayUrlByRoomID(mCurrRoomID);
-                if (mPlayUrl != null  && mixedPlayUrl != null) {
+                if (mPlayUrl != null && mixedPlayUrl != null) {
                     int playType = getPlayType(mixedPlayUrl);
                     mTXLivePlayer.startPlay(mixedPlayUrl, playType);
                 }
@@ -2266,6 +2266,9 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             customMessage.reviceID = recUserId;
             customMessage.data = cm;
             customMessage.cmd = "C2CMsg";
+            customMessage.userName = mSelfAccountInfo.userName;
+            customMessage.userAvatar = mSelfAccountInfo.userAvatar;
+            customMessage.userLevel = mSelfAccountInfo.userLevel;
             content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
             }.getType());
 
@@ -3249,14 +3252,13 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @param message
      */
     @Override
-    public void onC2CCustomMessage(String sendID, String cmd, String message) {
-
+    public void onC2CCustomMessage(String sendID, String cmd, String message, String userName, String headPic) {
         if (cmd.equalsIgnoreCase("linkmic")) {
             onRecvLinkMicMessage(message);
         } else if (cmd.equalsIgnoreCase("pk")) {
             onRecvPKMessage(message);
         } else {
-            callbackOnThread(mListener, "onRecvC2CCustomMsg", sendID, cmd, message);
+            callbackOnThread(mListener, "onRecvC2CCustomMsg", sendID, cmd, message, userName, headPic);
         }
 
 

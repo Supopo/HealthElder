@@ -39,6 +39,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class IMMessageMgr implements TIMMessageListener {
         /**
          * 收到自定义的C2C消息
          */
-        void onC2CCustomMessage(String sendID, String cmd, String message);
+        void onC2CCustomMessage(String sendID, String cmd, String message, String userName, String headPic);
 
         /**
          * IM群组销毁回调
@@ -465,7 +466,6 @@ public class IMMessageMgr implements TIMMessageListener {
                     }.getType());
 
 
-                    Log.e("--", "strCmdMsg: " + strCmdMsg);
                     TIMCustomElem customElem = new TIMCustomElem();
                     customElem.setData(strCmdMsg.getBytes("UTF-8"));
 
@@ -733,10 +733,10 @@ public class IMMessageMgr implements TIMMessageListener {
                                     //判断是不是自己的消息
                                     if (commonJson.reviceID.equals(mSelfUserID)) {
                                         DataJson dataJson = new Gson().fromJson(new Gson().toJson(commonJson.data), DataJson.class);
-                                        mMessageListener.onC2CCustomMessage(message.getSender(), dataJson.cmd, dataJson.msg);
+                                        mMessageListener.onC2CCustomMessage(message.getSender(), dataJson.cmd, dataJson.msg, commonJson.userName, commonJson.userAvatar);
                                     }
                                 } else {
-                                    mMessageListener.onC2CCustomMessage(message.getSender(), commonJson.cmd, new Gson().toJson(commonJson.data));
+                                    mMessageListener.onC2CCustomMessage(message.getSender(), commonJson.cmd, new Gson().toJson(commonJson.data), commonJson.userName, commonJson.userAvatar);
                                 }
                             }
                         } catch (JsonSyntaxException e) {
@@ -817,7 +817,9 @@ public class IMMessageMgr implements TIMMessageListener {
 
     }
 
-    public void setLoginSuccess() {
+    public void setLoginSuccess(LoginInfo loginInfo) {
+        this.mSelfUserID = loginInfo.userID;
+        this.mSelfUserSig = loginInfo.userSig;
         mLoginSuccess = true;
     }
 
@@ -1057,12 +1059,12 @@ public class IMMessageMgr implements TIMMessageListener {
         }
 
         @Override
-        public void onC2CCustomMessage(final String senderID, final String cmd, final String message) {
+        public void onC2CCustomMessage(final String senderID, final String cmd, final String message, final String userName, final String headPic) {
             runOnHandlerThread(new Runnable() {
                 @Override
                 public void run() {
                     if (listener != null)
-                        listener.onC2CCustomMessage(senderID, cmd, message);
+                        listener.onC2CCustomMessage(senderID, cmd, message, userName, headPic);
                 }
             });
         }

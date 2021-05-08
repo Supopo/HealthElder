@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.xaqinren.healthyelders.widget.RadiusCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        app:rcv_topLeftRadiu="@dimen/dp_18"
+        app:rcv_topRightRadiu="@dimen/dp_18">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/color_EAEAEA" />
+
+            <LinearLayout
+                android:id="@+id/ll_sqyylm"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_56"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_22"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_width="@dimen/dp_19"
+                        android:layout_height="@dimen/dp_19"
+                        android:background="@mipmap/icon_yuyinlx" />
+
+                    <TextView
+                        android:id="@+id/tv_sqyylx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_22"
+                        android:layout_marginLeft="@dimen/dp_9"
+                        android:gravity="center"
+                        android:text="申请语音连线"
+                        android:textColor="@color/color_252525"
+                        android:textSize="@dimen/sp_16" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"
+                android:background="@color/color_EAEAEA" />
+
+            <TextView
+                android:id="@+id/tv_qx"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_56"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+
+
+    </com.xaqinren.healthyelders.widget.RadiusCardView>
+
+
+</layout>

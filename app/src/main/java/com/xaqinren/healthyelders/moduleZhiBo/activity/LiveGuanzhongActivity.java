@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,6 +97,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
     private int mLinkPos;//多人连麦自己的座位号
+    private Dialog moreLinkToLinkDialog;
 
 
     @Override
@@ -185,6 +187,67 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         });
         binding.rvMoreLink.setAdapter(moreLinkAdapter);
         initMoreLinkData();
+
+        moreLinkAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            //用户点击请求上麦
+            //主播默认同意上麦 - 主播展示用户申请消息
+
+            mLinkPos = position;
+            if (TextUtils.isEmpty(moreLinkAdapter.getData().get(position).userId)) {
+                if (linkStatus == 1) {
+                    showMoreLinkToLinkPop(false);
+                }
+            } else {
+                //TODO 打开用户资料Pop
+            }
+
+
+        }));
+    }
+
+    //多人连麦-用户申请连麦
+    private void showMoreLinkToLinkPop(boolean isBottomOpen) {
+        moreLinkToLinkDialog = new Dialog(this, R.style.CustomerDialog);
+        //填充对话框的布局
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_more_link_tolink_pop, null);
+        //初始化控件
+        TextView tvCancel = (TextView) view.findViewById(R.id.tv_qx);
+        LinearLayout llSQYYLM = (LinearLayout) view.findViewById(R.id.ll_sqyylm);
+
+        tvCancel.setOnClickListener(lis -> {
+            moreLinkToLinkDialog.dismiss();
+        });
+
+        llSQYYLM.setOnClickListener(lis -> {
+
+            if (isBottomOpen) {
+                //告诉主播要上麦让主播查询位置
+                mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), "-1", null);
+            } else {
+                //告诉主播自己想要上的位置
+                mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), String.valueOf(mLinkPos), null);
+            }
+
+            moreLinkToLinkDialog.dismiss();
+        });
+
+        //点击外部不可dismiss
+        moreLinkToLinkDialog.setCancelable(false);
+        //将布局设置给Dialog
+        moreLinkToLinkDialog.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = moreLinkToLinkDialog.getWindow();
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        dialogWindow.setWindowAnimations(R.style.DialogBottomAnimation);
+        //获得窗体的属性
+        WindowManager.LayoutParams params = dialogWindow.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;//设置宽高模式，
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;//设置宽高模式，
+        dialogWindow.setAttributes(params);
+        moreLinkToLinkDialog.show();//显示对话框
+
     }
 
     //初始化多人连麦数据
@@ -1070,7 +1133,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     @Override
-    public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
+    public void onRecvC2CCustomMsg(String senderId, String cmd, String message,String userName, String headPic) {
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_FORBIDDER_TALK://禁言
@@ -1215,6 +1278,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                                             toSendLinkMsg();
                                         } else {
                                             //申请多人连麦的pop
+                                            showMoreLinkToLinkPop(true);
                                         }
                                     } else {
                                         ToastUtils.showShort("请先打开摄像头与麦克风权限");

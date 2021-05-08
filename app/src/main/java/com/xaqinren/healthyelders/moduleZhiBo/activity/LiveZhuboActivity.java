@@ -112,7 +112,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private QMUITipDialog showLinkTip;//连麦请求
     private int linkStatus;//0未操作 1邀请中 2接受邀请连接中
     private boolean mPendingRequest;//是否在操作连麦请求
-    private QMUIDialog showCloseLinkDialog;
+    private QMUIDialog showCloseLinkDialog;//关闭连麦弹窗
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
     private int setType;//直播间设置类型 1聊天室
@@ -842,7 +842,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     @Override
-    public void onRecvC2CCustomMsg(String senderId, String cmd, String message) {
+    public void onRecvC2CCustomMsg(String senderId, String cmd, String message, String userName, String headPic) {
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_REFUSE_LINK://观众拒绝主播邀请连麦
@@ -867,6 +867,55 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 linksShowAdapter.removeAt(temp);
                 updateLinkNum();
                 break;
+            case LiveConstants.IMCMD_MORE_LINK_NUM://用户申请多人语音连麦的请求
+                //收到用户申请多人语音连麦的请求
+                int linkPos = Integer.parseInt(message);
+                //TODO 判断需不需要展示消息
+                LogUtils.v(Constant.TAG_LIVE, userName + "申请了");
+                LogUtils.v(Constant.TAG_LIVE, headPic + "申请了");
+
+                ZBUserListBean bean = new ZBUserListBean();
+                bean.avatarUrl = headPic;
+                bean.nickname = userName;
+                bean.userId = senderId;
+
+                //-1说明用户点的是下面的连麦随机座位
+                if (linkPos == -1) {
+                    //计算空位
+                    Integer tempKey = getEmptyPos();
+
+                    if (tempKey != null) {
+                        posMap.put(tempKey, bean);
+                        //告诉对方有位置，可以开启连麦
+                        mLiveRoom.sendC2CCustomMsg(senderId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_JS), String.valueOf(tempKey), null);
+                    } else {
+                        //告诉对方没有位置
+                        mLiveRoom.sendC2CCustomMsg(senderId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_JS), String.valueOf(-1), null);
+                    }
+                } else {
+
+                    //先判断下当前位置有人没有
+                    if (posMap.get(linkPos) == null) {
+                        posMap.put(linkPos, bean);
+                        //告诉对方有位置，可以开启连麦
+                        mLiveRoom.sendC2CCustomMsg(senderId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_JS), String.valueOf(linkPos), null);
+                        addWaitMoreLinkList(bean);
+                    } else {
+                        //判断用户发来的位置是否和当前座位上的人一致
+                        if (((ZBUserListBean)posMap.get(linkPos)).userId.equals(senderId)) {
+                            posMap.put(linkPos, bean);
+                            //告诉对方有位置，可以开启连麦
+                            mLiveRoom.sendC2CCustomMsg(senderId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_JS), String.valueOf(linkPos), null);
+                            addWaitMoreLinkList(bean);
+                        } else {
+                            //告诉对方没有位置
+                            mLiveRoom.sendC2CCustomMsg(senderId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_JS), String.valueOf(-1), null);
+                        }
+                    }
+                }
+
+                break;
+
         }
     }
 
