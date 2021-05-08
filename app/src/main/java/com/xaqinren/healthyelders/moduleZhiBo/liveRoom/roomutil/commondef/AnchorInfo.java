@@ -26,7 +26,10 @@ public class AnchorInfo implements Parcelable {
     public String accelerateURL;
 
 
-    public boolean isLeave;
+    public int netStatus;// 1断开 成功 2加入 成功 3加入 失败 4断开 失败
+
+    public int position;//多人连麦座位号
+    public int micStatus;//加入 断开多人连麦
 
     public AnchorInfo() {
 

@@ -98,6 +98,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private List<ZBUserListBean> moreLinkList;
     private int mLinkPos;//多人连麦自己的座位号
     private Dialog moreLinkToLinkDialog;
+    private Dialog moreLinkSettingDialog;
 
 
     @Override
@@ -192,17 +193,27 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             //用户点击请求上麦
             //主播默认同意上麦 - 主播展示用户申请消息
 
-            mLinkPos = position;
             if (TextUtils.isEmpty(moreLinkAdapter.getData().get(position).userId)) {
                 if (linkStatus == 1) {
+                    mLinkPos = position;
                     showMoreLinkToLinkPop(false);
                 }
             } else {
-                //TODO 打开用户资料Pop
+                //打开用户资料Pop
+                showMoreLinkSettingPop(position);
             }
 
 
         }));
+
+        if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomConnection)) {
+            if (mLiveInitInfo.liveRoomConnection.equals(LiveConstants.LIVE_STATUS_CHAT_ROOM)) {
+                //判断是否开启了多人聊天
+                startMoreLinkLayout();
+                viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
+            }
+        }
+
     }
 
     //多人连麦-用户申请连麦
@@ -247,6 +258,68 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;//设置宽高模式，
         dialogWindow.setAttributes(params);
         moreLinkToLinkDialog.show();//显示对话框
+
+    }
+
+    private void showMoreLinkSettingPop(int postion) {
+        String userId = moreLinkAdapter.getData().get(postion).userId;
+        String nickName = moreLinkAdapter.getData().get(postion).nickname;
+        boolean voiceMicMute = moreLinkAdapter.getData().get(postion).hasProsody;
+
+        moreLinkSettingDialog = new Dialog(this, R.style.CustomerDialog);
+        //填充对话框的布局
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_more_link_setting_pop, null);
+        //初始化控件
+        TextView tvCancel = (TextView) view.findViewById(R.id.tv_qx);
+        TextView tvName = (TextView) view.findViewById(R.id.tv_name);
+        TextView tvInfo = (TextView) view.findViewById(R.id.tv_info);
+        TextView tvJinYin = (TextView) view.findViewById(R.id.tv_jy);
+        TextView tvDKLM = (TextView) view.findViewById(R.id.tv_dklx);
+
+        if (userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+            tvJinYin.setVisibility(View.VISIBLE);
+            tvDKLM.setVisibility(View.VISIBLE);
+            tvInfo.setVisibility(View.GONE);
+        } else {
+            tvJinYin.setVisibility(View.GONE);
+            tvDKLM.setVisibility(View.GONE);
+            tvInfo.setVisibility(View.VISIBLE);
+        }
+
+        if (voiceMicMute) {
+            tvJinYin.setText("取消静音");
+        } else {
+            tvJinYin.setText("静音");
+        }
+
+        tvName.setText(nickName);
+        tvCancel.setOnClickListener(lis -> {
+            moreLinkSettingDialog.dismiss();
+        });
+        tvDKLM.setOnClickListener(lis -> {
+            showCloseLinkDialog();
+        });
+        tvJinYin.setOnClickListener(lis -> {
+            viewModel.setVoiceMicMute(mLiveInitInfo.liveRoomRecordId, UserInfoMgr.getInstance().getUserInfo().getId(), !voiceMicMute);
+            moreLinkSettingDialog.dismiss();
+        });
+
+        //点击外部可dismiss
+        moreLinkSettingDialog.setCancelable(true);
+        //将布局设置给Dialog
+        moreLinkSettingDialog.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = moreLinkSettingDialog.getWindow();
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        dialogWindow.setWindowAnimations(R.style.DialogBottomAnimation);
+        //获得窗体的属性
+        WindowManager.LayoutParams params = dialogWindow.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;//设置宽高模式，
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;//设置宽高模式，
+        dialogWindow.setAttributes(params);
+        moreLinkSettingDialog.show();//显示对话框
 
     }
 
@@ -350,6 +423,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     //关闭自己的连麦
                     stopIMLink();
                     //关闭多人连麦的设置弹窗
+                    if (moreLinkSettingDialog != null && moreLinkSettingDialog.isShowing()) {
+                        moreLinkSettingDialog.dismiss();
+                    }
                 })
                 .show();
 
@@ -721,11 +797,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 if (linkType == 0) {
                     //展示镜头翻转按钮
                     binding.btnJtfz.setVisibility(View.VISIBLE);
+                } else {
+                    //刷新座位列表
+                    updateLinkerPos(mLinkPos, UserInfoMgr.getInstance().getUserInfo().getId(),
+                            UserInfoMgr.getInstance().getUserInfo().getNickname(),
+                            UserInfoMgr.getInstance().getUserInfo().getAvatarUrl());
                 }
-                //刷新座位列表
-                updateLinkerPos(mLinkPos, UserInfoMgr.getInstance().getUserInfo().getId(),
-                        UserInfoMgr.getInstance().getUserInfo().getNickname(),
-                        UserInfoMgr.getInstance().getUserInfo().getAvatarUrl());
+
 
             }
         });
@@ -737,6 +815,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         moreLinkAdapter.getData().get(linkerPos).nickname = nickName;
         moreLinkAdapter.getData().get(linkerPos).avatarUrl = avatar;
         moreLinkAdapter.getData().get(linkerPos).userId = userId;
+        moreLinkAdapter.getData().get(linkerPos).hasProsody = false;
         moreLinkAdapter.notifyItemChanged(linkerPos);
     }
 
@@ -1111,9 +1190,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
                 break;
             case LiveConstants.IMCMD_OPEN_MORE_LINK://主播开启多人连麦
-                linkType = 1;
-                initMoreLinkData();
-                binding.rvMoreLink.setVisibility(View.VISIBLE);
+                startMoreLinkLayout();
                 break;
             case LiveConstants.IMCMD_CLOSE_MORE_LINK://主播关闭多人连麦
                 //判断如果在连麦状态先退出连麦
@@ -1127,13 +1204,22 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 }
 
                 break;
+            case LiveConstants.IMCMD_RESH_MORELINK_INFO://刷新座位表
+                viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
+                break;
             default:
                 break;
         }
     }
 
+    private void startMoreLinkLayout() {
+        linkType = 1;
+        initMoreLinkData();
+        binding.rvMoreLink.setVisibility(View.VISIBLE);
+    }
+
     @Override
-    public void onRecvC2CCustomMsg(String senderId, String cmd, String message,String userName, String headPic) {
+    public void onRecvC2CCustomMsg(String senderId, String cmd, String message, String userName, String headPic) {
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_FORBIDDER_TALK://禁言
@@ -1184,7 +1270,21 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     selectLinkDialog();
                 }
                 break;
-
+            case LiveConstants.IMCMD_MORE_LINK_JS://收到主播消息判断得知有无位置
+                //收到主播消息判断得知有无位置
+                if (message.equals("-1")) {
+                    ToastUtil.toastShortMessage("暂无合适位置");
+                } else {
+                    //记录主播告诉自己的座位号
+                    mLinkPos = Integer.parseInt(message);
+                    //去申请连麦
+                    toSQIMLink();
+                }
+                break;
+            case LiveConstants.IMCMD_MORE_ANCHOR_QXJY://收到主播取消静音的消息
+            case LiveConstants.IMCMD_MORE_ANCHOR_JY://收到主播静音的消息
+                viewModel.setVoiceMicMute(mLiveInitInfo.liveRoomRecordId, UserInfoMgr.getInstance().getUserInfo().getId(), !moreLinkAdapter.getData().get(mLinkPos).hasProsody);
+                break;
         }
     }
 
@@ -1362,6 +1462,38 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     }
                     viewModel.addFansCount(mLiveInitInfo.liveRoomRecordId);
                 }
+            }
+        });
+        viewModel.netSuccess.observe(this, netSuccess -> {
+            if (netSuccess != null) {
+                //开启静音/取消静音
+                if (netSuccess == 1) {
+                    mLiveRoom.muteLocalAudio(!moreLinkAdapter.getData().get(mLinkPos).hasProsody);
+                    moreLinkAdapter.getData().get(mLinkPos).hasProsody = !moreLinkAdapter.getData().get(mLinkPos).hasProsody;
+                    moreLinkAdapter.notifyItemChanged(mLinkPos);
+                    //群发消息刷新
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_RESH_MORELINK_INFO), "", null);
+                }
+            }
+        });
+        viewModel.moreLinkList.observe(this, linkerList -> {
+            if (linkerList != null) {
+
+                moreLinkList = new ArrayList<>();
+                for (int i = 0; i < 6; i++) {
+                    ZBUserListBean userInfoBean = new ZBUserListBean();
+                    userInfoBean.nickname = "请求上麦";
+                    moreLinkList.add(userInfoBean);
+                }
+
+                for (ZBUserListBean bean : linkerList) {
+                    moreLinkList.remove(bean.position);
+                    moreLinkList.add(bean.position, bean);
+                }
+
+                moreLinkAdapter.setNewInstance(moreLinkList);
+
+                //TODO 判断有没有自己 若有开启重连
             }
         });
     }

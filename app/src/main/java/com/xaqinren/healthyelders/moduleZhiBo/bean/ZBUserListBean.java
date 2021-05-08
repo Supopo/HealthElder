@@ -19,7 +19,6 @@ public class ZBUserListBean implements Serializable {
     public boolean hasAway;
     public String identity;
     public boolean hasMic;
-    public boolean hasProsody;
     public String sex;//"MALE",
     public String leaveTime;//"MALE",
     public String identityName;//"陌生人"
@@ -30,16 +29,8 @@ public class ZBUserListBean implements Serializable {
     public int active;//活跃度
     public String viewerDuration;//用户看播时间
 
-    public boolean isLink;//是不是在语音麦上
     public int position;//麦序
-    public int intMuteStatus = 1;//1没有静音0静音
-
-    public boolean getMuteStatus() {
-        if (intMuteStatus == 1) {
-            return false;
-        }
-        return true;
-    }
+    public boolean hasProsody;//连麦是否静音
 
     public String getLevelCode() {
         if (levelCode == null) {

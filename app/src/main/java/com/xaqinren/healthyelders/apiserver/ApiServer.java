@@ -167,4 +167,20 @@ public interface ApiServer {
     //短视频发布页面->自己好友,关注,粉丝
     @GET("user/queryAttentionUserInfoPage")
     Observable<MBaseResponse<PublishAtMyBean>> getLiteAvPublishMyAtList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+
+    //直播间禁言
+    @Headers({"content-type:application/json"})
+    @POST("live/voiceMicMute")
+    Observable<MBaseResponse<Object>> setVoiceMicMute(@Header("Authorization") String authorization,
+                                                @Body RequestBody body);
+
+    //连麦用户列表
+    @GET("live/findMicUsers")
+    Observable<MBaseResponse<List<ZBUserListBean>>> findMicUsers(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //直播间加入多人连麦/离开多人连麦
+    @Headers({"content-type:application/json"})
+    @POST("live/voiceMic")
+    Observable<MBaseResponse<Object>> setVoiceMic(@Header("Authorization") String authorization,
+                                                      @Body RequestBody body);
 }

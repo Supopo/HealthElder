@@ -15,8 +15,7 @@
     <RelativeLayout
         android:id="@+id/rl_item"
         android:layout_width="@dimen/dp_93"
-        android:layout_height="@dimen/dp_93"
-       >
+        android:layout_height="@dimen/dp_93">
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/anchor_video_view"
@@ -39,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_18">
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_6">
 
 
             <com.qmuiteam.qmui.widget.QMUIRadiusImageView
@@ -48,7 +47,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_centerHorizontal="true"
-                android:visibility="@{viewModel.isLink?View.VISIBLE:View.GONE}"
+                android:visibility="@{viewModel.userId != null?View.VISIBLE:View.GONE}"
                 app:qmui_is_circle="true" />
 
             <ImageView
@@ -58,7 +57,7 @@
                 android:layout_alignBottom="@id/riv_avatar"
                 android:layout_centerHorizontal="true"
                 android:background="@mipmap/dryuy_jy"
-                android:visibility="@{viewModel.getMuteStatus()?View.VISIBLE:View.GONE}" />
+                android:visibility="@{viewModel.hasProsody?View.VISIBLE:View.GONE}" />
 
 
             <ImageView
@@ -67,7 +66,7 @@
                 android:layout_height="@dimen/dp_34"
                 android:layout_centerHorizontal="true"
                 android:background="@mipmap/yp_tx_nor"
-                android:visibility="@{viewModel.isLink?View.GONE:View.VISIBLE}" />
+                android:visibility="@{viewModel.userId != null ?View.GONE:View.VISIBLE}" />
 
         </RelativeLayout>
 

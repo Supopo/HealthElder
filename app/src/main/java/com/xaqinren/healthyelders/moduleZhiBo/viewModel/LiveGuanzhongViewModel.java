@@ -12,10 +12,14 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
+
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
@@ -30,6 +34,8 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> followSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
+    public MutableLiveData<Integer> netSuccess = new MutableLiveData<>();//1 禁言 2加入多人连麦 21加入多人连麦失败
+    public MutableLiveData<List<ZBUserListBean>> moreLinkList = new MutableLiveData<>();
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         //判断登录
@@ -79,4 +85,15 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     public void addFansCount(String liveRoomRecordId) {
         LiveRepository.getInstance().addFansCount(liveRoomRecordId);
     }
+
+    //设置麦克风是否静音
+    public void setVoiceMicMute(String liveRoomRecordId, String targetId, boolean voiceMicMute) {
+        LiveRepository.getInstance().setVoiceMicMute(dismissDialog, netSuccess, liveRoomRecordId, targetId, voiceMicMute);
+    }
+
+    //多人连麦列表
+    public void findMicUsers(String liveRoomRecordId) {
+        LiveRepository.getInstance().findMicUsers(liveRoomRecordId, moreLinkList);
+    }
+
 }

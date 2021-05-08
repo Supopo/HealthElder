@@ -10,8 +10,11 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -307,6 +310,109 @@ public class LiveRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
                         setSuccess.postValue(true);
+                    }
+
+                });
+    }
+
+    public void setVoiceMicMute(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Integer> netSuccess, String liveRoomRecordId, String targetId, boolean voiceMicMute) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("liveRoomRecordId", liveRoomRecordId);
+        hashMap.put("targetId", targetId);
+        hashMap.put("voiceMicMute", voiceMicMute);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setVoiceMicMute(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        netSuccess.postValue(1);
+                    }
+
+                });
+    }
+
+    //设置 加入多人连麦/离开多人连麦
+    public void setVoiceMic(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Integer> netSuccess, MutableLiveData<AnchorInfo> micAnchorInfo, String liveRoomRecordId, AnchorInfo anchorInfo) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("liveRoomRecordId", liveRoomRecordId);
+        hashMap.put("targetId", anchorInfo.userID);
+        hashMap.put("micStatus", anchorInfo.micStatus == 1 ? "CONNECT" : "BREAK");
+        hashMap.put("position", anchorInfo.position);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setVoiceMic(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        if (anchorInfo.micStatus != 1) {
+                            //设置断开 成功
+                            anchorInfo.netStatus = 1;
+                        }else {
+                            //加入 成功
+                            anchorInfo.netStatus = 2;
+                        }
+                        micAnchorInfo.postValue(anchorInfo);
+
+                    }
+
+                    @Override
+                    public void onFail(String code, MBaseResponse<Object> data) {
+                        super.onFail(code, data);
+                        if (anchorInfo.micStatus == 1) {
+                            //设置加入 失败
+                            anchorInfo.netStatus = 3;
+                        }else {
+                            //断开 失败
+                            anchorInfo.netStatus = 4;
+                        }
+                        micAnchorInfo.postValue(anchorInfo);
+                    }
+                });
+    }
+
+    public void findMicUsers(String liveRoomRecordId,MutableLiveData<List<ZBUserListBean>> moreLinkList) {
+        userApi.findMicUsers(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<ZBUserListBean>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<ZBUserListBean>> data) {
+                        moreLinkList.postValue(data.getData());
                     }
 
                 });

@@ -18,6 +18,12 @@ public class LiveConstants {
     public static int WAIT_MORE_LINK = 15;//等待多人连麦占座的时间
     public static int TO_LINK_TIME = 30;//申请连麦的时间
 
+    public static final String LIVE_STATUS_FREE = "FREE";
+    public static final String LIVE_STATUS_PK = "PK";
+    public static final String LIVE_STATUS_DOUBLE_TALK = "DOUBLE_TALK";
+    public static final String LIVE_STATUS_CHAT_ROOM = "CHAT_ROOM";
+    public static final String LIVE_STATUS_CONNECTION = "CONNECTION";
+
 
     public static final int ZBJ_SET_KQLTS = 101;                  // 直播间设置-开启聊天室
     public static final int ZBJ_SET_GBLTS = 102;                  // 直播间设置-关闭聊天室
@@ -66,10 +72,12 @@ public class LiveConstants {
     public static final int IMCMD_MORE_LINK_YQ = 22;             // 主播邀请并通知上麦者上麦以及座位号
     public static final int IMCMD_MORE_LINK_JS = 24;             // 主播接受上麦者上麦以及座位号 -1表示没位置
     public static final int IMCMD_MORE_LINK_NUM = 23;            // 上麦者告诉主播自己想上麦的座位号
-    public static final int IMCMD_RESH_HOME_INFO = 25;           // 通知观众们刷新信息
+    public static final int IMCMD_RESH_MORELINK_INFO = 25;       // 通知观众们刷新座位信息
     public static final int IMCMD_MORE_ANCHOR_JY = 26;           // 多人连麦-静音
     public static final int IMCMD_MORE_ANCHOR_QXJY = 27;         // 多人连麦-取消静音
     public static final int IMCMD_ZB_COMEBACK = 28;              // 主播断开重新回来了 通知大家重新拉一下流
     public static final int IMCMD_GONGGAO_MSG = 29;              // 公告消息 msg为json串 类型-名字-内容  msgType-nickname-content      msgType: 0-拉黑 1-踢出
+    public static final int IMCMD_RESH_HOME_INFO = 30;           // 通知观众们刷新房间信息
+
 }
 

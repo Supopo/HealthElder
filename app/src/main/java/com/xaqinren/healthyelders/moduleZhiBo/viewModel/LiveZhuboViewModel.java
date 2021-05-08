@@ -12,9 +12,11 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -36,6 +38,10 @@ public class LiveZhuboViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> setSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> startLiveInfo = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
+    public MutableLiveData<Integer> netSuccess = new MutableLiveData<>();//1 禁言 2加入多人连麦 21加入多人连麦失败
+    public MutableLiveData<AnchorInfo> micAnchorInfo = new MutableLiveData<>();
+    public MutableLiveData<List<ZBUserListBean>> moreLinkList = new MutableLiveData<>();
+
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         LoginInfo loginInfo = new LoginInfo();
@@ -91,4 +97,15 @@ public class LiveZhuboViewModel extends BaseViewModel {
     public void setZBStatus(ZBSettingBean zbSettingBean) {
         LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, zbSettingBean);
     }
+
+    //通知服务器用户加入/离开多人连麦
+    public void setVoiceMic(AnchorInfo anchorInfo, String liveRoomRecordId) {
+        LiveRepository.getInstance().setVoiceMic(dismissDialog, netSuccess, micAnchorInfo, liveRoomRecordId, anchorInfo);
+    }
+
+    //多人连麦列表
+    public void findMicUsers(String liveRoomRecordId) {
+        LiveRepository.getInstance().findMicUsers(liveRoomRecordId,moreLinkList);
+    }
+
 }

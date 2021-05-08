@@ -47,11 +47,18 @@ public class LiveInitInfo implements Serializable {
     public Boolean onlyInviteMic;//false, // 仅允许通过邀请上麦，0：否；1：是
     public Boolean userApplyMic;//true,// 观众连线需要通过申请，0：否；1：是
     public Boolean adminMicAuth;//true,// 管理员对连线嘉宾有操作权限，0：否；1：是
-    public Boolean canMicIng;//false, // 连麦状态 0：未开启 1：连麦中
+    public String liveRoomConnection;//直播间状态 FREE("自由")  PK("PK"), DOUBLE_TALK("双人聊"),  CHAT_ROOM("聊天室"), CONNECTION("连线")
     public Boolean hasFollow;//false,// 是否已关注
     public Boolean hasSpeech;//false, // 用户能否发言
     public Boolean hasAdmin;//false, // 是否是管理员
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
+    public boolean adminCanMuteAuth;//": true,
+    public boolean adminCanBlackAuth;//": true,
+    public boolean adminCanKickAuth;//": true,
+    public boolean chatRoomOnlyFansMic;//": true,
+    public boolean chatRoomOnlyInviteMic;//": true,
+    public boolean chatRoomUserApplyMic;//": true,
+    public boolean chatRoomAdminMicAuth;//": true,
 
     //开启直播间需要传
     public double longitude;
@@ -117,10 +124,6 @@ public class LiveInitInfo implements Serializable {
 
     public void setAdminMicAuth(Boolean adminMicAuth) {
         this.adminMicAuth = adminMicAuth;
-    }
-
-    public void setCanMicIng(Boolean canMicIng) {
-        this.canMicIng = canMicIng;
     }
 
     public void setHasFollow(Boolean hasFollow) {
@@ -189,10 +192,6 @@ public class LiveInitInfo implements Serializable {
 
     public Boolean getAdminMicAuth() {
         return adminMicAuth == null ? false : adminMicAuth;
-    }
-
-    public Boolean getCanMicIng() {
-        return canMicIng == null ? false : canMicIng;
     }
 
     public Boolean getHasFollow() {
