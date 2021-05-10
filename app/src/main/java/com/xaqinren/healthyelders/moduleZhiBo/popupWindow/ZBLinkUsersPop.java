@@ -24,9 +24,12 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkShowAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkUsersAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 
 
 import java.util.ArrayList;
@@ -55,7 +58,6 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private int showType;//0表示点开始申请消息 1表示是邀请连麦
     private int page = 1;
     private int openType;//0从底部打开 1从多人连麦的座位打开
-    private String liveSceneId;
     private List<AnchorInfo> pusherList;
     private boolean isLinking;
     private ZBLinkShowAdapter linksShowAdapter;
@@ -64,16 +66,18 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private BaseLoadMoreModule loadMore;
     private TextView tvSetting;
     private List<Integer> temp;
+    private ZB2LinkSettingPop zb2LinkSettingPop;
+    private LiveInitInfo liveInitInfo;
 
-    public ZBLinkUsersPop(int openType, Context context, String liveSceneId, int showType, ZBLinkShowAdapter linksShowAdapter, List<AnchorInfo> pusherList, boolean isLinking) {
+    public ZBLinkUsersPop(LiveInitInfo liveInitInfo, int openType, Context context, int showType, ZBLinkShowAdapter linksShowAdapter, List<AnchorInfo> pusherList, boolean isLinking) {
         super(context);
+        this.liveInitInfo = liveInitInfo;
         this.openType = openType;
         this.pusherList = pusherList;
         this.isLinking = isLinking;
         this.linksShowAdapter = linksShowAdapter;
         this.context = context;
         this.showType = showType;
-        this.liveSceneId = liveSceneId;
         initView();
         if (linksShowAdapter != null && linksShowAdapter.getData().size() == 0) {
             linksShowAdapter.setEmptyView(R.layout.item_empty_sqlm);
@@ -147,8 +151,9 @@ public class ZBLinkUsersPop extends BasePopupWindow {
         });
 
         tvSetting.setOnClickListener(lis -> {
-            ZB2LinkSettingPop zb2LinkSettingPop = new ZB2LinkSettingPop(context);
+            zb2LinkSettingPop = new ZB2LinkSettingPop(context, liveInitInfo);
             zb2LinkSettingPop.showPopupWindow();
+            dismiss();
         });
 
         usersAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
@@ -193,7 +198,7 @@ public class ZBLinkUsersPop extends BasePopupWindow {
     private void getUserList() {
         RetrofitClient.getInstance().create(ApiServer.class).getZBUserList(
                 UserInfoMgr.getInstance().getHttpToken(),
-                liveSceneId, page, 30)
+                liveInitInfo.liveRoomRecordId, page, 30)
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override

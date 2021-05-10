@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -120,7 +121,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
     private int setType;//直播间设置类型 1聊天室
-    private HashMap<Integer, ZBUserListBean> posMap = new HashMap<>();//多人连麦座位表
+    private LinkedHashMap<Integer, ZBUserListBean> posMap = new LinkedHashMap<>();//多人连麦座位表
     private int selectLinkPos;//多人连麦-主播自己邀请选择的座位号
     private Integer linkerPos;//当前上麦者所在位置
     private Dialog moreLinkSettingDialog;
@@ -376,7 +377,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     //初始化多人连麦数据
     private void initMoreLinkData() {
         moreLinkList = new ArrayList<>();
-        posMap = new HashMap<>();
+        posMap = new LinkedHashMap<>();
         for (int i = 0; i < 6; i++) {
             ZBUserListBean userInfoBean = new ZBUserListBean();
             userInfoBean.nickname = "邀请上麦";
@@ -525,7 +526,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     //展示邀请用户连麦的列表
     private void showUserLinkPopShow(int openType, int showType) {
-        userLinkPopShow = new ZBLinkUsersPop(openType, this, String.valueOf(mLiveInitInfo.liveRoomRecordId), showType, linksShowAdapter, mPusherList, isLianMai);
+        mLiveInitInfo.linkType = linkType;
+        userLinkPopShow = new ZBLinkUsersPop(mLiveInitInfo, openType, this, showType, linksShowAdapter, mPusherList, isLianMai);
         userLinkPopShow.showPopupWindow();
     }
 
@@ -1340,6 +1342,17 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     //关闭连麦
                     if (isLianMai || linkType == 1) {
                         showCloseLinkDialog();
+                    }
+                    break;
+                case LiveConstants.ZBJ_SET_SUCCESS://聊天设置成功
+                    ZBSettingBean zbSettingBean = (ZBSettingBean) eventBean.data;
+                    if (linkType == 0) {
+                        mLiveInitInfo.onlyFansMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
+                        mLiveInitInfo.userApplyMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
+                        mLiveInitInfo.onlyInviteMic = zbSettingBean.chatStatusManageDto.onlyInviteMic;
+                    } else if (linkType == 1) {
+                        mLiveInitInfo.onlyFansMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
+                        mLiveInitInfo.userApplyMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
                     }
                     break;
             }

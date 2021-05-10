@@ -52,13 +52,70 @@ public class LiveInitInfo implements Serializable {
     public Boolean hasSpeech;//false, // 用户能否发言
     public Boolean hasAdmin;//false, // 是否是管理员
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
-    public boolean adminCanMuteAuth;//": true,
-    public boolean adminCanBlackAuth;//": true,
-    public boolean adminCanKickAuth;//": true,
-    public boolean chatRoomOnlyFansMic;//": true,
-    public boolean chatRoomOnlyInviteMic;//": true,
-    public boolean chatRoomUserApplyMic;//": true,
-    public boolean chatRoomAdminMicAuth;//": true,
+
+    public Boolean getAdminCanMuteAuth() {
+        return adminCanMuteAuth == null ? false : adminCanMuteAuth;
+    }
+
+    public void setAdminCanMuteAuth(Boolean adminCanMuteAuth) {
+        this.adminCanMuteAuth = adminCanMuteAuth;
+    }
+
+    public Boolean getAdminCanBlackAuth() {
+        return adminCanBlackAuth == null ? false : adminCanBlackAuth;
+    }
+
+    public void setAdminCanBlackAuth(Boolean adminCanBlackAuth) {
+        this.adminCanBlackAuth = adminCanBlackAuth;
+    }
+
+    public Boolean getAdminCanKickAuth() {
+        return adminCanKickAuth == null ? false : adminCanKickAuth;
+    }
+
+    public void setAdminCanKickAuth(Boolean adminCanKickAuth) {
+        this.adminCanKickAuth = adminCanKickAuth;
+    }
+
+    public Boolean getChatRoomOnlyFansMic() {
+        return chatRoomOnlyFansMic == null ? false : chatRoomOnlyFansMic;
+    }
+
+    public void setChatRoomOnlyFansMic(Boolean chatRoomOnlyFansMic) {
+        this.chatRoomOnlyFansMic = chatRoomOnlyFansMic;
+    }
+
+    public Boolean getChatRoomOnlyInviteMic() {
+        return chatRoomOnlyInviteMic == null ? false : chatRoomOnlyInviteMic;
+    }
+
+    public void setChatRoomOnlyInviteMic(Boolean chatRoomOnlyInviteMic) {
+        this.chatRoomOnlyInviteMic = chatRoomOnlyInviteMic;
+    }
+
+    public Boolean getChatRoomUserApplyMic() {
+        return chatRoomUserApplyMic == null ? false : chatRoomUserApplyMic;
+    }
+
+    public void setChatRoomUserApplyMic(Boolean chatRoomUserApplyMic) {
+        this.chatRoomUserApplyMic = chatRoomUserApplyMic;
+    }
+
+    public Boolean getChatRoomAdminMicAuth() {
+        return chatRoomAdminMicAuth == null ? false : chatRoomAdminMicAuth;
+    }
+
+    public void setChatRoomAdminMicAuth(Boolean chatRoomAdminMicAuth) {
+        this.chatRoomAdminMicAuth = chatRoomAdminMicAuth;
+    }
+
+    public Boolean adminCanMuteAuth;//": true,
+    public Boolean adminCanBlackAuth;//": true,
+    public Boolean adminCanKickAuth;//": true,
+    public Boolean chatRoomOnlyFansMic;//": true,
+    public Boolean chatRoomOnlyInviteMic;//": true,
+    public Boolean chatRoomUserApplyMic;//": true,
+    public Boolean chatRoomAdminMicAuth;//": true,
 
     //开启直播间需要传
     public double longitude;
@@ -72,6 +129,8 @@ public class LiveInitInfo implements Serializable {
     public int beautyLevel;//美颜等级
     public int whitenessLevel;//美白等级
     public int ruddinessLevel;//红润等级
+
+    public int linkType;
 
 
     public void setHasNotice(Boolean hasNotice) {
