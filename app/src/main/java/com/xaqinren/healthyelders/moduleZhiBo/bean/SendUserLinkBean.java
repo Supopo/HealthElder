@@ -5,5 +5,5 @@ public class SendUserLinkBean {
     public String userHeadImageUrl;
     public String userId;
     public String sex;
-    public int position;
+    public String position;
 }

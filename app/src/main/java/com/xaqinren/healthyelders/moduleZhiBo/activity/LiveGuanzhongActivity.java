@@ -231,7 +231,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         llSQYYLM.setOnClickListener(lis -> {
             //判断是否需要主播同意
-            if (!mLiveInitInfo.userApplyMic) {
+            if (!mLiveInitInfo.chatRoomUserApplyMic) {
                 mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), isBottomOpen ? "-1" : String.valueOf(mLinkPos), null);
             } else {
                 toSendLinkMsg(isBottomOpen ? -1 : mLinkPos);

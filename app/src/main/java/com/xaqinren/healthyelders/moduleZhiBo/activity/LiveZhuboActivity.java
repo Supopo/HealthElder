@@ -916,7 +916,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_TO_LINK://用户来申请连麦的消息
                 SendUserLinkBean userLinkBean = new Gson().fromJson((String) message, SendUserLinkBean.class);
                 ZBUserListBean zbUserListBean = new ZBUserListBean();
-                zbUserListBean.position = userLinkBean.position;
+                zbUserListBean.position = Integer.parseInt(userLinkBean.position);
                 zbUserListBean.userId = userLinkBean.userId;
                 zbUserListBean.nickname = userLinkBean.userName;
                 zbUserListBean.avatarUrl = userLinkBean.userHeadImageUrl;
