@@ -1348,12 +1348,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     ZBSettingBean zbSettingBean = (ZBSettingBean) eventBean.data;
                     if (linkType == 0) {
                         mLiveInitInfo.onlyFansMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
-                        mLiveInitInfo.userApplyMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
+                        mLiveInitInfo.userApplyMic = zbSettingBean.chatStatusManageDto.userApplyMic;
                         mLiveInitInfo.onlyInviteMic = zbSettingBean.chatStatusManageDto.onlyInviteMic;
                     } else if (linkType == 1) {
-                        mLiveInitInfo.onlyFansMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
-                        mLiveInitInfo.userApplyMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
+                        mLiveInitInfo.chatRoomOnlyFansMic = zbSettingBean.chatStatusManageDto.onlyFansMic;
+                        mLiveInitInfo.chatRoomUserApplyMic = zbSettingBean.chatStatusManageDto.userApplyMic;
                     }
+                    //群发消息通知大家刷新接口
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_RESH_HOME_INFO), "", null);
                     break;
             }
         });
@@ -1477,15 +1479,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         viewModel.micAnchorInfo.observe(this, micAnchorInfo -> {
             if (micAnchorInfo != null) {
                 //判断用户还在不在座位中
-                boolean hasPos = false;
-                for (ZBUserListBean bean : posMap.values()) {
-                    if (bean != null && bean.userId.equals(micAnchorInfo.userID)) {
-                        hasPos = true;
-                    }
-                }
-                if (!hasPos) {
-                    return;
-                }
+//                boolean hasPos = false;
+//                for (ZBUserListBean bean : posMap.values()) {
+//                    if (bean != null && bean.userId.equals(micAnchorInfo.userID)) {
+//                        hasPos = true;
+//                    }
+//                }
+//                if (!hasPos) {
+//                    return;
+//                }
 
                 //断开成功 / 加入失败
                 if (micAnchorInfo.netStatus == 1 || micAnchorInfo.netStatus == 3) {

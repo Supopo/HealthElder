@@ -418,5 +418,27 @@ public class LiveRepository {
                 });
     }
 
+    public void getLiveStatus(String liveRoomId,MutableLiveData<LiveInitInfo> zbSettingBean) {
+        userApi.getLiveStatus(UserInfoMgr.getInstance().getHttpToken(), liveRoomId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
+                        zbSettingBean.postValue(data.getData());
+                    }
+
+                });
+    }
 
 }

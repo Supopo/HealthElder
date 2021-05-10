@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -64,20 +63,25 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
         zbSettingBean.liveRoomId = liveInitInfo.liveRoomId;
 
         chatStatusManageDto = new ChatStatusManageDto();
-        chatStatusManageDto.onlyFansMic = liveInitInfo.getOnlyFansMic();
-        chatStatusManageDto.userApplyMic = liveInitInfo.getUserApplyMic();
-        chatStatusManageDto.onlyInviteMic = liveInitInfo.getOnlyInviteMic();
+
+
+
+
+        if (liveInitInfo.linkType == 0) {
+            tvSetting.setText("双人聊设置");
+            chatStatusManageDto.onlyFansMic = liveInitInfo.getOnlyFansMic();
+            chatStatusManageDto.userApplyMic = liveInitInfo.getUserApplyMic();
+            chatStatusManageDto.onlyInviteMic = liveInitInfo.getOnlyInviteMic();
+        } else if (liveInitInfo.linkType == 1) {
+            tvSetting.setText("聊天室设置");
+            chatStatusManageDto.onlyFansMic = liveInitInfo.getChatRoomOnlyFansMic();
+            chatStatusManageDto.userApplyMic = liveInitInfo.getChatRoomUserApplyMic();
+            llMenu4.setVisibility(View.GONE);
+        }
 
         sbMenu1.setChecked(chatStatusManageDto.onlyFansMic);
         sbMenu3.setChecked(chatStatusManageDto.userApplyMic);
         sbMenu4.setChecked(chatStatusManageDto.onlyInviteMic);
-
-        if (liveInitInfo.linkType == 0) {
-            tvSetting.setText("双人聊设置");
-        } else if (liveInitInfo.linkType == 1) {
-            tvSetting.setText("聊天室设置");
-            llMenu4.setVisibility(View.GONE);
-        }
     }
 
     @Override

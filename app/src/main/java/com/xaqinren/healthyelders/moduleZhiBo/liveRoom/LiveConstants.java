@@ -15,6 +15,8 @@ public class LiveConstants {
     public static final String SHOW_QXJINYAN = "您已被主播解除禁言";
     public static final String SHOW_TICHU = "您已被主播踢出房间";
     public static final String GONGGAO_TICHU = "被主播踢出房间";
+    public static final String LINK_ONLY_FANS = "当前直播间只允许粉丝连线";
+    public static final String LINK_ONLY_INVITE = "当前直播间只允许主播邀请连线";
     public static int WAIT_MORE_LINK = 15;//等待多人连麦占座的时间
     public static int TO_LINK_TIME = 30;//申请连麦的时间
 

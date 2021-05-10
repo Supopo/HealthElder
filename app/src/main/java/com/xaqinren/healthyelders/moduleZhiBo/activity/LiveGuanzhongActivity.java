@@ -216,8 +216,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
-    private boolean needAgree = true;
-
     //多人连麦-用户申请连麦
     private void showMoreLinkToLinkPop(boolean isBottomOpen) {
         moreLinkToLinkDialog = new Dialog(this, R.style.CustomerDialog);
@@ -232,8 +230,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         });
 
         llSQYYLM.setOnClickListener(lis -> {
-
-            if (!needAgree) {
+            //判断是否需要主播同意
+            if (!mLiveInitInfo.userApplyMic) {
                 mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), isBottomOpen ? "-1" : String.valueOf(mLinkPos), null);
             } else {
                 toSendLinkMsg(isBottomOpen ? -1 : mLinkPos);
@@ -1212,6 +1210,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             case LiveConstants.IMCMD_RESH_MORELINK_INFO://刷新座位表
                 viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
                 break;
+            case LiveConstants.IMCMD_RESH_HOME_INFO://刷新房间设置信息
+                viewModel.getLiveStatus(mLiveInitInfo.liveRoomId);
+                break;
             default:
                 break;
         }
@@ -1376,6 +1377,25 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     //如果两次时间间隔大于500毫秒，则去请求
                     firstClickLMTime = secondTime;
                     if (linkStatus == 1) {
+                        //先判断是否仅接受粉丝连线 - 是不是主播粉丝
+                        if (linkType == 0) {
+                            if (mLiveInitInfo.onlyFansMic && !mLiveInitInfo.getHasFollow()) {
+                                ToastUtil.toastShortMessage(LiveConstants.LINK_ONLY_FANS);
+                                return;
+                            }
+                            if (mLiveInitInfo.onlyInviteMic) {
+                                ToastUtil.toastShortMessage(LiveConstants.LINK_ONLY_INVITE
+                                );
+                                return;
+                            }
+                        }else if(linkType == 1){
+                            if (mLiveInitInfo.chatRoomOnlyFansMic && !mLiveInitInfo.getHasFollow()) {
+                                ToastUtil.toastShortMessage(LiveConstants.LINK_ONLY_FANS);
+                                return;
+                            }
+                        }
+
+
                         disposable = permissions.request(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
                                 .subscribe(granted -> {
                                     if (granted) {
@@ -1523,6 +1543,18 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     }, 2000);
                 }
                 isFirst = false;
+            }
+        });
+        viewModel.setInitInfo.observe(this, setInitInfo -> {
+            if (setInitInfo != null) {
+                if (linkType == 0) {
+                    mLiveInitInfo.onlyFansMic = setInitInfo.onlyFansMic;
+                    mLiveInitInfo.userApplyMic = setInitInfo.userApplyMic;
+                    mLiveInitInfo.onlyInviteMic = setInitInfo.onlyInviteMic;
+                } else if (linkType == 1) {
+                    mLiveInitInfo.chatRoomOnlyFansMic = setInitInfo.chatRoomOnlyFansMic;
+                    mLiveInitInfo.chatRoomUserApplyMic = setInitInfo.chatRoomUserApplyMic;
+                }
             }
         });
     }

@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.util.List;
@@ -183,4 +184,8 @@ public interface ApiServer {
     @POST("live/voiceMic")
     Observable<MBaseResponse<Object>> setVoiceMic(@Header("Authorization") String authorization,
                                                       @Body RequestBody body);
+
+    //获取直播间设置状态
+    @GET("live/findLiveHomeStatus")
+    Observable<MBaseResponse<LiveInitInfo>> getLiveStatus(@Header("Authorization") String authorization, @Query("liveRoomId") String liveRoomId);
 }

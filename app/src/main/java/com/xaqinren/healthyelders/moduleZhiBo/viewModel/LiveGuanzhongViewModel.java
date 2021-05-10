@@ -15,7 +15,6 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
-import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -34,6 +33,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> followSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> setInitInfo = new MutableLiveData<>();
     public MutableLiveData<Integer> netSuccess = new MutableLiveData<>();//1 禁言 2加入多人连麦 21加入多人连麦失败
     public MutableLiveData<List<ZBUserListBean>> moreLinkList = new MutableLiveData<>();
 
@@ -96,4 +96,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
         LiveRepository.getInstance().findMicUsers(liveRoomRecordId, moreLinkList);
     }
 
+    public void getLiveStatus(String liveRoomId) {
+        LiveRepository.getInstance().getLiveStatus(liveRoomId, setInitInfo);
+    }
 }
