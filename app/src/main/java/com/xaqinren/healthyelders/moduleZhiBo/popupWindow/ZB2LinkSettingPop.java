@@ -1,11 +1,13 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
@@ -41,6 +43,7 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
     private SwitchButton sbMenu3;
     private SwitchButton sbMenu4;
     private boolean needSetStuas;
+    private QMUITipDialog dialog;
 
     public ZB2LinkSettingPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
@@ -79,13 +82,22 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
 
     @Override
     public void dismiss() {
-        super.dismiss();
-        setLiveStatus();
+        if (canDismiss) {
+            super.dismiss();
+        }else {
+            setLiveStatus();
+        }
     }
 
     private boolean canDismiss;
 
     private void setLiveStatus() {
+        dialog = new QMUITipDialog.Builder(getContext())
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                .setTipWord("请稍后")
+                .create();
+        dialog.show();
+
         chatStatusManageDto.onlyFansMic = sbMenu1.isChecked();
         chatStatusManageDto.userApplyMic = sbMenu3.isChecked();
         chatStatusManageDto.onlyInviteMic = sbMenu4.isChecked();
@@ -105,12 +117,14 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<Object>>>() {
                     @Override
                     protected void dismissDialog() {
-
+                        dialog.dismiss();
                     }
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZBJ_SET_SUCCESS, zbSettingBean));
+                        canDismiss = true;
+                        dismiss();
                     }
                 });
     }
