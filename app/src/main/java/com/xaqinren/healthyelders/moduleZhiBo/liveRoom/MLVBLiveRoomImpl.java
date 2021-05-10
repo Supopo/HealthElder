@@ -2207,6 +2207,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             if (zbUserListBean.avatarUrl != null) {
                 userResponse.userHeadImageUrl = zbUserListBean.avatarUrl;
             }
+            userResponse.position = zbUserListBean.position;
+
 
             String msg = new Gson().toJson(userResponse, new TypeToken<SendUserLinkBean>() {
             }.getType());

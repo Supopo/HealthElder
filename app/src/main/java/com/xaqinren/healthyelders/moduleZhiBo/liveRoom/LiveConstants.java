@@ -59,7 +59,6 @@ public class LiveConstants {
     public static final int IMCMD_CANCEL_FORBIDDER_TALK = 9;     // 取消禁言
     public static final int IMCMD_PUT_BLACK = 10;                // 拉黑
     public static final int IMCMD_SHOW_MIC = 11;                 // 观众可以连麦
-    public static final int IMCMD_TO_LINK = 19;                  // 用户发送申请连麦消息
     public static final int IMCMD_FORBIDDEN_MIC = 12;            // 观众禁止连麦
     public static final int IMCMD_CANCEL_LINK = 13;              // 观众取消连麦
     public static final int IMCMD_REFUSE_LINK = 14;              // 观众拒绝连麦
@@ -67,6 +66,7 @@ public class LiveConstants {
     public static final int IMCMD_OPEN_MORE_LINK = 16;           // 主播开启多人连麦
     public static final int IMCMD_CLOSE_MORE_LINK = 17;          // 主播关闭多人连麦
     public static final int IMCMD_LIKE = 18;                     // 点赞消息
+    public static final int IMCMD_TO_LINK = 19;                  // 用户发送申请连麦消息
     public static final int IMCMD_CANCEL_PUT_BLACK = 20;         // 取消拉黑
     public static final int IMCMD_ZB_LINKING = 21;               // 主播进入连麦
     public static final int IMCMD_MORE_LINK_YQ = 22;             // 主播邀请并通知上麦者上麦以及座位号

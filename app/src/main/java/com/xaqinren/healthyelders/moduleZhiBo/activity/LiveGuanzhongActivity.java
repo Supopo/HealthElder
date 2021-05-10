@@ -216,6 +216,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
+    private boolean needAgree = true;
+
     //多人连麦-用户申请连麦
     private void showMoreLinkToLinkPop(boolean isBottomOpen) {
         moreLinkToLinkDialog = new Dialog(this, R.style.CustomerDialog);
@@ -231,12 +233,10 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         llSQYYLM.setOnClickListener(lis -> {
 
-            if (isBottomOpen) {
-                //告诉主播要上麦让主播查询位置
-                mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), "-1", null);
+            if (!needAgree) {
+                mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), isBottomOpen ? "-1" : String.valueOf(mLinkPos), null);
             } else {
-                //告诉主播自己想要上的位置
-                mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), String.valueOf(mLinkPos), null);
+                toSendLinkMsg(isBottomOpen ? -1 : mLinkPos);
             }
 
             moreLinkToLinkDialog.dismiss();
@@ -450,11 +450,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     }
 
     //发送申请连麦的消息
-    private void toSendLinkMsg() {
+    private void toSendLinkMsg(int position) {
         ZBUserListBean userListBean = new ZBUserListBean();
         userListBean.userId = UserInfoMgr.getInstance().getUserInfo().getId();
         userListBean.avatarUrl = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
         userListBean.nickname = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        userListBean.position = position;
 
         //发送申请连麦自定义消息
         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TO_LINK), userListBean, new SendRoomCustomMsgCallback() {
@@ -1379,7 +1380,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                                 .subscribe(granted -> {
                                     if (granted) {
                                         if (linkType == 0) {
-                                            toSendLinkMsg();
+                                            toSendLinkMsg(0);
                                         } else {
                                             //申请多人连麦的pop
                                             showMoreLinkToLinkPop(true);
@@ -1403,8 +1404,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         }
     }
 
-   private boolean isFirst = true;
-   private boolean needToLink = false;//判断是否连麦中闪退
+    private boolean isFirst = true;
+    private boolean needToLink = false;//判断是否连麦中闪退
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
