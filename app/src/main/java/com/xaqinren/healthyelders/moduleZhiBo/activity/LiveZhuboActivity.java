@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.google.gson.Gson;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -62,6 +64,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.CenterDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,7 +120,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private QMUITipDialog showLinkTip;//连麦请求
     private int linkStatus;//0未操作 1邀请中 2接受邀请连接中
     private boolean mPendingRequest;//是否在操作连麦请求
-    private QMUIDialog showCloseLinkDialog;//关闭连麦弹窗
+    private CenterDialog showCloseLinkDialog;//关闭连麦弹窗
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
     private int setType;//直播间设置类型 1聊天室
@@ -1441,10 +1444,52 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         }
                         //开启多人聊天
                         linkType = 1;
+
+
+                        Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_enter2);
+
+
+                        int screenWidth = ScreenUtil.getScreenWidth(this);
+                        int screenHeight = ScreenUtil.getScreenHeight(this);
+                        //计算x轴缩放倍率
+                        float xx = (float) (screenWidth - getResources().getDimension(R.dimen.dp_96)) / screenWidth;
+                        //计算y轴缩放倍率
+                        float yy = (float) (getResources().getDimension(R.dimen.dp_573)) / (screenHeight);
+                        ScaleAnimation animation = new ScaleAnimation(1.0F, xx, 1.0F, yy, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
+                        animation.setDuration(500);
+                        animation.setFillAfter(true);
+                        Animation scaleAnimation3 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_exit);
+                        //                        binding.mTxVideoView.clearAnimation();
+                        //                        binding.mTxVideoView.setAnimation(animation);
+
+                        //                        binding.rvMoreLink.setVisibility(View.VISIBLE);
+                        //                        binding.rvMoreLink.clearAnimation();
+                        //                        binding.rvMoreLink.setAnimation(scaleAnimation1);
+
+                        binding.rvMoreLink.clearAnimation();
+                        binding.rvMoreLink.setAnimation(scaleAnimation1);
                         binding.rvMoreLink.setVisibility(View.VISIBLE);
+
+                        animation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+
                         //群发消息
                         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_OPEN_MORE_LINK), "", null);
-
                         break;
                     case LiveConstants.ZBJ_SET_GBLTS:
                         if (userLinkPopShow != null && userLinkPopShow.isShowing()) {
@@ -1464,7 +1509,27 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
                         //关闭多人聊天
                         linkType = 0;
+
+                        Animation scaleAnimation2 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_exit2);
+                        //                        binding.rvMoreLink.setAnimation(scaleAnimation2);
                         binding.rvMoreLink.setVisibility(View.GONE);
+                        scaleAnimation2.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+
                         //群发消息关闭多人连麦
                         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_CLOSE_MORE_LINK), "", null);
 
@@ -1479,15 +1544,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         viewModel.micAnchorInfo.observe(this, micAnchorInfo -> {
             if (micAnchorInfo != null) {
                 //判断用户还在不在座位中
-//                boolean hasPos = false;
-//                for (ZBUserListBean bean : posMap.values()) {
-//                    if (bean != null && bean.userId.equals(micAnchorInfo.userID)) {
-//                        hasPos = true;
-//                    }
-//                }
-//                if (!hasPos) {
-//                    return;
-//                }
+                //                boolean hasPos = false;
+                //                for (ZBUserListBean bean : posMap.values()) {
+                //                    if (bean != null && bean.userId.equals(micAnchorInfo.userID)) {
+                //                        hasPos = true;
+                //                    }
+                //                }
+                //                if (!hasPos) {
+                //                    return;
+                //                }
 
                 //断开成功 / 加入失败
                 if (micAnchorInfo.netStatus == 1 || micAnchorInfo.netStatus == 3) {
@@ -1526,39 +1591,38 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     //是否关闭连麦dialog
     public void showCloseLinkDialog() {
-        if (showCloseLinkDialog != null) {
-            showCloseLinkDialog.show();
-        } else {
-            showCloseLinkDialog = new QMUIDialog.MessageDialogBuilder(this)
-                    .setTitle("确定关闭连线吗？")
-                    .addAction("取消", (dialog, index) -> dialog.dismiss())
-                    .addAction("确定", (dialog, index) -> {
+        if (showCloseLinkDialog == null) {
+            showCloseLinkDialog = new CenterDialog(this);
+            showCloseLinkDialog.setMessageText("确定关闭连线吗？");
+            showCloseLinkDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showCloseLinkDialog.dismissDialog();
+                    //关闭连麦通知服务器更改状态
+                    setType = LiveConstants.ZBJ_SET_GBLTS;
+                    zbSettingBean.liveRoomConnection = LiveConstants.LIVE_STATUS_FREE;
+                    viewModel.setZBStatus(zbSettingBean);
 
-                        //关闭连麦通知服务器更改状态
-                        setType = LiveConstants.ZBJ_SET_GBLTS;
-                        zbSettingBean.liveRoomConnection = LiveConstants.LIVE_STATUS_FREE;
-                        viewModel.setZBStatus(zbSettingBean);
+                    //关闭连麦操作
+                    if (userLinkPopShow.isShowing()) {
+                        userLinkPopShow.dismiss();
+                    }
 
-                        //关闭连麦操作
-                        if (userLinkPopShow.isShowing()) {
-                            userLinkPopShow.dismiss();
+                    if (mPusherList.size() > 0) {
+                        //不能再遍历中移除list故此用新的
+                        List<AnchorInfo> tempList = new ArrayList<>();
+                        tempList.addAll(mPusherList);
+                        for (AnchorInfo anchorInfo : tempList) {
+                            //踢掉连麦者
+                            mLiveRoom.kickoutJoinAnchor(anchorInfo.userID);
+                            onAnchorExit(anchorInfo);
                         }
-
-                        if (mPusherList.size() > 0) {
-                            //不能再遍历中移除list故此用新的
-                            List<AnchorInfo> tempList = new ArrayList<>();
-                            tempList.addAll(mPusherList);
-                            for (AnchorInfo anchorInfo : tempList) {
-                                //踢掉连麦者
-                                mLiveRoom.kickoutJoinAnchor(anchorInfo.userID);
-                                onAnchorExit(anchorInfo);
-                            }
-                        }
-
-                        dialog.dismiss();
-                    })
-                    .show();
+                    }
+                }
+            });
         }
+        showCloseLinkDialog.showDialog();
+
     }
 
     private void disWaitTip() {

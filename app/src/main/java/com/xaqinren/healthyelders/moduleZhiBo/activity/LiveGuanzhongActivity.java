@@ -54,6 +54,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.CenterDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private Animation ggAnimation;
     private int linkStatus = 1;//1未连麦 2申请中 3连麦中
     private int linkType;//0 双人连麦 1多人连麦
-    private QMUIDialog closeLinkDialog;
+    private CenterDialog closeLinkDialog;
     private Dialog waitLinkDialog;
     private Dialog selectLinkDialog;
     private QMUITipDialog linkWaitTip;
@@ -416,20 +417,23 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     //是否关闭连麦dialog
     public void showCloseLinkDialog() {
-        closeLinkDialog = new QMUIDialog.MessageDialogBuilder(this)
-                .setTitle("关闭提示")
-                .setMessage("确定要关闭连麦吗？")
-                .addAction("取消", (dialog, index) -> dialog.dismiss())
-                .addAction("确定", (dialog, index) -> {
-                    dialog.dismiss();
+        if (closeLinkDialog == null) {
+            closeLinkDialog = new CenterDialog(this);
+            closeLinkDialog.setMessageText("确定要关闭连麦吗？");
+            closeLinkDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     //关闭自己的连麦
                     stopIMLink();
                     //关闭多人连麦的设置弹窗
                     if (moreLinkSettingDialog != null && moreLinkSettingDialog.isShowing()) {
                         moreLinkSettingDialog.dismiss();
                     }
-                })
-                .show();
+                    closeLinkDialog.dismissDialog();
+                }
+            });
+        }
+        closeLinkDialog.showDialog();
 
     }
 
@@ -1388,7 +1392,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                                 );
                                 return;
                             }
-                        }else if(linkType == 1){
+                        } else if (linkType == 1) {
                             if (mLiveInitInfo.chatRoomOnlyFansMic && !mLiveInitInfo.getHasFollow()) {
                                 ToastUtil.toastShortMessage(LiveConstants.LINK_ONLY_FANS);
                                 return;
