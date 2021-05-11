@@ -195,6 +195,8 @@
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverGZActivity"
             android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleLiteav.activity.PicturePickerActivity" />
+        <activity android:name=".moduleLiteav.activity.LiteAvPlayActivity" />
     </application>
 
 </manifest>

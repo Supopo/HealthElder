@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -20,7 +21,11 @@ import androidx.core.content.ContextCompat;
 import com.alibaba.fastjson.JSON;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.tencent.bugly.proguard.B;
+import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.utils.Signature;
 import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
+import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
+import com.tencent.qcloud.xiaoshipin.play.TCVodPlayerActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -28,6 +33,7 @@ import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
+import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlayActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
@@ -40,6 +46,11 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginI
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+
+import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.dcloud.common.DHInterface.ICallBack;
 import io.dcloud.feature.sdk.DCUniMPSDK;
@@ -55,6 +66,8 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
     private String wgtPath;
     private LoginTokenBean loginTokenBean;
     private String liveRoomId;
+
+    public static final int START_LIVE_PLAY = 100;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -151,6 +164,46 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             bundle.putLong(Constant.DraftId , 1620460768);
             startActivity(VideoPublishActivity.class, bundle);
         });
+        binding.tvMenu105.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), LiteAvPlayActivity.class);
+//            intent.putExtra(UGCKitConstants.PLAY_URL, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/aW5a30SYEaMA.mp4");
+//            intent.putExtra(UGCKitConstants.PUSHER_ID, "123456789");
+//            intent.putExtra(UGCKitConstants.PUSHER_NAME, "老王");
+//            intent.putExtra(UGCKitConstants.PUSHER_AVATAR, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/5285890818148680324.jpg");
+//            intent.putExtra(UGCKitConstants.COVER_PIC, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/5285890818148680324.jpg");
+//            intent.putExtra(UGCKitConstants.FILE_ID, "5285890818148680323");
+            intent.putExtra(UGCKitConstants.TCLIVE_INFO_LIST, (Serializable) createTestData());
+//            intent.putExtra(UGCKitConstants.TIMESTAMP, "2019-03-26 14:09:28");
+//            intent.putExtra(UGCKitConstants.TCLIVE_INFO_POSITION, 0);
+            startActivityForResult(intent, START_LIVE_PLAY);
+        });
+    }
+
+    /**
+     * TODO 视频播放地址从后台生成,前台生成不安全
+     * @return
+     */
+    private  List<TCVideoInfo> createTestData() {
+        int time = (int) (System.currentTimeMillis() / 1000 + (24 * 60 * 60 * 10));
+        String t = Signature.getTimeExpire(time);
+        String playToken = null;
+        try {
+            playToken = Signature.singVideo("http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/GvuOa71lnEgA.mp4", t);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        List<TCVideoInfo> list = new ArrayList<>();
+        TCVideoInfo info = new TCVideoInfo();
+        info.avatar = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/5285890818150396702.jpg";
+        info.playurl = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/GvuOa71lnEgA.mp4" + "?t=" + t + "&sign=" + playToken;
+        info.userid = "123456789";
+        info.nickname = "老王";
+        info.frontcover = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/5285890818150396702.jpg";
+        info.fileid = "5285890818150396701";
+        info.createTime = "2021-05-10 11:49:40";
+        info.review_status = TCVideoInfo.REVIEW_STATUS_NORMAL;
+        list.add(info);
+        return list;
     }
 
     private void showEditTextDialog() {

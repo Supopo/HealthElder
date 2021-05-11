@@ -75,7 +75,13 @@ public class TCPictureJoinActivity extends FragmentActivity {
     }
 
     private void startEditActivity(UGCKitResult ugcKitResult) {
-        Intent intent = new Intent(this, TCVideoEditerActivity.class);
+        Class cls = null;
+        try {
+            cls = Class.forName("com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(this, cls);
         intent.putExtra(UGCKitConstants.VIDEO_PATH, ugcKitResult.outputPath);
         startActivity(intent);
         finish();

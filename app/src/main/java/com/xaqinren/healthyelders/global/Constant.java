@@ -21,7 +21,7 @@ public class Constant {
     public static int MAX_DIAN_ZAN = 2;//点赞限制器 1s 2次
 
     public static String DraftId = "DRAFT_ID";//草稿箱id
-    public static String UnLookList = "UN_LOOK_LIST";//屏蔽用户
+
 
 
     //生成roomId

@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.tencent.qcloud.ugckit.utils.Signature;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.tencent.qcloud.ugckit.module.upload.TXUGCPublish;
 import com.tencent.qcloud.ugckit.module.upload.TXUGCPublishTypeDef;
@@ -123,8 +124,14 @@ public class UGCKitVideoPublish extends RelativeLayout implements View.OnClickLi
             return;
         }
         mIsFetchCosSig = true;
-
-        TCUserMgr.getInstance().getVodSig(new TCUserMgr.Callback() {
+        mCosSignature = Signature.createSing();
+        if (mCosSignature != null) {
+            LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, TCUserMgr.SUCCESS_CODE, "获取签名成功");
+            startPublish();
+        }else{
+            LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, 0, "获取签名失败");
+        }
+        /*TCUserMgr.getInstance().getVodSig(new TCUserMgr.Callback() {
             @Override
             public void onSuccess(@NonNull JSONObject data) {
                 try {
@@ -133,20 +140,20 @@ public class UGCKitVideoPublish extends RelativeLayout implements View.OnClickLi
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                /**
+                *//**
                  * ELK数据上报：获取签名成功
-                 */
+                 *//*
                 LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, TCUserMgr.SUCCESS_CODE, "获取签名成功");
             }
 
             @Override
             public void onFailure(int code, final String msg) {
-                /**
+                *//**
                  * ELK数据上报：获取签名失败
-                 */
+                 *//*
                 LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, code, "获取签名失败");
             }
-        });
+        });*/
     }
 
     /**

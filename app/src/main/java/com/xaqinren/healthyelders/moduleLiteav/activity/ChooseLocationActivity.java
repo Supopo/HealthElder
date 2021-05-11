@@ -152,11 +152,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     @Override
     protected void onStop() {
         super.onStop();
+        eventDisposable.dispose();
     }
 
     @Override
     protected void onDestroy() {
-        eventDisposable.dispose();
         poiSearch.setOnPoiSearchListener(null);
         poiSearch = null;
         inputTips = null;

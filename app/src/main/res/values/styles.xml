@@ -119,6 +119,16 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
+    <style name="line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp_1</item>
+        <item name="android:background">@color/color_EAEA</item>
+    </style>
+    <style name="lineV">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/color_EAEA</item>
+    </style>
     <style name="lineMarginDp16">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dp_1</item>

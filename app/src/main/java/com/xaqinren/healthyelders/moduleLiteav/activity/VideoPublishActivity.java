@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
@@ -12,6 +14,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,10 +37,24 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.nostra13.dcloudimageloader.utils.L;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.tencent.bugly.proguard.B;
+import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.UGCKitVideoPublish;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
+import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
+import com.tencent.qcloud.ugckit.module.upload.TXUGCPublish;
+import com.tencent.qcloud.ugckit.module.upload.TXUGCPublishTypeDef;
+import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
+import com.tencent.qcloud.ugckit.utils.LogReport;
+import com.tencent.qcloud.ugckit.utils.NetworkUtil;
+import com.tencent.qcloud.ugckit.utils.Signature;
+import com.tencent.qcloud.ugckit.utils.TCUserMgr;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.ugc.TXVideoEditer;
+import com.tencent.weibo.sdk.android.component.PublishActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -54,13 +72,20 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.ConciseDialog;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.Serializable;
@@ -84,7 +109,8 @@ import okhttp3.internal.cache.DiskLruCache;
 /**
  * 发布
  */
-public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBinding, VideoPublishViewModel> implements PoiSearch.OnPoiSearchListener {
+public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBinding, VideoPublishViewModel> implements PoiSearch.OnPoiSearchListener,
+        TXUGCPublishTypeDef.ITXVideoPublishListener{
 
     private LiteAvOpenModePopupWindow openModePop;
     //热点列表，横向
@@ -127,6 +153,10 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
     private int atPage = 1;
     private int atPageSize = 20;
+    private String mCosSignature;
+
+    private Handler mHandler = new Handler();
+    private TXUGCPublish mVideoPublish;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -168,7 +198,6 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         mCoverPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_COVERPATH);
         mDisableCache = getIntent().getBooleanExtra(UGCKitConstants.VIDEO_RECORD_NO_CACHE, false);
         publishDraftId = getIntent().getLongExtra(Constant.DraftId, 0L);
-
         if (publishDraftId > 0) {
             //装在草稿箱内容
             getDraftContent();
@@ -210,8 +239,13 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         //保存到草稿箱
         binding.includePublish.saveDraftBtn.setOnClickListener(view -> {
-            createDraftContent();
-            finish();
+            ConciseDialog conciseDialog = new ConciseDialog(this);
+            conciseDialog.setMessageText("确定保存至草稿箱吗？");
+            conciseDialog.showDialog();
+        });
+        binding.includePublish.publishBtn.setOnClickListener(view -> {
+            //TODO 发布
+            publishVideo();
         });
         binding.desText.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
             @Override
@@ -264,7 +298,109 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
         Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
         initListView();
+        loginUser();
     }
+
+    /**
+     * 视频发布 begin
+     */
+    private void loginUser() {
+        MLVBLiveRoom mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
+        viewModel.toLoginRoom(mLiveRoom);
+    }
+
+    private void publishVideo() {
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            ToastUtils.showShort(com.tencent.qcloud.ugckit.R.string.ugckit_video_publisher_activity_no_network_connection);
+            return;
+        }
+        fetchSignature();
+    }
+
+    private void fetchSignature() {
+        mCosSignature = Signature.createSing();
+        if (mCosSignature != null) {
+            LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, TCUserMgr.SUCCESS_CODE, "获取签名成功");
+            startPublish();
+        }else{
+            LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, 0, "获取签名失败");
+        }
+    }
+
+    private void startPublish() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mVideoPublish == null) {
+                    mVideoPublish = new TXUGCPublish(UGCKit.getAppContext(), TCUserMgr.getInstance().getUserId());
+                }
+                /**
+                 * 设置视频发布监听器
+                 */
+                mVideoPublish.setListener(VideoPublishActivity.this);
+
+                TXUGCPublishTypeDef.TXPublishParam param = new TXUGCPublishTypeDef.TXPublishParam();
+                param.signature = mCosSignature;
+                param.videoPath = mVideoPath;
+                param.coverPath = mCoverPath;
+                int publishCode = mVideoPublish.publishVideo(param);
+                binding.publishProgressMark.setVisibility(View.VISIBLE);
+                if (publishCode != 0) {
+//                    mTVPublish.setText("发布失败，错误码：" + publishCode);
+                }
+                NetworkUtil.getInstance(UGCKit.getAppContext()).setNetchangeListener(new NetworkUtil.NetchangeListener() {
+                    @Override
+                    public void onNetworkAvailable() {
+                        binding.tvProgress.setText(getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_publisher_activity_network_connection_is_disconnected_video_upload_failed));
+                    }
+                });
+                NetworkUtil.getInstance(UGCKit.getAppContext()).registerNetChangeReceiver();
+            }
+        });
+    }
+
+    @Override
+    public void onPublishProgress(long uploadBytes, long totalBytes) {
+        int progress = (int) (uploadBytes * 100 / totalBytes);
+        Log.d(TAG, "onPublishProgress:" + progress);
+        binding.progressbar.setProgress(progress);
+        binding.tvProgress.setText(getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_publisher_activity_is_uploading) + progress + "%");
+    }
+
+    @Override
+    public void onPublishComplete(TXUGCPublishTypeDef.TXPublishResult publishResult) {
+        Log.d(TAG, "onPublishComplete:" + publishResult.retCode);
+
+        /**
+         * ELK数据上报：视频发布到点播系统
+         */
+        LogReport.getInstance().reportPublishVideo(publishResult);
+
+        binding.publishProgressMark.setVisibility(View.GONE);
+        if (publishResult.retCode == TXUGCPublishTypeDef.PUBLISH_RESULT_OK) {
+//            mImageBack.setVisibility(View.GONE);
+            //TODO 发布到自己服务器
+            viewModel.UploadUGCVideo(publishResult.videoId, publishResult.videoURL, publishResult.coverURL);
+        } else {
+            if (publishResult.descMsg.contains("java.net.UnknownHostException") || publishResult.descMsg.contains("java.net.ConnectException")) {
+                binding.tvProgress.setText(getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_publisher_activity_network_connection_is_disconnected_video_upload_failed));
+            } else {
+                binding.tvProgress.setText(publishResult.descMsg);
+            }
+            Log.e(TAG, publishResult.descMsg);
+        }
+        binding.publishProgressMark.setVisibility(View.GONE);
+    }
+
+
+    private void clearDrafts(){
+        if (publishDraftId != 0) {
+            //删除对应的草稿箱
+
+        }
+    }
+
+    /** 视频发布 end */
 
     /**
      * 选中@或#后的弹窗
@@ -303,6 +439,31 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             binding.includeListAt.recyclerView.getAdapter().notifyDataSetChanged();
             binding.includeListAt.layoutPublishAt.setVisibility(View.VISIBLE);
         });
+        viewModel.loginRoomSuccess.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+            }
+        });
+        viewModel.publishSuccess.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    LogUtils.e(TAG,"发布视频成功");
+                    BackgroundTasks.getInstance().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
+                            NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
+                            clearDrafts();
+                        }
+                    });
+                }else{
+                    //发布失败
+                    LogUtils.e(TAG,"发布视频失败");
+                }
+            }
+        });
     }
 
     private void showTopicView(String str) {
@@ -324,10 +485,15 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
     @Override
     public void onBackPressed() {
-        TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
+        /*if (getIntent().getIntExtra(Constant.RequestCode,0) == VideoEditerActivity.publish_code) {
+            Intent intent = new Intent(this, VideoEditerActivity.class);
+            intent.putExtra(UGCKitConstants.VIDEO_PATH, mVideoPath);
+            startActivity(intent);
+        }*/
+        /*TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
         if (editer == null) {
             VideoEditerSDK.getInstance().initSDK();
-        }
+        }*/
         setResult(Activity.RESULT_OK);
         super.onBackPressed();
     }
@@ -387,7 +553,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                     switch (mode) {
                         case LiteAvOpenModePopupWindow.HIDE_MODE: {
                             Intent intent = new Intent(VideoPublishActivity.this, ChooseUnLookActivity.class);
-                            intent.putExtra(Constant.UnLookList, (Serializable) unLookUserList);
+                            intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
                             startActivityForResult(intent,unlook_code);
                         }break;
                     }
@@ -456,6 +622,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     protected void onDestroy() {
         super.onDestroy();
         eventDisposable.dispose();
+
     }
 
 
@@ -514,7 +681,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
      * 从草稿箱获取内容
      */
     private void getDraftContent() {
-        SaveDraftBean bean = getDraft(publishDraftId);
+        String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+        SaveDraftBean bean = viewModel.getDraftsById(this,fileName,publishDraftId);
         if (bean == null) {
             return;
         }
@@ -542,21 +710,6 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         isComment = bean.isComment();
     }
 
-    private SaveDraftBean getDraft(long id) {
-        String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-        String json = ACache.get(this).getAsString(fileName);
-        List<SaveDraftBean> saveDraftBeans;
-        if (!StringUtils.isEmpty(json)) {
-            saveDraftBeans = JSON.parseArray(json, SaveDraftBean.class);
-        } else saveDraftBeans = new ArrayList<>();
-        for (int i = 0; i < saveDraftBeans.size(); i++) {
-            SaveDraftBean bean = saveDraftBeans.get(i);
-            if (bean.getId() == id) {
-                return bean;
-            }
-        }
-        return null;
-    }
     /**
      * 创建草稿箱内容
      */
@@ -567,7 +720,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         PublishDesBean publishDesBean = binding.desText.getDesStr();
         SaveDraftBean saveDraftBean;
         if (publishDraftId > 0) {
-            saveDraftBean = getDraft(publishDraftId);
+            saveDraftBean = viewModel.getDraftsById(this,fileName,publishDraftId);
         }else{
             saveDraftBean = new SaveDraftBean();
             saveDraftBean.setId(System.currentTimeMillis() / 1000);
@@ -589,26 +742,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
         saveDraftBean.setSaveTime(System.currentTimeMillis());
 
-        String json = ACache.get(this).getAsString(fileName);
-        List<SaveDraftBean> saveDraftBeans;
-        if (!StringUtils.isEmpty(json)) {
-            saveDraftBeans = JSON.parseArray(json, SaveDraftBean.class);
-        } else saveDraftBeans = new ArrayList<>();
-        if (saveDraftBeans == null) saveDraftBeans = new ArrayList<>();
-        int index = -1;
-        for (int i = 0; i < saveDraftBeans.size(); i++) {
-            SaveDraftBean bean =  saveDraftBeans.get(i);
-            if (bean.getId() == saveDraftBean.getId()) {
-                index = i;
-                break;
-            }
-        }
-        if (index == -1)
-        saveDraftBeans.add(0 ,saveDraftBean );
-        else saveDraftBeans.set(index ,saveDraftBean );
-        ACache.get(this).put(fileName , JSON.toJSONString(saveDraftBeans));
+        viewModel.saveDraftsById(this, fileName, saveDraftBean);
+
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
     }
+
+
 
     /** 保存草稿箱 end*/
 

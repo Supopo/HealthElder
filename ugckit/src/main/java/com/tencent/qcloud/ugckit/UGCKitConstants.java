@@ -2,6 +2,7 @@ package com.tencent.qcloud.ugckit;
 
 public class UGCKitConstants {
     // 业务Server的地址
+//    public static final String APP_SVR_URL = "https://1302448977.vod2.myqcloud.com/lite"; //如果您的服务器没有部署https证书，这里需要用http
     public static final String APP_SVR_URL = "http://demo.vod2.myqcloud.com/lite"; //如果您的服务器没有部署https证书，这里需要用http
     // BGM列表地址
     public static final String SVR_BGM_GET_URL = "http://bgm-1252463788.cosgz.myqcloud.com/bgm_list.json";

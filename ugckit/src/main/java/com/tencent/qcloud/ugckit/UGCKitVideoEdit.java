@@ -298,7 +298,7 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
         });
     }
 
-    private void startGenerate() {
+    public void startGenerate() {
         mProgressFragmentUtil.showLoadingProgress(new ProgressFragmentUtil.IProgressListener() {
             @Override
             public void onStop() {

@@ -68,8 +68,10 @@ public class UGCKitVideoEffect extends AbsVideoEffectUI implements VideoProgress
 
     private void initTitlebar() {
         mConfirmIcon = UIAttributeUtil.getResResources(mActivity, R.attr.editerConfirmIcon, R.drawable.ugckit_ic_edit_effect_confirm_selector);
-        getTitleBar().getRightButton().setBackgroundResource(mConfirmIcon);
-        getTitleBar().getRightButton().setText("");
+        getTitleBar().getRightButton().setBackgroundResource(R.color.translucent_background);
+        getTitleBar().getLeftIcon().setVisibility(View.GONE);
+        getTitleBar().getRightButton().setText("保存");
+        getTitleBar().getLeftTitle().setText("取消");
         getTitleBar().setOnBackClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

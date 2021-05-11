@@ -41,6 +41,8 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoEditerBinding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoEditerViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -70,7 +72,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     // 返回键
     private ImageView backIv;
     private boolean              mIsPublish;
-    private int publish_code = 1001;
+    public static int publish_code = 1001;
 
 
     private IVideoEditKit.OnEditListener mOnVideoEditListener = new IVideoEditKit.OnEditListener() {
@@ -145,7 +147,9 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         backIv.setOnClickListener(view ->  showCancelAlert());
 
         binding.publish.setOnClickListener(view -> {
-            mUGCKitVideoEdit.showPublishDialog();
+//            mUGCKitVideoEdit.showPublishDialog();
+            VideoEditerSDK.getInstance().setPublishFlag(true);
+            mUGCKitVideoEdit.startGenerate();
         });
 
     }
@@ -224,6 +228,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
                 intent.putExtra(UGCKitConstants.VIDEO_COVERPATH, ugcKitResult.coverPath);
             }
             intent.putExtra(UGCKitConstants.VIDEO_RECORD_DURATION, duration);
+            intent.putExtra(LiteAvConstant.RequestCode, publish_code);
             startActivityForResult(intent, publish_code);
         } else {
             intent = new Intent(this, MainActivity.class);

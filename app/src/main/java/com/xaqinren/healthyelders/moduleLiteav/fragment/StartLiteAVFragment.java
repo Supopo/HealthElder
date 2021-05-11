@@ -34,6 +34,7 @@ import com.tencent.qcloud.ugckit.module.record.RecordMusicPannel;
 import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IRecordMusicPannel;
+import com.tencent.qcloud.xiaoshipin.videochoose.TCPicturePickerActivity;
 import com.tencent.ugc.TXRecordCommon;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -153,6 +154,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         /*binding.recodeBtn.setOnClickListener(view -> {
             startRecode();
         });*/
+        binding.galleryLayout.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), TCPicturePickerActivity.class);
+            startActivity(intent);
+        });
         binding.recodeBtn.setOnRecordButtonListener(new RecordButton.OnRecordButtonListener() {
             @Override
             public void onRecordStart() {

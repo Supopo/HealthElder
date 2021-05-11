@@ -110,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/include_publish"
-                android:layout_marginBottom="@dimen/dp_6"/>
+                android:layout_marginBottom="@dimen/dp_20"/>
 <!--            热点话题view-->
             <include
                 android:id="@+id/include_list_at"
@@ -125,5 +125,30 @@
                 android:layout_height="match_parent"
                 />
         </FrameLayout>
+        <RelativeLayout
+            android:id="@+id/publish_progress_mark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_80000000"
+            android:visibility="gone">
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:progressDrawable="@drawable/ugckit_default_progress" />
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/progressbar"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/ugckit_white"
+                android:textSize="14dp" />
+        </RelativeLayout>
     </RelativeLayout>
 </layout>

@@ -66,7 +66,7 @@ public class CoverUtil {
                 if (!appDir.exists()) {
                     appDir.mkdirs();
                 }
-                String fileName = "thumbnail" + ".jpg";
+                String fileName = "thumbnail"+ System.currentTimeMillis() + ".jpg";
                 File file = new File(appDir, fileName);
                 if (file.exists()) {
                     file.delete();

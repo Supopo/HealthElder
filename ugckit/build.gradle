@@ -70,4 +70,6 @@ dependencies {
         exclude group: 'com.tencent.qcloud', module: 'mtaUtils' //关闭 mta 上报功能}
     }
     compile project(':beautysettingkit')
+    //  短视频视频签名
+    implementation 'com.auth0:java-jwt:3.16.0'
 }

@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUnLookAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUserAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseUnLookViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.UnLookSearchLayout;
@@ -54,7 +55,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         super.initData();
         rlTitle.setVisibility(View.GONE);
         testData();
-        List<LiteAvUserBean> temp = (List<LiteAvUserBean>) getIntent().getSerializableExtra(Constant.UnLookList);
+        List<LiteAvUserBean> temp = (List<LiteAvUserBean>) getIntent().getSerializableExtra(LiteAvConstant.UnLookList);
         if (temp != null) {
             mergeList(temp);
         }
