@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.widget;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.Window;
@@ -8,10 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.tencent.bugly.proguard.A;
 import com.xaqinren.healthyelders.R;
-
-import org.w3c.dom.Text;
 
 
 public class ConciseDialog  {

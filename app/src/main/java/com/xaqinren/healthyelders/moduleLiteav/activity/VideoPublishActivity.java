@@ -78,6 +78,7 @@ import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.CenterDialog;
 import com.xaqinren.healthyelders.widget.ConciseDialog;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
@@ -239,9 +240,16 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         //保存到草稿箱
         binding.includePublish.saveDraftBtn.setOnClickListener(view -> {
-            ConciseDialog conciseDialog = new ConciseDialog(this);
-            conciseDialog.setMessageText("确定保存至草稿箱吗？");
-            conciseDialog.showDialog();
+            CenterDialog centerDialog = new CenterDialog(this);
+            centerDialog.setMessageText("确定保存至草稿箱吗？");
+            centerDialog.showDialog();
+            centerDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    centerDialog.dismissDialog();
+                }
+            });
+
         });
         binding.includePublish.publishBtn.setOnClickListener(view -> {
             //TODO 发布
