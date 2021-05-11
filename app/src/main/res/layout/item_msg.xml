@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleMsg.bean.MsgBean" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/ll_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_58"
+            android:paddingLeft="@dimen/dp_16">
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/dp_8"
+                android:id="@+id/rl_avatar"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true">
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:src="@color/color_EAEAEA"
+                    app:qmui_border_color="@color/qmui_s_transparent"
+                    app:qmui_is_circle="true"
+                    />
+
+                <TextView
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/bg_num_red"
+                    android:gravity="center"
+                    android:text="99"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dp_10" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_toRightOf="@id/rl_avatar"
+                android:layout_toLeftOf="@id/tv_time"
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_9"
+                android:text="@{viewModel.name}"
+                android:textSize="@dimen/sp_15"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_toRightOf="@id/rl_avatar"
+                android:layout_below="@id/tv_name"
+                android:layout_marginTop="@dimen/dp_3"
+                android:id="@+id/tv_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_9"
+                android:text="消息内容"
+                android:layout_marginRight="@dimen/dp_16"
+                android:singleLine="true"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_13" />
+
+            <TextView
+                android:layout_marginTop="@dimen/dp_8"
+                android:id="@+id/tv_time"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5月21日"
+                android:layout_marginRight="@dimen/dp_16"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_11" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/rl_avatar"
+                android:layout_marginLeft="@dimen/dp_9"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/color_EAEAEA"
+                />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</layout>

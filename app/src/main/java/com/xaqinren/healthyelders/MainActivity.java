@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -21,10 +20,11 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
+import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
-import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
+import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         mFragments = new ArrayList<>();
         mFragments.add(new XxxFragment());
         mFragments.add(new GirlsFragment());
-        mFragments.add(new XxxFragment());
+        mFragments.add(new MsgFragment());
         mFragments.add(new MineFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);

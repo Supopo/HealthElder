@@ -1530,8 +1530,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             showCloseLinkDialog.show();
         } else {
             showCloseLinkDialog = new QMUIDialog.MessageDialogBuilder(this)
-                    .setTitle("关闭连麦")
-                    .setMessage("确定关闭连麦吗？")
+                    .setTitle("确定关闭连线吗？")
                     .addAction("取消", (dialog, index) -> dialog.dismiss())
                     .addAction("确定", (dialog, index) -> {
 
