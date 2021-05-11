@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black_font_color">
+    android:background="@color/black_font_color"
+    android:id="@+id/rl_container">
     <com.tencent.rtmp.ui.TXCloudVideoView
         android:id="@+id/player_cloud_view"
         android:layout_width="match_parent"

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.widget.comment.ICommentBean" />
+    </data>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_13">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:src="@color/color_252525" />
+
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_252525"
+            android:textSize="@dimen/sp_12"
+            android:text="@{viewModel.nickName}"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:layout_below="@id/nickname"
+            android:layout_marginTop="@dimen/dp_4"
+            android:lineSpacingExtra="3dp"
+            android:textColor="@color/color_535353"
+            android:text="@{viewModel.comment}"
+            android:textSize="@dimen/sp_14"
+            android:layout_marginRight="@dimen/dp_62"/>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:layout_below="@id/content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_BBBBBB"
+            android:text="@{viewModel.commentTime}" />
+
+        <TextView
+            android:id="@+id/reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/time"
+            android:layout_toRightOf="@id/time"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_252525"
+            android:textStyle="bold"
+            android:text="回复" />
+    </RelativeLayout>
+</layout>

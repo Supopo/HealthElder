@@ -3,28 +3,20 @@ package com.xaqinren.healthyelders.moduleLiteav.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
-import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
 import com.tencent.qcloud.xiaoshipin.play.PlayerInfo;
-import com.tencent.qcloud.xiaoshipin.play.TCVodPlayerActivity;
-import com.tencent.qcloud.xiaoshipin.userinfo.UserInfoUtil;
-import com.tencent.qcloud.xiaoshipin.videorecord.FollowRecordDownloader;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXLog;
@@ -34,14 +26,19 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiteAvPlayBinding;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.LiteAvPlayViewModel;
 import com.xaqinren.healthyelders.widget.LiteAvPlayView;
+import com.xaqinren.healthyelders.widget.comment.CommentDialog;
+import com.xaqinren.healthyelders.widget.comment.ICommentBean;
+import com.xaqinren.healthyelders.widget.share.IShareUser;
+import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -103,7 +100,6 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
     private void initViews() {
         mTXCloudVideoView = (TXCloudVideoView) findViewById(com.hjyy.liteav.R.id.player_cloud_view);
         mIvCover = (ImageView) findViewById(com.hjyy.liteav.R.id.player_iv_cover);
-
 
         mVerticalViewPager = (VerticalViewPager) findViewById(com.hjyy.liteav.R.id.vertical_view_pager);
         mVerticalViewPager.setOffscreenPageLimit(2);
@@ -361,53 +357,46 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public LiteAvPlayView instantiateItem(ViewGroup container, int position) {
             TXCLog.i(TAG, "MyPagerAdapter instantiateItem, position = " + position);
+            //TODO 改成自己的视频bean
             TCVideoInfo videoInfo = mTCLiveInfoList.get(position);
-
             LiteAvPlayView view = new LiteAvPlayView(LiteAvPlayActivity.this);
             view.setId(position);
             view.initView();
             view.setVideoInfo(videoInfo);
-//            // 封面
-//            ImageView coverImageView = (ImageView) view.findViewById(com.hjyy.liteav.R.id.player_iv_cover);
-//            if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_PORN) { //涉黄的图片不显示
-//                coverImageView.setImageResource(com.hjyy.liteav.R.drawable.bg);
-//            } else {
-//                BitmapUtils.blurBgPic(LiteAvPlayActivity.this, coverImageView, videoInfo.frontcover, com.hjyy.liteav.R.drawable.bg);
-//            }
-//            // 头像
-//            CircleImageView ivAvatar = (CircleImageView) view.findViewById(com.hjyy.liteav.R.id.player_civ_avatar);
-//            Glide.with(LiteAvPlayActivity.this).load(videoInfo.headpic).error(com.hjyy.liteav.R.drawable.face).into(ivAvatar);
-//            // 姓名
-//            TextView tvName = (TextView) view.findViewById(com.hjyy.liteav.R.id.player_tv_publisher_name);
-//            if (TextUtils.isEmpty(videoInfo.nickname) || "null".equals(videoInfo.nickname)) {
-//                tvName.setText(UserInfoUtil.getLimitString(videoInfo.userid, 10));
-//            } else {
-//                tvName.setText(videoInfo.nickname);
-//            }
-//            TextView tvStatus = (TextView) view.findViewById(com.hjyy.liteav.R.id.tx_video_review_status);
-//            if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_NOT_REVIEW) {
-//                tvStatus.setVisibility(View.VISIBLE);
-//                tvStatus.setText(com.hjyy.liteav.R.string.video_not_review);
-//            } else if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_PORN) {
-//                tvStatus.setVisibility(View.VISIBLE);
-//                tvStatus.setText(com.hjyy.liteav.R.string.video_porn);
-//            } else if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_NORMAL) {
-//                tvStatus.setVisibility(View.GONE);
-//            }
-
-            // 获取此player
-//            TXCloudVideoView playView = (TXCloudVideoView) view.findViewById(com.hjyy.liteav.R.id.player_cloud_view);
             PlayerInfo playerInfo = instantiatePlayerInfo(position);
-//            playerInfo.playerView = playView;
-//            playerInfo.vodPlayer.setPlayerView(playView);
             view.attachVideoView(playerInfo);
+            view.setOnItemClickListener(new LiteAvPlayView.OnItemClickListener() {
+                @Override
+                public void onShareClick(String videoId) {
+                    showShareDialog();
+                }
+
+                @Override
+                public void onLikeClick(String videoId) {
+
+                }
+
+                @Override
+                public void onCommentClick(String videoId) {
+                    showCommentDialog();
+                }
+
+                @Override
+                public void onAvatarClick(String videoId) {
+
+                }
+
+                @Override
+                public void onLookClick(String videoId) {
+
+                }
+            });
             if (playerInfo.reviewstatus == TCVideoInfo.REVIEW_STATUS_NORMAL) {
                 playerInfo.vodPlayer.startPlay(playerInfo.playURL);
             } else if (playerInfo.reviewstatus == TCVideoInfo.REVIEW_STATUS_NOT_REVIEW) { // 审核中
             } else if (playerInfo.reviewstatus == TCVideoInfo.REVIEW_STATUS_PORN) {       // 涉黄
-
             }
             container.addView(view);
             return view;
@@ -422,5 +411,50 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
             container.removeView((View) object);
         }
     }
+    //分享弹窗
+    ShareDialog shareDialog;
+    private void showShareDialog(){
+        if (shareDialog == null)
+            shareDialog = new ShareDialog(this);
+        shareDialog.setData(getShareData());
+        shareDialog.show(binding.rlContainer);
+    }
+    private List<? extends IShareUser> getShareData() {
+        List<LiteAvUserBean> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            LiteAvUserBean bean = new LiteAvUserBean();
+            bean.avatarUrl = "";
+            bean.nickname = "";
+            bean.userId = i;
+            list.add(bean);
+        }
+        return list;
+    }
 
+    //评论弹窗
+    CommentDialog commentDialog;
+    private void showCommentDialog() {
+        if (commentDialog == null)
+            commentDialog = new CommentDialog(this);
+        commentDialog.setDataList(getCommentData());
+        commentDialog.show(binding.rlContainer);
+    }
+
+    private List<ICommentBean> getCommentData() {
+        List<ICommentBean> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            VideoCommentBean bean = new VideoCommentBean();
+            bean.avatar = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F140703%2F330746-140f301555752.jpg&refer=http%3A%2F%2Fimg.juimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623312032&t=dd12bc18844a0c4cfd47510b2ec89c4b";
+            bean.nickName = "你好呀";
+            bean.canComment = true;
+            bean.comment = "评论内容评论内容评论内容评论内容评论内容评论内容评论内容";
+            bean.commentTime = "12小时前";
+            bean.likeCount = "666";
+            bean.isLike = true;
+            bean.commentCount = 9;
+            bean.childComment = new ArrayList<>();
+            list.add(bean);
+        }
+        return list;
+    }
 }

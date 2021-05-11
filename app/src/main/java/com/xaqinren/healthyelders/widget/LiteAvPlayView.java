@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,10 +16,14 @@ import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
 import com.tencent.qcloud.xiaoshipin.play.PlayerInfo;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.widget.share.IShareUser;
+import com.xaqinren.healthyelders.widget.share.ShareDialog;
+
+import java.util.List;
 
 public class LiteAvPlayView extends RelativeLayout {
 
-
+    RelativeLayout rlContainer;
     TCVideoInfo videoInfo;
     TXCloudVideoView playView;
     ImageView playerIvCover;
@@ -42,6 +47,12 @@ public class LiteAvPlayView extends RelativeLayout {
 
     CircleImageView musicBtn;
 
+    OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     public LiteAvPlayView(Context context) {
         super(context);
         init();
@@ -58,8 +69,20 @@ public class LiteAvPlayView extends RelativeLayout {
     }
 
     private void init() {
+
         inflate(getContext(), R.layout.layout_lite_av_player, this);
+        rlContainer = findViewById(R.id.rl_container);
         playView = (TXCloudVideoView) findViewById(com.hjyy.liteav.R.id.player_cloud_view);
+        shareGroup = findViewById(R.id.share_group);
+        plGroup = findViewById(R.id.pl_group);
+
+
+        shareGroup.setOnClickListener(view -> {
+            if (onItemClickListener!=null) onItemClickListener.onShareClick(videoInfo.fileid);
+        });
+        plGroup.setOnClickListener(view -> {
+            if (onItemClickListener!=null) onItemClickListener.onCommentClick(videoInfo.fileid);
+        });
     }
 
     public void setVideoInfo(TCVideoInfo videoInfo) {
@@ -74,4 +97,17 @@ public class LiteAvPlayView extends RelativeLayout {
         info.playerView = playView;
         info.vodPlayer.setPlayerView(playView);
     }
+
+    public interface OnItemClickListener{
+        void onShareClick(String videoId);
+
+        void onLikeClick(String videoId);
+
+        void onCommentClick(String videoId);
+
+        void onAvatarClick(String videoId);
+
+        void onLookClick(String videoId);
+    }
+
 }

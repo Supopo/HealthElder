@@ -75,6 +75,10 @@
     <color name="colorTextMsg">#FFFFFF</color>
     <color name="colorShowMsg"> #11EEFF</color>
     <color name="colorGiftMsg"> #13D9E8</color>
+    <color name="color_AFAFAF">#afafaf</color>
+    <color name="color_535353">#535353</color>
+    <color name="color_BBBBBB">#BBBBBB</color>
+    <color name="color_B4b4b4">#B4B4B4</color>
 
 
 </resources>
