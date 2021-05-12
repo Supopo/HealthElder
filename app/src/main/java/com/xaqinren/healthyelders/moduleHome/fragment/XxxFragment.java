@@ -28,6 +28,7 @@ import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
 import com.tencent.qcloud.xiaoshipin.play.TCVodPlayerActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.global.Constant;
@@ -160,8 +161,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             startActivity(VideoPublishActivity.class);
         });
         binding.tvMenu104.setOnClickListener(view -> {
+            String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
             Bundle bundle = new Bundle();
-            bundle.putLong(Constant.DraftId , 1620460768);
+            bundle.putLong(Constant.DraftId , LiteAvRepository.getInstance().getDraftsList(getContext(),fileName).get(0).getId());
             startActivity(VideoPublishActivity.class, bundle);
         });
         binding.tvMenu105.setOnClickListener(view -> {

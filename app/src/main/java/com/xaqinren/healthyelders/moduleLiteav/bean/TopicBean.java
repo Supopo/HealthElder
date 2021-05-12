@@ -1,46 +1,46 @@
 package com.xaqinren.healthyelders.moduleLiteav.bean;
 
 public class TopicBean {
-    private Object id;
-    private Object createdAt;
-    private Object merchantId;
+    private String id;
+    private String createdAt;
+    private String merchantId;
     private String name;
-    private Object hot;
-    private Object useCount;
-    private Object playCount;
-    private Object icon;
-    private Object userId;
-    private Object approvalStatus;
-    private Object ObjectId;
-    private Object homeResourceType;
-    private Object objectId;
+    private String hot;
+    private String useCount;
+    private String playCount;
+    private String icon;
+    private String userId;
+    private String approvalStatus;
+    private String ObjectId;
+    private String homeResourceType;
+    private String objectId;
 
 
     public TopicBean(String topicTitle) {
         this.name = topicTitle;
     }
 
-    public Object getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Object id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Object getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Object createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Object getMerchantId() {
+    public String getMerchantId() {
         return merchantId;
     }
 
-    public void setMerchantId(Object merchantId) {
+    public void setMerchantId(String merchantId) {
         this.merchantId = merchantId;
     }
 
@@ -52,67 +52,67 @@ public class TopicBean {
         this.name = name;
     }
 
-    public Object getHot() {
+    public String getHot() {
         return hot;
     }
 
-    public void setHot(Object hot) {
+    public void setHot(String hot) {
         this.hot = hot;
     }
 
-    public Object getUseCount() {
+    public String getUseCount() {
         return useCount;
     }
 
-    public void setUseCount(Object useCount) {
+    public void setUseCount(String useCount) {
         this.useCount = useCount;
     }
 
-    public Object getPlayCount() {
+    public String getPlayCount() {
         return playCount;
     }
 
-    public void setPlayCount(Object playCount) {
+    public void setPlayCount(String playCount) {
         this.playCount = playCount;
     }
 
-    public Object getIcon() {
+    public String getIcon() {
         return icon;
     }
 
-    public void setIcon(Object icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
     }
 
-    public Object getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Object userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public Object getApprovalStatus() {
+    public String getApprovalStatus() {
         return approvalStatus;
     }
 
-    public void setApprovalStatus(Object approvalStatus) {
+    public void setApprovalStatus(String approvalStatus) {
         this.approvalStatus = approvalStatus;
     }
 
-    public Object getObjectId() {
+    public String getObjectId() {
         return ObjectId;
     }
 
-    public void setObjectId(Object objectId) {
+    public void setObjectId(String objectId) {
         ObjectId = objectId;
     }
 
-    public Object getHomeResourceType() {
+    public String getHomeResourceType() {
         return homeResourceType;
     }
 
-    public void setHomeResourceType(Object homeResourceType) {
+    public void setHomeResourceType(String homeResourceType) {
         this.homeResourceType = homeResourceType;
     }
 }

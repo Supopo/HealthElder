@@ -35,6 +35,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.google.gson.Gson;
 import com.nostra13.dcloudimageloader.utils.L;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -68,10 +69,14 @@ import com.xaqinren.healthyelders.moduleLiteav.adapter.PublishLocationAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.PublishTopicAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishSummaryBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.VideoPublishEditBean;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
@@ -247,6 +252,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 @Override
                 public void onClick(View v) {
                     centerDialog.dismissDialog();
+                    createDraftContent();
                 }
             });
 
@@ -389,9 +395,41 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
         binding.publishProgressMark.setVisibility(View.GONE);
         if (publishResult.retCode == TXUGCPublishTypeDef.PUBLISH_RESULT_OK) {
-//            mImageBack.setVisibility(View.GONE);
-            //TODO 发布到自己服务器
-            viewModel.UploadUGCVideo(publishResult.videoId, publishResult.videoURL, publishResult.coverURL);
+            PublishBean bean = new PublishBean();
+            bean.address = locationBean.desName;
+            bean.latitude = lat + "";
+            bean.longitude = lon + "";
+            bean.shortVideoAuth = bean.getMode(publishMode);
+            bean.shortVideoName = "小视频";
+            bean.shortVideoCover = publishResult.coverURL;
+            bean.shortVideoUrl = publishResult.videoURL;
+            bean.shortVideoId = publishResult.videoId;
+            bean.canRecommendFriends = isComment;
+
+            PublishSummaryBean summaryBean = new PublishSummaryBean();
+
+            PublishDesBean desBean = binding.desText.getDesStr();
+            summaryBean.content = desBean.content;
+            summaryBean.publishFocusItemBeans = desBean.publishFocusItemBeans;
+
+            for (VideoPublishEditBean editBean : binding.desText.getAtList()) {
+                PublishAtBean atBean = new PublishAtBean();
+                atBean.name = editBean.getContent().replace("@", "");
+                atBean.uid = editBean.getId() + "";
+                summaryBean.atList.add(atBean);
+            }
+            for (VideoPublishEditBean editBean : binding.desText.getTopicList()) {
+                summaryBean.topicList.add(editBean.getContent().replace("#", ""));
+            }
+
+            for (LiteAvUserBean userBean : unLookUserList) {
+                bean.refuseUserIds.add(userBean.userId+"");
+            }
+            bean.summary = JSON.toJSONString(summaryBean);
+
+            LogUtils.e(TAG, JSON.toJSONString(bean));
+            //发布到自己服务器
+            viewModel.UploadUGCVideo(bean);
         } else {
             if (publishResult.descMsg.contains("java.net.UnknownHostException") || publishResult.descMsg.contains("java.net.ConnectException")) {
                 binding.tvProgress.setText(getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_publisher_activity_network_connection_is_disconnected_video_upload_failed));
@@ -407,7 +445,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     private void clearDrafts(){
         if (publishDraftId != 0) {
             //删除对应的草稿箱
-
+            String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+            viewModel.delDraftsById(this,fileName,publishDraftId);
         }
     }
 
@@ -434,6 +473,22 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         binding.includeListAt.recyclerView.setAdapter(userAdapter);
         binding.includeListTopic.recyclerView.setAdapter(chooseTopicAdapter);
+
+        userAdapter.getLoadMoreModule().setEnableLoadMore(true);
+        userAdapter.getLoadMoreModule().setAutoLoadMore(true);
+        userAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                //目前还没数据做分页
+                if (singleSearchAt) {
+                    //搜索好友,加载更多
+                    viewModel.getMyAtList(atPage, atPageSize);
+                }else{
+                    //搜索用户,加载更多
+                    viewModel.searchUserList(atPage, atPageSize, currentAt);
+                }
+            }
+        });
     }
 
     @Override
@@ -443,12 +498,21 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         viewModel.liteAvUserList.observe(this, liteAvUserBean -> {
             for (LiteAvUserBean avUserBean : liteAvUserBean) {
                 avUserBean.readOnly = true;
+                if (!
+
+                        singleSearchAt) {
+                    //查询用户,只有ID,没有USerID,手动设置
+                    avUserBean.userId = avUserBean.id;
+                }
             }
             atPage++;
             this.liteAvUserBeans.addAll(liteAvUserBean);
-            userAdapter.addData(liteAvUserBean);
-            binding.includeListAt.recyclerView.getAdapter().notifyDataSetChanged();
-            binding.includeListAt.layoutPublishAt.setVisibility(View.VISIBLE);
+            userAdapter.setList(this.liteAvUserBeans);
+            if (liteAvUserBean.isEmpty() || liteAvUserBean.size() < atPageSize) {
+                userAdapter.getLoadMoreModule().loadMoreEnd(false);
+            }else{
+                userAdapter.getLoadMoreModule().loadMoreComplete();
+            }
         });
         viewModel.loginRoomSuccess.observe(this, aBoolean -> {
 
@@ -456,14 +520,11 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         viewModel.publishSuccess.observe(this, aBoolean -> {
             if (aBoolean) {
                 LogUtils.e(TAG,"发布视频成功");
-                BackgroundTasks.getInstance().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
-                        NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
-                        clearDrafts();
-                    }
-                });
+                ToastUtils.showLong("发布成功");
+                EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
+                NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
+                clearDrafts();
+                finish();
             }else{
                 //发布失败
                 LogUtils.e(TAG,"发布视频失败");
@@ -482,14 +543,23 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.includeListTopic.recyclerView.getAdapter().notifyDataSetChanged();
         binding.includeListTopic.layoutPublishAt.setVisibility(View.VISIBLE);
     }
+
+    private boolean singleSearchAt = false;
+    private String currentAt;
     private void showAtView(String str) {
         //TODO 调用接口
-        if (str.equals("@"))
-            viewModel.getMyAtList(atPage , atPageSize);
+        atPage = 1;
+        this.liteAvUserBeans.clear();
+        if (str.equals("@")) {
+            singleSearchAt = true;
+            viewModel.getMyAtList(atPage, atPageSize);
+        }
         else{
             //搜索
+            singleSearchAt = false;
+            currentAt = str.replace("@", "");
+            viewModel.searchUserList(atPage, atPageSize, currentAt);
         }
-        binding.includeListAt.recyclerView.getAdapter().notifyDataSetChanged();
         binding.includeListAt.layoutPublishAt.setVisibility(View.VISIBLE);
     }
 
@@ -510,6 +580,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 mCoverPath = path;
             } else if (requestCode == location_code) {
                 LocationBean bean = (LocationBean) data.getSerializableExtra("bean");
+                this.locationBean = bean;
                 binding.includePublish.myLocation.setText(bean.desName);
                 equalsLocation(bean);
             } else if (requestCode == unlook_code) {
@@ -747,6 +818,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         viewModel.saveDraftsById(this, fileName, saveDraftBean);
 
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
+        finish();
     }
 
 

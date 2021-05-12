@@ -5,10 +5,12 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -84,6 +86,56 @@ public class LiteAvRepository {
                 });
     }
 
+
+    public void publishVideo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> listMutableLiveData , PublishBean bean) {
+        String json = JSON.toJSONString(bean);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.postPublishLiteAv(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        listMutableLiveData.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, int page, int pageSize, String identity) {
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<LiteAvUserBean>>> data) {
+                        listMutableLiveData.postValue(data.getData().content);
+                    }
+                });
+    }
+
+
     public List<SaveDraftBean>  getDraftsList(Context context , String fileName) {
         String json = ACache.get(context).getAsString(fileName);
         List<SaveDraftBean> saveDraftBeans;
@@ -117,5 +169,42 @@ public class LiteAvRepository {
             saveDraftBeans.add(0 ,saveDraftBean );
         else saveDraftBeans.set(index ,saveDraftBean );
         ACache.get(context).put(fileName , JSON.toJSONString(saveDraftBeans));
+    }
+    public void delDraftsById(Context context , String fileName ,  long id) {
+        List<SaveDraftBean> saveDraftBeans =  getDraftsList(context, fileName);
+        int index = -1;
+        for (int i = 0; i < saveDraftBeans.size(); i++) {
+            SaveDraftBean bean =  saveDraftBeans.get(i);
+            if (bean.getId() == id) {
+                index = i;
+                break;
+            }
+        }
+        if (index==-1)return;
+        saveDraftBeans.remove(index);
+        ACache.get(context).put(fileName , JSON.toJSONString(saveDraftBeans));
+    }
+
+    public void getSearchUserList(MutableLiveData<Boolean> requestSuccess, MutableLiveData<List<LiteAvUserBean>> searchUserList, int page, int pageSize,String key) {
+        userApi.getSearchUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize,key)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        requestSuccess.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<LiteAvUserBean>>> data) {
+                        searchUserList.postValue(data.getData().content);
+                    }
+                });
     }
 }

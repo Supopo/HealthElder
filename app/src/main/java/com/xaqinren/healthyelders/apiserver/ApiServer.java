@@ -193,4 +193,21 @@ public interface ApiServer {
     //短视频获取热点话题
     @GET("content/findHotTopic")
     Observable<MBaseResponse<List<TopicBean>>> getHotTopicList(@Header("Authorization") String authorization);
+
+
+    //短视频发布
+    @Headers({"content-type:application/json"})
+    @POST("content/shortVideo/release")
+    Observable<MBaseResponse<Object>> postPublishLiteAv(@Header("Authorization") String authorization,
+                                                  @Body RequestBody body);
+
+    //用户，获取好友
+    @GET("user/queryFriendsPage")
+    Observable<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>> getUserFriend(@Header("Authorization") String authorization,
+                                                                               @Query("page") int page, @Query("pageSize") int pageSize, @Query("identity") String identity);
+
+    //用户，获取好友
+    @GET("user/querySearchPage")
+    Observable<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>> getSearchUserFriend(@Header("Authorization") String authorization,
+                                                                               @Query("page") int page, @Query("pageSize") int pageSize, @Query("key") String name);
 }

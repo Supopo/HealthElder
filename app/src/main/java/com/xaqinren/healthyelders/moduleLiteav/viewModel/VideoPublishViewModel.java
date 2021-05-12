@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
@@ -42,6 +43,7 @@ public class VideoPublishViewModel extends BaseViewModel {
 
     public MutableLiveData<List<LiteAvUserBean>> liteAvUserList = new MutableLiveData<>();
     public MutableLiveData<List<TopicBean>> topicList = new MutableLiveData<>();
+    public MutableLiveData<Object> publish = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> publishSuccess = new MutableLiveData<>();
 
@@ -50,6 +52,12 @@ public class VideoPublishViewModel extends BaseViewModel {
      */
     public void getMyAtList(int page ,int pageSize) {
         LiteAvRepository.getInstance().getMyAtList(requestSuccess, liteAvUserList, page, pageSize);
+    }
+    /**
+     * 搜索用户
+     */
+    public void searchUserList(int page ,int pageSize,String key ) {
+        LiteAvRepository.getInstance().getSearchUserList(requestSuccess, liteAvUserList, page, pageSize,key);
     }
 
     public List<SaveDraftBean> getDraftsList(Context context , String fileName) {
@@ -60,6 +68,10 @@ public class VideoPublishViewModel extends BaseViewModel {
     }
     public void saveDraftsById(Context context , String fileName ,  SaveDraftBean saveDraftBean) {
         LiteAvRepository.getInstance().saveDraftsById(context,fileName,saveDraftBean);
+    }
+
+    public void delDraftsById(Context context, String fileName, long publishDraftId) {
+        LiteAvRepository.getInstance().delDraftsById(context, fileName, publishDraftId);
     }
 
 
@@ -91,48 +103,11 @@ public class VideoPublishViewModel extends BaseViewModel {
 
     /**
      * 向自己服务器上传
-     * @param videoId
-     * @param videoURL
-     * @param coverURL
      */
-    public void UploadUGCVideo(final String videoId, final String videoURL, final String coverURL){
-        String title = null; //TODO:传入本地视频文件名称
-        if (TextUtils.isEmpty(title)) {
-            title = "小视频";
-        }
+    public void UploadUGCVideo(PublishBean bean){
         LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_UPLOAD_SERVER, TCUserMgr.SUCCESS_CODE, "UploadUGCVideo Sucess");
-        publishSuccess.postValue(true);
         //TODO 发布视频
-        /*try {
-            JSONObject body = new JSONObject().put("file_id", videoId)
-                    .put("title", title)
-                    .put("frontcover", coverURL)
-                    .put("location", "未知")
-                    .put("play_url", videoURL);
-            TCUserMgr.getInstance().request("/upload_ugc", body, new TCUserMgr.HttpCallback("upload_ugc", new TCUserMgr.Callback() {
-                @Override
-                public void onSuccess(JSONObject data) {
-                    Log.e("TAG", data.toString());
-
-                    *//**
-                     * ELK上报：发布视频到服务器
-                     *//*
-                    LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_UPLOAD_SERVER, TCUserMgr.SUCCESS_CODE, "UploadUGCVideo Sucess");
-                    publishSuccess.postValue(true);
-                }
-
-                @Override
-                public void onFailure(int code, final String msg) {
-                    *//**
-                     * ELK上报：发布视频到服务器
-                     *//*
-                    LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_UPLOAD_SERVER, code, msg);
-                    publishSuccess.postValue(false);
-                }
-            }));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+        LiteAvRepository.getInstance().publishVideo(requestSuccess, publishSuccess, bean);
     }
 
     /**
@@ -141,4 +116,6 @@ public class VideoPublishViewModel extends BaseViewModel {
     public void getHotTopic() {
         LiteAvRepository.getInstance().getHotTopicList(requestSuccess, topicList);
     }
+
+
 }

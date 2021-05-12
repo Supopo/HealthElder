@@ -77,6 +77,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private Disposable eventDisposable;
     private PoiSearch poiSearch;
     private int locationPageIndex = 1;
+    private int locationType = 0;//0 poi 1 str
+    private String currentSearch = "";
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -127,9 +129,18 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
+                    if (locationType == 0){
+                        locationType = 1;
+                    }
+                    if (!editable.equals(currentSearch)) {
+                        locationPageIndex = 1;
+                    }
                     searchAddress(editable.toString());
                 }else{
-                    locationPageIndex = 1;
+                    if (locationType == 1){
+                        locationType = 0;
+                        locationPageIndex = 1;
+                    }
                     adapter.setList(selLocationBeans);
                 }
             }
@@ -145,7 +156,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         adapter.getLoadMoreModule().setEnableLoadMore(true);
         adapter.getLoadMoreModule().setAutoLoadMore(true);
         adapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
-            getAddressList();
+            if (binding.searchView.getText().length() > 0) {
+                searchAddress(binding.searchView.getText().toString());
+            }else {
+                getAddressList();
+            }
         });
     }
 
@@ -209,7 +224,6 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
 
     private void searchAddress(String keyWord) {
         InputtipsQuery inputquery = new InputtipsQuery(keyWord, cityName);
-        inputquery.setCityLimit(true);//限制在当前城市
         if (inputTips == null) {
             inputTips = new Inputtips(this, inputquery);
             inputTips.setInputtipsListener(this);
@@ -238,6 +252,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         adapter.setList(selLocationBeans);
         if (poiResult.getPois().isEmpty()) {
             adapter.getLoadMoreModule().loadMoreEnd();
+        }else{
+            adapter.getLoadMoreModule().loadMoreComplete();
         }
     }
 
@@ -250,7 +266,9 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     public void onGetInputtips(List<Tip> list, int i) {
         LogUtils.e("Location", JSON.toJSONString(list));
         LatLng latLng1 = new LatLng(lat,lon);
-
+        if (locationPageIndex == 1) {
+            selLocationTipBeans.clear();
+        }
         for (Tip item : list) {
             LocationBean bean = new LocationBean();
             bean.desName = item.getName();
@@ -264,6 +282,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             bean.distance = distance+"";
             selLocationTipBeans.add(bean);
         }
+        locationPageIndex++;
         adapter.setList(selLocationTipBeans);
+        adapter.getLoadMoreModule().loadMoreEnd();
     }
 }

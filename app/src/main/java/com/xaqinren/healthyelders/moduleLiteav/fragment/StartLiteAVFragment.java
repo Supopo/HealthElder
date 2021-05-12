@@ -41,6 +41,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
@@ -51,6 +52,7 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding, BaseViewModel> implements
@@ -461,7 +463,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 permissions.add(Manifest.permission.RECORD_AUDIO);
             }
             if (permissions.size() != 0) {
-                ActivityCompat.requestPermissions(getActivity(), permissions.toArray(new String[0]), 100);
+                ActivityCompat.requestPermissions(getActivity(), (String[]) permissions.toArray(), 100);
                 return false;
             }
         }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -14,13 +15,10 @@ import com.nostra13.dcloudimageloader.utils.L;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiteAvLookModeBinding;
-import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUnLookAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUserAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseUnLookViewModel;
-import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.UnLookSearchLayout;
 
 import java.io.Serializable;
@@ -28,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
-import me.goldze.mvvmhabit.http.interceptor.logging.Logger;
 import me.goldze.mvvmhabit.utils.StringUtils;
 
 /**
@@ -39,7 +36,26 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     private static final String TAG = "ChooseUnLookActivity";
     private List<LiteAvUserBean> liteSelAvUserBeans = new ArrayList<>();
     private List<LiteAvUserBean> liteAvUserBeans = new ArrayList<>();
+    private List<LiteAvUserBean> searchUserBeans = new ArrayList<>();
     private ChooseUserAdapter userAdapter;
+    /**
+     * 请求单一的数据，请求返回数量 == 0 时，切换请求模式
+     */
+    private String FRIEND = "FRIEND";//朋友
+    private String FANS = "FANS";//粉丝
+    private String ATTENTION = "ATTENTION";//关注的人
+    private String STRANGER = "STRANGER";//陌生人
+    private String currentRequestType = FRIEND;
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    /**
+     * 搜索用的
+     */
+    private int searchCurrentPage;
+    private int searchPageSize = 10;
+
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_lite_av_look_mode;
@@ -54,16 +70,80 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     public void initData() {
         super.initData();
         rlTitle.setVisibility(View.GONE);
-        testData();
         List<LiteAvUserBean> temp = (List<LiteAvUserBean>) getIntent().getSerializableExtra(LiteAvConstant.UnLookList);
         if (temp != null) {
             mergeList(temp);
         }
         initView();
+        viewModel.getUserList(currentPage , pageSize , currentRequestType);
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.requestSuccess.observe(this,a ->{
+            dismissDialog();
+        });
+        viewModel.userList.observe(this, liteAvUserBeans -> {
+            if (liteAvUserBeans.isEmpty()) {
+                if (next()) {
+                    //进去下一次请求
+                    currentPage = 1;
+                    viewModel.getUserList(currentPage , pageSize , currentRequestType);
+                }else{
+                    //TODO 无更多用户了,需显示无更多数据footer
+
+                }
+                return;
+            }
+            if (currentRequestType.equals(FRIEND)) {
+                if (this.liteAvUserBeans.isEmpty()) {
+                    LiteAvUserBean bean = new LiteAvUserBean();
+                    bean.viewType = 1;
+                    bean.nickname = "好友";
+                    this.liteAvUserBeans.add(bean);
+                }
+            } else if (currentRequestType.equals(FANS)) {
+                if (this.liteAvUserBeans.isEmpty() ||
+                        this.liteAvUserBeans.get(this.liteAvUserBeans.size() - 1).viewType == 0) {
+                    LiteAvUserBean bean = new LiteAvUserBean();
+                    bean.viewType = 1;
+                    bean.nickname = "粉丝";
+                    this.liteAvUserBeans.add(bean);
+                }
+            } else {
+                if (this.liteAvUserBeans.isEmpty()
+                || this.liteAvUserBeans.get(this.liteAvUserBeans.size() - 1).viewType == 0) {
+                    LiteAvUserBean bean = new LiteAvUserBean();
+                    bean.viewType = 1;
+                    bean.nickname = "关注";
+                    this.liteAvUserBeans.add(bean);
+                }
+            }
+            this.liteAvUserBeans.addAll(liteAvUserBeans);
+            userAdapter.setList(this.liteAvUserBeans);
+        });
+        viewModel.searchUserList.observe(this, liteAvUserBeans -> {
+            //搜索列表
+            searchUserBeans.clear();
+            mergerSearch(liteAvUserBeans);
+            searchUserBeans.addAll(liteAvUserBeans);
+        });
+    }
+    private boolean next() {
+        if (currentRequestType.equals(FRIEND)) {
+            currentRequestType = FANS;
+            return true;
+        } else if (currentRequestType.equals(FANS)) {
+            currentRequestType = ATTENTION;
+            return true;
+        } else {
+            currentRequestType = ATTENTION;
+            return false;
+        }
     }
 
     /**
-     * 网络请求完数据后合并
      * @param temp
      */
     private void mergeList(List<LiteAvUserBean> temp) {
@@ -84,9 +164,17 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
             }
             i++;
         }
-
     }
-
+    private void mergerSearch(List<LiteAvUserBean> temp) {
+        for (int i = 0; i < temp.size(); i++) {
+            LiteAvUserBean bean = temp.get(i);
+            for (LiteAvUserBean user : liteSelAvUserBeans) {
+                if (user.userId == bean.userId) {
+                    bean.isSel = true;
+                }
+            }
+        }
+    }
     private void initView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -105,20 +193,9 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
             finish();
         });
         binding.searchBar.addData(liteSelAvUserBeans);
+
     }
 
-    private void testData() {
-        for (int i = 0; i < 30; i++) {
-            LiteAvUserBean bean = new LiteAvUserBean("name("+i+")", "avatar", i);
-            if (i % 10 == 1) {
-                bean.viewType = 0;
-                bean.nickname = "好友";
-            }else{
-                bean.viewType = 1;
-            }
-            liteAvUserBeans.add(bean);
-        }
-    }
     @Override
     public void onTextChange(String text) {
         if (!StringUtils.isEmpty(text)) {
@@ -149,7 +226,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         LiteAvUserBean liteAvUserBean = liteAvUserBeans.get(position);
-        if (liteAvUserBean.viewType == 1) {
+        if (liteAvUserBean.viewType == 0) {
             liteAvUserBean.isSel = !liteAvUserBean.isSel;
             if (liteAvUserBean.isSel) {
                 liteSelAvUserBeans.add(liteAvUserBean);
@@ -161,4 +238,6 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         }
         userAdapter.setData(position, liteAvUserBean);
     }
+
+
 }

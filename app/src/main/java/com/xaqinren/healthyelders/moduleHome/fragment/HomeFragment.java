@@ -89,7 +89,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.viewPager2.setAdapter(vp2Adapter);
         binding.tabLayout.setViewPager2(binding.viewPager2, titles);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override

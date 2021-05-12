@@ -34,7 +34,7 @@ public class VideoPublishCoverLayout extends FrameLayout {
     private List<ImageView> childList = new ArrayList<>();
     private View redBorderView;
     private OnCoverChangeListener onCoverChangeListener;
-
+    private boolean isClickEnable = true;
     public void setOnCoverChangeListener(OnCoverChangeListener onCoverChangeListener) {
         this.onCoverChangeListener = onCoverChangeListener;
     }
@@ -112,6 +112,8 @@ public class VideoPublishCoverLayout extends FrameLayout {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!isClickEnable)return;
+                    isClickEnable = false;
                     selCurrentChild(currentIndex , finalI);
                     moveBorderCenter();
                 }
@@ -163,8 +165,14 @@ public class VideoPublishCoverLayout extends FrameLayout {
         objectAnimator.start();
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        isClickEnable = enabled;
+    }
+
     private void selCurrentChild(int currentIndex , int nexIndex) {
-        if (currentIndex == nexIndex) return;
+        if (currentIndex == nexIndex) {isClickEnable = true;return;}
         this.currentIndex = nexIndex;
         onCoverChangeListener.onChange(nexIndex);
         moveBorderCenter();

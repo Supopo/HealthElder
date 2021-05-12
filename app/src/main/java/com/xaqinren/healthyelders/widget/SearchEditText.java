@@ -61,7 +61,7 @@ public class SearchEditText extends LinearLayout implements TextWatcher {
         editText.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.KEYCODE_BACK) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL) {
                     if (editText.getText().length() == 0) {
                         //删除选中的用户
                         onTextChangeListener.onDeleteUser();
@@ -72,14 +72,14 @@ public class SearchEditText extends LinearLayout implements TextWatcher {
         });
     }
 
-    public void addUser() {
+    public void addUser(int count) {
         editText.setText(null);
         searchIv.setVisibility(View.GONE);
-        userCount++;
+        userCount += count;
     }
     public void removeUser() {
         userCount--;
-        if (userCount == 0 ) searchIv.setVisibility(View.VISIBLE);
+        if (userCount <= 0 ) searchIv.setVisibility(View.VISIBLE);
     }
 
     @Override

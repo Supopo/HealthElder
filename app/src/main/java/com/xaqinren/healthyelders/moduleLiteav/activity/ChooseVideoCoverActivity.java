@@ -64,8 +64,8 @@ public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCo
             LogUtils.e("ChooseVideoCoverActivity", "生成一张预览图\t" + index + "\tbitmapSize\t"+bitmap.getByteCount());
             runOnUiThread(()->{
                 dismissDialog();
+                binding.coverListView.setEnabled(true);
                 binding.coverView.setImageBitmap(bitmap);
-//                Glide.with(ChooseVideoCoverActivity.this).load(bitmap).into(binding.coverView);
             });
         }
     };
@@ -95,7 +95,7 @@ public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCo
             //选择成功
             saveBitmapCover();
         });
-
+        showDialog();
         showEditer();
     }
 

@@ -127,7 +127,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/bg_btn_unlook_comfrim_shape"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_19"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:textColor="@color/white"

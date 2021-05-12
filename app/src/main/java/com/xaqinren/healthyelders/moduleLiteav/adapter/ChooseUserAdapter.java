@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemLiteAvUserBinding;
@@ -16,7 +17,7 @@ import com.xaqinren.healthyelders.widget.CircleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ChooseUserAdapter extends BaseMultiItemQuickAdapter<LiteAvUserBean,BaseViewHolder> {
+public class ChooseUserAdapter extends BaseMultiItemQuickAdapter<LiteAvUserBean,BaseViewHolder> implements LoadMoreModule {
     public ChooseUserAdapter() {
         super();
         addItemType(1,R.layout.item_lite_av_user_class);
