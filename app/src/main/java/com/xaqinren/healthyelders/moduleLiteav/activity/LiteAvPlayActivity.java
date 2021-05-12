@@ -1,16 +1,20 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Registry;
 import com.tencent.liteav.basic.log.TXCLog;
+import com.tencent.qcloud.tim.uikit.utils.SoftKeyBoardUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
@@ -29,8 +33,10 @@ import com.xaqinren.healthyelders.databinding.ActivityLiteAvPlayBinding;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.LiteAvPlayViewModel;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.LiteAvPlayView;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
+import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
 import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 import com.xaqinren.healthyelders.widget.share.IShareUser;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
@@ -149,7 +155,26 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
 
         mPagerAdapter = new MyPagerAdapter();
         mVerticalViewPager.setAdapter(mPagerAdapter);
+
+        onGlobalLayoutListener = () -> {
+            final Rect r = new Rect();
+            binding.rlContainer.getWindowVisibleDisplayFrame(r);
+            final int screenHeight = binding.rlContainer.getRootView().getHeight();
+            final int heightDifference = screenHeight - r.bottom;
+            boolean visible = heightDifference > screenHeight / 3;
+            if (visible) {
+                LogUtils.e(TAG, "keyboardHeightInPx \t->\t" + heightDifference);
+            } else {
+                if (publishDialog != null && publishDialog.isShow()) {
+                    publishDialog.keyBoardClosed();
+                }
+            }
+        };
+        binding.rlContainer.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+
     }
+
+    private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
 
     private void initPlayerSDK() {
         mVerticalViewPager.setCurrentItem(mInitTCLiveInfoPosition);
@@ -186,6 +211,7 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
 
     @Override
     protected void onDestroy() {
+        binding.rlContainer.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
         super.onDestroy();
         if (mTXCloudVideoView != null) {
             mTXCloudVideoView.onDestroy();
@@ -380,7 +406,7 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
 
                 @Override
                 public void onCommentClick(String videoId) {
-                    showCommentDialog();
+                    showCommentDialog(videoInfo.fileid);
                 }
 
                 @Override
@@ -433,28 +459,44 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
 
     //评论弹窗
     CommentDialog commentDialog;
-    private void showCommentDialog() {
+    private void showCommentDialog(String videoId) {
         if (commentDialog == null)
-            commentDialog = new CommentDialog(this);
-        commentDialog.setDataList(getCommentData());
+            commentDialog = new CommentDialog(this, videoId);
+        commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
+            @Override
+            public void toComment(ICommentBean iCommentBean) {
+                //评论评论
+                LogUtils.e(TAG,"准备评论");
+                showPublishCommentDialog();
+            }
+
+            @Override
+            public void toCommentVideo(String videoId) {
+                //评论视频本体
+                showPublishCommentDialog();
+            }
+
+            @Override
+            public void toLike(ICommentBean iCommentBean) {
+                LogUtils.e(TAG,"准备点赞");
+            }
+
+            @Override
+            public void toUser(ICommentBean iCommentBean) {
+                LogUtils.e(TAG,"准备查看用户");
+            }
+        });
         commentDialog.show(binding.rlContainer);
     }
 
-    private List<ICommentBean> getCommentData() {
-        List<ICommentBean> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            VideoCommentBean bean = new VideoCommentBean();
-            bean.avatar = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F140703%2F330746-140f301555752.jpg&refer=http%3A%2F%2Fimg.juimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623312032&t=dd12bc18844a0c4cfd47510b2ec89c4b";
-            bean.nickName = "你好呀";
-            bean.canComment = true;
-            bean.comment = "评论内容评论内容评论内容评论内容评论内容评论内容评论内容";
-            bean.commentTime = "12小时前";
-            bean.likeCount = "666";
-            bean.isLike = true;
-            bean.commentCount = 9;
-            bean.childComment = new ArrayList<>();
-            list.add(bean);
+    CommentPublishDialog publishDialog;
+    /**
+     * 发表评论
+     */
+    private void showPublishCommentDialog() {
+        if (publishDialog == null) {
+            publishDialog = new CommentPublishDialog(this, null);
         }
-        return list;
+        publishDialog.show(binding.rlContainer);
     }
 }

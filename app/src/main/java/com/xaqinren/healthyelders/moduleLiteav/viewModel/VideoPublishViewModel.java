@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
@@ -40,6 +41,7 @@ public class VideoPublishViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> requestSuccess = new MutableLiveData<>();
 
     public MutableLiveData<List<LiteAvUserBean>> liteAvUserList = new MutableLiveData<>();
+    public MutableLiveData<List<TopicBean>> topicList = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> publishSuccess = new MutableLiveData<>();
 
@@ -131,5 +133,12 @@ public class VideoPublishViewModel extends BaseViewModel {
         } catch (JSONException e) {
             e.printStackTrace();
         }*/
+    }
+
+    /**
+     * 热点话题
+     */
+    public void getHotTopic() {
+        LiteAvRepository.getInstance().getHotTopicList(requestSuccess, topicList);
     }
 }

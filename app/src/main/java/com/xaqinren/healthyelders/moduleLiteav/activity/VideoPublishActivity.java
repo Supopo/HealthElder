@@ -288,7 +288,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         publishTopicAdapter.setOnItemClickListener((adapter, view, position) -> {
             TopicBean topicBean = topicBeans.get(position);
-            binding.desText.setTopicStr("#" + topicBean.topicTitle, 0);
+            binding.desText.append("#" + topicBean.getName());
+            binding.desText.addBlackKey();
         });
         publishLocationAdapter.setOnItemClickListener((adapter,view,position)->{
             LocationBean bean = locationBeans.get(position);
@@ -307,6 +308,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
         initListView();
         loginUser();
+        //热门话题
+        viewModel.getHotTopic();
     }
 
     /**
@@ -426,7 +429,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         chooseTopicAdapter = new ChooseTopicAdapter(R.layout.item_publish_topic_view_adapter);
         chooseTopicAdapter.setList(listTopicBeans);
         chooseTopicAdapter.setOnItemClickListener((adapter, view, position) -> {
-            String title = listTopicBeans.get(position).topicTitle;
+            String title = listTopicBeans.get(position).getName();
             binding.desText.setTopicStr("#"+title , 0 );//TODO 增加 topic ID
         });
         binding.includeListAt.recyclerView.setAdapter(userAdapter);
@@ -447,30 +450,30 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             binding.includeListAt.recyclerView.getAdapter().notifyDataSetChanged();
             binding.includeListAt.layoutPublishAt.setVisibility(View.VISIBLE);
         });
-        viewModel.loginRoomSuccess.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
+        viewModel.loginRoomSuccess.observe(this, aBoolean -> {
 
+        });
+        viewModel.publishSuccess.observe(this, aBoolean -> {
+            if (aBoolean) {
+                LogUtils.e(TAG,"发布视频成功");
+                BackgroundTasks.getInstance().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
+                        NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
+                        clearDrafts();
+                    }
+                });
+            }else{
+                //发布失败
+                LogUtils.e(TAG,"发布视频失败");
             }
         });
-        viewModel.publishSuccess.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    LogUtils.e(TAG,"发布视频成功");
-                    BackgroundTasks.getInstance().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
-                            NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
-                            clearDrafts();
-                        }
-                    });
-                }else{
-                    //发布失败
-                    LogUtils.e(TAG,"发布视频失败");
-                }
-            }
+        viewModel.topicList.observe(this, topicBeans -> {
+            //热点话题
+            this.topicBeans.clear();
+            this.topicBeans.addAll(topicBeans);
+            publishTopicAdapter.setList(this.topicBeans);
         });
     }
 
@@ -493,15 +496,6 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
     @Override
     public void onBackPressed() {
-        /*if (getIntent().getIntExtra(Constant.RequestCode,0) == VideoEditerActivity.publish_code) {
-            Intent intent = new Intent(this, VideoEditerActivity.class);
-            intent.putExtra(UGCKitConstants.VIDEO_PATH, mVideoPath);
-            startActivity(intent);
-        }*/
-        /*TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
-        if (editer == null) {
-            VideoEditerSDK.getInstance().initSDK();
-        }*/
         setResult(Activity.RESULT_OK);
         super.onBackPressed();
     }

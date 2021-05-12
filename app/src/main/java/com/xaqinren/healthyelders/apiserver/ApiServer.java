@@ -4,6 +4,7 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
@@ -188,4 +189,8 @@ public interface ApiServer {
     //获取直播间设置状态
     @GET("live/findLiveHomeStatus")
     Observable<MBaseResponse<LiveInitInfo>> getLiveStatus(@Header("Authorization") String authorization, @Query("liveRoomId") String liveRoomId);
+
+    //短视频获取热点话题
+    @GET("content/findHotTopic")
+    Observable<MBaseResponse<List<TopicBean>>> getHotTopicList(@Header("Authorization") String authorization);
 }

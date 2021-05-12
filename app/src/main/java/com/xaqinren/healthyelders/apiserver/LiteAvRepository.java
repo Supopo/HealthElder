@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.utils.ACache;
 
@@ -56,6 +57,29 @@ public class LiteAvRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<PublishAtMyBean> data) {
                         startLiveInfo.postValue(data.getData().getContent());
+                    }
+                });
+    }
+
+    public void getHotTopicList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<TopicBean>> listMutableLiveData) {
+        userApi.getHotTopicList(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<TopicBean>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<TopicBean>> data) {
+                        listMutableLiveData.postValue(data.getData());
                     }
                 });
     }

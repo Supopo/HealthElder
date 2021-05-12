@@ -7,90 +7,96 @@
             name="viewModel"
             type="com.xaqinren.healthyelders.widget.comment.ICommentBean" />
     </data>
-
-    <RelativeLayout
-        android:orientation="vertical"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_18">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/avatar"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:src="@color/color_252525" />
-
-        <TextView
-            android:id="@+id/nickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/color_252525"
-            android:textSize="@dimen/sp_14"
-            android:text="@{viewModel.nickName}"
-            android:layout_toRightOf="@id/avatar"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/rl_content"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/avatar"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_below="@id/nickname"
-            android:layout_marginTop="@dimen/dp_4"
-            android:lineSpacingExtra="3dp"
-            android:textColor="@color/color_535353"
-            android:text="@{viewModel.comment}"
-            android:layout_marginRight="@dimen/dp_62"/>
+            android:layout_marginTop="@dimen/dp_18">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="2dp">
-
-            <ImageView
-                android:id="@+id/like_iv"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_13"
-                android:src="@mipmap/icon_pinl_zan_nor" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:src="@color/color_252525" />
 
             <TextView
+                android:id="@+id/nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_BBBBBB"
-                android:textSize="@dimen/sp_12"
-                android:layout_marginTop="@dimen/dp_4"
-                android:text="@{viewModel.likeCount}"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_14"
+                android:text="@{viewModel.nickName}"
+                android:layout_toRightOf="@id/avatar"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:textStyle="bold" />
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/avatar"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_below="@id/content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:textSize="@dimen/sp_12"
-            android:textColor="@color/color_BBBBBB"
-            android:text="@{viewModel.commentTime}" />
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/avatar"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_below="@id/nickname"
+                android:layout_marginTop="@dimen/dp_4"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/color_535353"
+                android:text="@{viewModel.comment}"
+                android:layout_marginRight="@dimen/dp_62"/>
 
-        <TextView
-            android:id="@+id/reply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/time"
-            android:layout_toRightOf="@id/time"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:textSize="@dimen/sp_12"
-            android:textColor="@color/color_252525"
-            android:textStyle="bold"
-            android:text="回复" />
+            <LinearLayout
+                android:id="@+id/ll_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="2dp">
+
+                <ImageView
+                    android:id="@+id/like_iv"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_13"
+                    android:src="@mipmap/icon_pinl_zan_nor" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_BBBBBB"
+                    android:textSize="@dimen/sp_12"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:text="@{viewModel.likeCount}"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/avatar"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_below="@id/content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_BBBBBB"
+                android:text="@{viewModel.commentTime}" />
+
+            <TextView
+                android:id="@+id/reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/time"
+                android:layout_toRightOf="@id/time"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_252525"
+                android:textStyle="bold"
+                android:text="回复" />
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/child_list"
@@ -98,6 +104,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/avatar"
-            android:layout_marginLeft="@dimen/dp_10" />
-    </RelativeLayout>
+            android:layout_marginLeft="@dimen/dp_42" />
+    </LinearLayout>
 </layout>
