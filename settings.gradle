@@ -1,3 +1,4 @@
+include ':flycotablayout'
 include ':ugckit'
 include ':liteav'
 include ':app', ':LibMVVM', ':beautysettingkit', ':audioeffectsettingkit', ':tuikit'

@@ -86,15 +86,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         fragments.add(new GirlsFragment());
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
         binding.viewPager2.setAdapter(vp2Adapter);
+        binding.tabLayout.setViewPager2(binding.viewPager2, titles);
 
-        new TabLayoutMediator(binding.tabLayout, binding.viewPager2, true, new TabLayoutMediator.OnConfigureTabCallback() {
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                //这里需要根据position修改tab的样式和文字等
-                tab.setText(titles[position]);
-                initTabText(tab, Typeface.BOLD);
-            }
-        }).attach();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
