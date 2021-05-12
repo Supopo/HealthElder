@@ -224,6 +224,9 @@ dependencies {
     //文字识别
     implementation files('libs/ocr-sdk.jar')
 
+    implementation "androidx.viewpager2:viewpager2:1.0.0-alpha02"
+    //自定义TabLayout
+    implementation 'com.github.zuoguiqing:ImgTabLayout:1.0.1'
 
 }
 

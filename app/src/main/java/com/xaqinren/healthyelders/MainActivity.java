@@ -1,11 +1,16 @@
 package com.xaqinren.healthyelders;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,13 +18,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.dmcbig.mediapicker.utils.ScreenUtils;
+import com.tencent.bugly.proguard.A;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
-import com.xaqinren.healthyelders.moduleHome.fragment.GirlsFragment;
+import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -48,6 +56,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Disposable eventDisposable;
     private String accessToken;
     private UserInfoBean userInfoBean;
+    private Disposable subscribe;
+    private HomeFragment homeFragment;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -110,20 +120,33 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void initFragment() {
         mFragments = new ArrayList<>();
+        mFragments.add(new HomeFragment());
         mFragments.add(new XxxFragment());
-        mFragments.add(new GirlsFragment());
         mFragments.add(new MsgFragment());
         mFragments.add(new MineFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;
+        homeFragment = (HomeFragment) mFragments.get(0);
         initEvent();
+
     }
 
     private void initEvent() {
         binding.tvMenu1.setOnClickListener(lis -> {
             selectView = binding.tvMenu1;
-            initBottomTab();
+
+            if (selectView.getId() == oldView.getId()) {
+                //发送回顶消息
+                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.RESH_VIEW_CODE));
+                //底部菜单变白色
+                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
+
+                binding.line.setVisibility(View.VISIBLE);
+            }else {
+                initBottomTab();
+            }
+
             oldView = binding.tvMenu1;
         });
         binding.tvMenu2.setOnClickListener(lis -> {
@@ -152,15 +175,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                     });
         });
-
-        eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
-            if (o.msgId == CodeTable.TOKEN_ERR) {
-                //TODO token失效 重新登录
-                SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
-                SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
-            }
-        });
-        RxSubscriptions.add(eventDisposable);
     }
 
 
@@ -168,8 +182,22 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void initViewObservable() {
         super.initViewObservable();
 
+        eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
+            if (o.msgId == CodeTable.TOKEN_ERR) {
+                //TODO token失效 重新登录
+                SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
+                SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
+            } else if (o.msgId == CodeTable.EVENT_HOME) {
+                if (o.msgType == CodeTable.SET_MENU_TOUMING) {
+                    //底部菜单变透明，中心布局变全屏
+                    binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg2);
+                    binding.line.setVisibility(View.GONE);
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
+                }
+            }
+        });
+        RxSubscriptions.add(eventDisposable);
     }
-
 
 
     private void initBottomTab() {
@@ -178,24 +206,28 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
 
         oldView.setCompoundDrawables(null, null, null, null);
-        oldView.setTextColor(getResources().getColor(R.color.gray_666));
-        oldView.setTextSize(16);
+        oldView.setTextColor(getResources().getColor(R.color.color_9292));
+        oldView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_16)));
 
         selectView.setCompoundDrawables(null, null, null, dawable);
-        selectView.setTextColor(getResources().getColor(R.color.color_DC3530));
-        selectView.setTextSize(18);
+        selectView.setTextColor(getResources().getColor(R.color.color_252525));
+        selectView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_18)));
 
         switch (selectView.getId()) {
             case R.id.tv_menu1:
+                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg2);
                 commitAllowingStateLoss(0);
                 break;
             case R.id.tv_menu2:
+                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
                 commitAllowingStateLoss(1);
                 break;
             case R.id.tv_menu3:
+                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
                 commitAllowingStateLoss(2);
                 break;
             case R.id.tv_menu4:
+                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
                 commitAllowingStateLoss(3);
                 break;
 

@@ -1446,46 +1446,44 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         linkType = 1;
 
 
-                        Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_enter2);
+                         Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_enter2);
+                        // int screenWidth = ScreenUtil.getScreenWidth(this);
+                        // int screenHeight = ScreenUtil.getScreenHeight(this);
+                        // //计算x轴缩放倍率
+                        // float xx = (float) (screenWidth - getResources().getDimension(R.dimen.dp_96)) / screenWidth;
+                        // //计算y轴缩放倍率
+                        // float yy = (float) (getResources().getDimension(R.dimen.dp_573)) / (screenHeight);
+                        // ScaleAnimation animation = new ScaleAnimation(1.0F, xx, 1.0F, yy, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
+                        // animation.setDuration(500);
+                        // animation.setFillAfter(true);
+                        // Animation scaleAnimation3 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_exit);
+                        // binding.mTxVideoView.clearAnimation();
+                        // binding.mTxVideoView.setAnimation(animation);
 
-
-                        int screenWidth = ScreenUtil.getScreenWidth(this);
-                        int screenHeight = ScreenUtil.getScreenHeight(this);
-                        //计算x轴缩放倍率
-                        float xx = (float) (screenWidth - getResources().getDimension(R.dimen.dp_96)) / screenWidth;
-                        //计算y轴缩放倍率
-                        float yy = (float) (getResources().getDimension(R.dimen.dp_573)) / (screenHeight);
-                        ScaleAnimation animation = new ScaleAnimation(1.0F, xx, 1.0F, yy, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
-                        animation.setDuration(500);
-                        animation.setFillAfter(true);
-                        Animation scaleAnimation3 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_exit);
-                        //                        binding.mTxVideoView.clearAnimation();
-                        //                        binding.mTxVideoView.setAnimation(animation);
-
-                        //                        binding.rvMoreLink.setVisibility(View.VISIBLE);
-                        //                        binding.rvMoreLink.clearAnimation();
-                        //                        binding.rvMoreLink.setAnimation(scaleAnimation1);
+                        // binding.rvMoreLink.setVisibility(View.VISIBLE);
+                        // binding.rvMoreLink.clearAnimation();
+                        // binding.rvMoreLink.setAnimation(scaleAnimation1);
 
                         binding.rvMoreLink.clearAnimation();
                         binding.rvMoreLink.setAnimation(scaleAnimation1);
                         binding.rvMoreLink.setVisibility(View.VISIBLE);
 
-                        animation.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
+//                        animation.setAnimationListener(new Animation.AnimationListener() {
+//                            @Override
+//                            public void onAnimationStart(Animation animation) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onAnimationEnd(Animation animation) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onAnimationRepeat(Animation animation) {
+//
+//                            }
+//                        });
 
 
                         //群发消息

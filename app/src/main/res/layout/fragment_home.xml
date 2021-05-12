@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView
+            android:id="@+id/nsv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:overScrollMode="never">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <RelativeLayout
+                    android:id="@+id/rl_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_top_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_95"
+                        android:background="@drawable/bg_fansteam_name">
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_142"
+                        android:layout_below="@id/rl_top_title"
+                        android:background="@color/gray_999">
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/rl_top" />
+            </RelativeLayout>
+        </com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView>
+
+        <RelativeLayout
+            android:id="@+id/rl_menu"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginTop="@dimen/dp_44">
+
+
+            <!--            去掉点击水波纹-->
+            <!--            app:tabBackground="@android:color/transparent"-->
+            <!--            app:tabRippleColor="@android:color/transparent"-->
+
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="@dimen/dp_152"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                app:tabBackground="@android:color/transparent"
+                app:tabGravity="fill"
+                app:tabMaxWidth="0dp"
+                app:tabMode="fixed"
+                app:tabIndicatorFullWidth="false"
+                app:tabRippleColor="@android:color/transparent"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="#d1d1d1" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

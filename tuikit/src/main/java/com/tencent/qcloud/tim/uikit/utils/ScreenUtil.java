@@ -6,7 +6,11 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -73,9 +77,13 @@ public class ScreenUtil {
     public static int getScreenHeight(Context context) {
         DisplayMetrics metric = new DisplayMetrics();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(metric);
+//        wm.getDefaultDisplay().getMetrics(metric); //高度不准
+        wm.getDefaultDisplay().getRealMetrics(metric);
         return metric.heightPixels;
     }
+
+
+
 
     public static int getScreenWidth(Context context) {
         DisplayMetrics metric = new DisplayMetrics();
@@ -83,6 +91,7 @@ public class ScreenUtil {
         wm.getDefaultDisplay().getMetrics(metric);
         return metric.widthPixels;
     }
+
 
     public static int getPxByDp(float dp) {
         float scale = TUIKit.getAppContext().getResources().getDisplayMetrics().density;

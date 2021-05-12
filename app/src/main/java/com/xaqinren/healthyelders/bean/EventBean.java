@@ -11,6 +11,7 @@ public class EventBean<T> {
     public int status;
     public boolean doIt;
     public String content;
+    public String name;
     public Object object;
     public String nickname;
     public T data;
