@@ -44,6 +44,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private static final String TAG = "HomeFragment";
     private Disposable subscribe;
     private String[] titles = {"推荐", "关注", "附近"};
+    private String[] menuTitles = {"美食厨房", "民间偏方", "运动健身", "家有良医"};
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -105,17 +106,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             });
         }
 
-    }
-
-    private void initTabText(TabLayout.Tab tabAt, int bold) {
-        if (tabAt == null || tabAt.getText() == null) {
-            return;
-        }
-        String trim = tabAt.getText().toString().trim();
-        SpannableString spannableString = new SpannableString(trim);
-        StyleSpan styleSpan = new StyleSpan(bold);
-        spannableString.setSpan(styleSpan, 0, trim.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        tabAt.setText(spannableString);
     }
 
     @Override
