@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
@@ -121,7 +120,7 @@ public class UserRepository {
         HashMap<String, String> map = new HashMap<>();
         map.put("mobileNumber", phone);
         map.put("password", code);
-        map.put("clientId", Constant.WX_MID);
+        map.put("clientId", Constant.APP_MID);
         map.put("requestSource", "ANDROID_APP");
         if (!StringUtils.isEmpty(openId)) {
             map.put("openId", openId);
@@ -129,7 +128,7 @@ public class UserRepository {
         map.put("recommendCode", "");
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.phoneLogin(Constant.HEADER_DEF, Constant.WX_MID, body)
+        userApi.phoneLogin(Constant.HEADER_DEF, Constant.APP_MID, body)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -177,7 +176,7 @@ public class UserRepository {
 
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.toWxChatRealLogin(Constant.HEADER_DEF, Constant.WX_MID, body)
+        userApi.toWxChatRealLogin(Constant.HEADER_DEF, Constant.APP_MID, body)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

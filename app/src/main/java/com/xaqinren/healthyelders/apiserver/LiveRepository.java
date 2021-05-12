@@ -4,8 +4,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -372,7 +375,7 @@ public class LiveRepository {
                         if (anchorInfo.micStatus != 1) {
                             //设置断开 成功
                             anchorInfo.netStatus = 1;
-                        }else {
+                        } else {
                             //加入 成功
                             anchorInfo.netStatus = 2;
                         }
@@ -386,7 +389,7 @@ public class LiveRepository {
                         if (anchorInfo.micStatus == 1) {
                             //设置加入 失败
                             anchorInfo.netStatus = 3;
-                        }else {
+                        } else {
                             //断开 失败
                             anchorInfo.netStatus = 4;
                         }
@@ -395,7 +398,7 @@ public class LiveRepository {
                 });
     }
 
-    public void findMicUsers(String liveRoomRecordId,MutableLiveData<List<ZBUserListBean>> moreLinkList) {
+    public void findMicUsers(String liveRoomRecordId, MutableLiveData<List<ZBUserListBean>> moreLinkList) {
         userApi.findMicUsers(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -418,7 +421,7 @@ public class LiveRepository {
                 });
     }
 
-    public void getLiveStatus(String liveRoomId,MutableLiveData<LiveInitInfo> zbSettingBean) {
+    public void getLiveStatus(String liveRoomId, MutableLiveData<LiveInitInfo> zbSettingBean) {
         userApi.getLiveStatus(UserInfoMgr.getInstance().getHttpToken(), liveRoomId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -441,4 +444,27 @@ public class LiveRepository {
                 });
     }
 
+
+    public void getHomeVideoList(int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList) {
+        userApi.getHomeVideoList(Constant.HEADER_DEF,Constant.APP_MID, page, pageSize, "")
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        videoList.postValue(data.getData().content);
+                    }
+
+                });
+    }
 }

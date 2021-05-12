@@ -1,27 +1,22 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.tencent.liteav.basic.log.TXCLog;
-import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil.OnTelephoneListener;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
-import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
 import com.tencent.qcloud.xiaoshipin.play.PlayerInfo;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -32,13 +27,10 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
-import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.databinding.FragmentHomeTjBinding;
-import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.VerticalViewPager2;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
-import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,18 +47,16 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> implements ITXVodPlayListener, OnTelephoneListener {
     private static final String TAG = "HomeFragment";
     private VerticalViewPager2 mVerticalViewPager;
-    private HomePageAdapter mPagerAdapter;
+    private VideoListAdapter mPagerAdapter;
     private TXCloudVideoView mTXCloudVideoView;
-    // 发布者id 、视频地址、 发布者名称、 头像URL、 封面URL
-    private List<TCVideoInfo> mTCLiveInfoList;
+    private List<VideoInfo> mVideoInfoList;
+    private List<VideoInfo> temp;
     private int mCurrentPosition;
     private TXVodPlayer mTXVodPlayer;
     private ImageView mIvCover;
-    private boolean canRefresh;//是否可以下拉刷新
     private Disposable subscribe;
-    public LockableNestedScrollView mNestedScrollView;
-    private View.OnScrollChangeListener changeListener;
-
+    private int page = 1;
+    private int pageSize = 10;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -85,7 +75,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     };
     private String[] vidoes = {
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/cbac2f83b8cd41aeab99f330c9149eab.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/cf913ed075eb4b9bb0dfd0ef17255167.mp4",
+            "rtmp://liveplay.hjyiyuanjiankang.com/live/1400392607_1386137830790533120?txSecret=1c121890dde53c5afe40fca24c100de2&txTime=609D0B18",
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/0a7cab4596374f06a8cf0481f754b302.mp4",
     };
 
@@ -98,6 +88,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             }
         });
         RxSubscriptions.add(subscribe);
+        viewModel.datas.observe(this, datas -> {
+            if (datas != null && datas.size() > 0) {
+                mVideoInfoList.addAll(datas);
+                initVideoListPage();
+            }
+        });
     }
 
     public void resetVVPHeight() {
@@ -109,41 +105,22 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     public void initData() {
         super.initData();
 
-        //        binding.srlContent.setEnabled(false);
         mVerticalViewPager = binding.verticalViewPager;
-//        mNestedScrollView = binding.nsv;
         resetVVPHeight();
 
-        mTCLiveInfoList = new ArrayList<>();
+        mVideoInfoList = new ArrayList<>();
+        temp = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            TCVideoInfo info = new TCVideoInfo();
-            info.review_status = TCVideoInfo.REVIEW_STATUS_NORMAL;
-            info.frontcover = pics[i];
-            info.hlsPlayUrl = vidoes[i];
-            info.playurl = info.hlsPlayUrl;
-            mTCLiveInfoList.add(info);
+            VideoInfo info = new VideoInfo();
+            info.coverUrl = pics[i];
+            info.resourceUrl = vidoes[i];
+            mVideoInfoList.add(info);
+            temp.add(info);
         }
-
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            changeListener = new View.OnScrollChangeListener() {
-//                @Override
-//                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                    Log.e(TAG, "onScrollChange: " + scrollX + "---" + scrollY + "----" + oldScrollX + "---" + oldScrollY + "---" + binding.verticalViewPager.getTop() + "---" + ScreenUtils.getScreenHeight(getActivity()));
-//                    if (scrollY >= binding.verticalViewPager.getTop()) {
-//                        //通知首页底部菜单栏变透明
-//                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-//                        binding.nsv.setScrollingEnabled(false);
-//                        binding.rlTop.setVisibility(View.GONE);
-//                    }
-//                }
-//            };
-//            binding.nsv.setOnScrollChangeListener(changeListener);
-//        }
-        initViewPage();
+        viewModel.getVideoData(page, pageSize);
     }
 
-    private void initViewPage() {
+    private void initVideoListPage() {
         initVideoViews();
         initPlayerSDK();
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
@@ -168,16 +145,19 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 0) {
-                    canRefresh = true;
-                }
+
                 TXLog.d(TAG, "mVerticalViewPager, onPageSelected position = " + position);
                 mCurrentPosition = position;
                 // 滑动界面，首先让之前的播放器暂停，并seek到0
                 TXLog.d(TAG, "滑动后，让之前的播放器暂停，mTXVodPlayer = " + mTXVodPlayer);
                 if (mTXVodPlayer != null) {
-                    mTXVodPlayer.seek(0);
+                    //TODO 判断下是不是直播如果是直播不需要seek到0
+                    //                    mTXVodPlayer.seek(0);
                     mTXVodPlayer.pause();
+                }
+
+                if (position == mVideoInfoList.size() - 2) {
+                    
                 }
             }
 
@@ -207,7 +187,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             }
         });
 
-        mPagerAdapter = new HomePageAdapter();
+        mPagerAdapter = new VideoListAdapter();
         mVerticalViewPager.setAdapter(mPagerAdapter);
     }
 
@@ -237,6 +217,27 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         subscribe.dispose();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mTXCloudVideoView != null) {
+            mTXCloudVideoView.onPause();
+        }
+        if (mTXVodPlayer != null) {
+            mTXVodPlayer.pause();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mTXCloudVideoView != null) {
+            mTXCloudVideoView.onResume();
+        }
+        if (mTXVodPlayer != null) {
+            mTXVodPlayer.resume();
+        }
+    }
 
     protected void stopPlay(boolean clearLastFrame) {
         if (mTXVodPlayer != null) {
@@ -249,7 +250,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         if (event == TXLiveConstants.PLAY_EVT_CHANGE_RESOLUTION) {
             int width = param.getInt(TXLiveConstants.EVT_PARAM1);
             int height = param.getInt(TXLiveConstants.EVT_PARAM2);
-            //FIXBUG:不能修改为横屏，合唱会变为横向的
+            //判断设置是否满屏显示
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {
             restartPlay();
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 视频I帧到达，开始播放
@@ -312,7 +313,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         }
     }
 
-    class HomePageAdapter extends PagerAdapter {
+    class VideoListAdapter extends PagerAdapter {
         private List<PlayerInfo> playerInfoList = new ArrayList<>();
 
         protected PlayerInfo instantiatePlayerInfo(int position) {
@@ -320,23 +321,22 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             PlayerInfo playerInfo = new PlayerInfo();
             TXVodPlayer vodPlayer = new TXVodPlayer(getActivity());
             vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
-            //FIXBUG:FULL_SCREEN 合唱显示不全，ADJUST_RESOLUTION黑边
-            vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION);
+            //设置模式 全屏-RENDER_MODE_FULL_FILL_SCREEN
+            vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
             vodPlayer.setVodListener(HomeTJFragment.this);
             TXVodPlayConfig config = new TXVodPlayConfig();
 
             File sdcardDir = getActivity().getExternalFilesDir(null);
             if (sdcardDir != null) {
-                config.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/txcache");
+                config.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/jkzlcache");
             }
             config.setMaxCacheItems(5);
             vodPlayer.setConfig(config);
             vodPlayer.setAutoPlay(false);
 
-            TCVideoInfo tcLiveInfo = mTCLiveInfoList.get(position);
-            playerInfo.playURL = TextUtils.isEmpty(tcLiveInfo.hlsPlayUrl) ? tcLiveInfo.playurl : tcLiveInfo.hlsPlayUrl;
+            VideoInfo videoInfo = mVideoInfoList.get(position);
+            playerInfo.playURL = videoInfo.resourceUrl;
             playerInfo.vodPlayer = vodPlayer;
-            playerInfo.reviewstatus = tcLiveInfo.review_status;
             playerInfo.pos = position;
             playerInfoList.add(playerInfo);
 
@@ -384,7 +384,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
         @Override
         public int getCount() {
-            return mTCLiveInfoList.size();
+            return mVideoInfoList.size();
         }
 
         @Override
@@ -394,43 +394,22 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            TCVideoInfo videoInfo = mTCLiveInfoList.get(position);
+            VideoInfo videoInfo = mVideoInfoList.get(position);
 
-            View view = LayoutInflater.from(container.getContext()).inflate(R.layout.lite_view_player_content, null);
+            View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_video_list, null);
             view.setId(position);
 
             // 封面
             ImageView coverImageView = (ImageView) view.findViewById(R.id.player_iv_cover);
-            if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_PORN) { //涉黄的图片不显示
-                coverImageView.setImageResource(R.drawable.bg);
-            } else {
-                BitmapUtils.blurBgPic(getActivity(), coverImageView, videoInfo.frontcover, R.drawable.bg);
-            }
-
-            TextView tvStatus = (TextView) view.findViewById(R.id.tx_video_review_status);
-            if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_NOT_REVIEW) {
-                tvStatus.setVisibility(View.VISIBLE);
-                tvStatus.setText(R.string.video_not_review);
-            } else if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_PORN) {
-                tvStatus.setVisibility(View.VISIBLE);
-                tvStatus.setText(R.string.video_porn);
-            } else if (videoInfo.review_status == TCVideoInfo.REVIEW_STATUS_NORMAL) {
-                tvStatus.setVisibility(View.GONE);
-            }
+            Glide.with(getActivity()).load(videoInfo).into(coverImageView);
 
             // 获取此player
             TXCloudVideoView playView = (TXCloudVideoView) view.findViewById(R.id.player_cloud_view);
             PlayerInfo playerInfo = instantiatePlayerInfo(position);
             playerInfo.playerView = playView;
             playerInfo.vodPlayer.setPlayerView(playView);
+            playerInfo.vodPlayer.startPlay(playerInfo.playURL);
 
-            if (playerInfo.reviewstatus == TCVideoInfo.REVIEW_STATUS_NORMAL) {
-                playerInfo.vodPlayer.startPlay(playerInfo.playURL);
-            } else if (playerInfo.reviewstatus == TCVideoInfo.REVIEW_STATUS_NOT_REVIEW) { // 审核中
-
-            } else if (playerInfo.reviewstatus == TCVideoInfo.REVIEW_STATUS_PORN) {       // 涉黄
-
-            }
             container.addView(view);
             return view;
         }
