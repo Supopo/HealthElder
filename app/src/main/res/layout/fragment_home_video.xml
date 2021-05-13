@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel" />
@@ -9,7 +10,8 @@
 
     <RelativeLayout
         android:id="@+id/mainRelativeLayout"
-        style="@style/Layout.Main">
+        style="@style/Layout.Main"
+        android:background="@color/black">
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
@@ -125,14 +127,15 @@
             android:layout_marginBottom="@dimen/dp_67"
             android:background="@mipmap/bg_home_music"
             android:padding="@dimen/dp_8"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/icon_kuaip_ship" />
 
         <cc.ibooker.ztextviewlib.MarqueeTextView
             android:id="@+id/musicMarqueeTextView"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/musicImageView"
-            android:drawableStart="@mipmap/ic_home_douyin"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:drawableStart="@mipmap/shipin_yiny"
             android:drawablePadding="@dimen/dp_4"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
@@ -248,6 +251,16 @@
             android:layout_centerInParent="true"
             android:src="@mipmap/ic_video_play"
             android:visibility="gone" />
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_3"
+            android:progressDrawable="@drawable/video_progress_bar"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_50" />
 
     </RelativeLayout>
 </layout>

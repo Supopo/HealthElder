@@ -265,7 +265,9 @@ public class LoadingView extends View {
         post(() -> {
             isAnimCanceled = false;
             isLtr = false;
-            anim.start();
+            if (anim != null) {
+                anim.start();
+            }
         });
 
     }

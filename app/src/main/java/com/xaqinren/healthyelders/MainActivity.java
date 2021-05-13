@@ -1,14 +1,10 @@
 package com.xaqinren.healthyelders;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.dmcbig.mediapicker.utils.ScreenUtils;
-import com.tencent.bugly.proguard.A;
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -186,20 +180,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                LogUtils.v(Constant.TAG_LIVE,"---------按下了----------");
                 before_press_Y = event.getY();
                 before_press_X = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                LogUtils.v(Constant.TAG_LIVE,"---------移动----------");
                 double now_press_Y = event.getY();
                 double now_press_X = event.getX();
 
                 double scrollX = Math.abs(now_press_X - before_press_X);
-                LogUtils.v(Constant.TAG_LIVE,"---------x"+scrollX);
-
                 double scrollY = Math.abs(now_press_Y - before_press_Y);
-                LogUtils.v(Constant.TAG_LIVE,"---------y"+scrollY);
 
                 if (scrollX <= 50 || scrollX < scrollY) {
                     //左右滑动过小，禁止滑动
@@ -213,7 +202,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                LogUtils.v(Constant.TAG_LIVE,"---------抬起来----------");
                 before_press_Y = 0;
                 before_press_X = 0;
                 //恢复滑动

@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,6 +29,7 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 
 /**
  * Created by Lee. on 2021/5/11.
+ * 首页Fragment
  */
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> {
     private static final String TAG = "HomeFragment";
@@ -85,7 +85,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    Log.e(TAG, "onScrollChange: " + scrollX + "---" + scrollY + "----" + oldScrollX + "---" + oldScrollY);
                     if (scrollY >= getResources().getDimension(R.dimen.dp_237)) {
                         //通知首页底部菜单栏变透明
                         RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
