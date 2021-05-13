@@ -11,9 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:layout_height="match_parent">
 
         <com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView
             android:id="@+id/nsv"
@@ -85,6 +83,7 @@
                 </RelativeLayout>
 
                 <androidx.viewpager2.widget.ViewPager2
+                    android:overScrollMode="never"
                     android:id="@+id/viewPager2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

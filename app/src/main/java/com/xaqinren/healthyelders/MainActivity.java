@@ -138,7 +138,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
             if (selectView.getId() == oldView.getId()) {
                 //发送回顶消息
-                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.RESH_VIEW_CODE));
+                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
                 //底部菜单变白色
                 binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
 

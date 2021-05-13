@@ -5,12 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
@@ -28,15 +35,22 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeTjBinding;
-import com.xaqinren.healthyelders.moduleHome.VerticalViewPager2;
+import com.xaqinren.healthyelders.databinding.ItemVideoListBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
@@ -44,19 +58,22 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 /**
  * Created by Lee. on 2021/5/11.
  */
-public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> implements ITXVodPlayListener, OnTelephoneListener {
+public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> {
     private static final String TAG = "HomeFragment";
-    private VerticalViewPager2 mVerticalViewPager;
-    private VideoListAdapter mPagerAdapter;
-    private TXCloudVideoView mTXCloudVideoView;
     private List<VideoInfo> mVideoInfoList;
     private List<VideoInfo> temp;
-    private int mCurrentPosition;
-    private TXVodPlayer mTXVodPlayer;
-    private ImageView mIvCover;
     private Disposable subscribe;
     private int page = 1;
     private int pageSize = 10;
+    private VideoAdapter mVideoAdapter;
+    private List<Fragment> fragmentList = new ArrayList<>();
+    private FragmentPagerAdapter homeAdapter;
+    private int homePosition;
+    private FragmentActivity fragmentActivity;
+
+    public HomeTJFragment(FragmentActivity fragmentActivity) {
+        this.fragmentActivity = fragmentActivity;
+    }
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,7 +92,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     };
     private String[] vidoes = {
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/cbac2f83b8cd41aeab99f330c9149eab.mp4",
-            "rtmp://liveplay.hjyiyuanjiankang.com/live/1400392607_1386137830790533120?txSecret=1c121890dde53c5afe40fca24c100de2&txTime=609D0B18",
+            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/cf913ed075eb4b9bb0dfd0ef17255167.mp4",
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/0a7cab4596374f06a8cf0481f754b302.mp4",
     };
 
@@ -84,29 +101,36 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         super.initViewObservable();
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
-
+                if (event.msgId == CodeTable.EVENT_HOME) {
+                    if (event.msgType == CodeTable.SET_MENU_TOUMING) {
+                        //底部菜单变透明 开启vp2滑动
+                        binding.viewPager2.setUserInputEnabled(true);
+                    } else if (event.msgType == CodeTable.SET_MENU_WHITE) {
+                        //底部菜单变白，头布局处理
+                        binding.viewPager2.setUserInputEnabled(false);
+                    }
+                }
             }
         });
         RxSubscriptions.add(subscribe);
         viewModel.datas.observe(this, datas -> {
             if (datas != null && datas.size() > 0) {
-                mVideoInfoList.addAll(datas);
-                initVideoListPage();
+
             }
         });
     }
 
     public void resetVVPHeight() {
-        ViewGroup.LayoutParams layoutParams = mVerticalViewPager.getLayoutParams();
+        ViewGroup.LayoutParams layoutParams = binding.viewPager2.getLayoutParams();
         layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
     }
 
     @Override
     public void initData() {
         super.initData();
-
-        mVerticalViewPager = binding.verticalViewPager;
         resetVVPHeight();
+
+        binding.viewPager2.setUserInputEnabled(false);
 
         mVideoInfoList = new ArrayList<>();
         temp = new ArrayList<>();
@@ -117,203 +141,56 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             mVideoInfoList.add(info);
             temp.add(info);
         }
-        viewModel.getVideoData(page, pageSize);
-    }
-
-    private void initVideoListPage() {
         initVideoViews();
-        initPlayerSDK();
-        TelephonyUtil.getInstance().setOnTelephoneListener(this);
-        TelephonyUtil.getInstance().initPhoneListener();
-
-        //在这里停留，让列表界面卡住几百毫秒，给sdk一点预加载的时间，形成秒开的视觉效果
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
+
 
     private void initVideoViews() {
-        mIvCover = (ImageView) getActivity().findViewById(R.id.player_iv_cover);
-        mVerticalViewPager.setOffscreenPageLimit(2);
-        mVerticalViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                TXLog.d(TAG, "mVerticalViewPager, onPageScrolled position = " + position);
-            }
+        binding.homeLoadView.setVisibility(View.VISIBLE);
+        binding.homeLoadView.start();
+        homePosition = 0;
+        viewModel.getVideoData(page, pageSize);
 
+        homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+
+        for (int i = 0; i < mVideoInfoList.size(); i++) {
+            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), "main", homePosition));
+            homePosition++;
+        }
+        binding.viewPager2.setAdapter(homeAdapter);
+        binding.viewPager2.setOffscreenPageLimit(fragmentList.size());
+        binding.homeLoadView.setVisibility(View.GONE);
+
+
+        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                AppApplication.get().setPlayPosition(position);
+                RxBus.getDefault().post(new VideoEvent(1));
+                //判断数据数量进行加载
+                if ((position + 3) == fragmentList.size()) {
+                    //TODO 请求数据
 
-                TXLog.d(TAG, "mVerticalViewPager, onPageSelected position = " + position);
-                mCurrentPosition = position;
-                // 滑动界面，首先让之前的播放器暂停，并seek到0
-                TXLog.d(TAG, "滑动后，让之前的播放器暂停，mTXVodPlayer = " + mTXVodPlayer);
-                if (mTXVodPlayer != null) {
-                    //TODO 判断下是不是直播如果是直播不需要seek到0
-                    //                    mTXVodPlayer.seek(0);
-                    mTXVodPlayer.pause();
-                }
-
-                if (position == mVideoInfoList.size() - 2) {
-                    
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
-        mVerticalViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
-            @Override
-            public void transformPage(View page, float position) {
-                TXLog.d(TAG, "mVerticalViewPager, transformPage pisition = " + position + " mCurrentPosition" + mCurrentPosition);
-                if (position != 0) {
-                    return;
-                }
-
-                ViewGroup viewGroup = (ViewGroup) page;
-                mIvCover = (ImageView) viewGroup.findViewById(com.hjyy.liteav.R.id.player_iv_cover);
-                mTXCloudVideoView = (TXCloudVideoView) viewGroup.findViewById(R.id.player_cloud_view);
-
-
-                PlayerInfo playerInfo = mPagerAdapter.findPlayerInfo(mCurrentPosition);
-                if (playerInfo != null) {
-                    playerInfo.vodPlayer.resume();
-                    mTXVodPlayer = playerInfo.vodPlayer;
+                    //加载数据
+                    for (int i = 0; i < temp.size(); i++) {
+                        fragmentList.add(new HomeVideoFragment(temp.get(i), "main", homePosition));
+                        homePosition++;
+                    }
+                    homeAdapter.notifyDataSetChanged();
                 }
             }
         });
-
-        mPagerAdapter = new VideoListAdapter();
-        mVerticalViewPager.setAdapter(mPagerAdapter);
-    }
-
-    private void initPlayerSDK() {
-        mVerticalViewPager.setCurrentItem(0);
-    }
-
-    private void restartPlay() {
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.resume();
-        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mTXCloudVideoView != null) {
-            mTXCloudVideoView.onDestroy();
-            mTXCloudVideoView = null;
-        }
-
-        mPagerAdapter.onDestroy();
-        stopPlay(true);
-        mTXVodPlayer = null;
-
-        TelephonyUtil.getInstance().uninitPhoneListener();
         subscribe.dispose();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mTXCloudVideoView != null) {
-            mTXCloudVideoView.onPause();
-        }
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.pause();
-        }
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mTXCloudVideoView != null) {
-            mTXCloudVideoView.onResume();
-        }
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.resume();
-        }
-    }
-
-    protected void stopPlay(boolean clearLastFrame) {
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.stopPlay(clearLastFrame);
-        }
-    }
-
-    @Override
-    public void onPlayEvent(TXVodPlayer player, int event, Bundle param) {
-        if (event == TXLiveConstants.PLAY_EVT_CHANGE_RESOLUTION) {
-            int width = param.getInt(TXLiveConstants.EVT_PARAM1);
-            int height = param.getInt(TXLiveConstants.EVT_PARAM2);
-            //判断设置是否满屏显示
-        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {
-            restartPlay();
-        } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 视频I帧到达，开始播放
-
-            PlayerInfo playerInfo = mPagerAdapter.findPlayerInfo(player);
-            if (playerInfo != null) {
-                playerInfo.isBegin = true;
-            }
-            if (mTXVodPlayer == player) {
-                TXLog.i(TAG, "onPlayEvent, event I FRAME, player = " + player);
-                mIvCover.setVisibility(View.GONE);
-
-                LogReport.getInstance().reportVodPlaySucc(event);
-            }
-        } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {
-            if (mTXVodPlayer == player) {
-                TXLog.i(TAG, "onPlayEvent, event prepared, player = " + player);
-                mTXVodPlayer.resume();
-            }
-        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {
-            PlayerInfo playerInfo = mPagerAdapter.findPlayerInfo(player);
-            if (playerInfo != null && playerInfo.isBegin) {
-                mIvCover.setVisibility(View.GONE);
-                TXCLog.i(TAG, "onPlayEvent, event begin, cover remove");
-            }
-        } else if (event < 0) {
-            if (mTXVodPlayer == player) {
-                TXLog.i(TAG, "onPlayEvent, event prepared, player = " + player);
-
-                LogReport.getInstance().reportVodPlayFail(event);
-            }
-
-            ToastUtil.toastShortMessage("event:" + event);
-        }
-    }
-
-    @Override
-    public void onNetStatus(TXVodPlayer player, Bundle status) {
-
-    }
-
-    @Override
-    public void onRinging() {
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.setMute(true);
-        }
-    }
-
-    @Override
-    public void onOffhook() {
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.setMute(true);
-        }
-    }
-
-    @Override
-    public void onIdle() {
-        if (mTXVodPlayer != null) {
-            mTXVodPlayer.setMute(false);
-        }
-    }
-
-    class VideoListAdapter extends PagerAdapter {
+    class VideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> implements LoadMoreModule {
         private List<PlayerInfo> playerInfoList = new ArrayList<>();
 
         protected PlayerInfo instantiatePlayerInfo(int position) {
@@ -323,7 +200,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
             //设置模式 全屏-RENDER_MODE_FULL_FILL_SCREEN
             vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
-            vodPlayer.setVodListener(HomeTJFragment.this);
+            //            vodPlayer.setVodListener(HomeTJFragment.this);
             TXVodPlayConfig config = new TXVodPlayConfig();
 
             File sdcardDir = getActivity().getExternalFilesDir(null);
@@ -341,18 +218,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             playerInfoList.add(playerInfo);
 
             return playerInfo;
-        }
-
-        protected void destroyPlayerInfo(int position) {
-            while (true) {
-                PlayerInfo playerInfo = findPlayerInfo(position);
-                if (playerInfo == null) {
-                    break;
-                }
-                playerInfo.vodPlayer.stopPlay(true);
-                playerInfoList.remove(playerInfo);
-
-            }
         }
 
         public PlayerInfo findPlayerInfo(int position) {
@@ -382,44 +247,24 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             playerInfoList.clear();
         }
 
-        @Override
-        public int getCount() {
-            return mVideoInfoList.size();
+        public VideoAdapter(int layoutResId) {
+            super(layoutResId);
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
+        protected void convert(@NotNull BaseViewHolder helper, VideoInfo item) {
+            //注意 ItemBinding 改为自己item_layout的名字 ItemXxxBinding
+            ItemVideoListBinding binding = DataBindingUtil.bind(helper.itemView);
+            binding.setViewModel(item);
+            binding.executePendingBindings();
 
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            VideoInfo videoInfo = mVideoInfoList.get(position);
-
-            View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_video_list, null);
-            view.setId(position);
-
-            // 封面
-            ImageView coverImageView = (ImageView) view.findViewById(R.id.player_iv_cover);
-            Glide.with(getActivity()).load(videoInfo).into(coverImageView);
+            Glide.with(getActivity()).load(item.coverUrl).into((ImageView) helper.getView(R.id.iv_cover));
 
             // 获取此player
-            TXCloudVideoView playView = (TXCloudVideoView) view.findViewById(R.id.player_cloud_view);
-            PlayerInfo playerInfo = instantiatePlayerInfo(position);
+            TXCloudVideoView playView = (TXCloudVideoView) helper.getView(R.id.tcVideoView);
+            PlayerInfo playerInfo = instantiatePlayerInfo(helper.getAdapterPosition());
             playerInfo.playerView = playView;
             playerInfo.vodPlayer.setPlayerView(playView);
-            playerInfo.vodPlayer.startPlay(playerInfo.playURL);
-
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-
-            destroyPlayerInfo(position);
-
-            container.removeView((View) object);
         }
     }
 }

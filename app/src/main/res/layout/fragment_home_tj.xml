@@ -10,16 +10,19 @@
     </data>
 
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
+            android:id="@+id/homeLoadView"
+            style="@style/Layout.Main" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <com.xaqinren.healthyelders.moduleHome.VerticalViewPager2
-                android:background="@color/color_DC3530"
-                android:id="@+id/vertical_view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never" />
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </RelativeLayout>
 </layout>

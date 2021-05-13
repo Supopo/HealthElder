@@ -1,23 +1,15 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.tabs.TabLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -25,10 +17,7 @@ import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
-import com.xaqinren.healthyelders.utils.TabUtils;
-import com.xaqinren.healthyelders.widget.TabLayoutMediator;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +52,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == CodeTable.EVENT_HOME) {
-                    if (event.msgType == CodeTable.RESH_VIEW_CODE) {
+                    if (event.msgType == CodeTable.SET_MENU_WHITE) {
                         binding.tabLayout.setVisibility(View.GONE);
                         binding.rlTop.setVisibility(View.VISIBLE);
                         binding.nsv.setScrollingEnabled(true);
@@ -82,7 +71,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new HomeTJFragment());
+        fragments.add(new HomeTJFragment(getActivity()));
         fragments.add(new XxxFragment());
         fragments.add(new GirlsFragment());
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
