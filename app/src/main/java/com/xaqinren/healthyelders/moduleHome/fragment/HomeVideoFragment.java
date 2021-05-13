@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
 
@@ -38,6 +41,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private String type;//区分是从哪里进来的
     private TXVodPlayer vodPlayer;
     private Disposable disposable;
+    private Animation amRotate;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -83,7 +87,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer.setConfig(config);
         vodPlayer.setPlayerView(binding.mainVideoView);
         vodPlayer.setAutoPlay(false);
-        //        vodPlayer.startPlay(videoInfo.resourceUrl);
+        vodPlayer.startPlay(videoInfo.resourceUrl);
+
+
+        amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_anim);
     }
 
     @Override
@@ -153,6 +160,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 收到首帧数据，越快收到此消息说明链路质量越好
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             binding.mainLoadView.setVisibility(View.GONE);
+            if (amRotate != null) {
+                binding.musicImageView.clearAnimation();
+                binding.musicImageView.startAnimation(amRotate);
+            }
             LogUtils.v(Constant.TAG_LIVE, "Fragment" + position + "PLAY_EVT_VOD_PLAY_PREPARED");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
             LogUtils.v(Constant.TAG_LIVE, "Fragment" + position + "PLAY_EVT_PLAY_LOADING");

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<rotate xmlns:android="http://schemas.android.com/apk/res/android">
+    <rotate
+        android:fromDegrees="0"
+        android:toDegrees="359"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:duration="2000"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:repeatCount="-1">
+    </rotate>
+
+<!--    android:interpolator="@android:anim/accelerate_interpolator" 设置动画为加速动画(动画播放中越来越快)-->
+    <!--    android:interpolator="@android:anim/decelerate_interpolator" 设置动画为减速动画(动画播放中越来越慢)-->
+    <!--    android:interpolator="@android:anim/accelerate_decelerate_interpolator" 设置动画为先加速在减速(开始速度最快 逐渐减慢)-->
+    <!--    android:interpolator="@android:anim/anticipate_interpolator" 先反向执行一段，然后再加速反向回来（相当于我们弹簧，先反向压缩一小段，然后在加速弹出）-->
+    <!--    android:interpolator="@android:anim/anticipate_overshoot_interpolator" 同上先反向一段，然后加速反向回来，执行完毕自带回弹效果（更形象的弹簧效果）-->
+    <!--    android:interpolator="@android:anim/bounce_interpolator" 执行完毕之后会回弹跳跃几段（相当于我们高空掉下一颗皮球，到地面是会跳动几下）-->
+    <!--    android:interpolator="@android:anim/cycle_interpolator" 循环，动画循环一定次数，值的改变为一正弦函数：Math.sin(2* mCycles* Math.PI* input)-->
+    <!--    android:interpolator="@android:anim/linear_interpolator" 线性均匀改变-->
+    <!--    android:interpolator="@android:anim/overshoot_interpolator" 加速执行，结束之后回弹-->
+</rotate>
