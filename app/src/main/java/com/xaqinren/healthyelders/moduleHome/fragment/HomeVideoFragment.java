@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
 
@@ -64,7 +63,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         super.initData();
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
+        amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_anim);
+        initVideo();
+    }
 
+    private void initVideo() {
         //加载进度
         binding.mainLoadView.setVisibility(View.VISIBLE);
         binding.mainLoadView.start();
@@ -86,29 +89,57 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         config.setMaxCacheItems(4);
         vodPlayer.setConfig(config);
         vodPlayer.setPlayerView(binding.mainVideoView);
-        vodPlayer.setAutoPlay(false);
-        vodPlayer.startPlay(videoInfo.resourceUrl);
-
-
-        amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_anim);
+        startPlay(false);
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
-            stopPlay(false);
             if (bean != null) {
+
+                //上下切换
+                LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getTjPlayPosition() + type + position + bean.toString());
                 if (bean.msgId == 1) {
-                    //判断当前滑动到的postion是不是当前页，若是则播放
-                    if (AppApplication.get().getPlayPosition() == position) {
-                        LogUtils.v(Constant.TAG_LIVE, "收到播放消息");
-                        vodPlayer.setAutoPlay(true);
-                        vodPlayer.startPlay(videoInfo.resourceUrl);
+                    stopPlay(true);
+
+                    if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
+                        startTjVideo();
+                    }
+
+                    if (bean.fragmentId.equals("home-gz") && type.equals("home-gz")) {
+                        LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getGzPlayPosition() + type + position + bean.toString());
+                        startGzVideo();
+                    }
+
+                } else if (bean.msgId == 101) {//左右切换
+                    stopPlay(true);
+                    if ((bean.position == 0 && type.equals("home-tj"))) {
+                        startTjVideo();
+                    } else if ((bean.position == 1 && type.equals("home-gz"))) {
+                        startGzVideo();
                     }
                 }
             }
         });
+    }
+
+    private void startTjVideo() {
+        if (AppApplication.get().getTjPlayPosition() == position) {
+            startPlay(true);
+        }
+    }
+
+    private void startGzVideo() {
+        if (AppApplication.get().getGzPlayPosition() == position) {
+            startPlay(true);
+        }
+    }
+
+
+    private void startPlay(boolean b) {
+        vodPlayer.setAutoPlay(b);
+        vodPlayer.startPlay(videoInfo.resourceUrl);
     }
 
     private void pausePlay() {
@@ -135,12 +166,31 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     public void onPause() {
         super.onPause();
         pausePlay();
+        LogUtils.v(Constant.TAG_LIVE, type + position + "onPause()");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        restartPlay();
+
+        if (type.equals("home-tj")) {
+            if (AppApplication.get().getTjPlayPosition() == position) {
+                restartPlay();
+            } else {
+                pausePlay();
+            }
+        }
+
+        if (type.equals("home-gz")) {
+            if (AppApplication.get().getGzPlayPosition() == position) {
+                restartPlay();
+            } else {
+                pausePlay();
+            }
+        }
+
+
+        LogUtils.v(Constant.TAG_LIVE, type + position + "onResume()");
     }
 
     @Override
@@ -159,28 +209,46 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //param.getInt(TXLiveConstants.EVT_PARAM2); //视频高度
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 收到首帧数据，越快收到此消息说明链路质量越好
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
-            binding.mainLoadView.setVisibility(View.GONE);
-            if (amRotate != null) {
-                binding.musicImageView.clearAnimation();
-                binding.musicImageView.startAnimation(amRotate);
-            }
-            LogUtils.v(Constant.TAG_LIVE, "Fragment" + position + "PLAY_EVT_VOD_PLAY_PREPARED");
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
-            LogUtils.v(Constant.TAG_LIVE, "Fragment" + position + "PLAY_EVT_PLAY_LOADING");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
-            LogUtils.v(Constant.TAG_LIVE, "Fragment" + position + "开始播放了");
+
+            LogUtils.v(Constant.TAG_LIVE, type + position + "开始播放了");
+            LogUtils.v(Constant.TAG_LIVE, "推荐pos:" + AppApplication.get().getTjPlayPosition());
+            LogUtils.v(Constant.TAG_LIVE, "关注pos:" + AppApplication.get().getGzPlayPosition());
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_PROGRESS) {//视频播放进度，会通知当前进度和总体进度，仅在点播时有效
             //EVT_PLAY_DURATION 总时间  EVT_PLAY_PROGRESS 当前进度
             //有此回调说明是点播
+
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
             binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
+
+            if (param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS) > 0) {
+                LogUtils.v(Constant.TAG_LIVE, type + position + "进度条");
+                LogUtils.v(Constant.TAG_LIVE, "推荐pos:" + AppApplication.get().getTjPlayPosition());
+                LogUtils.v(Constant.TAG_LIVE, "关注pos:" + AppApplication.get().getGzPlayPosition());
+                binding.mainLoadView.setVisibility(View.GONE);
+                if (!isStart) {
+                    if (amRotate != null) {
+                        binding.musicImageView.clearAnimation();
+                        binding.musicImageView.startAnimation(amRotate);
+                        isStart = true;
+                    }
+                }
+
+            }
+
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
+            LogUtils.v(Constant.TAG_LIVE, type + position + "播放结束了");
+
             restartPlay();
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
         } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放RTMP地址时会抛送）
         }
     }
+
+    boolean isStart;
 
     @Override
     public void onNetStatus(TXVodPlayer txVodPlayer, Bundle bundle) {

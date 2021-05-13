@@ -57,10 +57,10 @@ public class AppApplication extends BaseApplication {
     public static Context getContext() {
         return mContext;
     }
+
     public static AppApplication get() {
         return instance;
     }
-
 
 
     @Override
@@ -169,7 +169,14 @@ public class AppApplication extends BaseApplication {
         TUIKit.init(this, SDKAPPID, configs);
     }
 
-    //用于标记首页滑动播放位置
+
+    //用于标记首页推荐滑动播放位置
+    private int tjPlayPosition = -1;
+    //用于标记首页关注滑动播放位置
+    private int gzPlayPosition = -1;
+    //用户标记首页推荐-关注位置
+    private int layoutPos = 0;
+    //小视频列表标记位置
     private int playPosition = 0;
 
     public int getPlayPosition() {
@@ -178,5 +185,31 @@ public class AppApplication extends BaseApplication {
 
     public void setPlayPosition(int playPosition) {
         this.playPosition = playPosition;
+    }
+
+
+    public int getLayoutPos() {
+        return layoutPos;
+    }
+
+    public void setLayoutPos(int layoutPos) {
+        this.layoutPos = layoutPos;
+    }
+
+
+    public int getTjPlayPosition() {
+        return tjPlayPosition;
+    }
+
+    public void setTjPlayPosition(int tjPlayPosition) {
+        this.tjPlayPosition = tjPlayPosition;
+    }
+
+    public int getGzPlayPosition() {
+        return gzPlayPosition;
+    }
+
+    public void setGzPlayPosition(int gzPlayPosition) {
+        this.gzPlayPosition = gzPlayPosition;
     }
 }

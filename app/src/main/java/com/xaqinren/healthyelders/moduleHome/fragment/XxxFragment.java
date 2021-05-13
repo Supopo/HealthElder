@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSON;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.tencent.qcloud.ugckit.utils.Signature;
 import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
@@ -85,6 +86,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
     @Override
     public void initData() {
         checkPermission();
+
+        ViewGroup.LayoutParams layoutParams = binding.container.getLayoutParams();
+        layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
 
         binding.tvMenu1.setOnClickListener(lis -> {
             try {
@@ -164,29 +168,30 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu104.setOnClickListener(view -> {
             String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
             Bundle bundle = new Bundle();
-            bundle.putLong(Constant.DraftId , LiteAvRepository.getInstance().getDraftsList(getContext(),fileName).get(0).getId());
+            bundle.putLong(Constant.DraftId, LiteAvRepository.getInstance().getDraftsList(getContext(), fileName).get(0).getId());
             startActivity(VideoPublishActivity.class, bundle);
         });
         binding.tvMenu105.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), LiteAvPlay2Activity.class);
-//            intent.putExtra(UGCKitConstants.PLAY_URL, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/aW5a30SYEaMA.mp4");
-//            intent.putExtra(UGCKitConstants.PUSHER_ID, "123456789");
-//            intent.putExtra(UGCKitConstants.PUSHER_NAME, "老王");
-//            intent.putExtra(UGCKitConstants.PUSHER_AVATAR, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/5285890818148680324.jpg");
-//            intent.putExtra(UGCKitConstants.COVER_PIC, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/5285890818148680324.jpg");
-//            intent.putExtra(UGCKitConstants.FILE_ID, "5285890818148680323");
+            //            intent.putExtra(UGCKitConstants.PLAY_URL, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/aW5a30SYEaMA.mp4");
+            //            intent.putExtra(UGCKitConstants.PUSHER_ID, "123456789");
+            //            intent.putExtra(UGCKitConstants.PUSHER_NAME, "老王");
+            //            intent.putExtra(UGCKitConstants.PUSHER_AVATAR, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/5285890818148680324.jpg");
+            //            intent.putExtra(UGCKitConstants.COVER_PIC, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/5285890818148680324.jpg");
+            //            intent.putExtra(UGCKitConstants.FILE_ID, "5285890818148680323");
             intent.putExtra(UGCKitConstants.TCLIVE_INFO_LIST, (Serializable) createTestData());
-//            intent.putExtra(UGCKitConstants.TIMESTAMP, "2019-03-26 14:09:28");
-//            intent.putExtra(UGCKitConstants.TCLIVE_INFO_POSITION, 0);
+            //            intent.putExtra(UGCKitConstants.TIMESTAMP, "2019-03-26 14:09:28");
+            //            intent.putExtra(UGCKitConstants.TCLIVE_INFO_POSITION, 0);
             startActivityForResult(intent, START_LIVE_PLAY);
         });
     }
 
     /**
      * TODO 视频播放地址从后台生成,前台生成不安全
+     *
      * @return
      */
-    private  List<TCVideoInfo> createTestData() {
+    private List<TCVideoInfo> createTestData() {
         int time = (int) (System.currentTimeMillis() / 1000 + (24 * 60 * 60 * 10));
         String t = Signature.getTimeExpire(time);
         String playToken = null;

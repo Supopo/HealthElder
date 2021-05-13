@@ -15,9 +15,13 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,18 +72,34 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         RxSubscriptions.add(subscribe);
     }
 
+    private boolean isFirst = true;
     public void initData() {
         super.initData();
-
-
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeTJFragment(getActivity()));
-        fragments.add(new XxxFragment());
-        fragments.add(new GirlsFragment());
+        fragments.add(new HomeGZFragment(getActivity()));
+        fragments.add(new HomeFJFragment());
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
         vp2 = binding.viewPager2;
         binding.viewPager2.setAdapter(vp2Adapter);
+        binding.viewPager2.setOffscreenPageLimit(1);
         binding.tabLayout.setViewPager2(binding.viewPager2, titles);
+        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                AppApplication.get().setLayoutPos(position);
+                //第一次加载完所有Fragment会触发
+                if (!isFirst) {
+                    LogUtils.v(Constant.TAG_LIVE, "左右滑动：" + position);
+                    //通知HomeVideoFragment做出左右滑动相应操作
+                    RxBus.getDefault().post(new VideoEvent(101, position));
+                    //通知关注列表页面开始加载数据
+                    RxBus.getDefault().post(new EventBean(101, position));
+                }
+                isFirst = false;
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
@@ -96,6 +116,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             });
         }
     }
+
 
     @Override
     public void onDestroyView() {

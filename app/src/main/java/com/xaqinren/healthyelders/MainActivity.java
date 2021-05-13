@@ -19,9 +19,11 @@ import com.dmcbig.mediapicker.utils.ScreenUtils;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
@@ -133,29 +135,42 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             selectView = binding.tvMenu1;
 
             if (selectView.getId() == oldView.getId()) {
+                //判断只有处于推荐列表时候才有效
+                if (AppApplication.get().getLayoutPos() != 0) {
+                    return;
+                }
                 //发送回顶消息
                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
+                //发送停止播放消息
+                RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
                 //底部菜单变白色
                 binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
-
                 binding.line.setVisibility(View.VISIBLE);
             } else {
+                //发送继续播放消息
+                RxBus.getDefault().post(new VideoEvent(101, AppApplication.get().getLayoutPos()));
                 initBottomTab();
             }
 
             oldView = binding.tvMenu1;
         });
         binding.tvMenu2.setOnClickListener(lis -> {
+            //发送停止播放消息
+            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu2;
             initBottomTab();
             oldView = binding.tvMenu2;
         });
         binding.tvMenu3.setOnClickListener(lis -> {
+            //发送停止播放消息
+            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu3;
             initBottomTab();
             oldView = binding.tvMenu3;
         });
         binding.tvMenu4.setOnClickListener(lis -> {
+            //发送停止播放消息
+            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu4;
             initBottomTab();
             oldView = binding.tvMenu4;
@@ -195,7 +210,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     if (homeFragment != null && homeFragment.vp2 != null) {
                         homeFragment.vp2.setUserInputEnabled(false);
                     }
-                }else {
+                } else {
                     if (homeFragment != null && homeFragment.vp2 != null) {
                         homeFragment.vp2.setUserInputEnabled(true);
                     }

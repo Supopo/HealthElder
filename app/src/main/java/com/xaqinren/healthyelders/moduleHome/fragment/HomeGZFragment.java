@@ -4,26 +4,43 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
+import com.tencent.qcloud.xiaoshipin.play.PlayerInfo;
+import com.tencent.rtmp.TXLiveConstants;
+import com.tencent.rtmp.TXVodPlayConfig;
+import com.tencent.rtmp.TXVodPlayer;
+import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.databinding.FragmentHomeTjBinding;
+import com.xaqinren.healthyelders.databinding.ItemVideoListBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +51,10 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 
 /**
  * Created by Lee. on 2021/5/11.
- * 视频播放列表Fragment
+ * 首页关注列表Fragment
  */
-public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> {
-    private static final String TAG = "home-tj";
+public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZViewModel> {
+    private static final String TAG = "home-gz";
     private List<VideoInfo> mVideoInfoList;
     private List<VideoInfo> temp;
     private Disposable subscribe;
@@ -48,13 +65,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
 
-    public HomeTJFragment(FragmentActivity fragmentActivity) {
+    public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
     }
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return R.layout.fragment_home_tj;
+        return R.layout.fragment_home_gz;
     }
 
     @Override
@@ -63,10 +80,10 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private String[] pics = {
+            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/6bc9be6ee22343beb6d78f7e24204992.png",
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/608a1b18c21a40e0ad678761d4a0ed17.png",
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/86791a92d09f4d1595e0124d09156d6f.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/6bc9be6ee22343beb6d78f7e24204992.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/86791a92d09f4d1595e0124d09156d6f.png",
+            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/608a1b18c21a40e0ad678761d4a0ed17.png",
     };
     private String[] vidoes = {
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/cbac2f83b8cd41aeab99f330c9149eab.mp4",
@@ -79,7 +96,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201222/69504846fdaf4e86ac8c82470175e2aa.mp4",
     };
 
-
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -87,17 +103,16 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             if (event != null) {
                 if (event.msgId == CodeTable.EVENT_HOME) {
                     if (event.msgType == CodeTable.SET_MENU_TOUMING) {
-                        //底部菜单变透明 头布局隐藏 开启vp2滑动
+                        //底部菜单变透明 开启vp2滑动
                         binding.viewPager2.setUserInputEnabled(true);
-                        //第一次 开始播放第一条
-                        if (AppApplication.get().getTjPlayPosition() < 0) {
-                            AppApplication.get().setTjPlayPosition(0);
-                        }
-                        RxBus.getDefault().post(new VideoEvent(1, TAG));
                     } else if (event.msgType == CodeTable.SET_MENU_WHITE) {
-                        //底部菜单变白 说明头布局出现
+                        //底部菜单变白，头布局处理
                         binding.viewPager2.setUserInputEnabled(false);
-
+                    }
+                } else if (event.msgId == 101 && event.msgType == 1) {
+                    //判断是不是第一次切换到关注列表
+                    if (!isInit) {
+                        initVideoViews();
                     }
                 }
             }
@@ -117,29 +132,26 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
     }
 
-
     @Override
     public void initData() {
         super.initData();
         resetVVPHeight();
-
         //开始时候有头布局所以禁止滑动
         binding.viewPager2.setUserInputEnabled(false);
-
         getData();
-        initVideoViews();
     }
 
     private void getData() {
         temp = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            int random = (int) (Math.random() * 7);
             VideoInfo info = new VideoInfo();
+            int random = (int) (Math.random() * 7);
             info.resourceUrl = vidoes[random];
             temp.add(info);
         }
     }
 
+    private boolean isInit;
 
     private void initVideoViews() {
         binding.homeLoadView.setVisibility(View.VISIBLE);
@@ -149,41 +161,34 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
         homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
+        getData();
         for (int i = 0; i < temp.size(); i++) {
             fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
             fragmentPosition++;
         }
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(fragmentList.size());
-
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                //第一次加载所有Fragment完会触发
-                if (!first) {
-                    LogUtils.v(Constant.TAG_LIVE, "上下滑动1：" + position);
-                    AppApplication.get().setTjPlayPosition(position);
-                    RxBus.getDefault().post(new VideoEvent(1, TAG));
-                    //判断数据数量滑动到倒数第三个时候去进行加载
-                    if ((position + 1) == fragmentList.size()) {
-                        //TODO 加载更多数据
-                        getData();
-                        //加载数据
-                        for (int i = 0; i < temp.size(); i++) {
-                            fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
-                            fragmentPosition++;
-                        }
-                        homeAdapter.notifyDataSetChanged();
+                AppApplication.get().setGzPlayPosition(position);
+                RxBus.getDefault().post(new VideoEvent(1, TAG));
+                //判断数据数量滑动到倒数第三个时候去进行加载
+                if ((position + 1) == fragmentList.size()) {
+                    //TODO 加载更多数据
+                    getData();
+                    //加载数据
+                    for (int i = 0; i < temp.size(); i++) {
+                        fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
+                        fragmentPosition++;
                     }
+                    homeAdapter.notifyDataSetChanged();
                 }
-
-                first = false;
             }
         });
+        isInit = true;
     }
-
-    private boolean first = true;
 
 
     @Override
