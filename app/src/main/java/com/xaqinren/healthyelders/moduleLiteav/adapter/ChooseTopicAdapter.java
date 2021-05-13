@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleLiteav.adapter;
 
+import android.view.View;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -18,5 +20,13 @@ public class ChooseTopicAdapter extends BaseQuickAdapter<TopicBean, BaseViewHold
     protected void convert(@NotNull BaseViewHolder baseViewHolder, TopicBean topicBean) {
         ItemPublishTopicViewAdapterBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(topicBean);
+        if (topicBean.getHot() == null) {
+            binding.hintIv.setVisibility(View.GONE);
+        }
+        if (topicBean.getPlayCount() == null) {
+            binding.playCount.setVisibility(View.GONE);
+        }else{
+            binding.playCount.setText(topicBean.getPlayCount() + "");
+        }
     }
 }

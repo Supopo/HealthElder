@@ -498,9 +498,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         viewModel.liteAvUserList.observe(this, liteAvUserBean -> {
             for (LiteAvUserBean avUserBean : liteAvUserBean) {
                 avUserBean.readOnly = true;
-                if (!
-
-                        singleSearchAt) {
+                if (!singleSearchAt) {
                     //查询用户,只有ID,没有USerID,手动设置
                     avUserBean.userId = avUserBean.id;
                 }
@@ -536,10 +534,19 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             this.topicBeans.addAll(topicBeans);
             publishTopicAdapter.setList(this.topicBeans);
         });
+        viewModel.topicSearchList.observe(this, topicBeans -> {
+            //热点话题
+            this.listTopicBeans.clear();
+            this.listTopicBeans.addAll(topicBeans);
+            chooseTopicAdapter.setList(this.listTopicBeans);
+        });
     }
 
+    /**
+     * 搜索话题
+     */
     private void showTopicView(String str) {
-        //TODO 调用接口
+        viewModel.getSearchTopic(str.replace("#", ""));
         binding.includeListTopic.recyclerView.getAdapter().notifyDataSetChanged();
         binding.includeListTopic.layoutPublishAt.setVisibility(View.VISIBLE);
     }
@@ -547,7 +554,6 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     private boolean singleSearchAt = false;
     private String currentAt;
     private void showAtView(String str) {
-        //TODO 调用接口
         atPage = 1;
         this.liteAvUserBeans.clear();
         if (str.equals("@")) {

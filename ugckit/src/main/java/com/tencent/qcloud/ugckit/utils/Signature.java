@@ -120,7 +120,6 @@ public class Signature {
         return day10X16;
     }
     public static String singVideo(String playUrl , String UrlTimeExpire) throws URISyntaxException {
-        //60a721c1  93ced57194da6d6db61a5c6c0ce4e0ba
         URI uri = new URI(playUrl);
         String query = uri.getPath();
         int last = query.lastIndexOf("/");

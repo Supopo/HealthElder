@@ -1,22 +1,33 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
+import com.xaqinren.healthyelders.modulePicture.Constant;
+import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleLiteav.fragment.StartLiteAVFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
+import com.xaqinren.healthyelders.utils.GlideEngine;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +47,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private StartLiveUiViewModel liveUiViewModel;
     private int currentFragmentPosition = 0;
     private boolean isLiteAVRecode = false;
+    private String TAG = getClass().getSimpleName();
+
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -70,7 +83,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         mFragments = new ArrayList<>();
         mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
-        mFragments.add(new XxxFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;
@@ -90,12 +102,31 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             oldView = binding.tvMenu2;
         });
         binding.tvMenu3.setOnClickListener(lis -> {
-            selectView = binding.tvMenu3;
-            initBottomTab();
-            oldView = binding.tvMenu3;
+            //拍照
+            PictureSelector.create(this)
+                    .openCamera(PictureMimeType.ofImage())
+                    .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
+                    .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
         });
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+                //拍照完成
+                List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
+                String path = result.get(0).getPath();
+                LogUtils.e(TAG, path);
+                //发布图文页面
+                Intent intent = new Intent(StartLiveActivity.this, PublishTextPhotoActivity.class);
+                intent.putExtra(Constant.PHOTO_PATH, path);
+                startActivity(intent);
+            }
+        }
+    }
 
     private void initBottomTab() {
 

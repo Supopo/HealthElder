@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/tv_menu2"
                 android:drawablePadding="@dimen/dp_4"
-                android:text="相册"
+                android:text="拍照"
                 android:textColor="@color/color_FF9C9C9C"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />

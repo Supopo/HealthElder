@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="@dimen/dp_50"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/dp_17"
         android:paddingRight="@dimen/dp_16"
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/color_252525"
-            android:text="#爱机车更爱生活"
+            android:text="@{viewModel.name}"
             android:layout_height="wrap_content" />
 
         <ImageView

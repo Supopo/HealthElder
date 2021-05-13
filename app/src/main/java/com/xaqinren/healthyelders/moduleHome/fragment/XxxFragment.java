@@ -189,19 +189,19 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         int time = (int) (System.currentTimeMillis() / 1000 + (24 * 60 * 60 * 10));
         String t = Signature.getTimeExpire(time);
         String playToken = null;
+        String playUrl = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/449bcd025285890818256440011/8bXNLBaIVRIA.mp4";
         try {
-            playToken = Signature.singVideo("http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/GvuOa71lnEgA.mp4", t);
+            playToken = Signature.singVideo(playUrl, t);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         List<TCVideoInfo> list = new ArrayList<>();
         TCVideoInfo info = new TCVideoInfo();
         info.avatar = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/5285890818150396702.jpg";
-        info.playurl = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/GvuOa71lnEgA.mp4" + "?t=" + t + "&sign=" + playToken;
+        info.playurl = playUrl + "?t=" + t + "&sign=" + playToken;
         info.userid = "123456789";
         info.nickname = "老王";
         info.frontcover = "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/004aa94b5285890818150396701/5285890818150396702.jpg";
-        info.fileid = "5285890818150396701";
         info.createTime = "2021-05-10 11:49:40";
         info.review_status = TCVideoInfo.REVIEW_STATUS_NORMAL;
         list.add(info);

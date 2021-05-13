@@ -195,6 +195,10 @@ public interface ApiServer {
     @GET("content/findHotTopic")
     Observable<MBaseResponse<List<TopicBean>>> getHotTopicList(@Header("Authorization") String authorization);
 
+    //短视频搜索热点话题
+    @GET("content/findPageByName")
+    Observable<MBaseResponse<List<TopicBean>>> getSearchTopicList(@Header("Authorization") String authorization, @Query("name") String key);
+
 
     //短视频发布
     @Headers({"content-type:application/json"})

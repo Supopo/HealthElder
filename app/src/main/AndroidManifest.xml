@@ -196,6 +196,8 @@
             android:name=".moduleZhiBo.activity.ZhiboOverGZActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleLiteav.activity.LiteAvPlayActivity" android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".modulePicture.activity.PublishTextPhotoActivity" android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
     </application>
 
 </manifest>

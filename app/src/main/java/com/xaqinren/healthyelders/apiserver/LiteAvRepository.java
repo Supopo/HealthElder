@@ -207,4 +207,27 @@ public class LiteAvRepository {
                     }
                 });
     }
+
+    public void getSearchTopicList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<TopicBean>> listMutableLiveData, String key) {
+        userApi.getSearchTopicList(UserInfoMgr.getInstance().getHttpToken(), key)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<TopicBean>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<TopicBean>> data) {
+                        listMutableLiveData.postValue(data.getData());
+                    }
+                });
+    }
 }

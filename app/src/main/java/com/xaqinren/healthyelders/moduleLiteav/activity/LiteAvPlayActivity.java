@@ -310,7 +310,7 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
             TXVodPlayer vodPlayer = new TXVodPlayer(LiteAvPlayActivity.this);
             vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
             //FIXBUG:FULL_SCREEN 合唱显示不全，ADJUST_RESOLUTION黑边
-            vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION);
+            vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
             vodPlayer.setVodListener(LiteAvPlayActivity.this);
             TXVodPlayConfig config = new TXVodPlayConfig();
 
