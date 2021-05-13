@@ -152,7 +152,6 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
                 }
             }
         });
-
         mPagerAdapter = new MyPagerAdapter();
         mVerticalViewPager.setAdapter(mPagerAdapter);
 

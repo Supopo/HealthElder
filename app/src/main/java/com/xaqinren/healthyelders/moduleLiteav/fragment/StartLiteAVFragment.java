@@ -71,6 +71,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private StartLiveUiViewModel liveUiViewModel;
     private LiteAvRecode liteAvRecode;
     private OnFragmentStatusListener onFragmentStatusListener;
+    private int REQUEST_PERMISSION = 100;
 
     public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
         this.onFragmentStatusListener = onFragmentStatusListener;
@@ -448,24 +449,16 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     @Override
     public void onStart() {
         super.onStart();
-        if (hasPermission()) {
-
+        if (!hasPermission()) {
+            String[] permissions = {Manifest.permission.CAMERA , Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+            requestPermissions(permissions,REQUEST_PERMISSION);
         }
     }
 
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            List<String> permissions = new ArrayList<>();
-            if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)) {
-                permissions.add(Manifest.permission.CAMERA);
-            }
-            if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO)) {
-                permissions.add(Manifest.permission.RECORD_AUDIO);
-            }
-            if (permissions.size() != 0) {
-                ActivityCompat.requestPermissions(getActivity(), (String[]) permissions.toArray(), 100);
-                return false;
-            }
+            String[] permissions = {Manifest.permission.CAMERA , Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+            return PermissionUtils.checkPermissionAllGranted(getActivity(), permissions);
         }
         return true;
     }

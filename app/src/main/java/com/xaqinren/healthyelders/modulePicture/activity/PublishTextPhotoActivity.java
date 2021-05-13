@@ -101,6 +101,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private List<LocalPhotoBean> localPhotoBeans = new ArrayList<>();
     private PictureAdapter pictureAdapter;
     private int MAX = 9;
+    private int REQUEST_CAMERA = 188;
+    private int REQUEST_GALLERY = 189;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -248,17 +250,21 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         initListView();
     }
 
+    private ListBottomPopup listBottomPopup;
     private void showListPop() {
         List<ListPopMenuBean> menus = new ArrayList<>();
         menus.add(new ListPopMenuBean("拍照", getResources().getColor(R.color.color_252525), 16));
         menus.add(new ListPopMenuBean("相册", getResources().getColor(R.color.color_252525), 16));
-        ListBottomPopup listBottomPopup = new ListBottomPopup(this, menus, new OnItemClickListener() {
+        listBottomPopup = new ListBottomPopup(this, menus, new OnItemClickListener() {
 
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0) {
                     //拍照,使用自定义拍照界面
-
+                    PictureSelector.create(PublishTextPhotoActivity.this)
+                            .openCamera(PictureMimeType.ofImage())
+                            .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
+                            .forResult(REQUEST_CAMERA);//结果回调onActivityResult code
                 }else{
                     List<LocalMedia> localMedia = new ArrayList<>();
                     for (LocalPhotoBean localPhotoBean : localPhotoBeans) {
@@ -280,11 +286,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                             .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
                             .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
                             .selectionData(localMedia)
-                            .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                            .forResult(REQUEST_GALLERY);//结果回调onActivityResult code
                 }
+                listBottomPopup.dismiss();
             }
         });
         listBottomPopup.showPopupWindow();
+
     }
 
 
@@ -502,9 +510,18 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 binding.includePublish.myLocation.setText(bean.desName);
                 equalsLocation(bean);
             }
-            else if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+            else if (requestCode == REQUEST_GALLERY) {
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 meagerPhoto(result);
+            }
+            else if (requestCode == REQUEST_CAMERA) {
+                if (localPhotoBeans.get(localPhotoBeans.size() - 1).type == 1) {
+                    localPhotoBeans.remove(localPhotoBeans.get(localPhotoBeans.size() - 1));
+                }
+                List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
+                String path = result.get(0).getPath();
+                addPhoto(path);
+                pictureAdapter.setList(localPhotoBeans);
             }
         }
     }

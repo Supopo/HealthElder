@@ -396,6 +396,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.publishProgressMark.setVisibility(View.GONE);
         if (publishResult.retCode == TXUGCPublishTypeDef.PUBLISH_RESULT_OK) {
             PublishBean bean = new PublishBean();
+            if (locationBean!=null)
             bean.address = locationBean.desName;
             bean.latitude = lat + "";
             bean.longitude = lon + "";

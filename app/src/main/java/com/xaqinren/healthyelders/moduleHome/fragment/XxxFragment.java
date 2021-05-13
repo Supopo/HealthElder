@@ -34,6 +34,7 @@ import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
+import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlay2Activity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlayActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
@@ -167,7 +168,7 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             startActivity(VideoPublishActivity.class, bundle);
         });
         binding.tvMenu105.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), LiteAvPlayActivity.class);
+            Intent intent = new Intent(getActivity(), LiteAvPlay2Activity.class);
 //            intent.putExtra(UGCKitConstants.PLAY_URL, "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/82c4c0ce5285890818148680323/aW5a30SYEaMA.mp4");
 //            intent.putExtra(UGCKitConstants.PUSHER_ID, "123456789");
 //            intent.putExtra(UGCKitConstants.PUSHER_NAME, "老王");

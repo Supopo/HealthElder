@@ -198,6 +198,7 @@
         <activity android:name=".moduleLiteav.activity.LiteAvPlayActivity" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modulePicture.activity.PublishTextPhotoActivity" android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
+        <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" />
     </application>
 
 </manifest>

@@ -10,7 +10,12 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
+import me.goldze.mvvmhabit.utils.StringUtils;
+
 public class ChooseLocationAdapter extends BaseQuickAdapter<LocationBean, BaseViewHolder> implements LoadMoreModule {
+    DecimalFormat decimalFormat=new DecimalFormat(".00");
     public ChooseLocationAdapter(int layoutResId) {
         super(layoutResId);
     }
@@ -20,5 +25,16 @@ public class ChooseLocationAdapter extends BaseQuickAdapter<LocationBean, BaseVi
         ItemLiteAvLocationBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(selLocationBean);
         binding.executePendingBindings();
+        if (StringUtils.isEmpty(selLocationBean.distance)) {
+            binding.distanceView.setText(null);
+        }else {
+            float distance = Float.valueOf(selLocationBean.distance);
+            if (distance < 1000) {
+                binding.distanceView.setText(distance + "m");
+            }else {
+                String dis = decimalFormat.format(distance / 1000);
+                binding.distanceView.setText(dis + "km");
+            }
+        }
     }
 }

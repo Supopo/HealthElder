@@ -1,25 +1,18 @@
 package com.xaqinren.healthyelders.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-
 import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
 import com.tencent.qcloud.xiaoshipin.play.PlayerInfo;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.widget.share.IShareUser;
-import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
-import java.util.List;
 
 public class LiteAvPlayView extends RelativeLayout {
 
@@ -45,9 +38,19 @@ public class LiteAvPlayView extends RelativeLayout {
     ImageView shareIv;
     TextView shareCountTv;
 
-    CircleImageView musicBtn;
+    ImageView playBtn;
+
+    de.hdodenhof.circleimageview.CircleImageView musicBtn;
 
     OnItemClickListener onItemClickListener;
+
+    public TXCloudVideoView getPlayView() {
+        return playView;
+    }
+
+    public de.hdodenhof.circleimageview.CircleImageView getMusicBtn() {
+        return musicBtn;
+    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -69,13 +72,12 @@ public class LiteAvPlayView extends RelativeLayout {
     }
 
     private void init() {
-
         inflate(getContext(), R.layout.layout_lite_av_player, this);
         rlContainer = findViewById(R.id.rl_container);
-        playView = (TXCloudVideoView) findViewById(com.hjyy.liteav.R.id.player_cloud_view);
+        playView =  findViewById(R.id.player_cloud_view);
         shareGroup = findViewById(R.id.share_group);
         plGroup = findViewById(R.id.pl_group);
-
+        musicBtn = findViewById(R.id.music_btn);
 
         shareGroup.setOnClickListener(view -> {
             if (onItemClickListener!=null) onItemClickListener.onShareClick(videoInfo.fileid);

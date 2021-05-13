@@ -47,7 +47,6 @@
             android:layout_alignParentRight="true"
             android:textColor="@color/gray_999"
             android:textSize="@dimen/sp_13"
-            android:text="@{viewModel.distance+'m'}"
             />
 
         <View
