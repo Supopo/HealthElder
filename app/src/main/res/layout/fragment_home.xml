@@ -10,6 +10,7 @@
     </data>
 
     <RelativeLayout
+        android:id="@+id/rl_all"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -42,17 +43,17 @@
                             android:id="@+id/stl_menu"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_51"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="@dimen/dp_15"
+                            android:layout_toLeftOf="@id/iv_search"
                             app:tabBackground="@android:color/transparent"
                             app:tabMode="fixed"
                             app:tabRippleColor="@android:color/transparent"
                             app:tabSelectedTextColor="@color/white"
                             app:tabTextColor="#d1d1d1"
-                            app:tl_textsize="@dimen/sp_16"
-                            app:tl_textSelectsize="@dimen/sp_16"
                             app:tl_divider_color="@color/transparent"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginLeft="@dimen/dp_15"
-                            android:layout_toLeftOf="@id/iv_search" />
+                            app:tl_textSelectsize="@dimen/sp_16"
+                            app:tl_textsize="@dimen/sp_16" />
 
                         <ImageView
                             android:id="@+id/iv_search"
@@ -83,11 +84,11 @@
                 </RelativeLayout>
 
                 <androidx.viewpager2.widget.ViewPager2
-                    android:overScrollMode="never"
                     android:id="@+id/viewPager2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/rl_top" />
+                    android:layout_below="@id/rl_top"
+                    android:overScrollMode="never" />
             </RelativeLayout>
         </com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView>
 

@@ -112,7 +112,7 @@
             android:layout_height="100dp"
             android:layout_above="@+id/infoRelativeLayout"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="@dimen/dp_16" />
+            android:layout_marginBottom="@dimen/dp_67" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/musicImageView"
@@ -122,7 +122,7 @@
             android:layout_above="@+id/infoRelativeLayout"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="6dp"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_67"
             android:background="@mipmap/bg_home_music"
             android:padding="@dimen/dp_8"
             android:src="@mipmap/ic_launcher" />

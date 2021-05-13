@@ -4,11 +4,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -34,6 +36,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private Disposable subscribe;
     private String[] titles = {"推荐", "关注", "附近"};
     private String[] menuTitles = {"美食厨房", "民间偏方", "运动健身", "家有良医"};
+    public ViewPager2 vp2;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,7 +47,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public int initVariableId() {
         return BR.viewModel;
     }
-
 
     @Override
     public void initViewObservable() {
@@ -75,6 +77,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         fragments.add(new XxxFragment());
         fragments.add(new GirlsFragment());
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
+        vp2 = binding.viewPager2;
         binding.viewPager2.setAdapter(vp2Adapter);
         binding.tabLayout.setViewPager2(binding.viewPager2, titles);
 
@@ -93,7 +96,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 }
             });
         }
-
     }
 
     @Override
