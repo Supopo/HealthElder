@@ -88,7 +88,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         viewModel.videoInfo.setValue(videoInfo);
         if (videoInfo.resourceType.equals("VIDEO")) {
-            binding.rlVideo.setVisibility(View.VISIBLE);
 
             //内容
             PublishDesBean publishDesBean = new PublishDesBean();
@@ -122,13 +121,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             binding.rlAvatar.clearAnimation();
             binding.rlAvatar.startAnimation(animation);
 
-        } else if (videoInfo.resourceType.equals("LIVE")) {
-            binding.rlAvatarAll.setVisibility(View.GONE);
-            binding.llNumInfo.setVisibility(View.GONE);
-            binding.rlMusic.setVisibility(View.GONE);
-            binding.llMusicName.setVisibility(View.GONE);
         }
-
 
         initVideo();
     }

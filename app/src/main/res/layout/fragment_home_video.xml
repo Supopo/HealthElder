@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel" />
@@ -16,19 +18,20 @@
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
-            style="@style/Layout.Main" />
-
-
-        <RelativeLayout
-            android:id="@+id/rlVideo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            style="@style/Layout.Main">
 
             <ImageView
                 android:id="@+id/coverImageView"
                 style="@style/Layout.Main"
                 android:scaleType="center"
                 app:url="@{viewModel.videoInfo.coverUrl}" />
+        </com.tencent.rtmp.ui.TXCloudVideoView>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/quanp_zhez">
 
             <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
                 android:id="@+id/mainLoadView"
@@ -48,7 +51,8 @@
                 android:layout_above="@+id/llNumInfo"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="@dimen/dp_2"
-                android:layout_marginBottom="@dimen/dp_25">
+                android:layout_marginBottom="@dimen/dp_25"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/avatarBg"
@@ -102,9 +106,9 @@
                 android:layout_above="@id/rlMusic"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_46"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
 
                 <ImageView
                     android:layout_width="@dimen/dp_34"
@@ -176,19 +180,20 @@
                 android:layout_height="@dimen/dp_100"
                 android:layout_above="@+id/infoRelativeLayout"
                 android:layout_alignParentEnd="true"
-                android:layout_marginBottom="@dimen/dp_67">
+                android:layout_marginBottom="@dimen/dp_67"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
 
                 <com.xaqinren.healthyelders.moduleHome.widget.MusicalNoteLayout
                     android:id="@+id/mainMusicalNoteLayout"
-                    android:layout_width="@dimen/dp_100"
-                    android:layout_height="@dimen/dp_100" />
+                    android:layout_width="@dimen/dp_93"
+                    android:layout_height="@dimen/dp_93" />
 
                 <RelativeLayout
-                    android:layout_alignParentBottom="true"
                     android:id="@+id/rlMusicImageView"
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
                     android:background="@mipmap/yiny_changp_bg"
                     android:padding="@dimen/dp_8">
 
@@ -205,12 +210,14 @@
 
             <LinearLayout
                 android:id="@+id/llMusicName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/rlMusic"
                 android:layout_alignBottom="@+id/rlMusic"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
 
                 <ImageView
                     android:layout_width="@dimen/dp_14"
@@ -220,7 +227,7 @@
 
                 <com.xaqinren.healthyelders.widget.MarqueeView
                     android:id="@+id/musicMarqueeTextView"
-                    android:layout_width="@dimen/dp_160"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.videoInfo.musicName}"
                     app:scrollType="horizontal"
@@ -244,13 +251,25 @@
                 android:textColor="@color/textSub"
                 android:textSize="@dimen/sp_15" />
 
+            <TextView
+                android:id="@+id/tvZhiBoing"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_20"
+                android:layout_above="@id/authorTextView"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_7"
+                android:background="@drawable/bg_zb_ing"
+                android:gravity="center"
+                android:text="直播中"
+                android:textColor="@color/white"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.GONE}" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/authorTextView"
                 style="@style/TextView.Normal"
                 android:layout_above="@+id/descTextView"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:paddingStart="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
                 android:text="@{'@'+viewModel.videoInfo.nickname}"
                 android:textColor="@color/text"
                 android:textSize="@dimen/sp_16"
@@ -341,6 +360,46 @@
                 android:layout_centerInParent="true"
                 android:src="@mipmap/ic_video_play"
                 android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/llZhiBoTip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/authorTextView"
+                android:layout_marginBottom="@dimen/dp_62"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.GONE}">
+
+                <View
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_0_5"
+                    android:background="#ccffffff" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="点击进入直播间"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_20"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_0_5"
+                    android:background="#ccffffff" />
+
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progressBar"

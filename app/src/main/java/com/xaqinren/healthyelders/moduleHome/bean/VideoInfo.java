@@ -44,6 +44,14 @@ public class VideoInfo {
     public List<PublishAtBean> atList = new ArrayList<>();
     public List<PublishFocusItemBean> publishFocusItemBeans = new ArrayList<>();
 
+    public int getVideoType() {
+        if (resourceType.equals("LIVE")) {
+            return 2;
+        } else if (resourceType.equals("VIDEO")) {
+            return 1;
+        }
+        return 0;
+    }
 
     public String getMusicName() {
         if (TextUtils.isEmpty(musicName)) {
