@@ -16,8 +16,9 @@
 
 
         <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
+            android:layout_centerInParent="true"
             android:id="@+id/homeLoadView"
-            style="@style/Layout.Main" />
+            style="@style/Layout.Wrap" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager2"

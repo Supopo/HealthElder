@@ -2,15 +2,17 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -19,11 +21,16 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
+import com.xaqinren.healthyelders.moduleHome.adapter.MenuAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -39,7 +46,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private static final String TAG = "HomeFragment";
     private Disposable subscribe;
     private String[] titles = {"推荐", "关注", "附近"};
-    private String[] menuTitles = {"美食厨房", "民间偏方", "运动健身", "家有良医"};
+    private String[] menuTitles = {"美食厨房", "民间偏方", "运动健身", "家有良医", "美食厨房", "民间偏方", "运动健身"};
     public ViewPager2 vp2;
 
     @Override
@@ -73,6 +80,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     }
 
     private boolean isFirst = true;
+
     public void initData() {
         super.initData();
         List<Fragment> fragments = new ArrayList<>();
@@ -115,6 +123,37 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 }
             });
         }
+
+        initTopMenu();
+
+    }
+
+    private void initTopMenu() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.rlMenu1.setLayoutManager(linearLayoutManager);
+        BaseQuickAdapter<String, BaseViewHolder> menu1Adapter = new BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_home_menu) {
+
+            @Override
+            protected void convert(@NotNull BaseViewHolder holder, String s) {
+                holder.setText(R.id.tv_menu, s);
+            }
+        };
+        binding.rlMenu1.setAdapter(menu1Adapter);
+        menu1Adapter.setNewInstance(new ArrayList<String>(Arrays.asList(menuTitles)));
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
+        linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.rvMenu2.setLayoutManager(linearLayoutManager2);
+        MenuAdapter menuAdapter = new MenuAdapter(R.layout.item_home_menu2);
+        binding.rvMenu2.setAdapter(menuAdapter);
+
+        List<GirlsBean> menu = new ArrayList();
+        for (int i = 0; i < 8; i++) {
+            GirlsBean girlsBean = new GirlsBean();
+            menu.add(girlsBean);
+        }
+        menuAdapter.setNewInstance(menu);
     }
 
 
