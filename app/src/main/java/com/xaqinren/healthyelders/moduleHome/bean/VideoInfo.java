@@ -1,6 +1,13 @@
 package com.xaqinren.healthyelders.moduleHome.bean;
 
+import android.text.TextUtils;
+
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lee. on 2021/5/12.
@@ -28,17 +35,32 @@ public class VideoInfo {
     public String liveRoomId;//":
     public String liveRoomCode;//":
     public String musicId;//":
+    public String musicIcon;//":
     public String musicName;//":
 
-    public String getFavoriteCountEx(){
+    //"resourceType": "VIDEO",需要
+    public String content;
+    public List<String> topicList = new ArrayList<>();
+    public List<PublishAtBean> atList = new ArrayList<>();
+    public List<PublishFocusItemBean> publishFocusItemBeans = new ArrayList<>();
+
+
+    public String getMusicName() {
+        if (TextUtils.isEmpty(musicName)) {
+            return "视频原声";
+        }
+        return musicName;
+    }
+
+    public String getFavoriteCountEx() {
         return Num2TextUtil.sNum2Text2(favoriteCount);
     }
 
-    public String getCommentCountEx(){
+    public String getCommentCountEx() {
         return Num2TextUtil.sNum2Text2(commentCount);
     }
 
-    public String getShareCountEx(){
+    public String getShareCountEx() {
         return Num2TextUtil.sNum2Text2(shareCount);
     }
 

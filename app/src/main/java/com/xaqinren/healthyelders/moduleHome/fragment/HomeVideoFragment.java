@@ -1,15 +1,27 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -23,6 +35,9 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishSummaryBean;
+import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -49,7 +64,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         this.videoInfo = videoInfo;
         this.type = type;
         this.position = position;
-        videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
+        if (videoInfo.resourceType.equals("VIDEO")) {
+            videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
+        }
     }
 
     @Override
@@ -67,19 +84,50 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         super.initData();
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
-        //音乐播放器旋转动画
-        amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
+
+
         viewModel.videoInfo.setValue(videoInfo);
+        if (videoInfo.resourceType.equals("VIDEO")) {
+            binding.rlVideo.setVisibility(View.VISIBLE);
 
-        //TODO 判断是不是正在直播
-        //直播头像背景动画
-        AnimationDrawable animationDrawable = (AnimationDrawable) binding.avatarBg.getBackground();
-        animationDrawable.start();
-        //头像缩小动画
-        Animation animation = AnimUtils.getAnimation(getActivity(), R.anim.avatar_start_zb);
-        binding.rlAvatar.clearAnimation();
-        binding.rlAvatar.startAnimation(animation);
+            //内容
+            PublishDesBean publishDesBean = new PublishDesBean();
+            publishDesBean.content = videoInfo.content;
+            publishDesBean.publishFocusItemBeans = videoInfo.publishFocusItemBeans;
+            binding.descTextView.setColorBlock(getResources().getColor(R.color.white));
+            binding.descTextView.setColorNormal(getResources().getColor(R.color.white));
+            binding.descTextView.setColorTopic(getResources().getColor(R.color.white));
 
+            int[] textStyle = {
+                    Typeface.BOLD,
+                    Typeface.BOLD,
+                    Typeface.NORMAL};
+            binding.descTextView.setTextStyle(textStyle);
+            binding.descTextView.initDesStr(publishDesBean);
+
+            //音乐播放器旋转动画
+            amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
+
+            if (videoInfo.musicIcon != null) {
+                //音乐封面
+                Glide.with(getActivity()).load(videoInfo.musicIcon).into(binding.musicImageView);
+            }
+
+            //直播头像背景动画
+            AnimationDrawable animationDrawable = (AnimationDrawable) binding.avatarBg.getBackground();
+            animationDrawable.start();
+            //头像缩小动画
+            Animation animation = AnimUtils.getAnimation(getActivity(), R.anim.avatar_start_zb);
+            //直播头像
+            binding.rlAvatar.clearAnimation();
+            binding.rlAvatar.startAnimation(animation);
+
+        } else if (videoInfo.resourceType.equals("LIVE")) {
+            binding.rlAvatarAll.setVisibility(View.GONE);
+            binding.llNumInfo.setVisibility(View.GONE);
+            binding.rlMusic.setVisibility(View.GONE);
+            binding.llMusicName.setVisibility(View.GONE);
+        }
 
 
         initVideo();
@@ -257,12 +305,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private boolean isStart;//是否开始了
 
     private void showStartLayout() {
-        binding.mainLoadView.stop();
-        binding.mainLoadView.setVisibility(View.GONE);
-        binding.coverImageView.setVisibility(View.GONE);
-        if (amRotate != null) {
-            binding.musicImageView.clearAnimation();
-            binding.musicImageView.startAnimation(amRotate);
+        if (videoInfo.resourceType.equals("VIDEO")) {
+            binding.mainLoadView.stop();
+            binding.mainLoadView.setVisibility(View.GONE);
+            binding.coverImageView.setVisibility(View.GONE);
+            if (amRotate != null) {
+                binding.rlMusicImageView.clearAnimation();
+                binding.rlMusicImageView.startAnimation(amRotate);
+            }
         }
         isStart = true;
     }

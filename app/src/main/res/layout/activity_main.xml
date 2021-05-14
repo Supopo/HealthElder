@@ -24,8 +24,15 @@
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_49"
+            android:layout_height="@dimen/dp_50"
             android:layout_alignParentBottom="true" />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_above="@id/ll_menu"
+            android:background="@color/white" />
 
         <LinearLayout
             android:id="@+id/ll_menu"
