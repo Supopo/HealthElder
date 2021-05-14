@@ -2,8 +2,10 @@ package com.xaqinren.healthyelders.moduleHome.bean;
 
 import android.text.TextUtils;
 
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
 import java.util.ArrayList;
@@ -34,15 +36,28 @@ public class VideoInfo {
     public String externalId;//": "5285890818169432613"
     public String liveRoomId;//":
     public String liveRoomCode;//":
+    public String hasIntroduce;//":
     public String musicId;//":
     public String musicIcon;//":
     public String musicName;//":
 
+    public boolean hasFavorite;
+    public boolean hasAttention;
+    public boolean hasLive;
+
     //"resourceType": "VIDEO",需要
     public String content;
-    public List<String> topicList = new ArrayList<>();
-    public List<PublishAtBean> atList = new ArrayList<>();
-    public List<PublishFocusItemBean> publishFocusItemBeans = new ArrayList<>();
+    public List<String> topicList;
+    public List<PublishAtBean> atList;
+    public List<PublishFocusItemBean> publishFocusItemBeans;
+
+
+    public String getLiveRoomName() {
+        if (TextUtils.isEmpty(title)) {
+            return nickname + "的直播间";
+        }
+        return title;
+    }
 
     public int getVideoType() {
         if (resourceType.equals("LIVE")) {
@@ -55,20 +70,29 @@ public class VideoInfo {
 
     public String getMusicName() {
         if (TextUtils.isEmpty(musicName)) {
-            return "视频原声";
+            return "视频原声 - @" + nickname;
         }
         return musicName;
     }
 
     public String getFavoriteCountEx() {
+        if (favoriteCount == null) {
+            favoriteCount = "0";
+        }
         return Num2TextUtil.sNum2Text2(favoriteCount);
     }
 
     public String getCommentCountEx() {
+        if (commentCount == null) {
+            commentCount = "0";
+        }
         return Num2TextUtil.sNum2Text2(commentCount);
     }
 
     public String getShareCountEx() {
+        if (shareCount == null) {
+            shareCount = "0";
+        }
         return Num2TextUtil.sNum2Text2(shareCount);
     }
 

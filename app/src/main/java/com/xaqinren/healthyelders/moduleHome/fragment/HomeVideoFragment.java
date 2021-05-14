@@ -1,26 +1,16 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
@@ -36,14 +26,11 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.PublishSummaryBean;
-import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
 
-import cc.ibooker.ztextviewlib.AutoVerticalScrollTextViewUtil;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
@@ -85,10 +72,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
 
-
         viewModel.videoInfo.setValue(videoInfo);
+
+
+        //视频封面
+        if (videoInfo.coverUrl != null) {
+            Glide.with(getActivity()).load(videoInfo.coverUrl).into(binding.coverImageView);
+        }
         if (videoInfo.resourceType.equals("VIDEO")) {
 
+            //头像
+            if (videoInfo.avatarUrl != null) {
+                Glide.with(getActivity()).load(videoInfo.avatarUrl).into(binding.avatarImageView);
+            }
             //内容
             PublishDesBean publishDesBean = new PublishDesBean();
             publishDesBean.content = videoInfo.content;
@@ -112,14 +108,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 Glide.with(getActivity()).load(videoInfo.musicIcon).into(binding.musicImageView);
             }
 
-            //直播头像背景动画
-            AnimationDrawable animationDrawable = (AnimationDrawable) binding.avatarBg.getBackground();
-            animationDrawable.start();
-            //头像缩小动画
-            Animation animation = AnimUtils.getAnimation(getActivity(), R.anim.avatar_start_zb);
-            //直播头像
-            binding.rlAvatar.clearAnimation();
-            binding.rlAvatar.startAnimation(animation);
+            if (videoInfo.hasLive) {
+
+                //直播头像背景动画
+                AnimationDrawable animationDrawable = (AnimationDrawable) binding.avatarBg.getBackground();
+                animationDrawable.start();
+                //头像缩小动画
+                Animation animation = AnimUtils.getAnimation(getActivity(), R.anim.avatar_start_zb);
+                //直播头像
+                binding.rlAvatar.clearAnimation();
+                binding.rlAvatar.startAnimation(animation);
+            }
+
+        } else if (videoInfo.resourceType.equals("LIVE")) {
 
         }
 
@@ -216,6 +217,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void stopPlay(boolean clearLastFrame) {
+        binding.coverImageView.setVisibility(View.VISIBLE);
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
@@ -277,9 +279,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //有此回调说明是点播
             if (param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS) > 0) {
 
-                binding.progressBar.setVisibility(View.VISIBLE);
-                binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
-                binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
+                if (videoInfo.getVideoType() == 1) {
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
+                    binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
+                }
 
                 if (!isStart) {
                     showStartLayout();
@@ -301,12 +305,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (videoInfo.resourceType.equals("VIDEO")) {
             binding.mainLoadView.stop();
             binding.mainLoadView.setVisibility(View.GONE);
-            binding.coverImageView.setVisibility(View.GONE);
             if (amRotate != null) {
                 binding.rlMusicImageView.clearAnimation();
                 binding.rlMusicImageView.startAnimation(amRotate);
             }
         }
+        binding.coverImageView.setVisibility(View.GONE);
         isStart = true;
     }
 

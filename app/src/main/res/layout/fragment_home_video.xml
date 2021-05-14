@@ -18,15 +18,12 @@
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
-            style="@style/Layout.Main">
+            style="@style/Layout.Main" />
 
-            <ImageView
-                android:id="@+id/coverImageView"
-                style="@style/Layout.Main"
-                android:scaleType="center"
-                app:url="@{viewModel.videoInfo.coverUrl}" />
-        </com.tencent.rtmp.ui.TXCloudVideoView>
-
+        <ImageView
+            android:id="@+id/coverImageView"
+            style="@style/Layout.Main"
+            android:scaleType="fitXY" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -36,8 +33,8 @@
             <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
                 android:id="@+id/mainLoadView"
                 style="@style/Layout.Wrap"
-                android:layout_width="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                />
 
             <com.xaqinren.healthyelders.moduleHome.widget.LikeLayout
                 android:id="@+id/mainMyLikeLayout"
@@ -47,12 +44,12 @@
             <RelativeLayout
                 android:id="@+id/rlAvatarAll"
                 android:layout_width="@dimen/dp_62"
-                android:layout_height="@dimen/dp_68"
+                android:layout_height="@dimen/dp_66"
                 android:layout_above="@+id/llNumInfo"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/dp_25"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.INVISIBLE}">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/avatarBg"
@@ -60,7 +57,8 @@
                     android:layout_width="@dimen/dp_62"
                     android:layout_height="@dimen/dp_62"
                     android:background="@drawable/avatar_start_zb_anim"
-                    android:padding="@dimen/dp_1" />
+                    android:padding="@dimen/dp_1"
+                    android:visibility="@{viewModel.videoInfo.hasLive?View.VISIBLE:View.INVISIBLE}" />
 
                 <RelativeLayout
                     android:id="@+id/rlAvatar"
@@ -76,15 +74,16 @@
                         android:layout_height="@dimen/dp_50"
                         android:src="@color/white"
                         app:qmui_border_color="@color/transparent"
-                        app:qmui_is_circle="true"
-                        app:url="@{viewModel.videoInfo.avatarUrl}" />
+                        app:qmui_is_circle="true" />
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivZhiBoing"
                         style="@style/ImageView.Wrap"
                         android:layout_width="@dimen/dp_34"
                         android:layout_height="@dimen/dp_14"
                         android:layout_centerHorizontal="true"
-                        android:background="@mipmap/toux_zhib_bg" />
+                        android:background="@mipmap/toux_zhib_bg"
+                        android:visibility="@{viewModel.videoInfo.hasLive?View.VISIBLE:View.INVISIBLE}" />
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -108,7 +107,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.INVISIBLE}">
 
                 <ImageView
                     android:layout_width="@dimen/dp_34"
@@ -181,7 +180,7 @@
                 android:layout_above="@+id/infoRelativeLayout"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="@dimen/dp_67"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.INVISIBLE}">
 
                 <com.xaqinren.healthyelders.moduleHome.widget.MusicalNoteLayout
                     android:id="@+id/mainMusicalNoteLayout"
@@ -194,12 +193,12 @@
                     android:layout_height="@dimen/dp_48"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginRight="@dimen/dp_9"
                     android:background="@mipmap/yiny_changp_bg"
                     android:padding="@dimen/dp_8">
 
                     <com.qmuiteam.qmui.widget.QMUIRadiusImageView
                         android:id="@+id/musicImageView"
-                        style="@style/ImageView.Wrap"
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
                         android:layout_centerInParent="true"
@@ -212,12 +211,12 @@
                 android:id="@+id/llMusicName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/rlMusic"
                 android:layout_alignBottom="@+id/rlMusic"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:layout_toStartOf="@+id/rlMusic"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.INVISIBLE}">
 
                 <ImageView
                     android:layout_width="@dimen/dp_14"
@@ -225,11 +224,17 @@
                     android:layout_marginRight="@dimen/dp_7"
                     android:background="@mipmap/shipin_yiny" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.videoInfo.getMusicName()}"
+                    android:textColor="@color/white" />
+
                 <com.xaqinren.healthyelders.widget.MarqueeView
                     android:id="@+id/musicMarqueeTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.videoInfo.musicName}"
+                    android:visibility="gone"
                     app:scrollType="horizontal"
                     app:speedType="slow"
                     app:textColor="#fff" />
@@ -249,7 +254,23 @@
                 android:editable="false"
                 android:maxLines="3"
                 android:textColor="@color/textSub"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.INVISIBLE}" />
+
+            <TextView
+                android:id="@+id/liveTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/llMusicName"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_toStartOf="@+id/rlMusic"
+                android:maxLines="3"
+                android:text="@{viewModel.videoInfo.getLiveRoomName()}"
+                android:textColor="@color/textSub"
+                android:textSize="@dimen/sp_15"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}" />
 
             <TextView
                 android:id="@+id/tvZhiBoing"
@@ -262,7 +283,7 @@
                 android:gravity="center"
                 android:text="直播中"
                 android:textColor="@color/white"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.GONE}" />
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/authorTextView"
@@ -371,7 +392,7 @@
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/dp_15"
                 android:paddingRight="@dimen/dp_15"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}">
 
                 <View
                     android:layout_width="@dimen/dp_68"
