@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +58,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private UserInfoBean userInfoBean;
     private Disposable subscribe;
     private HomeFragment homeFragment;
+    private Drawable dawable2;
+    private Drawable dawable;
+    private boolean isTranMenu;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -125,13 +130,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;
+        selectView = binding.tvMenu1;
+
+        dawable = getResources().getDrawable(R.mipmap.line_bq);
+        dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
+        dawable2 = getResources().getDrawable(R.mipmap.line_bq_white);
+        dawable2.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
+
         homeFragment = (HomeFragment) mFragments.get(0);
         initEvent();
 
     }
 
     private void initEvent() {
-        binding.tvMenu1.setOnClickListener(lis -> {
+        binding.rlMenu1.setOnClickListener(lis -> {
             selectView = binding.tvMenu1;
 
             if (selectView.getId() == oldView.getId()) {
@@ -144,7 +156,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //发送停止播放消息
                 RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
                 //底部菜单变白色
-                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
+                binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
+                selectView.setCompoundDrawables(null, null, null, dawable);
+                selectView.setTextColor(getResources().getColor(R.color.color_252525));
+                isTranMenu = false;
+                //取消全屏
                 binding.line.setVisibility(View.VISIBLE);
             } else {
                 //发送继续播放消息
@@ -154,21 +170,21 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
             oldView = binding.tvMenu1;
         });
-        binding.tvMenu2.setOnClickListener(lis -> {
+        binding.rlMenu2.setOnClickListener(lis -> {
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu2;
             initBottomTab();
             oldView = binding.tvMenu2;
         });
-        binding.tvMenu3.setOnClickListener(lis -> {
+        binding.rlMenu3.setOnClickListener(lis -> {
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu3;
             initBottomTab();
             oldView = binding.tvMenu3;
         });
-        binding.tvMenu4.setOnClickListener(lis -> {
+        binding.rlMenu4.setOnClickListener(lis -> {
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu4;
@@ -240,7 +256,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
                     //底部菜单变透明，中心布局变全屏
-                    binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg2);
+                    binding.llMenu.setBackgroundColor(getResources().getColor(R.color.transparent));
+                    selectView.setCompoundDrawables(null, null, null, dawable2);
+                    selectView.setTextColor(getResources().getColor(R.color.white));
+                    isTranMenu = true;
+                    //变全屏
                     binding.line.setVisibility(View.GONE);
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
                 }
@@ -252,32 +272,35 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void initBottomTab() {
 
-        Drawable dawable = getResources().getDrawable(R.mipmap.line_bq);
-        dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
-
         oldView.setCompoundDrawables(null, null, null, null);
         oldView.setTextColor(getResources().getColor(R.color.color_9292));
         oldView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_16)));
 
-        selectView.setCompoundDrawables(null, null, null, dawable);
-        selectView.setTextColor(getResources().getColor(R.color.color_252525));
-        selectView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_18)));
+
+        if (selectView.getId() == R.id.tv_menu1 && isTranMenu) {
+            binding.llMenu.setBackgroundColor(getResources().getColor(R.color.transparent));
+            selectView.setCompoundDrawables(null, null, null, dawable2);
+            selectView.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
+            selectView.setCompoundDrawables(null, null, null, dawable);
+            selectView.setTextColor(getResources().getColor(R.color.color_252525));
+            selectView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_18)));
+        }
+
 
         switch (selectView.getId()) {
             case R.id.tv_menu1:
-                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg2);
+
                 commitAllowingStateLoss(0);
                 break;
             case R.id.tv_menu2:
-                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
                 commitAllowingStateLoss(1);
                 break;
             case R.id.tv_menu3:
-                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
                 commitAllowingStateLoss(2);
                 break;
             case R.id.tv_menu4:
-                binding.llMenu.setBackgroundResource(R.mipmap.bottom_bg1);
                 commitAllowingStateLoss(3);
                 break;
 
