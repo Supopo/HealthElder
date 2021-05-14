@@ -7,33 +7,33 @@
         android:id="@+id/one_one"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:src="@mipmap/icon_xsp_9"/>
+        android:src="@mipmap/icon_xsp_1_1"/>
     <ImageView
         android:id="@+id/three_four"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:src="@mipmap/icon_xsp_9"
+        android:src="@mipmap/icon_xsp_3_4"
         android:layout_toRightOf="@id/one_one"
         android:layout_marginLeft="@dimen/dp_20"/>
     <ImageView
         android:id="@+id/four_three"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:src="@mipmap/icon_xsp_9"
+        android:src="@mipmap/icon_xsp_4_3"
         android:layout_toRightOf="@id/three_four"
         android:layout_marginLeft="@dimen/dp_20"/>
     <ImageView
         android:id="@+id/six_nine"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:src="@mipmap/icon_xsp_9"
+        android:src="@mipmap/icon_xsp_16_9"
         android:layout_toRightOf="@id/four_three"
         android:layout_marginLeft="@dimen/dp_20"/>
     <ImageView
         android:id="@+id/nine_six"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:src="@mipmap/icon_xsp_9"
+        android:src="@mipmap/icon_xsp_9_16"
         android:layout_toRightOf="@id/six_nine"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_70"/>

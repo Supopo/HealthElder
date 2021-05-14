@@ -28,15 +28,7 @@
             android:textColor="@color/white"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_120"/>
-       <!-- <ImageView
-            android:id="@+id/recode_btn"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:src="@mipmap/icon_kuaip_ship"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>-->
+            android:layout_marginBottom="@dimen/dp_169"/>
 
         <com.xaqinren.healthyelders.widget.RecordButton
             android:id="@+id/recode_btn"
@@ -44,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_49"
             />
 
         <LinearLayout
@@ -87,7 +80,7 @@
                 <ImageView
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:src="@mipmap/icon_fanzhuan"/>
+                    android:src="@mipmap/icon_xsp_fanzhuan"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -110,7 +103,7 @@
                 <ImageView
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:src="@mipmap/icon_xsp_kms_on"/>
+                    android:src="@mipmap/icon_xsp_kms_off"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -183,7 +176,7 @@
                     android:id="@+id/scale_iv"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:src="@mipmap/icon_xsp_9"/>
+                    android:src="@mipmap/icon_xsp_16_9"/>
 
                 <TextView
                     android:id="@+id/scale_tv"
@@ -225,7 +218,7 @@
             android:id="@+id/record_speed_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_120"
+            android:layout_marginBottom="@dimen/dp_169"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:visibility="gone"/>
@@ -239,7 +232,7 @@
             android:gravity="center_horizontal"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/dp_19"
+            android:layout_marginBottom="@dimen/dp_68"
             android:layout_marginRight="@dimen/dp_30">
             <com.xaqinren.healthyelders.widget.CircleImageView
                 android:layout_width="@dimen/dp_40"
@@ -258,5 +251,11 @@
                 android:textColor="@color/white"
                 android:text="相册"/>
         </LinearLayout>
+        <!-- 用于拍照以后生成的图片界面显示-->
+        <include layout="@layout/layout_photo_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/photo_preview"/>
+
     </RelativeLayout>
 </layout>

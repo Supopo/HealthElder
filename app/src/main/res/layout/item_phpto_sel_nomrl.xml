@@ -16,7 +16,7 @@
             android:layout_width="@dimen/dp_94"
             android:layout_height="@dimen/dp_94"
             android:src="@color/gray_999"
-            android:scaleType="centerCrop"/>
+            />
 
         <ImageView
             android:id="@+id/item_close"

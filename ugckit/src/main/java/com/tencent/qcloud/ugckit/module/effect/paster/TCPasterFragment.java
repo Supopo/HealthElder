@@ -112,6 +112,8 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
         super.onCreate(savedInstanceState);
 
         PlayerManagerKit.getInstance().addOnPlayStateLitener(this);
+
+
     }
 
     @Nullable
@@ -153,7 +155,9 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
         if (timeLineView != null) {
             mVideoProgressController = timeLineView.getVideoProgressController();
         }
-
+        if (mFloatLayerViewGroup != null) {
+            mFloatLayerViewGroup.clear();
+        }
         recoverFromManager();
     }
 
@@ -347,6 +351,7 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
 
     @NonNull
     private List<TCPasterInfo> getPasterInfoList(int pasterType, String fileFolder, String fileName) {
+
         List<TCPasterInfo> pasterInfoList = new ArrayList<TCPasterInfo>();
 
         if (TextUtils.isEmpty(fileFolder)) {
@@ -374,7 +379,7 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        Log.e(TAG, "getPasterInfoList -> " + pasterInfoList.size());
         return pasterInfoList;
     }
 
@@ -536,14 +541,17 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
         }
         PasterView view = (PasterView) mFloatLayerViewGroup.getSelectedLayerOperationView();
         if (view != null) {
+            Log.e(TAG, "mFloatLayerViewGroup.remove ->" + mFloatLayerViewGroup.getChildCount());
             mFloatLayerViewGroup.removeOperationView(view);
+            Log.e(TAG, "mFloatLayerViewGroup.remove ->" + mFloatLayerViewGroup.getChildCount());
         }
+        Log.e(TAG, "mFloatLayerViewGroup.size ->" + mFloatLayerViewGroup.getChildCount());
         mVideoProgressController.removeRangeSliderView(ViewConst.VIEW_TYPE_PASTER, index);
 
         if (mAddPasterInfoList.size() > 0) {
             mAddPasterInfoList.remove(index);
         }
-
+        Log.e(TAG, "mAddPasterInfoList.size ->" + mAddPasterInfoList.size());
         mAddPasterAdapter.notifyDataSetChanged();
 
         mCurrentSelectedPos = -1;
@@ -676,6 +684,7 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
 
             manager.add(info);
         }
+        Log.e(TAG, "mFloatLayerViewGroup.size ->" + mFloatLayerViewGroup.getChildCount() + "\tmanager.size -> "+ manager.getSize());
     }
 
     /**
@@ -683,7 +692,10 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
      */
     private void recoverFromManager() {
         TCPasterViewInfoManager manager = TCPasterViewInfoManager.getInstance();
-        TXCLog.i(TAG, "recoverFromManager, manager.size = " + manager.getSize());
+        if (mFloatLayerViewGroup != null) {
+            Log.e(TAG, "mFloatLayerViewGroup.viewCount " + mFloatLayerViewGroup.getChildCount());
+
+        }
         for (int i = 0; i < manager.getSize(); i++) {
             TCPasterViewInfo info = manager.get(i);
             Bitmap pasterBitmap = BitmapFactory.decodeFile(info.getPasterPath());

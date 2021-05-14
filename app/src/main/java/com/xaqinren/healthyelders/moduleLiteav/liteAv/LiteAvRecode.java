@@ -50,8 +50,8 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
     private boolean cameraSwitch = true;        //是否前置摄像头UI判断
     private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
-    private int minRecordTime = 100;
-    private int maxRecordTime = 10 * 1000;
+    private int minRecordTime = 90;
+    private int maxRecordTime = 60 * 1000;
     private int currentAsp = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;  //屏幕比
 
     private final int STATUS_IDLE = 0;
@@ -64,6 +64,13 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
     private RecodeLiteListener recodeLiteListener;
     private SoftReference<Context> context ;
 
+    public int getMaxRecordTime() {
+        return maxRecordTime;
+    }
+
+    public int getMinRecordTime() {
+        return minRecordTime;
+    }
 
     public void init(Context context) {
         this.context = new SoftReference<>(context);
@@ -345,7 +352,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             VideoRecordSDK.getInstance().getRecorder().resumeBGM();
             VideoRecordSDK.getInstance().resumeRecord();
             LogUtils.e("LiteAVRecode","已恢复录制");
-            recodeLiteListener.onRecodeSuccess();
+            recodeLiteListener.onRecodeSuccess(true);
             currentStatus = STATUS_RECODE;
         } else if (currentStatus == STATUS_RECODE) {
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
@@ -373,8 +380,9 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
                 // 录制完成回调
             }
             currentStatus = STATUS_IDLE;
+            recodeLiteListener.onRecodeSuccess(false);
         }else{
-            recodeLiteListener.onRecodeSuccess();
+            recodeLiteListener.onRecodeSuccess(true);
             currentStatus = STATUS_RECODE;
         }
     }
@@ -435,6 +443,6 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         void onMusicReplace(int position);
         void onRecodeProgress(String time,long timeInt);
         void onRecodeComplete();
-        void onRecodeSuccess();
+        void onRecodeSuccess(boolean isSuccess);
     }
 }

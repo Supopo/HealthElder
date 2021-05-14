@@ -3,8 +3,10 @@ package com.xaqinren.healthyelders.moduleLiteav.fragment;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ModuleInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,14 +28,19 @@ import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
+import com.tencent.qcloud.tim.uikit.utils.FileUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
+import com.tencent.qcloud.ugckit.module.record.PhotoSoundPlayer;
+import com.tencent.qcloud.ugckit.module.record.RecordModeView;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicPannel;
 import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IRecordMusicPannel;
+import com.tencent.qcloud.ugckit.utils.BitmapUtils;
+import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.tencent.qcloud.xiaoshipin.videochoose.TCPicturePickerActivity;
 import com.tencent.ugc.TXRecordCommon;
 import com.xaqinren.healthyelders.BR;
@@ -42,6 +49,9 @@ import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.modulePicture.Constant;
+import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
@@ -66,12 +76,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private RecordMusicPannel musicPannel;         //滤镜控制器
     private PopupWindow scalePop;               //屏幕比例弹窗
     private boolean isRecord = false;
-    public int maxRecordTime = 20 * 1000;
-    public int minRecordTime = 5 * 1000;
+
     private StartLiveUiViewModel liveUiViewModel;
     private LiteAvRecode liteAvRecode;
     private OnFragmentStatusListener onFragmentStatusListener;
     private int REQUEST_PERMISSION = 100;
+    private String photoPath;
+    private int currentMode = RecordButton.VIDEO_MODE;
 
     public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
         this.onFragmentStatusListener = onFragmentStatusListener;
@@ -84,6 +95,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         return R.layout.fragment_start_lite_av;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
 
     @Override
     public int initVariableId() {
@@ -98,11 +114,17 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             @Override
             public void onChanged(Integer integer) {
                 LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
-                if (integer.intValue() == 0) {
+                if (integer.intValue() == 0 ) {
                     //释放
                     VideoRecordSDK.getInstance().getRecorder().stopBGM();
                     VideoRecordSDK.getInstance().stopCameraPreview();
-                }else{
+                }  else {
+                    if (integer.intValue() == 2) {
+                        //变为拍照模式
+                        changePhotoMode();
+                    }else{
+                        changeVideoMode();
+                    }
                     //重新加载
                     VideoRecordSDK.getInstance().getRecorder().resumeBGM();
                     VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
@@ -112,9 +134,30 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     }
 
+    private void changePhotoMode() {
+        binding.selMusic.setVisibility(View.GONE);
+        binding.speedLayout.setVisibility(View.GONE);
+        binding.recodeBtn.setMode(RecordButton.PHOTO_MODE);
+    }
+
+    private void changeVideoMode() {
+        binding.selMusic.setVisibility(View.VISIBLE);
+        binding.speedLayout.setVisibility(View.VISIBLE);
+        binding.recodeBtn.setMode(RecordButton.VIDEO_MODE);
+    }
+
+
+
     @Override
     public void initData() {
         super.initData();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            currentMode = bundle.getInt(com.xaqinren.healthyelders.modulePicture.constant.Constant.RECODE_MODE);
+        }
+        if (currentMode == RecordButton.PHOTO_MODE) {
+            changePhotoMode();
+        }
         liveUiViewModel = ViewModelProviders.of(getActivity()).get(StartLiveUiViewModel.class);
         initCameraRecode();
         initView();
@@ -173,11 +216,38 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 //手指松开,录制完成
                 pauseRecode();
             }
+
+            @Override
+            public void onPhotoSuccess() {
+                //调用SDK拍照
+                PhotoSoundPlayer.playPhotoSound();
+                VideoRecordSDK.getInstance().takePhoto(bitmap -> {
+                    photoPath = FileUtil.saveBitmap(null, bitmap);
+                    binding.photoPreview.rlContainer.setVisibility(View.VISIBLE);
+                    binding.photoPreview.photoPreviewIv.setImageBitmap(bitmap);
+                    //隐藏activity 底部bar
+                    if (onFragmentStatusListener!=null)
+                        onFragmentStatusListener.isRecode(true);
+                });
+            }
         });
-        binding.recodeBtn.setRecodeMaxTime(liteAvRecode.getRecodeConfig().mMaxDuration);
+        binding.recodeBtn.setRecodeMaxTime(liteAvRecode.getMaxRecordTime());
         binding.recodeBtn.setRecodeProgressBarWidth((int) getResources().getDimension(R.dimen.dp_6));
         binding.recordSpeedLayout.setOnRecordSpeedListener(speed -> liteAvRecode.setRecodeSpeed(speed));
-
+        binding.photoPreview.cancel.setOnClickListener(view -> {
+            photoPath = "";
+            binding.photoPreview.rlContainer.setVisibility(View.GONE);
+            if (onFragmentStatusListener!=null)
+                onFragmentStatusListener.isRecode(false);
+        });
+        binding.photoPreview.save.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), PublishTextPhotoActivity.class);
+            intent.putExtra(Constant.PHOTO_PATH, photoPath);
+            startActivity(intent);
+            if (onFragmentStatusListener!=null)
+                onFragmentStatusListener.isRecode(false);
+            binding.photoPreview.rlContainer.setVisibility(View.GONE);
+        });
     }
 
     /**
@@ -222,18 +292,28 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             switch (view.getId()) {
                 case R.id.one_one:
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_1_1;
+                    binding.scaleIv.setImageResource(R.mipmap.icon_xsp_1_1);
+                    binding.scaleTv.setText("1:1");
                     break;
                 case R.id.three_four:
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_3_4;
+                    binding.scaleIv.setImageResource(R.mipmap.icon_xsp_3_4);
+                    binding.scaleTv.setText("3:4");
                     break;
                 case R.id.four_three:
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_4_3;
+                    binding.scaleIv.setImageResource(R.mipmap.icon_xsp_4_3);
+                    binding.scaleTv.setText("4:3");
                     break;
                 case R.id.six_nine:
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_16_9;
+                    binding.scaleIv.setImageResource(R.mipmap.icon_xsp_16_9);
+                    binding.scaleTv.setText("16:9");
                     break;
                 case R.id.nine_six:
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;
+                    binding.scaleIv.setImageResource(R.mipmap.icon_xsp_9_16);
+                    binding.scaleTv.setText("9:16");
                     break;
             }
             liteAvRecode.setCurrentAsp(mAspectRatio);
@@ -427,7 +507,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     @Override
-    public void onRecodeSuccess() {
+    public void onRecodeSuccess(boolean success) {
+//        binding.recodeBtn.recodeComplete();
+        if (!success){
+            //录制开启失败
+            dismissDialog();
+            return;
+        }
         //开始录制成功
         showRecodePanel();
         if (onFragmentStatusListener!=null)
@@ -443,6 +529,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         onFragmentStatusListener.isRecode(false);
         binding.recodeTime.setText(null);
         binding.recodeBtn.setRecodeProgress(0);
+        binding.recodeBtn.recodeComplete();
         startEditActivity();
     }
 

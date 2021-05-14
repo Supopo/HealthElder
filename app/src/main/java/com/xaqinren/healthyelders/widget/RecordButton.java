@@ -22,11 +22,27 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     private View translucenceView;
     private View whiteView;
     private View recodeView;
+    private View photoView;
     private ArcView arcView;
     private int tranColor;
+    private boolean isClickRecode;
+    private int starts_idle = 0;
+    private int starts_recode = 1;
+    private int starts_complete = 2;
+    private int currentStats = starts_idle;
+    private boolean isParentRecodeComplete = false;
+    public static final int PHOTO_MODE = 2;
+    public static final int VIDEO_MODE = 1;
+    private int mode = VIDEO_MODE;
 
     private OnRecordButtonListener onRecordButtonListener;
 
+    public void setMode(int mode) {
+        if (mode != this.mode) {
+            this.mode = mode;
+            changeMode();
+        }
+    }
 
     public void setOnRecordButtonListener(OnRecordButtonListener onRecordButtonListener) {
         this.onRecordButtonListener = onRecordButtonListener;
@@ -54,24 +70,56 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         translucenceView = findViewById(R.id.translucence_view);
         whiteView = findViewById(R.id.white_view);
         recodeView = findViewById(R.id.recode_view);
+        photoView = findViewById(R.id.photo_view);
         arcView = findViewById(R.id.cir_view);
         tranColor = Color.parseColor("#a5ffffff");
         translucenceView.setBackground(createCircleGradientDrawable(tranColor));
         whiteView.setBackground(createCircleGradientDrawable(getResources().getColor(R.color.white)));
         translucenceView.setBackground(createCircleGradientDrawable(tranColor));
     }
-
+    private void changeMode() {
+        if (mode == VIDEO_MODE) {
+            startVideoMode();
+        } else if (mode == PHOTO_MODE) {
+            startPhotoMode();
+        }
+    }
+    long downTime;
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         int action = motionEvent.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                startRecodeAnim();
+                if (downTime != 0 && (System.currentTimeMillis() - downTime) < 100) {
+                    //判断是快速双击,不处理任何
+                    return true;
+                }
+                downTime = System.currentTimeMillis();
+                if (mode == VIDEO_MODE) {
+                    if (isClickRecode) {
+                        //点击播放中,再次点击则认为播放完成
+                        endRecodeAnim();
+                    }else
+                        startRecodeAnim();
+                }else if (mode == PHOTO_MODE){
+                    //拍照模式
 
+                }
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                endRecodeAnim();
+                if (mode == VIDEO_MODE) {
+                    if (System.currentTimeMillis() - downTime   < 100) {
+                        //认为是点击播放
+                        isClickRecode = true;
+                    }
+                    if (!isClickRecode) {
+                        endRecodeAnim();
+                    }
+                } else if (mode == PHOTO_MODE) {
+                    //拍照完成,执行拍照完成动画
+                    photoEndAnim();
+                }
                 break;
             }
         }
@@ -93,6 +141,72 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         normalDrawable.setColor(color);
         normalDrawable.setUseLevel(false);
         return normalDrawable;
+    }
+    /**
+     * 执行录制->拍照模式
+     */
+    private void startPhotoMode() {
+        ObjectAnimator videoHide = ObjectAnimator.ofFloat(recodeView, "alpha", 1f, 0f);
+        ObjectAnimator photoShow = ObjectAnimator.ofFloat(photoView, "alpha", 0f, 1f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(120);
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.play(videoHide).with(photoShow);
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                photoView.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                recodeView.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        animatorSet.start();
+    }
+    /**
+     * 执行拍照->录制模式
+     */
+    private void startVideoMode() {
+        ObjectAnimator videoShow = ObjectAnimator.ofFloat(recodeView, "alpha", 0f, 1f);
+        ObjectAnimator photohide = ObjectAnimator.ofFloat(photoView, "alpha", 1f, 0f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(120);
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.play(videoShow).with(photohide);
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                recodeView.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                photoView.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        animatorSet.start();
     }
 
     /**
@@ -118,10 +232,12 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             @Override
             public void onAnimationStart(Animator animation) {
 //                whiteView.setVisibility(VISIBLE);
+                isParentRecodeComplete = false;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                currentStats = starts_recode;
                 onRecordButtonListener.onRecordStart();
                 arcView.setVisibility(View.VISIBLE);
                 arcView.show();
@@ -141,6 +257,41 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         animatorSet.start();
     }
 
+    /**
+     * 拍照缩放动画
+     */
+    private void photoEndAnim() {
+        ObjectAnimator btnBkgZoomOutXAn = ObjectAnimator.ofFloat(photoView, "scaleX", 1f, 1.2f, 1.0f);
+        ObjectAnimator btnBkgZoomOutYAn = ObjectAnimator.ofFloat(photoView, "scaleY", 1f, 1.2f, 1.0f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(120);
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.play(btnBkgZoomOutXAn).with(btnBkgZoomOutYAn);
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (onRecordButtonListener != null) {
+                    onRecordButtonListener.onPhotoSuccess();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        animatorSet.start();
+    }
 
     private void endRecodeAnim() {
         ObjectAnimator btnBkgZoomOutXAn = ObjectAnimator.ofFloat(translucenceView, "scaleX", 0.5f);
@@ -162,10 +313,15 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             @Override
             public void onAnimationStart(Animator animation) {
 //                whiteView.setVisibility(GONE);
+                currentStats = starts_complete;
+                downTime = 0;
+                isClickRecode = false;
             }
             @Override
             public void onAnimationEnd(Animator animation) {
-                onRecordButtonListener.onRecordPause();
+                if (!isParentRecodeComplete)
+                    onRecordButtonListener.onRecordPause();
+                currentStats = starts_idle;
                 arcView.hide();
             }
 
@@ -184,6 +340,16 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         whiteView.setVisibility(GONE);
     }
 
+    /**
+     * 上层发送录制完成事件
+     */
+    public void recodeComplete() {
+        if (currentStats == starts_recode) {
+            isParentRecodeComplete = true;
+            endRecodeAnim();
+        }
+    }
+
     public interface OnRecordButtonListener{
         /**
          * 多段录制点击开始
@@ -194,5 +360,10 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
          * 多段录制点击暂停
          */
         void onRecordPause();
+
+        /**
+         * 手指抬起拍照完成
+         */
+        void onPhotoSuccess();
     }
 }

@@ -14,10 +14,42 @@
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/ll_menu" />
+            />
 
-
-        <RelativeLayout
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/ll_menu"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_49"
+            android:background="@color/color_80000000"
+            app:tabGravity="center"
+            app:tabTextColor="@color/color_FFF9F9F9"
+            app:tabSelectedTextColor="@color/white"
+            app:tabIndicator="@drawable/bg_white_line"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="@dimen/dp_4"
+            android:layout_alignParentBottom="true"
+            app:tabRippleColor = "@android:color/transparent"
+            >
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:selectableItemBackground="@null"
+                android:selectableItemBackgroundBorderless="@null"
+                android:text="开直播"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:selectableItemBackground="@null"
+                android:selectableItemBackgroundBorderless="@null"
+                android:text="拍视频"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:selectableItemBackground="@null"
+                android:selectableItemBackgroundBorderless="@null"
+                android:text="拍照"/>
+        </com.google.android.material.tabs.TabLayout>
+        <!--<RelativeLayout
             android:id="@+id/ll_menu"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_49"
@@ -62,6 +94,6 @@
                 android:textColor="@color/color_FF9C9C9C"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
-        </RelativeLayout>
+        </RelativeLayout>-->
     </RelativeLayout>
 </layout>

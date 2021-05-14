@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
@@ -27,8 +28,11 @@ public class PictureAdapter extends BaseMultiItemQuickAdapter<LocalPhotoBean,Bas
     protected void convert(@NotNull BaseViewHolder baseViewHolder, LocalPhotoBean localPhotoBean) {
         if (localPhotoBean.getItemType() == 0) {
             ItemPhptoSelNomrlBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
-            Glide.with(binding.itemIv).load(localPhotoBean.getPath())
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners((int) getContext().getResources().getDimension(R.dimen.dp_4))))
+            Glide.with(binding.itemIv)
+                    .load(localPhotoBean.getPath())
+                    .apply(new RequestOptions()
+                            .transforms(new CenterCrop(), new RoundedCorners((int) getContext().getResources().getDimension(R.dimen.dp_4))
+                            ))
                     .into(binding.itemIv);
         }
     }

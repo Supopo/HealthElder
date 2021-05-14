@@ -103,6 +103,12 @@ public class FloatLayerViewGroup extends FrameLayout implements View.OnClickList
         mEnableChildDoubleClick = enable;
     }
 
+    public void clear() {
+        mLastSelectedPos = -1;
+        mFloatLayerViewList.clear();
+        removeAllViews();
+    }
+
     @Override
     public void onClick(View v) {
         mLastTime = mCurTime;

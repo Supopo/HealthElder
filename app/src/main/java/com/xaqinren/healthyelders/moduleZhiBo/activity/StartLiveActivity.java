@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 
+import com.google.android.material.tabs.TabLayout;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -66,7 +67,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         super.onCreate(savedInstanceState);
         // 必须在代码中设置主题(setTheme)或者在AndroidManifest中设置主题(android:theme)
         setTheme(com.hjyy.liteav.R.style.RecordActivityTheme);
-
     }
 
     @Override
@@ -83,33 +83,43 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         mFragments = new ArrayList<>();
         mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
-        //默认选中第一个
         commitAllowingStateLoss(0);
-        oldView = binding.tvMenu1;
+        liveUiViewModel.getCurrentPage().setValue(0);
+        //默认选中第一个
+        binding.llMenu.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int po = tab.getPosition();
+                /*if (po == 2) {
+                    PictureSelector.create(StartLiveActivity.this)
+                            .openCamera(PictureMimeType.ofImage())
+                            .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
+                            .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                    return;
+                }*/
+                if (po == 2) {
+                    po = 1;
+                    commitAllowingStateLoss(po);
+                    liveUiViewModel.getCurrentPage().setValue(2);
+                }else{
+                    commitAllowingStateLoss(po);
+                    liveUiViewModel.getCurrentPage().setValue(po);
+                }
 
-        initEvent();
+                currentFragmentPosition = po;
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
-
-    private void initEvent() {
-        binding.tvMenu1.setOnClickListener(lis -> {
-            selectView = binding.tvMenu1;
-            initBottomTab();
-            oldView = binding.tvMenu1;
-        });
-        binding.tvMenu2.setOnClickListener(lis -> {
-            selectView = binding.tvMenu2;
-            initBottomTab();
-            oldView = binding.tvMenu2;
-        });
-        binding.tvMenu3.setOnClickListener(lis -> {
-            //拍照
-            PictureSelector.create(this)
-                    .openCamera(PictureMimeType.ofImage())
-                    .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
-                    .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-        });
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -128,42 +138,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         }
     }
 
-    private void initBottomTab() {
-
-        Drawable dawable = getResources().getDrawable(R.mipmap.line_white);
-        dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
-
-        oldView.setCompoundDrawables(null, null, null, null);
-        oldView.setTextColor(getResources().getColor(R.color.color_FF9C9C9C));
-
-        selectView.setCompoundDrawables(null, null, null, dawable);
-        selectView.setTextColor(getResources().getColor(R.color.white));
-
-        switch (selectView.getId()) {
-            case R.id.tv_menu1:
-                commitAllowingStateLoss(0);
-                currentFragmentPosition = 0;
-                break;
-            case R.id.tv_menu2:
-                commitAllowingStateLoss(1);
-                currentFragmentPosition = 1;
-                break;
-            case R.id.tv_menu3:
-                commitAllowingStateLoss(2);
-                currentFragmentPosition = 2;
-                break;
-        }
-
-    }
-
-    private boolean canChangePage() {
-        if (isLiteAVRecode) {
-            startLiteAVFragment.onFragmentChange();
-            return false;
-        }
-        return true;
-    }
-
     private void commitAllowingStateLoss(int position) {
         hideAllFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -175,7 +149,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             transaction.add(R.id.frameLayout, currentFragment, position + "");
         }
         transaction.commitAllowingStateLoss();
-        liveUiViewModel.getCurrentPage().setValue(position);
     }
 
     //隐藏所有Fragment

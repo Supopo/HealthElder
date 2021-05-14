@@ -316,7 +316,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     }
 
     /**
-     * 向上层发送输入#事件或移动到#XXX范围内
+     * 向围上层发送输入#事件或移动到#XXX范内
      */
     private void sendBackTopic(Editable editable) {
         char last = editable.charAt(editable.length() - 1);
@@ -642,7 +642,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             bean.start = editBean.getStartPoint();
             bean.end = editBean.getEndPoint();
             bean.type = editBean.getTextType();
-            bean.uId = editBean.getId();
+            bean.uid = editBean.getId();
             focusItemBeans.add(bean);
         }
         publishDesBean.publishFocusItemBeans = focusItemBeans;
@@ -662,7 +662,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 editBean.setStrLength(e - s);
                 editBean.setTextType(t);
                 editBean.setContent(content.substring(s, e));
-                editBean.setId(bean.uId);
+                editBean.setId(bean.uid);
                 videoAtEditBeans.add(editBean);
             }
         }

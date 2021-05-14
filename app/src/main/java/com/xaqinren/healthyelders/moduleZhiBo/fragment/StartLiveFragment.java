@@ -416,6 +416,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         spannableString.setSpan(new NoLineColorSpan() {
             @Override
             public void onClick(@NonNull View widget) {
+
             }
         }, text1.length(), (text1 + text2).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

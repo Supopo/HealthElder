@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item android:width="@dimen/dp_20" android:height="@dimen/dp_4" android:drawable="@mipmap/line_white"
+                android:gravity="center"/>
+        </layer-list>
+    </item>
+</selector>

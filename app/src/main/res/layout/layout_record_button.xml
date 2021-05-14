@@ -33,4 +33,12 @@
         android:layout_height="@dimen/dp_80"
         android:src="@mipmap/icon_kuaip_ship"
         android:layout_centerInParent="true"/>
+
+    <ImageView
+        android:id="@+id/photo_view"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
+        android:src="@mipmap/icon_xsp_luz"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -222,7 +222,6 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
     @Override
     public void initPlayer() {
         getVideoPlayLayout().initPlayerLayout();
-
         VideoEditerSDK.getInstance().resetDuration();
     }
 

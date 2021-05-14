@@ -105,6 +105,16 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private int REQUEST_GALLERY = 189;
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent!=null) {
+            String path = intent.getStringExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
+            removeLast();
+            addLast(path);
+        }
+    }
+
+    @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_publish_text_photo;
     }
@@ -260,11 +270,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0) {
-                    //拍照,使用自定义拍照界面
-                    PictureSelector.create(PublishTextPhotoActivity.this)
-                            .openCamera(PictureMimeType.ofImage())
-                            .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
-                            .forResult(REQUEST_CAMERA);//结果回调onActivityResult code
+                    Intent intent = new Intent(PublishTextPhotoActivity.this, TackPictureActivity.class);
+                    startActivityForResult(intent, REQUEST_CAMERA);
                 }else{
                     List<LocalMedia> localMedia = new ArrayList<>();
                     for (LocalPhotoBean localPhotoBean : localPhotoBeans) {
@@ -515,19 +522,22 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 meagerPhoto(result);
             }
             else if (requestCode == REQUEST_CAMERA) {
-                if (localPhotoBeans.get(localPhotoBeans.size() - 1).type == 1) {
-                    localPhotoBeans.remove(localPhotoBeans.get(localPhotoBeans.size() - 1));
-                }
+                removeLast();
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 String path = result.get(0).getPath();
-                addPhoto(path);
-                pictureAdapter.setList(localPhotoBeans);
+                addLast(path);
             }
         }
     }
-
-
-
+    private void removeLast() {
+        if (localPhotoBeans.get(localPhotoBeans.size() - 1).type == 1) {
+            localPhotoBeans.remove(localPhotoBeans.get(localPhotoBeans.size() - 1));
+        }
+    }
+    private void addLast(String path) {
+        addPhoto(path);
+        pictureAdapter.setList(localPhotoBeans);
+    }
     /**
      * 判断当前location地址有相同的地址
      * @param bean

@@ -12,16 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000">
-
         <com.tencent.qcloud.ugckit.UGCKitVideoEdit
             android:id="@+id/video_edit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
             />
         <RelativeLayout
+            android:id="@+id/icon_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="visible">
             <ImageView
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
@@ -211,6 +211,97 @@
                 android:textSize="@dimen/sp_16"
                 android:text="下一步"
                 />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/effect_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <com.tencent.qcloud.ugckit.component.floatlayer.FloatLayerViewGroup
+                android:id="@+id/paster_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <com.tencent.qcloud.ugckit.component.floatlayer.FloatLayerViewGroup
+                android:id="@+id/bubble_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/video_bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <com.tencent.qcloud.ugckit.module.effect.PlayControlLayout
+                    android:id="@+id/play_control_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_60"
+                    android:background="@color/ugckit_editer_bottom"
+                    android:orientation="horizontal" />
+
+                <com.tencent.qcloud.ugckit.module.effect.TimeLineView
+                    android:id="@+id/timeline_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_60"
+                    android:layout_below="@+id/play_control_layout"
+                    android:background="@color/ugckit_editer_bottom" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/fragment_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:layout_alignParentBottom="true"
+                />
+
+            <com.tencent.qcloud.ugckit.module.effect.paster.view.PasterPannel
+                android:id="@+id/paster_select_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone" />
+
+            <com.tencent.qcloud.ugckit.module.effect.bubble.BubbleSubtitlePannel
+                android:id="@+id/bubble_setting_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16">
+
+                <TextView
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_14"
+                    android:text="取消"
+                    android:textColor="@color/white"
+                    android:layout_centerVertical="true"
+                    />
+                <TextView
+                    android:id="@+id/save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_14"
+                    android:text="使用"
+                    android:textColor="@color/white"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+            </RelativeLayout>
         </RelativeLayout>
     </FrameLayout>
 </layout>

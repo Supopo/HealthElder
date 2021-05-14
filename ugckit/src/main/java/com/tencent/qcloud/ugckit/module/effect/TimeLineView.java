@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import androidx.fragment.app.FragmentActivity;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -71,6 +72,7 @@ public class TimeLineView extends RelativeLayout implements ITimeLineView, Video
         int screenWidth = point.x;
 
         List<Bitmap> thumbnailList = VideoEditerSDK.getInstance().getAllThumbnails();
+        Log.w(TAG, "thumbnailList ->  " + thumbnailList.size());
         mVideoProgressView.setViewWidth(screenWidth);
         mVideoProgressView.setThumbnailData(thumbnailList);
 
@@ -104,7 +106,8 @@ public class TimeLineView extends RelativeLayout implements ITimeLineView, Video
     public void onPreviewProgress(int timeMs) {
         int currentState = PlayerManagerKit.getInstance().getCurrentState();
         if (currentState == PlayState.STATE_PLAY || currentState == PlayState.STATE_RESUME) {
-            mVideoProgressController.setCurrentTimeMs(timeMs);
+            if (mVideoProgressController!=null)
+                mVideoProgressController.setCurrentTimeMs(timeMs);
         }
     }
 
