@@ -19,6 +19,9 @@ public class HomeVideoModel extends BaseViewModel {
     }
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
+    public MutableLiveData<VideoInfo> videoInfo = new MutableLiveData<>();
+
+
 
     public void getVideoData(int page, int pageSize) {
         LiveRepository.getInstance().getHomeVideoList(page, pageSize, datas);

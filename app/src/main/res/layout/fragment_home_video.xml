@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,6 +18,12 @@
             android:id="@+id/mainVideoView"
             style="@style/Layout.Main" />
 
+        <ImageView
+            android:id="@+id/coverImageView"
+            style="@style/Layout.Main"
+            android:scaleType="center"
+            app:url="@{viewModel.videoInfo.coverUrl}" />
+
         <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
             android:id="@+id/mainLoadView"
             style="@style/Layout.Wrap"
@@ -26,66 +33,115 @@
         <com.xaqinren.healthyelders.moduleHome.widget.LikeLayout
             android:id="@+id/mainMyLikeLayout"
             style="@style/Layout.Main"
-            android:layout_above="@+id/avatarImageView" />
+            android:layout_above="@+id/rlAvatarAll" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/avatarImageView"
-            style="@style/ImageView.Wrap"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:layout_above="@+id/likeTextView"
+        <RelativeLayout
+            android:id="@+id/rlAvatarAll"
+            android:layout_width="@dimen/dp_62"
+            android:layout_height="@dimen/dp_68"
+            android:layout_above="@+id/llNumInfo"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="6dp"
-            android:layout_marginBottom="@dimen/dp_32"
-            android:background="@drawable/border_home_avatar"
-            android:padding="@dimen/dp_1" />
+            android:layout_marginRight="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_20">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/addImageView"
-            style="@style/ImageView.Wrap"
-            android:layout_width="24dp"
-            android:layout_alignStart="@+id/avatarImageView"
-            android:layout_alignEnd="@+id/avatarImageView"
-            android:layout_alignBottom="@+id/avatarImageView"
-            android:layout_marginBottom="-8dp"
-            android:scaleType="center"
-            android:src="@mipmap/ic_home_add" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/avatarBg"
+                style="@style/ImageView.Wrap"
+                android:layout_width="@dimen/dp_62"
+                android:layout_height="@dimen/dp_62"
+                android:background="@drawable/avatar_start_zb_anim"
+                android:padding="@dimen/dp_1" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/likeTextView"
-            style="@style/TextView.Normal"
-            android:layout_above="@+id/commentTextView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:drawableTop="@mipmap/ic_home_like"
-            android:gravity="center"
-            android:textColor="@color/textTwo"
-            android:textSize="@dimen/sp_13" />
+            <RelativeLayout
+                android:id="@+id/rlAvatar"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_6">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/commentTextView"
-            style="@style/TextView.Normal"
-            android:layout_above="@+id/forwardTextView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:drawableTop="@mipmap/ic_home_comment"
-            android:gravity="center"
-            android:textColor="@color/textTwo"
-            android:textSize="@dimen/sp_13" />
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:id="@+id/avatarImageView"
+                    style="@style/ImageView.Wrap"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:src="@color/white"
+                    app:qmui_border_color="@color/transparent"
+                    app:qmui_is_circle="true"
+                    app:url="@{viewModel.videoInfo.avatarUrl}" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/forwardTextView"
-            style="@style/TextView.Normal"
-            android:layout_above="@+id/musicImageView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="46dp"
-            android:drawableTop="@mipmap/ic_home_forward"
-            android:gravity="center"
-            android:textColor="@color/textTwo"
-            android:textSize="@dimen/sp_13" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    style="@style/ImageView.Wrap"
+                    android:layout_width="@dimen/dp_34"
+                    android:layout_height="@dimen/dp_14"
+                    android:layout_centerHorizontal="true"
+                    android:background="@mipmap/toux_zhib_bg" />
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/addImageView"
+                style="@style/ImageView.Wrap"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:scaleType="center"
+                android:src="@mipmap/ic_home_add" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llNumInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/musicImageView"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_46"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/dp_34"
+                android:layout_height="@dimen/dp_29"
+                android:background="@mipmap/ic_home_like" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="@{viewModel.videoInfo.getFavoriteCountEx()}"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_34"
+                android:layout_height="@dimen/dp_34"
+                android:layout_marginTop="@dimen/dp_22"
+                android:background="@mipmap/ic_home_comment" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="@{viewModel.videoInfo.getCommentCountEx()}"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_33"
+                android:layout_height="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_22"
+                android:background="@mipmap/ic_home_forward" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="@{viewModel.videoInfo.getShareCountEx()}"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/infoRelativeLayout"
@@ -125,27 +181,40 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="@dimen/dp_67"
-            android:background="@mipmap/bg_home_music"
+            android:background="@mipmap/yiny_changp_bg"
             android:padding="@dimen/dp_8"
             android:src="@mipmap/icon_kuaip_ship" />
 
-        <cc.ibooker.ztextviewlib.MarqueeTextView
-            android:id="@+id/musicMarqueeTextView"
-            android:layout_width="160dp"
+        <LinearLayout
+            android:id="@+id/llMusicName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/musicImageView"
             android:layout_marginLeft="@dimen/dp_16"
-            android:drawableStart="@mipmap/shipin_yiny"
-            android:drawablePadding="@dimen/dp_4"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:singleLine="true"
-            android:textColor="@color/text" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_14"
+                android:layout_marginRight="@dimen/dp_7"
+                android:background="@mipmap/shipin_yiny" />
+
+            <com.xaqinren.healthyelders.widget.MarqueeView
+                android:id="@+id/musicMarqueeTextView"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.videoInfo.musicName}"
+                app:scrollType="horizontal"
+                app:speedType="slow"
+                app:textColor="#fff" />
+
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/descTextView"
             style="@style/TextView.Normal"
-            android:layout_above="@+id/musicMarqueeTextView"
+            android:layout_above="@+id/llMusicName"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_toStartOf="@+id/mainMusicalNoteLayout"
@@ -162,6 +231,7 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
+            android:text="@{'@'+viewModel.videoInfo.nickname}"
             android:textColor="@color/text"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
@@ -253,14 +323,14 @@
             android:visibility="gone" />
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_3"
-            android:progressDrawable="@drawable/video_progress_bar"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_50" />
+            android:layout_marginBottom="@dimen/dp_50"
+            android:progressDrawable="@drawable/video_progress_bar"
+            android:visibility="gone" />
 
     </RelativeLayout>
 </layout>

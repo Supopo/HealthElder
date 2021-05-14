@@ -101,8 +101,8 @@ public class MusicalNoteLayout extends RelativeLayout implements WeakWrapperHand
         for (int i = 0; i < 3; i++) {
             mDrawables.add(i == 0 ? note1 : note2);
         }
-        mDrawableHeight = note1.getIntrinsicHeight() / 2;
-        mDrawableWidth = note1.getIntrinsicWidth() / 2;
+        mDrawableHeight = note1.getIntrinsicHeight();
+        mDrawableWidth = note1.getIntrinsicWidth();
         mNoteParams = new LayoutParams(mDrawableWidth, mDrawableHeight);
         mNoteParams.addRule(ALIGN_PARENT_BOTTOM);
         mNoteParams.addRule(ALIGN_PARENT_RIGHT);

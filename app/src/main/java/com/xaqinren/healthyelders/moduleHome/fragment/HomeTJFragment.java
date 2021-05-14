@@ -38,11 +38,10 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
  */
 public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> {
     private static final String TAG = "home-tj";
-    private List<VideoInfo> mVideoInfoList;
+    private List<VideoInfo> mVideoInfoList = new ArrayList<>();
     private List<VideoInfo> temp;
     private Disposable subscribe;
     private int page = 1;
-    private int pageSize = 4;
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter homeAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
@@ -103,11 +102,20 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             }
         });
         RxSubscriptions.add(subscribe);
+
+        //接受数据
         viewModel.datas.observe(this, datas -> {
             binding.homeLoadView.stop();
             binding.homeLoadView.setVisibility(View.GONE);
-            if (datas != null && datas.size() > 0) {
 
+            if (datas != null && datas.size() > 0) {
+                mVideoInfoList.addAll(datas);
+
+                for (int i = 0; i < datas.size(); i++) {
+                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition));
+                    fragmentPosition++;
+                }
+                homeAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -122,11 +130,8 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     public void initData() {
         super.initData();
         resetVVPHeight();
-
         //开始时候有头布局所以禁止滑动
         binding.viewPager2.setUserInputEnabled(false);
-
-        getData();
         initVideoViews();
     }
 
@@ -145,16 +150,16 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.homeLoadView.setVisibility(View.VISIBLE);
         binding.homeLoadView.start();
         //请求数据
-        viewModel.getVideoData(page, pageSize);
+        viewModel.getVideoData(page);
 
         homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
-        for (int i = 0; i < temp.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
+        for (int i = 0; i < mVideoInfoList.size(); i++) {
+            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition));
             fragmentPosition++;
         }
         binding.viewPager2.setAdapter(homeAdapter);
-        binding.viewPager2.setOffscreenPageLimit(fragmentList.size());
+        binding.viewPager2.setOffscreenPageLimit(3);
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -167,14 +172,9 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                     //判断数据数量滑动到倒数第三个时候去进行加载
                     if ((position + 1) == fragmentList.size()) {
-                        //TODO 加载更多数据
-                        getData();
-                        //加载数据
-                        for (int i = 0; i < temp.size(); i++) {
-                            fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
-                            fragmentPosition++;
-                        }
-                        homeAdapter.notifyDataSetChanged();
+                        //加载更多数据
+                        page++;
+                        viewModel.getVideoData(page);
                     }
                 }
 

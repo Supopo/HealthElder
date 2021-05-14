@@ -38,9 +38,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
-import me.goldze.mvvmhabit.bus.RxBusSubscriber;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.utils.RxUtils;
 
 public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, LiteAvPlayViewModel> implements TelephonyUtil.OnTelephoneListener, ITXVodPlayListener {
     private final String TAG = "LiteAvPlayFragment";
@@ -93,7 +91,7 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
         vodPlayer.setConfig(config);
         vodPlayer.setAutoPlay(false);
         vodPlayer.setPlayerView(binding.playerCloudView);
-        amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_anim);
+        amRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
         binding.playerCloudView.setOnClickListener(view -> {
             //暂停
             if (vodPlayer.isPlaying())

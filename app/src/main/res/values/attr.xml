@@ -59,4 +59,22 @@
         <attr name="circle_music_view_res" format="reference" />
         <attr name="circle_music_view_size" format="dimension" />
     </declare-styleable>
+
+    <!--文字跑马灯-->
+    <declare-styleable name="MarqueeView">
+        <attr name="scrollType">
+            <enum name="no" value="1" />
+            <enum name="vertical" value="2" />
+            <enum name="horizontal" value="3" />
+        </attr>
+        <attr name="speedType">
+            <enum name="slow" value="4" />
+            <enum name="normal" value="5" />
+            <enum name="fast" value="6" />
+            <enum name="express" value="7" />
+        </attr>
+        <attr name="textColor" format="color" />
+        <!--行高，只对垂直滚动有效-->
+        <attr name="lineSpace" format="integer" />
+    </declare-styleable>
 </resources>

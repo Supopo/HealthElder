@@ -1,5 +1,9 @@
 package com.xaqinren.healthyelders.global;
 
+import com.tencent.qcloud.ugckit.utils.Signature;
+
+import java.net.URISyntaxException;
+
 /**
  * Description: 常量
  */
@@ -53,5 +57,18 @@ public class Constant {
      */
     public static final String SP_KEY_LOGIN_USER = "loginUser";
 
+
+    //腾讯云小视频加防盗链
+    public static String setVideoSigUrl(String playUrl) {
+        int time = (int) (System.currentTimeMillis() / 1000 + (24 * 60 * 60 * 10));
+        String t = Signature.getTimeExpire(time);
+        String playToken = null;
+        try {
+            playToken = Signature.singVideo(playUrl, t);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return playUrl + "?t=" + t + "&sign=" + playToken;
+    }
 
 }
