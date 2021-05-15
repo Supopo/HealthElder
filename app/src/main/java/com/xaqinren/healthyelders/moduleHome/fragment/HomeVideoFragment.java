@@ -46,18 +46,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private String type;//区分是从哪里进来的
     private TXVodPlayer vodPlayer;
     private Disposable disposable;
-    private Animation musicAmRotate;//音乐旋转动画
-    private Animation zbAnimation;
-    private AnimationDrawable zbAvatarBgAnim;
+    private Animation musicRotateAnim;//音乐Icon旋转动画
+    private Animation avatarAnim;//头像放大缩小动画
+    private AnimationDrawable avatarBgAnim;//头像背景圈动画
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
         this.type = type;
         this.position = position;
-        if (videoInfo != null && videoInfo.resourceType.equals("VIDEO")) {
-            //            videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
-            videoInfo.resourceUrl = "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201225/427d7d9635a240d8b1eb7bf2a03c2e35.mp4";
-
+        if (videoInfo.resourceType.equals("VIDEO")) {
+            videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
         }
     }
 
@@ -77,18 +75,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
 
+
         viewModel.videoInfo.setValue(videoInfo);
-
-        //视频封面
-        if (!TextUtils.isEmpty(videoInfo.coverUrl)) {
-            Glide.with(getActivity()).load(videoInfo.coverUrl).into(binding.coverImageView);
-        }
         if (videoInfo.resourceType.equals("VIDEO")) {
-
-            //头像
-            if (videoInfo.avatarUrl != null) {
-                Glide.with(getActivity()).load(videoInfo.avatarUrl).into(binding.avatarImageView);
-            }
             //内容
             PublishDesBean publishDesBean = new PublishDesBean();
             publishDesBean.content = videoInfo.content;
@@ -105,28 +94,35 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             binding.descTextView.initDesStr(publishDesBean);
 
             //音乐播放器旋转动画
-            musicAmRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
+            musicRotateAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
+            binding.mainMusicalNoteLayout.start(false);
 
             if (!TextUtils.isEmpty(videoInfo.musicIcon)) {
                 //音乐封面
                 Glide.with(getActivity()).load(videoInfo.musicIcon).into(binding.musicImageView);
             }
 
-            //是否在直播
+            if (!TextUtils.isEmpty(videoInfo.avatarUrl)) {
+                //头像
+                Glide.with(getActivity()).load(videoInfo.avatarUrl).into(binding.avatarImageView);
+            }
+
             if (videoInfo.hasLive) {
                 //直播头像背景动画
-                zbAvatarBgAnim = (AnimationDrawable) binding.avatarBg.getBackground();
-                zbAvatarBgAnim.start();
+                avatarBgAnim = (AnimationDrawable) binding.avatarBg.getBackground();
+                avatarBgAnim.start();
                 //头像缩小动画
-                zbAnimation = AnimUtils.getAnimation(getActivity(), R.anim.avatar_start_zb);
-                //直播头像
+                avatarAnim = AnimUtils.getAnimation(getActivity(), R.anim.avatar_start_zb);
+                //直播头像动画
                 binding.rlAvatar.clearAnimation();
-                binding.rlAvatar.startAnimation(zbAnimation);
+                binding.rlAvatar.startAnimation(avatarAnim);
             }
+
 
         } else if (videoInfo.resourceType.equals("LIVE")) {
 
         }
+
 
         initVideo();
     }
@@ -165,17 +161,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 //上下切换
                 LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getTjPlayPosition() + type + position + bean.toString());
                 if (bean.msgId == 1) {
+                    stopPlay(true);
 
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
-                    } else {
-                        stopPlay(true);
                     }
 
                     if (bean.fragmentId.equals("home-gz") && type.equals("home-gz")) {
+                        LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getGzPlayPosition() + type + position + bean.toString());
                         startGzVideo();
-                    } else {
-                        stopPlay(true);
                     }
 
                 } else if (bean.msgId == 101) {//左右切换
@@ -204,28 +198,32 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
 
     private void startPlay(boolean b) {
-        binding.coverImageView.setVisibility(b ? View.GONE : View.VISIBLE);
         vodPlayer.setAutoPlay(b);
         vodPlayer.startPlay(videoInfo.resourceUrl);
     }
 
     private void pausePlay() {
         binding.mainVideoView.onPause();
+        binding.mainMusicalNoteLayout.start(false);
+        binding.rlMusicImageView.clearAnimation();
         if (vodPlayer != null) {
             vodPlayer.pause();
         }
-
     }
 
     private void restartPlay() {
         binding.mainVideoView.onResume();
+        binding.mainMusicalNoteLayout.start(true);
+        if (musicRotateAnim != null) {
+            binding.rlMusicImageView.setAnimation(musicRotateAnim);
+        }
+
         if (vodPlayer != null) {
             vodPlayer.resume();
         }
     }
 
     private void stopPlay(boolean clearLastFrame) {
-        binding.coverImageView.setVisibility(View.VISIBLE);
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
@@ -265,21 +263,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding.mainVideoView.onDestroy();
-        stopPlay(true);
-        if (musicAmRotate != null) {
-            musicAmRotate.cancel();
-            musicAmRotate = null;
+        if (avatarAnim != null) {
+            avatarAnim.cancel();
+            avatarAnim = null;
         }
-        if (zbAnimation != null) {
-            zbAnimation.cancel();
-            zbAnimation = null;
+        if (avatarBgAnim != null) {
+            avatarBgAnim.stop();
+            avatarBgAnim = null;
         }
-        if (zbAvatarBgAnim != null) {
-            zbAvatarBgAnim.stop();
-            zbAvatarBgAnim = null;
+        if (musicRotateAnim != null) {
+            musicRotateAnim.cancel();
+            musicRotateAnim = null;
         }
 
+        binding.mainVideoView.onDestroy();
+        stopPlay(true);
         TelephonyUtil.getInstance().uninitPhoneListener();
         disposable.dispose();
     }
@@ -290,28 +288,24 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //param.getInt(TXLiveConstants.EVT_PARAM1); //视频宽度
             //param.getInt(TXLiveConstants.EVT_PARAM2); //视频高度
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 收到首帧数据，越快收到此消息说明链路质量越好
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RCV_FIRST_I_FRAME");
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
-        } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
+        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
+        }else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RTMP_STREAM_BEGIN");
             showStartLayout();
-        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_LOADING");
-        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
+        }
+
+        else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
             showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_PROGRESS) {//视频播放进度，会通知当前进度和总体进度，仅在点播时有效
             //EVT_PLAY_DURATION 总时间  EVT_PLAY_PROGRESS 当前进度
             //有此回调说明是点播
             if (param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS) > 0) {
-                LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_PROGRESS");
 
-                if (videoInfo.getVideoType() == 1) {
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
-                    binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
-                }
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
+                binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
 
                 if (!isStart) {
                     showStartLayout();
@@ -330,14 +324,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void showStartLayout() {
         if (videoInfo.resourceType.equals("VIDEO")) {
-            if (musicAmRotate != null) {
+            binding.mainLoadView.stop();
+            binding.mainLoadView.setVisibility(View.GONE);
+            binding.coverImageView.setVisibility(View.GONE);
+            binding.mainMusicalNoteLayout.start(true);
+            //开启音乐Icon动画
+            if (musicRotateAnim != null) {
                 binding.rlMusicImageView.clearAnimation();
-                binding.rlMusicImageView.startAnimation(musicAmRotate);
+                binding.rlMusicImageView.startAnimation(musicRotateAnim);
             }
         }
-        binding.mainLoadView.stop();
-        binding.mainLoadView.setVisibility(View.GONE);
-        binding.coverImageView.setVisibility(View.GONE);
         isStart = true;
     }
 
