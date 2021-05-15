@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
@@ -204,7 +205,7 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/release")
     Observable<MBaseResponse<Object>> postPublishLiteAv(@Header("Authorization") String authorization,
-                                                  @Body RequestBody body);
+                                                        @Body RequestBody body);
 
     //用户，获取好友
     @GET("user/queryFriendsPage")
@@ -214,9 +215,13 @@ public interface ApiServer {
     //用户，获取好友
     @GET("user/querySearchPage")
     Observable<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>> getSearchUserFriend(@Header("Authorization") String authorization,
-                                                                               @Query("page") int page, @Query("pageSize") int pageSize, @Query("key") String name);
+                                                                                     @Query("page") int page, @Query("pageSize") int pageSize, @Query("key") String name);
 
     //获取首页视频直播
     @GET("content/open/queryComprehensivePage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page, @Query("pageSize") Integer count, @Query("resourceType") String resourceType);
+
+    //获取首页菜单信息
+    @GET("content/open/findHomeData")
+    Observable<MBaseResponse<HomeRes>> getHomeInfo(@Header("Authorization") String authorization, @Header("mid") String mid);
 }

@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ public class HomeViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<List<TCVideoInfo>> datas = new MutableLiveData<>();
+    public MutableLiveData<HomeRes> homeInfo = new MutableLiveData<>();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
 
     public void getVideoData() {
         List<TCVideoInfo> list = new ArrayList<>();
@@ -33,5 +37,9 @@ public class HomeViewModel extends BaseViewModel {
             info.playurl = "https://aweme.snssdk.com/aweme/v1/play/?video_id=97022dc18711411ead17e8dcb75bccd2&line=0&ratio=720p&media_type=4&vr_type=0";
             list.add(info);
         }
+    }
+
+    public void getHomeInfo() {
+        LiveRepository.getInstance().getHomeInfo(homeInfo);
     }
 }

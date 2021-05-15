@@ -1,55 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:binding="http://schemas.android.com/apk/res-auto">
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleHome.bean.GirlsBean" />
+            type="com.xaqinren.healthyelders.moduleHome.bean.MenuBean" />
     </data>
 
     <!--    随机背景颜色-->
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
-    <LinearLayout
-        android:layout_marginRight="@dimen/dp_8"
-        android:id="@+id/ll_item"
-        android:background="@drawable/bg_home_menu"
+    <RelativeLayout
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_114"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_6"
-        android:paddingTop="@dimen/dp_7">
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/bg_home_menu">
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="标题"
-            android:textColor="@color/color_252525"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/ll_item"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_114"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingTop="@dimen/dp_7"
+            android:visibility="@{viewModel.onlyShowImage?View.GONE:View.VISIBLE}">
 
-        <TextView
-            android:id="@+id/tv_des"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginBottom="@dimen/dp_11"
-            android:gravity="center"
-            android:text="卖你所想"
-            android:textColor="@color/gray_999"
-            android:textSize="@dimen/sp_11" />
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{viewModel.menuName}"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tv_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginBottom="@dimen/dp_11"
+                android:gravity="center"
+                android:text="@{viewModel.subMenuName}"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_11" />
+
+
+            <ImageView
+                android:id="@+id/iv_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitEnd"
+                android:src="@mipmap/ic_launcher"
+                app:url="@{viewModel.icon}" />
+
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/iv_menu"
+            android:id="@+id/iv_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitEnd"
-            android:src="@mipmap/ic_launcher" />
-
-    </LinearLayout>
+            android:visibility="@{viewModel.onlyShowImage?View.VISIBLE:View.GONE}"
+            app:url="@{viewModel.imageUrl}" />
+    </RelativeLayout>
 </layout>

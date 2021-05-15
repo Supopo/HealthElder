@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.MenuAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -48,6 +50,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private String[] titles = {"推荐", "关注", "附近"};
     private String[] menuTitles = {"美食厨房", "民间偏方", "运动健身", "家有良医", "美食厨房", "民间偏方", "运动健身"};
     public ViewPager2 vp2;
+    private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
+    private MenuAdapter menu2Adapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,12 +81,29 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             }
         });
         RxSubscriptions.add(subscribe);
+
+        viewModel.homeInfo.observe(this, homeRes -> {
+            if (homeRes != null) {
+                if (homeRes.commodityType != null) {
+                    menu1Adapter.setNewInstance(homeRes.contentMenu);
+                }
+                if (homeRes.contentMenu != null) {
+                    menu2Adapter.setNewInstance(homeRes.commodityType);
+                }
+            }
+        });
     }
 
     private boolean isFirst = true;
 
     public void initData() {
         super.initData();
+        initFragment();
+        initTopMenu();
+        viewModel.getHomeInfo();
+    }
+
+    private void initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new HomeTJFragment(getActivity()));
         fragments.add(new HomeGZFragment(getActivity()));
@@ -123,37 +144,29 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 }
             });
         }
-
-        initTopMenu();
-
     }
 
     private void initTopMenu() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         binding.rlMenu1.setLayoutManager(linearLayoutManager);
-        BaseQuickAdapter<String, BaseViewHolder> menu1Adapter = new BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_home_menu) {
+        menu1Adapter = new BaseQuickAdapter<MenuBean, BaseViewHolder>(R.layout.item_home_menu) {
 
             @Override
-            protected void convert(@NotNull BaseViewHolder holder, String s) {
-                holder.setText(R.id.tv_menu, s);
+            protected void convert(@NotNull BaseViewHolder holder, MenuBean item) {
+                TextView tvMenu = holder.getView(R.id.tv_menu);
+                tvMenu.setText(item.menuName);
+                tvMenu.setTextColor(android.graphics.Color.parseColor(item.fontColor));
             }
         };
         binding.rlMenu1.setAdapter(menu1Adapter);
-        menu1Adapter.setNewInstance(new ArrayList<String>(Arrays.asList(menuTitles)));
 
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
         linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         binding.rvMenu2.setLayoutManager(linearLayoutManager2);
-        MenuAdapter menuAdapter = new MenuAdapter(R.layout.item_home_menu2);
-        binding.rvMenu2.setAdapter(menuAdapter);
+        menu2Adapter = new MenuAdapter(R.layout.item_home_menu2);
+        binding.rvMenu2.setAdapter(menu2Adapter);
 
-        List<GirlsBean> menu = new ArrayList();
-        for (int i = 0; i < 8; i++) {
-            GirlsBean girlsBean = new GirlsBean();
-            menu.add(girlsBean);
-        }
-        menuAdapter.setNewInstance(menu);
     }
 
 

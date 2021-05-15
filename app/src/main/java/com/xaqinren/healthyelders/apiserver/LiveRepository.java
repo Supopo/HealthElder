@@ -8,6 +8,7 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
+import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -444,9 +445,8 @@ public class LiveRepository {
                 });
     }
 
-
     public void getHomeVideoList(int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList) {
-        userApi.getHomeVideoList(Constant.HEADER_DEF,Constant.APP_MID, page, pageSize, "")
+        userApi.getHomeVideoList(Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, "")
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -463,6 +463,29 @@ public class LiveRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
                         videoList.postValue(data.getData().content);
+                    }
+
+                });
+    }
+
+    public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {
+        userApi.getHomeInfo(Constant.HEADER_DEF, Constant.APP_MID)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<HomeRes>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<HomeRes> data) {
+                        homeRes.postValue(data.getData());
                     }
 
                 });
