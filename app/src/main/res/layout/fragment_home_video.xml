@@ -18,8 +18,7 @@
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"/>
+            style="@style/Layout.Main" />
 
         <ImageView
             android:id="@+id/coverImageView"
@@ -27,20 +26,19 @@
             android:scaleType="fitXY" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/rlView"
+            style="@style/Layout.Main"
             android:background="@mipmap/quanp_zhez">
 
             <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
                 android:id="@+id/mainLoadView"
                 style="@style/Layout.Wrap"
-                android:layout_centerInParent="true"
-                />
+                android:layout_centerInParent="true" />
 
-            <com.xaqinren.healthyelders.moduleHome.widget.LikeLayout
-                android:id="@+id/mainMyLikeLayout"
+            <RelativeLayout
+                android:id="@+id/mainLikeLayout"
                 style="@style/Layout.Main"
-                android:layout_above="@+id/rlAvatarAll" />
+                />
 
             <RelativeLayout
                 android:id="@+id/rlAvatarAll"
@@ -375,14 +373,6 @@
 
             </RelativeLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/playImageView"
-                style="@style/ImageView.Wrap"
-                android:layout_width="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@mipmap/ic_video_play"
-                android:visibility="gone" />
-
             <LinearLayout
                 android:id="@+id/llZhiBoTip"
                 android:layout_width="match_parent"
@@ -431,6 +421,14 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="@dimen/dp_50"
                 android:progressDrawable="@drawable/video_progress_bar"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/playImageView"
+                style="@style/ImageView.Wrap"
+                android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/ic_video_play"
                 android:visibility="gone" />
 
         </RelativeLayout>

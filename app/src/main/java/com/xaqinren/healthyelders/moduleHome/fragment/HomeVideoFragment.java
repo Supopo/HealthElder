@@ -1,18 +1,29 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -27,10 +38,12 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
+import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -49,6 +62,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private Animation musicRotateAnim;//音乐Icon旋转动画
     private Animation avatarAnim;//头像放大缩小动画
     private AnimationDrawable avatarBgAnim;//头像背景圈动画
+
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -77,6 +91,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
 
         viewModel.videoInfo.setValue(videoInfo);
+
+        //视频封面
+        if (!TextUtils.isEmpty(videoInfo.coverUrl)) {
+            Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
+        }
+
         if (videoInfo.resourceType.equals("VIDEO")) {
             //内容
             PublishDesBean publishDesBean = new PublishDesBean();
@@ -95,16 +115,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             //音乐播放器旋转动画
             musicRotateAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
-            binding.mainMusicalNoteLayout.start(false);
 
+            //音乐封面
             if (!TextUtils.isEmpty(videoInfo.musicIcon)) {
-                //音乐封面
-                Glide.with(getActivity()).load(videoInfo.musicIcon).into(binding.musicImageView);
+                Glide.with(getActivity()).load(videoInfo.musicIcon).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.musicImageView);
             }
 
+            //头像
             if (!TextUtils.isEmpty(videoInfo.avatarUrl)) {
-                //头像
-                Glide.with(getActivity()).load(videoInfo.avatarUrl).into(binding.avatarImageView);
+                Glide.with(getActivity()).load(videoInfo.avatarUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.avatarImageView);
             }
 
             if (videoInfo.hasLive) {
@@ -122,7 +141,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (videoInfo.resourceType.equals("LIVE")) {
 
         }
-
 
         initVideo();
     }
@@ -151,6 +169,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer.setPlayerView(binding.mainVideoView);
         startPlay(false);
     }
+
+    private boolean isPlaying;
 
     @Override
     public void initViewObservable() {
@@ -182,6 +202,119 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }
         });
+        //双击点赞事件/暂停
+        binding.mainLikeLayout.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        before_press_Y = event.getY();
+                        before_press_X = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        long secondTime = System.currentTimeMillis();
+                        if (secondTime - firstClickTime < 200) {
+                            now_press_y = event.getY();
+                            now_press_x = event.getX();
+                            if (now_press_y - before_press_Y <= 50 && now_press_x - before_press_X <= 50) {
+                                //双击点赞
+                                handler.removeMessages(1);
+                                handler.sendEmptyMessage(2);
+                            }
+                        } else {
+                            handler.sendEmptyMessageDelayed(1, 250);
+                        }
+
+                        firstClickTime = secondTime;
+                        break;
+
+                }
+                return true;
+            }
+        });
+    }
+
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    toPauseVideo();
+                    break;
+                case 2:
+                    double2DianZan();
+                    break;
+            }
+        }
+    };
+
+    private void toPauseVideo() {
+        //单击暂停
+        if (videoInfo.getVideoType() == 1) {
+            if (isFirstStart) {
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    vodPlayer.resume();
+                    binding.playImageView.setVisibility(View.GONE);
+                } else {
+                    vodPlayer.pause();
+                    binding.playImageView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+    }
+
+
+    //双击点赞
+    private double before_press_Y;
+    private double before_press_X;
+    private double now_press_y;
+    private double now_press_x;
+    private long firstClickTime;
+    private float[] num = {-30, -20, 0, 20, 30};//随机路径
+
+    private void double2DianZan() {
+        ImageView iv = new ImageView(getActivity());
+        iv.setImageDrawable(getResources().getDrawable(R.mipmap.ic_video_like));
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(300, 300);
+        lp.leftMargin = (int) now_press_x - 150;
+        lp.topMargin = (int) now_press_y - 300;
+
+        iv.setLayoutParams(lp);
+        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+        try {
+            binding.mainLikeLayout.addView(iv);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //双击点赞动画
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(AnimUtil.scale(iv, "scaleX", 2f, 0.9f, 100, 0))
+                .with(AnimUtil.scale(iv, "scaleY", 2f, 0.9f, 100, 0))
+                .with(AnimUtil.rotation(iv, 0, 0, num[new Random().nextInt(4)]))
+                .with(AnimUtil.alpha(iv, 0, 1, 100, 0))
+                .with(AnimUtil.scale(iv, "scaleX", 0.9f, 1, 50, 150))
+                .with(AnimUtil.scale(iv, "scaleY", 0.9f, 1, 50, 150))
+                .with(AnimUtil.translationY(iv, 0, -600, 800, 400))
+                .with(AnimUtil.alpha(iv, 1, 0, 300, 400))
+                .with(AnimUtil.scale(iv, "scaleX", 1, 3f, 700, 400))
+                .with(AnimUtil.scale(iv, "scaleY", 1, 3f, 700, 400));
+        animatorSet.start();
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                //只移除当前的ImageView
+                binding.mainLikeLayout.removeView(iv);
+            }
+        });
+
     }
 
     private void startTjVideo() {
@@ -204,26 +337,20 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void pausePlay() {
         binding.mainVideoView.onPause();
-        binding.mainMusicalNoteLayout.start(false);
-        binding.rlMusicImageView.clearAnimation();
         if (vodPlayer != null) {
             vodPlayer.pause();
         }
     }
 
-    private void restartPlay() {
+    private void resumePlay() {
         binding.mainVideoView.onResume();
-        binding.mainMusicalNoteLayout.start(true);
-        if (musicRotateAnim != null) {
-            binding.rlMusicImageView.setAnimation(musicRotateAnim);
-        }
-
         if (vodPlayer != null) {
             vodPlayer.resume();
         }
     }
 
     private void stopPlay(boolean clearLastFrame) {
+        binding.coverImageView.setVisibility(View.VISIBLE);
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
@@ -239,10 +366,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onResume() {
         super.onResume();
-
         if (type.equals("home-tj")) {
             if (AppApplication.get().getTjPlayPosition() == position) {
-                restartPlay();
+                resumePlay();
             } else {
                 pausePlay();
             }
@@ -250,7 +376,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         if (type.equals("home-gz")) {
             if (AppApplication.get().getGzPlayPosition() == position) {
-                restartPlay();
+                resumePlay();
             } else {
                 pausePlay();
             }
@@ -280,6 +406,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         stopPlay(true);
         TelephonyUtil.getInstance().uninitPhoneListener();
         disposable.dispose();
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -291,13 +418,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
-        }else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
+        } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RTMP_STREAM_BEGIN");
             showStartLayout();
-        }
-
-        else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
+        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
             showStartLayout();
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_PROGRESS) {//视频播放进度，会通知当前进度和总体进度，仅在点播时有效
             //EVT_PLAY_DURATION 总时间  EVT_PLAY_PROGRESS 当前进度
             //有此回调说明是点播
@@ -307,34 +433,36 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
                 binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
 
-                if (!isStart) {
-                    showStartLayout();
-                }
+
+                showStartLayout();
+                LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_PROGRESS");
             }
 
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
-            LogUtils.v(Constant.TAG_LIVE, type + position + "播放结束了");
-
-            restartPlay();
+            resumePlay();
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
         }
     }
 
-    private boolean isStart;//是否开始了
+    private boolean isFirstStart;//第一次开启播放
 
     private void showStartLayout() {
+        if (isFirstStart) {
+            return;
+        }
+
+        binding.coverImageView.setVisibility(View.GONE);
+        binding.mainLoadView.stop();
+        binding.mainLoadView.setVisibility(View.GONE);
         if (videoInfo.resourceType.equals("VIDEO")) {
-            binding.mainLoadView.stop();
-            binding.mainLoadView.setVisibility(View.GONE);
-            binding.coverImageView.setVisibility(View.GONE);
-            binding.mainMusicalNoteLayout.start(true);
             //开启音乐Icon动画
             if (musicRotateAnim != null) {
                 binding.rlMusicImageView.clearAnimation();
                 binding.rlMusicImageView.startAnimation(musicRotateAnim);
             }
         }
-        isStart = true;
+        isFirstStart = true;
+        isPlaying = true;
     }
 
 
