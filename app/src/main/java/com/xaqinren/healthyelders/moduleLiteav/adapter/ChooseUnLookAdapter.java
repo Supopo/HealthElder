@@ -1,11 +1,5 @@
 package com.xaqinren.healthyelders.moduleLiteav.adapter;
 
-import android.database.DatabaseUtils;
-
-import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -26,6 +20,6 @@ public class ChooseUnLookAdapter extends BaseQuickAdapter<LiteAvUserBean,BaseVie
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, LiteAvUserBean unLookBean) {
         CircleImageView circleImageView = baseViewHolder.getView(R.id.avatar);
-        Glide.with(circleImageView).load(R.mipmap.ic_launcher).into(circleImageView);
+        Glide.with(circleImageView).load(R.mipmap.icon_app).into(circleImageView);
     }
 }

@@ -18,7 +18,8 @@
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
-            style="@style/Layout.Main" />
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
         <ImageView
             android:id="@+id/coverImageView"
@@ -72,8 +73,8 @@
                         style="@style/ImageView.Wrap"
                         android:layout_width="@dimen/dp_50"
                         android:layout_height="@dimen/dp_50"
-                        android:src="@color/white"
-                        app:qmui_border_color="@color/transparent"
+                        app:qmui_border_color="@color/white"
+                        app:qmui_border_width="@dimen/dp_1"
                         app:qmui_is_circle="true" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -117,7 +118,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:text="@{viewModel.videoInfo.getFavoriteCountEx()}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_12" />
@@ -131,7 +132,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:text="@{viewModel.videoInfo.getCommentCountEx()}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_12" />
@@ -145,7 +146,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:text="@{viewModel.videoInfo.getShareCountEx()}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_12" />

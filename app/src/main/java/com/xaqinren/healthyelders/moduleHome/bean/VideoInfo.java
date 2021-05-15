@@ -76,22 +76,22 @@ public class VideoInfo {
     }
 
     public String getFavoriteCountEx() {
-        if (favoriteCount == null) {
-            favoriteCount = "0";
+        if (favoriteCount == null || favoriteCount.equals("0")) {
+            return "赞";
         }
         return Num2TextUtil.sNum2Text2(favoriteCount);
     }
 
     public String getCommentCountEx() {
-        if (commentCount == null) {
-            commentCount = "0";
+        if (commentCount == null || commentCount.equals("0")) {
+            return "写评论";
         }
         return Num2TextUtil.sNum2Text2(commentCount);
     }
 
     public String getShareCountEx() {
-        if (shareCount == null) {
-            shareCount = "0";
+        if (shareCount == null || shareCount.equals("0")) {
+            return "分享";
         }
         return Num2TextUtil.sNum2Text2(shareCount);
     }
