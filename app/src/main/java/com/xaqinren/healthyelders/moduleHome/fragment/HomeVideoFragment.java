@@ -3,6 +3,8 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -62,6 +65,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private Animation musicRotateAnim;//音乐Icon旋转动画
     private Animation avatarAnim;//头像放大缩小动画
     private AnimationDrawable avatarBgAnim;//头像背景圈动画
+    private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
 
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
@@ -83,6 +87,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         return BR.viewModel;
     }
 
+
+    public static final int STATE_PLAYING =1;//正在播放
+    public static final int STATE_PAUSE =2;//暂停
+    public static final int STATE_STOP =3;//停止
+    public int state;
+    @SuppressLint("ObjectAnimatorBinding")
     @Override
     public void initData() {
         super.initData();
@@ -116,6 +126,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //音乐播放器旋转动画
             musicRotateAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
 
+            state = STATE_STOP;
+            objectAnimator = ObjectAnimator.ofFloat(binding.rlMusicImageView, "rotation", 0f, 360f);//添加旋转动画，旋转中心默认为控件中点
+            objectAnimator.setDuration(2000);//设置动画时间
+            objectAnimator.setInterpolator(new LinearInterpolator());//动画时间线性渐变
+            objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+            objectAnimator.setRepeatMode(ObjectAnimator.RESTART);
+
+
             //音乐封面
             if (!TextUtils.isEmpty(videoInfo.musicIcon)) {
                 Glide.with(getActivity()).load(videoInfo.musicIcon).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.musicImageView);
@@ -143,6 +161,24 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
 
         initVideo();
+    }
+
+    public void playMusicAnim(){
+        if(state == STATE_STOP){
+            objectAnimator.start();//动画开始
+            state = STATE_PLAYING;
+        }else if(state == STATE_PAUSE){
+            objectAnimator.resume();//动画重新开始
+            state = STATE_PLAYING;
+        }else if(state == STATE_PLAYING){
+            objectAnimator.pause();//动画暂停
+            state = STATE_PAUSE;
+        }
+    }
+
+    public void stopMusicAnim(){
+        objectAnimator.end();//动画结束
+        state = STATE_STOP;
     }
 
     private void initVideo() {
@@ -258,10 +294,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 if (isPlaying) {
                     vodPlayer.resume();
                     binding.playImageView.setVisibility(View.GONE);
+                    binding.mainMusicalNoteLayout.start(true);
                 } else {
                     vodPlayer.pause();
                     binding.playImageView.setVisibility(View.VISIBLE);
+                    binding.mainMusicalNoteLayout.start(false);
                 }
+                playMusicAnim();
             }
         }
 
@@ -354,6 +393,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
+        stopMusicAnim();
+        binding.rlMusicImageView.clearAnimation();
+        binding.mainMusicalNoteLayout.start(false);
     }
 
     @Override
@@ -458,7 +500,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //开启音乐Icon动画
             if (musicRotateAnim != null) {
                 binding.rlMusicImageView.clearAnimation();
-                binding.rlMusicImageView.startAnimation(musicRotateAnim);
+//                binding.rlMusicImageView.startAnimation(musicRotateAnim);
+                playMusicAnim();
             }
         }
         isFirstStart = true;
