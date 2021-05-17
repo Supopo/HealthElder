@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +24,12 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.MenuAdapter;
+import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +55,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public ViewPager2 vp2;
     private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
     private MenuAdapter menu2Adapter;
+    private HomeGZFragment gzFragment;
+    private ZhiBoingAvatarAdapter zbingAdapter;
+    private HomeTJFragment tjFragment;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -70,12 +76,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             if (event != null) {
                 if (event.msgId == CodeTable.EVENT_HOME) {
                     if (event.msgType == CodeTable.SET_MENU_WHITE) {
-                        binding.tabLayout.setVisibility(View.GONE);
-                        binding.rlTop.setVisibility(View.VISIBLE);
-                        binding.nsv.setScrollingEnabled(true);
-                        //滚回到顶部
-                        binding.nsv.fling(0);
-                        binding.nsv.smoothScrollTo(0, 0);
+                        scrollTop();
                     }
                 }
             }
@@ -105,8 +106,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     private void initFragment() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new HomeTJFragment(getActivity()));
-        fragments.add(new HomeGZFragment(getActivity()));
+        tjFragment = new HomeTJFragment(getActivity());
+        gzFragment = new HomeGZFragment(getActivity());
+        fragments.add(tjFragment);
+        fragments.add(gzFragment);
         fragments.add(new HomeFJFragment());
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
         vp2 = binding.viewPager2;
@@ -120,11 +123,18 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 AppApplication.get().setLayoutPos(position);
                 //第一次加载完所有Fragment会触发
                 if (!isFirst) {
-                    LogUtils.v(Constant.TAG_LIVE, "左右滑动：" + position);
                     //通知HomeVideoFragment做出左右滑动相应操作
                     RxBus.getDefault().post(new VideoEvent(101, position));
                     //通知关注列表页面开始加载数据
                     RxBus.getDefault().post(new EventBean(101, position));
+
+                    if (position == 1) {
+                        //判断有没有直播中
+                        scrollTop();
+                        binding.tvShowZb.setText("个直播");
+                    }else {
+                        binding.tvShowZb.setText("回到首页");
+                    }
                 }
                 isFirst = false;
             }
@@ -134,16 +144,70 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if (scrollY >= getResources().getDimension(R.dimen.dp_237)) {
-                        //通知首页底部菜单栏变透明
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                        binding.nsv.setScrollingEnabled(false);
-                        binding.rlTop.setVisibility(View.GONE);
-                        binding.tabLayout.setVisibility(View.VISIBLE);
+                    LogUtils.v(Constant.TAG_LIVE, "滑动：" + scrollY);
+                    if (AppApplication.get().getLayoutPos() == 0) {
+                        if (scrollY >= (int) getResources().getDimension(R.dimen.dp_237)) {
+                            LogUtils.v(Constant.TAG_LIVE, "滑动1：" + getResources().getDimension(R.dimen.dp_237));
+                            //通知首页底部菜单栏变透明
+                            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                            binding.nsv.setScrollingEnabled(false);
+                            binding.rlTop.setVisibility(View.GONE);
+                            binding.tabLayout.setVisibility(View.VISIBLE);
+                        }
+                    } else if (AppApplication.get().getLayoutPos() == 1) {
+                        if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
+                            LogUtils.v(Constant.TAG_LIVE, "滑动2：" + getResources().getDimension(R.dimen.dp_218));
+                            binding.nsv.setScrollingEnabled(false);
+                            gzFragment.gzViewPager2.setUserInputEnabled(true);
+                            binding.rlZbList.setVisibility(View.GONE);
+                        }
                     }
+
                 }
             });
         }
+
+        binding.llShowTop.setOnClickListener(lis -> {
+            scrollTop();
+        });
+
+        initZBingAdapter();
+    }
+
+    private void initZBingAdapter() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.rvZbList.setLayoutManager(linearLayoutManager);
+        zbingAdapter = new ZhiBoingAvatarAdapter(R.layout.item_zbing_avatar);
+        binding.rvZbList.setAdapter(zbingAdapter);
+
+
+        List<ZBUserListBean> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            ZBUserListBean bean = new ZBUserListBean();
+            list.add(bean);
+        }
+        zbingAdapter.setNewInstance(list);
+    }
+
+    //滚回到顶部
+    private void scrollTop() {
+        binding.nsv.setScrollingEnabled(true);
+        binding.nsv.fling(0);
+        binding.nsv.smoothScrollTo(0, 0);
+
+        if (AppApplication.get().getLayoutPos() == 0) {
+            tjFragment.tjViewPager2.setUserInputEnabled(false);
+            binding.tabLayout.setVisibility(View.GONE);
+            binding.rlTop.setVisibility(View.VISIBLE);
+            binding.rlZbList.setVisibility(View.GONE);
+        } else if (AppApplication.get().getLayoutPos() == 1) {
+            gzFragment.gzViewPager2.setUserInputEnabled(false);
+            binding.tabLayout.setVisibility(View.VISIBLE);
+            binding.rlTop.setVisibility(View.GONE);
+            binding.rlZbList.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void initTopMenu() {

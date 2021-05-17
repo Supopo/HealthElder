@@ -44,6 +44,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private FragmentPagerAdapter homeAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
+    public ViewPager2 tjViewPager2;
 
     public HomeTJFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -68,10 +69,11 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     if (event.msgType == CodeTable.SET_MENU_TOUMING) {
                         //底部菜单变透明 头布局隐藏 开启vp2滑动
                         binding.viewPager2.setUserInputEnabled(true);
-                        //第一次 开始播放第一条
+                        //设置开始播放第一条
                         if (AppApplication.get().getTjPlayPosition() < 0) {
                             AppApplication.get().setTjPlayPosition(0);
                         }
+                        //通知播放页面播放
                         RxBus.getDefault().post(new VideoEvent(1, TAG));
                     } else if (event.msgType == CodeTable.SET_MENU_WHITE) {
                         //底部菜单变白 说明头布局出现
@@ -111,6 +113,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         super.initData();
         resetVVPHeight();
         //开始时候有头布局所以禁止滑动
+        tjViewPager2 = binding.viewPager2;
         binding.viewPager2.setUserInputEnabled(false);
         initVideoViews();
     }

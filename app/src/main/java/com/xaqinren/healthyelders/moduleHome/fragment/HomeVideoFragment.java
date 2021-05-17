@@ -237,7 +237,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         super.initViewObservable();
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
-
                 //上下切换
                 LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getTjPlayPosition() + type + position + bean.toString());
                 if (bean.msgId == 1) {

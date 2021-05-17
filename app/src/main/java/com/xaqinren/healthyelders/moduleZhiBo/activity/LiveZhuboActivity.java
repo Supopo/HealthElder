@@ -1417,7 +1417,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         viewModel.liveHeaderInfo.observe(this, liveHeaderInfo -> {
             if (liveHeaderInfo != null) {
                 //更新点赞人数
-                binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
+                if (TextUtils.isEmpty(liveHeaderInfo.totalZanNum)) {
+                    binding.tvZanNum.setText(mLiveInitInfo.nickname);
+                }else {
+                    binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
+                }
                 //更新榜单头像
                 if (liveHeaderInfo.liveRoomUsers != null) {
                     topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);

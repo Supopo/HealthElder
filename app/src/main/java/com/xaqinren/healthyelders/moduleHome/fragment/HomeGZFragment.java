@@ -4,43 +4,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.module.LoadMoreModule;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
-import com.tencent.qcloud.xiaoshipin.play.PlayerInfo;
-import com.tencent.rtmp.TXLiveConstants;
-import com.tencent.rtmp.TXVodPlayConfig;
-import com.tencent.rtmp.TXVodPlayer;
-import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
-import com.xaqinren.healthyelders.databinding.FragmentHomeTjBinding;
-import com.xaqinren.healthyelders.databinding.ItemVideoListBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
-import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
-import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,9 +40,10 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private Disposable subscribe;
     private int page = 1;
     private List<Fragment> fragmentList = new ArrayList<>();
-    private FragmentPagerAdapter homeAdapter;
+    private FragmentPagerAdapter videoAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
+    public ViewPager2 gzViewPager2;
 
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -83,17 +65,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         super.initViewObservable();
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
-                if (event.msgId == CodeTable.EVENT_HOME) {
-                    if (event.msgType == CodeTable.SET_MENU_TOUMING) {
-                        //底部菜单变透明 开启vp2滑动
-                        binding.viewPager2.setUserInputEnabled(true);
-                    } else if (event.msgType == CodeTable.SET_MENU_WHITE) {
-                        //底部菜单变白，头布局处理
-                        binding.viewPager2.setUserInputEnabled(false);
-                    }
-                } else if (event.msgId == 101 && event.msgType == 1) {
+                if (event.msgId == 101 && event.msgType == 1) {
                     //判断是不是第一次切换到关注列表
                     if (!isInit) {
+                        //在切过来之后设置不然会导致HomeFragment里面的NSV滑动
+                        resetVVPHeight();
                         initVideoViews();
                     }
                 }
@@ -111,7 +87,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition));
                     fragmentPosition++;
                 }
-                homeAdapter.notifyDataSetChanged();
+                videoAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -124,8 +100,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     @Override
     public void initData() {
         super.initData();
-        resetVVPHeight();
-        //开始时候有头布局所以禁止滑动
+        //开始时候可能有头布局所以禁止滑动
+        gzViewPager2 =  binding.viewPager2;
         binding.viewPager2.setUserInputEnabled(false);
     }
 
@@ -138,7 +114,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         //请求数据
         viewModel.getVideoData(page);
 
-        homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+        videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
@@ -146,7 +122,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             fragmentPosition++;
         }
 
-        binding.viewPager2.setAdapter(homeAdapter);
+        binding.viewPager2.setAdapter(videoAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -162,6 +138,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 }
             }
         });
+
+
         isInit = true;
     }
 
