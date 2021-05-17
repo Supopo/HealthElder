@@ -1,12 +1,16 @@
 package com.tencent.qcloud.ugckit.component.swipemenu.touch;
 
+import android.app.Service;
 import android.graphics.Canvas;
+import android.os.Vibrator;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 public class DefaultItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
@@ -64,6 +68,7 @@ public class DefaultItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public OnItemStateChangedListener getOnItemStateChangedListener() {
         return onItemStateChangedListener;
     }
+
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder targetViewHolder) {
@@ -144,6 +149,10 @@ public class DefaultItemTouchHelperCallback extends ItemTouchHelper.Callback {
         super.onSelectedChanged(viewHolder, actionState);
         if (onItemStateChangedListener != null && actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
             onItemStateChangedListener.onSelectedChanged(viewHolder, actionState);
+        } else if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            //长按准备滑动
+            Vibrator vib = (Vibrator) viewHolder.itemView.getContext().getSystemService(Service.VIBRATOR_SERVICE);//震动70毫秒
+            vib.vibrate(70);
         }
     }
 
@@ -153,5 +162,65 @@ public class DefaultItemTouchHelperCallback extends ItemTouchHelper.Callback {
         if (onItemStateChangedListener != null) {
             onItemStateChangedListener.onSelectedChanged(viewHolder, OnItemStateChangedListener.ACTION_STATE_IDLE);
         }
+    }
+
+    @Override
+    public int convertToAbsoluteDirection(int flags, int layoutDirection) {
+        return super.convertToAbsoluteDirection(flags, layoutDirection);
+    }
+
+    @Override
+    public boolean canDropOver(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder current, @NonNull RecyclerView.ViewHolder target) {
+        return super.canDropOver(recyclerView, current, target);
+    }
+
+    @Override
+    public int getBoundingBoxMargin() {
+        return super.getBoundingBoxMargin();
+    }
+
+    @Override
+    public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+        return super.getSwipeThreshold(viewHolder);
+    }
+
+    @Override
+    public float getMoveThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+        return super.getMoveThreshold(viewHolder);
+    }
+
+    @Override
+    public float getSwipeEscapeVelocity(float defaultValue) {
+        return super.getSwipeEscapeVelocity(defaultValue);
+    }
+
+    @Override
+    public float getSwipeVelocityThreshold(float defaultValue) {
+        return super.getSwipeVelocityThreshold(defaultValue);
+    }
+
+    @Override
+    public RecyclerView.ViewHolder chooseDropTarget(@NonNull RecyclerView.ViewHolder selected, @NonNull List<RecyclerView.ViewHolder> dropTargets, int curX, int curY) {
+        return super.chooseDropTarget(selected, dropTargets, curX, curY);
+    }
+
+    @Override
+    public void onMoved(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, int fromPos, @NonNull RecyclerView.ViewHolder target, int toPos, int x, int y) {
+        super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+    }
+
+    @Override
+    public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+    }
+
+    @Override
+    public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
+        return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
+    }
+
+    @Override
+    public int interpolateOutOfBoundsScroll(@NonNull RecyclerView recyclerView, int viewSize, int viewSizeOutOfBounds, int totalSize, long msSinceStartScroll) {
+        return super.interpolateOutOfBoundsScroll(recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll);
     }
 }

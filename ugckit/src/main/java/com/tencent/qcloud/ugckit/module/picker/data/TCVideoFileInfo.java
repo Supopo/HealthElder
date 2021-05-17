@@ -20,6 +20,7 @@ public class TCVideoFileInfo implements Parcelable {
     private Uri     fileUri;
     private int     fileType   = FILE_TYPE_VIDEO;
     private boolean isSelected = false;
+    private int currentPosition;
 
     public TCVideoFileInfo() {
     }
@@ -142,6 +143,14 @@ public class TCVideoFileInfo implements Parcelable {
 
     public void setFileUri(Uri fileUri) {
         this.fileUri = fileUri;
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
     @NonNull

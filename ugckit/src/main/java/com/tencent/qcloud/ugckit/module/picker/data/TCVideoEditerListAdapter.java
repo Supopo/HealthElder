@@ -87,11 +87,13 @@ public class TCVideoEditerListAdapter extends RecyclerView.Adapter<TCVideoEditer
         private final ImageView thumb;
         @NonNull
         private final TextView duration;
+        private final TextView postion;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
             thumb = (ImageView) itemView.findViewById(R.id.iv_thumb);
             duration = (TextView) itemView.findViewById(R.id.tv_duration);
+            postion = itemView.findViewById(R.id.tv_position);
         }
     }
 

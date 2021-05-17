@@ -24,6 +24,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.luck.picture.lib.PictureSelectionModel;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
@@ -39,8 +43,6 @@ import com.tencent.qcloud.ugckit.module.record.RecordMusicPannel;
 import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IRecordMusicPannel;
-import com.tencent.qcloud.ugckit.utils.BitmapUtils;
-import com.tencent.qcloud.xiaoshipin.mainui.TCMainActivity;
 import com.tencent.qcloud.xiaoshipin.videochoose.TCPicturePickerActivity;
 import com.tencent.ugc.TXRecordCommon;
 import com.xaqinren.healthyelders.BR;
@@ -51,8 +53,9 @@ import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.Constant;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
+import com.xaqinren.healthyelders.modulePicture.activity.SelectorMediaActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
+import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.RecordButton;
@@ -121,8 +124,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 }  else {
                     if (integer.intValue() == 2) {
                         //变为拍照模式
+                        currentMode = RecordButton.PHOTO_MODE;
                         changePhotoMode();
                     }else{
+                        currentMode = RecordButton.VIDEO_MODE;
                         changeVideoMode();
                     }
                     //重新加载
@@ -201,8 +206,24 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             startRecode();
         });*/
         binding.galleryLayout.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), TCPicturePickerActivity.class);
-            startActivity(intent);
+            if (currentMode == RecordButton.PHOTO_MODE) {
+                //拍照的图库选择
+                PictureSelector.create(this)
+                        .openGallery(PictureMimeType.ofImage())
+                        .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+                        .maxSelectNum(9)// 最大图片选择数量
+                        .isCamera(false)// 是否显示拍照按钮
+                        .previewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        .previewImage(true)// 是否可预览图片
+                        .enableCrop(false)// 是否裁剪 true or false
+                        .compress(true)// 是否压缩图片 使用的是Luban压缩
+                        .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+            }else {
+                //录制的图库选择
+                Intent intent = new Intent(getActivity(), SelectorMediaActivity.class);
+                startActivity(intent);
+            }
         });
         binding.recodeBtn.setOnRecordButtonListener(new RecordButton.OnRecordButtonListener() {
             @Override

@@ -14,7 +14,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
- * 拍照
+ * 拍照页
  */
 public class TackPictureActivity extends BaseActivity<ActivityTackPictureBinding, BaseViewModel> {
 

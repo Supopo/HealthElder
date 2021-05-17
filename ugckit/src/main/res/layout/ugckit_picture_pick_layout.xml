@@ -5,7 +5,7 @@
     android:layout_marginLeft="15dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="15dp"
-    android:background="@drawable/ugckit_ic_choose_bottom_bg">
+    >
 
     <LinearLayout
         android:id="@+id/layout1"
@@ -22,7 +22,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@string/ugckit_video_long_drag"
-            android:textColor="@color/ugckit_half_white"
+            android:textColor="@color/ugckit_color_text_g2"
             android:textSize="14dp" />
 
         <Button

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View style="@style/line" />
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            app:tabTextColor="@color/gray_999"
+            app:tabSelectedTextColor="@color/color_252525"
+            app:tabIndicatorHeight="@dimen/dp_2"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorColor="@color/color_252525"
+            app:tabIndicator="@drawable/select_media_line"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/dp_1"
+            app:tabGravity="fill">
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="图片"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视频"/>
+        </com.google.android.material.tabs.TabLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tabLayout"/>
+    </RelativeLayout>
+</layout>

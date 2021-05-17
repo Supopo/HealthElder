@@ -59,6 +59,7 @@ public class UGCKitPicturePicker extends AbsPickerUI implements ActivityCompat.O
             @Override
             public void onAdd(TCVideoFileInfo fileInfo) {
                 // 选中一个图片
+
                 getPickedLayout().addItem(fileInfo);
             }
         });

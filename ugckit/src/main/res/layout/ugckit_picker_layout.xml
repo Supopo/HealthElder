@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1F2531"
     android:orientation="vertical">
 
     <com.tencent.qcloud.ugckit.component.TitleBarLayout
@@ -20,8 +19,6 @@
         android:id="@+id/choose_pick_layout"
         android:layout_width="match_parent"
         android:layout_height="146dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/ugckit_ic_choose_bottom_bg" />
+        android:background="@drawable/ugckit_ic_choose_bottom_bg_sel" />
 </LinearLayout>
