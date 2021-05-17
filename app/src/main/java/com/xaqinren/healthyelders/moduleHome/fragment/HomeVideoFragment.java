@@ -68,6 +68,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private boolean isPlaying;//判断播放状态
     private boolean hasPlaying;//是否已经开始了 因为视频播放第一次播放只走进度，滑动后播放先走开始回调
     private AnimationDrawable avatarAddAnim;
+    private AnimationDrawable zbingAnim;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -153,7 +154,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
 
         } else if (videoInfo.resourceType.equals("LIVE")) {
-
+            zbingAnim = (AnimationDrawable) binding.ivZBing.getBackground();
         }
 
         initVideo();
@@ -440,13 +441,17 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (!hasPlaying) {
             return;
         }
-
+        if (videoInfo.getVideoType() == 1) {
+            stopMusicAnim();
+        }else {
+            zbingAnim.stop();
+        }
         binding.coverImageView.setVisibility(View.VISIBLE);
         hasPlaying = false;
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
-        stopMusicAnim();
+
     }
 
     @Override
@@ -548,11 +553,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         binding.coverImageView.setVisibility(View.GONE);
         binding.mainLoadView.stop();
         binding.mainLoadView.setVisibility(View.GONE);
-        if (videoInfo.resourceType.equals("VIDEO")) {
+        if (videoInfo.getVideoType() == 1) {
             //开启音乐Icon动画
             if (musicRotateAnim != null) {
                 playMusicAnim();
             }
+        }else {
+            zbingAnim.start();
         }
         hasPlaying = true;
         isPlaying = true;
