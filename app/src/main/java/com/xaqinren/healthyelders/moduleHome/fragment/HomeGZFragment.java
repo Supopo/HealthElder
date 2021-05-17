@@ -55,11 +55,9 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
  */
 public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZViewModel> {
     private static final String TAG = "home-gz";
-    private List<VideoInfo> mVideoInfoList;
-    private List<VideoInfo> temp;
+    private List<VideoInfo> mVideoInfoList = new ArrayList<>();
     private Disposable subscribe;
     private int page = 1;
-    private int pageSize = 4;
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter homeAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
@@ -79,22 +77,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         return BR.viewModel;
     }
 
-    private String[] pics = {
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/6bc9be6ee22343beb6d78f7e24204992.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/608a1b18c21a40e0ad678761d4a0ed17.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/86791a92d09f4d1595e0124d09156d6f.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/608a1b18c21a40e0ad678761d4a0ed17.png",
-    };
-    private String[] vidoes = {
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/cbac2f83b8cd41aeab99f330c9149eab.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/cf913ed075eb4b9bb0dfd0ef17255167.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/0a7cab4596374f06a8cf0481f754b302.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200805/89e502164fb6482d8feee24f05ac751d.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201225/427d7d9635a240d8b1eb7bf2a03c2e35.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201225/7b7d936e94424af9bc31aafa0a0de760.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201224/def8cf20cd3046999f247de0a1b55199.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201222/69504846fdaf4e86ac8c82470175e2aa.mp4",
-    };
 
     @Override
     public void initViewObservable() {
@@ -121,8 +103,15 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         viewModel.datas.observe(this, datas -> {
             binding.homeLoadView.stop();
             binding.homeLoadView.setVisibility(View.GONE);
-            if (datas != null && datas.size() > 0) {
 
+            if (datas != null && datas.size() > 0) {
+                mVideoInfoList.addAll(datas);
+
+                for (int i = 0; i < datas.size(); i++) {
+                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition));
+                    fragmentPosition++;
+                }
+                homeAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -138,36 +127,27 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         resetVVPHeight();
         //开始时候有头布局所以禁止滑动
         binding.viewPager2.setUserInputEnabled(false);
-        getData();
     }
 
-    private void getData() {
-        temp = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            VideoInfo info = new VideoInfo();
-            int random = (int) (Math.random() * 7);
-            info.resourceUrl = vidoes[random];
-            temp.add(info);
-        }
-    }
 
-    private boolean isInit;
+    private boolean isInit;//设置懒加载，点到关注才开始加载
 
     private void initVideoViews() {
         binding.homeLoadView.setVisibility(View.VISIBLE);
         binding.homeLoadView.start();
         //请求数据
-        viewModel.getVideoData(page, pageSize);
+        viewModel.getVideoData(page);
 
         homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
-        getData();
-        for (int i = 0; i < temp.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
+
+        for (int i = 0; i < mVideoInfoList.size(); i++) {
+            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition));
             fragmentPosition++;
         }
+
         binding.viewPager2.setAdapter(homeAdapter);
-        binding.viewPager2.setOffscreenPageLimit(fragmentList.size());
+        binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -176,14 +156,9 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
                 //判断数据数量滑动到倒数第三个时候去进行加载
                 if ((position + 1) == fragmentList.size()) {
-                    //TODO 加载更多数据
-                    getData();
-                    //加载数据
-                    for (int i = 0; i < temp.size(); i++) {
-                        fragmentList.add(new HomeVideoFragment(temp.get(i), TAG, fragmentPosition));
-                        fragmentPosition++;
-                    }
-                    homeAdapter.notifyDataSetChanged();
+                    //加载更多数据
+                    page++;
+                    viewModel.getVideoData(page);
                 }
             }
         });

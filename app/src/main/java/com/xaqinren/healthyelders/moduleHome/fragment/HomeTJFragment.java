@@ -22,7 +22,6 @@ import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,6 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> {
     private static final String TAG = "home-tj";
     private List<VideoInfo> mVideoInfoList = new ArrayList<>();
-    private List<VideoInfo> temp;
     private Disposable subscribe;
     private int page = 1;
     private List<Fragment> fragmentList = new ArrayList<>();
@@ -130,15 +128,14 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             fragmentPosition++;
         }
         binding.viewPager2.setAdapter(homeAdapter);
-        binding.viewPager2.setOffscreenPageLimit(3);
+        binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 //第一次加载所有Fragment完会触发
-                if (!first) {
-                    LogUtils.v(Constant.TAG_LIVE, "上下滑动1：" + position);
+                if (!firstInit) {
                     AppApplication.get().setTjPlayPosition(position);
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                     //判断数据数量滑动到倒数第三个时候去进行加载
@@ -149,12 +146,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     }
                 }
 
-                first = false;
+                firstInit = false;
             }
         });
     }
 
-    private boolean first = true;
+    private boolean firstInit = true;
 
 
     @Override

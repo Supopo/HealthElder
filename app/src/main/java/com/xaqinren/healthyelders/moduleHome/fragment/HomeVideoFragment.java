@@ -448,6 +448,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
         binding.coverImageView.setVisibility(View.VISIBLE);
         hasPlaying = false;
+        isPlaying = false;
+        binding.playImageView.setVisibility(View.GONE);
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
