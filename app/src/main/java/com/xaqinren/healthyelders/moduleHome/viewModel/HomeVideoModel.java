@@ -22,10 +22,12 @@ public class HomeVideoModel extends BaseViewModel {
     public MutableLiveData<VideoInfo> videoInfo = new MutableLiveData<>();
 
 
-
     public void getVideoData(int page, int pageSize) {
         LiveRepository.getInstance().getHomeVideoList(page, pageSize, datas);
     }
 
+    public void toLikeVideo(String videoId, boolean isLike) {
+        LiveRepository.getInstance().toLikeVideo(videoId, isLike);
+    }
 
 }

@@ -27,6 +27,14 @@ public class VideoInfo {
     public String userId;//": "1385879201982189568",
     public String nickname;//": "夕夜空",
     public String avatarUrl;//":
+
+    public int getFavoriteCount() {
+        if (TextUtils.isEmpty(favoriteCount)) {
+            return 0;
+        }
+        return Integer.parseInt(favoriteCount);
+    }
+
     public String favoriteCount;//": "0",
     public String commentCount;//": "0",
     public String shareCount;//": "0",

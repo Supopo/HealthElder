@@ -446,7 +446,13 @@ public class LiveRepository {
     }
 
     public void getHomeVideoList(int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList) {
-        userApi.getHomeVideoList(Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, "")
+        String uid = "";
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
+                uid = UserInfoMgr.getInstance().getUserInfo().getId();
+            }
+        }
+        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, "")
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -469,14 +475,7 @@ public class LiveRepository {
     }
 
     public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {
-        String uid = "";
-        if (UserInfoMgr.getInstance().getUserInfo() != null) {
-            if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
-                uid = UserInfoMgr.getInstance().getUserInfo().getId();
-            }
-        }
-
-        userApi.getHomeInfo(Constant.HEADER_DEF, Constant.APP_MID, uid)
+        userApi.getHomeInfo(Constant.HEADER_DEF, Constant.APP_MID)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -493,6 +492,34 @@ public class LiveRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<HomeRes> data) {
                         homeRes.postValue(data.getData());
+                    }
+
+                });
+    }
+
+    public void toLikeVideo(String shortVideoId, boolean favoriteStatus) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("shortVideoId", shortVideoId);
+        hashMap.put("favoriteStatus", favoriteStatus);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setVideoLike(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+
                     }
 
                 });

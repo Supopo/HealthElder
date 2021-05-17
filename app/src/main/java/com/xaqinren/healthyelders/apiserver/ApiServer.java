@@ -219,9 +219,14 @@ public interface ApiServer {
 
     //获取首页视频直播
     @GET("content/open/queryComprehensivePage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page, @Query("pageSize") Integer count, @Query("resourceType") String resourceType);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid,@Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page, @Query("pageSize") Integer count, @Query("resourceType") String resourceType);
 
     //获取首页菜单信息
     @GET("content/open/findHomeData")
-    Observable<MBaseResponse<HomeRes>> getHomeInfo(@Header("Authorization") String authorization, @Header("mid") String mid, @Header("uid") String uid);
+    Observable<MBaseResponse<HomeRes>> getHomeInfo(@Header("Authorization") String authorization, @Header("mid") String mid);
+
+    //首页点赞
+    @Headers({"content-type:application/json"})
+    @POST("content/shortVideo/favorite")
+    Observable<MBaseResponse<HomeRes>> setVideoLike(@Header("Authorization") String authorization, @Body RequestBody body);
 }

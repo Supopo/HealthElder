@@ -65,8 +65,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private Animation avatarAnim;//头像放大缩小动画
     private AnimationDrawable avatarBgAnim;//头像背景圈动画
     private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
-    private int playStatus;//0-未开始 1-开始播放 2-暂停播放 3-继续播放 4-结束播放
-    private boolean isPlaying;
+    private boolean isPlaying;//判断播放状态
+    private boolean hasPlaying;//是否已经开始了 因为视频播放第一次播放只走进度，滑动后播放先走开始回调
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -197,9 +197,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void initVideo() {
-        //加载进度
-        binding.mainLoadView.setVisibility(View.VISIBLE);
-        binding.mainLoadView.start();
+        //判断是推荐第一条开始未滑动时候不显示加载进度
+        if ((AppApplication.get().getTjPlayPosition() == -1 && position == 0 && type.equals("home-tj"))) {
+            binding.mainLoadView.setVisibility(View.GONE);
+        } else {
+            //加载进度
+            binding.mainLoadView.setVisibility(View.VISIBLE);
+            binding.mainLoadView.start();
+        }
+
+
         //视频播放
         vodPlayer = new TXVodPlayer(getActivity());
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
@@ -222,6 +229,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
 
+    private double firstLikeTime;
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -232,11 +241,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getTjPlayPosition() + type + position + bean.toString());
                 if (bean.msgId == 1) {
                     stopPlay(true);
-
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
                     }
-
                     if (bean.fragmentId.equals("home-gz") && type.equals("home-gz")) {
                         LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getGzPlayPosition() + type + position + bean.toString());
                         startGzVideo();
@@ -283,6 +290,23 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return true;
             }
         });
+
+        binding.rlLike.setOnClickListener(lis -> {
+            long secondTime = System.currentTimeMillis();
+            if (secondTime - firstLikeTime < 500) {
+                return;
+            }
+
+            videoInfo.hasFavorite = !videoInfo.hasFavorite;
+            viewModel.toLikeVideo(videoInfo.resourceId, videoInfo.hasFavorite);
+            if (videoInfo.hasFavorite) {
+                videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() + 1);
+            } else {
+                videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() - 1);
+            }
+            viewModel.videoInfo.setValue(videoInfo);
+            firstLikeTime = secondTime;
+        });
     }
 
     private final Handler handler = new Handler() {
@@ -291,7 +315,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    toPauseVideo();
+                    clickPauseVideo();
                     break;
                 case 2:
                     double2DianZan();
@@ -300,7 +324,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     };
 
-    private void toPauseVideo() {
+    private void clickPauseVideo() {
         //单击暂停
         if (videoInfo.getVideoType() == 1) {
             if (hasPlaying) {
@@ -380,7 +404,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     }
 
-
     private void startPlay(boolean b) {
         vodPlayer.setAutoPlay(b);
         vodPlayer.startPlay(videoInfo.resourceUrl);
@@ -406,6 +429,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void stopPlay(boolean clearLastFrame) {
+        if (!hasPlaying) {
+            return;
+        }
+
         binding.coverImageView.setVisibility(View.VISIBLE);
         hasPlaying = false;
         if (vodPlayer != null) {
@@ -505,7 +532,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     }
 
-    private boolean hasPlaying;//是否已经开始了
     private void showStartLayout() {
         if (hasPlaying) {
             return;
@@ -523,7 +549,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         hasPlaying = true;
         isPlaying = true;
     }
-
 
     @Override
     public void onNetStatus(TXVodPlayer txVodPlayer, Bundle bundle) {

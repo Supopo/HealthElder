@@ -142,7 +142,7 @@ public class UserRepository {
                         if (response.isOk()) {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
-                            UserInfoMgr.getInstance().setHttpToken(response.getData().access_token);
+                            UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
                         } else {
                             loginSuccess.postValue(false);
@@ -191,7 +191,7 @@ public class UserRepository {
                         if (response.isOk()) {
                             InfoCache.getInstance().setTokenInfo(response.getData());
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
-                            UserInfoMgr.getInstance().setHttpToken(response.getData().access_token);
+                            UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
                             loginStatus.postValue(1);
                         } else {
                             //需要绑定手机号跳转绑定手机号页面

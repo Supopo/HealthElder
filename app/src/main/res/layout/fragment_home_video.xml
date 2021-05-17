@@ -23,7 +23,7 @@
         <ImageView
             android:id="@+id/coverImageView"
             style="@style/Layout.Main"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:id="@+id/rlView"
@@ -37,8 +37,7 @@
 
             <RelativeLayout
                 android:id="@+id/mainLikeLayout"
-                style="@style/Layout.Main"
-                />
+                style="@style/Layout.Main" />
 
             <RelativeLayout
                 android:id="@+id/rlAvatarAll"
@@ -108,10 +107,26 @@
                 android:orientation="vertical"
                 android:visibility="@{viewModel.videoInfo.getVideoType() == 1?View.VISIBLE:View.INVISIBLE}">
 
-                <ImageView
-                    android:layout_width="@dimen/dp_34"
-                    android:layout_height="@dimen/dp_29"
-                    android:background="@mipmap/ic_home_like" />
+                <RelativeLayout
+                    android:id="@+id/rlLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:visibility="@{viewModel.videoInfo.hasFavorite?View.GONE:View.VISIBLE}"
+                        android:id="@+id/ivLiking"
+                        android:layout_width="@dimen/dp_34"
+                        android:layout_height="@dimen/dp_29"
+                        android:background="@mipmap/ic_home_like" />
+
+                    <ImageView
+                        android:visibility="@{viewModel.videoInfo.hasFavorite?View.VISIBLE:View.GONE}"
+                        android:id="@+id/ivLike"
+                        android:layout_width="@dimen/dp_34"
+                        android:layout_height="@dimen/dp_29"
+                        android:background="@mipmap/ic_home_liking" />
+
+
+                </RelativeLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
