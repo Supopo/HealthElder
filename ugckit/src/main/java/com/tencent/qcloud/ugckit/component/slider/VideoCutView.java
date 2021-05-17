@@ -149,12 +149,12 @@ public class VideoCutView extends RelativeLayout implements RangeSlider.OnRangeC
         }
         mVideoDuration = videoInfo.duration;
 
-        if (mVideoDuration >= 16000) {
+        /*if (mVideoDuration >= 16000) {
             mViewMaxDuration = 16000;
         } else {
             mViewMaxDuration = mVideoDuration;
-        }
-
+        }*/
+        mViewMaxDuration = mVideoDuration;
         mViewLeftTime = 0;
         mViewRightTime = (int) mViewMaxDuration;
 

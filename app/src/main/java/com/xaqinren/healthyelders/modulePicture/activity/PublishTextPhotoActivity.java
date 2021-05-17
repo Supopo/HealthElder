@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -23,9 +24,11 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.tencent.bugly.proguard.M;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityPublishTextPhotoBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
@@ -35,6 +38,8 @@ import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUserAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.PublishLocationAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.adapter.PictureAdapter;
@@ -103,7 +108,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private int MAX = 9;
     private int REQUEST_CAMERA = 188;
     private int REQUEST_GALLERY = 189;
-
+    private boolean isUploadFile;
+    private int upLoadFileCount;
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -142,7 +148,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
         RxSubscriptions.add(eventDisposable);
         checkPermission();
-        String path = getIntent().getStringExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
+        ArrayList<String> path = getIntent().getStringArrayListExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
         publishDraftId = getIntent().getLongExtra(Constant.DraftId, 0L);
         if (publishDraftId > 0) {
             //装在草稿箱内容
@@ -181,30 +187,36 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         //TODO 发布
         binding.includePublish.publishBtn.setOnClickListener(view -> {
 //            publishVideo();
+            showDialog();
+            uploadFile();
         });
 
         binding.desText.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
             @Override
             public void inputTopic(String str) {
                 LogUtils.e(TAG, "inputTopic 提出话题弹窗 -> " + str);
+                binding.contentLayout.setVisibility(View.GONE);
                 showTopicView(str);
             }
 
             @Override
             public void inputNoTopic() {
                 LogUtils.e(TAG, "inputNoTopic 隐藏话题弹窗 -> " );
+                binding.contentLayout.setVisibility(View.VISIBLE);
                 binding.includeListTopic.layoutPublishAt.setVisibility(View.GONE);
             }
 
             @Override
             public void inputAt(String str) {
                 LogUtils.e(TAG, "inputTopic 提出@弹窗 -> " + str);
+                binding.contentLayout.setVisibility(View.GONE);
                 showAtView(str);
             }
 
             @Override
             public void inputNoAt() {
                 LogUtils.e(TAG, "inputNoTopic 隐藏@弹窗 -> " );
+                binding.contentLayout.setVisibility(View.VISIBLE);
                 binding.includeListAt.layoutPublishAt.setVisibility(View.GONE);
             }
 
@@ -302,7 +314,16 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
     }
 
-
+    private void addPhoto(List<String> path) {
+        if (path!=null) {
+            for (String s : path) {
+                LocalPhotoBean bean = new LocalPhotoBean();
+                bean.setPath(s);
+                localPhotoBeans.add(bean);
+            }
+        }
+        addAddPhoto();
+    }
     private void addPhoto(String path) {
         LocalPhotoBean bean = new LocalPhotoBean();
         bean.setPath(path);
@@ -312,9 +333,11 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
     private void addAddPhoto() {
         if (localPhotoBeans.size() < MAX) {
-            LocalPhotoBean bean = new LocalPhotoBean();
-            bean.type = 1;
-            localPhotoBeans.add(bean);
+            if (localPhotoBeans.isEmpty() || localPhotoBeans.get(localPhotoBeans.size() - 1).type == 0) {
+                LocalPhotoBean bean = new LocalPhotoBean();
+                bean.type = 1;
+                localPhotoBeans.add(bean);
+            }
         }
     }
 
@@ -363,8 +386,16 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             this.listTopicBeans.addAll(topicBeans);
             chooseTopicAdapter.setList(this.listTopicBeans);
         });
+        viewModel.uploadFile.observe(this,objects -> {
+            LogUtils.e(TAG, objects);
+            uploadFileUrl.add(objects);
+            if (uploadFileUrl.size() == upLoadFileCount) {
+                LogUtils.e(TAG, "上传完成");
+            }
+        });
     }
 
+    private List<String> uploadFileUrl = new ArrayList<>();
     private boolean singleSearchAt = false;
     private String currentAt;
     private void showAtView(String str) {
@@ -478,6 +509,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 bean.lat = item.getLatLonPoint().getLatitude();
                 bean.lon = item.getLatLonPoint().getLongitude();
             }
+            bean.province = item.getProvinceName();
+            bean.city = item.getCityName();
+            bean.district = item.getAdName();
             locationBeans.add(bean);
             index++;
         }
@@ -557,18 +591,92 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     }
 
 
+
+
     /**
      * TODO 从草稿箱获取内容
      */
     private void getDraftContent() {
+        String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+        SaveDraftBean bean = viewModel.getDraftsById(this,fileName,publishDraftId);
+        if (bean == null) {
+            return;
+        }
+        //文本
+        PublishDesBean publishDesBean = new PublishDesBean();
+        publishDesBean.content = bean.getContent();
+        publishDesBean.publishFocusItemBeans = bean.getPublishFocusItemBeans();
+        binding.desText.initDesStr(publishDesBean);
+        //地址
+        lon = bean.getLon();
+        lat = bean.getLat();
+        locationBean = new LocationBean();
+        locationBean.desName = bean.getAddress();
+        locationBean.lon = lon;
+        locationBean.lat = lat;
+        binding.includePublish.myLocation.setText(bean.getAddress());
+        //正文
+        binding.contentInput.setText(bean.getBodyStr());
+        //图片
+        addPhoto(bean.getFilePaths());
 
     }
     /**
      * TODO 创建草稿箱内容
      */
     private void createDraftContent() {
+        //图片list ， 标题  ，正文  ，地址  ，保存相册
+        String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
 
+        PublishDesBean publishDesBean = binding.desText.getDesStr();
+        SaveDraftBean saveDraftBean;
+        if (publishDraftId > 0) {
+            saveDraftBean = viewModel.getDraftsById(this,fileName,publishDraftId);
+        }else{
+            saveDraftBean = new SaveDraftBean();
+            saveDraftBean.setId(System.currentTimeMillis() / 1000);
+        }
+
+        saveDraftBean.setContent(publishDesBean.content);
+        saveDraftBean.setPublishFocusItemBeans(publishDesBean.publishFocusItemBeans);
+
+        saveDraftBean.setFilePaths(getUploadFiles());
+        saveDraftBean.setBodyStr(binding.contentInput.getText().toString());
+
+
+        if (locationBean!=null) {
+            saveDraftBean.setAddress(locationBean.desName);
+            saveDraftBean.setLon(lon);
+            saveDraftBean.setLat(lat);
+            saveDraftBean.setProvince(locationBean.province);
+            saveDraftBean.setCity(locationBean.city);
+            saveDraftBean.setDistrict(locationBean.district);
+        }
+        saveDraftBean.setComment(false);
+        saveDraftBean.setType(1);
+        saveDraftBean.setSaveTime(System.currentTimeMillis());
+
+        viewModel.saveDraftsById(this, fileName, saveDraftBean);
+
+        LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
+        finish();
     }
 
+    private List<String> getUploadFiles() {
+        List<String> files = new ArrayList<>();
+        for (LocalPhotoBean bean : localPhotoBeans) {
+            if (bean.type == 0)
+                files.add(bean.getPath());
+        }
+        return files;
+    }
+
+    private void uploadFile() {
+        if (isUploadFile) return;
+        isUploadFile = true;
+        List<String> files = getUploadFiles();
+        upLoadFileCount = files.size();
+        viewModel.uploadFile(files);
+    }
 
 }

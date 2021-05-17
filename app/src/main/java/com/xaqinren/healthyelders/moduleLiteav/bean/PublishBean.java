@@ -21,6 +21,9 @@ public class PublishBean {
     public String musicId;
     public String musicName;
     public boolean canRecommendFriends;
+    public String province;
+    public String city;
+    public String district;
     public List<String> refuseUserIds = new ArrayList<>();
 
 

@@ -16,14 +16,19 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.utils.ACache;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 public class LiteAvRepository {
@@ -229,5 +234,39 @@ public class LiteAvRepository {
                         listMutableLiveData.postValue(data.getData());
                     }
                 });
+    }
+
+    /**
+     * 上传图片
+     * @param dismissDialog
+     * @param fileUrl
+     * @param filePath
+     */
+    public void updatePhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<String> fileUrl, List<String> filePath) {
+
+        for (int i = 0; i < filePath.size(); i++) {
+            File file = new File(filePath.get(i));
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file"+i, file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file))
+                    .build();
+            RetrofitClient.getInstance().create(ApiServer.class).uploadFile(UserInfoMgr.getInstance().getHttpToken(), requestBody)
+                    .compose(RxUtils.schedulersTransformer()) //线程调度
+                    .doOnSubscribe(disposable -> {
+
+                    })
+                    .subscribe(new CustomObserver<MBaseResponse<String>>() {
+
+                        @Override
+                        protected void dismissDialog() {
+                            dismissDialog.postValue(true);
+                        }
+
+                        @Override
+                        protected void onSuccess(MBaseResponse<String> data) {
+                            fileUrl.postValue(data.getData());
+                        }
+                    });
+        }
     }
 }

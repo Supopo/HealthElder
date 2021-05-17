@@ -151,14 +151,17 @@ public class UGCKitVideoEdit extends AbsVideoEditUI {
     @Override
     public void setVideoPath(String videoPath) {
         // 获取TXVideoEditer，兼容"快速导入"之前没有初始化TXVideoEditer；"全功能导入"，裁剪时已经预处理了视频，此时初始化了TXVideoEditer
-        TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
+        VideoEditerSDK.getInstance().releaseSDK();
+        VideoEditerSDK.getInstance().clear();
+        VideoEditerSDK.getInstance().initSDK();
+        /*TXVideoEditer editer = VideoEditerSDK.getInstance().getEditer();
         if (editer == null) {
             VideoEditerSDK.getInstance().initSDK();
-        }
+        }*/
         TXCLog.i(TAG, "[UGCKit][VideoEdit][QuickImport]setVideoPath:" + videoPath);
         VideoEditerSDK.getInstance().setVideoPath(videoPath);
 
-        // 获取TXVideoInfo，兼容"快速导入"新传入videoPath，之前没有获取视频信息;"全功能导入"，裁剪时已经获取视频基本信息。
+        // 获取TXVideoInfo，兼容"快速导入"新传入videoPath，之前没有获取视频信息;"全功能导入"，裁剪时已经获取视频基本信息。4
         TXVideoEditConstants.TXVideoInfo info = VideoEditerSDK.getInstance().getTXVideoInfo();
         if (info == null) {
             // 从"录制"进入，录制勾选了"进入编辑"，info在录制界面已设置，此处不为null

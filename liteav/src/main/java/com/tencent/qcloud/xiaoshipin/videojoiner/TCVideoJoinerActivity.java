@@ -70,10 +70,16 @@ public class TCVideoJoinerActivity extends FragmentActivity {
      * @param ugcKitResult
      */
     private void startCutActivity(UGCKitResult ugcKitResult) {
-        Intent intent = new Intent(TCVideoJoinerActivity.this, TCVideoCutActivity.class);
-        intent.putExtra(UGCKitConstants.VIDEO_PATH, ugcKitResult.outputPath);
-        startActivity(intent);
-        finish();
+        try {
+            Class cls = Class.forName("com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity");
+            Intent intent = new Intent(TCVideoJoinerActivity.this, cls);
+            intent.putExtra(UGCKitConstants.VIDEO_PATH, ugcKitResult.outputPath);
+            startActivity(intent);
+            finish();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

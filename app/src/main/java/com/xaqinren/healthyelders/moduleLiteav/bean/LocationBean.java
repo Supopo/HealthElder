@@ -12,4 +12,10 @@ public class LocationBean implements Serializable {
     public double lon;
     public boolean isSelLocation;
     public boolean isLookMore;
+    //省
+    public String province;
+    //市
+    public String city ;
+    //区
+    public String district;
 }

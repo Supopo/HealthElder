@@ -37,6 +37,8 @@ public class PublishTextPhotoViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> publishSuccess = new MutableLiveData<>();
 
+    public MutableLiveData<String> uploadFile = new MutableLiveData<>();
+
     /**
      * 获取用户自身好友，粉丝，
      */
@@ -89,5 +91,9 @@ public class PublishTextPhotoViewModel extends BaseViewModel {
      */
     public void getSearchTopic(String key) {
         LiteAvRepository.getInstance().getSearchTopicList(requestSuccess, topicSearchList, key);
+    }
+
+    public void uploadFile(List<String> files) {
+        LiteAvRepository.getInstance().updatePhoto(requestSuccess , uploadFile , files);
     }
 }

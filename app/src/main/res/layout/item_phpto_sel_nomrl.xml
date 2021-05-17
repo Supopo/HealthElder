@@ -38,7 +38,6 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
             android:layout_alignRight="@id/item_iv"
-            android:text="00:58"
             android:visibility="gone"/>
     </RelativeLayout>
 </layout>

@@ -102,7 +102,7 @@ public class UGCKitVideoJoin implements IVideoJoinKit, TXVideoJoiner.TXVideoJoin
                 cancelJoin();
             }
         });
-        mTXVideoJoiner.joinVideo(TXVideoEditConstants.VIDEO_COMPRESSED_540P, mOutputPath);
+        mTXVideoJoiner.joinVideo(TXVideoEditConstants.VIDEO_COMPRESSED_720P, mOutputPath);
     }
 
     @NonNull

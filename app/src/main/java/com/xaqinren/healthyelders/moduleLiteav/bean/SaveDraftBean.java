@@ -20,17 +20,76 @@ public class SaveDraftBean implements Serializable {
     private double lon;
     //定位地址
     private String address;
+    //省
+    private String province;
+    //市
+    private String city ;
+    //区
+    private String district;
     //公开模式
     private int openMode;
     //禁止查阅
     private List<LiteAvUserBean> unLookUser;
     //存储时间
     private long saveTime;
-    //是否推荐
+    //视频是否推荐,图文保存相册
     private boolean isComment;
     //音乐ID
     private long musicId;
+    //类型
+    private int type;//0视频 1图文
+    //图片list
+    private List<String> filePaths;
+    //图片正文
+    private String bodyStr;
 
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getBodyStr() {
+        return bodyStr;
+    }
+
+    public void setBodyStr(String bodyStr) {
+        this.bodyStr = bodyStr;
+    }
+
+    public List<String> getFilePaths() {
+        return filePaths;
+    }
+
+    public void setFilePaths(List<String> filePaths) {
+        this.filePaths = filePaths;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public long getId() {
         return id;

@@ -406,6 +406,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             bean.shortVideoUrl = publishResult.videoURL;
             bean.shortVideoId = publishResult.videoId;
             bean.canRecommendFriends = isComment;
+            bean.province = locationBean.province;
+            bean.city = locationBean.city;
+            bean.district = locationBean.district;
 
             PublishSummaryBean summaryBean = new PublishSummaryBean();
 
@@ -731,6 +734,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             bean.address = item.getSnippet();
             bean.desName = item.getTitle();
             bean.distance = item.getDistance() + "";
+            bean.province = item.getProvinceName();
+            bean.city = item.getCityName();
+            bean.district = item.getAdName();
             if (item.getLatLonPoint() != null) {
                 bean.lat = item.getLatLonPoint().getLatitude();
                 bean.lon = item.getLatLonPoint().getLongitude();
@@ -815,6 +821,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             saveDraftBean.setAddress(locationBean.desName);
             saveDraftBean.setLon(lon);
             saveDraftBean.setLat(lat);
+            saveDraftBean.setProvince(locationBean.province);
+            saveDraftBean.setCity(locationBean.city);
+            saveDraftBean.setDistrict(locationBean.district);
         }
         saveDraftBean.setOpenMode(publishMode);
         saveDraftBean.setUnLookUser(unLookUserList);

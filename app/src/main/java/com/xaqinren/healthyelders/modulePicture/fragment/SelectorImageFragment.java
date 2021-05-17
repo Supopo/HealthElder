@@ -46,6 +46,7 @@ import java.util.Collections;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.module.OnMultiClickListener;
 import me.goldze.mvvmhabit.utils.ConvertUtils;
 
 /**
@@ -111,8 +112,12 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         binding.menuList.setAdapter(menuAdapter);
         binding.menuList.setLongPressDragEnabled(true);
         binding.menuList.setOnItemMoveListener(this);
-
-        binding.btnNext.setOnClickListener(view -> startPictureJoinActivity(selList));
+        binding.btnNext.setOnClickListener(new OnMultiClickListener(5000) {
+            @Override
+            public void onMultiClick(View v) {
+                startPictureJoinActivity(selList);
+            }
+        });
     }
 
     /**
@@ -136,7 +141,6 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
     }
 
 
-
     /**
      * 功能：加载本地所有图片</p>
      * 包含：<p/>
@@ -146,7 +150,6 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
     private void loadPictureList() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             mHandlder.post(() -> {
-                //TODO 获取到图库,绑定到listview
                 list = PickerManagerKit.getInstance(getContext()).getAllPictrue();
                 adapter.setList(list);
             });

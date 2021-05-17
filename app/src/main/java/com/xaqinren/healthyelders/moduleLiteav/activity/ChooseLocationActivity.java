@@ -9,18 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.fastjson.JSON;
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
@@ -34,14 +27,11 @@ import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
-import com.nostra13.dcloudimageloader.utils.L;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityLiteAvLocationBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseLocationAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
@@ -62,7 +52,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * 选择地址
  */
 public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationBinding, ChooseLocationViewModel>
-        implements PoiSearch.OnPoiSearchListener, Inputtips.InputtipsListener {
+        implements PoiSearch.OnPoiSearchListener, Inputtips.InputtipsListener, GeocodeSearch.OnGeocodeSearchListener {
     private ChooseLocationAdapter adapter;
     private List<LocationBean> selLocationBeans = new ArrayList<>();
     private List<LocationBean> selLocationTipBeans = new ArrayList<>();
@@ -79,7 +69,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private int locationPageIndex = 1;
     private int locationType = 0;//0 poi 1 str
     private String currentSearch = "";
-
+    private GeocodeSearch geocoderSearch;
+    private String clickDesName;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_lite_av_location;
@@ -147,11 +138,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         });
         adapter.setOnItemClickListener((adapter1, view, position) -> {
             LocationBean bean = (LocationBean) adapter1.getData().get(position);
-            //选择返回
-            Intent intent = new Intent();
-            intent.putExtra("bean", bean);
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+            clickDesName = bean.desName;
+            getGeocodeSearch(new LatLonPoint(bean.lat, bean.lon));
         });
         adapter.getLoadMoreModule().setEnableLoadMore(true);
         adapter.getLoadMoreModule().setAutoLoadMore(true);
@@ -233,6 +221,15 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         inputTips.requestInputtipsAsyn();
     }
 
+    private void getGeocodeSearch(LatLonPoint latLonPoint) {
+        if (geocoderSearch == null) {
+            geocoderSearch = new GeocodeSearch(this);
+            geocoderSearch.setOnGeocodeSearchListener(this);
+        }
+        // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,GeocodeSearch.AMAP);
+        geocoderSearch.getFromLocationAsyn(query);
+    }
 
     @Override
     public void onPoiSearched(PoiResult poiResult, int i) {
@@ -246,6 +243,9 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             bean.distance = item.getDistance() + "";
             bean.lat = item.getLatLonPoint().getLatitude();
             bean.lon = item.getLatLonPoint().getLongitude();
+            bean.province = item.getProvinceName();
+            bean.city = item.getCityName();
+            bean.district = item.getAdName();
             selLocationBeans.add(bean);
         }
         locationPageIndex++;
@@ -277,6 +277,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                 bean.lat = item.getPoint().getLatitude();
                 bean.lon = item.getPoint().getLongitude();
             }
+            item.getDistrict();
             LatLng latLng2 = new LatLng(bean.lat,bean.lon);
             int distance = (int) AMapUtils.calculateLineDistance(latLng1,latLng2);
             bean.distance = distance+"";
@@ -285,5 +286,27 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         locationPageIndex++;
         adapter.setList(selLocationTipBeans);
         adapter.getLoadMoreModule().loadMoreEnd();
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+        //解析result获取地址描述信息
+        LocationBean bean = new LocationBean();
+        bean.lat = regeocodeResult.getRegeocodeQuery().getPoint().getLatitude();
+        bean.lon = regeocodeResult.getRegeocodeQuery().getPoint().getLongitude();
+        bean.province = regeocodeResult.getRegeocodeAddress().getProvince();
+        bean.city = regeocodeResult.getRegeocodeAddress().getCity();
+        bean.district = regeocodeResult.getRegeocodeAddress().getDistrict();
+        bean.desName = clickDesName;
+        //选择返回
+        Intent intent = new Intent();
+        intent.putExtra("bean", bean);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
     }
 }

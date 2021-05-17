@@ -38,8 +38,10 @@ import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlay2Activity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlayActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
+import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
@@ -168,8 +170,11 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu104.setOnClickListener(view -> {
             String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
             Bundle bundle = new Bundle();
-            bundle.putLong(Constant.DraftId, LiteAvRepository.getInstance().getDraftsList(getContext(), fileName).get(0).getId());
-            startActivity(VideoPublishActivity.class, bundle);
+            SaveDraftBean bean = LiteAvRepository.getInstance().getDraftsList(getContext(), fileName).get(0);
+            long id = bean.getId();
+            int type = bean.getType();
+            bundle.putLong(Constant.DraftId, id);
+            startActivity(type == 0 ? VideoPublishActivity.class : PublishTextPhotoActivity.class, bundle);
         });
         binding.tvMenu105.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), LiteAvPlay2Activity.class);

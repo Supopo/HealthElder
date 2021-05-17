@@ -7,7 +7,64 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_layout"
+            />
+        <RelativeLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_178"
+            android:background="@drawable/bg_top_cir_10dp"
+            android:layout_alignParentBottom="true">
+            <LinearLayout
+                android:id="@+id/layout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="@dimen/dp_18"
+                android:paddingBottom="@dimen/dp_14">
+                <TextView
+                    android:id="@+id/tv_drag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:text="长按拖拽可调整视频顺序"
+                    android:textColor="@color/gray_999"
+                    android:textSize="@dimen/sp_12" />
+
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="@dimen/dp_92"
+                    android:layout_height="@dimen/dp_36"
+                    android:layout_marginRight="@dimen/dp_13"
+                    android:background="@drawable/bg_choose_next_selector"
+                    android:text="@string/ugckit_next_step"
+                    android:textColor="@drawable/color_choose_next_selector"
+                    android:enabled="false"
+                    android:textSize="@dimen/sp_16" />
+            </LinearLayout>
+            <com.tencent.qcloud.ugckit.component.swipemenu.SwipeMenuRecyclerView
+                android:id="@+id/menu_list"
+                android:layout_below="@id/layout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"/>
+        </RelativeLayout>
+
+        <!--<com.tencent.qcloud.ugckit.module.picker.view.PickedLayout
+            android:id="@+id/choose_pick_layout"
+            android:layout_width="match_parent"
+            android:layout_height="146dp"
+            android:background="@drawable/ugckit_ic_choose_bottom_bg_sel"
+            android:layout_alignParentBottom="true"/>-->
     </RelativeLayout>
 </layout>

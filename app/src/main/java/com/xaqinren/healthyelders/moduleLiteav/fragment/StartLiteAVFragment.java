@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleLiteav.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ModuleInfo;
@@ -28,6 +29,7 @@ import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
@@ -54,6 +56,7 @@ import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.Constant;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.SelectorMediaActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -270,6 +273,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
         });
     }
+
+
 
     /**
      * 屏幕比例
@@ -597,17 +602,31 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE) {
-            return;
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE) {
+                if (data == null) {
+                    return;
+                }
+                MusicInfo musicInfo = new MusicInfo();
+                musicInfo.path = data.getStringExtra(UGCKitConstants.MUSIC_PATH);
+                musicInfo.name = data.getStringExtra(UGCKitConstants.MUSIC_NAME);
+                musicInfo.position = data.getIntExtra(UGCKitConstants.MUSIC_POSITION, -1);
+                liteAvRecode.setMusicInfo(musicInfo);
+            } else if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+                //拍照完成
+                List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
+                ArrayList<String> paths = new ArrayList<>();
+                for (LocalMedia media : result) {
+                    String path = media.getPath();
+                    paths.add(path);
+                }
+                //发布图文页面
+                Intent intent = new Intent(getContext(), PublishTextPhotoActivity.class);
+                intent.putStringArrayListExtra(Constant.PHOTO_PATH, paths);
+                startActivity(intent);
+            }
         }
-        if (data == null) {
-            return;
-        }
-        MusicInfo musicInfo = new MusicInfo();
-        musicInfo.path = data.getStringExtra(UGCKitConstants.MUSIC_PATH);
-        musicInfo.name = data.getStringExtra(UGCKitConstants.MUSIC_NAME);
-        musicInfo.position = data.getIntExtra(UGCKitConstants.MUSIC_POSITION, -1);
-        liteAvRecode.setMusicInfo(musicInfo);
+
     }
 
 

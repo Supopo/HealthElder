@@ -17,6 +17,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
@@ -25,7 +26,9 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -116,6 +119,11 @@ public interface ApiServer {
     //上传文件
     @POST("merchant/fileUpload")
     Observable<MBaseResponse<String>> uploadFile(@Header("Authorization") String token, @Body RequestBody requestBody);
+
+    //上传文件
+    @Multipart
+    @POST("merchant/fileUpload")
+    Observable<MBaseResponse<List<Object>>> uploadMultiFile(@Header("Authorization") String token, @PartMap Map<String, RequestBody> maps);
 
     //直播间信息刷新接口-点赞数-观众数-榜单
     @GET("live/findLiveRoomRefreshParams")

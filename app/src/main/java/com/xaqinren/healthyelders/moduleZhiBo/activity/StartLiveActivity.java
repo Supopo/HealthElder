@@ -10,25 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
+
 
 
 import com.google.android.material.tabs.TabLayout;
-import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
-import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
-import com.xaqinren.healthyelders.modulePicture.Constant;
-import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleLiteav.fragment.StartLiteAVFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
-import com.xaqinren.healthyelders.utils.GlideEngine;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,22 +112,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PictureConfig.CHOOSE_REQUEST) {
-                //拍照完成
-                List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                String path = result.get(0).getPath();
-                LogUtils.e(TAG, path);
-                //发布图文页面
-                Intent intent = new Intent(StartLiveActivity.this, PublishTextPhotoActivity.class);
-                intent.putExtra(Constant.PHOTO_PATH, path);
-                startActivity(intent);
-            }
-        }
-    }
 
     private void commitAllowingStateLoss(int position) {
         hideAllFragment();
