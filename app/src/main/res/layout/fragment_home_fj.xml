@@ -11,17 +11,17 @@
 
 
     <RelativeLayout
+        android:paddingTop="@dimen/dp_95"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
             android:id="@+id/homeLoadView"
             style="@style/Layout.Main" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/green" />
     </RelativeLayout>
 </layout>

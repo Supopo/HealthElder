@@ -132,7 +132,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //判断有没有直播中
                         scrollTop();
                         binding.tvShowZb.setText("个直播");
-                    }else {
+                    } else if (position == 2) {
+                        binding.tvShowZb.setText("回到首页");
+                        binding.rlZbList.setVisibility(View.GONE);
+                    } else {
                         binding.tvShowZb.setText("回到首页");
                     }
                 }
@@ -153,6 +156,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                             binding.nsv.setScrollingEnabled(false);
                             binding.rlTop.setVisibility(View.GONE);
                             binding.tabLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.llShowTop.setVisibility(View.VISIBLE);
                         }
                     } else if (AppApplication.get().getLayoutPos() == 1) {
                         if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
@@ -160,6 +165,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                             binding.nsv.setScrollingEnabled(false);
                             gzFragment.gzViewPager2.setUserInputEnabled(true);
                             binding.rlZbList.setVisibility(View.GONE);
+                        } else {
+                            binding.llShowTop.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -207,6 +214,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             binding.rlTop.setVisibility(View.GONE);
             binding.rlZbList.setVisibility(View.VISIBLE);
         }
+        binding.llShowTop.setVisibility(View.GONE);
 
     }
 

@@ -9,6 +9,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 /**
+ * //                       _ooOoo_
+ * //                      o8888888o
+ * //                      88" . "88
+ * //                      (| -_- |)
+ * //                       O\ = /O
+ * //                   ____/`---'\____
+ * //                 .   ' \\| |// `.
+ * //                  / \\||| : |||// \
+ * //                / _||||| -:- |||||- \
+ * //                  | | \\\ - /// | |
+ * //                | \_| ''\---/'' | |
+ * //                 \ .-\__ `-` ___/-. /
+ * //              ______`. .' /--.--\ `. . __
+ * //           ."" '< `.___\_<|>_/___.' >'"".
+ * //          | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ * //            \ \ `-. \_ __\ /__ _/ .-` / /
+ * //    ======`-.____`-.___\_____/___.-`____.-'======
+ * //                       `=---='
+ * //
+ * //    .............................................
+ * //             佛祖保佑             永无BUG
  * =====================================================
  * 描    述: RecyclerView间距设置，用法rv.addItemDecoration
  * =====================================================
@@ -16,6 +37,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
     private int mSpeace;
     private int mColumns = 2;//列数 默认2列
+    private boolean isStaggeredGrid;
 
     public SpeacesItemDecoration(Context context, int speace) {
         this.mSpeace = dp2px(context, speace);
@@ -26,24 +48,34 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         this.mColumns = columns;
     }
 
+    public SpeacesItemDecoration(Context context, int speace, int columns, boolean isStaggeredGrid) {
+        this.mSpeace = speace;
+        this.mColumns = columns;
+        this.isStaggeredGrid = isStaggeredGrid;
+    }
+
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         //判断列数，如果是最后一列，则outRect.left = 0;
-        outRect.left = mSpeace;
-        outRect.bottom = 0;
+        outRect.bottom = mSpeace;
         outRect.right = mSpeace;
-        outRect.top = mSpeace;
+        //        outRect.left = mSpeace;
+        //        outRect.top = mSpeace;
 
-        StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-        //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
-        if (lp.getSpanIndex() != 0) {
-            outRect.left = 0;
+
+        if (isStaggeredGrid) {
+            StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+            //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
+                    if (lp.getSpanIndex() != 0) {
+                        outRect.right = 0;
+                    }
         }
-        // StaggeredGridLayoutManager中第一列是 中这样判断第一列有问题
-        //        int position = parent.getChildLayoutPosition(view);
-        //        if (((position + 1) % mColumns) == 0) {
-        //            outRect.left = 0;
-        //        }
+
+        int position = parent.getChildLayoutPosition(view);
+        if (((position + 1) % mColumns) == 0) {
+            outRect.right = 0;
+        }
+
 
     }
 

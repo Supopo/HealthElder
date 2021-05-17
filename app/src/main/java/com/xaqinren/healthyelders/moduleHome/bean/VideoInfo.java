@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
+import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
@@ -104,4 +105,7 @@ public class VideoInfo {
         return Num2TextUtil.sNum2Text2(shareCount);
     }
 
+    public int getPlaceholderRes() {
+        return ColorsUtils.randomColor();
+    }
 }

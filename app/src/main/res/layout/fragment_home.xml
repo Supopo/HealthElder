@@ -109,11 +109,12 @@
 
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/ll_showTop"
             android:layout_width="@dimen/dp_78"
             android:layout_height="@dimen/dp_26"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_205"
+            android:layout_marginTop="@dimen/dp_125"
             android:background="@drawable/btn_2top"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_10">

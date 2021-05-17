@@ -5,49 +5,80 @@
 
 
     <data>
+
         <variable
             name="viewModel"
             type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean" />
     </data>
 
-    <RelativeLayout
-        android:id="@+id/rlAvatarAll"
-        android:layout_width="@dimen/dp_76"
-        android:layout_height="@dimen/dp_76"
-        android:layout_marginRight="@dimen/dp_12">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/avatarBg"
-            style="@style/ImageView.Wrap"
-            android:layout_width="@dimen/dp_76"
-            android:layout_height="@dimen/dp_76"
-            android:background="@drawable/avatar_start_zb_anim"
-            android:padding="@dimen/dp_1" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_125"
+        android:layout_marginRight="@dimen/dp_12"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rlAvatar"
-            android:layout_width="@dimen/dp_66"
-            android:layout_height="@dimen/dp_66"
-            android:layout_centerInParent="true">
+            android:layout_marginTop="@dimen/dp_11"
+            android:id="@+id/rlAvatarAll"
+            android:layout_width="@dimen/dp_76"
+            android:layout_height="@dimen/dp_76"
+            >
 
-            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
-                android:id="@+id/avatarImageView"
-                style="@style/ImageView.Wrap"
-                android:layout_width="@dimen/dp_66"
-                android:layout_height="@dimen/dp_66"
-                app:qmui_border_color="@color/white"
-                app:qmui_border_width="@dimen/dp_1"
-                app:qmui_is_circle="true" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivZhiBoing"
+                android:id="@+id/avatarBg"
                 style="@style/ImageView.Wrap"
-                android:layout_width="@dimen/dp_34"
-                android:layout_height="@dimen/dp_14"
+                android:layout_width="@dimen/dp_76"
+                android:layout_height="@dimen/dp_76"
+                android:background="@drawable/avatar_start_zb_anim"
+                android:padding="@dimen/dp_1" />
+
+            <RelativeLayout
+                android:id="@+id/rlAvatar"
+                android:layout_width="@dimen/dp_66"
+                android:layout_height="@dimen/dp_66"
+                android:layout_centerInParent="true">
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:id="@+id/avatarImageView"
+                    style="@style/ImageView.Wrap"
+                    android:layout_width="@dimen/dp_66"
+                    android:layout_height="@dimen/dp_66"
+                    app:qmui_border_color="@color/white"
+                    app:qmui_border_width="@dimen/dp_1"
+                    app:qmui_is_circle="true" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivZhiBoing"
+                    style="@style/ImageView.Wrap"
+                    android:layout_width="@dimen/dp_34"
+                    android:layout_height="@dimen/dp_14"
+                    android:layout_centerHorizontal="true"
+                    android:background="@mipmap/toux_zhib_bg" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="@mipmap/toux_zhib_bg" />
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="@dimen/dp_16"
+                android:gravity="center"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/white"
+                android:text="直播中"
+                android:background="@drawable/bg_zb_ing_r2"
+                />
+
         </RelativeLayout>
 
-    </RelativeLayout>
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:text="婆婆酥" />
+    </LinearLayout>
 
 </layout>
