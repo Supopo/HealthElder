@@ -228,6 +228,12 @@ public class RangeSlider extends ViewGroup {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return super.onInterceptTouchEvent(ev);
+
+    }
+
+    @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         if (!isEnabled()) {
             return false;
@@ -241,6 +247,8 @@ public class RangeSlider extends ViewGroup {
                 int x = (int) event.getX();
                 int y = (int) event.getY();
 
+
+
                 mLastX = mOriginalX = x;
                 mIsDragging = false;
 
@@ -250,12 +258,14 @@ public class RangeSlider extends ViewGroup {
                     if (mRangeChangeListener != null) {
                         mRangeChangeListener.onKeyDown(TYPE_LEFT);
                     }
+                    getParent().requestDisallowInterceptTouchEvent(true);
                 } else if (!mRightThumb.isPressed() && mRightThumb.inInTarget(x, y)) {
                     mRightThumb.setPressed(true);
                     handle = true;
                     if (mRangeChangeListener != null) {
                         mRangeChangeListener.onKeyDown(TYPE_RIGHT);
                     }
+                    getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 break;
 

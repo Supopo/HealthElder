@@ -73,8 +73,13 @@ public class TCBubbleSubtitleFragment extends Fragment implements BaseRecyclerAd
     private int     mDeleteIcon = R.drawable.ugckit_ic_word_del_normal;
 
     private VideoProgressController mVideoProgressController;
+    private TXVideoEditConstants.TXVideoInfo info;
     @Nullable
     private RangeSliderViewContainer.OnDurationChangeListener mOnDurationChangeListener;
+
+    public TCBubbleSubtitleFragment(TXVideoEditConstants.TXVideoInfo info) {
+        this.info = info;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,9 +132,7 @@ public class TCBubbleSubtitleFragment extends Fragment implements BaseRecyclerAd
     private void initData() {
         mTXVideoEditer = VideoEditerSDK.getInstance().getEditer();
 
-        long endTime = VideoEditerSDK.getInstance().getCutterEndTime();
-        long startTime = VideoEditerSDK.getInstance().getCutterStartTime();
-        mDuration = endTime - startTime;
+
         updateDefaultTime();
     }
 
@@ -183,8 +186,14 @@ public class TCBubbleSubtitleFragment extends Fragment implements BaseRecyclerAd
      * 根据当前控件数量 更新默认的一个控件开始时间和结束时间
      */
     private void updateDefaultTime() {
+
+        long startTime = VideoEditerSDK.getInstance().getCutterStartTime();
+        mDuration = info.duration;
+
         int count = mTCBubbleViewGroup != null ? mTCBubbleViewGroup.getChildCount() : 0;
-        mDefaultWordStartTime = count * 3000; // 两个之间间隔3秒
+//        long startTime = VideoEditerSDK.getInstance().getCutterStartTime();
+        Log.e("updateDefaultTime", "startTime -> " + startTime);
+        mDefaultWordStartTime = count * 3000 + startTime; // 两个之间间隔3秒
         mDefaultWordEndTime = mDefaultWordStartTime + 2000;
 
         if (mDefaultWordStartTime > mDuration) {
@@ -277,6 +286,9 @@ public class TCBubbleSubtitleFragment extends Fragment implements BaseRecyclerAd
             mAddBubbleAdapter.notifyDataSetChanged();
             mAddBubbleAdapter.setCurrentSelectedPos(count - 1);
 
+            // 更新一下默认配置的时间
+            updateDefaultTime();
+
             // 更新进度条上的开始结束位置
             RangeSliderViewContainer rangeSliderView = new RangeSliderViewContainer(getActivity());
             rangeSliderView.init(mVideoProgressController, mDefaultWordStartTime, mDefaultWordEndTime - mDefaultWordStartTime, mDuration);
@@ -285,8 +297,7 @@ public class TCBubbleSubtitleFragment extends Fragment implements BaseRecyclerAd
             mVideoProgressController.addRangeSliderView(ViewConst.VIEW_TYPE_WORD, rangeSliderView);
             mVideoProgressController.setCurrentTimeMs(mDefaultWordStartTime);
 
-            // 更新一下默认配置的时间
-            updateDefaultTime();
+
 
             mCurrentSelectedPos = count - 1;
         }

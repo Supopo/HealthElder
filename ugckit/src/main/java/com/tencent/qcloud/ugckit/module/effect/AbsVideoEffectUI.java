@@ -110,8 +110,8 @@ public abstract class AbsVideoEffectUI extends RelativeLayout implements IVideoE
 
         mStaticFilterFragment = new TCStaticFilterFragment();
         mMotionFragment = new TCMotionFragment();
-        mPasterFragment = new TCPasterFragment();
-        mBubbleFragment = new TCBubbleSubtitleFragment();
+        mPasterFragment = new TCPasterFragment(null);
+        mBubbleFragment = new TCBubbleSubtitleFragment(null);
         mMusicFragment = new TCMusicSettingFragment();
     }
 

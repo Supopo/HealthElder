@@ -57,6 +57,7 @@ public class UGCKitConstants {
     public static final int TYPE_EDITER_FILTER = 4;
     public static final int TYPE_EDITER_PASTER = 5;
     public static final int TYPE_EDITER_SUBTITLE = 6;
+    public static final int TYPE_EDITER_CUT = 7;
 
     // 合唱演示视频地址
     public static final String CHORUS_URL = "http://1400100725.vod2.myqcloud.com/8b7d5993vodgzp1400100725/d864a3545285890780576877210/ss2W2I8oIn4A.mp4";

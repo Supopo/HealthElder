@@ -21,11 +21,13 @@ import android.widget.ImageView;
 
 import com.tencent.liteav.basic.log.TXCLog;
 
+import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.module.PlayerManagerKit;
 import com.tencent.qcloud.ugckit.module.effect.BaseRecyclerAdapter;
 import com.tencent.qcloud.ugckit.module.effect.TimeLineView;
 import com.tencent.qcloud.ugckit.module.effect.TimelineViewUtil;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
+import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
 import com.tencent.qcloud.ugckit.utils.FileUtils;
 import com.tencent.qcloud.ugckit.R;
@@ -39,6 +41,7 @@ import com.tencent.qcloud.ugckit.module.effect.paster.view.TCPasterOperationView
 import com.tencent.qcloud.ugckit.module.effect.paster.view.PasterPannel;
 import com.tencent.ugc.TXVideoEditConstants;
 import com.tencent.ugc.TXVideoEditer;
+import com.tencent.ugc.TXVideoInfoReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,6 +109,10 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
     private int mCoverIcon;
     private int pasterTextSize;
     private int pasterTextColor;
+    private TXVideoEditConstants.TXVideoInfo info;
+    public TCPasterFragment(TXVideoEditConstants.TXVideoInfo info) {
+        this.info = info;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -220,10 +227,8 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
 
         mTXVideoEditer = VideoEditerSDK.getInstance().getEditer();
 
-        long startTime = VideoEditerSDK.getInstance().getCutterStartTime();
-        long endTime = VideoEditerSDK.getInstance().getCutterEndTime();
 
-        mDuration = endTime - startTime;
+
         updateDefaultTime();
     }
 
@@ -231,9 +236,19 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
      * 根据当前控件数量 更新默认的一个控件开始时间和结束时间
      */
     private void updateDefaultTime() {
+        long startTime = VideoEditerSDK.getInstance().getCutterStartTime();
+        mDuration = info.duration;
+
         int count = mFloatLayerViewGroup != null ? mFloatLayerViewGroup.getChildCount() : 0;
-        mDefaultWordStartTime = count * 1000; // 两个之间间隔1秒
+
+
+
+        mDefaultWordStartTime = count * 1000 + startTime; // 两个之间间隔1秒
         mDefaultWordEndTime = mDefaultWordStartTime + 2000;
+
+
+        Log.e("updateDefaultTime", "startTime -> " + mDefaultWordStartTime + "\t" + "endTime -> " + mDefaultWordEndTime
+                + "\t" + "mDuration -> " + mDuration);
 
         if (mDefaultWordStartTime > mDuration) {
             mDefaultWordStartTime = mDuration - 2000;
@@ -467,6 +482,9 @@ public class TCPasterFragment extends Fragment implements BaseRecyclerAdapter.On
         pasterOperationView.setPasterName(tcPasterInfo.getName());
         pasterOperationView.showDelete(false);
         pasterOperationView.showEdit(false);
+
+        Log.e("updateDefaultTime", "startTime -> " + mDefaultWordStartTime + "\t" + "endTime -> " + mDefaultWordEndTime
+                + "\t" + "mDuration -> " + mDuration);
 
         RangeSliderViewContainer rangeSliderView = new RangeSliderViewContainer(getActivity());
         rangeSliderView.init(mVideoProgressController, mDefaultWordStartTime, mDefaultWordEndTime - mDefaultWordStartTime, mDuration);

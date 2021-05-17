@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.tencent.bugly.proguard.A;
+import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.qcloud.tim.uikit.utils.PopWindowUtil;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.UGCKit;
@@ -39,6 +41,7 @@ import com.tencent.qcloud.ugckit.component.dialogfragment.ProgressFragmentUtil;
 import com.tencent.qcloud.ugckit.component.timeline.VideoProgressController;
 import com.tencent.qcloud.ugckit.module.PlayerManagerKit;
 import com.tencent.qcloud.ugckit.module.VideoGenerateKit;
+import com.tencent.qcloud.ugckit.module.cut.IVideoCutLayout;
 import com.tencent.qcloud.ugckit.module.editer.IVideoEditKit;
 import com.tencent.qcloud.ugckit.module.editer.UGCKitEditConfig;
 import com.tencent.qcloud.ugckit.module.effect.ConfigureLoader;
@@ -52,11 +55,16 @@ import com.tencent.qcloud.ugckit.module.effect.motion.TCMotionFragment;
 import com.tencent.qcloud.ugckit.module.effect.paster.TCPasterFragment;
 import com.tencent.qcloud.ugckit.module.effect.time.TCTimeFragment;
 import com.tencent.qcloud.ugckit.module.effect.utils.DraftEditer;
+import com.tencent.qcloud.ugckit.module.effect.utils.Edit;
+import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
+import com.tencent.qcloud.ugckit.utils.DialogUtil;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEffectActivity;
+import com.tencent.rtmp.TXLog;
 import com.tencent.ugc.TXVideoEditConstants;
 import com.tencent.ugc.TXVideoEditer;
+import com.tencent.ugc.TXVideoInfoReader;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -74,7 +82,7 @@ import me.goldze.mvvmhabit.utils.Utils;
 /**
  * 录制完编辑
  */
-public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding, VideoEditerViewModel> implements View.OnClickListener , VideoProgressController.VideoProgressSeekListener{
+public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding, VideoEditerViewModel> implements View.OnClickListener, VideoProgressController.VideoProgressSeekListener, Edit.OnCutChangeListener {
     private static final String TAG = "TCVideoEditerActivity";
     /**
      * 视频路径
@@ -99,12 +107,15 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     public static int publish_code = 1001;
     private int margin220;
     private int margin66;
+    private boolean mComplete;
     /**
      * 执行编辑的时候高度
      */
     private int effVideoHeight;
     private int screenVideoHeight;
 
+    private long cutStartTime, cutEndTime;
+    TXVideoEditConstants.TXVideoInfo info;
 
     private IVideoEditKit.OnEditListener mOnVideoEditListener = new IVideoEditKit.OnEditListener() {
         @Override
@@ -177,7 +188,9 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         mTvFilter.setOnClickListener(this);
         mTvPaster.setOnClickListener(this);
         mTvSubtitle.setOnClickListener(this);
+        binding.jianjiLayout.setOnClickListener(this);
 
+        binding.videoEditView.setCutChangeListener(this);
         binding.videoEdit.getTitleBar().setVisibility(View.GONE);
 
         backIv.setOnClickListener(view ->  showCancelAlert());
@@ -187,9 +200,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             VideoEditerSDK.getInstance().setPublishFlag(true);
             mUGCKitVideoEdit.startGenerate();
         });
-
-
-
+        info = TXVideoInfoReader.getInstance(UGCKit.getAppContext()).getVideoFileInfo(mVideoPath);
+        loadVideoInfo(info);
     }
 
     @Override
@@ -307,6 +319,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        binding.timelineView.setVisibility(View.VISIBLE);
+        binding.videoEditView.setVisibility(View.GONE);
         if (id == R.id.sel_music) {
             startEffectActivity(UGCKitConstants.TYPE_EDITER_BGM);
         } else if (id == R.id.action_layout) {
@@ -319,6 +333,11 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             startEffectActivity(UGCKitConstants.TYPE_EDITER_PASTER);
         } else if (id == R.id.zimu_layout) {
             startEffectActivity(UGCKitConstants.TYPE_EDITER_SUBTITLE);
+        } else if (id == R.id.jianji_layout) {
+            binding.timelineView.setVisibility(View.GONE);
+            binding.videoEditView.setVisibility(View.VISIBLE);
+            hideFragment();
+            startEffectActivity(UGCKitConstants.TYPE_EDITER_CUT);
         }
     }
 
@@ -338,7 +357,9 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 //        intent.putExtra(UGCKitConstants.KEY_FRAGMENT, effectType);
 //        startActivityForResult(intent, UGCKitConstants.ACTIVITY_OTHER_REQUEST_CODE);
         showEffect();
-        initEffect();
+        if (!isInitEffect)
+            initEffect();
+        isInitEffect = true;
         showEffect(effectType);
     }
 
@@ -394,15 +415,16 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             }
         }
     };
-
+    boolean isInitEffect = false;
     private void initEffect() {
+
         mTimeFragment = new TCTimeFragment();
         mTimeFragment.setOnTimeLineListener(mOnTimeLineListener);
 
         mStaticFilterFragment = new TCStaticFilterFragment();
         mMotionFragment = new TCMotionFragment();
-        mPasterFragment = new TCPasterFragment();
-        mBubbleFragment = new TCBubbleSubtitleFragment();
+        mPasterFragment = new TCPasterFragment(info);
+        mBubbleFragment = new TCBubbleSubtitleFragment(info);
         mMusicFragment = new TCMusicSettingFragment();
 
         binding.timelineView.setOnTimeChangeListener((type, time) -> {
@@ -421,8 +443,41 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         initTitlebar();
 
         preivewVideo();
+
+        List<Bitmap> thumbnailList = VideoEditerSDK.getInstance().getAllThumbnails();
+        for (int i = 0; i < thumbnailList.size(); i++) {
+            binding.videoEditView.addBitmap(i, thumbnailList.get(i));
+        }
+        binding.videoEditView.setCount(thumbnailList.size());
     }
 
+    private void loadVideoInfo( TXVideoEditConstants.TXVideoInfo info) {
+        // 加载视频信息
+        if (mComplete == true) {
+            return;
+        }
+        mComplete = false;
+
+        if (info == null) {
+            //DialogUtil.showDialog(getContext(), getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_cutter_activity_video_main_handler_edit_failed), getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_does_not_support_android_version_below_4_3), null);
+        } else {
+            /*getVideoCutLayout().setOnRotateVideoListener(new IVideoCutLayout.OnRotateVideoListener() {
+                @Override
+                public void onRotate(int rotation) {
+                    VideoEditerSDK.getInstance().getEditer().setRenderRotation(rotation);
+                }
+            });*/
+            cutStartTime = 0;
+            cutEndTime = info.duration ;
+            setVideoInfo(info);
+            TXCLog.i(TAG,"[UGCKit][VideoCut]load thunmail");
+            // 播放视频
+        }
+    }
+
+    /**
+     * 取消,使用
+     */
     private void initTitlebar() {
         binding.cancel.setOnClickListener(v -> {
             // 点击"返回",清除当前设置的视频特效
@@ -430,12 +485,17 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             // 还原已经设置给SDK的特效
             VideoEditerSDK.getInstance().restore();
             hideEffect();
+            VideoEditerSDK.getInstance().setCutterStartTime(cutStartTime, cutEndTime);
             PlayerManagerKit.getInstance().restartPlay();
+
         });
         binding.save.setOnClickListener(v -> {
             // 点击"完成"，应用当前设置的视频特效
             ConfigureLoader.getInstance().saveConfigFromDraft();
             hideEffect();
+            cutStartTime = tempCutStartTime;
+            cutEndTime = tempCutEndTime;
+            VideoEditerSDK.getInstance().setCutterStartTime(cutStartTime, cutEndTime);
             PlayerManagerKit.getInstance().restartPlay();
         });
     }
@@ -490,7 +550,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     }
 
     private void showFragment(@NonNull Fragment fragment, String tag) {
-        if (fragment == mCurrentFragment) return;
+        if (fragment == mCurrentFragment && !mCurrentFragment.isHidden()) return;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (mCurrentFragment != null) {
             transaction.hide(mCurrentFragment);
@@ -501,6 +561,13 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             transaction.show(fragment);
         }
         mCurrentFragment = fragment;
+        transaction.commit();
+    }
+
+    private void hideFragment() {
+        if (mCurrentFragment==null)return;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.hide(mCurrentFragment);
         transaction.commit();
     }
 
@@ -530,6 +597,42 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     public void onVideoProgressSeekFinish(long currentTimeMs) {
         PlayerManagerKit.getInstance().previewAtTime(currentTimeMs);
     }
+
+    @Override
+    public void onCutClick() {
+
+    }
+
+    @Override
+    public void onCutChangeKeyDown() {
+        PlayerManagerKit.getInstance().stopPlay();
+    }
+    private long tempCutStartTime,tempCutEndTime;
+    @Override
+    public void onCutChangeKeyUp(long startTime, long endTime, int type) {
+        long duration = (endTime - startTime) / 1000;
+        tempCutStartTime = startTime;
+        tempCutEndTime = endTime;
+//        String str = getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_cutter_activity_load_video_success_already_picked) + duration + "s";
+//        mTextDuration.setText(str);
+
+        VideoEditerSDK.getInstance().setCutterStartTime(startTime, endTime);
+        PlayerManagerKit.getInstance().startPlay();
+
+        TXLog.d(TAG, "startTime:" + startTime + ",endTime:" + endTime + ",duration:" + duration);
+    }
+
+    public void setVideoInfo(@NonNull TXVideoEditConstants.TXVideoInfo videoInfo) {
+
+        int durationS = (int) (videoInfo.duration / 1000);
+        int thumbCount = durationS / 3;
+
+        TXCLog.i(TAG, "[UGCKit][VideoCut]init cut time, start:" + 0 + ", end:" + durationS * 1000);
+        VideoEditerSDK.getInstance().setCutterStartTime(0, durationS * 1000);
+
+        binding.videoEditView.setMediaFileInfo(videoInfo);
+    }
+
     /** 编辑部分 end */
 
 }

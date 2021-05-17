@@ -57,27 +57,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_38"
                 >
                 <LinearLayout
-                    android:id="@+id/wenzi_layout"
+                    android:id="@+id/jianji_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal"
                     android:layout_marginRight="@dimen/dp_28"
-                    android:layout_marginTop="@dimen/dp_54"
-                    android:visibility="gone">
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:visibility="visible">
                     <ImageView
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_shp_icon_wenzi"/>
+                        android:src="@mipmap/shp_icon_jianji"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_12"
                         android:layout_marginTop="4dp"
-                        android:text="文字"
+                        android:text="剪辑"
                         android:textColor="@color/white"/>
                 </LinearLayout>
                 <LinearLayout
@@ -86,14 +87,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal"
-                    android:layout_below="@id/wenzi_layout"
-                    android:layout_marginTop="@dimen/dp_54"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_below="@id/jianji_layout"
                     android:layout_marginRight="@dimen/dp_28"
                     >
                     <ImageView
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_shp_icon_tiezhi"/>
+                        android:src="@mipmap/shp_icon_tiezhi"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -116,7 +117,7 @@
                     <ImageView
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_shp_icon_texiao"/>
+                        android:src="@mipmap/shp_icon_texiao"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -139,7 +140,7 @@
                     <ImageView
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_shp_icon_lvjing"/>
+                        android:src="@mipmap/shp_icon_lvjing"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -163,7 +164,7 @@
                         android:id="@+id/scale_iv"
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_shp_icon_zimu"/>
+                        android:src="@mipmap/shp_icon_zimu"/>
 
                     <TextView
                         android:id="@+id/scale_tv"
@@ -187,7 +188,7 @@
                     <ImageView
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_shp_icon_sd"/>
+                        android:src="@mipmap/shp_icon_sd"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -252,6 +253,16 @@
                     android:layout_height="@dimen/dp_60"
                     android:layout_below="@+id/play_control_layout"
                     android:background="@color/ugckit_editer_bottom" />
+
+                <com.tencent.qcloud.ugckit.component.slider.VideoCutView
+                    android:id="@+id/video_edit_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/play_control_layout"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="20dp" />
             </RelativeLayout>
 
             <FrameLayout

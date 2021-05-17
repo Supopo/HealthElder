@@ -31,7 +31,9 @@ import com.tencent.qcloud.ugckit.module.picker.data.TCVideoFileInfo;
 import com.tencent.qcloud.ugckit.module.picker.view.IPickerLayout;
 import com.tencent.qcloud.xiaoshipin.mainui.list.DividerGridItemDecoration;
 import com.tencent.qcloud.xiaoshipin.videochoose.TCPicturePickerActivity;
+import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoCutActivity;
 import com.tencent.qcloud.xiaoshipin.videojoiner.TCPictureJoinActivity;
+import com.tencent.qcloud.xiaoshipin.videojoiner.TCVideoJoinerActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentSelectorImageBinding;
@@ -109,7 +111,31 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         binding.menuList.setAdapter(menuAdapter);
         binding.menuList.setLongPressDragEnabled(true);
         binding.menuList.setOnItemMoveListener(this);
+
+        binding.btnNext.setOnClickListener(view -> startPictureJoinActivity(selList));
     }
+
+    /**
+     * 图片选择后,合成【多个视频】
+     */
+    /**
+     * 跳转到图片合成视频界面，将多张图片添加转场动画后生成一个图频
+     */
+    private void startPictureJoinActivity(ArrayList<TCVideoFileInfo> fileInfoList) {
+        ArrayList<String> picturePathList = new ArrayList<String>();
+        for (TCVideoFileInfo info : fileInfoList) {
+            if (Build.VERSION.SDK_INT >= 29) {
+                picturePathList.add(info.getFileUri().toString());
+            } else {
+                picturePathList.add(info.getFilePath());
+            }
+        }
+        Intent intent = new Intent(getContext(), TCPictureJoinActivity.class);
+        intent.putExtra(UGCKitConstants.INTENT_KEY_MULTI_PIC_LIST, picturePathList);
+        startActivity(intent);
+    }
+
+
 
     /**
      * 功能：加载本地所有图片</p>

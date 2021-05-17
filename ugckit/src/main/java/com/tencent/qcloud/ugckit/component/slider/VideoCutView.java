@@ -104,7 +104,7 @@ public class VideoCutView extends RelativeLayout implements RangeSlider.OnRangeC
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.addOnScrollListener(mOnScrollListener);
+//        mRecyclerView.addOnScrollListener(mOnScrollListener);
 
         mAdapter = new TCVideoEditerAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
@@ -124,6 +124,9 @@ public class VideoCutView extends RelativeLayout implements RangeSlider.OnRangeC
         Resources resources = getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         int screenWidth = dm.widthPixels;
+        ViewGroup.LayoutParams params = mRangeSlider.getLayoutParams();
+        params.width = width + 2 * resources.getDimensionPixelOffset(R.dimen.ugckit_cut_margin);
+        mRangeSlider.setLayoutParams(params);
         if (width > screenWidth) {
             width = screenWidth;
         }
