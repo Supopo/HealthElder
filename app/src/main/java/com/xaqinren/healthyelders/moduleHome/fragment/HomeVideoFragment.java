@@ -67,6 +67,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
     private boolean isPlaying;//判断播放状态
     private boolean hasPlaying;//是否已经开始了 因为视频播放第一次播放只走进度，滑动后播放先走开始回调
+    private AnimationDrawable avatarAddAnim;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -150,7 +151,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 binding.rlAvatar.clearAnimation();
                 binding.rlAvatar.startAnimation(avatarAnim);
             }
-
 
         } else if (videoInfo.resourceType.equals("LIVE")) {
 
@@ -306,6 +306,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
             viewModel.videoInfo.setValue(videoInfo);
             firstLikeTime = secondTime;
+        });
+
+        //关注
+        binding.followImageView.setOnClickListener(lis ->{
+            avatarAddAnim = (AnimationDrawable) binding.followImageView.getBackground();
+            avatarAddAnim.start();
+            viewModel.toFollow(videoInfo.userId);
+            videoInfo.hasAttention = !videoInfo.hasAttention;
         });
     }
 

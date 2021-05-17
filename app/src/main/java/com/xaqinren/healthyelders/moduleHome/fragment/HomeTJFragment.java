@@ -61,24 +61,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         return BR.viewModel;
     }
 
-    private String[] pics = {
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/608a1b18c21a40e0ad678761d4a0ed17.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/86791a92d09f4d1595e0124d09156d6f.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/6bc9be6ee22343beb6d78f7e24204992.png",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/86791a92d09f4d1595e0124d09156d6f.png",
-    };
-    private String[] vidoes = {
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200727/cbac2f83b8cd41aeab99f330c9149eab.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/cf913ed075eb4b9bb0dfd0ef17255167.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200804/0a7cab4596374f06a8cf0481f754b302.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20200805/89e502164fb6482d8feee24f05ac751d.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201225/427d7d9635a240d8b1eb7bf2a03c2e35.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201225/7b7d936e94424af9bc31aafa0a0de760.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201224/def8cf20cd3046999f247de0a1b55199.mp4",
-            "http://qinren.oss-cn-hangzhou.aliyuncs.com/20201222/69504846fdaf4e86ac8c82470175e2aa.mp4",
-    };
-
-
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -134,17 +116,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.viewPager2.setUserInputEnabled(false);
         initVideoViews();
     }
-
-    private void getData() {
-        temp = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            int random = (int) (Math.random() * 7);
-            VideoInfo info = new VideoInfo();
-            info.resourceUrl = vidoes[random];
-            temp.add(info);
-        }
-    }
-
 
     private void initVideoViews() {
         binding.homeLoadView.setVisibility(View.VISIBLE);

@@ -258,12 +258,16 @@ public class UserRepository {
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
                     @Override
                     protected void dismissDialog() {
-                        dismissDialog.postValue(true);
+                        if (dismissDialog != null) {
+                            dismissDialog.postValue(true);
+                        }
                     }
 
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
-                        followSuccess.postValue(true);
+                        if (followSuccess != null) {
+                            followSuccess.postValue(true);
+                        }
                     }
                 });
     }

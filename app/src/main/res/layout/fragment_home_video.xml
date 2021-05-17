@@ -85,14 +85,15 @@
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addImageView"
+                    android:visibility="@{viewModel.videoInfo.hasAttention?View.VISIBLE:View.INVISIBLE}"
+                    android:id="@+id/followImageView"
                     style="@style/ImageView.Wrap"
                     android:layout_width="@dimen/dp_22"
                     android:layout_height="@dimen/dp_22"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:scaleType="center"
-                    android:src="@mipmap/ic_home_add" />
+                    android:background="@drawable/avatar_gz_zb_anim" />
             </RelativeLayout>
 
 
