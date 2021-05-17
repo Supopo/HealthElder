@@ -20,7 +20,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,7 +65,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private Animation avatarAnim;//头像放大缩小动画
     private AnimationDrawable avatarBgAnim;//头像背景圈动画
     private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
-
+    private int playStatus;//0-未开始 1-开始播放 2-暂停播放 3-继续播放 4-结束播放
+    private boolean isPlaying;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -88,10 +88,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
 
-    public static final int STATE_PLAYING =1;//正在播放
-    public static final int STATE_PAUSE =2;//暂停
-    public static final int STATE_STOP =3;//停止
+    public static final int STATE_PLAYING = 1;//正在播放
+    public static final int STATE_PAUSE = 2;//暂停
+    public static final int STATE_STOP = 3;//停止
     public int state;
+
     @SuppressLint("ObjectAnimatorBinding")
     @Override
     public void initData() {
@@ -126,12 +127,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //音乐播放器旋转动画
             musicRotateAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.music_rotate_anim);
 
-            state = STATE_STOP;
-            objectAnimator = ObjectAnimator.ofFloat(binding.rlMusicImageView, "rotation", 0f, 360f);//添加旋转动画，旋转中心默认为控件中点
-            objectAnimator.setDuration(2000);//设置动画时间
-            objectAnimator.setInterpolator(new LinearInterpolator());//动画时间线性渐变
-            objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            objectAnimator.setRepeatMode(ObjectAnimator.RESTART);
+            createObjAnim();
 
 
             //音乐封面
@@ -163,22 +159,41 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         initVideo();
     }
 
-    public void playMusicAnim(){
-        if(state == STATE_STOP){
+
+    private void createObjAnim() {
+        state = STATE_STOP;
+        objectAnimator = ObjectAnimator.ofFloat(binding.rlMusicImageView, "rotation", 0f, 360f);//添加旋转动画，旋转中心默认为控件中点
+        objectAnimator.setDuration(10000);//设置动画时间
+        objectAnimator.setInterpolator(new LinearInterpolator());//动画时间线性渐变
+        objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        objectAnimator.setRepeatMode(ObjectAnimator.RESTART);
+    }
+
+    public void playMusicAnim() {
+        if (objectAnimator == null) {
+            createObjAnim();
+        }
+        if (state == STATE_STOP) {
             objectAnimator.start();//动画开始
+            binding.mainMusicalNoteLayout.start(true);
             state = STATE_PLAYING;
-        }else if(state == STATE_PAUSE){
+        } else if (state == STATE_PAUSE) {
             objectAnimator.resume();//动画重新开始
             state = STATE_PLAYING;
-        }else if(state == STATE_PLAYING){
+            binding.mainMusicalNoteLayout.start(true);
+        } else if (state == STATE_PLAYING) {
             objectAnimator.pause();//动画暂停
             state = STATE_PAUSE;
+            binding.mainMusicalNoteLayout.start(false);
         }
     }
 
-    public void stopMusicAnim(){
-        objectAnimator.end();//动画结束
-        state = STATE_STOP;
+    public void stopMusicAnim() {
+        if (objectAnimator != null) {
+            objectAnimator.end();//动画结束
+            state = STATE_STOP;
+        }
+        binding.mainMusicalNoteLayout.start(false);
     }
 
     private void initVideo() {
@@ -206,7 +221,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         startPlay(false);
     }
 
-    private boolean isPlaying;
 
     @Override
     public void initViewObservable() {
@@ -289,16 +303,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void toPauseVideo() {
         //单击暂停
         if (videoInfo.getVideoType() == 1) {
-            if (isFirstStart) {
+            if (hasPlaying) {
                 isPlaying = !isPlaying;
                 if (isPlaying) {
                     vodPlayer.resume();
                     binding.playImageView.setVisibility(View.GONE);
-                    binding.mainMusicalNoteLayout.start(true);
                 } else {
                     vodPlayer.pause();
                     binding.playImageView.setVisibility(View.VISIBLE);
-                    binding.mainMusicalNoteLayout.start(false);
                 }
                 playMusicAnim();
             }
@@ -319,9 +331,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         ImageView iv = new ImageView(getActivity());
         iv.setImageDrawable(getResources().getDrawable(R.mipmap.ic_video_like));
 
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(300, 300);
-        lp.leftMargin = (int) now_press_x - 150;
-        lp.topMargin = (int) now_press_y - 300;
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(150, 150);
+        lp.leftMargin = (int) now_press_x - 100;
+        lp.topMargin = (int) now_press_y - 200;
 
         iv.setLayoutParams(lp);
         iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -334,16 +346,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         //双击点赞动画
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(AnimUtil.scale(iv, "scaleX", 2f, 0.9f, 100, 0))
-                .with(AnimUtil.scale(iv, "scaleY", 2f, 0.9f, 100, 0))
+        animatorSet.play(AnimUtil.scale(iv, "scaleX", 1.5f, 0.9f, 100, 0))
+                .with(AnimUtil.scale(iv, "scaleY", 1.5f, 0.9f, 100, 0))
                 .with(AnimUtil.rotation(iv, 0, 0, num[new Random().nextInt(4)]))
                 .with(AnimUtil.alpha(iv, 0, 1, 100, 0))
                 .with(AnimUtil.scale(iv, "scaleX", 0.9f, 1, 50, 150))
                 .with(AnimUtil.scale(iv, "scaleY", 0.9f, 1, 50, 150))
                 .with(AnimUtil.translationY(iv, 0, -600, 800, 400))
                 .with(AnimUtil.alpha(iv, 1, 0, 300, 400))
-                .with(AnimUtil.scale(iv, "scaleX", 1, 3f, 700, 400))
-                .with(AnimUtil.scale(iv, "scaleY", 1, 3f, 700, 400));
+                .with(AnimUtil.scale(iv, "scaleX", 1, 1.5f, 700, 400))
+                .with(AnimUtil.scale(iv, "scaleY", 1, 1.5f, 700, 400));
         animatorSet.start();
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -384,48 +396,56 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void resumePlay() {
         binding.mainVideoView.onResume();
         if (vodPlayer != null) {
-            vodPlayer.resume();
+            //判断之前是不暂停状态
+            if (isPlaying) {
+                vodPlayer.resume();
+            } else {
+                vodPlayer.pause();
+            }
         }
     }
 
     private void stopPlay(boolean clearLastFrame) {
         binding.coverImageView.setVisibility(View.VISIBLE);
+        hasPlaying = false;
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
         stopMusicAnim();
-        binding.rlMusicImageView.clearAnimation();
-        binding.mainMusicalNoteLayout.start(false);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        pausePlay();
-        LogUtils.v(Constant.TAG_LIVE, type + position + "onPause()");
+        if (hasPlaying) {
+            pausePlay();
+            LogUtils.v(Constant.TAG_LIVE, type + position + "onPause()");
+        }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (type.equals("home-tj")) {
-            if (AppApplication.get().getTjPlayPosition() == position) {
-                resumePlay();
-            } else {
-                pausePlay();
+        if (hasPlaying) {
+            if (type.equals("home-tj")) {
+                if (AppApplication.get().getTjPlayPosition() == position) {
+                    resumePlay();
+                } else {
+                    pausePlay();
+                }
             }
-        }
 
-        if (type.equals("home-gz")) {
-            if (AppApplication.get().getGzPlayPosition() == position) {
-                resumePlay();
-            } else {
-                pausePlay();
+            if (type.equals("home-gz")) {
+                if (AppApplication.get().getGzPlayPosition() == position) {
+                    resumePlay();
+                } else {
+                    pausePlay();
+                }
             }
+
+            LogUtils.v(Constant.TAG_LIVE, type + position + "onResume()");
         }
-
-
-        LogUtils.v(Constant.TAG_LIVE, type + position + "onResume()");
     }
 
     @Override
@@ -467,6 +487,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             showStartLayout();
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_PROGRESS) {//视频播放进度，会通知当前进度和总体进度，仅在点播时有效
+            //第一次播放时候先会出现进度不会先走PLAY_EVT_PLAY_BEGIN
             //EVT_PLAY_DURATION 总时间  EVT_PLAY_PROGRESS 当前进度
             //有此回调说明是点播
             if (param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS) > 0) {
@@ -474,8 +495,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
                 binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
-
-
                 showStartLayout();
                 LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_PROGRESS");
             }
@@ -486,10 +505,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     }
 
-    private boolean isFirstStart;//第一次开启播放
-
+    private boolean hasPlaying;//是否已经开始了
     private void showStartLayout() {
-        if (isFirstStart) {
+        if (hasPlaying) {
             return;
         }
 
@@ -499,12 +517,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (videoInfo.resourceType.equals("VIDEO")) {
             //开启音乐Icon动画
             if (musicRotateAnim != null) {
-                binding.rlMusicImageView.clearAnimation();
-//                binding.rlMusicImageView.startAnimation(musicRotateAnim);
                 playMusicAnim();
             }
         }
-        isFirstStart = true;
+        hasPlaying = true;
         isPlaying = true;
     }
 

@@ -469,7 +469,14 @@ public class LiveRepository {
     }
 
     public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {
-        userApi.getHomeInfo(Constant.HEADER_DEF, Constant.APP_MID)
+        String uid = "";
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
+                uid = UserInfoMgr.getInstance().getUserInfo().getId();
+            }
+        }
+
+        userApi.getHomeInfo(Constant.HEADER_DEF, Constant.APP_MID, uid)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

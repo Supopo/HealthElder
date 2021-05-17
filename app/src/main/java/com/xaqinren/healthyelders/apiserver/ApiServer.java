@@ -223,5 +223,5 @@ public interface ApiServer {
 
     //获取首页菜单信息
     @GET("content/open/findHomeData")
-    Observable<MBaseResponse<HomeRes>> getHomeInfo(@Header("Authorization") String authorization, @Header("mid") String mid);
+    Observable<MBaseResponse<HomeRes>> getHomeInfo(@Header("Authorization") String authorization, @Header("mid") String mid, @Header("uid") String uid);
 }

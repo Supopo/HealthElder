@@ -175,7 +175,7 @@
             <RelativeLayout
                 android:id="@+id/rlMusic"
                 android:layout_width="@dimen/dp_100"
-                android:layout_height="@dimen/dp_100"
+                android:layout_height="@dimen/dp_90"
                 android:layout_above="@+id/infoRelativeLayout"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="@dimen/dp_67"
@@ -184,7 +184,7 @@
                 <com.xaqinren.healthyelders.moduleHome.widget.MusicalNoteLayout
                     android:id="@+id/mainMusicalNoteLayout"
                     android:layout_width="@dimen/dp_93"
-                    android:layout_height="@dimen/dp_93" />
+                    android:layout_height="@dimen/dp_85" />
 
                 <RelativeLayout
                     android:id="@+id/rlMusicImageView"
