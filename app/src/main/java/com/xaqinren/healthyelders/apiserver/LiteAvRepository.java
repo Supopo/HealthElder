@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
@@ -27,6 +28,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -242,31 +244,59 @@ public class LiteAvRepository {
      * @param fileUrl
      * @param filePath
      */
-    public void updatePhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<String> fileUrl, List<String> filePath) {
-
-        for (int i = 0; i < filePath.size(); i++) {
-            File file = new File(filePath.get(i));
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file"+i, file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file))
-                    .build();
-            RetrofitClient.getInstance().create(ApiServer.class).uploadFile(UserInfoMgr.getInstance().getHttpToken(), requestBody)
-                    .compose(RxUtils.schedulersTransformer()) //线程调度
-                    .doOnSubscribe(disposable -> {
-
-                    })
-                    .subscribe(new CustomObserver<MBaseResponse<String>>() {
-
-                        @Override
-                        protected void dismissDialog() {
-                            dismissDialog.postValue(true);
-                        }
-
-                        @Override
-                        protected void onSuccess(MBaseResponse<String> data) {
-                            fileUrl.postValue(data.getData());
-                        }
-                    });
+    public void updatePhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<String>> fileUrl, List<String> filePath) {
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        for (String s : filePath) {
+            File file = new File(s);
+            builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
         }
+        RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
+                Constant.lanUrl + "content/filesUpload",
+                UserInfoMgr.getInstance().getHttpToken(), builder.build())
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(disposable -> {
+
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<String>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<String>> data) {
+                        fileUrl.postValue(data.getData());
+                    }
+                });
+    }
+
+    /**
+     * 发布图文
+     */
+    public void publishTextPhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<String> publish, com.xaqinren.healthyelders.modulePicture.bean.PublishBean publishBean) {
+        String json = JSON.toJSONString(publishBean);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.postPublishTextPhoto(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        publish.postValue("发布成功");
+                    }
+                });
     }
 }

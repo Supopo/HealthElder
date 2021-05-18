@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/dp_11"
             android:layout_marginRight="@dimen/dp_10"/>
 
-        <com.xaqinren.healthyelders.widget.VideoPublishEditTextView
+        <EditText
             android:id="@+id/des_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,54 +40,26 @@
             android:gravity="top"
             android:layout_below="@id/photo_list"
             />
-        <TextView
-            android:id="@+id/add_topic"
-            android:layout_width="@dimen/dp_96"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_21"
-            android:layout_below="@id/des_text"
-            android:background="@drawable/bg_video_publish_symbol"
-            android:textSize="@dimen/sp_13"
-            android:textColor="@color/color_252525"
-            android:drawableLeft="@mipmap/icon_topic"
-            android:drawablePadding="@dimen/dp_m_10"
-            android:paddingLeft="@dimen/dp_14"
-            android:text="添加话题"
-            android:gravity="center"/>
-        <TextView
-            android:id="@+id/add_friend"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_21"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_below="@id/des_text"
-            android:background="@drawable/bg_video_publish_symbol"
-            android:textSize="@dimen/sp_13"
-            android:textColor="@color/color_252525"
-            android:layout_toRightOf="@id/add_topic"
-            android:text="\@朋友"
-            android:gravity="center"/>
         <LinearLayout
             android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@id/add_topic"
+            android:layout_below="@id/des_text"
             android:visibility="visible">
             <View android:id="@+id/line"
                 style="@style/lineMarginDp16"
                 android:layout_below="@id/add_topic"
                 android:layout_marginTop="@dimen/dp_14"/>
 
-            <EditText
+            <com.xaqinren.healthyelders.widget.VideoPublishEditTextView
                 android:id="@+id/content_input"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_77"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_77"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginBottom="@dimen/dp_13"
                 android:layout_below="@+id/line"
                 android:background="@null"
                 android:hint="添加正文"
@@ -95,17 +67,49 @@
                 android:textColorHint="@color/gray_999"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14"
-                />
-            <View android:id="@+id/line1"
-                style="@style/lineMarginDp16"
-                android:layout_below="@id/content_input"
+                android:maxLength="500"
                 />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/add_topic"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_below="@id/content_layout"
+            android:background="@drawable/bg_video_publish_symbol"
+            android:textSize="@dimen/sp_13"
+            android:textColor="@color/color_252525"
+            android:drawableLeft="@mipmap/icon_topic"
+            android:drawablePadding="@dimen/dp_m_10"
+            android:layout_marginTop="@dimen/dp_13"
+            android:paddingLeft="@dimen/dp_14"
+            android:text="添加话题"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/add_friend"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_below="@id/content_layout"
+            android:background="@drawable/bg_video_publish_symbol"
+            android:textSize="@dimen/sp_13"
+            android:textColor="@color/color_252525"
+            android:layout_toRightOf="@id/add_topic"
+            android:layout_marginTop="@dimen/dp_13"
+            android:text="\@朋友"
+            android:gravity="center"/>
+
+        <View android:id="@+id/line1"
+            style="@style/lineMarginDp16"
+            android:layout_below="@id/add_topic"
+            android:layout_marginTop="@dimen/dp_12"
+            />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/content_layout">
+            android:layout_below="@id/line1">
             <include layout="@layout/layout_publish_photo_publish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

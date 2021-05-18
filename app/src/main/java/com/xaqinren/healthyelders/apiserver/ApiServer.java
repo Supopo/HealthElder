@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -31,6 +33,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 
 public interface ApiServer {
@@ -121,9 +124,9 @@ public interface ApiServer {
     Observable<MBaseResponse<String>> uploadFile(@Header("Authorization") String token, @Body RequestBody requestBody);
 
     //上传文件
-    @Multipart
-    @POST("merchant/fileUpload")
-    Observable<MBaseResponse<List<Object>>> uploadMultiFile(@Header("Authorization") String token, @PartMap Map<String, RequestBody> maps);
+    @POST
+    Observable<MBaseResponse<List<String>>> uploadMultiFile(
+            @Url String host , @Header("Authorization") String token, @Body MultipartBody requestBody);
 
     //直播间信息刷新接口-点赞数-观众数-榜单
     @GET("live/findLiveRoomRefreshParams")
@@ -213,6 +216,12 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/release")
     Observable<MBaseResponse<Object>> postPublishLiteAv(@Header("Authorization") String authorization,
+                                                        @Body RequestBody body);
+
+    //图文发布
+    @Headers({"content-type:application/json"})
+    @POST("content/userDiary/release")
+    Observable<MBaseResponse<Object>> postPublishTextPhoto(@Header("Authorization") String authorization,
                                                         @Body RequestBody body);
 
     //用户，获取好友

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
@@ -25,6 +26,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.bugly.proguard.M;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -38,12 +40,16 @@ import com.xaqinren.healthyelders.moduleLiteav.adapter.ChooseUserAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.PublishLocationAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.PublishSummaryBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.VideoPublishEditBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.adapter.PictureAdapter;
 import com.xaqinren.healthyelders.modulePicture.bean.LocalPhotoBean;
+import com.xaqinren.healthyelders.modulePicture.bean.PublishBean;
 import com.xaqinren.healthyelders.modulePicture.viewModel.PublishTextPhotoViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
@@ -114,9 +120,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent!=null) {
-            String path = intent.getStringExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
+            ArrayList<String> path = getIntent().getStringArrayListExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
             removeLast();
-            addLast(path);
+            addLast(path.get(0));
         }
     }
 
@@ -163,7 +169,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         publishLocationAdapter.setList(locationBeans);
 
         //设置最大输入
-        binding.desText.setInputMax(55);
+        binding.contentInput.setInputMax(500);
 
         //选择地址
         binding.includePublish.locationLayout.setOnClickListener(view -> {
@@ -187,43 +193,40 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         //TODO 发布
         binding.includePublish.publishBtn.setOnClickListener(view -> {
 //            publishVideo();
+            if (!checkParams())return;
             showDialog();
             uploadFile();
         });
 
-        binding.desText.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
+        binding.contentInput.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
             @Override
             public void inputTopic(String str) {
                 LogUtils.e(TAG, "inputTopic 提出话题弹窗 -> " + str);
-                binding.contentLayout.setVisibility(View.GONE);
                 showTopicView(str);
             }
 
             @Override
             public void inputNoTopic() {
                 LogUtils.e(TAG, "inputNoTopic 隐藏话题弹窗 -> " );
-                binding.contentLayout.setVisibility(View.VISIBLE);
                 binding.includeListTopic.layoutPublishAt.setVisibility(View.GONE);
             }
 
             @Override
             public void inputAt(String str) {
                 LogUtils.e(TAG, "inputTopic 提出@弹窗 -> " + str);
-                binding.contentLayout.setVisibility(View.GONE);
                 showAtView(str);
             }
 
             @Override
             public void inputNoAt() {
                 LogUtils.e(TAG, "inputNoTopic 隐藏@弹窗 -> " );
-                binding.contentLayout.setVisibility(View.VISIBLE);
                 binding.includeListAt.layoutPublishAt.setVisibility(View.GONE);
             }
 
             @Override
             public void maxInput() {
                 LogUtils.e(TAG, "inputNoTopic 已到最大输入值 -> " );
-                ToastUtils.showShort("最多输入"+binding.desText.getInputMax()+"个文字");
+                ToastUtils.showShort("最多输入"+binding.contentInput.getInputMax()+"个文字");
             }
         });
 
@@ -238,8 +241,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             equalsLocation(bean);
         });
 
-        binding.addTopic.setOnClickListener(view -> binding.desText.append("#"));
-        binding.addFriend.setOnClickListener(view -> binding.desText.append("@"));
+        binding.addTopic.setOnClickListener(view -> binding.contentInput.append("#"));
+        binding.addFriend.setOnClickListener(view -> binding.contentInput.append("@"));
 
         addPhoto(path);
 
@@ -271,7 +274,21 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
         initListView();
     }
-
+    private boolean checkParams() {
+        if (getUploadFiles().isEmpty()) {
+            ToastUtils.showShort("请选择照片");
+            return false;
+        }
+        if (binding.desText.getText().toString().isEmpty()) {
+            ToastUtils.showShort("请添加标题");
+            return false;
+        }
+        if (binding.contentInput.getText().toString().isEmpty()) {
+            ToastUtils.showShort("请添加正文");
+            return false;
+        }
+        return true;
+    }
     private ListBottomPopup listBottomPopup;
     private void showListPop() {
         List<ListPopMenuBean> menus = new ArrayList<>();
@@ -387,12 +404,45 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             chooseTopicAdapter.setList(this.listTopicBeans);
         });
         viewModel.uploadFile.observe(this,objects -> {
-            LogUtils.e(TAG, objects);
-            uploadFileUrl.add(objects);
-            if (uploadFileUrl.size() == upLoadFileCount) {
-                LogUtils.e(TAG, "上传完成");
-            }
+            uploadFileUrl.addAll(objects);
+            LogUtils.e(TAG, "上传完成");
+            publish();
         });
+        viewModel.publishLiveData.observe(this,s -> {
+            ToastUtils.showShort(s);
+        });
+    }
+
+    /**
+     * 发布
+     */
+    private void publish() {
+        PublishBean bean = new PublishBean();
+        bean.bannerImages = uploadFileUrl;
+        bean.address = locationBean.desName;
+        bean.latitude = locationBean.lat+"";
+        bean.longitude = locationBean.lon+"";
+        bean.city = locationBean.city;
+        bean.province = locationBean.province;
+        bean.district = locationBean.district;
+        bean.title = binding.desText.getText().toString();
+
+        PublishSummaryBean summaryBean = new PublishSummaryBean();
+        PublishDesBean desBean = binding.contentInput.getDesStr();
+        summaryBean.content = desBean.content;
+        summaryBean.publishFocusItemBeans = desBean.publishFocusItemBeans;
+        for (VideoPublishEditBean editBean : binding.contentInput.getAtList()) {
+            PublishAtBean atBean = new PublishAtBean();
+            atBean.name = editBean.getContent().replace("@", "");
+            atBean.uid = editBean.getId() + "";
+            summaryBean.atList.add(atBean);
+        }
+        for (VideoPublishEditBean editBean : binding.contentInput.getTopicList()) {
+            summaryBean.topicList.add(editBean.getContent().replace("#", ""));
+        }
+        bean.summary = JSON.toJSONString(summaryBean);
+
+        viewModel.publish(bean);
     }
 
     private List<String> uploadFileUrl = new ArrayList<>();
@@ -431,13 +481,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         userAdapter.setList(liteAvUserBeans);
         userAdapter.setOnItemClickListener((adapter, view, position) -> {
             String name = liteAvUserBeans.get(position).nickname;
-            binding.desText.setAtStr("@" + name, liteAvUserBeans.get(position).userId);
+            binding.contentInput.setAtStr("@" + name, liteAvUserBeans.get(position).userId);
         });
         chooseTopicAdapter = new ChooseTopicAdapter(R.layout.item_publish_topic_view_adapter);
         chooseTopicAdapter.setList(listTopicBeans);
         chooseTopicAdapter.setOnItemClickListener((adapter, view, position) -> {
             String title = listTopicBeans.get(position).getName();
-            binding.desText.setTopicStr("#" + title, 0);//TODO 增加 topic ID
+            binding.contentInput.setTopicStr("#" + title, 0);//TODO 增加 topic ID
         });
         binding.includeListAt.recyclerView.setAdapter(userAdapter);
         binding.includeListTopic.recyclerView.setAdapter(chooseTopicAdapter);
@@ -589,10 +639,6 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         }
         publishLocationAdapter.notifyDataSetChanged();
     }
-
-
-
-
     /**
      * TODO 从草稿箱获取内容
      */
@@ -606,7 +652,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         PublishDesBean publishDesBean = new PublishDesBean();
         publishDesBean.content = bean.getContent();
         publishDesBean.publishFocusItemBeans = bean.getPublishFocusItemBeans();
-        binding.desText.initDesStr(publishDesBean);
+        binding.contentInput.initDesStr(publishDesBean);
         //地址
         lon = bean.getLon();
         lat = bean.getLat();
@@ -628,7 +674,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         //图片list ， 标题  ，正文  ，地址  ，保存相册
         String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
 
-        PublishDesBean publishDesBean = binding.desText.getDesStr();
+        PublishDesBean publishDesBean = binding.contentInput.getDesStr();
         SaveDraftBean saveDraftBean;
         if (publishDraftId > 0) {
             saveDraftBean = viewModel.getDraftsById(this,fileName,publishDraftId);

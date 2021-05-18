@@ -4,6 +4,8 @@ import com.tencent.qcloud.ugckit.utils.Signature;
 
 import java.net.URISyntaxException;
 
+import retrofit2.http.Url;
+
 /**
  * Description: 常量
  */
@@ -11,6 +13,7 @@ public class Constant {
     public static boolean DEBUG = true;
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
     public static String debugUrl = "http://192.168.1.113:18080/";
+    public static String lanUrl = DEBUG ? "http://test.hjyiyuanjiankang.com/" : baseUrl;
     public static String PageUrl = "WEB_URL";
     public static String PageTitle = "WEB_TITLE";
     public static final int NET_SPEED = 10086;

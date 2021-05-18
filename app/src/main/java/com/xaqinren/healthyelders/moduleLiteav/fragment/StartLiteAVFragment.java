@@ -50,6 +50,7 @@ import com.tencent.ugc.TXRecordCommon;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
+import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseMusicActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
@@ -87,6 +88,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private LiteAvRecode liteAvRecode;
     private OnFragmentStatusListener onFragmentStatusListener;
     private int REQUEST_PERMISSION = 100;
+    private int REQUEST_MUSIC = 10003;
     private String photoPath;
     private int currentMode = RecordButton.VIDEO_MODE;
 
@@ -202,7 +204,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
         //选择音乐
         binding.selMusic.setOnClickListener(view -> {
-            showMusic();
+//            showMusic();
+            Intent intent = new Intent(getContext(), ChooseMusicActivity.class);
+            startActivityForResult(intent , REQUEST_MUSIC);
         });
         //录制
         /*binding.recodeBtn.setOnClickListener(view -> {
@@ -266,7 +270,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
         binding.photoPreview.save.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), PublishTextPhotoActivity.class);
-            intent.putExtra(Constant.PHOTO_PATH, photoPath);
+            ArrayList<String> paths = new ArrayList<>();
+            paths.add(photoPath);
+            intent.putExtra(Constant.PHOTO_PATH, paths);
             startActivity(intent);
             if (onFragmentStatusListener!=null)
                 onFragmentStatusListener.isRecode(false);

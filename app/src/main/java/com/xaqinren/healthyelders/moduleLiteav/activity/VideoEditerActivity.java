@@ -105,6 +105,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     private ImageView backIv;
     private boolean              mIsPublish;
     public static int publish_code = 1001;
+    private int REQUEST_MUSIC = 10003;
     private int margin220;
     private int margin66;
     private boolean mComplete;
@@ -134,6 +135,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         }
 
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,7 +324,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         binding.timelineView.setVisibility(View.VISIBLE);
         binding.videoEditView.setVisibility(View.GONE);
         if (id == R.id.sel_music) {
-            startEffectActivity(UGCKitConstants.TYPE_EDITER_BGM);
+            Intent intent = new Intent(this, ChooseMusicActivity.class);
+            startActivityForResult(intent , REQUEST_MUSIC);
         } else if (id == R.id.action_layout) {
             startEffectActivity(UGCKitConstants.TYPE_EDITER_MOTION);
         } else if (id == R.id.speed_layout) {

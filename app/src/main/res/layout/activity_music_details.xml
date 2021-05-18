@@ -5,7 +5,7 @@
 
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,14 +49,40 @@
                 />
 
         </RelativeLayout>
-
-        <View style="@style/line" />
+        <View style="@style/line" android:layout_below="@id/titleBar_layout" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/content_list"
             android:layout_below="@id/titleBar_layout"
+            android:layout_marginTop="@dimen/dp_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"/>
-    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/paishe_layout"
+            android:layout_width="@dimen/dp_147"
+            android:layout_height="@dimen/dp_52"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_btn_comfrim_cir_shape"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/icon_same_paishe"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="拍同款"
+                android:textSize="@dimen/sp_16"
+                android:layout_marginLeft="@dimen/dp_4"/>
+        </LinearLayout>
+    </RelativeLayout>
 </layout>

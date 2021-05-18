@@ -33,12 +33,10 @@ public class PublishTextPhotoViewModel extends BaseViewModel {
     public MutableLiveData<List<LiteAvUserBean>> liteAvUserList = new MutableLiveData<>();
     public MutableLiveData<List<TopicBean>> topicList = new MutableLiveData<>();
     public MutableLiveData<List<TopicBean>> topicSearchList = new MutableLiveData<>();
-    public MutableLiveData<Object> publish = new MutableLiveData<>();
-    public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
-    public MutableLiveData<Boolean> publishSuccess = new MutableLiveData<>();
 
-    public MutableLiveData<String> uploadFile = new MutableLiveData<>();
+    public MutableLiveData<List<String>> uploadFile = new MutableLiveData<>();
 
+    public MutableLiveData<String> publishLiveData = new MutableLiveData<>();
     /**
      * 获取用户自身好友，粉丝，
      */
@@ -93,7 +91,18 @@ public class PublishTextPhotoViewModel extends BaseViewModel {
         LiteAvRepository.getInstance().getSearchTopicList(requestSuccess, topicSearchList, key);
     }
 
+    /**
+     * 发布多图
+     * @param files
+     */
     public void uploadFile(List<String> files) {
         LiteAvRepository.getInstance().updatePhoto(requestSuccess , uploadFile , files);
+    }
+
+    /**
+     * 发布
+     */
+    public void publish(com.xaqinren.healthyelders.modulePicture.bean.PublishBean publishBean) {
+        LiteAvRepository.getInstance().publishTextPhoto(requestSuccess , publishLiveData , publishBean);
     }
 }

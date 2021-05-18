@@ -51,6 +51,16 @@
             android:name="android.max_aspect"
             android:value="2.4" />
 
+        <!--hifiveai  begin        -->
+        <meta-data
+            android:name = "HIFIVE_APPID"
+            android:value = "6jg58jx4aa9t7305dyck4ckvbyhk7duk">
+        </meta-data>
+        <meta-data
+            android:name = "HIFIVE_SERVERCODE"
+            android:value = "wnzwnkevnc74uym5" />
+        <!--hifiveai  end        -->
+
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -196,12 +206,13 @@
             android:name=".moduleZhiBo.activity.ZhiboOverGZActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleLiteav.activity.LiteAvPlayActivity" android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".modulePicture.activity.PublishTextPhotoActivity" android:windowSoftInputMode="adjustNothing"
+        <activity android:name=".modulePicture.activity.PublishTextPhotoActivity"
             android:launchMode="singleInstance"/>
         <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" />
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
+        <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
     </application>
 
 </manifest>
