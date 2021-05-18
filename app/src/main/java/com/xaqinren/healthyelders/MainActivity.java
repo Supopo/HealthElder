@@ -268,9 +268,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
-                    if (isTranMenu) {
-                        return;
-                    }
                     //底部菜单变透明，中心布局变全屏
                     setBottomColors(R.color.transparent, dawable2, R.color.white, true);
                     //变全屏

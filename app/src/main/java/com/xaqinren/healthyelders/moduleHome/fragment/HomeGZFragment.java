@@ -105,9 +105,12 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 binding.tvShowZb.setText(list.size() + "个直播");
                 binding.nsv.smoothScrollTo(0, 0);
                 zbingAdapter.setNewInstance(list);
+                binding.viewPager2.setUserInputEnabled(false);
+                binding.nsv.setScrollingEnabled(true);
             } else {
                 binding.rlTop.setVisibility(View.GONE);
                 binding.viewPager2.setUserInputEnabled(true);
+                binding.nsv.setScrollingEnabled(false);
             }
         });
     }
@@ -196,11 +199,20 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 showLoadView();
                 viewModel.getVideoData(page);
                 binding.srl.setRefreshing(false);
+
+                //判断
+                if (binding.rlTop.getVisibility() == View.GONE) {
+                    binding.nsv.setScrollingEnabled(false);
+                    binding.viewPager2.setUserInputEnabled(true);
+                }else {
+                    binding.nsv.setScrollingEnabled(true);
+                    binding.viewPager2.setUserInputEnabled(false);
+                }
             }
         });
 
 
-        binding.llShowTop.setOnClickListener(lis ->{
+        binding.llShowTop.setOnClickListener(lis -> {
             binding.rlTop.setVisibility(View.VISIBLE);
             binding.nsv.setScrollingEnabled(true);
             binding.viewPager2.setUserInputEnabled(false);
