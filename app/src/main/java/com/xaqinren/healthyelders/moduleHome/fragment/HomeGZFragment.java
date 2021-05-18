@@ -85,7 +85,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
             if (datas != null && datas.size() > 0) {
                 if (page == 1) {
-                    mVideoInfoList.clear();
                     viewModel.getLiveFiends();
                 }
 
@@ -96,6 +95,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     fragmentPosition++;
                 }
                 videoAdapter.notifyDataSetChanged();
+            } else {
+                page--;
             }
         });
 
@@ -195,16 +196,18 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page = 1;
+                page++;
                 showLoadView();
                 viewModel.getVideoData(page);
                 binding.srl.setRefreshing(false);
+
+                viewModel.getLiveFiends();
 
                 //判断
                 if (binding.rlTop.getVisibility() == View.GONE) {
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
-                }else {
+                } else {
                     binding.nsv.setScrollingEnabled(true);
                     binding.viewPager2.setUserInputEnabled(false);
                 }

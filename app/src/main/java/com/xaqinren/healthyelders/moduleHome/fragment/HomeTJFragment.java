@@ -98,9 +98,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             closeLoadView();
 
             if (datas != null && datas.size() > 0) {
-                if (page == 1) {
-                    mVideoInfoList.clear();
-                }
 
                 mVideoInfoList.addAll(datas);
 
@@ -109,6 +106,8 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
+            }else {
+                page--;
             }
         });
 
@@ -215,7 +214,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page = 1;
+                page ++;
                 showLoadView();
                 viewModel.getVideoData(page);
                 binding.srl.setRefreshing(false);
