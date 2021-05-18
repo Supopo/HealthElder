@@ -62,12 +62,15 @@ import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ImageUtils;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+import me.goldze.mvvmhabit.utils.compression.Luban;
 
 /**
  * 图文发布
@@ -419,12 +422,14 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private void publish() {
         PublishBean bean = new PublishBean();
         bean.bannerImages = uploadFileUrl;
-        bean.address = locationBean.desName;
-        bean.latitude = locationBean.lat+"";
-        bean.longitude = locationBean.lon+"";
-        bean.city = locationBean.city;
-        bean.province = locationBean.province;
-        bean.district = locationBean.district;
+        if (locationBean != null) {
+            bean.address = locationBean.desName;
+            bean.latitude = locationBean.lat+"";
+            bean.longitude = locationBean.lon+"";
+            bean.city = locationBean.city;
+            bean.province = locationBean.province;
+            bean.district = locationBean.district;
+        }
         bean.title = binding.desText.getText().toString();
 
         PublishSummaryBean summaryBean = new PublishSummaryBean();
@@ -717,12 +722,35 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         return files;
     }
 
+    List<String> lubanList = new ArrayList<>();
     private void uploadFile() {
         if (isUploadFile) return;
         isUploadFile = true;
         List<String> files = getUploadFiles();
         upLoadFileCount = files.size();
-        viewModel.uploadFile(files);
+        ImageUtils.compressWithRx(files, new Observer() {
+            @Override
+            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                lubanList.clear();
+            }
+
+            @Override
+            public void onNext(@io.reactivex.annotations.NonNull Object o) {
+                lubanList.add(o.toString());
+            }
+
+            @Override
+            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                dismissDialog();
+            }
+
+            @Override
+            public void onComplete() {
+                viewModel.uploadFile(lubanList);
+            }
+        });
+
+
     }
 
 }

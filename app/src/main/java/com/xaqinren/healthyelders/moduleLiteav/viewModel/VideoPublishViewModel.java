@@ -15,6 +15,7 @@ import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.NetworkUtil;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
@@ -30,6 +31,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -47,6 +50,7 @@ public class VideoPublishViewModel extends BaseViewModel {
     public MutableLiveData<Object> publish = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> publishSuccess = new MutableLiveData<>();
+    public MutableLiveData<String> fileUpload = new MutableLiveData<>();
 
     /**
      * 获取用户自身好友，粉丝，
@@ -125,5 +129,13 @@ public class VideoPublishViewModel extends BaseViewModel {
      */
     public void getSearchTopic(String key) {
         LiteAvRepository.getInstance().getSearchTopicList(requestSuccess, topicSearchList, key);
+    }
+
+    /**
+     * 发布多图
+     * @param files
+     */
+    public void uploadFile(String files) {
+        LiteAvRepository.getInstance().updatePhoto(requestSuccess , fileUpload , files);
     }
 }

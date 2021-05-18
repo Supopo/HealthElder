@@ -102,9 +102,11 @@ import java.util.List;
 import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ImageUtils;
 import me.goldze.mvvmhabit.utils.KeyBoardUtils;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
@@ -163,6 +165,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
     private Handler mHandler = new Handler();
     private TXUGCPublish mVideoPublish;
+    private String shortVideoUrl;
+    private String shortVideoId;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -395,45 +399,10 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
         binding.publishProgressMark.setVisibility(View.GONE);
         if (publishResult.retCode == TXUGCPublishTypeDef.PUBLISH_RESULT_OK) {
-            PublishBean bean = new PublishBean();
-            if (locationBean!=null)
-            bean.address = locationBean.desName;
-            bean.latitude = lat + "";
-            bean.longitude = lon + "";
-            bean.shortVideoAuth = bean.getMode(publishMode);
-            bean.shortVideoName = "小视频";
-            bean.shortVideoCover = publishResult.coverURL;
-            bean.shortVideoUrl = publishResult.videoURL;
-            bean.shortVideoId = publishResult.videoId;
-            bean.canRecommendFriends = isComment;
-            bean.province = locationBean.province;
-            bean.city = locationBean.city;
-            bean.district = locationBean.district;
-
-            PublishSummaryBean summaryBean = new PublishSummaryBean();
-
-            PublishDesBean desBean = binding.desText.getDesStr();
-            summaryBean.content = desBean.content;
-            summaryBean.publishFocusItemBeans = desBean.publishFocusItemBeans;
-
-            for (VideoPublishEditBean editBean : binding.desText.getAtList()) {
-                PublishAtBean atBean = new PublishAtBean();
-                atBean.name = editBean.getContent().replace("@", "");
-                atBean.uid = editBean.getId() + "";
-                summaryBean.atList.add(atBean);
-            }
-            for (VideoPublishEditBean editBean : binding.desText.getTopicList()) {
-                summaryBean.topicList.add(editBean.getContent().replace("#", ""));
-            }
-
-            for (LiteAvUserBean userBean : unLookUserList) {
-                bean.refuseUserIds.add(userBean.userId+"");
-            }
-            bean.summary = JSON.toJSONString(summaryBean);
-
-            LogUtils.e(TAG, JSON.toJSONString(bean));
-            //发布到自己服务器
-            viewModel.UploadUGCVideo(bean);
+            shortVideoUrl = publishResult.videoURL;
+            shortVideoId = publishResult.videoId;
+            showDialog();
+            uploadCover();
         } else {
             if (publishResult.descMsg.contains("java.net.UnknownHostException") || publishResult.descMsg.contains("java.net.ConnectException")) {
                 binding.tvProgress.setText(getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_publisher_activity_network_connection_is_disconnected_video_upload_failed));
@@ -445,6 +414,63 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.publishProgressMark.setVisibility(View.GONE);
     }
 
+    public void publish(String cover) {
+
+        PublishBean bean = new PublishBean();
+        if (locationBean!=null) {
+            bean.address = locationBean.desName;
+            bean.province = locationBean.province;
+            bean.city = locationBean.city;
+            bean.district = locationBean.district;
+        }
+        bean.latitude = lat + "";
+        bean.longitude = lon + "";
+        bean.shortVideoAuth = bean.getMode(publishMode);
+        bean.shortVideoName = "小视频";
+        bean.shortVideoCover = cover;
+        bean.shortVideoUrl = shortVideoUrl;
+        bean.shortVideoId = shortVideoId;
+        bean.canRecommendFriends = isComment;
+
+        PublishSummaryBean summaryBean = new PublishSummaryBean();
+
+        PublishDesBean desBean = binding.desText.getDesStr();
+        summaryBean.content = desBean.content;
+        summaryBean.publishFocusItemBeans = desBean.publishFocusItemBeans;
+
+        for (VideoPublishEditBean editBean : binding.desText.getAtList()) {
+            PublishAtBean atBean = new PublishAtBean();
+            atBean.name = editBean.getContent().replace("@", "");
+            atBean.uid = editBean.getId() + "";
+            summaryBean.atList.add(atBean);
+        }
+        for (VideoPublishEditBean editBean : binding.desText.getTopicList()) {
+            summaryBean.topicList.add(editBean.getContent().replace("#", ""));
+        }
+
+        for (LiteAvUserBean userBean : unLookUserList) {
+            bean.refuseUserIds.add(userBean.userId+"");
+        }
+        bean.summary = JSON.toJSONString(summaryBean);
+
+        LogUtils.e(TAG, JSON.toJSONString(bean));
+        //发布到自己服务器
+        viewModel.UploadUGCVideo(bean);
+    }
+
+
+    public void uploadCover() {
+        ImageUtils.compressWithRx(mCoverPath, new Consumer() {
+            @Override
+            public void accept(Object o) throws Exception {
+                if (o == null) {
+                    dismissDialog();
+                    return;
+                }
+                viewModel.uploadFile(o.toString());
+            }
+        });
+    }
 
     private void clearDrafts(){
         if (publishDraftId != 0) {
@@ -543,6 +569,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             this.listTopicBeans.clear();
             this.listTopicBeans.addAll(topicBeans);
             chooseTopicAdapter.setList(this.listTopicBeans);
+        });
+        viewModel.fileUpload.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                publish(s);
+            }
         });
     }
 

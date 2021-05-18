@@ -28,6 +28,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.compression.Luban;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -234,6 +235,33 @@ public class LiteAvRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<List<TopicBean>> data) {
                         listMutableLiveData.postValue(data.getData());
+                    }
+                });
+    }
+
+
+    public void updatePhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<String> fileUrl, String filePath) {
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        File file = new File(filePath);
+        builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
+        RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
+                Constant.lanUrl + "content/filesUpload",
+                UserInfoMgr.getInstance().getHttpToken(), builder.build())
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(disposable -> {
+
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<String>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<String>> data) {
+                        fileUrl.postValue(data.getData().get(0));
                     }
                 });
     }
