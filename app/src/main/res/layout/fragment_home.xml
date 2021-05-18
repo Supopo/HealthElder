@@ -124,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="2个直播"
+                android:text="回到首页"
                 android:textSize="@dimen/sp_12"
                 android:textColor="@color/white" />
 

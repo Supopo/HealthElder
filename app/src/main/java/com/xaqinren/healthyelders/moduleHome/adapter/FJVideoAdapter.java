@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 
@@ -24,6 +25,12 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         binding.setViewModel(item);
         binding.executePendingBindings();
 
+        //模拟展示
+        if (helper.getAdapterPosition() == 0 || helper.getAdapterPosition() == 6||helper.getAdapterPosition() == 3 ) {
+            helper.setGone(R.id.rl_bottom,false);
+        }else {
+            helper.setGone(R.id.rl_bottom,true);
+        }
 
     }
 

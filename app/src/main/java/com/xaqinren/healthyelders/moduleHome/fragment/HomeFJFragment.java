@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
@@ -61,11 +62,15 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
             }
         });
 
-        binding.rvVideo.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        //瀑布流
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        //防止Item切换
+        manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        binding.rvVideo.setLayoutManager(manager);
         binding.rvVideo.setAdapter(mAdapter);
         //防止刷新跳动
         binding.rvVideo.setItemAnimator(null);
-        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3));
+        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3,true));
 
         List<VideoInfo> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {

@@ -43,13 +43,18 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         this.mSpeace = dp2px(context, speace);
     }
 
+    public SpeacesItemDecoration(Context context, int speace, boolean isStaggeredGrid) {
+        this.mSpeace = dp2px(context, speace);
+        this.isStaggeredGrid = isStaggeredGrid;
+    }
+
     public SpeacesItemDecoration(Context context, int speace, int columns) {
-        this.mSpeace = speace;
+        this.mSpeace = dp2px(context, speace);
         this.mColumns = columns;
     }
 
     public SpeacesItemDecoration(Context context, int speace, int columns, boolean isStaggeredGrid) {
-        this.mSpeace = speace;
+        this.mSpeace = dp2px(context, speace);
         this.mColumns = columns;
         this.isStaggeredGrid = isStaggeredGrid;
     }
@@ -62,16 +67,15 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         //        outRect.left = mSpeace;
         //        outRect.top = mSpeace;
 
-
+        int position;
         if (isStaggeredGrid) {
             StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
             //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
-                    if (lp.getSpanIndex() != 0) {
-                        outRect.right = 0;
-                    }
+             position = lp.getSpanIndex();
+        }else {
+             position = parent.getChildLayoutPosition(view);
         }
 
-        int position = parent.getChildLayoutPosition(view);
         if (((position + 1) % mColumns) == 0) {
             outRect.right = 0;
         }
