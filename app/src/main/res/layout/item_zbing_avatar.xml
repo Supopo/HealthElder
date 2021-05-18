@@ -8,21 +8,20 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean" />
+            type="com.xaqinren.healthyelders.moduleHome.bean.VideoInfo" />
     </data>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_76"
         android:layout_height="@dimen/dp_125"
         android:layout_marginRight="@dimen/dp_12"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/dp_11"
             android:id="@+id/rlAvatarAll"
             android:layout_width="@dimen/dp_76"
             android:layout_height="@dimen/dp_76"
-            >
+            android:layout_marginTop="@dimen/dp_11">
 
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -46,7 +45,8 @@
                     android:layout_height="@dimen/dp_66"
                     app:qmui_border_color="@color/white"
                     app:qmui_border_width="@dimen/dp_1"
-                    app:qmui_is_circle="true" />
+                    app:qmui_is_circle="true"
+                    app:url="@{viewModel.avatarUrl}" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivZhiBoing"
@@ -58,27 +58,26 @@
             </RelativeLayout>
 
             <TextView
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:layout_width="@dimen/dp_44"
                 android:layout_height="@dimen/dp_16"
-                android:gravity="center"
-                android:textSize="@dimen/sp_10"
-                android:textColor="@color/white"
-                android:text="直播中"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/bg_zb_ing_r2"
-                />
+                android:gravity="center"
+                android:text="直播中"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_10" />
 
         </RelativeLayout>
 
         <TextView
-            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_8"
             android:singleLine="true"
-            android:textColor="@color/white"
-            android:text="婆婆酥" />
+            android:text="@{viewModel.nickname}"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </layout>

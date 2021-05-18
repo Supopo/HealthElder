@@ -527,4 +527,27 @@ public class LiveRepository {
 
                 });
     }
+
+    public void getLiveFiends(MutableLiveData<List<VideoInfo>> videoList) {
+        userApi.getLiveFirends(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<VideoInfo>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<VideoInfo>> data) {
+                        videoList.postValue(data.getData());
+                    }
+
+                });
+    }
 }

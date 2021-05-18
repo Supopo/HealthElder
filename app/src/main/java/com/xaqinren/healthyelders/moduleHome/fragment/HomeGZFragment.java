@@ -165,7 +165,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.loadView.start();
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

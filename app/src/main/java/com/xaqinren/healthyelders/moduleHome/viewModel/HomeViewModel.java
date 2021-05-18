@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.viewModel;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -10,8 +11,10 @@ import androidx.lifecycle.Transformations;
 import com.tencent.qcloud.xiaoshipin.mainui.list.TCVideoInfo;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ public class HomeViewModel extends BaseViewModel {
         super(application);
     }
 
-    public MutableLiveData<List<TCVideoInfo>> datas = new MutableLiveData<>();
+    public MutableLiveData<List<VideoInfo>> firendDatas = new MutableLiveData<>();
     public MutableLiveData<HomeRes> homeInfo = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
 
@@ -41,5 +44,12 @@ public class HomeViewModel extends BaseViewModel {
 
     public void getHomeInfo() {
         LiveRepository.getInstance().getHomeInfo(homeInfo);
+    }
+
+    public void getLiveFiends() {
+        if (TextUtils.isEmpty(UserInfoMgr.getInstance().getHttpToken())) {
+            return;
+        }
+        LiveRepository.getInstance().getLiveFiends(firendDatas);
     }
 }

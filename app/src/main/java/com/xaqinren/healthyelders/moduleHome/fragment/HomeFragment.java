@@ -99,6 +99,19 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 }
             }
         });
+        viewModel.firendDatas.observe(this, list -> {
+            if (list != null && list.size() > 0) {
+                binding.rlZbList.setVisibility(View.VISIBLE);
+                binding.nsv.setScrollingEnabled(true);
+                gzFragment.gzViewPager2.setUserInputEnabled(false);
+                zbingAdapter.setNewInstance(list);
+                binding.tvShowZb.setText(list.size() + "个直播");
+            }else {
+                binding.rlZbList.setVisibility(View.GONE);
+                binding.nsv.setScrollingEnabled(false);
+                gzFragment.gzViewPager2.setUserInputEnabled(true);
+            }
+        });
     }
 
     private boolean isFirst = true;
@@ -137,9 +150,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     RxBus.getDefault().post(new EventBean(101, position));
 
                     if (position == 1) {
+                        viewModel.getLiveFiends();
                         //判断有没有直播中
-                        scrollTop();
-                        binding.tvShowZb.setText("个直播");
+//                        scrollTop();
+                        binding.tvShowZb.setText("回到首页");
                     } else if (position == 2) {
                         binding.tvShowZb.setText("回到首页");
                         binding.rlZbList.setVisibility(View.GONE);
@@ -197,13 +211,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         zbingAdapter = new ZhiBoingAvatarAdapter(R.layout.item_zbing_avatar);
         binding.rvZbList.setAdapter(zbingAdapter);
 
-
-        List<ZBUserListBean> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            ZBUserListBean bean = new ZBUserListBean();
-            list.add(bean);
-        }
-        zbingAdapter.setNewInstance(list);
     }
 
     //滚回到顶部

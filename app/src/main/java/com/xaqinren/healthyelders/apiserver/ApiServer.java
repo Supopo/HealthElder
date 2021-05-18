@@ -237,4 +237,8 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/favorite")
     Observable<MBaseResponse<HomeRes>> setVideoLike(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //获取正在直播的好友
+    @GET("content/findAttentionUserLive")
+    Observable<MBaseResponse<List<VideoInfo>>> getLiveFirends(@Header("Authorization") String authorization);
 }
