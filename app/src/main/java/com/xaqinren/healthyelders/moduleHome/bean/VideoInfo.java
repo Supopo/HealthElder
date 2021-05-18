@@ -77,6 +77,8 @@ public class VideoInfo {
             return 2;
         } else if (resourceType.equals("VIDEO")) {
             return 1;
+        } else if (resourceType.equals("ARTICLE")) {
+            return 3;
         }
         return 0;
     }
@@ -133,5 +135,12 @@ public class VideoInfo {
 
         }
         return "";
+    }
+
+    public boolean isArticle() {
+        if (resourceType.equals("ARTICLE")) {
+            return true;
+        }
+        return false;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -229,6 +230,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         homeFragment.vp2.setUserInputEnabled(true);
                     }
                 }
+
+                Log.v("-------------", "滑动L:" + (now_press_Y - before_press_Y));
                 break;
             case MotionEvent.ACTION_UP:
                 before_press_Y = 0;
@@ -261,7 +264,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     //变全屏
                     binding.line.setVisibility(View.GONE);
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
-                }else if(o.msgType == CodeTable.SET_MENU_WHITE){
+                } else if (o.msgType == CodeTable.SET_MENU_WHITE) {
                     binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
                     selectView.setCompoundDrawables(null, null, null, dawable);
                     selectView.setTextColor(getResources().getColor(R.color.color_252525));

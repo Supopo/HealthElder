@@ -27,6 +27,7 @@
             android:background="@{viewModel.placeholderRes}">
 
             <ImageView
+                android:id="@+id/iv_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -122,6 +123,17 @@
                 android:textSize="@dimen/sp_13" />
 
         </RelativeLayout>
+
+        <TextView
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/riv_photo"
+            android:layout_toRightOf="@id/riv_photo"
+            android:padding="@dimen/dp_10"
+            android:text="@{viewModel.title}"
+            android:textSize="@dimen/sp_13"
+            android:visibility="@{viewModel.isArticle()?View.VISIBLE:View.GONE}" />
 
     </LinearLayout>
 

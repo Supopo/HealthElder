@@ -160,19 +160,20 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                     LogUtils.v(Constant.TAG_LIVE, "滑动：" + scrollY);
                     if (AppApplication.get().getLayoutPos() == 0) {
+
                         if (scrollY >= (int) getResources().getDimension(R.dimen.dp_237)) {
-                            LogUtils.v(Constant.TAG_LIVE, "滑动1：" + getResources().getDimension(R.dimen.dp_237));
+                            binding.nsv.fling(0);
+                            binding.nsv.smoothScrollTo(0, 0);
                             //通知首页底部菜单栏变透明
                             RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
                             binding.nsv.setScrollingEnabled(false);
                             binding.rlTop.setVisibility(View.GONE);
                             binding.rlTabMenu.setVisibility(View.VISIBLE);
-                        } else {
+                        } else if (scrollY < (int) getResources().getDimension(R.dimen.dp_237)) {
                             binding.llShowTop.setVisibility(View.VISIBLE);
                         }
                     } else if (AppApplication.get().getLayoutPos() == 1) {
                         if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
-                            LogUtils.v(Constant.TAG_LIVE, "滑动2：" + getResources().getDimension(R.dimen.dp_218));
                             binding.nsv.setScrollingEnabled(false);
                             gzFragment.gzViewPager2.setUserInputEnabled(true);
                             binding.rlZbList.setVisibility(View.GONE);
@@ -209,7 +210,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     }
 
     //滚回到顶部
-    private void scrollTop() {
+    public void scrollTop() {
         binding.nsv.setScrollingEnabled(true);
         binding.nsv.fling(0);
         binding.nsv.smoothScrollTo(0, 0);

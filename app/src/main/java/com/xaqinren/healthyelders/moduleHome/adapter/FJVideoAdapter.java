@@ -1,10 +1,14 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -26,10 +30,27 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         binding.executePendingBindings();
 
         //模拟展示
-        if (helper.getAdapterPosition() == 0 || helper.getAdapterPosition() == 6||helper.getAdapterPosition() == 3 ) {
-            helper.setGone(R.id.rl_bottom,false);
-        }else {
-            helper.setGone(R.id.rl_bottom,true);
+        if (helper.getAdapterPosition() == 0 || helper.getAdapterPosition() == 6 || helper.getAdapterPosition() == 3) {
+            helper.setGone(R.id.rl_bottom, false);
+        } else {
+            helper.setGone(R.id.rl_bottom, true);
+        }
+
+        if (item.isArticle()) {
+            int screenWidth = ScreenUtil.getScreenWidth(getContext());
+            //瀑布流图片的宽度
+            int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_3)) / 2;
+
+            //图片真是宽高
+            int oldWidth = 1280;
+            int oldHeight = 1980;
+
+            //计算新高度
+            int newHeight = itemWidth * oldHeight / oldWidth;
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.rlItem.getLayoutParams();
+            params.height = newHeight;
+            binding.rlItem.setLayoutParams(params);
         }
 
     }

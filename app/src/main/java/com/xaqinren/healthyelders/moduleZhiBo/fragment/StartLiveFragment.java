@@ -260,6 +260,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.fileUrl.observe(this, url -> {
             if (!TextUtils.isEmpty(url)) {
                 mLiveInitInfo.liveRoomCover = url;
+                Log.e("--", "上传图片URL：" + url);
                 startLiveZhuboActivity();
             }
         });
@@ -353,7 +354,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     //显示位置
                     mLiveInitInfo.setHasLocation(true);
                     if (lat != 0 && lon != 0) {
-                        binding.tvLoc.setText(cityName+poiName);
+                        binding.tvLoc.setText(cityName + poiName);
                     }
                 } else if (position == 2) {
                     mLiveInitInfo.setHasLocation(false);
@@ -559,6 +560,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                         }
 
                         Glide.with(this).load(photoPath).into(binding.ivCover);
+                        viewModel.updatePhoto(photoPath);
                     }
                     break;
             }
