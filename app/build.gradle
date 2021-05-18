@@ -230,6 +230,9 @@ dependencies {
     implementation 'com.github.zuoguiqing:ImgTabLayout:1.0.1'
     //加强版TextView 跑马灯效果等
     implementation 'com.github.zrunker:ZTextView:+'
+    //smartRefresh
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-11'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-andx-11'//没有使用特殊Header，可以不加这行
 
 }
 

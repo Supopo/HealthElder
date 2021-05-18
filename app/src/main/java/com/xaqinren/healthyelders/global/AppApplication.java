@@ -212,4 +212,23 @@ public class AppApplication extends BaseApplication {
     public void setGzPlayPosition(int gzPlayPosition) {
         this.gzPlayPosition = gzPlayPosition;
     }
+
+    public double getmLat() {
+        return mLat;
+    }
+
+    public void setmLat(double mLat) {
+        this.mLat = mLat;
+    }
+
+    public double getmLon() {
+        return mLon;
+    }
+
+    public void setmLon(double mLon) {
+        this.mLon = mLon;
+    }
+
+    private double mLat;
+    private double mLon;
 }

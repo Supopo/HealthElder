@@ -84,4 +84,14 @@ public class Num2TextUtil {
         }
     }
 
+    public static String m2Km(int m) {
+        DecimalFormat decimalFormat = new DecimalFormat(".0");
+        float distances = Float.valueOf(m);
+        if (distances < 1000) {
+            return distances + "m";
+        } else {
+            String dis = decimalFormat.format(distances / 1000);
+            return dis + "km";
+        }
+    }
 }

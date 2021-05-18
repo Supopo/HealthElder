@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +16,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.RefreshState;
+import com.scwang.smartrefresh.layout.listener.OnMultiPurposeListener;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -29,6 +35,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -101,6 +108,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         initFragment();
         initTopMenu();
         viewModel.getHomeInfo();
+        LocationService.startService(getActivity());
     }
 
     private void initFragment() {
@@ -112,8 +120,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         fragments.add(new HomeFJFragment());
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
         vp2 = binding.viewPager2;
+
         binding.viewPager2.setAdapter(vp2Adapter);
-        binding.viewPager2.setOffscreenPageLimit(1);
+        binding.viewPager2.setOffscreenPageLimit(2);
         binding.tabLayout.setViewPager2(binding.viewPager2, titles);
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -134,11 +143,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     } else if (position == 2) {
                         binding.tvShowZb.setText("回到首页");
                         binding.rlZbList.setVisibility(View.GONE);
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE ));
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
                     } else {
                         binding.rlZbList.setVisibility(View.GONE);
                         binding.tvShowZb.setText("回到首页");
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING ));
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
                     }
                 }
                 isFirst = false;

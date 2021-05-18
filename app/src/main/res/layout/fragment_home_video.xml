@@ -93,7 +93,7 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/avatar_gz_zb_anim"
                     android:scaleType="center"
-                    android:visibility="@{viewModel.videoInfo.hasAttention?View.VISIBLE:View.INVISIBLE}" />
+                    android:visibility="@{viewModel.videoInfo.hasAttention?View.INVISIBLE:View.VISIBLE}" />
             </RelativeLayout>
 
 

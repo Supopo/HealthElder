@@ -2,6 +2,10 @@ package com.xaqinren.healthyelders.moduleHome.bean;
 
 import android.text.TextUtils;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapUtils;
+import com.amap.api.maps.model.LatLng;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
@@ -107,5 +111,27 @@ public class VideoInfo {
 
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
+    }
+
+    public String getDistance() {
+        if (AppApplication.get().getmLat() == 0) {
+            return "";
+        }
+        if (AppApplication.get().getmLon() == 0) {
+            return "";
+        }
+        if (!TextUtils.isEmpty(location)) {
+            String[] loc = location.split(",");
+            if (loc.length == 2) {
+                double lat = Double.parseDouble(loc[0]);
+                double lon = Double.parseDouble(loc[1]);
+                LatLng latLng1 = new LatLng(AppApplication.get().getmLat(), AppApplication.get().getmLon());//我的坐标
+                LatLng latLng2 = new LatLng(lat, lon);
+                int mm = (int) AMapUtils.calculateLineDistance(latLng1, latLng2);
+                return Num2TextUtil.m2Km(mm);
+            }
+
+        }
+        return "";
     }
 }

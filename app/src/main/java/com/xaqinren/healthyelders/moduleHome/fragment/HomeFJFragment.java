@@ -12,16 +12,24 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeFjBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FJVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeFJViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/13.
@@ -32,6 +40,9 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     private FJVideoAdapter mAdapter;
     private int page = 1;
     private BaseLoadMoreModule mLoadMore;
+    private Disposable subscribe;
+    private double lat;
+    private double lon;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,7 +59,6 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         super.initData();
 
         mAdapter = new FJVideoAdapter(R.layout.item_fj_video);
-
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
         mLoadMore.setAutoLoadMore(true);//自动加载
@@ -72,19 +82,40 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         binding.rvVideo.setItemAnimator(null);
         binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
 
-        List<VideoInfo> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            VideoInfo videoInfo = new VideoInfo();
-            list.add(videoInfo);
-        }
-
-        mAdapter.setNewInstance(list);
-        //                viewModel.getVideoData(page);
+//        List<VideoInfo> list = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            VideoInfo videoInfo = new VideoInfo();
+//            list.add(videoInfo);
+//        }
+//
+//        mAdapter.setNewInstance(list);
     }
+
+    private boolean isInit;//设置懒加载，点到关注才开始加载
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == 101 && event.msgType == 2) {
+                    //判断是不是第一次切换到关注列表
+                    if (!isInit) {
+                        viewModel.getVideoData(page);
+                    }
+                }
+                else  if (event.msgId == CodeTable.LOCATION_SUCCESS) {
+                    //定位成功
+                    LocationBean locationBean = (LocationBean) event.data;
+                    lat = locationBean.lat;
+                    lon = locationBean.lon;
+                    AppApplication.get().setmLat(lat);
+                    AppApplication.get().setmLon(lon);
+                    LogUtils.v(Constant.TAG_LIVE,"我的坐标"+lat);
+                    LogUtils.v(Constant.TAG_LIVE,"我的坐标"+lon);
+                }
+            }
+        });
         viewModel.datas.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {

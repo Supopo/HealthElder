@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/riv_photo"
                     android:layout_toRightOf="@id/riv_photo"
-                    android:text="5km"
+                    android:text="@{viewModel.getDistance()}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_13" />
             </LinearLayout>
@@ -97,7 +97,7 @@
         <RelativeLayout
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_56"
+            android:layout_height="@dimen/dp_36"
             android:background="@color/white"
             android:visibility="gone">
 
@@ -117,22 +117,9 @@
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toRightOf="@id/iv_loc"
                 android:singleLine="true"
-                android:text="大唐不夜城"
+                android:text="@{viewModel.address}"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_13" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/iv_loc"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_6"
-                android:layout_marginRight="@dimen/dp_10"
-                android:singleLine="true"
-                android:text="商业街/步行街｜市场街区榜单"
-                android:textColor="@color/gray_999"
-                android:textSize="@dimen/sp_11" />
-
 
         </RelativeLayout>
 
