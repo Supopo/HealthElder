@@ -22,7 +22,7 @@ public class HomeGZViewModel extends BaseViewModel {
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
 
     public void getVideoData(int page) {
-        LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize, datas);
+        LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize,1, datas);
     }
 
 }

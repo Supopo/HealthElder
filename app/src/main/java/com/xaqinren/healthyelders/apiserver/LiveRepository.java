@@ -445,14 +445,14 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList) {
+    public void getHomeVideoList(int page, int pageSize,int type, MutableLiveData<List<VideoInfo>> videoList) {
         String uid = "";
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
                 uid = UserInfoMgr.getInstance().getUserInfo().getId();
             }
         }
-        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, "")
+        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, type)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

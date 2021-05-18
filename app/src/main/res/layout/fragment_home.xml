@@ -137,11 +137,27 @@
         </LinearLayout>
         <!--        推荐 关注 附近-->
         <RelativeLayout
-            android:id="@+id/rl_menu"
+            android:visibility="gone"
+            android:id="@+id/rl_tabMenu"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
             android:layout_marginTop="@dimen/dp_44">
 
+            <ImageView
+                android:layout_marginLeft="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_13"
+                android:layout_width="@dimen/dp_38"
+                android:layout_height="@dimen/dp_27"
+                android:background="@mipmap/home_zhib"
+                />
+            <ImageView
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_width="@dimen/dp_26"
+                android:layout_height="@dimen/dp_26"
+                android:background="@mipmap/home_search_gray"
+                />
 
             <!--            去掉点击水波纹-->
             <!--            app:tabBackground="@android:color/transparent"-->
@@ -153,7 +169,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
-                android:visibility="gone"
                 app:tabBackground="@android:color/transparent"
                 app:tabMode="fixed"
                 app:tabRippleColor="@android:color/transparent"

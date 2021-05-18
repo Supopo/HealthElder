@@ -51,7 +51,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private static final String TAG = "HomeFragment";
     private Disposable subscribe;
     private String[] titles = {"推荐", "关注", "附近"};
-    private String[] menuTitles = {"美食厨房", "民间偏方", "运动健身", "家有良医", "美食厨房", "民间偏方", "运动健身"};
     public ViewPager2 vp2;
     private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
     private MenuAdapter menu2Adapter;
@@ -158,7 +157,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                             RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
                             binding.nsv.setScrollingEnabled(false);
                             binding.rlTop.setVisibility(View.GONE);
-                            binding.tabLayout.setVisibility(View.VISIBLE);
+                            binding.rlTabMenu.setVisibility(View.VISIBLE);
                         } else {
                             binding.llShowTop.setVisibility(View.VISIBLE);
                         }
@@ -208,12 +207,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
         if (AppApplication.get().getLayoutPos() == 0) {
             tjFragment.tjViewPager2.setUserInputEnabled(false);
-            binding.tabLayout.setVisibility(View.GONE);
+            binding.rlTabMenu.setVisibility(View.GONE);
             binding.rlTop.setVisibility(View.VISIBLE);
             binding.rlZbList.setVisibility(View.GONE);
         } else if (AppApplication.get().getLayoutPos() == 1) {
             gzFragment.gzViewPager2.setUserInputEnabled(false);
-            binding.tabLayout.setVisibility(View.VISIBLE);
+            binding.rlTabMenu.setVisibility(View.VISIBLE);
             binding.rlTop.setVisibility(View.GONE);
             binding.rlZbList.setVisibility(View.VISIBLE);
         }

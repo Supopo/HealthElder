@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.xaqinren.healthyelders.moduleHome.bean.VideoInfo" />
@@ -38,7 +40,8 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/btn_2top"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_6">
+                android:paddingLeft="@dimen/dp_6"
+                android:visibility="@{viewModel.hasLive?View.VISIBLE:View.GONE}">
 
                 <ImageView
                     android:layout_width="@dimen/dp_6"
@@ -92,46 +95,43 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/rl_bottom"
-            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_56">
+            android:layout_height="@dimen/dp_56"
+            android:background="@color/white"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/iv_loc"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_4"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                android:background="@mipmap/fujin_icon_dw"
-                />
+                android:background="@mipmap/fujin_icon_dw" />
 
             <TextView
-                android:layout_marginTop="@dimen/dp_9"
-                android:layout_toRightOf="@id/iv_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
+                android:layout_marginTop="@dimen/dp_9"
                 android:layout_marginRight="@dimen/dp_10"
+                android:layout_toRightOf="@id/iv_loc"
+                android:singleLine="true"
                 android:text="大唐不夜城"
                 android:textColor="@color/color_252525"
-                android:textSize="@dimen/sp_13"
-                />
+                android:textSize="@dimen/sp_13" />
 
             <TextView
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_6"
-                android:layout_below="@id/iv_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
+                android:layout_below="@id/iv_loc"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_6"
                 android:layout_marginRight="@dimen/dp_10"
+                android:singleLine="true"
                 android:text="商业街/步行街｜市场街区榜单"
                 android:textColor="@color/gray_999"
-                android:textSize="@dimen/sp_11"
-                />
+                android:textSize="@dimen/sp_11" />
 
 
         </RelativeLayout>

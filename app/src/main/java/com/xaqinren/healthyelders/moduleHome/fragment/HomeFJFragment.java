@@ -70,7 +70,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         binding.rvVideo.setAdapter(mAdapter);
         //防止刷新跳动
         binding.rvVideo.setItemAnimator(null);
-        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3,true));
+        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
 
         List<VideoInfo> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -79,7 +79,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         }
 
         mAdapter.setNewInstance(list);
-        //        viewModel.getVideoData(page);
+        //                viewModel.getVideoData(page);
     }
 
     @Override
