@@ -53,7 +53,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
     public ViewPager2 gzViewPager2;
-    public SmartRefreshLayout srl;
 
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -87,10 +86,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         });
         RxSubscriptions.add(subscribe);
         viewModel.datas.observe(this, datas -> {
-            binding.homeLoadView.stop();
-            binding.homeLoadView.setVisibility(View.GONE);
-
             if (datas != null && datas.size() > 0) {
+                if (page == 1) {
+                    mVideoInfoList.clear();
+                }
+
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
@@ -100,64 +100,12 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 videoAdapter.notifyDataSetChanged();
             }
         });
-        srl.setOnMultiPurposeListener(new OnMultiPurposeListener() {
-            @Override
-            public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent, int offset, int headerHeight, int maxDragHeight) {
-                LogUtils.v(Constant.TAG_LIVE, "---关注2列表刷新----" + offset + "-----------");
-            }
 
-            @Override
-            public void onHeaderReleased(RefreshHeader header, int headerHeight, int maxDragHeight) {
+    }
 
-            }
-
-            @Override
-            public void onHeaderStartAnimator(RefreshHeader header, int headerHeight, int maxDragHeight) {
-
-            }
-
-            @Override
-            public void onHeaderFinish(RefreshHeader header, boolean success) {
-
-            }
-
-            @Override
-            public void onFooterMoving(RefreshFooter footer, boolean isDragging, float percent, int offset, int footerHeight, int maxDragHeight) {
-
-            }
-
-            @Override
-            public void onFooterReleased(RefreshFooter footer, int footerHeight, int maxDragHeight) {
-
-            }
-
-            @Override
-            public void onFooterStartAnimator(RefreshFooter footer, int footerHeight, int maxDragHeight) {
-
-            }
-
-            @Override
-            public void onFooterFinish(RefreshFooter footer, boolean success) {
-
-            }
-
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-
-            }
-
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-
-            }
-
-            @Override
-            public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
-
-            }
-        });
-
-
+    private void closeLoadView() {
+        binding.loadView.stop();
+        binding.loadView.setVisibility(View.GONE);
     }
 
     public void resetVVPHeight() {
@@ -169,19 +117,14 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     public void initData() {
         super.initData();
         //开始时候可能有头布局所以禁止滑动
-        gzViewPager2 =  binding.viewPager2;
+        gzViewPager2 = binding.viewPager2;
         binding.viewPager2.setUserInputEnabled(false);
-        srl = binding.srlContent;
     }
 
 
     private boolean isInit;//设置懒加载，点到关注才开始加载
 
     private void initVideoViews() {
-        binding.homeLoadView.setVisibility(View.VISIBLE);
-        binding.homeLoadView.start();
-        //请求数据
-        viewModel.getVideoData(page);
 
         videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
@@ -191,12 +134,16 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             fragmentPosition++;
         }
 
+        //请求数据
+        viewModel.getVideoData(page);
+
         binding.viewPager2.setAdapter(videoAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+
                 AppApplication.get().setGzPlayPosition(position);
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
                 //判断数据数量滑动到倒数第三个时候去进行加载
@@ -209,7 +156,13 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         });
 
 
+
         isInit = true;
+    }
+
+    private void showLoadView() {
+        binding.loadView.setVisibility(View.VISIBLE);
+        binding.loadView.start();
     }
 
 

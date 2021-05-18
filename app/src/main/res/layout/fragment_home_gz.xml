@@ -15,21 +15,14 @@
         android:background="@color/color_252525">
 
         <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
-            android:id="@+id/homeLoadView"
+            android:id="@+id/loadView"
             style="@style/Layout.Main"
             android:layout_centerInParent="true" />
-
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/srl_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical" />
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
     </RelativeLayout>
 </layout>

@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_36"
             android:background="@color/white"
-            android:visibility="gone">
+            android:visibility="@{viewModel.showLocInfo()?View.VISIBLE:View.GONE}">
 
             <ImageView
                 android:id="@+id/iv_loc"
@@ -125,11 +125,11 @@
         </RelativeLayout>
 
         <TextView
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/riv_photo"
             android:layout_toRightOf="@id/riv_photo"
+            android:background="@color/white"
             android:padding="@dimen/dp_10"
             android:text="@{viewModel.title}"
             android:textSize="@dimen/sp_13"

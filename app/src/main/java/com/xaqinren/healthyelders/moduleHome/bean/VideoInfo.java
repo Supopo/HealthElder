@@ -143,4 +143,15 @@ public class VideoInfo {
         }
         return false;
     }
+
+    public boolean showLocInfo() {
+        if (isArticle()) {
+            return false;
+        }
+        if (!TextUtils.isEmpty(address)) {
+            return true;
+        }
+
+        return false;
+    }
 }

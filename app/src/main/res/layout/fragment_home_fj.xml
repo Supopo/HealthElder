@@ -16,15 +16,22 @@
         android:paddingTop="@dimen/dp_95"
         android:paddingBottom="@dimen/dp_50">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_video"
-            android:background="@color/color_FFF8F8F8"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
+            android:id="@+id/srl_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_FFF8F8F8" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
-            android:id="@+id/homeLoadView"
+            android:id="@+id/loadView"
             style="@style/Layout.Main"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </RelativeLayout>
 </layout>

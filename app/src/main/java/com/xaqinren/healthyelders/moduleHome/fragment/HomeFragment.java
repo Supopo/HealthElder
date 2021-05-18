@@ -158,18 +158,15 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    LogUtils.v(Constant.TAG_LIVE, "滑动：" + scrollY);
                     if (AppApplication.get().getLayoutPos() == 0) {
 
                         if (scrollY >= (int) getResources().getDimension(R.dimen.dp_237)) {
-                            binding.nsv.fling(0);
-                            binding.nsv.smoothScrollTo(0, 0);
                             //通知首页底部菜单栏变透明
                             RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
                             binding.nsv.setScrollingEnabled(false);
                             binding.rlTop.setVisibility(View.GONE);
                             binding.rlTabMenu.setVisibility(View.VISIBLE);
-                        } else if (scrollY < (int) getResources().getDimension(R.dimen.dp_237)) {
+                        } else {
                             binding.llShowTop.setVisibility(View.VISIBLE);
                         }
                     } else if (AppApplication.get().getLayoutPos() == 1) {

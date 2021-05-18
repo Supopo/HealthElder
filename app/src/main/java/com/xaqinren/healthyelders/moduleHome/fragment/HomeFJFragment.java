@@ -2,11 +2,13 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
@@ -67,8 +69,20 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
             @Override
             public void onLoadMore() {
+                binding.srlContent.setRefreshing(false);
                 page++;
                 viewModel.getVideoData(page);
+            }
+        });
+
+        binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mLoadMore.setEnableLoadMore(false);
+                page = 1;
+                showLoadView();
+                viewModel.getVideoData(page);
+                binding.srlContent.setRefreshing(false);
             }
         });
 
@@ -81,17 +95,9 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         //防止刷新跳动
         binding.rvVideo.setItemAnimator(null);
         binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
-
-//        List<VideoInfo> list = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            VideoInfo videoInfo = new VideoInfo();
-//            list.add(videoInfo);
-//        }
-//
-//        mAdapter.setNewInstance(list);
     }
 
-    private boolean isInit;//设置懒加载，点到关注才开始加载
+    private boolean isFirst = true;
 
     @Override
     public void initViewObservable() {
@@ -99,24 +105,24 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == 101 && event.msgType == 2) {
-                    //判断是不是第一次切换到关注列表
-                    if (!isInit) {
+                    if (isFirst) {
+                        //判断是不是第一次切换到关注列表
+                        showLoadView();
                         viewModel.getVideoData(page);
                     }
-                }
-                else  if (event.msgId == CodeTable.LOCATION_SUCCESS) {
+                    isFirst = false;
+                } else if (event.msgId == CodeTable.LOCATION_SUCCESS) {
                     //定位成功
                     LocationBean locationBean = (LocationBean) event.data;
                     lat = locationBean.lat;
                     lon = locationBean.lon;
                     AppApplication.get().setmLat(lat);
                     AppApplication.get().setmLon(lon);
-                    LogUtils.v(Constant.TAG_LIVE,"我的坐标"+lat);
-                    LogUtils.v(Constant.TAG_LIVE,"我的坐标"+lon);
                 }
             }
         });
         viewModel.datas.observe(this, dataList -> {
+            closeLoadView();
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成
@@ -138,6 +144,16 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                 }
             }
         });
+    }
+
+    private void showLoadView() {
+        binding.loadView.start();
+        binding.loadView.setVisibility(View.VISIBLE);
+    }
+
+    private void closeLoadView() {
+        binding.loadView.stop();
+        binding.loadView.setVisibility(View.GONE);
     }
 
     @Override

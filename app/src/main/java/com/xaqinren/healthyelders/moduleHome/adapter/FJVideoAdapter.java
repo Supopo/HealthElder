@@ -29,13 +29,6 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         binding.setViewModel(item);
         binding.executePendingBindings();
 
-        //模拟展示
-        if (helper.getAdapterPosition() == 0 || helper.getAdapterPosition() == 6 || helper.getAdapterPosition() == 3) {
-            helper.setGone(R.id.rl_bottom, false);
-        } else {
-            helper.setGone(R.id.rl_bottom, true);
-        }
-
         if (item.isArticle()) {
             int screenWidth = ScreenUtil.getScreenWidth(getContext());
             //瀑布流图片的宽度

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
@@ -87,10 +88,11 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
         //接受数据
         viewModel.datas.observe(this, datas -> {
-            binding.homeLoadView.stop();
-            binding.homeLoadView.setVisibility(View.GONE);
-
             if (datas != null && datas.size() > 0) {
+                if (page == 1) {
+                    mVideoInfoList.clear();
+                }
+
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
@@ -100,6 +102,11 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 homeAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void closeLoadView() {
+        binding.loadView.stop();
+        binding.loadView.setVisibility(View.GONE);
     }
 
     public void resetVVPHeight() {
@@ -119,10 +126,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private void initVideoViews() {
-        binding.homeLoadView.setVisibility(View.VISIBLE);
-        binding.homeLoadView.start();
-        //请求数据
-        viewModel.getVideoData(page);
 
         homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
@@ -130,6 +133,9 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition));
             fragmentPosition++;
         }
+
+        //请求数据
+        viewModel.getVideoData(page);
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
 
@@ -152,6 +158,20 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 firstInit = false;
             }
         });
+
+//        binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                page = 1;
+//                showLoadView();
+//                viewModel.getVideoData(page);
+//            }
+//        });
+    }
+
+    private void showLoadView() {
+        binding.loadView.setVisibility(View.VISIBLE);
+        binding.loadView.start();
     }
 
     private boolean firstInit = true;
