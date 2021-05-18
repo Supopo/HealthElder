@@ -38,6 +38,14 @@ public class ListBottomPopup extends BasePopupWindow {
         super(context);
     }
 
+    public ListBottomPopup(Context context, List<ListPopMenuBean> menus) {
+        super(context);
+        setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
+        this.menus = menus;
+        initView();
+    }
+
     public ListBottomPopup(Context context, List<ListPopMenuBean> menus, OnItemClickListener itemClickListener) {
         super(context);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
@@ -87,6 +95,11 @@ public class ListBottomPopup extends BasePopupWindow {
         tvCancel.setOnClickListener(lis -> {
             dismiss();
         });
+
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener){
+        adapter.setOnItemClickListener(itemClickListener);
     }
 
     @Override

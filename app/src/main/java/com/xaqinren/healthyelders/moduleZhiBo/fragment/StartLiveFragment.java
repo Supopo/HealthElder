@@ -44,9 +44,14 @@ import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
@@ -63,7 +68,9 @@ import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/4/23.
@@ -86,6 +93,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private LiveInitInfo mLiveInitInfo = new LiveInitInfo();
     private StartLiveUiViewModel liveUiViewModel;
     private boolean checkInfo;
+    private double lat;
+    private double lon;
+    private Disposable subscribe;
+    private String cityName;
+    private String poiName;
+    private String cityCode;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,6 +123,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         showDialog();
         viewModel.checkLiveInfo();
         initEvent();
+
+        mLiveInitInfo.setHasLocation(true);
+        LocationService.startService(getActivity());
         LogUtils.v(Constant.TAG_LIVE, "token:" + UserInfoMgr.getInstance().getAccessToken());
     }
 
@@ -192,6 +208,26 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.LOCATION_SUCCESS) {
+                    //定位成功
+                    LocationBean locationBean = (LocationBean) event.data;
+                    lat = locationBean.lat;
+                    lon = locationBean.lon;
+                    AppApplication.get().setmLat(lat);
+                    AppApplication.get().setmLon(lon);
+                    cityCode = locationBean.cityCode;
+                    cityName = locationBean.cityName;
+                    poiName = locationBean.desName;
+                    binding.tvLoc.setText(cityName + poiName);
+                    mLiveInitInfo.latitude = lat;
+                    mLiveInitInfo.longitude = lon;
+                }
+            }
+        });
+
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
                 checkInfo = true;
@@ -308,11 +344,22 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         menus.add(new ListPopMenuBean("显示位置更多人能看到你噢", getResources().getColor(R.color.gray_999), 14));
         menus.add(new ListPopMenuBean("显示位置", 0, 0));
         menus.add(new ListPopMenuBean("隐藏位置", 0, 0));
-        ListBottomPopup listBottomPopup = new ListBottomPopup(getActivity(), menus, new OnItemClickListener() {
+        ListBottomPopup listBottomPopup = new ListBottomPopup(getActivity(), menus);
+        listBottomPopup.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                LogUtils.v("--", "点击了：" + menus.get(position).menuName);
+                if (position == 1) {
+                    //显示位置
+                    mLiveInitInfo.setHasLocation(true);
+                    if (lat != 0 && lon != 0) {
+                        binding.tvLoc.setText(cityName+poiName);
+                    }
+                } else if (position == 2) {
+                    mLiveInitInfo.setHasLocation(false);
+                    binding.tvLoc.setText("开启位置");
+                }
+                listBottomPopup.dismiss();
             }
         });
         listBottomPopup.showPopupWindow();

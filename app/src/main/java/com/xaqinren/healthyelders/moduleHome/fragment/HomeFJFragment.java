@@ -139,4 +139,10 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
             }
         });
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        subscribe.dispose();
+    }
 }

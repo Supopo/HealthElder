@@ -499,7 +499,7 @@ public class LiveRepository {
 
     public void toLikeVideo(String shortVideoId, boolean favoriteStatus) {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("shortVideoId", shortVideoId);
+        hashMap.put("objectId", shortVideoId);
         hashMap.put("favoriteStatus", favoriteStatus);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
