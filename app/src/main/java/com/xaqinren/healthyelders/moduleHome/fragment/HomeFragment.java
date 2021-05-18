@@ -135,8 +135,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     } else if (position == 2) {
                         binding.tvShowZb.setText("回到首页");
                         binding.rlZbList.setVisibility(View.GONE);
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE ));
                     } else {
+                        binding.rlZbList.setVisibility(View.GONE);
                         binding.tvShowZb.setText("回到首页");
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING ));
                     }
                 }
                 isFirst = false;

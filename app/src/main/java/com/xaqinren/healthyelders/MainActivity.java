@@ -261,6 +261,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     //变全屏
                     binding.line.setVisibility(View.GONE);
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
+                }else if(o.msgType == CodeTable.SET_MENU_WHITE){
+                    binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
+                    selectView.setCompoundDrawables(null, null, null, dawable);
+                    selectView.setTextColor(getResources().getColor(R.color.color_252525));
                 }
             }
         });
