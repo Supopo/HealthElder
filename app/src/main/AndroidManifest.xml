@@ -50,17 +50,6 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
-
-        <!--hifiveai  begin        -->
-        <meta-data
-            android:name = "HIFIVE_APPID"
-            android:value = "6jg58jx4aa9t7305dyck4ckvbyhk7duk">
-        </meta-data>
-        <meta-data
-            android:name = "HIFIVE_SERVERCODE"
-            android:value = "wnzwnkevnc74uym5" />
-        <!--hifiveai  end        -->
-
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
             android:screenOrientation="portrait">
