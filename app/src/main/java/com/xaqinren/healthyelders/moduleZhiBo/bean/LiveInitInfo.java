@@ -121,6 +121,9 @@ public class LiveInitInfo implements Serializable {
     public double longitude;
     public double latitude;
     public String address;
+    public String province;
+    public String city;
+    public String district;
     public String pushUrl;
 
     //开启直播间外面设置的一些参数

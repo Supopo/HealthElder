@@ -8,8 +8,10 @@ public class CodeTable {
     public static int CODE_SUCCESS = 100;
     public static int RESH_VIEW_CODE = 99;
     public static int SET_MENU_WHITE = 97;//设置首页底部菜单栏变白
+    public static int SHOW_HOME1_TOP = 971;//展示推荐列表顶部
     public static int SET_MENU_TOUMING = 98;//设置首页底部菜单栏透明
     public static int SET_MENU_SUCCESS = 981;//设置首页底部菜单栏透明-成功
+    public static int SHOW_TAB_LAYOUT = 96;//展示HomeFragment-TabLayout
     public static int EVENT_HOME = 10101001;
 
     /**

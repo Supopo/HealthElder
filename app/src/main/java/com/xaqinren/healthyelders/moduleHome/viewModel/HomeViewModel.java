@@ -28,7 +28,6 @@ public class HomeViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<List<VideoInfo>> firendDatas = new MutableLiveData<>();
-    public MutableLiveData<HomeRes> homeInfo = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
 
     public void getVideoData() {
@@ -42,9 +41,7 @@ public class HomeViewModel extends BaseViewModel {
         }
     }
 
-    public void getHomeInfo() {
-        LiveRepository.getInstance().getHomeInfo(homeInfo);
-    }
+
 
     public void getLiveFiends() {
         if (TextUtils.isEmpty(UserInfoMgr.getInstance().getHttpToken())) {

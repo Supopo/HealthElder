@@ -99,6 +99,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private String cityName;
     private String poiName;
     private String cityCode;
+    private String province;
+    private String district;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -219,11 +221,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     AppApplication.get().setmLat(lat);
                     AppApplication.get().setmLon(lon);
                     cityCode = locationBean.cityCode;
+                    province = locationBean.province;
                     cityName = locationBean.cityName;
+                    district = locationBean.district;
                     poiName = locationBean.desName;
                     binding.tvLoc.setText(cityName + poiName);
-                    mLiveInitInfo.latitude = lat;
-                    mLiveInitInfo.longitude = lon;
+
                 }
             }
         });
@@ -291,6 +294,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         if (!checkInfo) {
             return;
         }
+
+        mLiveInitInfo.latitude = lat;
+        mLiveInitInfo.longitude = lon;
+        mLiveInitInfo.address =  poiName;
+        mLiveInitInfo.province =  province;
+        mLiveInitInfo.city =  cityName;
+        mLiveInitInfo.district =  district;
 
         //设置美颜的参数传进去
         mLiveInitInfo.beautyStyle = mBeautyStyle;

@@ -5,19 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshFooter;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.constant.RefreshState;
-import com.scwang.smartrefresh.layout.listener.OnMultiPurposeListener;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -26,10 +21,10 @@ import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +47,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private FragmentPagerAdapter videoAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
-    public ViewPager2 gzViewPager2;
 
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -86,9 +80,13 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         });
         RxSubscriptions.add(subscribe);
         viewModel.datas.observe(this, datas -> {
+
+            closeLoadView();
+
             if (datas != null && datas.size() > 0) {
                 if (page == 1) {
                     mVideoInfoList.clear();
+                    viewModel.getLiveFiends();
                 }
 
                 mVideoInfoList.addAll(datas);
@@ -101,6 +99,17 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             }
         });
 
+        viewModel.firendDatas.observe(this, list -> {
+            if (list != null && list.size() > 0) {
+                binding.rlTop.setVisibility(View.VISIBLE);
+                binding.tvShowZb.setText(list.size() + "个直播");
+                binding.nsv.smoothScrollTo(0, 0);
+                zbingAdapter.setNewInstance(list);
+            } else {
+                binding.rlTop.setVisibility(View.GONE);
+                binding.viewPager2.setUserInputEnabled(true);
+            }
+        });
     }
 
     private void closeLoadView() {
@@ -113,11 +122,21 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
     }
 
+    private ZhiBoingAvatarAdapter zbingAdapter;
+
+    private void initZBingAdapter() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.rvZbList.setLayoutManager(linearLayoutManager);
+        zbingAdapter = new ZhiBoingAvatarAdapter(R.layout.item_zbing_avatar);
+        binding.rvZbList.setAdapter(zbingAdapter);
+
+    }
+
     @Override
     public void initData() {
         super.initData();
         //开始时候可能有头布局所以禁止滑动
-        gzViewPager2 = binding.viewPager2;
         binding.viewPager2.setUserInputEnabled(false);
     }
 
@@ -134,6 +153,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             fragmentPosition++;
         }
 
+        showLoadView();
         //请求数据
         viewModel.getVideoData(page);
 
@@ -155,7 +175,36 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             }
         });
 
+        initZBingAdapter();
 
+
+        binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
+                    binding.rlTop.setVisibility(View.GONE);
+                    binding.nsv.setScrollingEnabled(false);
+                    binding.viewPager2.setUserInputEnabled(true);
+                }
+            }
+        });
+
+        binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page = 1;
+                showLoadView();
+                viewModel.getVideoData(page);
+                binding.srl.setRefreshing(false);
+            }
+        });
+
+
+        binding.llShowTop.setOnClickListener(lis ->{
+            binding.rlTop.setVisibility(View.VISIBLE);
+            binding.nsv.setScrollingEnabled(true);
+            binding.viewPager2.setUserInputEnabled(false);
+        });
 
         isInit = true;
     }

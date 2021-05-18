@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.dmcbig.mediapicker.utils.ScreenUtils;
-import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -150,20 +149,26 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 if (AppApplication.get().getLayoutPos() != 0) {
                     return;
                 }
-                //发送回顶消息
-                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
+                //发送推荐列表回顶消息
+                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
                 //发送停止播放消息
                 RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
                 //底部菜单变白色
-                binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
-                selectView.setCompoundDrawables(null, null, null, dawable);
-                selectView.setTextColor(getResources().getColor(R.color.color_252525));
-                isTranMenu = false;
+                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
                 //取消全屏
                 binding.line.setVisibility(View.VISIBLE);
             } else {
-                //发送继续播放消息
-                RxBus.getDefault().post(new VideoEvent(101, AppApplication.get().getLayoutPos()));
+                //判断
+                if (AppApplication.get().getLayoutPos() != 2) {
+                    //发送继续播放消息
+                    RxBus.getDefault().post(new VideoEvent(101, AppApplication.get().getLayoutPos()));
+                    isTranMenu = true;
+                }else {
+                    //原先是附近 需要变白
+                    //底部菜单变白色
+                    setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+                }
+
                 initBottomTab();
             }
 
@@ -201,6 +206,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                     });
         });
+    }
+
+    private void setBottomColors(int p, Drawable dawable, int p2, boolean b) {
+        binding.llMenu.setBackgroundColor(getResources().getColor(p));
+        selectView.setCompoundDrawables(null, null, null, dawable);
+        selectView.setTextColor(getResources().getColor(p2));
+        isTranMenu = b;
     }
 
     private float before_press_Y;
@@ -256,11 +268,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
+                    if (isTranMenu) {
+                        return;
+                    }
                     //底部菜单变透明，中心布局变全屏
-                    binding.llMenu.setBackgroundColor(getResources().getColor(R.color.transparent));
-                    selectView.setCompoundDrawables(null, null, null, dawable2);
-                    selectView.setTextColor(getResources().getColor(R.color.white));
-                    isTranMenu = true;
+                    setBottomColors(R.color.transparent, dawable2, R.color.white, true);
                     //变全屏
                     binding.line.setVisibility(View.GONE);
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
@@ -296,16 +308,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         switch (selectView.getId()) {
             case R.id.tv_menu1:
-
+                binding.line.setVisibility(View.GONE);
                 commitAllowingStateLoss(0);
                 break;
             case R.id.tv_menu2:
+                //取消全屏
+                binding.line.setVisibility(View.VISIBLE);
                 commitAllowingStateLoss(1);
                 break;
             case R.id.tv_menu3:
+                binding.line.setVisibility(View.VISIBLE);
                 commitAllowingStateLoss(2);
                 break;
             case R.id.tv_menu4:
+                binding.line.setVisibility(View.VISIBLE);
                 commitAllowingStateLoss(3);
                 break;
 

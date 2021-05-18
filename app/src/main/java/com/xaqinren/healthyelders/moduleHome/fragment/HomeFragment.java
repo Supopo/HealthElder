@@ -1,48 +1,30 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.scwang.smartrefresh.layout.api.RefreshFooter;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.constant.RefreshState;
-import com.scwang.smartrefresh.layout.listener.OnMultiPurposeListener;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.MenuAdapter;
-import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
-import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
-import com.xaqinren.healthyelders.utils.LogUtils;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -59,10 +41,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private Disposable subscribe;
     private String[] titles = {"推荐", "关注", "附近"};
     public ViewPager2 vp2;
-    private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
-    private MenuAdapter menu2Adapter;
     private HomeGZFragment gzFragment;
-    private ZhiBoingAvatarAdapter zbingAdapter;
     private HomeTJFragment tjFragment;
 
     @Override
@@ -81,37 +60,19 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == CodeTable.EVENT_HOME) {
-                    if (event.msgType == CodeTable.SET_MENU_WHITE) {
-                        scrollTop();
+                    if (event.msgType == CodeTable.SHOW_TAB_LAYOUT) {
+                        //展示TabLayout
+                        binding.rlTabMenu.setVisibility(View.VISIBLE);
+                    } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
+                        //隐藏TabLayout
+                        binding.rlTabMenu.setVisibility(View.GONE);
                     }
                 }
             }
         });
         RxSubscriptions.add(subscribe);
 
-        viewModel.homeInfo.observe(this, homeRes -> {
-            if (homeRes != null) {
-                if (homeRes.commodityType != null) {
-                    menu1Adapter.setNewInstance(homeRes.contentMenu);
-                }
-                if (homeRes.contentMenu != null) {
-                    menu2Adapter.setNewInstance(homeRes.commodityType);
-                }
-            }
-        });
-        viewModel.firendDatas.observe(this, list -> {
-            if (list != null && list.size() > 0) {
-                binding.rlZbList.setVisibility(View.VISIBLE);
-                binding.nsv.setScrollingEnabled(true);
-                gzFragment.gzViewPager2.setUserInputEnabled(false);
-                zbingAdapter.setNewInstance(list);
-                binding.tvShowZb.setText(list.size() + "个直播");
-            }else {
-                binding.rlZbList.setVisibility(View.GONE);
-                binding.nsv.setScrollingEnabled(false);
-                gzFragment.gzViewPager2.setUserInputEnabled(true);
-            }
-        });
+
     }
 
     private boolean isFirst = true;
@@ -119,8 +80,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void initData() {
         super.initData();
         initFragment();
-        initTopMenu();
-        viewModel.getHomeInfo();
         LocationService.startService(getActivity());
     }
 
@@ -149,112 +108,17 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     //通知关注列表页面开始加载数据
                     RxBus.getDefault().post(new EventBean(101, position));
 
-                    if (position == 1) {
-                        viewModel.getLiveFiends();
-                        //判断有没有直播中
-//                        scrollTop();
-                        binding.tvShowZb.setText("回到首页");
-                    } else if (position == 2) {
-                        binding.tvShowZb.setText("回到首页");
-                        binding.rlZbList.setVisibility(View.GONE);
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
-                    } else {
-                        binding.rlZbList.setVisibility(View.GONE);
-                        binding.tvShowZb.setText("回到首页");
+                    if (position == 0) {//推荐
                         RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                    } else if (position == 1) {//关注
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                    } else {//附近
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
                     }
                 }
                 isFirst = false;
             }
         });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            binding.nsv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if (AppApplication.get().getLayoutPos() == 0) {
-
-                        if (scrollY >= (int) getResources().getDimension(R.dimen.dp_237)) {
-                            //通知首页底部菜单栏变透明
-                            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                            binding.nsv.setScrollingEnabled(false);
-                            binding.rlTop.setVisibility(View.GONE);
-                            binding.rlTabMenu.setVisibility(View.VISIBLE);
-                        } else {
-                            binding.llShowTop.setVisibility(View.VISIBLE);
-                        }
-                    } else if (AppApplication.get().getLayoutPos() == 1) {
-                        if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
-                            binding.nsv.setScrollingEnabled(false);
-                            gzFragment.gzViewPager2.setUserInputEnabled(true);
-                            binding.rlZbList.setVisibility(View.GONE);
-                        } else {
-                            binding.llShowTop.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                }
-            });
-        }
-
-        binding.llShowTop.setOnClickListener(lis -> {
-            scrollTop();
-        });
-
-        initZBingAdapter();
-    }
-
-    private void initZBingAdapter() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.rvZbList.setLayoutManager(linearLayoutManager);
-        zbingAdapter = new ZhiBoingAvatarAdapter(R.layout.item_zbing_avatar);
-        binding.rvZbList.setAdapter(zbingAdapter);
-
-    }
-
-    //滚回到顶部
-    public void scrollTop() {
-        binding.nsv.setScrollingEnabled(true);
-        binding.nsv.fling(0);
-        binding.nsv.smoothScrollTo(0, 0);
-
-        if (AppApplication.get().getLayoutPos() == 0) {
-            tjFragment.tjViewPager2.setUserInputEnabled(false);
-            binding.rlTabMenu.setVisibility(View.GONE);
-            binding.rlTop.setVisibility(View.VISIBLE);
-            binding.rlZbList.setVisibility(View.GONE);
-        } else if (AppApplication.get().getLayoutPos() == 1) {
-            gzFragment.gzViewPager2.setUserInputEnabled(false);
-            binding.rlTabMenu.setVisibility(View.VISIBLE);
-            binding.rlTop.setVisibility(View.GONE);
-            binding.rlZbList.setVisibility(View.VISIBLE);
-        }
-        binding.llShowTop.setVisibility(View.GONE);
-
-    }
-
-    private void initTopMenu() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.rlMenu1.setLayoutManager(linearLayoutManager);
-        menu1Adapter = new BaseQuickAdapter<MenuBean, BaseViewHolder>(R.layout.item_home_menu) {
-
-            @Override
-            protected void convert(@NotNull BaseViewHolder holder, MenuBean item) {
-                TextView tvMenu = holder.getView(R.id.tv_menu);
-                tvMenu.setText(item.menuName);
-                tvMenu.setTextColor(android.graphics.Color.parseColor(item.fontColor));
-            }
-        };
-        binding.rlMenu1.setAdapter(menu1Adapter);
-
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
-        linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.rvMenu2.setLayoutManager(linearLayoutManager2);
-        menu2Adapter = new MenuAdapter(R.layout.item_home_menu2);
-        binding.rvMenu2.setAdapter(menu2Adapter);
-
     }
 
 
