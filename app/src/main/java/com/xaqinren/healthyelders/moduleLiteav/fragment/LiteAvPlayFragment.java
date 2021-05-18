@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleLiteav.fragment;
 
+import android.animation.ObjectAnimator;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlay2Activity;
+import com.xaqinren.healthyelders.moduleLiteav.activity.MusicDetailsActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.LiteAvPlayViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -48,6 +51,13 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
     private VideoInfo videoInfo;
     private Disposable disposable;
     private Animation amRotate;
+    private boolean hasPlaying;//是否已经开始了 因为视频播放第一次播放只走进度，滑动后播放先走开始回调
+    private AnimationDrawable avatarAddAnim;
+    private AnimationDrawable zbingAnim;
+    private Animation musicRotateAnim;//音乐Icon旋转动画
+    private Animation avatarAnim;//头像放大缩小动画
+    private AnimationDrawable avatarBgAnim;//头像背景圈动画
+    private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
 
     public LiteAvPlayFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -104,6 +114,10 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
         binding.shareGroup.setOnClickListener(view -> {
             showShareDialog();
         });
+        binding.musicBtn.setOnClickListener(view -> {
+            startActivity(MusicDetailsActivity.class);
+        });
+
     }
 
     @Override
@@ -212,22 +226,50 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 视频I帧到达，开始播放
 
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {
-            binding.playBtn.setVisibility(View.GONE);
+            /*binding.playBtn.setVisibility(View.GONE);
             binding.mainLoadView.setVisibility(View.GONE);
             if (amRotate != null) {
                 binding.musicBtn.clearAnimation();
                 binding.musicBtn.startAnimation(amRotate);
                 binding.mainMusicalNoteLayout.start(true);
-            }
-        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {
+            }*/
+        }else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN){
+            showStartLayout();
+        }
+        else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {
             binding.playBtn.setVisibility(View.GONE);
             binding.mainLoadView.setVisibility(View.GONE);
             binding.mainMusicalNoteLayout.start(true);
+            showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_PROGRESS) {
-            binding.progressBar.setVisibility(View.VISIBLE);
-            binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
-            binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
+            if (param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS) > 0) {
+
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
+                binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
+                showStartLayout();
+            }
         }
+    }
+
+    private void showStartLayout() {
+        if (hasPlaying) {
+            return;
+        }
+
+       /* binding.coverImageView.setVisibility(View.GONE);
+        binding.mainLoadView.stop();
+        binding.mainLoadView.setVisibility(View.GONE);
+        if (videoInfo.getVideoType() == 1) {
+            //开启音乐Icon动画
+            if (musicRotateAnim != null) {
+                playMusicAnim();
+            }
+        }else {
+            zbingAnim.start();
+        }
+        hasPlaying = true;
+        isPlaying = true;*/
     }
 
     @Override

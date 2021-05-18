@@ -201,6 +201,7 @@
         <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" />
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
+        <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
     </application>
 
 </manifest>

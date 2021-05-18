@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/rl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/titleBar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44" >
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:src="@mipmap/icon_back"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_7"
+                />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_16"
+                android:singleLine="true"
+                android:maxLength="10"/>
+
+            <ImageView
+                android:id="@+id/share"
+                android:layout_width="@dimen/dp_23"
+                android:layout_height="@dimen/dp_23"
+                android:src="@mipmap/icon_music_share"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_7"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_16"
+                />
+
+        </RelativeLayout>
+
+        <View style="@style/line" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/content_list"
+            android:layout_below="@id/titleBar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"/>
+    </LinearLayout>
+</layout>

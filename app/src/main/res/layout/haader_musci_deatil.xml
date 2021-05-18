@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_19"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_19">
+
+        <View
+            android:id="@+id/cover_cir"
+            android:layout_width="@dimen/dp_130"
+            android:layout_height="@dimen/dp_130"
+            android:layout_alignTop="@id/cover_bg"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_alignLeft="@id/cover_bg"
+            android:layout_marginLeft="@dimen/dp_27"
+            android:background="@drawable/bg_music_cir"
+            />
+
+        <ImageView
+            android:id="@+id/cover_bg"
+            android:layout_width="@dimen/dp_140"
+            android:layout_height="@dimen/dp_140"
+            android:src="@color/color_F1F1F1"
+            />
+        <ImageView
+            android:id="@+id/cover_iv"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_120"
+            android:src="@color/color_B4b4b4"
+            android:layout_alignTop="@id/cover_bg"
+            android:layout_alignLeft="@id/cover_bg"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            />
+
+        <TextView
+            android:id="@+id/music_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cover_cir"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/color_252525"
+            android:text="耳环创作的原声"
+            android:maxLines="3"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_13"
+            android:textColor="@color/gray_999"
+            android:text="耳环"
+            android:layout_alignLeft="@id/music_name"
+            android:layout_below="@id/music_name"
+            android:layout_marginTop="@dimen/dp_12"
+            android:drawableRight="@mipmap/icon_advance"
+            />
+        android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/user_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/gray_999"
+            android:text="3.8W人使用"
+            android:layout_alignLeft="@id/music_name"
+            android:layout_below="@id/nickname"
+            android:layout_marginTop="@dimen/dp_4"
+            />
+        <LinearLayout
+            android:id="@+id/music_coll_layout"
+            android:layout_width="@dimen/dp_73"
+            android:layout_height="@dimen/dp_28"
+            android:orientation="horizontal"
+            android:layout_alignLeft="@id/music_name"
+            android:layout_alignBottom="@id/cover_bg"
+            android:background="@drawable/bg_music_coll"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/music_coll_iv"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/icon_music_coll"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="收藏"
+                android:textColor="@color/gray_666"
+                android:textSize="@dimen/sp_13"
+                android:layout_marginLeft="@dimen/dp_4"/>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

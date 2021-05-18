@@ -75,7 +75,7 @@ public class LiteAvPlay2Activity extends BaseActivity<ActivityLiteAvPlay2Binding
         homePosition = 0;
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new LiteAvPlayFragment(mVideoInfoList.get(i), "main", homePosition));
+            fragmentList.add(new LiteAvPlayFragment(mVideoInfoList.get(i), "VIDEO", homePosition));
             homePosition++;
         }
         binding.viewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
@@ -104,6 +104,7 @@ public class LiteAvPlay2Activity extends BaseActivity<ActivityLiteAvPlay2Binding
                 String playToken = Signature.singVideo(urls[i], t);
                 VideoInfo info = new VideoInfo();
                 info.resourceUrl = urls[i] + "?t=" + t + "&sign=" + playToken;
+                info.resourceType = "VIDEO";
                 mVideoInfoList.add(info);
             } catch (URISyntaxException e) {
                 e.printStackTrace();

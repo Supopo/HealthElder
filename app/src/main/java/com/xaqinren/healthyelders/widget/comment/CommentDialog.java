@@ -161,9 +161,13 @@ public class CommentDialog {
 
 
     public interface OnChildClick{
+        //评论评论[存在评论本身的可能性,即没有XXX 回复 XXX的可能性]
         void toComment(ICommentBean iCommentBean);
+        //评论视频本身
         void toCommentVideo(String  videoId);
+        //点击喜欢
         void toLike(ICommentBean iCommentBean);
+        //查看用户
         void toUser(ICommentBean iCommentBean);
     }
 
