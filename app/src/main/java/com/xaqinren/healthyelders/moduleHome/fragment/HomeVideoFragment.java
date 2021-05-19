@@ -39,12 +39,20 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.comment.CommentDialog;
+import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
+import com.xaqinren.healthyelders.widget.comment.ICommentBean;
+import com.xaqinren.healthyelders.widget.share.IShareUser;
+import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
@@ -324,6 +332,76 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             viewModel.toFollow(videoInfo.userId);
             videoInfo.hasAttention = !videoInfo.hasAttention;
         });
+
+        binding.ivComment.setOnClickListener(lis ->{
+            showCommentDialog(videoInfo.resourceId);
+        });
+
+        binding.ivShare.setOnClickListener(lis ->{
+            showShareDialog();
+        });
+    }
+
+
+
+    //分享弹窗
+    ShareDialog shareDialog;
+    private void showShareDialog(){
+        if (shareDialog == null)
+            shareDialog = new ShareDialog(getActivity());
+        shareDialog.setData(getShareData());
+        shareDialog.show(binding.mainRelativeLayout);
+    }
+    private List<? extends IShareUser> getShareData() {
+        List<LiteAvUserBean> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            LiteAvUserBean bean = new LiteAvUserBean();
+            bean.avatarUrl = "";
+            bean.nickname = "";
+            bean.userId = i;
+            list.add(bean);
+        }
+        return list;
+    }
+
+    //评论弹窗
+    CommentDialog commentDialog;
+    private void showCommentDialog(String videoId) {
+        if (commentDialog == null)
+            commentDialog = new CommentDialog(getContext(), videoId);
+        commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
+            @Override
+            public void toComment(ICommentBean iCommentBean) {
+                //评论评论
+                showPublishCommentDialog();
+            }
+
+            @Override
+            public void toCommentVideo(String videoId) {
+                //评论视频本体
+                showPublishCommentDialog();
+            }
+
+            @Override
+            public void toLike(ICommentBean iCommentBean) {
+            }
+
+            @Override
+            public void toUser(ICommentBean iCommentBean) {
+            }
+        });
+        commentDialog.show(binding.mainRelativeLayout);
+    }
+
+    CommentPublishDialog publishDialog;
+    /**
+     * 发表评论
+     */
+    private void showPublishCommentDialog() {
+        if (publishDialog == null) {
+            publishDialog = new CommentPublishDialog(getActivity(), null);
+        }
+        publishDialog.show(binding.mainRelativeLayout);
     }
 
     private final Handler handler = new Handler() {
@@ -358,7 +436,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
 
     }
-
 
     //双击点赞
     private double before_press_Y;
