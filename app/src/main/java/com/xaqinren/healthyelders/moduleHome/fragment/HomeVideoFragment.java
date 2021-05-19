@@ -78,6 +78,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private AnimationDrawable avatarAddAnim;
     private AnimationDrawable zbingAnim;
 
+    private String commentId;//评论时候的ID 有内容id或者评论id区别
+
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
         this.type = type;
@@ -110,6 +112,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
 
+        commentId = videoInfo.resourceId;
         if (type.equals("home-list")) {
             ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
             layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_10);
@@ -349,11 +352,20 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         binding.ivShare.setOnClickListener(lis -> {
             showShareDialog();
         });
+
+        viewModel.commentSuccess.observe(this, isSuccess -> {
+            if (isSuccess != null && true) {
+                //关闭输入Dialog，刷新
+                if (publishDialog != null) {
+                    publishDialog.keyBoardClosed();
+                }
+            }
+        });
     }
 
 
     //分享弹窗
-    ShareDialog shareDialog;
+    private ShareDialog shareDialog;
 
     private void showShareDialog() {
         if (shareDialog == null)
@@ -375,7 +387,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     //评论弹窗
-    CommentDialog commentDialog;
+    private CommentDialog commentDialog;
 
     private void showCommentDialog(String videoId) {
         if (commentDialog == null)
@@ -414,7 +426,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             publishDialog = new CommentPublishDialog(getActivity(), null);
         }
         publishDialog.show(binding.mainRelativeLayout);
+
+        publishDialog.setOnOperationListener(new CommentPublishDialog.OnOperationListener() {
+            @Override
+            public void onEmojiBtnClick() {
+
+            }
+
+            @Override
+            public void onPublish(String content) {
+                //发表评论
+                viewModel.toComment(commentId, content);
+            }
+        });
     }
+
 
     private final Handler handler = new Handler() {
         @Override

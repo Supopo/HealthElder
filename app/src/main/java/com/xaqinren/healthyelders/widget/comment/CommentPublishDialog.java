@@ -1,31 +1,15 @@
 package com.xaqinren.healthyelders.widget.comment;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.Instrumentation;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
-import com.tencent.qcloud.tim.uikit.TUIKit;
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.tim.uikit.utils.SoftKeyBoardUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.PopCommentPublishBinding;

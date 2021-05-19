@@ -250,4 +250,10 @@ public interface ApiServer {
     //获取正在直播的好友
     @GET("content/findAttentionUserLive")
     Observable<MBaseResponse<List<VideoInfo>>> getLiveFirends(@Header("Authorization") String authorization);
+
+    //评论
+    @Headers({"content-type:application/json"})
+    @POST("content/shortVideo/comment")
+    Observable<MBaseResponse<Object>> toComment(@Header("Authorization") String authorization,
+                                                           @Body RequestBody body);
 }
