@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.widget.comment;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -21,8 +24,12 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.databinding.PopCommentBinding;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -38,17 +45,21 @@ public class CommentDialog {
     private View contentView;
     private SoftReference<Context> context;
     private PopCommentBinding binding;
-    private CommentAdapter commentAdapter;
-    private List<ICommentBean> dataList;
+    private CommentListAdapter commentAdapter;
+    private List<CommentListBean> dataList;
     private boolean isOverData;
     private CommentViewModel viewModel;
     private OnChildClick onChildClick;
     private String videoId;
     private BaseLoadMoreModule loadMoreModule;
+    private OnLoadMoreListener onLoadMoreListener;
+    private Context mContext;
+    private int page = 1;
 
-    public  CommentDialog(Context context, String videoId) {
+    public CommentDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
         this.videoId = videoId;
+        mContext = context;
         init();
     }
 
@@ -61,7 +72,7 @@ public class CommentDialog {
         contentView = View.inflate(context.get(), R.layout.pop_comment, null);
         binding = DataBindingUtil.bind(contentView);
         int height = (int) (ScreenUtil.getScreenHeight(context.get()) * 0.8f);
-        popupWindow = new PopupWindow(binding.getRoot() , ViewGroup.LayoutParams.MATCH_PARENT ,height);
+        popupWindow = new PopupWindow(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, height);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable());
@@ -70,31 +81,17 @@ public class CommentDialog {
 
         });
         binding.close.setOnClickListener(view -> popupWindow.dismiss());
-        commentAdapter = new CommentAdapter(R.layout.item_comment, new CommentAdapter.OnChildLoadMoreCommentListener() {
+        commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
             public void onLoadMore(int position, ICommentBean iCommentBean, int page, int pageSize) {
-                //TODO 掉接口
-                List<VideoCommentBean> list = new ArrayList<>();
-                for (int j = 0; j < 1; j++) {
-                    VideoCommentBean bean1 = new VideoCommentBean();
-                    bean1.avatar = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F140703%2F330746-140f301555752.jpg&refer=http%3A%2F%2Fimg.juimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623312032&t=dd12bc18844a0c4cfd47510b2ec89c4b";
-                    bean1.nickName = "你好呀";
-                    bean1.canComment = true;
-                    bean1.comment = "评论内容评论内容评论内容评论内容评论内容评论内容评论内容";
-                    bean1.commentTime = "12小时前";
-                    bean1.likeCount = "666";
-                    bean1.isLike = false;
-                    list.add(bean1);
-                }
-                iCommentBean.childComment.addAll(list.size() - 1, list);
-                commentAdapter.notifyItemChanged(position);
+
             }
 
             @Override
             public void onPackUp(int position, ICommentBean iCommentBean, int page, int pageSize) {
 
             }
-        }, new CommentAdapter.OnOperationItemClickListener() {
+        }, new CommentListAdapter.OnOperationItemClickListener() {
             @Override
             public void toComment(ICommentBean iCommentBean) {
                 onChildClick.toComment(iCommentBean);
@@ -124,21 +121,42 @@ public class CommentDialog {
         loadMoreModule.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                //TODO 调用 获取本视频更多评论
+                page++;
+                getCommentList();
+            }
+        });
+
+        getCommentList();
+        commentList.observe((LifecycleOwner) mContext, dataList -> {
+            if (dataList.size() > 0) {
+                //加载更多加载完成
+                loadMoreModule.loadMoreComplete();
+            }
+            if (page == 1) {
+                commentAdapter.setList(dataList);
+            } else {
+                if (dataList.size() == 0) {
+                    //加载更多加载结束
+                    loadMoreModule.loadMoreEnd(true);
+                    page--;
+                }
+                commentAdapter.addData(dataList);
             }
         });
     }
+
 
     public void setData() {
 
     }
 
-    public void setDataList(List<ICommentBean> dataList) {
-        this.dataList = dataList;
-        commentAdapter.setList(this.dataList);
+    public void rushData(){
+        page = 1;
+        getCommentList();
     }
 
-    public void addDataList(List<ICommentBean> dataList) {
+
+    public void addDataList(List<CommentListBean> dataList) {
         this.dataList.addAll(dataList);
     }
 
@@ -151,26 +169,8 @@ public class CommentDialog {
         if (popupWindow == null) {
             init();
         }
-        setDataList(getCommentData());
+        //        setDataList(getCommentData());
         popupWindow.showAsDropDown(Parent, Gravity.BOTTOM, 0, 0);
-    }
-
-    private List<ICommentBean> getCommentData() {
-        List<ICommentBean> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            VideoCommentBean bean = new VideoCommentBean();
-            bean.avatar = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.juimg.com%2Ftuku%2Fyulantu%2F140703%2F330746-140f301555752.jpg&refer=http%3A%2F%2Fimg.juimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623312032&t=dd12bc18844a0c4cfd47510b2ec89c4b";
-            bean.nickName = "你好呀";
-            bean.canComment = true;
-            bean.comment = "评论内容评论内容评论内容评论内容评论内容评论内容评论内容";
-            bean.commentTime = "12小时前";
-            bean.likeCount = "666";
-            bean.isLike = true;
-            bean.commentCount = 3;
-            bean.childComment = new ArrayList<>();
-            list.add(bean);
-        }
-        return list;
     }
 
 
@@ -179,17 +179,24 @@ public class CommentDialog {
     }
 
 
-    public interface OnChildClick{
+    public interface OnChildClick {
         //评论评论[存在评论本身的可能性,即没有XXX 回复 XXX的可能性]
         void toComment(ICommentBean iCommentBean);
+
         //评论视频本身
-        void toCommentVideo(String  videoId);
+        void toCommentVideo(String videoId);
+
         //点击喜欢
         void toLike(ICommentBean iCommentBean);
+
         //查看用户
         void toUser(ICommentBean iCommentBean);
     }
 
+    public MutableLiveData<List<CommentListBean>> commentList = new MutableLiveData<>();
 
 
+    public void getCommentList() {
+        LiveRepository.getInstance().getCommentList(commentList, page, videoId);
+    }
 }

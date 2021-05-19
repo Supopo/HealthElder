@@ -2,8 +2,8 @@ package com.xaqinren.healthyelders.moduleLiteav.bean;
 
 import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 
-import java.util.List;
 
+//视频评论类
 public class VideoCommentBean extends ICommentBean {
 
 }

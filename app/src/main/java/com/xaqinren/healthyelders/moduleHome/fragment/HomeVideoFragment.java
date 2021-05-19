@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -359,6 +360,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 if (publishDialog != null) {
                     publishDialog.keyBoardClosed();
                 }
+                commentDialog.rushData();
             }
         });
     }
@@ -388,6 +390,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     //评论弹窗
     private CommentDialog commentDialog;
+
+    private int commentPage = 1;
 
     private void showCommentDialog(String videoId) {
         if (commentDialog == null)

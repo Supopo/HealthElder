@@ -2,12 +2,14 @@ package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
@@ -126,7 +128,7 @@ public interface ApiServer {
     //上传文件
     @POST
     Observable<MBaseResponse<List<String>>> uploadMultiFile(
-            @Url String host , @Header("Authorization") String token, @Body MultipartBody requestBody);
+            @Url String host, @Header("Authorization") String token, @Body MultipartBody requestBody);
 
     //直播间信息刷新接口-点赞数-观众数-榜单
     @GET("live/findLiveRoomRefreshParams")
@@ -222,7 +224,7 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/release")
     Observable<MBaseResponse<Object>> postPublishTextPhoto(@Header("Authorization") String authorization,
-                                                        @Body RequestBody body);
+                                                           @Body RequestBody body);
 
     //用户，获取好友
     @GET("user/queryFriendsPage")
@@ -236,7 +238,7 @@ public interface ApiServer {
 
     //获取首页视频直播
     @GET("content/open/queryComprehensivePage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid,@Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page, @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid, @Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page, @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType);
 
     //获取首页菜单信息
     @GET("content/open/findHomeData")
@@ -255,5 +257,10 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/comment")
     Observable<MBaseResponse<Object>> toComment(@Header("Authorization") String authorization,
-                                                           @Body RequestBody body);
+                                                @Body RequestBody body);
+
+    //一级评论列表
+    @GET("content/shortVideo/comment/findPageByShortVideoId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentList(@Header("Authorization") String authorization,
+                                                                                 @Query("page") int page, @Query("pageSize") int pageSize, @Query("shortVideoId") String shortVideoId);
 }
