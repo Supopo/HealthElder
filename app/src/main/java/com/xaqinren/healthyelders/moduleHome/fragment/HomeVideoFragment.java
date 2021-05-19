@@ -37,6 +37,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentHomeVideoBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
@@ -359,6 +360,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 //关闭输入Dialog，刷新
                 if (publishDialog != null) {
                     publishDialog.keyBoardClosed();
+                    openType = 0;
                 }
                 commentDialog.rushData();
             }
@@ -393,28 +395,34 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private int commentPage = 1;
 
+    private int openType;
+
     private void showCommentDialog(String videoId) {
         if (commentDialog == null)
             commentDialog = new CommentDialog(getContext(), videoId);
         commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
             @Override
-            public void toComment(ICommentBean iCommentBean) {
+            public void toComment(CommentListBean iCommentBean) {
                 //评论评论
+                openType = 1;
+                commentId = iCommentBean.id;
                 showPublishCommentDialog();
             }
 
             @Override
             public void toCommentVideo(String videoId) {
+                openType = 0;
+                commentId = videoId;
                 //评论视频本体
                 showPublishCommentDialog();
             }
 
             @Override
-            public void toLike(ICommentBean iCommentBean) {
+            public void toLike(CommentListBean iCommentBean) {
             }
 
             @Override
-            public void toUser(ICommentBean iCommentBean) {
+            public void toUser(CommentListBean iCommentBean) {
             }
         });
         commentDialog.show(binding.mainRelativeLayout);
@@ -439,8 +447,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             @Override
             public void onPublish(String content) {
-                //发表评论
-                viewModel.toComment(commentId, content);
+                if (openType == 0) {
+                    //发表评论
+                    viewModel.toComment(commentId, content);
+                } else if (openType == 1) {
+                    //回复评论
+                    viewModel.toCommentReply(commentId, content, 0);
+
+                }
+
             }
         });
     }

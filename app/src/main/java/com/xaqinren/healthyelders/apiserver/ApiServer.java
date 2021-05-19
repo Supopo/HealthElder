@@ -259,8 +259,20 @@ public interface ApiServer {
     Observable<MBaseResponse<Object>> toComment(@Header("Authorization") String authorization,
                                                 @Body RequestBody body);
 
-    //一级评论列表
+    //评论列表
     @GET("content/shortVideo/comment/findPageByShortVideoId")
     Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentList(@Header("Authorization") String authorization,
                                                                                  @Query("page") int page, @Query("pageSize") int pageSize, @Query("shortVideoId") String shortVideoId);
+
+    //回复评论
+    @Headers({"content-type:application/json"})
+    @POST("content/shortVideo/commentReply")
+    Observable<MBaseResponse<Object>> toCommentReply(@Header("Authorization") String authorization,
+                                                @Body RequestBody body);
+
+
+    //回复列表
+    @GET("content/shortVideo/commentReply/findPageByCommentId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentReplyList(@Header("Authorization") String authorization,
+                                                                                 @Query("page") int page, @Query("pageSize") int pageSize, @Query("commentId") String commentId);
 }

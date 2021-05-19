@@ -52,9 +52,11 @@ public class CommentDialog {
     private OnChildClick onChildClick;
     private String videoId;
     private BaseLoadMoreModule loadMoreModule;
-    private OnLoadMoreListener onLoadMoreListener;
     private Context mContext;
     private int page = 1;
+    private int pageReply = 0;
+    private String comentReplyId;
+    private int commentPos;
 
     public CommentDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
@@ -83,27 +85,33 @@ public class CommentDialog {
         binding.close.setOnClickListener(view -> popupWindow.dismiss());
         commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
-            public void onLoadMore(int position, ICommentBean iCommentBean, int page, int pageSize) {
-
+            public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {
+                commentPos = position;
+                comentReplyId = iCommentBean.id;
+                getCommentReplyList(iCommentBean);
+                iCommentBean.itemPage++;
             }
 
             @Override
-            public void onPackUp(int position, ICommentBean iCommentBean, int page, int pageSize) {
+            public void onPackUp(int position, CommentListBean iCommentBean, int page, int pageSize) {
+                iCommentBean.itemPage = 1;
+                iCommentBean.shortVideoCommentReplyList.clear();
+                commentAdapter.notifyItemChanged(position);
 
             }
         }, new CommentListAdapter.OnOperationItemClickListener() {
             @Override
-            public void toComment(ICommentBean iCommentBean) {
+            public void toComment(CommentListBean iCommentBean) {
                 onChildClick.toComment(iCommentBean);
             }
 
             @Override
-            public void toLike(ICommentBean iCommentBean) {
+            public void toLike(CommentListBean iCommentBean) {
                 onChildClick.toLike(iCommentBean);
             }
 
             @Override
-            public void toUser(ICommentBean iCommentBean) {
+            public void toUser(CommentListBean iCommentBean) {
                 onChildClick.toUser(iCommentBean);
             }
         });
@@ -143,6 +151,16 @@ public class CommentDialog {
                 commentAdapter.addData(dataList);
             }
         });
+
+        commentReplyList.observe((LifecycleOwner) mContext, dataList -> {
+            if (dataList.size() > 0) {
+                //加载更多加载完成
+                dataList.get(dataList.size() - 1).lodaState = 1;
+                commentAdapter.getData().get(commentPos).shortVideoCommentReplyList.addAll(commentAdapter.getData().get(commentPos).shortVideoCommentReplyList.size() - 1, dataList);
+                commentAdapter.notifyItemChanged(commentPos);
+            }
+
+        });
     }
 
 
@@ -150,7 +168,7 @@ public class CommentDialog {
 
     }
 
-    public void rushData(){
+    public void rushData() {
         page = 1;
         getCommentList();
     }
@@ -169,7 +187,6 @@ public class CommentDialog {
         if (popupWindow == null) {
             init();
         }
-        //        setDataList(getCommentData());
         popupWindow.showAsDropDown(Parent, Gravity.BOTTOM, 0, 0);
     }
 
@@ -181,22 +198,27 @@ public class CommentDialog {
 
     public interface OnChildClick {
         //评论评论[存在评论本身的可能性,即没有XXX 回复 XXX的可能性]
-        void toComment(ICommentBean iCommentBean);
+        void toComment(CommentListBean iCommentBean);
 
         //评论视频本身
         void toCommentVideo(String videoId);
 
         //点击喜欢
-        void toLike(ICommentBean iCommentBean);
+        void toLike(CommentListBean iCommentBean);
 
         //查看用户
-        void toUser(ICommentBean iCommentBean);
+        void toUser(CommentListBean iCommentBean);
     }
 
     public MutableLiveData<List<CommentListBean>> commentList = new MutableLiveData<>();
+    public MutableLiveData<List<CommentListBean>> commentReplyList = new MutableLiveData<>();
 
 
     public void getCommentList() {
         LiveRepository.getInstance().getCommentList(commentList, page, videoId);
+    }
+
+    public void getCommentReplyList(CommentListBean commentListBean) {
+        LiveRepository.getInstance().getCommentReplyList(commentReplyList, commentListBean.itemPage, commentListBean.itemSize, comentReplyId);
     }
 }

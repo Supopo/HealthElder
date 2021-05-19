@@ -36,6 +36,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentPlayLiteAvBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlay2Activity;
@@ -556,7 +557,7 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
             commentDialog = new CommentDialog(getContext(), videoId);
         commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
             @Override
-            public void toComment(ICommentBean iCommentBean) {
+            public void toComment(CommentListBean iCommentBean) {
                 //评论评论
                 LogUtils.e(TAG,"准备评论");
                 showPublishCommentDialog();
@@ -569,12 +570,12 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
             }
 
             @Override
-            public void toLike(ICommentBean iCommentBean) {
+            public void toLike(CommentListBean iCommentBean) {
                 LogUtils.e(TAG,"准备点赞");
             }
 
             @Override
-            public void toUser(ICommentBean iCommentBean) {
+            public void toUser(CommentListBean iCommentBean) {
                 LogUtils.e(TAG,"准备查看用户");
             }
         });

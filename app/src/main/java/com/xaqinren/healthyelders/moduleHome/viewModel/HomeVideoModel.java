@@ -33,6 +33,10 @@ public class HomeVideoModel extends BaseViewModel {
     }
 
     public void toComment(String id, String content) {
-        LiveRepository.getInstance().toComment(id, content,commentSuccess);
+        LiveRepository.getInstance().toComment(id, content, commentSuccess);
+    }
+
+    public void toCommentReply(String id, String content, int type) {
+        LiveRepository.getInstance().toCommentReply(id, content, type, commentSuccess);
     }
 }

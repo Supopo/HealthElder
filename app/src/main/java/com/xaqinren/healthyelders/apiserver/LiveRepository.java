@@ -608,5 +608,56 @@ public class LiveRepository {
                 });
     }
 
+    public void toCommentReply(String id, String content, int type, MutableLiveData<Boolean> commentSuccess) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("replyType", type == 0 ? "REPLY_COMMENT" : "REPLY_REPLY");
+        hashMap.put("id", id);
+        hashMap.put("content", content);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.toCommentReply(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        commentSuccess.postValue(true);
+                    }
+
+                });
+    }
+
+    public void getCommentReplyList(MutableLiveData<List<CommentListBean>> commentList, int page, int size, String id) {
+        userApi.getCommentReplyList(UserInfoMgr.getInstance().getHttpToken(), page, size, id)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<CommentListBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<CommentListBean>>> data) {
+                        commentList.postValue(data.getData().content);
+                    }
+
+                });
+    }
 
 }

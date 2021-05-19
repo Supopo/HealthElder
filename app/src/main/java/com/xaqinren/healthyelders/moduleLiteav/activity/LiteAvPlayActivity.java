@@ -30,6 +30,7 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiteAvPlayBinding;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.LiteAvPlayViewModel;
@@ -463,7 +464,7 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
             commentDialog = new CommentDialog(this, videoId);
         commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
             @Override
-            public void toComment(ICommentBean iCommentBean) {
+            public void toComment(CommentListBean iCommentBean) {
                 //评论评论
                 LogUtils.e(TAG,"准备评论");
                 showPublishCommentDialog();
@@ -476,12 +477,12 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
             }
 
             @Override
-            public void toLike(ICommentBean iCommentBean) {
+            public void toLike(CommentListBean iCommentBean) {
                 LogUtils.e(TAG,"准备点赞");
             }
 
             @Override
-            public void toUser(ICommentBean iCommentBean) {
+            public void toUser(CommentListBean iCommentBean) {
                 LogUtils.e(TAG,"准备查看用户");
             }
         });
