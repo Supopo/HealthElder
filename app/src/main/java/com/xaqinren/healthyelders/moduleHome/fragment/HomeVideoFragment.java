@@ -178,7 +178,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void createObjAnim() {
         state = STATE_STOP;
-        objectAnimator = ObjectAnimator.ofFloat(binding.llMusicName, "rotation", 0f, 360f);//添加旋转动画，旋转中心默认为控件中点
+        objectAnimator = ObjectAnimator.ofFloat(binding.rlMusicImageView, "rotation", 0f, 360f);//添加旋转动画，旋转中心默认为控件中点
         objectAnimator.setDuration(10000);//设置动画时间
         objectAnimator.setInterpolator(new LinearInterpolator());//动画时间线性渐变
         objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);

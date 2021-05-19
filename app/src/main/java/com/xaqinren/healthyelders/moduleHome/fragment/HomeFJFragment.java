@@ -129,6 +129,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                     listBean.page = page;
                     listBean.videoInfos = tempList;
                     listBean.position = tempPos;
+                    listBean.type = 2;
 
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("key", listBean);

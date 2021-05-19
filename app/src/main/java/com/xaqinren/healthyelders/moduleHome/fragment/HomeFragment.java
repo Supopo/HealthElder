@@ -17,10 +17,12 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.MenuAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 
@@ -72,6 +74,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         });
         RxSubscriptions.add(subscribe);
 
+        binding.ivZhibo.setOnClickListener(lis ->{
+            VideoListBean listBean = new VideoListBean();
+            listBean.type = 0;
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("key", listBean);
+            startActivity(VideoListActivity.class, bundle);
+        });
 
     }
 

@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class VideoListBean implements Serializable {
     public List<VideoInfo> videoInfos;
-    public Integer position;
-    public Integer page;
+    public int position;
+    public int page;
+    public int type;//2-从附近打开 0-从推荐打开
 }

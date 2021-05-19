@@ -3,7 +3,6 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -38,7 +37,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
     private List<VideoInfo> mVideoInfoList = new ArrayList<>();
     private Disposable subscribe;
-    private int page;
+    private int page = 1;
     private int position;
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter homeAdapter;
@@ -64,9 +63,13 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         Bundle bundle = intent.getExtras();
         videos = (VideoListBean) bundle.getSerializable("key");
 
-        position = videos.position;
-        page = videos.page;
-        mVideoInfoList.addAll(videos.videoInfos);
+        //从附近打开
+        if (videos.type == 2) {
+            position = videos.position;
+            page = videos.page;
+            mVideoInfoList.addAll(videos.videoInfos);
+        }
+
     }
 
     @Override
@@ -85,32 +88,35 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
-        binding.viewPager2.setCurrentItem(position);
 
-        AppApplication.get().setPlayPosition(position);
-
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //播放指令
-                RxBus.getDefault().post(new VideoEvent(1, TAG));
-            }
-        }, 500);
+        if (videos.type == 2) {
+            //从附近打开
+            binding.viewPager2.setCurrentItem(position);
+            AppApplication.get().setPlayPosition(position);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //播放指令
+                    RxBus.getDefault().post(new VideoEvent(1, TAG));
+                }
+            }, 500);
+        } else if (videos.type == 0) {
+            //请求数据  推荐打开 主播列表
+            viewModel.getVideoData(page, videos.type);
+        }
 
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.e("--", "----------------------------pos: " + position);
                 AppApplication.get().setPlayPosition(position);
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
                 //判断数据数量滑动到倒数第三个时候去进行加载
                 if ((position + 1) == fragmentList.size()) {
                     //加载更多数据
                     page++;
-                    viewModel.getVideoData(page);
+                    viewModel.getVideoData(page, videos.type);
                 }
 
 
@@ -123,12 +129,12 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             public void onRefresh() {
                 page++;
                 //                showLoadView();
-                viewModel.getVideoData(page);
+                viewModel.getVideoData(page, videos.type);
                 binding.srl.setRefreshing(false);
             }
         });
 
-        binding.ivBack.setOnClickListener(lis ->{
+        binding.ivBack.setOnClickListener(lis -> {
             finish();
         });
 
@@ -143,14 +149,21 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             //            closeLoadView();
 
             if (datas != null && datas.size() > 0) {
-
-                //先判断是否包含文章有先移除
                 List<VideoInfo> tempList = new ArrayList<>();
-                for (VideoInfo data : datas) {
-                    if (!data.isArticle()) {
-                        tempList.add(data);
+
+                if (videos.type == 2) {
+
+                    //先判断是否包含文章有先移除
+                    for (VideoInfo data : datas) {
+                        if (!data.isArticle()) {
+                            tempList.add(data);
+                        }
                     }
+
+                } else if (videos.type == 0) {
+                    tempList.addAll(datas);
                 }
+
 
                 mVideoInfoList.addAll(tempList);
 

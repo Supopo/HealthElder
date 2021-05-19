@@ -15,14 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:background="@mipmap/main_back_white"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_57"
-            android:layout_width="@dimen/dp_22"
-            android:layout_height="@dimen/dp_22"
-            />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/srl"
@@ -35,5 +27,15 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:background="@mipmap/main_back_white"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_57"
+            android:layout_width="@dimen/dp_22"
+            android:layout_height="@dimen/dp_22"
+            />
     </RelativeLayout>
 </layout>

@@ -22,9 +22,16 @@ public class VideoListViewModel extends BaseViewModel {
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
 
-    //type = 2 附近列表
-    public void getVideoData(int page) {
-        LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize, 2, datas);
+    //type = 2 从附近打开 //type = 0 从推荐打开 之请求
+    public void getVideoData(int page, int type) {
+        String resourceType = "";
+        if (type == 0) {
+            resourceType = "LIVE";
+        }else if(type == 2){
+            resourceType = "LIVE,VIDEO,ARTICLE";
+        }
+
+        LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize, type, datas, resourceType);
     }
 
 }
