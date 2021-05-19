@@ -238,7 +238,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-                LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getTjPlayPosition() + type + position + bean.toString());
+                LogUtils.v(Constant.TAG_LIVE, type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
@@ -247,7 +247,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     if (bean.fragmentId.equals("home-gz") && type.equals("home-gz")) {
                         startGzVideo();
                     }
-                    if(bean.fragmentId.equals("home-list") && type.equals("home-list")){
+                    if (bean.fragmentId.equals("home-list") && type.equals("home-list")) {
                         startListVideo();
                     }
 
@@ -311,7 +311,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
 
         //关注
-        binding.followImageView.setOnClickListener(lis ->{
+        binding.followImageView.setOnClickListener(lis -> {
             avatarAddAnim = (AnimationDrawable) binding.followImageView.getBackground();
             avatarAddAnim.start();
             viewModel.toFollow(videoInfo.userId);
@@ -450,7 +450,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
         if (videoInfo.getVideoType() == 1) {
             stopMusicAnim();
-        }else {
+        } else {
             zbingAnim.stop();
         }
         binding.coverImageView.setVisibility(View.VISIBLE);
@@ -487,6 +487,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             if (type.equals("home-gz")) {
                 if (AppApplication.get().getGzPlayPosition() == position) {
+                    resumePlay();
+                } else {
+                    pausePlay();
+                }
+            }
+
+            if (type.equals("home-list")) {
+                if (AppApplication.get().getPlayPosition() == position) {
                     resumePlay();
                 } else {
                     pausePlay();
@@ -567,7 +575,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (musicRotateAnim != null) {
                 playMusicAnim();
             }
-        }else {
+        } else {
             zbingAnim.start();
         }
         hasPlaying = true;

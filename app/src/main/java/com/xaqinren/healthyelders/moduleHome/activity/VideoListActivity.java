@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
@@ -87,8 +88,16 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         binding.viewPager2.setCurrentItem(position);
 
         AppApplication.get().setPlayPosition(position);
-        //播放指令
-        RxBus.getDefault().post(new VideoEvent(1, TAG));
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //播放指令
+                RxBus.getDefault().post(new VideoEvent(1, TAG));
+            }
+        },500);
+
 
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {

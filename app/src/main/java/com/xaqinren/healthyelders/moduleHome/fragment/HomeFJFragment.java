@@ -122,8 +122,8 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                     }
 
                     int tempPos = 0;
-                    for (int i = 0; i < adapterList.size(); i++) {
-                        if (nowInfo.resourceId.equals(adapterList.get(i).resourceId)) {
+                    for (int i = 0; i < tempList.size(); i++) {
+                        if (nowInfo.resourceId.equals(tempList.get(i).resourceId)) {
                             tempPos = i;
                         }
                     }
