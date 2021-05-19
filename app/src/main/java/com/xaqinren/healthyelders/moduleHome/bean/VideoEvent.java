@@ -5,7 +5,7 @@ package com.xaqinren.healthyelders.moduleHome.bean;
  * 视频播放专用
  */
 public class VideoEvent {
-    public int msgId;//1-说明是上下滑了 101-说明是 首页左右滑动了
+    public int msgId;//1-说明是上下滑了 101-说明是 首页左右滑动了 10010-说明回到首页顶部了 暂停播放 隐藏视图
     public int position;
     public String fragmentId;
 

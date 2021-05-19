@@ -169,6 +169,16 @@ public class AppApplication extends BaseApplication {
         TUIKit.init(this, SDKAPPID, configs);
     }
 
+    public boolean isShowTopMenu() {
+        return showTopMenu;
+    }
+
+    public void setShowTopMenu(boolean showTopMenu) {
+        this.showTopMenu = showTopMenu;
+    }
+
+    //顶部菜单是否展示
+    private boolean showTopMenu = true;
 
     //用于标记首页推荐滑动播放位置
     private int tjPlayPosition = -1;

@@ -44,6 +44,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
     private VideoListBean videos;
+    private Handler handler;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -73,9 +74,15 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
     public void initData() {
         super.initData();
-
+        handler = new Handler();
         setStatusBarTransparent();
 
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
@@ -93,7 +100,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             //从附近打开
             binding.viewPager2.setCurrentItem(position);
             AppApplication.get().setPlayPosition(position);
-            new Handler().postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     //播放指令

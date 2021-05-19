@@ -49,6 +49,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     private double lat;
     private double lon;
     public RecyclerView recyclerView;
+    public View viewTop;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,6 +65,9 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     public void initData() {
         super.initData();
         recyclerView = binding.rvVideo;
+        viewTop = binding.viewTop;
+
+
         mAdapter = new FJVideoAdapter(R.layout.item_fj_video);
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载

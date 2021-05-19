@@ -279,18 +279,25 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
+                    if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {
+                        return;
+                    }
                     //底部菜单变透明，中心布局变全屏
                     setBottomColors(R.color.transparent, dawable2, R.color.white, true);
                     binding.lineBottom.setVisibility(View.VISIBLE);
                     //变全屏
                     binding.line.setVisibility(View.GONE);
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
                 } else if (o.msgType == CodeTable.SET_MENU_WHITE) {
                     binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
                     selectView.setCompoundDrawables(null, null, null, dawable);
                     selectView.setTextColor(getResources().getColor(R.color.color_252525));
                     binding.lineBottom.setVisibility(View.INVISIBLE);
                 } else if (o.msgType == CodeTable.SET_MENU_COLOR) {
+
+                    if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {
+                        return;
+                    }
+
                     if (o.status != 10) {
                         //背景色从白-透明 10-0
                         String alphaColor = ColorsUtils.getAlphaColor("ffffff", o.status);

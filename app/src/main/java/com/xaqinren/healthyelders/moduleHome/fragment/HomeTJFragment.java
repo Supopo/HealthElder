@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     public ViewPager2 tjViewPager2;
     public CardView tjCardView;
     private int screenWidth;
+    private Handler handler;
 
 
     public HomeTJFragment(FragmentActivity fragmentActivity) {
@@ -92,7 +94,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         //接受数据
         viewModel.datas.observe(this, datas -> {
             closeLoadView();
-
             if (datas != null && datas.size() > 0) {
 
                 mVideoInfoList.addAll(datas);
@@ -102,6 +103,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
+
+                //判断是是不是展示首页菜单展示模式
+                if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().isShowTopMenu()) {
+                    //隐藏视频播放视图层
+                    RxBus.getDefault().post(new VideoEvent(10010, 0));
+                }
             } else {
                 page--;
             }
@@ -120,6 +127,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     @Override
     public void initData() {
         super.initData();
+        handler = new Handler();
         //开始时候有头布局所以禁止滑动
         tjViewPager2 = binding.viewPager2;
         tjCardView = binding.cardView;
@@ -181,7 +189,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             }
         });
 
-        binding.srl.setEnabled(false);
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

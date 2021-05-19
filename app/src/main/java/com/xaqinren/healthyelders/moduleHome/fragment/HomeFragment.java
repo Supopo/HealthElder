@@ -78,6 +78,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //展示TabLayout
                         binding.rlTabMenu.setVisibility(View.VISIBLE);
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
+                        AppApplication.get().setShowTopMenu(true);
+
+                        //隐藏视频播放视图层
+                        RxBus.getDefault().post(new VideoEvent(10010, 0));
+
                         //隐藏TabLayout
                         binding.rlTabMenu.setVisibility(View.GONE);
 
@@ -85,12 +90,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                             //推荐viewPager2 变窄
                             int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
                             tjFragment.setCardWidth(screenWidth - dimension);
-
+                            tjFragment.tjCardView.setRadius(getResources().getDimension(R.dimen.dp_14));
                             tjFragment.tjViewPager2.setUserInputEnabled(false);
                         } else if (AppApplication.get().getLayoutPos() == 1) {
                             gzFragment.setVP2Enabled(false);
                         } else {
                             fjFragment.recyclerView.setNestedScrollingEnabled(false);
+                            fjFragment.viewTop.setVisibility(View.GONE);
                         }
 
                         //展示头布局
@@ -198,6 +204,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_247)) {
+                    AppApplication.get().setShowTopMenu(false);
+
+
                     //隐藏头部菜单
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
@@ -207,7 +216,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         tjFragment.tjViewPager2.setUserInputEnabled(true);
                         //推荐ViewPager2变宽
                         tjFragment.setCardWidth(screenWidth);
-
+                        tjFragment.tjCardView.setRadius(0);
                         //判断第一次
                         //设置开始播放第一条
                         if (AppApplication.get().getTjPlayPosition() < 0) {
@@ -217,11 +226,18 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         gzFragment.setVP2Enabled(true);
                     } else {
                         fjFragment.recyclerView.setNestedScrollingEnabled(true);
+                        fjFragment.viewTop.setVisibility(View.VISIBLE);
                     }
 
 
+                    String tag = "";
+                    if (AppApplication.get().getLayoutPos() == 0) {
+                        tag = "home-tj";
+                    } else if (AppApplication.get().getLayoutPos() == 1) {
+                        tag = "home-gz";
+                    }
                     //通知播放页面播放
-                    RxBus.getDefault().post(new VideoEvent(1, TAG));
+                    RxBus.getDefault().post(new VideoEvent(1, tag));
 
                     //通知主页底部变透明
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
@@ -234,7 +250,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     }
 
                     if (AppApplication.get().getLayoutPos() == 0) {
-
                         //h滑动237 w加宽20
                         //推荐ViewPager2逐渐变宽
 
@@ -243,6 +258,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         params.width = tjFragment.oldWidth + (int) ((float) (scrollY) * bb);
 
                         tjFragment.tjCardView.setLayoutParams(params);
+                    } else if (AppApplication.get().getLayoutPos() == 2) {
+
                     }
 
                     //主页底部菜单背景颜色从白变透明

@@ -113,7 +113,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (type.equals("home-list")) {
             ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
             layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_10);
-        }else {
+        } else {
             ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
             layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_50);
         }
@@ -273,6 +273,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     } else if ((bean.position == 1 && type.equals("home-gz"))) {
                         startGzVideo();
                     }
+                } else if (bean.msgId == 10010) {//回到了顶部
+                    stopPlay(true);
+                    //判断
+                    if (AppApplication.get().getLayoutPos() == 0 && type.equals("home-tj")) {
+                        if (AppApplication.get().getTjPlayPosition() == position || (AppApplication.get().getTjPlayPosition() == -1 && position == 0)) {
+                            //隐藏
+                            binding.rlView.setVisibility(View.GONE);
+                        }
+                    }
                 }
             }
         });
@@ -333,25 +342,26 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             videoInfo.hasAttention = !videoInfo.hasAttention;
         });
 
-        binding.ivComment.setOnClickListener(lis ->{
+        binding.ivComment.setOnClickListener(lis -> {
             showCommentDialog(videoInfo.resourceId);
         });
 
-        binding.ivShare.setOnClickListener(lis ->{
+        binding.ivShare.setOnClickListener(lis -> {
             showShareDialog();
         });
     }
 
 
-
     //分享弹窗
     ShareDialog shareDialog;
-    private void showShareDialog(){
+
+    private void showShareDialog() {
         if (shareDialog == null)
             shareDialog = new ShareDialog(getActivity());
         shareDialog.setData(getShareData());
         shareDialog.show(binding.mainRelativeLayout);
     }
+
     private List<? extends IShareUser> getShareData() {
         List<LiteAvUserBean> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -366,6 +376,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     //评论弹窗
     CommentDialog commentDialog;
+
     private void showCommentDialog(String videoId) {
         if (commentDialog == null)
             commentDialog = new CommentDialog(getContext(), videoId);
@@ -394,6 +405,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     CommentPublishDialog publishDialog;
+
     /**
      * 发表评论
      */
@@ -505,6 +517,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startPlay(boolean b) {
+        if (binding.rlView.getVisibility() == View.GONE) {
+            binding.rlView.setVisibility(View.VISIBLE);
+        }
+
         vodPlayer.setAutoPlay(b);
         vodPlayer.startPlay(videoInfo.resourceUrl);
     }
