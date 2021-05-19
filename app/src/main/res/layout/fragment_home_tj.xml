@@ -19,24 +19,32 @@
             android:layout_height="match_parent">
 
 
-                <RelativeLayout
-                    android:id="@+id/rl_all"
+            <RelativeLayout
+                android:id="@+id/rl_all"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
+                    android:id="@+id/loadView"
+                    style="@style/Layout.Wrap"
+                    android:layout_centerInParent="true" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-
-                    <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
-                        android:id="@+id/loadView"
-                        style="@style/Layout.Wrap"
-                        android:layout_centerInParent="true" />
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    app:cardCornerRadius="@dimen/dp_14"
+                    app:cardElevation="0dp">
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/viewPager2"
-                        android:layout_centerHorizontal="true"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical" />
-                </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout

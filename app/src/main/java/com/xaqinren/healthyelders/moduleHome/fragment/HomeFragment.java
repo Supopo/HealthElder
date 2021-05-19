@@ -2,7 +2,6 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +84,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         if (AppApplication.get().getLayoutPos() == 0) {
                             //推荐viewPager2 变窄
                             int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-                            tjFragment.setVP2Width(screenWidth - dimension);
+                            tjFragment.setCardWidth(screenWidth - dimension);
 
                             tjFragment.tjViewPager2.setUserInputEnabled(false);
                         } else if (AppApplication.get().getLayoutPos() == 1) {
@@ -208,7 +206,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     if (AppApplication.get().getLayoutPos() == 0) {
                         tjFragment.tjViewPager2.setUserInputEnabled(true);
                         //推荐ViewPager2变宽
-                        tjFragment.setVP2Width(screenWidth);
+                        tjFragment.setCardWidth(screenWidth);
 
                         //判断第一次
                         //设置开始播放第一条
@@ -241,10 +239,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //推荐ViewPager2逐渐变宽
 
                         float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
-                        ViewGroup.LayoutParams params = tjFragment.tjViewPager2.getLayoutParams();
+                        ViewGroup.LayoutParams params = tjFragment.tjCardView.getLayoutParams();
                         params.width = tjFragment.oldWidth + (int) ((float) (scrollY) * bb);
 
-                        tjFragment.tjViewPager2.setLayoutParams(params);
+                        tjFragment.tjCardView.setLayoutParams(params);
                     }
 
                     //主页底部菜单背景颜色从白变透明

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -60,6 +61,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
     public ViewPager2 tjViewPager2;
+    public CardView tjCardView;
     private int screenWidth;
 
 
@@ -114,29 +116,30 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
 
     public int oldWidth;
+
     @Override
     public void initData() {
         super.initData();
         //开始时候有头布局所以禁止滑动
         tjViewPager2 = binding.viewPager2;
+        tjCardView = binding.cardView;
         binding.viewPager2.setUserInputEnabled(false);
         screenWidth = ScreenUtil.getScreenWidth(getActivity());
 
-        //变窄viewPager2 变窄
-        ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+        //变窄viewPager2
+        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
         int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
         params.height = ScreenUtils.getScreenHeight(getActivity());
         params.width = screenWidth - dimension;
         oldWidth = screenWidth - dimension;
-        binding.viewPager2.setLayoutParams(params);
-        Log.e("---------", "viewPager2: " + params.width);
+        tjCardView.setLayoutParams(params);
         initVideoViews();
     }
 
-    public void setVP2Width(int width) {
-        ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+    public void setCardWidth(int width) {
+        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
         params.width = width;
-        binding.viewPager2.setLayoutParams(params);
+        tjCardView.setLayoutParams(params);
     }
 
     private void initVideoViews() {
