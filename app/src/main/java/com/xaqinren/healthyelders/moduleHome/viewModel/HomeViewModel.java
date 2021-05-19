@@ -29,6 +29,7 @@ public class HomeViewModel extends BaseViewModel {
 
     public MutableLiveData<List<VideoInfo>> firendDatas = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<HomeRes> homeInfo = new MutableLiveData<>();
 
     public void getVideoData() {
         List<TCVideoInfo> list = new ArrayList<>();
@@ -48,5 +49,10 @@ public class HomeViewModel extends BaseViewModel {
             return;
         }
         LiveRepository.getInstance().getLiveFiends(firendDatas);
+    }
+
+
+    public void getHomeInfo() {
+        LiveRepository.getInstance().getHomeInfo(homeInfo);
     }
 }

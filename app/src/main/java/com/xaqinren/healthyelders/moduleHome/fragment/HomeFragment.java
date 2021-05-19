@@ -1,16 +1,22 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
+import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -25,6 +31,9 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.utils.LogUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +54,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public ViewPager2 vp2;
     private HomeGZFragment gzFragment;
     private HomeTJFragment tjFragment;
+    private HomeFJFragment fjFragment;
+    private int screenWidth;
+    private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
+    private MenuAdapter menu2Adapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,13 +81,33 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
                         //隐藏TabLayout
                         binding.rlTabMenu.setVisibility(View.GONE);
+
+                        if (AppApplication.get().getLayoutPos() == 0) {
+                            //推荐viewPager2 变窄
+                            int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+                            tjFragment.setVP2Width(screenWidth - dimension);
+
+                            tjFragment.tjViewPager2.setUserInputEnabled(false);
+                        } else if (AppApplication.get().getLayoutPos() == 1) {
+                            gzFragment.setVP2Enabled(false);
+                        } else {
+                            fjFragment.recyclerView.setNestedScrollingEnabled(false);
+                        }
+
+                        //展示头布局
+                        binding.rlTop.setVisibility(View.VISIBLE);
+                        binding.nsv.setScrollingEnabled(true);
+                        binding.viewPager2.setUserInputEnabled(false);
+
+                        binding.nsv.fling(0);
+                        binding.nsv.smoothScrollTo(0, 0);
                     }
                 }
             }
         });
         RxSubscriptions.add(subscribe);
 
-        binding.ivZhibo.setOnClickListener(lis ->{
+        binding.ivZhibo.setOnClickListener(lis -> {
             VideoListBean listBean = new VideoListBean();
             listBean.type = 0;
 
@@ -83,13 +116,33 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             startActivity(VideoListActivity.class, bundle);
         });
 
+
+        viewModel.homeInfo.observe(this, homeRes -> {
+            if (homeRes != null) {
+                if (homeRes.commodityType != null) {
+                    menu1Adapter.setNewInstance(homeRes.contentMenu);
+                }
+                if (homeRes.contentMenu != null) {
+                    menu2Adapter.setNewInstance(homeRes.commodityType);
+                }
+            }
+        });
+
+    }
+
+    public void resetVVPHeight() {
+        ViewGroup.LayoutParams layoutParams = binding.viewPager2.getLayoutParams();
+        layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
     }
 
     private boolean isFirst = true;
 
     public void initData() {
         super.initData();
+        screenWidth = ScreenUtil.getScreenWidth(getActivity());
+        resetVVPHeight();
         initFragment();
+        initTopMenu();
         LocationService.startService(getActivity());
     }
 
@@ -97,11 +150,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         List<Fragment> fragments = new ArrayList<>();
         tjFragment = new HomeTJFragment(getActivity());
         gzFragment = new HomeGZFragment(getActivity());
+        fjFragment = new HomeFJFragment();
         fragments.add(tjFragment);
         fragments.add(gzFragment);
-        fragments.add(new HomeFJFragment());
+        fragments.add(fjFragment);
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
         vp2 = binding.viewPager2;
+        binding.viewPager2.setUserInputEnabled(false);
+
 
         binding.viewPager2.setAdapter(vp2Adapter);
         binding.viewPager2.setOffscreenPageLimit(2);
@@ -118,7 +174,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     if (binding.rlTabMenu.getVisibility() == View.GONE) {
                         binding.rlTabMenu.setVisibility(View.VISIBLE);
                     }
-                    if (position == 0 && tjFragment.getTopShow()) {
+                    if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
                         binding.rlTabMenu.setVisibility(View.GONE);
                     }
 
@@ -138,6 +194,87 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 isFirst = false;
             }
         });
+
+        binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_247)) {
+                    //隐藏头部菜单
+                    binding.nsv.setScrollingEnabled(false);
+                    binding.viewPager2.setUserInputEnabled(true);
+                    binding.rlTop.setVisibility(View.GONE);
+
+                    if (AppApplication.get().getLayoutPos() == 0) {
+                        tjFragment.tjViewPager2.setUserInputEnabled(true);
+                        //推荐ViewPager2变宽
+                        tjFragment.setVP2Width(screenWidth);
+
+                        //判断第一次
+                        //设置开始播放第一条
+                        if (AppApplication.get().getTjPlayPosition() < 0) {
+                            AppApplication.get().setTjPlayPosition(0);
+                        }
+                    } else if (AppApplication.get().getLayoutPos() == 1) {
+                        gzFragment.setVP2Enabled(true);
+                    } else {
+                        fjFragment.recyclerView.setNestedScrollingEnabled(true);
+                    }
+
+
+                    //通知播放页面播放
+                    RxBus.getDefault().post(new VideoEvent(1, TAG));
+
+                    //通知主页底部变透明
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                    //通知HomeFragment展示TabLayout
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_TAB_LAYOUT));
+                } else {
+
+                    if (AppApplication.get().getLayoutPos() == 0) {
+
+                        //h滑动237 w加宽20
+                        //推荐ViewPager2逐渐变宽
+                        float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
+                        ViewGroup.LayoutParams params = tjFragment.tjViewPager2.getLayoutParams();
+                        int width = params.width + (int) ((float) scrollY * bb);
+                        tjFragment.setVP2Width(width);
+                    }
+
+                    //主页底部菜单背景颜色从白变透明
+                    float colorBb = 10 / getResources().getDimension(R.dimen.dp_247);
+                    //从白-透明 100-0
+                    int colorA = 10 - (int) (scrollY * colorBb);
+
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_COLOR, "", colorA));
+
+                }
+            }
+        });
+    }
+
+    private void initTopMenu() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.rvMenu1.setLayoutManager(linearLayoutManager);
+        menu1Adapter = new BaseQuickAdapter<MenuBean, BaseViewHolder>(R.layout.item_home_menu) {
+
+            @Override
+            protected void convert(@NotNull BaseViewHolder holder, MenuBean item) {
+                TextView tvMenu = holder.getView(R.id.tv_menu);
+                tvMenu.setText(item.menuName);
+                tvMenu.setTextColor(Color.parseColor(item.fontColor));
+            }
+        };
+        binding.rvMenu1.setAdapter(menu1Adapter);
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
+        linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        binding.rvMenu2.setLayoutManager(linearLayoutManager2);
+        menu2Adapter = new MenuAdapter(R.layout.item_home_menu2);
+        binding.rvMenu2.setAdapter(menu2Adapter);
+
+        viewModel.getHomeInfo();
+
     }
 
 

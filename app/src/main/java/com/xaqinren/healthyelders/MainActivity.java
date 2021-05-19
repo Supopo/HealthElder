@@ -147,16 +147,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         binding.rlMenu1.setOnClickListener(lis -> {
             selectView = binding.tvMenu1;
 
-            //点击首页按钮展示头布局
-            homeFragment.vp2.setCurrentItem(0);
-            //发送推荐列表回顶消息
+            //发送HomeFragment回顶消息
             RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             //底部菜单变白色
             setBottomColors(R.color.white, dawable, R.color.color_252525, false);
-            //取消全屏
-            //            binding.line.setVisibility(View.VISIBLE);
+
 
             //            if (selectView.getId() == oldView.getId()) {
             //                //判断只有处于推荐列表时候才有效
@@ -298,7 +295,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         //背景色从白-透明 10-0
                         String alphaColor = ColorsUtils.getAlphaColor("ffffff", o.status);
                         binding.llMenu.setBackgroundColor(Color.parseColor(alphaColor));
-
                         //字体色从黑-白
                         selectView.setTextColor(Color.parseColor(textColors[o.status]));
 

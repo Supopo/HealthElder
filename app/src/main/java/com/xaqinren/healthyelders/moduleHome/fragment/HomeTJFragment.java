@@ -59,16 +59,8 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
     public ViewPager2 tjViewPager2;
-    private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
-    private MenuAdapter menu2Adapter;
     private int screenWidth;
 
-    public boolean getTopShow() {
-        if (binding.rlTop.getVisibility() == View.VISIBLE) {
-            return true;
-        }
-        return false;
-    }
 
     public HomeTJFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -89,23 +81,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         super.initViewObservable();
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
-                if (event.msgId == CodeTable.EVENT_HOME) {
-                    if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
-                        //展示头布局
-                        binding.viewPager2.setUserInputEnabled(false);
-                        binding.nsv.setScrollingEnabled(true);
-                        binding.rlTop.setVisibility(View.VISIBLE);
-                        binding.nsv.fling(0);
-                        binding.nsv.smoothScrollTo(0, 0);
 
-                        //变窄viewPager2 变窄
-                        ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
-                        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-                        params.width = screenWidth - dimension;
-                        binding.viewPager2.setLayoutParams(params);
-
-                    }
-                }
             }
         });
         RxSubscriptions.add(subscribe);
@@ -128,16 +104,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             }
         });
 
-        viewModel.homeInfo.observe(this, homeRes -> {
-            if (homeRes != null) {
-                if (homeRes.commodityType != null) {
-                    menu1Adapter.setNewInstance(homeRes.contentMenu);
-                }
-                if (homeRes.contentMenu != null) {
-                    menu2Adapter.setNewInstance(homeRes.commodityType);
-                }
-            }
-        });
     }
 
     private void closeLoadView() {
@@ -160,34 +126,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         params.height = ScreenUtils.getScreenHeight(getActivity());
         params.width = screenWidth - dimension;
         binding.viewPager2.setLayoutParams(params);
-
-        initTopMenu();
         initVideoViews();
     }
 
-    private void initTopMenu() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.rvMenu1.setLayoutManager(linearLayoutManager);
-        menu1Adapter = new BaseQuickAdapter<MenuBean, BaseViewHolder>(R.layout.item_home_menu) {
-
-            @Override
-            protected void convert(@NotNull BaseViewHolder holder, MenuBean item) {
-                TextView tvMenu = holder.getView(R.id.tv_menu);
-                tvMenu.setText(item.menuName);
-                tvMenu.setTextColor(Color.parseColor(item.fontColor));
-            }
-        };
-        binding.rvMenu1.setAdapter(menu1Adapter);
-
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
-        linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
-        binding.rvMenu2.setLayoutManager(linearLayoutManager2);
-        menu2Adapter = new MenuAdapter(R.layout.item_home_menu2);
-        binding.rvMenu2.setAdapter(menu2Adapter);
-
-        viewModel.getHomeInfo();
-
+    public void setVP2Width(int width) {
+        ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+        params.width = width;
+        binding.viewPager2.setLayoutParams(params);
     }
 
     private void initVideoViews() {
@@ -212,7 +157,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 //第一次加载所有Fragment完会触发
                 if (!firstInit) {
                     if (position == 0) {
-                        binding.nsv.setScrollingEnabled(false);
                         binding.viewPager2.setUserInputEnabled(true);
                     }
 
@@ -238,57 +182,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 showLoadView();
                 viewModel.getVideoData(page);
                 binding.srl.setRefreshing(false);
-            }
-        });
-
-        binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                LogUtils.v("----------", "scrollY: " + scrollY + "-oldScrollY:" + oldScrollY);
-                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_247)) {
-                    //隐藏头部菜单
-                    binding.nsv.setScrollingEnabled(false);
-                    binding.viewPager2.setUserInputEnabled(true);
-                    binding.rlTop.setVisibility(View.GONE);
-
-                    //变窄viewPager2 变宽
-                    ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
-                    params.width = screenWidth;
-                    binding.viewPager2.setLayoutParams(params);
-
-                    //判断第一次
-                    //设置开始播放第一条
-                    if (AppApplication.get().getTjPlayPosition() < 0) {
-                        AppApplication.get().setTjPlayPosition(0);
-                    }
-                    //通知播放页面播放
-                    RxBus.getDefault().post(new VideoEvent(1, TAG));
-
-                    binding.srl.setEnabled(true);
-                    //通知主页底部变透明
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                    //通知HomeFragment展示TabLayout
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_TAB_LAYOUT));
-                } else {
-                    //h滑动237 w加宽20
-                    //逐渐变宽
-                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
-                    ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
-                    params.width = params.width + (int) ((float) scrollY * bb);
-                    binding.viewPager2.setLayoutParams(params);
-
-                    //主页底部菜单背景颜色从白变透明
-                    float colorBb = 10 / getResources().getDimension(R.dimen.dp_247);
-                    //从白-透明 100-0
-                    int colorA = 10 - (int) (scrollY * colorBb);
-                    LogUtils.v("-------", "colorA" + colorA);
-
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_COLOR, "", colorA));
-
-
-                }
-
-
             }
         });
     }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -47,6 +48,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     private Disposable subscribe;
     private double lat;
     private double lon;
+    public RecyclerView recyclerView;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     @Override
     public void initData() {
         super.initData();
-
+        recyclerView = binding.rvVideo;
         mAdapter = new FJVideoAdapter(R.layout.item_fj_video);
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载

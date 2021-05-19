@@ -29,7 +29,4 @@ public class HomeTJViewModel extends BaseViewModel {
         LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize, 0,datas);
     }
 
-    public void getHomeInfo() {
-        LiveRepository.getInstance().getHomeInfo(homeInfo);
-    }
 }

@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
@@ -47,6 +48,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private FragmentPagerAdapter videoAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
+    public LockableNestedScrollView gzNsv;
+    public ViewPager2 gzViewPager2;
 
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -62,6 +65,20 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         return BR.viewModel;
     }
 
+    public void setVP2Enabled(boolean enabled) {
+        if (enabled) {
+            if (binding.rlTop.getVisibility() == View.GONE) {//顶部未展示
+                binding.nsv.setScrollingEnabled(false);
+                binding.viewPager2.setUserInputEnabled(true);
+            }else {
+                binding.nsv.setScrollingEnabled(true);
+                binding.viewPager2.setUserInputEnabled(false);
+            }
+        }else {
+            binding.nsv.setScrollingEnabled(false);
+            binding.viewPager2.setUserInputEnabled(false);
+        }
+    }
 
     @Override
     public void initViewObservable() {
