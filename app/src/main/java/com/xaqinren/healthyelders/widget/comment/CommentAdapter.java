@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemCommentBinding;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import retrofit2.http.PUT;
 
-public class CommentAdapter extends BaseQuickAdapter<ICommentBean , CommentAdapter.ViewHolder> {
+public class CommentAdapter extends BaseQuickAdapter<ICommentBean , CommentAdapter.ViewHolder> implements LoadMoreModule {
     private OnChildLoadMoreCommentListener loadMoreCommentListener;
     private OnOperationItemClickListener operationItemClickListener;
     public CommentAdapter(int layoutResId , OnChildLoadMoreCommentListener loadMoreCommentListener , OnOperationItemClickListener operationItemClickListener) {
@@ -62,7 +63,7 @@ public class CommentAdapter extends BaseQuickAdapter<ICommentBean , CommentAdapt
         if (iCommentBean.commentCount > 0) {
             baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount + 1);
             if (iCommentBean.childComment.isEmpty()) {
-                //增加一个加载更多
+                //增加一个加载更多底部
                 ICommentBean bean = new ICommentBean();
                 bean.viewType = 1;
                 iCommentBean.childComment.add(bean);

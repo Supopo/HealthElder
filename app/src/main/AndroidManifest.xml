@@ -198,11 +198,12 @@
         <activity android:name=".modulePicture.activity.PublishTextPhotoActivity"
             android:launchMode="singleInstance"/>
         <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" />
+        <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
         <activity android:name=".moduleHome.activity.VideoListActivity" />
+        <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" />
     </application>
 
 </manifest>

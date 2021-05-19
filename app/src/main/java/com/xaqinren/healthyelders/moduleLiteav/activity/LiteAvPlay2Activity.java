@@ -95,16 +95,17 @@ public class LiteAvPlay2Activity extends BaseActivity<ActivityLiteAvPlay2Binding
         int time = (int) (System.currentTimeMillis() / 1000 + (24 * 60 * 60 * 1));
         String t = Signature.getTimeExpire(time);
         String[] urls = {
-                "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/96104fa55285890818301219505/HuATs9Bs4wwA.mp4",
-                "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/9f646aec5285890818301618671/u8wAGSjnujsA.mp4",
-                "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/5dd176fa5285890818294517667/RaxZKTDhg8AA.mp4",
+                "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/0d76f8195285890818520396975/NjUwaiqvGRsA.mp4",
+                "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/327610ab5285890818541326146/dsPZcHixDg8A.mp4",
+                "http://1302448977.vod2.myqcloud.com/2734970fvodcq1302448977/7d2a7c385285890818338587344/z5j7BlJe2JwA.mp4",
         };
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 String playToken = Signature.singVideo(urls[i], t);
                 VideoInfo info = new VideoInfo();
                 info.resourceUrl = urls[i] + "?t=" + t + "&sign=" + playToken;
                 info.resourceType = "VIDEO";
+                info.id = "1394634174266134528";
                 mVideoInfoList.add(info);
             } catch (URISyntaxException e) {
                 e.printStackTrace();

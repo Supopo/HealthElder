@@ -41,6 +41,12 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             Typeface.NORMAL,
             Typeface.NORMAL};
 
+
+    //是否激活#
+    private boolean isTopicEnable = true;
+    //是否激活@
+    private boolean isAtEnable = true;
+
     //特殊文字颜色
     private int colorTopic = Color.parseColor("#FF004E");
     private int colorBlock = Color.parseColor("#00004E");
@@ -86,6 +92,14 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
 
     public int getInputMax() {
         return inputMax;
+    }
+
+    public void setAtEnable(boolean atEnable) {
+        isAtEnable = atEnable;
+    }
+
+    public void setTopicEnable(boolean topicEnable) {
+        isTopicEnable = topicEnable;
     }
 
     public void setOnTextChangeListener(OnTextChangeListener onTextChangeListener) {
@@ -155,7 +169,9 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             removeTextChangedListener(this);
             clearAtOptionNoColor();
             watchText(editable, textStart, textLengthBefore, getTextLengthAfter);
+            if (isTopicEnable)
             sendBackTopic(editable);
+            if (isAtEnable)
             sendBackAt(editable);
             addTextChangedListener(this);
         } else {
@@ -371,6 +387,10 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
      * @param atStr
      */
     public void setAtStr(String atStr, long id) {
+        if (!isAtEnable){
+            append(atStr);
+            return;
+        }
         //提交了一个热点话题，理所应当从当前#开始网后面替换topicStr的文字内容
         for (VideoPublishEditBean bean : videoAtEditBeans) {
             if (bean.getId() == id) {
@@ -444,6 +464,10 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
      * @param topicStr
      */
     public void setTopicStr(String topicStr, int id) {
+        if (!isTopicEnable){
+            append(topicStr);
+            return;
+        }
         //提交了一个热点话题，理所应当从当前#开始网后面替换topicStr的文字内容
         String currentStr = getText().toString();
 
@@ -491,11 +515,16 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
 
     private void watchText(Editable text, int start, int lengthBefore, int lengthAfter) {
         //        LogUtils.e("VideoPublishEditTextView", "text = " + text.toString() + "\tstart =\t"+start+ "\tlengthBefore =\t"+lengthBefore+ "\tlengthAfter =\t"+lengthAfter);
+        if (isTopicEnable)
         checkTopic(text, start, lengthBefore, lengthAfter);
+        if (isAtEnable)
         checkFriend(text, start, lengthBefore, lengthAfter);
-        if (prepareTopic) {
-            changeTextColor(videoPublishEditBeans, text, colorTopic, start, lengthBefore, lengthAfter);
+        if (isTopicEnable || isAtEnable) {
+            if (prepareTopic) {
+                changeTextColor(videoPublishEditBeans, text, colorTopic, start, lengthBefore, lengthAfter);
+            }
         }
+
         prepareTopic = false;
         videoPublishEditBeans.clear();
     }

@@ -42,6 +42,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
@@ -188,6 +189,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             //            intent.putExtra(UGCKitConstants.TIMESTAMP, "2019-03-26 14:09:28");
             //            intent.putExtra(UGCKitConstants.TCLIVE_INFO_POSITION, 0);
             startActivityForResult(intent, START_LIVE_PLAY);
+        });
+        binding.tvMenu106.setOnClickListener(view -> {
+            startActivity(TextPhotoDetailActivity.class);
         });
     }
 

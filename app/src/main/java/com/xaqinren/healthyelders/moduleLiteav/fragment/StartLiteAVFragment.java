@@ -8,12 +8,14 @@ import android.content.pm.ModuleInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -63,6 +65,7 @@ import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.RecordButton;
+import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +94,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private int REQUEST_MUSIC = 10003;
     private String photoPath;
     private int currentMode = RecordButton.VIDEO_MODE;
+
+
 
     public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
         this.onFragmentStatusListener = onFragmentStatusListener;
@@ -204,9 +209,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
         //选择音乐
         binding.selMusic.setOnClickListener(view -> {
-//            showMusic();
-            Intent intent = new Intent(getContext(), ChooseMusicActivity.class);
-            startActivityForResult(intent , REQUEST_MUSIC);
+            showMusic();
+//            Intent intent = new Intent(getContext(), ChooseMusicActivity.class);
+//            startActivityForResult(intent , REQUEST_MUSIC);
         });
         //录制
         /*binding.recodeBtn.setOnClickListener(view -> {
@@ -278,6 +283,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 onFragmentStatusListener.isRecode(false);
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
         });
+
+
     }
 
 
@@ -477,18 +484,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             mMusicPop.getWindow().setAttributes(lp);
         }
 
-        mMusicPop.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
-            @Override
-            public void onBottomItemClick(BottomDialog dialog, View view) {
+        mMusicPop.setOnBottomItemClickListener((dialog, view) -> {
 
-            }
         });
-        mMusicPop.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                showNormalPanel();
-            }
-        });
+        mMusicPop.setOnDismissListener(dialogInterface -> showNormalPanel());
     }
 
     private void initCameraRecode(){
@@ -609,16 +608,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE) {
-                if (data == null) {
-                    return;
-                }
-                MusicInfo musicInfo = new MusicInfo();
-                musicInfo.path = data.getStringExtra(UGCKitConstants.MUSIC_PATH);
-                musicInfo.name = data.getStringExtra(UGCKitConstants.MUSIC_NAME);
-                musicInfo.position = data.getIntExtra(UGCKitConstants.MUSIC_POSITION, -1);
-                liteAvRecode.setMusicInfo(musicInfo);
-            } else if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+            if (requestCode == PictureConfig.CHOOSE_REQUEST) {
                 //拍照完成
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 ArrayList<String> paths = new ArrayList<>();
@@ -631,6 +621,15 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 intent.putStringArrayListExtra(Constant.PHOTO_PATH, paths);
                 startActivity(intent);
             }
+        } else if (resultCode == UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE) {
+            if (data == null) {
+                return;
+            }
+            MusicInfo musicInfo = new MusicInfo();
+            musicInfo.path = data.getStringExtra(UGCKitConstants.MUSIC_PATH);
+            musicInfo.name = data.getStringExtra(UGCKitConstants.MUSIC_NAME);
+            musicInfo.position = data.getIntExtra(UGCKitConstants.MUSIC_POSITION, -1);
+            liteAvRecode.setMusicInfo(musicInfo);
         }
 
     }

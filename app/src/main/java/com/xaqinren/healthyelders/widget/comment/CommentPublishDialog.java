@@ -44,11 +44,16 @@ public class CommentPublishDialog {
     private SoftReference<Context> context;
     private String videoId;
     private PopCommentPublishBinding binding;
+    private OnOperationListener onOperationListener;
 
     public CommentPublishDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
         this.videoId = videoId;
         init();
+    }
+
+    public void setOnOperationListener(OnOperationListener onOperationListener) {
+        this.onOperationListener = onOperationListener;
     }
 
     private void init() {
@@ -63,9 +68,21 @@ public class CommentPublishDialog {
 
         binding.rlContainer.setOnClickListener(view -> {
             LogUtils.e(TAG, "关闭键盘");
-            SoftKeyBoardUtil.hideKeyBoard(binding.inputEt);
+
             dialog.dismiss();
+        });SoftKeyBoardUtil.hideKeyBoard(binding.inputEt);
+        binding.iconBtn.setOnClickListener(view -> {
+            if (onOperationListener != null) {
+                onOperationListener.onEmojiBtnClick();
+            }
         });
+        binding.publishBtn.setOnClickListener(view -> {
+            if (onOperationListener != null) {
+                onOperationListener.onPublish(binding.inputEt.getText().toString());
+            }
+        });
+        binding.inputEt.setAtEnable(false);
+        binding.inputEt.setTopicEnable(false);
     }
 
 
@@ -91,5 +108,9 @@ public class CommentPublishDialog {
     }
     public void keyBoardClosed() {
         dialog.dismiss();
+    }
+    public interface OnOperationListener{
+        void onEmojiBtnClick();
+        void onPublish(String content);
     }
 }

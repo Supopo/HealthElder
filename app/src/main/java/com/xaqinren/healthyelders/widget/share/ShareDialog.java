@@ -25,10 +25,18 @@ public class ShareDialog{
     private PopShareBinding binding;
     private ShareFriendAdapter shareFriendAdapter;
     private List<? extends IShareUser> userList;
+    public static int VIDEO_TYPE = 0;//短视频
+    public static int TP_TYPE = 1;//图文
+    private int showType = VIDEO_TYPE;
 
     public ShareDialog(Context context) {
         this.context = new SoftReference<>(context);
         init();
+    }
+
+    public void setShowType(int showType) {
+        this.showType = showType;
+        showType();
     }
 
     private void init() {
@@ -47,6 +55,7 @@ public class ShareDialog{
 
         binding.atUserList.setLayoutManager(new LinearLayoutManager(context.get(), LinearLayoutManager.HORIZONTAL, false));
         binding.atUserList.setAdapter(shareFriendAdapter);
+
 
         binding.shareClsLayout.shareFriend.setOnClickListener(view -> {
             //私信朋友
@@ -69,7 +78,22 @@ public class ShareDialog{
         binding.shareOperationLayout.shareReport.setOnClickListener(view -> {
             //举报
         });
+        binding.shareOperationLayout.sharePost.setOnClickListener(view -> {
+            //生成海报
+        });
         binding.rlContainer.setOnClickListener(view -> popupWindow.dismiss());
+
+    }
+
+    private void showType() {
+        if (showType == VIDEO_TYPE) {
+            binding.shareOperationLayout.sharePost.setVisibility(View.GONE);
+        } else if (showType == TP_TYPE) {
+            binding.shareOperationLayout.shareSaveNative.setVisibility(View.GONE);
+            binding.shareOperationLayout.shareColl.setVisibility(View.GONE);
+            binding.shareOperationLayout.shareReport.setVisibility(View.GONE);
+            binding.shareOperationLayout.sharePost.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setData(List<? extends IShareUser> data) {

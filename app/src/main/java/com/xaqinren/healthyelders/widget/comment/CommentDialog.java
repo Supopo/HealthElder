@@ -17,6 +17,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.animation.BaseAnimation;
 import com.chad.library.adapter.base.animation.SlideInBottomAnimation;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.PopCommentBinding;
@@ -42,6 +44,8 @@ public class CommentDialog {
     private CommentViewModel viewModel;
     private OnChildClick onChildClick;
     private String videoId;
+    private BaseLoadMoreModule loadMoreModule;
+
     public  CommentDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
         this.videoId = videoId;
@@ -113,6 +117,20 @@ public class CommentDialog {
         binding.commentLayout.setOnClickListener(view -> {
             onChildClick.toCommentVideo(videoId);
         });
+
+        loadMoreModule = commentAdapter.getLoadMoreModule();
+        loadMoreModule.setAutoLoadMore(true);
+        loadMoreModule.setEnableLoadMore(true);
+        loadMoreModule.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                //TODO 调用 获取本视频更多评论
+            }
+        });
+    }
+
+    public void setData() {
+
     }
 
     public void setDataList(List<ICommentBean> dataList) {

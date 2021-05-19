@@ -155,6 +155,15 @@
                 android:gravity="center"
                 android:text="打开短视频"
                 android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/tv_menu106"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_30"
+                android:background="@color/green"
+                android:gravity="center"
+                android:text="打开图文详情"
+                android:textColor="@color/white" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
