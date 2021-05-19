@@ -13,6 +13,7 @@ import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by Lee. on 2021/5/12.
  * 首页小视频
  */
-public class VideoInfo {
+public class VideoInfo implements Serializable {
     public String id;//": "1392445338140332032",
     public String createdAt;//": "2021-05-12 19:43:33",
     public String merchantId;//": "1378618860613144576",

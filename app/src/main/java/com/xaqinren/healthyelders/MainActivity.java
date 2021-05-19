@@ -144,33 +144,46 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         binding.rlMenu1.setOnClickListener(lis -> {
             selectView = binding.tvMenu1;
 
-            if (selectView.getId() == oldView.getId()) {
-                //判断只有处于推荐列表时候才有效
-                if (AppApplication.get().getLayoutPos() != 0) {
-                    return;
-                }
-                //发送推荐列表回顶消息
-                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
-                //发送停止播放消息
-                RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
-                //底部菜单变白色
-                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
-                //取消全屏
-                binding.line.setVisibility(View.VISIBLE);
-            } else {
-                //判断
-                if (AppApplication.get().getLayoutPos() != 2) {
-                    //发送继续播放消息
-                    RxBus.getDefault().post(new VideoEvent(101, AppApplication.get().getLayoutPos()));
-                    isTranMenu = true;
-                }else {
-                    //原先是附近 需要变白
-                    //底部菜单变白色
-                    setBottomColors(R.color.white, dawable, R.color.color_252525, false);
-                }
+            //点击首页按钮展示头布局
+            homeFragment.vp2.setCurrentItem(0);
+            //发送推荐列表回顶消息
+            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
+            //发送停止播放消息
+            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+            //底部菜单变白色
+            setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+            //取消全屏
+//            binding.line.setVisibility(View.VISIBLE);
 
-                initBottomTab();
-            }
+//            if (selectView.getId() == oldView.getId()) {
+//                //判断只有处于推荐列表时候才有效
+//                if (AppApplication.get().getLayoutPos() != 0) {
+//                    return;
+//                }
+//
+//                //发送推荐列表回顶消息
+//                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
+//                //发送停止播放消息
+//                RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+//                //底部菜单变白色
+//                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+//                //取消全屏
+//                binding.line.setVisibility(View.VISIBLE);
+//            }
+//            else {
+//                //判断
+//                if (AppApplication.get().getLayoutPos() != 2) {
+//                    //发送继续播放消息
+//                    RxBus.getDefault().post(new VideoEvent(101, AppApplication.get().getLayoutPos()));
+//                    isTranMenu = true;
+//                }else {
+//                    //原先是附近 需要变白
+//                    //底部菜单变白色
+//                    setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+//                }
+//
+//                initBottomTab();
+//            }
 
             oldView = binding.tvMenu1;
         });
@@ -242,8 +255,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         homeFragment.vp2.setUserInputEnabled(true);
                     }
                 }
-
-                Log.v("-------------", "滑动L:" + (now_press_Y - before_press_Y));
                 break;
             case MotionEvent.ACTION_UP:
                 before_press_Y = 0;
@@ -270,6 +281,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
                     //底部菜单变透明，中心布局变全屏
                     setBottomColors(R.color.transparent, dawable2, R.color.white, true);
+                    binding.lineBottom.setVisibility(View.VISIBLE);
                     //变全屏
                     binding.line.setVisibility(View.GONE);
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_SUCCESS));
@@ -277,6 +289,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
                     selectView.setCompoundDrawables(null, null, null, dawable);
                     selectView.setTextColor(getResources().getColor(R.color.color_252525));
+                    binding.lineBottom.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -293,10 +306,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         if (selectView.getId() == R.id.tv_menu1 && isTranMenu) {
             binding.llMenu.setBackgroundColor(getResources().getColor(R.color.transparent));
+            binding.lineBottom.setVisibility(View.VISIBLE);
             selectView.setCompoundDrawables(null, null, null, dawable2);
             selectView.setTextColor(getResources().getColor(R.color.white));
         } else {
             binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
+            binding.lineBottom.setVisibility(View.INVISIBLE);
             selectView.setCompoundDrawables(null, null, null, dawable);
             selectView.setTextColor(getResources().getColor(R.color.color_252525));
             selectView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_18)));

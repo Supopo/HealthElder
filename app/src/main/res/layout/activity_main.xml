@@ -24,15 +24,16 @@
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_50"
+            android:layout_height="@dimen/dp_49"
             android:layout_alignParentBottom="true" />
 
         <View
-            android:id="@+id/line1"
+            android:visibility="invisible"
+            android:id="@+id/line_bottom"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_above="@id/ll_menu"
-            android:background="@color/white" />
+            android:background="#80969696" />
 
         <LinearLayout
             android:id="@+id/ll_menu"

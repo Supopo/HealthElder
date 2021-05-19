@@ -28,6 +28,7 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
+///评论PopUpWindow
 public class CommentDialog {
     private final String TAG = this.getClass().getSimpleName();
 

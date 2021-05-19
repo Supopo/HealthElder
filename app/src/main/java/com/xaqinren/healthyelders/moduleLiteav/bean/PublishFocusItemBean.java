@@ -7,6 +7,6 @@ public class PublishFocusItemBean implements Serializable {
     public int end;
     public int type;
     public long uid;// 用户搜索用ID/热点搜索用文字
-    public static final int TOPIC_TYPE = 1;
-    public static final int AT_TYPE = 2;
+//    public static final int TOPIC_TYPE = 1;
+//    public static final int AT_TYPE = 2;
 }

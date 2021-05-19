@@ -202,6 +202,7 @@
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
+        <activity android:name=".moduleHome.activity.VideoListActivity" />
     </application>
 
 </manifest>

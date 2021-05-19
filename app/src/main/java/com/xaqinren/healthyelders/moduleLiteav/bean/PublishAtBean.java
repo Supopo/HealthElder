@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.moduleLiteav.bean;
 
-public class PublishAtBean {
+import java.io.Serializable;
+
+public class PublishAtBean implements Serializable {
     public String name;
     public String uid;
 }

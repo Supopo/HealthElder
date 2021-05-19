@@ -6,32 +6,25 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleHome.viewModel.HomeFJViewModel" />
+            type="com.xaqinren.healthyelders.moduleHome.viewModel.VideoListViewModel" />
     </data>
 
 
     <RelativeLayout
+        android:background="@color/color_252525"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp_95"
-        android:paddingBottom="@dimen/dp_49">
+        android:layout_height="match_parent">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
-            android:id="@+id/srl_content"
+            android:id="@+id/srl"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_video"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/color_FFF8F8F8" />
+                android:orientation="vertical" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
-            android:id="@+id/loadView"
-            style="@style/Layout.Main"
-            android:visibility="visible" />
     </RelativeLayout>
 </layout>

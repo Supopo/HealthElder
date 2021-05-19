@@ -103,6 +103,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 AppApplication.get().setLayoutPos(position);
                 //第一次加载完所有Fragment会触发
                 if (!isFirst) {
+                    if (binding.rlTabMenu.getVisibility() == View.GONE) {
+                        binding.rlTabMenu.setVisibility(View.VISIBLE);
+                    }
+
                     //通知HomeVideoFragment做出左右滑动相应操作
                     RxBus.getDefault().post(new VideoEvent(101, position));
                     //通知关注列表页面开始加载数据

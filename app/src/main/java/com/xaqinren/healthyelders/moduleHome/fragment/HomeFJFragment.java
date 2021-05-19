@@ -1,15 +1,19 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
@@ -19,8 +23,10 @@ import com.xaqinren.healthyelders.databinding.FragmentHomeFjBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.FJVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeFJViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -95,6 +101,47 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         //防止刷新跳动
         binding.rvVideo.setItemAnimator(null);
         binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
+
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                //判断是不是文章类型
+                List<VideoInfo> adapterList = mAdapter.getData();
+
+                //不是文章
+                if (!adapterList.get(position).isArticle()) {
+
+                    //从数据中判断移除文章
+                    VideoInfo nowInfo = adapterList.get(position);
+                    List<VideoInfo> tempList = new ArrayList<>();
+                    //移除文章 计算position
+                    for (VideoInfo videoInfo : adapterList) {
+                        if (!videoInfo.isArticle()) {
+                            tempList.add(videoInfo);
+                        }
+                    }
+
+                    int tempPos = 0;
+                    for (int i = 0; i < adapterList.size(); i++) {
+                        if (nowInfo.resourceId.equals(adapterList.get(i).resourceId)) {
+                            tempPos = i;
+                        }
+                    }
+
+                    //跳页 传入数据 pos page list
+                    VideoListBean listBean = new VideoListBean();
+                    listBean.page = page;
+                    listBean.videoInfos = tempList;
+                    listBean.position = tempPos;
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("key", listBean);
+                    startActivity(VideoListActivity.class, bundle);
+
+                } else {
+                }
+            }
+        });
     }
 
     private boolean isFirst = true;

@@ -245,8 +245,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         startTjVideo();
                     }
                     if (bean.fragmentId.equals("home-gz") && type.equals("home-gz")) {
-                        LogUtils.v(Constant.TAG_LIVE, AppApplication.get().getGzPlayPosition() + type + position + bean.toString());
                         startGzVideo();
+                    }
+                    if(bean.fragmentId.equals("home-list") && type.equals("home-list")){
+                        startListVideo();
                     }
 
                 } else if (bean.msgId == 101) {//左右切换
@@ -408,6 +410,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void startGzVideo() {
         if (AppApplication.get().getGzPlayPosition() == position) {
+            startPlay(true);
+        }
+    }
+
+    private void startListVideo() {
+        if (AppApplication.get().getPlayPosition() == position) {
             startPlay(true);
         }
     }
