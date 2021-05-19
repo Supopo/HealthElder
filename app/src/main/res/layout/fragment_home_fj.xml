@@ -13,11 +13,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp_95"
         android:paddingBottom="@dimen/dp_49">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <View
+            android:background="@color/color_252525"
+            android:id="@+id/view_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_95"
+            />
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_below="@id/view_top"
             android:id="@+id/srl_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

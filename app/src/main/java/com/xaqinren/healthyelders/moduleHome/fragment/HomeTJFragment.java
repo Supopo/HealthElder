@@ -270,6 +270,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_TAB_LAYOUT));
                 } else {
                     //h滑动237 w加宽20
+                    //逐渐变宽
                     float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_237);
                     ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
                     params.width = params.width + (int) ((float)scrollY * bb);

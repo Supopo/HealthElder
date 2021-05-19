@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -22,14 +20,12 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeFjBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.FJVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeFJViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
-import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
