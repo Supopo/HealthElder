@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +113,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
 
+    public int oldWidth;
     @Override
     public void initData() {
         super.initData();
@@ -125,7 +127,9 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
         params.height = ScreenUtils.getScreenHeight(getActivity());
         params.width = screenWidth - dimension;
+        oldWidth = screenWidth - dimension;
         binding.viewPager2.setLayoutParams(params);
+        Log.e("---------", "viewPager2: " + params.width);
         initVideoViews();
     }
 

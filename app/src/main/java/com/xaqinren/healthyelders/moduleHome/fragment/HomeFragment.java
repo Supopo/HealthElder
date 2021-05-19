@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,14 +231,20 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_TAB_LAYOUT));
                 } else {
 
+                    if (scrollY == 0) {
+                        return;
+                    }
+
                     if (AppApplication.get().getLayoutPos() == 0) {
 
                         //h滑动237 w加宽20
                         //推荐ViewPager2逐渐变宽
+
                         float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
                         ViewGroup.LayoutParams params = tjFragment.tjViewPager2.getLayoutParams();
-                        int width = params.width + (int) ((float) scrollY * bb);
-                        tjFragment.setVP2Width(width);
+                        params.width = tjFragment.oldWidth + (int) ((float) (scrollY) * bb);
+
+                        tjFragment.tjViewPager2.setLayoutParams(params);
                     }
 
                     //主页底部菜单背景颜色从白变透明
@@ -246,7 +253,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     int colorA = 10 - (int) (scrollY * colorBb);
 
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_COLOR, "", colorA));
-
                 }
             }
         });
