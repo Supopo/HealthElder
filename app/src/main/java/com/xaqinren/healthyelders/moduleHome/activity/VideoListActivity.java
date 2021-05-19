@@ -96,8 +96,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 //播放指令
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
             }
-        },500);
-
+        }, 500);
 
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -129,6 +128,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             }
         });
 
+        binding.ivBack.setOnClickListener(lis ->{
+            finish();
+        });
+
     }
 
     @Override
@@ -151,13 +154,16 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 mVideoInfoList.addAll(tempList);
 
-                for (int i = 0; i < datas.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition));
+                //ViewPage添加
+                for (int i = 0; i < tempList.size(); i++) {
+                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition));
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
             } else {
-                page--;
+                if (page > 1) {
+                    page--;
+                }
             }
         });
     }

@@ -102,6 +102,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
 
+        if (type.equals("home-list")) {
+            ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
+            layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_10);
+        }else {
+            ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
+            layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_50);
+        }
 
         viewModel.videoInfo.setValue(videoInfo);
 
