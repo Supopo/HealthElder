@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -59,6 +60,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     public ViewPager2 tjViewPager2;
     private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
     private MenuAdapter menu2Adapter;
+    private int screenWidth;
 
     public boolean getTopShow() {
         if (binding.rlTop.getVisibility() == View.VISIBLE) {
@@ -94,6 +96,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                         binding.rlTop.setVisibility(View.VISIBLE);
                         binding.nsv.fling(0);
                         binding.nsv.smoothScrollTo(0, 0);
+
+                        //变窄viewPager2 变窄
+                        ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+                        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+                        params.width = screenWidth - dimension;
+                        binding.viewPager2.setLayoutParams(params);
+
                     }
                 }
             }
@@ -135,19 +144,22 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.loadView.setVisibility(View.GONE);
     }
 
-    public void resetVVPHeight() {
-        ViewGroup.LayoutParams layoutParams = binding.viewPager2.getLayoutParams();
-        layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
-    }
-
 
     @Override
     public void initData() {
         super.initData();
-        resetVVPHeight();
         //开始时候有头布局所以禁止滑动
         tjViewPager2 = binding.viewPager2;
         binding.viewPager2.setUserInputEnabled(false);
+        screenWidth = ScreenUtil.getScreenWidth(getActivity());
+
+        //变窄viewPager2 变窄
+        ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+        params.height = ScreenUtils.getScreenHeight(getActivity());
+        params.width = screenWidth - dimension;
+        binding.viewPager2.setLayoutParams(params);
+
         initTopMenu();
         initVideoViews();
     }
@@ -231,11 +243,17 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                LogUtils.v("----------", "scrollY: " + scrollY + "-oldScrollY:" + oldScrollY);
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_237)) {
                     //隐藏头部菜单
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
                     binding.rlTop.setVisibility(View.GONE);
+
+                    //变窄viewPager2 变宽
+                    ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+                    params.width = screenWidth;
+                    binding.viewPager2.setLayoutParams(params);
 
                     //判断第一次
                     //设置开始播放第一条
@@ -250,7 +268,15 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
                     //通知HomeFragment展示TabLayout
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_TAB_LAYOUT));
+                } else {
+                    //h滑动237 w加宽20
+                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_237);
+                    ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
+                    params.width = params.width + (int) ((float)scrollY * bb);
+                    binding.viewPager2.setLayoutParams(params);
                 }
+
+
             }
         });
     }
