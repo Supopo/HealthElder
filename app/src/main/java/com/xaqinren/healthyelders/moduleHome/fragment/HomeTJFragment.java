@@ -60,6 +60,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
     private MenuAdapter menu2Adapter;
 
+    public boolean getTopShow() {
+        if (binding.rlTop.getVisibility() == View.VISIBLE) {
+            return true;
+        }
+        return false;
+    }
+
     public HomeTJFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
     }
@@ -106,7 +113,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
-            }else {
+            } else {
                 page--;
             }
         });
@@ -214,7 +221,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page ++;
+                page++;
                 showLoadView();
                 viewModel.getVideoData(page);
                 binding.srl.setRefreshing(false);
