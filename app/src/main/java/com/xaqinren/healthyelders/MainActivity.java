@@ -2,8 +2,10 @@ package com.xaqinren.healthyelders;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,6 +34,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
+import com.xaqinren.healthyelders.utils.ColorsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -290,12 +293,36 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     selectView.setCompoundDrawables(null, null, null, dawable);
                     selectView.setTextColor(getResources().getColor(R.color.color_252525));
                     binding.lineBottom.setVisibility(View.INVISIBLE);
+                } else if (o.msgType == CodeTable.SET_MENU_COLOR) {
+                    if (o.status != 10) {
+                        //背景色从白-透明 10-0
+                        String alphaColor = ColorsUtils.getAlphaColor("ffffff", o.status);
+                        binding.llMenu.setBackgroundColor(Color.parseColor(alphaColor));
+
+                        //字体色从黑-白
+                        selectView.setTextColor(Color.parseColor(textColors[o.status]));
+
+                        //菜单下标逐渐透明
+                    }
+
                 }
             }
         });
         RxSubscriptions.add(eventDisposable);
     }
 
+    private String[] textColors = {
+            "#FFFFFF",
+            "#FFF7F7F7",
+            "#FFE1E1E1",
+            "#FFC5C5C5",
+            "#FFA3A3A3",
+            "#FF858585",
+            "#FF696969",
+            "#FF4D4D4D",
+            "#FF2E2E2E",
+            "#FF0F0F0F",
+    };
 
     private void initBottomTab() {
 

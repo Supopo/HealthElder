@@ -32,6 +32,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
+import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -244,7 +245,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 LogUtils.v("----------", "scrollY: " + scrollY + "-oldScrollY:" + oldScrollY);
-                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_237)) {
+                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_247)) {
                     //隐藏头部菜单
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
@@ -271,10 +272,20 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 } else {
                     //h滑动237 w加宽20
                     //逐渐变宽
-                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_237);
+                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
                     ViewGroup.LayoutParams params = binding.viewPager2.getLayoutParams();
-                    params.width = params.width + (int) ((float)scrollY * bb);
+                    params.width = params.width + (int) ((float) scrollY * bb);
                     binding.viewPager2.setLayoutParams(params);
+
+                    //主页底部菜单背景颜色从白变透明
+                    float colorBb = 10 / getResources().getDimension(R.dimen.dp_247);
+                    //从白-透明 100-0
+                    int colorA = 10 - (int) (scrollY * colorBb);
+                    LogUtils.v("-------", "colorA" + colorA);
+
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_COLOR, "", colorA));
+
+
                 }
 
 

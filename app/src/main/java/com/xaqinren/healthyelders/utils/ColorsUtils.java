@@ -32,4 +32,23 @@ public class ColorsUtils {
         int color = Color.argb(255, new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
         return color;
     }
+
+    // 10-100%
+    public static String[] alphas = {
+            "1A",
+            "33",
+            "4D",
+            "66",
+            "80",
+            "99",
+            "B3",
+            "CC",
+            "E6",
+            "FF"
+    };
+
+    //设置颜色透明度 pos 1-10
+    public static String getAlphaColor(String color, int pos) {
+        return "#" + alphas[pos - 1] + color;
+    }
 }
