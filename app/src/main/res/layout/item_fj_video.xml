@@ -15,9 +15,10 @@
     <!--    随机背景颜色-->
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/color_252525"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -64,77 +65,89 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        </RelativeLayout>
 
-                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
-                    android:id="@+id/riv_photo"
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
-                    android:layout_marginLeft="@dimen/dp_7"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:src="@{viewModel.placeholderRes}"
-                    app:qmui_border_color="@color/transparent"
-                    app:qmui_is_circle="true"
-                    app:url="@{viewModel.avatarUrl}" />
+
+
+
+        <LinearLayout
+            android:id="@+id/ll_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_item"
+            android:background="#FF2A2C38"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:paddingLeft="@dimen/dp_45"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_25"
+                android:text="@{viewModel.getDistance()}"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_13" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_3"
+                android:paddingLeft="@dimen/dp_10"
+                android:text="@{viewModel.title}"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_13" />
+
+
+            <RelativeLayout
+                android:id="@+id/rl_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_36"
+                android:visibility="@{viewModel.showLocInfo()?View.VISIBLE:View.GONE}">
+
+                <ImageView
+                    android:id="@+id/iv_loc"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:background="@mipmap/fujin_icon_dw_g" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/riv_photo"
-                    android:layout_toRightOf="@id/riv_photo"
-                    android:text="@{viewModel.getDistance()}"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_toRightOf="@id/iv_loc"
+                    android:singleLine="true"
+                    android:text="@{viewModel.address}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_13" />
-            </LinearLayout>
 
-        </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+        <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+            android:layout_alignBottom="@id/view"
+            android:id="@+id/riv_photo"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:src="@{viewModel.placeholderRes}"
+            app:qmui_border_color="#FF2A2C38"
+            app:qmui_border_width="@dimen/dp_2"
+            app:qmui_is_circle="true"
+            app:url="@{viewModel.avatarUrl}" />
 
-        <RelativeLayout
-            android:id="@+id/rl_bottom"
+        <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_36"
-            android:background="@color/white"
-            android:visibility="@{viewModel.showLocInfo()?View.VISIBLE:View.GONE}">
+            android:layout_height="@dimen/dp_25"
+            android:layout_alignTop="@id/ll_loc"
+            />
 
-            <ImageView
-                android:id="@+id/iv_loc"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_4"
-                android:background="@mipmap/fujin_icon_dw" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_9"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_toRightOf="@id/iv_loc"
-                android:singleLine="true"
-                android:text="@{viewModel.address}"
-                android:textColor="@color/color_252525"
-                android:textSize="@dimen/sp_13" />
-
-        </RelativeLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/riv_photo"
-            android:layout_toRightOf="@id/riv_photo"
-            android:background="@color/white"
-            android:padding="@dimen/dp_10"
-            android:text="@{viewModel.title}"
-            android:textSize="@dimen/sp_13"
-            android:visibility="@{viewModel.isArticle()?View.VISIBLE:View.GONE}" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </layout>

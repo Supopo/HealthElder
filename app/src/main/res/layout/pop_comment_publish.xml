@@ -43,12 +43,12 @@
 
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/icon_at"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:background="@mipmap/pl_at"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_toLeftOf="@id/icon_btn"/>
 
@@ -57,6 +57,7 @@
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:background="@mipmap/pl_biaoq"
+                android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_toLeftOf="@id/publish_btn"/>
 

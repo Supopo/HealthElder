@@ -680,21 +680,24 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
 
     public void initDesStr(PublishDesBean publishDesBean) {
         String content = publishDesBean.content;
-        for (PublishFocusItemBean bean : publishDesBean.publishFocusItemBeans) {
-            int s = bean.start;
-            int e = bean.end;
-            int t = bean.type;
-            if (t == VideoPublishEditBean.AT_TYPE) {
-                VideoPublishEditBean editBean = new VideoPublishEditBean();
-                editBean.setStartPoint(s);
-                editBean.setEndPoint(e);
-                editBean.setStrLength(e - s);
-                editBean.setTextType(t);
-                editBean.setContent(content.substring(s, e));
-                editBean.setId(bean.uid);
-                videoAtEditBeans.add(editBean);
+        if (publishDesBean.publishFocusItemBeans != null) {
+            for (PublishFocusItemBean bean : publishDesBean.publishFocusItemBeans) {
+                int s = bean.start;
+                int e = bean.end;
+                int t = bean.type;
+                if (t == VideoPublishEditBean.AT_TYPE) {
+                    VideoPublishEditBean editBean = new VideoPublishEditBean();
+                    editBean.setStartPoint(s);
+                    editBean.setEndPoint(e);
+                    editBean.setStrLength(e - s);
+                    editBean.setTextType(t);
+                    editBean.setContent(content.substring(s, e));
+                    editBean.setId(bean.uid);
+                    videoAtEditBeans.add(editBean);
+                }
             }
         }
+
         setText(content);
     }
 

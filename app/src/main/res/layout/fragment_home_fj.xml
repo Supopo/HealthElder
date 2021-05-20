@@ -11,12 +11,12 @@
 
 
     <RelativeLayout
+        android:background="@color/color_252525"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/dp_49">
 
         <View
-            android:background="@color/color_252525"
             android:id="@+id/view_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_95"
@@ -32,7 +32,7 @@
                 android:id="@+id/rv_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/color_FFF8F8F8" />
+                />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
