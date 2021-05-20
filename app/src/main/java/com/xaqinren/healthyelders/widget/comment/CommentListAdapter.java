@@ -1,11 +1,13 @@
 package com.xaqinren.healthyelders.widget.comment;
 
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.module.LoadMoreModule;
@@ -38,7 +40,11 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         binding.childList.setAdapter(baseViewHolder.commentChildAdapter);
         baseViewHolder.commentChildAdapter.setList(iCommentBean.shortVideoCommentReplyList);
         iCommentBean.parentPos = baseViewHolder.getAdapterPosition();//插入评论所在pos
-
+        if (!iCommentBean.hasFavorite) {
+            Glide.with(getContext()).load(R.mipmap.icon_pinl_zan_nor).into((ImageView) baseViewHolder.getView(R.id.like_iv));
+        } else {
+            Glide.with(getContext()).load(R.mipmap.pinl_zan_sel).into((ImageView) baseViewHolder.getView(R.id.like_iv));
+        }
         binding.rlContent.setOnClickListener(view -> {
             //发起评论
             operationItemClickListener.toComment(iCommentBean);
@@ -91,17 +97,23 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             });
 
             baseViewHolder.commentChildAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+                CommentListBean replyComment = iCommentBean.shortVideoCommentReplyList.get(position);
+                replyComment.parentPos = iCommentBean.parentPos;
+                replyComment.itemPos = position;
+
                 switch (view.getId()) {
                     case R.id.rl_content:
                         //回复里面的回复
-                        CommentListBean replyComment = iCommentBean.shortVideoCommentReplyList.get(position);
-                        replyComment.parentPos = iCommentBean.parentPos;
                         operationItemClickListener.toCommentReply(replyComment);
                         break;
                     case R.id.avatar:
                     case R.id.nickname:
                         operationItemClickListener.toUser(iCommentBean.shortVideoCommentReplyList.get(position));
                         //用户
+                        break;
+                    case R.id.ll_like:
+                        //回复点赞
+                        operationItemClickListener.toLikeReply(replyComment);
                         break;
                 }
             });
@@ -118,6 +130,14 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             if (type == 99) {
                 //刷新点赞
                 helper.setText(R.id.tv_like, String.valueOf(item.favoriteCount));
+                if (!item.hasFavorite) {
+                    Glide.with(getContext()).load(R.mipmap.icon_pinl_zan_nor).into((ImageView) helper.getView(R.id.like_iv));
+                } else {
+                    Glide.with(getContext()).load(R.mipmap.pinl_zan_sel).into((ImageView) helper.getView(R.id.like_iv));
+                }
+            } else if (type == 98) {
+                //刷新某条评论中的某条回复
+                helper.commentChildAdapter.notifyItemChanged(item.itemPos, 99);
             }
         }
     }
@@ -146,6 +166,8 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         void toCommentReply(CommentListBean iCommentBean);
 
         void toLike(CommentListBean iCommentBean);
+
+        void toLikeReply(CommentListBean iCommentBean);
 
         void toUser(CommentListBean iCommentBean);
     }

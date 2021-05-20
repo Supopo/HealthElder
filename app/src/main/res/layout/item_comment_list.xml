@@ -89,7 +89,7 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_toRightOf="@id/avatar"
-                android:text="@{viewModel.createdAt}"
+                android:text="@{viewModel.getRelaTime()}"
                 android:textColor="@color/color_BBBBBB"
                 android:textSize="@dimen/sp_12" />
 

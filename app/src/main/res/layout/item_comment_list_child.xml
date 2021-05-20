@@ -25,22 +25,48 @@
             android:src="@color/color_252525"
             app:url="@{viewModel.fromAvatarUrl}" />
 
-        <TextView
-            android:id="@+id/nickname"
+        <LinearLayout
+            android:id="@+id/ll_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_toRightOf="@id/avatar"
-            android:text="@{viewModel.getShowName()}"
-            android:textColor="@color/color_252525"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.fromUsername}"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_7"
+                android:layout_height="@dimen/dp_9"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                android:background="@mipmap/jiant_yhm"
+                android:visibility="@{viewModel.getShowToName()?View.VISIBLE:View.GONE}" />
+
+            <TextView
+                android:id="@+id/toNickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.toUsername}"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.getShowToName()?View.VISIBLE:View.GONE}" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/nickname"
+            android:layout_below="@id/ll_nickname"
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_62"
@@ -58,7 +84,7 @@
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toRightOf="@id/avatar"
-            android:text="@{viewModel.createdAt}"
+            android:text="@{viewModel.getRelaTime()}"
             android:textColor="@color/color_BBBBBB"
             android:textSize="@dimen/sp_12" />
 
@@ -79,7 +105,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="2dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">

@@ -4,7 +4,9 @@ package com.xaqinren.healthyelders.moduleHome.bean;
 import android.text.TextUtils;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.xaqinren.healthyelders.utils.DateUtils;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +44,11 @@ public class CommentListBean implements MultiItemEntity {
     }
 
     public int parentPos;
+    public int itemPos;
 
     //评论回复数据格式
     public String commentId;//
-    public String replyTypeEnum;// REPLY_REPLY 回复回复  REPLY_COMMENT("回复评论"),
+    public String replyType;// REPLY_REPLY 回复回复  REPLY_COMMENT("回复评论"),
     public String targetId;//
     public String fromUserId;//
     public String fromUsername;//
@@ -54,13 +57,16 @@ public class CommentListBean implements MultiItemEntity {
     public String toUsername;//
     public String toAvatarUrl;//
 
-    public String getShowName() {
-        if (!TextUtils.isEmpty(fromUserId) && !TextUtils.isEmpty(toUserId) &&!TextUtils.isEmpty(replyTypeEnum)) {
-            if ((!fromUserId.equals(toUserId)) && replyTypeEnum.equals("REPLY_REPLY")) {
-                return fromUsername + " ▶ " + toUsername;
+    public boolean getShowToName() {
+        if (!TextUtils.isEmpty(fromUserId) && !TextUtils.isEmpty(toUserId) && !TextUtils.isEmpty(replyType)) {
+            if ((!fromUserId.equals(toUserId)) && replyType.equals("REPLY_REPLY")) {
+                return true;
             }
         }
-        return fromUsername;
+        return false;
     }
 
+    public String getRelaTime() {
+        return DateUtils.getRelativeTime(createdAt);
+    }
 }

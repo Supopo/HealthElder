@@ -7,10 +7,10 @@
     </data>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_5">
 
@@ -23,9 +23,16 @@
             android:id="@+id/hint_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
             android:text="加载更多评论"
-            android:textSize="@dimen/sp_13"
             android:textColor="@color/gray_999"
-            android:layout_marginLeft="@dimen/dp_8" />
+            android:textSize="@dimen/sp_13" />
+
+        <ImageView
+            android:id="@+id/iv_down"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:background="@mipmap/plhuif_xiala" />
     </LinearLayout>
 </layout>

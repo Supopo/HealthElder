@@ -21,6 +21,7 @@
             android:background="@color/white"
             android:paddingTop="@dimen/dp_11"
             android:paddingBottom="@dimen/dp_11"
+            android:paddingRight="@dimen/dp_16"
             android:clickable="true"
             >
             <com.xaqinren.healthyelders.widget.VideoPublishEditTextView
@@ -38,30 +39,37 @@
                 android:gravity="center_vertical"
                 android:hint="说点什么吧"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:layout_toLeftOf="@id/icon_at"/>
+
+
+            <ImageView
+                android:id="@+id/icon_at"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:background="@mipmap/pl_at"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_toLeftOf="@id/icon_btn"/>
 
             <ImageView
                 android:id="@+id/icon_btn"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
-                android:src="@mipmap/icon_pl_biaoq"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_12"
+                android:background="@mipmap/pl_biaoq"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_toLeftOf="@id/publish_btn"/>
 
-            <TextView
+
+            <ImageView
                 android:id="@+id/publish_btn"
-                android:layout_width="@dimen/dp_55"
+                android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
-                android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/bg_btn_comfrim_cir_shape"
-                android:gravity="center"
-                android:text="发表"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
+                android:background="@mipmap/btn_fab"
                 android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_13"
                 android:layout_alignParentRight="true"/>
+
         </RelativeLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/emoji_list"

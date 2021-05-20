@@ -111,11 +111,12 @@ public class CommentDialog {
             @Override
             public void toLike(CommentListBean iCommentBean) {
                 onChildClick.toLike(iCommentBean);
-                CommentListBean commentBean = commentAdapter.getData().get(iCommentBean.parentPos);
-
                 //点赞
                 setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
-                if (!commentBean.hasFavorite) {
+
+                CommentListBean commentBean = commentAdapter.getData().get(iCommentBean.parentPos);
+
+                if (commentBean.hasFavorite) {
                     if (commentBean.favoriteCount > 0) {
                         commentBean.favoriteCount--;
                     }
@@ -123,8 +124,38 @@ public class CommentDialog {
                     commentBean.favoriteCount++;
                 }
 
+                commentBean.hasFavorite = !commentBean.hasFavorite;
+
                 //刷新某个Item
                 commentAdapter.notifyItemChanged(iCommentBean.parentPos, 99);
+            }
+
+            @Override
+            public void toLikeReply(CommentListBean iCommentBean) {
+                //点赞
+                setCommentLike(videoId, iCommentBean.commentId, !iCommentBean.hasFavorite, true);
+
+                CommentListBean commentBean = commentAdapter.getData().get(iCommentBean.parentPos);
+                commentBean.itemPos = iCommentBean.itemPos;
+                if (commentBean.shortVideoCommentReplyList != null) {
+                    CommentListBean commentChild = commentBean.shortVideoCommentReplyList.get(iCommentBean.itemPos);
+                    if (commentChild != null) {
+                        if (commentChild.hasFavorite) {
+                            if (commentChild.favoriteCount > 0) {
+                                commentChild.favoriteCount--;
+                            }
+                        } else {
+                            commentChild.favoriteCount++;
+                        }
+
+
+                        commentChild.hasFavorite = !commentChild.hasFavorite;
+                    }
+                }
+
+                commentAdapter.notifyItemChanged(iCommentBean.parentPos, 98);
+
+
             }
 
             @Override
