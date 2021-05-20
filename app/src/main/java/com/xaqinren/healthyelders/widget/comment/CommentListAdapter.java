@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.widget.comment;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -64,14 +65,16 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
 
 
         if (iCommentBean.commentCount > 0) {
+
             baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount + 1);
-            if (iCommentBean.shortVideoCommentReplyList.isEmpty()) {
+            if (iCommentBean.shortVideoCommentReplyList.isEmpty() || iCommentBean.lodaState == 1) {
                 //增加一个加载更多底部
                 CommentListBean bean = new CommentListBean();
                 bean.viewType = 1;
                 iCommentBean.shortVideoCommentReplyList.add(bean);
                 baseViewHolder.commentChildAdapter.addData(bean);
                 baseViewHolder.commentChildAdapter.notifyDataSetChanged();
+                iCommentBean.lodaState = 0;
             }
             baseViewHolder.commentChildAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override

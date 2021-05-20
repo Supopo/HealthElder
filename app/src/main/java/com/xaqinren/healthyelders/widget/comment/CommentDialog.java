@@ -236,12 +236,16 @@ public class CommentDialog {
         mCommentCount++;
         binding.commentCountTv.setText(mCommentCount + "条评论");
 
+
         CommentListBean adapterCommentBean = commentAdapter.getData().get(commentListBean.parentPos);
+
         if (adapterCommentBean.shortVideoCommentReplyList == null) {
             adapterCommentBean.shortVideoCommentReplyList = new ArrayList<>();
         }
         adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
         adapterCommentBean.commentCount++;
+        adapterCommentBean.lodaState = 1;//展示  展开回复
+
         commentAdapter.notifyItemChanged(commentListBean.parentPos);
     }
 
