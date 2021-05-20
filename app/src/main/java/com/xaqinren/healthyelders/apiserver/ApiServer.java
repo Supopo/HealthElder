@@ -242,7 +242,7 @@ public interface ApiServer {
 
     //获取首页菜单信息
     @GET("content/open/findHomeData")
-    Observable<MBaseResponse<HomeRes>> getHomeInfo(@Header("Authorization") String authorization, @Header("mid") String mid);
+    Observable<MBaseResponse<HomeRes>> getHomeInfo();
 
     //首页点赞
     @Headers({"content-type:application/json"})
@@ -260,9 +260,8 @@ public interface ApiServer {
                                                 @Body RequestBody body);
 
     //评论列表
-    @GET("content/shortVideo/comment/findPageByShortVideoId")
-    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentList(@Header("Authorization") String authorization,
-                                                                                 @Query("page") int page, @Query("pageSize") int pageSize, @Query("shortVideoId") String shortVideoId);
+    @GET("content/open/shortVideo/comment/findPageByShortVideoId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("shortVideoId") String shortVideoId);
 
     //回复评论
     @Headers({"content-type:application/json"})
@@ -272,7 +271,6 @@ public interface ApiServer {
 
 
     //回复列表
-    @GET("content/shortVideo/commentReply/findPageByCommentId")
-    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentReplyList(@Header("Authorization") String authorization,
-                                                                                 @Query("page") int page, @Query("pageSize") int pageSize, @Query("commentId") String commentId);
+    @GET("content/open/shortVideo/commentReply/findPageByCommentId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentReplyList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("commentId") String commentId);
 }

@@ -184,10 +184,12 @@ public class CommentDialog {
     }
 
     public void addMReplyData(CommentListBean commentListBean) {
-        if (commentAdapter.getData().get(commentListBean.parentPos).shortVideoCommentReplyList == null) {
-            commentAdapter.getData().get(commentListBean.parentPos).shortVideoCommentReplyList = new ArrayList<>();
+        CommentListBean adapterCommentBean = commentAdapter.getData().get(commentListBean.parentPos);
+        if (adapterCommentBean.shortVideoCommentReplyList == null) {
+            adapterCommentBean.shortVideoCommentReplyList = new ArrayList<>();
         }
-        commentAdapter.getData().get(commentListBean.parentPos).shortVideoCommentReplyList.add(0,commentListBean);
+        adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
+        adapterCommentBean.commentCount++;
         commentAdapter.notifyItemChanged(commentListBean.parentPos);
     }
 

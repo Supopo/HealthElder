@@ -484,7 +484,7 @@ public class LiveRepository {
     }
 
     public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {
-        userApi.getHomeInfo(Constant.HEADER_DEF, Constant.APP_MID)
+        userApi.getHomeInfo()
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -586,7 +586,8 @@ public class LiveRepository {
     }
 
     public void getCommentList(MutableLiveData<List<CommentListBean>> commentList, int page, String id) {
-        userApi.getCommentList(UserInfoMgr.getInstance().getHttpToken(), page, 10, id)
+
+        userApi.getCommentList(page, 10, id)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -640,7 +641,7 @@ public class LiveRepository {
     }
 
     public void getCommentReplyList(CommentListBean commentListBean, MutableLiveData<CommentListBean> commentList) {
-        userApi.getCommentReplyList(UserInfoMgr.getInstance().getHttpToken(), commentListBean.itemPage, commentListBean.itemSize, commentListBean.id)
+        userApi.getCommentReplyList(commentListBean.itemPage, commentListBean.itemSize, commentListBean.id)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

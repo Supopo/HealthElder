@@ -1,11 +1,13 @@
 package com.xaqinren.healthyelders.widget.comment;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.databinding.DataBindingUtil;
 
@@ -29,10 +31,12 @@ public class CommentPublishDialog {
     private String videoId;
     private PopCommentPublishBinding binding;
     private OnOperationListener onOperationListener;
+    private Activity activity;
 
     public CommentPublishDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
         this.videoId = videoId;
+        activity = (Activity) context;
         init();
     }
 
@@ -99,6 +103,10 @@ public class CommentPublishDialog {
     }
 
     public void keyBoardClosed() {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
         dialog.dismiss();
     }
 

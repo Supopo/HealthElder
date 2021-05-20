@@ -85,6 +85,7 @@ public class RetrofitClient {
                 //开启缓存
 //                .cache(cache)
                 .addInterceptor(new BaseInterceptor(headers))
+                .addInterceptor(new MBaseInterceptor())
                 .addInterceptor(new CacheInterceptor(mContext))
                 .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
                 .addInterceptor(new LoggingInterceptor
