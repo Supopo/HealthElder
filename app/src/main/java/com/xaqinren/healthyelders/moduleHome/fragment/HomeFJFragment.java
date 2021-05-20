@@ -21,6 +21,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeFjBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.FJVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -130,9 +131,17 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                         }
                     }
 
+
                     //跳页 传入数据 pos page list
                     VideoListBean listBean = new VideoListBean();
-                    listBean.page = page;
+
+                    if (tempList.size() % Constant.loadVideoSize == 0) {
+                        listBean.page = (tempList.size() / 2);
+                    } else {
+                        listBean.page = (tempList.size() / 2) + 1;
+                    }
+
+
                     listBean.videoInfos = tempList;
                     listBean.position = tempPos;
                     listBean.type = 2;

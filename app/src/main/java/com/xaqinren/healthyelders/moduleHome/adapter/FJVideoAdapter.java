@@ -41,7 +41,7 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
             //计算新高度
             int newHeight = itemWidth * oldHeight / oldWidth;
 
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.rlItem.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rlItem.getLayoutParams();
             params.height = newHeight;
             binding.rlItem.setLayoutParams(params);
         }

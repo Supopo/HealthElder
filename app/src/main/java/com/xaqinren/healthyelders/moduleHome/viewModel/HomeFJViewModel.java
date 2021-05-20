@@ -23,7 +23,7 @@ public class HomeFJViewModel extends BaseViewModel {
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
 
     public void getVideoData(int page) {
-        LiveRepository.getInstance().getHomeVideoList(page, 10, 2,datas);
+        LiveRepository.getInstance().getHomeVideoList(page, 6, 2, datas);
     }
 
 }

@@ -621,7 +621,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else {
             zbingAnim.stop();
         }
-        binding.coverImageView.setVisibility(View.VISIBLE);
+        binding.coverImageView.setVisibility(View.GONE);//--展示
         hasPlaying = false;
         isPlaying = false;
         binding.playImageView.setVisibility(View.GONE);
