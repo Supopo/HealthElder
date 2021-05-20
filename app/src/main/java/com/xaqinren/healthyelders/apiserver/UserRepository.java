@@ -98,7 +98,9 @@ public class UserRepository {
                     @Override
                     public void onNext(MBaseResponse<UserInfoBean> response) {
                         if (response.isOk()) {
-                            userInfo.postValue(response.getData());
+                            if (userInfo != null) {
+                                userInfo.postValue(response.getData());
+                            }
                             InfoCache.getInstance().setLoginUser(response.getData());
                             UserInfoMgr.getInstance().setUserInfo(response.getData());
                         }
@@ -143,6 +145,7 @@ public class UserRepository {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
+                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
                         } else {
                             loginSuccess.postValue(false);
@@ -192,6 +195,7 @@ public class UserRepository {
                             InfoCache.getInstance().setTokenInfo(response.getData());
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
+                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
                             loginStatus.postValue(1);
                         } else {
                             //需要绑定手机号跳转绑定手机号页面

@@ -13,8 +13,11 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemCommentListBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, CommentListAdapter.ViewHolder> implements LoadMoreModule {
     private OnChildLoadMoreCommentListener loadMoreCommentListener;
@@ -102,6 +105,20 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                         break;
                 }
             });
+        }
+    }
+
+    //局部刷新用的
+    @Override
+    protected void convert(ViewHolder helper, CommentListBean item, List<?> payloads) {
+        super.convert(helper, item, payloads);
+        if (payloads.size() > 0 && payloads.get(0) instanceof Integer) {
+            //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新
+            int type = (Integer) payloads.get(0);// 刷新哪个部分 标志位
+            if (type == 99) {
+                //刷新点赞
+                helper.setText(R.id.tv_like, String.valueOf(item.favoriteCount));
+            }
         }
     }
 

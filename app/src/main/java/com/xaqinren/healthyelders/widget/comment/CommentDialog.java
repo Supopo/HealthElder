@@ -54,9 +54,6 @@ public class CommentDialog {
     private BaseLoadMoreModule loadMoreModule;
     private Context mContext;
     private int page = 1;
-    private int pageReply = 0;
-    private String comentReplyId;
-    private int commentPos;
 
     public CommentDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
@@ -82,6 +79,7 @@ public class CommentDialog {
         popupWindow.setOnDismissListener(() -> {
 
         });
+        //关闭dialog
         //        binding.close.setOnClickListener(view -> popupWindow.dismiss());
         binding.close.setOnClickListener(view -> rushData());
         commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
@@ -113,6 +111,20 @@ public class CommentDialog {
             @Override
             public void toLike(CommentListBean iCommentBean) {
                 onChildClick.toLike(iCommentBean);
+                CommentListBean commentBean = commentAdapter.getData().get(iCommentBean.parentPos);
+
+                //点赞
+                setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
+                if (!commentBean.hasFavorite) {
+                    if (commentBean.favoriteCount > 0) {
+                        commentBean.favoriteCount--;
+                    }
+                } else {
+                    commentBean.favoriteCount++;
+                }
+
+                //刷新某个Item
+                commentAdapter.notifyItemChanged(iCommentBean.parentPos, 99);
             }
 
             @Override
@@ -249,5 +261,9 @@ public class CommentDialog {
 
     public void getCommentReplyList(CommentListBean commentListBean) {
         LiveRepository.getInstance().getCommentReplyList(commentListBean, commentReplyList);
+    }
+
+    public void setCommentLike(String shortVideoId, String commentId, boolean favoriteStatus, boolean notRoot) {
+        LiveRepository.getInstance().toLikeComment(shortVideoId, commentId, favoriteStatus, notRoot);
     }
 }

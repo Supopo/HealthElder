@@ -269,8 +269,12 @@ public interface ApiServer {
     Observable<MBaseResponse<CommentListBean>> toCommentReply(@Header("Authorization") String authorization,
                                                 @Body RequestBody body);
 
-
     //回复列表
     @GET("content/open/shortVideo/commentReply/findPageByCommentId")
     Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentReplyList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("commentId") String commentId);
+
+    //评论点赞
+    @Headers({"content-type:application/json"})
+    @POST("content/shortVideo/commentFavorite")
+    Observable<MBaseResponse<Object>> setCommentLike(@Header("Authorization") String authorization, @Body RequestBody body);
 }

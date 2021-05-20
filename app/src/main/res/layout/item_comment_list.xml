@@ -71,6 +71,7 @@
                     android:src="@mipmap/icon_pinl_zan_nor" />
 
                 <TextView
+                    android:id="@+id/tv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"

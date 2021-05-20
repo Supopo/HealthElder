@@ -73,5 +73,33 @@
             android:textColor="@color/color_252525"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="2dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/like_iv"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_13"
+                android:src="@mipmap/icon_pinl_zan_nor" />
+
+            <TextView
+                android:id="@+id/tv_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="@{String.valueOf(viewModel.favoriteCount)}"
+                android:textColor="@color/color_BBBBBB"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     </RelativeLayout>
 </layout>

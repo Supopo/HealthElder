@@ -664,4 +664,34 @@ public class LiveRepository {
                 });
     }
 
+    public void toLikeComment(String shortVideoId, String commentId, boolean favoriteStatus, boolean notRoot) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("objectId", shortVideoId);
+        hashMap.put("id", commentId);
+        hashMap.put("favoriteStatus", favoriteStatus);
+        hashMap.put("notRoot", notRoot);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setCommentLike(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+
+                    }
+
+                });
+    }
+
 }

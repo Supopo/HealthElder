@@ -20,6 +20,7 @@ public class CommentListBean implements MultiItemEntity {
     public String avatarUrl;//
     public String content;//
     public int favoriteCount;//
+    public boolean hasFavorite;//
     public int commentCount;//
     public Object status;//
     public boolean hasShow;//
