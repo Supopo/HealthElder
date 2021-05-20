@@ -107,7 +107,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 //判断是是不是展示首页菜单展示模式
                 if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().isShowTopMenu()) {
                     //隐藏视频播放视图层
-                    RxBus.getDefault().post(new VideoEvent(10010, 0));
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            RxBus.getDefault().post(new VideoEvent(10010, 0));
+                        }
+                    },400);
                 }
             } else {
                 page--;

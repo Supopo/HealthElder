@@ -564,6 +564,11 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
             }
 
             @Override
+            public void toCommentReply(CommentListBean iCommentBean) {
+                
+            }
+
+            @Override
             public void toCommentVideo(String videoId) {
                 //评论视频本体
                 showPublishCommentDialog();
@@ -579,7 +584,7 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
                 LogUtils.e(TAG,"准备查看用户");
             }
         });
-        commentDialog.show(binding.rlContainer);
+        commentDialog.show(binding.rlContainer,"0");
     }
 
     CommentPublishDialog publishDialog;

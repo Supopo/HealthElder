@@ -44,7 +44,7 @@ public class CommentPublishDialog {
 
         contentView = View.inflate(context.get(), R.layout.pop_comment_publish, null);
         binding = DataBindingUtil.bind(contentView);
-        dialog = new Dialog(context.get(),R.style.FullWidthDialog);
+        dialog = new Dialog(context.get(), R.style.FullWidthDialog);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.setContentView(binding.getRoot());
         dialog.setCancelable(true);
@@ -54,7 +54,8 @@ public class CommentPublishDialog {
             LogUtils.e(TAG, "关闭键盘");
 
             dialog.dismiss();
-        });SoftKeyBoardUtil.hideKeyBoard(binding.inputEt);
+        });
+        SoftKeyBoardUtil.hideKeyBoard(binding.inputEt);
         binding.iconBtn.setOnClickListener(view -> {
             if (onOperationListener != null) {
                 onOperationListener.onEmojiBtnClick();
@@ -69,6 +70,9 @@ public class CommentPublishDialog {
         binding.inputEt.setTopicEnable(false);
     }
 
+    public void setReplyHint(String hintText) {
+        binding.inputEt.setHint(hintText);
+    }
 
     public void show(View Parent) {
         if (dialog == null) {
@@ -85,16 +89,22 @@ public class CommentPublishDialog {
         binding.inputEt.setFocusable(true);
         binding.inputEt.setFocusableInTouchMode(true);
         binding.inputEt.requestFocus();
+        binding.inputEt.setText("");
     }
-    public boolean isShow(){
-        if (dialog == null) return false;
+
+    public boolean isShow() {
+        if (dialog == null)
+            return false;
         return dialog.isShowing();
     }
+
     public void keyBoardClosed() {
         dialog.dismiss();
     }
-    public interface OnOperationListener{
+
+    public interface OnOperationListener {
         void onEmojiBtnClick();
+
         void onPublish(String content);
     }
 }

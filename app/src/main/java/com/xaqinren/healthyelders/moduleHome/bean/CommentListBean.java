@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.moduleHome.bean;
 
 
+import android.text.TextUtils;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.util.ArrayList;
@@ -26,8 +28,9 @@ public class CommentListBean implements MultiItemEntity {
     public boolean hasAuthor;//
     public boolean hasAuthorFavorite;//
     public List<CommentListBean> shortVideoCommentReplyList = new ArrayList<>();//
+    public List<CommentListBean> replyList = new ArrayList<>();//
     public int viewType;
-    public int lodaState;
+    public int lodaState;//自定义加载状态
 
     public int itemPage = 1;
     public int itemSize = 4;
@@ -36,4 +39,27 @@ public class CommentListBean implements MultiItemEntity {
     public int getItemType() {
         return viewType;
     }
+
+    public int parentPos;
+
+    //评论回复数据格式
+    public String commentId;//
+    public String replyTypeEnum;// REPLY_REPLY 回复回复  REPLY_COMMENT("回复评论"),
+    public String targetId;//
+    public String fromUserId;//
+    public String fromUsername;//
+    public String fromAvatarUrl;//
+    public String toUserId;//
+    public String toUsername;//
+    public String toAvatarUrl;//
+
+    public String getShowName() {
+        if (!TextUtils.isEmpty(fromUserId) && !TextUtils.isEmpty(toUserId) &&!TextUtils.isEmpty(replyTypeEnum)) {
+            if ((!fromUserId.equals(toUserId)) && replyTypeEnum.equals("REPLY_REPLY")) {
+                return fromUsername + " ▶ " + toUsername;
+            }
+        }
+        return fromUsername;
+    }
+
 }

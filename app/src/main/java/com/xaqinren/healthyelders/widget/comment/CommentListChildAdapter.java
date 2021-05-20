@@ -35,10 +35,10 @@ public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentLi
             FooterCommentExpanBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             if (getData().size() == 1) {
                 //加载XX条数据
-                binding.hintTv.setText("加载" + (count - 1) + "条评论");
+                binding.hintTv.setText("加载" + (count - 1) + "条回复");
             } else if (getData().size() < count ) {
                 //加载更多
-                binding.hintTv.setText("加载更多评论");
+                binding.hintTv.setText("加载更多回复");
             } else {
                 //收起
                 binding.hintTv.setText("收起");

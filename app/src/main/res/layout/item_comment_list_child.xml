@@ -23,7 +23,7 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:src="@color/color_252525"
-            app:url="@{viewModel.avatarUrl}" />
+            app:url="@{viewModel.fromAvatarUrl}" />
 
         <TextView
             android:id="@+id/nickname"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_toRightOf="@id/avatar"
-            android:text="@{viewModel.nickname}"
+            android:text="@{viewModel.getShowName()}"
             android:textColor="@color/color_252525"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold" />

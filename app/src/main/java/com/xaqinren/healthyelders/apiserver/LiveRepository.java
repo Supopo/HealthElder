@@ -557,7 +557,7 @@ public class LiveRepository {
                 });
     }
 
-    public void toComment(String id, String content, MutableLiveData<Boolean> commentSuccess) {
+    public void toComment(String id, String content, MutableLiveData<CommentListBean> commentSuccess) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("id", id);
         hashMap.put("content", content);
@@ -571,15 +571,15 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
                     @Override
                     protected void dismissDialog() {
 
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<Object> data) {
-                        commentSuccess.postValue(true);
+                    protected void onSuccess(MBaseResponse<CommentListBean> data) {
+                        commentSuccess.postValue(data.getData());
                     }
 
                 });
@@ -608,10 +608,10 @@ public class LiveRepository {
                 });
     }
 
-    public void toCommentReply(String id, String content, int type, MutableLiveData<Boolean> commentSuccess) {
+    public void toCommentReply(CommentListBean mCommentListBean, String content, int type, MutableLiveData<CommentListBean> commentSuccess) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("replyType", type == 0 ? "REPLY_COMMENT" : "REPLY_REPLY");
-        hashMap.put("id", id);
+        hashMap.put("id", mCommentListBean.id);
         hashMap.put("content", content);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
@@ -623,22 +623,24 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
                     @Override
                     protected void dismissDialog() {
 
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<Object> data) {
-                        commentSuccess.postValue(true);
+                    protected void onSuccess(MBaseResponse<CommentListBean> data) {
+                        CommentListBean commentListBean = data.getData();
+                        commentListBean.parentPos = mCommentListBean.parentPos;
+                        commentSuccess.postValue(commentListBean);
                     }
 
                 });
     }
 
-    public void getCommentReplyList(MutableLiveData<List<CommentListBean>> commentList, int page, int size, String id) {
-        userApi.getCommentReplyList(UserInfoMgr.getInstance().getHttpToken(), page, size, id)
+    public void getCommentReplyList(CommentListBean commentListBean, MutableLiveData<CommentListBean> commentList) {
+        userApi.getCommentReplyList(UserInfoMgr.getInstance().getHttpToken(), commentListBean.itemPage, commentListBean.itemSize, commentListBean.id)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -654,7 +656,8 @@ public class LiveRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<List<CommentListBean>>> data) {
-                        commentList.postValue(data.getData().content);
+                        commentListBean.replyList = data.getData().content;
+                        commentList.postValue(commentListBean);
                     }
 
                 });

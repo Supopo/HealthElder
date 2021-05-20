@@ -27,7 +27,6 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
     }
 
 
-
     @Override
     protected void convert(@NotNull ViewHolder baseViewHolder, CommentListBean iCommentBean) {
         ItemCommentListBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
@@ -36,8 +35,8 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         binding.childList.setAdapter(baseViewHolder.commentChildAdapter);
         baseViewHolder.commentChildAdapter.setList(iCommentBean.shortVideoCommentReplyList);
 
-
         binding.rlContent.setOnClickListener(view -> {
+            iCommentBean.parentPos = baseViewHolder.getAdapterPosition();
             //发起评论
             operationItemClickListener.toComment(iCommentBean);
         });
@@ -91,8 +90,8 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             baseViewHolder.commentChildAdapter.setOnItemChildClickListener((adapter, view, position) -> {
                 switch (view.getId()) {
                     case R.id.rl_content:
-                        //评论
-                        operationItemClickListener.toComment(iCommentBean.shortVideoCommentReplyList.get(position));
+                        //回复里面的回复
+                        operationItemClickListener.toCommentReply(iCommentBean.shortVideoCommentReplyList.get(position));
                         break;
                     case R.id.avatar:
                     case R.id.nickname:
@@ -124,6 +123,8 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
 
     public interface OnOperationItemClickListener {
         void toComment(CommentListBean iCommentBean);
+
+        void toCommentReply(CommentListBean iCommentBean);
 
         void toLike(CommentListBean iCommentBean);
 

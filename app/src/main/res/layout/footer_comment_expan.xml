@@ -23,7 +23,7 @@
             android:id="@+id/hint_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="展开11条回复"
+            android:text="加载更多评论"
             android:textSize="@dimen/sp_13"
             android:textColor="@color/gray_999"
             android:layout_marginLeft="@dimen/dp_8" />

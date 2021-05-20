@@ -81,6 +81,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private AnimationDrawable zbingAnim;
 
     private String commentId;//评论时候的ID 有内容id或者评论id区别
+    private CommentListBean mCommentListBean;//当前评论对象
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -355,14 +356,24 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             showShareDialog();
         });
 
-        viewModel.commentSuccess.observe(this, isSuccess -> {
-            if (isSuccess != null && true) {
+        viewModel.commentSuccess.observe(this, commentListBean -> {
+            if (commentListBean != null) {
+
+                //本地刷新
+                if (openType == 0) {
+                    //往评论列表查插数据
+                    commentDialog.addMCommentData(commentListBean);
+                } else if (openType == 1 || openType == 2) {
+                    //往回复列表查插数据
+                    commentDialog.addMReplyData(commentListBean);
+                }
+
+
                 //关闭输入Dialog，刷新
                 if (publishDialog != null) {
                     publishDialog.keyBoardClosed();
                     openType = 0;
                 }
-                commentDialog.rushData();
             }
         });
     }
@@ -393,8 +404,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     //评论弹窗
     private CommentDialog commentDialog;
 
-    private int commentPage = 1;
-
     private int openType;
 
     private void showCommentDialog(String videoId) {
@@ -403,10 +412,20 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
             @Override
             public void toComment(CommentListBean iCommentBean) {
-                //评论评论
+                //回复评论
                 openType = 1;
                 commentId = iCommentBean.id;
-                showPublishCommentDialog();
+                mCommentListBean = iCommentBean;
+                showPublishCommentDialog("回复 @" + iCommentBean.nickname + " :");
+            }
+
+            @Override
+            public void toCommentReply(CommentListBean iCommentBean) {
+                //回复回复
+                openType = 2;
+                commentId = iCommentBean.id;
+                mCommentListBean = iCommentBean;
+                showPublishCommentDialog("回复 @" + iCommentBean.fromUsername + " :");
             }
 
             @Override
@@ -414,7 +433,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 openType = 0;
                 commentId = videoId;
                 //评论视频本体
-                showPublishCommentDialog();
+                showPublishCommentDialog("说点什么吧");
             }
 
             @Override
@@ -425,18 +444,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             public void toUser(CommentListBean iCommentBean) {
             }
         });
-        commentDialog.show(binding.mainRelativeLayout);
+        commentDialog.show(binding.mainRelativeLayout, videoInfo.commentCount);
     }
 
-    CommentPublishDialog publishDialog;
+    private CommentPublishDialog publishDialog;
 
     /**
      * 发表评论
      */
-    private void showPublishCommentDialog() {
+    private void showPublishCommentDialog(String nickName) {
         if (publishDialog == null) {
             publishDialog = new CommentPublishDialog(getActivity(), null);
         }
+        publishDialog.setReplyHint(nickName);
         publishDialog.show(binding.mainRelativeLayout);
 
         publishDialog.setOnOperationListener(new CommentPublishDialog.OnOperationListener() {
@@ -452,8 +472,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     viewModel.toComment(commentId, content);
                 } else if (openType == 1) {
                     //回复评论
-                    viewModel.toCommentReply(commentId, content, 0);
+                    viewModel.toCommentReply(mCommentListBean, content, 0);
 
+                } else if (openType == 2) {
+                    //回复回复
+                    viewModel.toCommentReply(mCommentListBean, content, 1);
                 }
 
             }

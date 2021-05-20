@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class HomeVideoModel extends BaseViewModel {
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
     public MutableLiveData<VideoInfo> videoInfo = new MutableLiveData<>();
-    public MutableLiveData<Boolean> commentSuccess = new MutableLiveData<>();
+    public MutableLiveData<CommentListBean> commentSuccess = new MutableLiveData<>();
 
 
     public void toLikeVideo(String videoId, boolean isLike) {
@@ -36,7 +37,7 @@ public class HomeVideoModel extends BaseViewModel {
         LiveRepository.getInstance().toComment(id, content, commentSuccess);
     }
 
-    public void toCommentReply(String id, String content, int type) {
-        LiveRepository.getInstance().toCommentReply(id, content, type, commentSuccess);
+    public void toCommentReply(CommentListBean mCommentListBean, String content, int type) {
+        LiveRepository.getInstance().toCommentReply(mCommentListBean, content, type, commentSuccess);
     }
 }

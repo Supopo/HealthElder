@@ -26,8 +26,7 @@
                 android:textSize="@dimen/sp_16"
                 android:textColor="@color/color_252525"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_16"
-                android:text="655条评论"/>
+                android:layout_marginTop="@dimen/dp_16" />
             <ImageView
                 android:id="@+id/close"
                 android:layout_width="@dimen/dp_20"

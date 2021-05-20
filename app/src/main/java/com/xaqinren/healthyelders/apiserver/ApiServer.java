@@ -256,7 +256,7 @@ public interface ApiServer {
     //评论
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/comment")
-    Observable<MBaseResponse<Object>> toComment(@Header("Authorization") String authorization,
+    Observable<MBaseResponse<CommentListBean>> toComment(@Header("Authorization") String authorization,
                                                 @Body RequestBody body);
 
     //评论列表
@@ -267,7 +267,7 @@ public interface ApiServer {
     //回复评论
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/commentReply")
-    Observable<MBaseResponse<Object>> toCommentReply(@Header("Authorization") String authorization,
+    Observable<MBaseResponse<CommentListBean>> toCommentReply(@Header("Authorization") String authorization,
                                                 @Body RequestBody body);
 
 

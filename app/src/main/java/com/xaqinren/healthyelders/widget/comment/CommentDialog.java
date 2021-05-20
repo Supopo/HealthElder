@@ -82,12 +82,12 @@ public class CommentDialog {
         popupWindow.setOnDismissListener(() -> {
 
         });
-        binding.close.setOnClickListener(view -> popupWindow.dismiss());
+        //        binding.close.setOnClickListener(view -> popupWindow.dismiss());
+        binding.close.setOnClickListener(view -> rushData());
         commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
             public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {
-                commentPos = position;
-                comentReplyId = iCommentBean.id;
+                iCommentBean.parentPos = position;
                 getCommentReplyList(iCommentBean);
                 iCommentBean.itemPage++;
             }
@@ -103,6 +103,11 @@ public class CommentDialog {
             @Override
             public void toComment(CommentListBean iCommentBean) {
                 onChildClick.toComment(iCommentBean);
+            }
+
+            @Override
+            public void toCommentReply(CommentListBean iCommentBean) {
+                onChildClick.toCommentReply(iCommentBean);
             }
 
             @Override
@@ -152,20 +157,38 @@ public class CommentDialog {
             }
         });
 
-        commentReplyList.observe((LifecycleOwner) mContext, dataList -> {
-            if (dataList.size() > 0) {
-                //加载更多加载完成
-                dataList.get(dataList.size() - 1).lodaState = 1;
-                commentAdapter.getData().get(commentPos).shortVideoCommentReplyList.addAll(commentAdapter.getData().get(commentPos).shortVideoCommentReplyList.size() - 1, dataList);
-                commentAdapter.notifyItemChanged(commentPos);
+        commentReplyList.observe((LifecycleOwner) mContext, replyDatas -> {
+            if (replyDatas != null) {
+                if (replyDatas.replyList != null && replyDatas.replyList.size() > 0) {
+                    //加载更多加载完成
+                    replyDatas.replyList.get(replyDatas.replyList.size() - 1).lodaState = 1;
+                    commentAdapter.getData().get(replyDatas.parentPos)
+                            .shortVideoCommentReplyList.addAll(commentAdapter.getData().get(replyDatas.parentPos).shortVideoCommentReplyList.size() - 1,
+                            replyDatas.replyList);
+                    commentAdapter.notifyItemChanged(replyDatas.parentPos);
+                } else {
+                    commentAdapter.getData().get(replyDatas.parentPos).itemPage--;
+                }
             }
+
 
         });
     }
 
 
-    public void setData() {
+    //添加自己的评论数据
+    public void addMCommentData(CommentListBean commentListBean) {
+        commentAdapter.addData(0, commentListBean);
+        commentAdapter.notifyItemChanged(0);
+        binding.commentList.scrollToPosition(0);
+    }
 
+    public void addMReplyData(CommentListBean commentListBean) {
+        if (commentAdapter.getData().get(commentListBean.parentPos).shortVideoCommentReplyList == null) {
+            commentAdapter.getData().get(commentListBean.parentPos).shortVideoCommentReplyList = new ArrayList<>();
+        }
+        commentAdapter.getData().get(commentListBean.parentPos).shortVideoCommentReplyList.add(0,commentListBean);
+        commentAdapter.notifyItemChanged(commentListBean.parentPos);
     }
 
     public void rushData() {
@@ -183,10 +206,11 @@ public class CommentDialog {
         //没有更多评论,变为收起
     }
 
-    public void show(View Parent) {
+    public void show(View Parent, String commentCount) {
         if (popupWindow == null) {
             init();
         }
+        binding.commentCountTv.setText(commentCount + "条评论");
         popupWindow.showAsDropDown(Parent, Gravity.BOTTOM, 0, 0);
     }
 
@@ -200,6 +224,9 @@ public class CommentDialog {
         //评论评论[存在评论本身的可能性,即没有XXX 回复 XXX的可能性]
         void toComment(CommentListBean iCommentBean);
 
+        //回复回复
+        void toCommentReply(CommentListBean iCommentBean);
+
         //评论视频本身
         void toCommentVideo(String videoId);
 
@@ -211,7 +238,7 @@ public class CommentDialog {
     }
 
     public MutableLiveData<List<CommentListBean>> commentList = new MutableLiveData<>();
-    public MutableLiveData<List<CommentListBean>> commentReplyList = new MutableLiveData<>();
+    public MutableLiveData<CommentListBean> commentReplyList = new MutableLiveData<>();
 
 
     public void getCommentList() {
@@ -219,6 +246,6 @@ public class CommentDialog {
     }
 
     public void getCommentReplyList(CommentListBean commentListBean) {
-        LiveRepository.getInstance().getCommentReplyList(commentReplyList, commentListBean.itemPage, commentListBean.itemSize, comentReplyId);
+        LiveRepository.getInstance().getCommentReplyList(commentListBean, commentReplyList);
     }
 }
