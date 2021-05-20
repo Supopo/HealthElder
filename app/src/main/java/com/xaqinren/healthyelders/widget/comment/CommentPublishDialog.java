@@ -55,8 +55,6 @@ public class CommentPublishDialog {
         dialog.setCanceledOnTouchOutside(true);
 
         binding.rlContainer.setOnClickListener(view -> {
-            LogUtils.e(TAG, "关闭键盘");
-
             dialog.dismiss();
         });
         SoftKeyBoardUtil.hideKeyBoard(binding.inputEt);

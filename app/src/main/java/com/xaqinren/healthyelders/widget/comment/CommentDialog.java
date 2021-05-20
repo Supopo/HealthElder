@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.widget.comment;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -54,6 +55,7 @@ public class CommentDialog {
     private BaseLoadMoreModule loadMoreModule;
     private Context mContext;
     private int page = 1;
+    private int mCommentCount;
 
     public CommentDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
@@ -80,8 +82,8 @@ public class CommentDialog {
 
         });
         //关闭dialog
-        //        binding.close.setOnClickListener(view -> popupWindow.dismiss());
-        binding.close.setOnClickListener(view -> rushData());
+        binding.close.setOnClickListener(view -> popupWindow.dismiss());
+        //        binding.close.setOnClickListener(view -> rushData());
         commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
             public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {
@@ -133,7 +135,7 @@ public class CommentDialog {
             @Override
             public void toLikeReply(CommentListBean iCommentBean) {
                 //点赞
-                setCommentLike(videoId, iCommentBean.commentId, !iCommentBean.hasFavorite, true);
+                setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, true);
 
                 CommentListBean commentBean = commentAdapter.getData().get(iCommentBean.parentPos);
                 commentBean.itemPos = iCommentBean.itemPos;
@@ -221,12 +223,19 @@ public class CommentDialog {
 
     //添加自己的评论数据
     public void addMCommentData(CommentListBean commentListBean) {
+
+        mCommentCount++;
+        binding.commentCountTv.setText(mCommentCount + "条评论");
         commentAdapter.addData(0, commentListBean);
         commentAdapter.notifyItemChanged(0);
         binding.commentList.scrollToPosition(0);
+
     }
 
     public void addMReplyData(CommentListBean commentListBean) {
+        mCommentCount++;
+        binding.commentCountTv.setText(mCommentCount + "条评论");
+
         CommentListBean adapterCommentBean = commentAdapter.getData().get(commentListBean.parentPos);
         if (adapterCommentBean.shortVideoCommentReplyList == null) {
             adapterCommentBean.shortVideoCommentReplyList = new ArrayList<>();
@@ -255,6 +264,10 @@ public class CommentDialog {
         if (popupWindow == null) {
             init();
         }
+        if (TextUtils.isEmpty(commentCount)) {
+            commentCount = "0";
+        }
+        mCommentCount = Integer.parseInt(commentCount);
         binding.commentCountTv.setText(commentCount + "条评论");
         popupWindow.showAsDropDown(Parent, Gravity.BOTTOM, 0, 0);
     }

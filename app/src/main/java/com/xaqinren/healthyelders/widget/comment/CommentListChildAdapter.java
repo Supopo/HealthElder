@@ -42,16 +42,16 @@ public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentLi
             FooterCommentExpanBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             if (getData().size() == 1) {
                 //加载XX条数据
-                binding.ivDown.setVisibility(View.VISIBLE);
                 binding.hintTv.setText("展开" + (count - 1) + "条回复");
+                binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
             } else if (getData().size() < count) {
                 //加载更多
-                binding.ivDown.setVisibility(View.VISIBLE);
                 binding.hintTv.setText("展开" + (count - iCommentBean.itemSize - 1) + "条回复");
+                binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
             } else {
                 //收起
                 binding.hintTv.setText("收起");
-                binding.ivDown.setVisibility(View.GONE);
+                binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_shouq));
             }
         } else {
             ItemCommentListChildBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);

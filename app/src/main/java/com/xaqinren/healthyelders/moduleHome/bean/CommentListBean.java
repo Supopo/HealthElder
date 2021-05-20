@@ -58,8 +58,8 @@ public class CommentListBean implements MultiItemEntity {
     public String toAvatarUrl;//
 
     public boolean getShowToName() {
-        if (!TextUtils.isEmpty(fromUserId) && !TextUtils.isEmpty(toUserId) && !TextUtils.isEmpty(replyType)) {
-            if ((!fromUserId.equals(toUserId)) && replyType.equals("REPLY_REPLY")) {
+        if (!TextUtils.isEmpty(replyType)) {
+            if (replyType.equals("REPLY_REPLY")) {
                 return true;
             }
         }

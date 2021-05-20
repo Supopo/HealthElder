@@ -70,9 +70,16 @@
                 <ImageView
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:src="@mipmap/icon_pl_biaoq"
+                    android:background="@mipmap/pl_at"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginRight="@dimen/dp_12"/>
+
+                <ImageView
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:background="@mipmap/icon_pl_biaoq"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginRight="@dimen/dp_16"/>
             </LinearLayout>
         </RelativeLayout>
