@@ -34,9 +34,9 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         binding.childList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.childList.setAdapter(baseViewHolder.commentChildAdapter);
         baseViewHolder.commentChildAdapter.setList(iCommentBean.shortVideoCommentReplyList);
+        iCommentBean.parentPos = baseViewHolder.getAdapterPosition();//插入评论所在pos
 
         binding.rlContent.setOnClickListener(view -> {
-            iCommentBean.parentPos = baseViewHolder.getAdapterPosition();
             //发起评论
             operationItemClickListener.toComment(iCommentBean);
         });
@@ -91,7 +91,9 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                 switch (view.getId()) {
                     case R.id.rl_content:
                         //回复里面的回复
-                        operationItemClickListener.toCommentReply(iCommentBean.shortVideoCommentReplyList.get(position));
+                        CommentListBean replyComment = iCommentBean.shortVideoCommentReplyList.get(position);
+                        replyComment.parentPos = iCommentBean.parentPos;
+                        operationItemClickListener.toCommentReply(replyComment);
                         break;
                     case R.id.avatar:
                     case R.id.nickname:
