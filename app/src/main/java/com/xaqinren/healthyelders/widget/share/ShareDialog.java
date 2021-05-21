@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.widget.share;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
@@ -9,16 +8,18 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.xaqinren.healthyelders.DataBinderMapperImpl;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 
 import java.lang.ref.SoftReference;
 import java.util.List;
 
-public class ShareDialog{
+public class ShareDialog {
     private PopupWindow popupWindow;
     private View contentView;
     private SoftReference<Context> context;
@@ -28,9 +29,11 @@ public class ShareDialog{
     public static int VIDEO_TYPE = 0;//短视频
     public static int TP_TYPE = 1;//图文
     private int showType = VIDEO_TYPE;
+    private Context mContext;
 
     public ShareDialog(Context context) {
         this.context = new SoftReference<>(context);
+        mContext = context;
         init();
     }
 
@@ -42,7 +45,7 @@ public class ShareDialog{
     private void init() {
         contentView = View.inflate(context.get(), R.layout.pop_share, null);
         binding = DataBindingUtil.bind(contentView);
-        popupWindow = new PopupWindow(binding.getRoot() , ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT);
+        popupWindow = new PopupWindow(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable());
@@ -56,6 +59,7 @@ public class ShareDialog{
         binding.atUserList.setLayoutManager(new LinearLayoutManager(context.get(), LinearLayoutManager.HORIZONTAL, false));
         binding.atUserList.setAdapter(shareFriendAdapter);
 
+        getFriends();
 
         binding.shareClsLayout.shareFriend.setOnClickListener(view -> {
             //私信朋友
@@ -83,6 +87,9 @@ public class ShareDialog{
         });
         binding.rlContainer.setOnClickListener(view -> popupWindow.dismiss());
 
+        datas.observe((LifecycleOwner) mContext, datas -> {
+
+        });
     }
 
     private void showType() {
@@ -110,5 +117,13 @@ public class ShareDialog{
 
     public void hide() {
         popupWindow.dismiss();
+    }
+
+    private MutableLiveData<List<Object>> datas = new MutableLiveData<>();
+    private int page = 1;
+    private int pageSize = 10;
+
+    public void getFriends() {
+        UserRepository.getInstance().getFriendsList(datas, page, pageSize);
     }
 }

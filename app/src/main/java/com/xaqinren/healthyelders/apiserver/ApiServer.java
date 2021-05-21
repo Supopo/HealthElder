@@ -262,7 +262,7 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/comment")
     Observable<MBaseResponse<CommentListBean>> toComment(@Header("Authorization") String authorization,
-                                                @Body RequestBody body);
+                                                         @Body RequestBody body);
 
     //评论列表
     @GET("content/open/shortVideo/comment/findPageByShortVideoId")
@@ -272,7 +272,7 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/commentReply")
     Observable<MBaseResponse<CommentListBean>> toCommentReply(@Header("Authorization") String authorization,
-                                                @Body RequestBody body);
+                                                              @Body RequestBody body);
 
     //回复列表
     @GET("content/open/shortVideo/commentReply/findPageByCommentId")
@@ -300,7 +300,8 @@ public interface ApiServer {
     //搜索音乐
     @GET("content/queryMusicPage")
     Observable<MBaseResponse<BaseListRes<List<MMusicItemBean>>>> getMusicList(@Header("Authorization") String authorization,
-                                                                 @Query("page") int page , @Query("pageSize")int pageSize , @Query("name")String name ,@Query("sheetId")String sheetId );
+                                                                              @Query("page") int page, @Query("pageSize") int pageSize, @Query("name") String name, @Query("sheetId") String sheetId);
+
     //音乐 推荐音乐
     @GET("content/queryMusicRecommend")
     Observable<MBaseResponse<List<MMusicItemBean>>> getMusicRecommend(@Header("Authorization") String authorization);
@@ -313,4 +314,9 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/musicFavorite")
     Observable<MBaseResponse<Object>> musicFavorite(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //好友列表
+    @GET("user/queryAttentionUserInfoPage")
+    Observable<MBaseResponse<BaseListRes<List<Object>>>> getFriendsList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+
 }

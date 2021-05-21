@@ -179,6 +179,14 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     tempList.addAll(datas);
                 }
 
+                if (page == 1) {
+                    mVideoInfoList.clear();
+                    fragmentList.clear();
+                    fragmentPosition = 0;
+                    //需要重new否者会出现缓存
+                    homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    binding.viewPager2.setAdapter(homeAdapter);
+                }
 
                 mVideoInfoList.addAll(tempList);
 
@@ -187,7 +195,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition));
                     fragmentPosition++;
                 }
-                homeAdapter.notifyDataSetChanged();
+
             } else {
                 if (page > 1) {
                     page--;

@@ -106,7 +106,9 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     mVideoInfoList.clear();
                     fragmentList.clear();
                     fragmentPosition = 0;
-                    videoAdapter.notifyDataSetChanged();
+                    //需要重new否者会出现缓存
+                    videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    binding.viewPager2.setAdapter(videoAdapter);
                 }
 
                 mVideoInfoList.addAll(datas);

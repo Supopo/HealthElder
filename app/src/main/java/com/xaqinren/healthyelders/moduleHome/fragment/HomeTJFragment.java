@@ -94,7 +94,10 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     mVideoInfoList.clear();
                     fragmentList.clear();
                     fragmentPosition = 0;
-                    homeAdapter.notifyDataSetChanged();
+
+                    //需要重new否者会出现缓存
+                    homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    binding.viewPager2.setAdapter(homeAdapter);
                 }
 
                 mVideoInfoList.addAll(datas);
@@ -104,7 +107,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
-
 
                 if (page == 1 && binding.srl.isRefreshing()) {
                     binding.srl.setRefreshing(false);
