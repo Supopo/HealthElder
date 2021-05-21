@@ -24,9 +24,10 @@ public class HomeTJViewModel extends BaseViewModel {
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
     public MutableLiveData<HomeRes> homeInfo = new MutableLiveData<>();
+    public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
 
     public void getVideoData(int page) {
-        LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize, 0,datas);
+        LiveRepository.getInstance().getHomeVideoList(closeRsl,page, Constant.loadVideoSize, 0,datas);
     }
 
 }

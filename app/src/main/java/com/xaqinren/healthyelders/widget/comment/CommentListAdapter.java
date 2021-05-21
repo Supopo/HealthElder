@@ -92,7 +92,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             baseViewHolder.commentChildAdapter.notifyDataSetChanged();
             iCommentBean.lodaState = 0;
 
-            baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() + 1,iCommentBean.shortVideoCommentReplyList.size());
+            baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() + 1);
 
             baseViewHolder.commentChildAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override

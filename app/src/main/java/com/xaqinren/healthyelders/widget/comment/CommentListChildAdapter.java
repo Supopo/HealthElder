@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.widget.comment;
 
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.databinding.DataBindingUtil;
@@ -10,7 +9,6 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FooterCommentExpanBinding;
-import com.xaqinren.healthyelders.databinding.ItemCommentChildBinding;
 import com.xaqinren.healthyelders.databinding.ItemCommentListChildBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 
@@ -20,12 +18,10 @@ import java.util.List;
 
 public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentListBean, BaseViewHolder> {
 
-    private int count;
-    private int pCount;
+    private int count;  //总数量
 
-    public void setCount(int count, int pCount) {
+    public void setCount(int count) {
         this.count = count;
-        this.pCount = pCount;//作者的回复数量
     }
 
     public CommentListChildAdapter(int layoutResId) {
@@ -42,13 +38,9 @@ public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentLi
     protected void convert(@NotNull BaseViewHolder baseViewHolder, CommentListBean iCommentBean) {
         if (iCommentBean.viewType == 1) {
             FooterCommentExpanBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
-            if (getData().size() - pCount == 1) {
-                //展开总数
-                binding.hintTv.setText("展开" + (count - 1) + "条回复");
-                binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
-            } else if (getData().size() - pCount < count) {
+            if (count > getData().size()) {
                 //加载更多
-                binding.hintTv.setText("展开" + (count - iCommentBean.itemSize - 1) + "条回复");
+                binding.hintTv.setText("展开" + (count - getData().size()) + "条回复");
                 binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
             } else {
                 //收起

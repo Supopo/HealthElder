@@ -95,7 +95,6 @@ public class CommentDialog {
             public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {
                 iCommentBean.parentPos = position;
                 getCommentReplyList(iCommentBean);
-                iCommentBean.itemPage++;
             }
 
             @Override
@@ -213,18 +212,20 @@ public class CommentDialog {
 
                 if (replyDatas.replyList != null && replyDatas.replyList.size() > 0) {
 
+                    commentAdapter.getData().get(replyDatas.parentPos).itemPage++;
+
                     //加载更多加载完成
                     replyDatas.replyList.get(replyDatas.replyList.size() - 1).lodaState = 1;
+                    replyDatas.replyList.get(replyDatas.replyList.size() - 1).itemPage = commentAdapter.getData().get(replyDatas.parentPos).itemPage;
 
-                    int index = commentAdapter.getData().get(replyDatas.parentPos).replyList.size() > 0 ? commentAdapter.getData().get(replyDatas.parentPos).replyList.size() - 1 : 0;
+
+                    int index = commentAdapter.getData().get(replyDatas.parentPos).replyList.size() > 0 ? commentAdapter.getData().get(replyDatas.parentPos).replyList.size() : 0;
                     commentAdapter.getData().get(replyDatas.parentPos)
                             .replyList.addAll(index,
                             replyDatas.replyList);
 
                     commentAdapter.notifyItemChanged(replyDatas.parentPos);
 
-                } else {
-                    commentAdapter.getData().get(replyDatas.parentPos).itemPage--;
                 }
 
             }

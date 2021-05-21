@@ -21,9 +21,10 @@ public class HomeFJViewModel extends BaseViewModel {
 
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
+    public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
 
     public void getVideoData(int page) {
-        LiveRepository.getInstance().getHomeVideoList(page, 6, 2, datas);
+        LiveRepository.getInstance().getHomeVideoList(closeRsl, page, 6, 2, datas);
     }
 
 }

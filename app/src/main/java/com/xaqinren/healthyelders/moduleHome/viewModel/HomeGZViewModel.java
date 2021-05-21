@@ -26,9 +26,11 @@ public class HomeGZViewModel extends BaseViewModel {
     public MutableLiveData<List<VideoInfo>> firendDatas = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
+    public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
+
 
     public void getVideoData(int page) {
-        LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize,1, datas);
+        LiveRepository.getInstance().getHomeVideoList(closeRsl,page, Constant.loadVideoSize,1, datas);
     }
 
     public void getLiveFiends() {

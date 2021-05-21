@@ -447,7 +447,7 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType) {
+    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType) {
         String uid = "";
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
@@ -466,7 +466,6 @@ public class LiveRepository {
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
                     @Override
                     protected void dismissDialog() {
-
                     }
 
                     @Override
@@ -474,13 +473,20 @@ public class LiveRepository {
                         videoList.postValue(data.getData().content);
                     }
 
+                    @Override
+                    public void onFail(String code, MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        super.onFail(code, data);
+                        if (closeRsl != null) {
+                            closeRsl.postValue(true);
+                        }
+                    }
                 });
     }
 
-    public void getHomeVideoList(int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList) {
+    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList) {
         //不传默认返回三种类型的列表
         String resourceType = type == 2 ? "LIVE,VIDEO,ARTICLE" : "";
-        getHomeVideoList(page, pageSize, type, videoList, resourceType);
+        getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType);
     }
 
     public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {
