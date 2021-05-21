@@ -39,6 +39,7 @@ public class HomeGZViewModel extends BaseViewModel {
     }
 
     public void joinLive(String liveRoomId) {
+        showDialog();
         LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
     }
 }
