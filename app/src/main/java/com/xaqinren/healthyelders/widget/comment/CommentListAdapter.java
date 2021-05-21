@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.widget.comment;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,7 +15,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemCommentListBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
-import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 
 import org.jetbrains.annotations.NotNull;
 

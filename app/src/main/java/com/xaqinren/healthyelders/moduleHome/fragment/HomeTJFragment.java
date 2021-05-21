@@ -1,25 +1,18 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
@@ -27,18 +20,11 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeTjBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
-import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
-import com.xaqinren.healthyelders.moduleHome.adapter.MenuAdapter;
-import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
-import com.xaqinren.healthyelders.utils.ColorsUtils;
-import com.xaqinren.healthyelders.utils.LogUtils;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +82,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             closeLoadView();
             if (datas != null && datas.size() > 0) {
 
+                if (page == 1) {
+                    mVideoInfoList.clear();
+                    fragmentList.clear();
+                    fragmentPosition = 0;
+                    homeAdapter.notifyDataSetChanged();
+                }
+
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
@@ -103,6 +96,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
+
+
+                if (page == 1 && binding.srl.isRefreshing()) {
+                    binding.srl.setRefreshing(false);
+                    AppApplication.get().setTjPlayPosition(0);
+                    RxBus.getDefault().post(new VideoEvent(1, TAG));
+                }
 
                 //判断是是不是展示首页菜单展示模式
                 if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().isShowTopMenu()) {
@@ -112,8 +112,11 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                         public void run() {
                             RxBus.getDefault().post(new VideoEvent(10010, 0));
                         }
-                    },400);
+                    }, 400);
                 }
+
+
+
             } else {
                 page--;
             }
@@ -197,10 +200,9 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page++;
+                page = 1;
                 showLoadView();
                 viewModel.getVideoData(page);
-                binding.srl.setRefreshing(false);
             }
         });
     }

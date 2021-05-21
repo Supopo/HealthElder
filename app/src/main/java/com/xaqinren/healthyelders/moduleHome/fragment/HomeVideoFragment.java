@@ -26,7 +26,6 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -48,7 +47,6 @@ import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
-import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 import com.xaqinren.healthyelders.widget.share.IShareUser;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
@@ -259,7 +257,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-                LogUtils.v(Constant.TAG_LIVE, type + "-" + position + "-" + bean.toString());
+                LogUtils.v(Constant.TAG_LIVE, "App: "+AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
@@ -613,15 +611,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void stopPlay(boolean clearLastFrame) {
-        if (!hasPlaying) {
-            return;
-        }
         if (videoInfo.getVideoType() == 1) {
             stopMusicAnim();
         } else {
             zbingAnim.stop();
         }
-        binding.coverImageView.setVisibility(View.GONE);//--展示
+        binding.coverImageView.setVisibility(View.VISIBLE);//--展示
         hasPlaying = false;
         isPlaying = false;
         binding.playImageView.setVisibility(View.GONE);
