@@ -657,8 +657,11 @@ public class LiveRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<List<CommentListBean>>> data) {
-                        commentListBean.replyList = data.getData().content;
-                        commentList.postValue(commentListBean);
+                        //不要引用传进来的commentListBean 会出错
+                        CommentListBean resBean = new CommentListBean();
+                        resBean.parentPos = commentListBean.parentPos;
+                        resBean.replyList = data.getData().content;
+                        commentList.postValue(resBean);
                     }
 
                 });

@@ -32,6 +32,7 @@ public class CommentListBean implements MultiItemEntity {
     public boolean hasAuthorFavorite;//
     public List<CommentListBean> shortVideoCommentReplyList = new ArrayList<>();//
     public List<CommentListBean> replyList = new ArrayList<>();//
+    public List<CommentListBean> allReply = new ArrayList<>();//
     public int viewType;
     public int lodaState;//自定义加载状态
 

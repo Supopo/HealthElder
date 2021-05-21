@@ -21,9 +21,11 @@ import java.util.List;
 public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentListBean, BaseViewHolder> {
 
     private int count;
+    private int pCount;
 
-    public void setCount(int count) {
+    public void setCount(int count, int pCount) {
         this.count = count;
+        this.pCount = pCount;//作者的回复数量
     }
 
     public CommentListChildAdapter(int layoutResId) {
@@ -40,11 +42,11 @@ public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentLi
     protected void convert(@NotNull BaseViewHolder baseViewHolder, CommentListBean iCommentBean) {
         if (iCommentBean.viewType == 1) {
             FooterCommentExpanBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
-            if (getData().size() == 1) {
-                //加载XX条数据
+            if (getData().size() - pCount == 1) {
+                //展开总数
                 binding.hintTv.setText("展开" + (count - 1) + "条回复");
                 binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
-            } else if (getData().size() < count) {
+            } else if (getData().size() - pCount < count) {
                 //加载更多
                 binding.hintTv.setText("展开" + (count - iCommentBean.itemSize - 1) + "条回复");
                 binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));

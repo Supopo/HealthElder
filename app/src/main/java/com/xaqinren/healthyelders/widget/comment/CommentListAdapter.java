@@ -38,7 +38,18 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         binding.setViewModel(iCommentBean);
         binding.childList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.childList.setAdapter(baseViewHolder.commentChildAdapter);
-        baseViewHolder.commentChildAdapter.setList(iCommentBean.shortVideoCommentReplyList);
+
+        if (iCommentBean.allReply == null) {
+            iCommentBean.allReply = new ArrayList<>();
+        }
+
+        if (iCommentBean.shortVideoCommentReplyList == null) {
+            iCommentBean.shortVideoCommentReplyList = new ArrayList<>();
+        }
+        if (iCommentBean.replyList == null) {
+            iCommentBean.replyList = new ArrayList<>();
+        }
+
         iCommentBean.parentPos = baseViewHolder.getAdapterPosition();//插入评论所在pos
         if (!iCommentBean.hasFavorite) {
             Glide.with(getContext()).load(R.mipmap.icon_pinl_zan_nor).into((ImageView) baseViewHolder.getView(R.id.like_iv));
@@ -63,32 +74,41 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         });
 
 
-        if (iCommentBean.commentCount > 0) {
+        iCommentBean.allReply.clear();
+        iCommentBean.allReply.addAll(iCommentBean.shortVideoCommentReplyList);
+        iCommentBean.allReply.addAll(iCommentBean.replyList);
+        baseViewHolder.commentChildAdapter.setList(iCommentBean.allReply);
 
-            baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount + 1);
-            if (iCommentBean.shortVideoCommentReplyList == null || iCommentBean.shortVideoCommentReplyList.size() == 0 || iCommentBean.lodaState == 1) {
-                //增加一个加载更多底部
-                CommentListBean bean = new CommentListBean();
-                bean.viewType = 1;
-                iCommentBean.shortVideoCommentReplyList = new ArrayList<>();
-                iCommentBean.shortVideoCommentReplyList.add(bean);
-                baseViewHolder.commentChildAdapter.addData(bean);
-                baseViewHolder.commentChildAdapter.notifyDataSetChanged();
-                iCommentBean.lodaState = 0;
-            }
+
+        if (iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() > 0 || iCommentBean.lodaState == 1) {
+
+
+            //增加一个加载更多底部
+            CommentListBean bean = new CommentListBean();
+            bean.viewType = 1;
+
+            iCommentBean.allReply.add(bean);
+            baseViewHolder.commentChildAdapter.addData(bean);
+            baseViewHolder.commentChildAdapter.notifyDataSetChanged();
+            iCommentBean.lodaState = 0;
+
+            baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() + 1,iCommentBean.shortVideoCommentReplyList.size());
+
             baseViewHolder.commentChildAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                    int viewType = iCommentBean.shortVideoCommentReplyList.get(position).viewType;
+                    int viewType = iCommentBean.allReply.get(position).viewType;
                     if (viewType == 1) {
                         //点击更多
-                        if (iCommentBean.shortVideoCommentReplyList.size() == 0) {
+                        if (iCommentBean.allReply.size() == 0) {
                             //加载更多
                             loadMoreCommentListener.onLoadMore(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
-                        } else if (iCommentBean.shortVideoCommentReplyList.size() == iCommentBean.commentCount + 1) {
+                        } else if (iCommentBean.allReply.size() == iCommentBean.commentCount + 1) {
                             //收起
-                            iCommentBean.shortVideoCommentReplyList.clear();
-                            baseViewHolder.commentChildAdapter.setList(null);
+                            iCommentBean.replyList.clear();
+                            iCommentBean.allReply.clear();
+                            iCommentBean.allReply.addAll(iCommentBean.shortVideoCommentReplyList);
+                            baseViewHolder.commentChildAdapter.setList(iCommentBean.allReply);
                             loadMoreCommentListener.onPackUp(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
                             notifyItemChanged(baseViewHolder.getAdapterPosition());
                         } else {
@@ -100,7 +120,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             });
 
             baseViewHolder.commentChildAdapter.setOnItemChildClickListener((adapter, view, position) -> {
-                CommentListBean replyComment = iCommentBean.shortVideoCommentReplyList.get(position);
+                CommentListBean replyComment = iCommentBean.allReply.get(position);
                 replyComment.parentPos = iCommentBean.parentPos;
                 replyComment.itemPos = position;
 
@@ -111,7 +131,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                         break;
                     case R.id.avatar:
                     case R.id.nickname:
-                        operationItemClickListener.toUser(iCommentBean.shortVideoCommentReplyList.get(position));
+                        operationItemClickListener.toUser(iCommentBean.allReply.get(position));
                         //用户
                         break;
                     case R.id.ll_like:

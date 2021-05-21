@@ -101,7 +101,7 @@ public class CommentDialog {
             @Override
             public void onPackUp(int position, CommentListBean iCommentBean, int page, int pageSize) {
                 iCommentBean.itemPage = 1;
-                iCommentBean.shortVideoCommentReplyList.clear();
+                iCommentBean.replyList.clear();
                 commentAdapter.notifyItemChanged(position);
 
             }
@@ -145,8 +145,8 @@ public class CommentDialog {
 
                 CommentListBean commentBean = commentAdapter.getData().get(iCommentBean.parentPos);
                 commentBean.itemPos = iCommentBean.itemPos;
-                if (commentBean.shortVideoCommentReplyList != null) {
-                    CommentListBean commentChild = commentBean.shortVideoCommentReplyList.get(iCommentBean.itemPos);
+                if (commentBean.allReply != null) {
+                    CommentListBean commentChild = commentBean.allReply.get(iCommentBean.itemPos);
                     if (commentChild != null) {
                         if (commentChild.hasFavorite) {
                             if (commentChild.favoriteCount > 0) {
@@ -210,16 +210,23 @@ public class CommentDialog {
 
         commentReplyList.observe((LifecycleOwner) mContext, replyDatas -> {
             if (replyDatas != null) {
+
                 if (replyDatas.replyList != null && replyDatas.replyList.size() > 0) {
+
                     //加载更多加载完成
                     replyDatas.replyList.get(replyDatas.replyList.size() - 1).lodaState = 1;
+
+                    int index = commentAdapter.getData().get(replyDatas.parentPos).replyList.size() > 0 ? commentAdapter.getData().get(replyDatas.parentPos).replyList.size() - 1 : 0;
                     commentAdapter.getData().get(replyDatas.parentPos)
-                            .shortVideoCommentReplyList.addAll(commentAdapter.getData().get(replyDatas.parentPos).shortVideoCommentReplyList.size() - 1,
+                            .replyList.addAll(index,
                             replyDatas.replyList);
+
                     commentAdapter.notifyItemChanged(replyDatas.parentPos);
+
                 } else {
                     commentAdapter.getData().get(replyDatas.parentPos).itemPage--;
                 }
+
             }
 
 
@@ -245,9 +252,8 @@ public class CommentDialog {
 
         CommentListBean adapterCommentBean = commentAdapter.getData().get(commentListBean.parentPos);
 
-        if (adapterCommentBean.shortVideoCommentReplyList == null) {
-            adapterCommentBean.shortVideoCommentReplyList = new ArrayList<>();
-        }
+        int index = adapterCommentBean.shortVideoCommentReplyList.size() == 0 ? 0 : adapterCommentBean.shortVideoCommentReplyList.size() - 1;
+
         adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
         adapterCommentBean.commentCount++;
         adapterCommentBean.lodaState = 1;//展示  展开回复
