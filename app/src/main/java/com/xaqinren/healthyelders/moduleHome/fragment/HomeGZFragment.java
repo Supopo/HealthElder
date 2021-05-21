@@ -48,8 +48,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private FragmentPagerAdapter videoAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
-    public LockableNestedScrollView gzNsv;
-    public ViewPager2 gzViewPager2;
 
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -103,6 +101,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             if (datas != null && datas.size() > 0) {
                 if (page == 1) {
                     viewModel.getLiveFiends();
+
+                    mVideoInfoList.clear();
+                    fragmentList.clear();
+                    fragmentPosition = 0;
+                    videoAdapter.notifyDataSetChanged();
                 }
 
                 mVideoInfoList.addAll(datas);
@@ -112,6 +115,12 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     fragmentPosition++;
                 }
                 videoAdapter.notifyDataSetChanged();
+
+                if (page == 1 && binding.srl.isRefreshing()) {
+                    binding.srl.setRefreshing(false);
+                    AppApplication.get().setTjPlayPosition(0);
+                    RxBus.getDefault().post(new VideoEvent(1, TAG));
+                }
             } else {
                 page--;
             }
@@ -120,6 +129,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         viewModel.firendDatas.observe(this, list -> {
             if (list != null && list.size() > 0) {
                 binding.rlTop.setVisibility(View.VISIBLE);
+                binding.llShowTop.setVisibility(View.GONE);
                 binding.tvShowZb.setText(list.size() + "个直播");
                 binding.nsv.smoothScrollTo(0, 0);
                 zbingAdapter.setNewInstance(list);
@@ -127,6 +137,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 binding.nsv.setScrollingEnabled(true);
             } else {
                 binding.rlTop.setVisibility(View.GONE);
+                binding.llShowTop.setVisibility(View.VISIBLE);
                 binding.viewPager2.setUserInputEnabled(true);
                 binding.nsv.setScrollingEnabled(false);
             }
@@ -204,6 +215,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
                     binding.rlTop.setVisibility(View.GONE);
+                    binding.llShowTop.setVisibility(View.VISIBLE);
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
                 }
@@ -213,13 +225,9 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page++;
+                page = 1;
                 showLoadView();
                 viewModel.getVideoData(page);
-                binding.srl.setRefreshing(false);
-
-                viewModel.getLiveFiends();
-
                 //判断
                 if (binding.rlTop.getVisibility() == View.GONE) {
                     binding.nsv.setScrollingEnabled(false);
@@ -234,6 +242,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
         binding.llShowTop.setOnClickListener(lis -> {
             binding.rlTop.setVisibility(View.VISIBLE);
+            binding.llShowTop.setVisibility(View.GONE);
             binding.nsv.setScrollingEnabled(true);
             binding.viewPager2.setUserInputEnabled(false);
         });
