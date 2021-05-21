@@ -9,6 +9,7 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
 import java.util.List;
 
@@ -20,10 +21,10 @@ public class HomeVideoModel extends BaseViewModel {
         super(application);
     }
 
-    public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
     public MutableLiveData<VideoInfo> videoInfo = new MutableLiveData<>();
     public MutableLiveData<CommentListBean> commentSuccess = new MutableLiveData<>();
-
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
     public void toLikeVideo(String videoId, boolean isLike) {
         LiveRepository.getInstance().toLikeVideo(videoId, isLike);
@@ -39,5 +40,9 @@ public class HomeVideoModel extends BaseViewModel {
 
     public void toCommentReply(CommentListBean mCommentListBean, String content, int type) {
         LiveRepository.getInstance().toCommentReply(mCommentListBean, content, type, commentSuccess);
+    }
+
+    public void joinLive(String liveRoomId) {
+        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
     }
 }

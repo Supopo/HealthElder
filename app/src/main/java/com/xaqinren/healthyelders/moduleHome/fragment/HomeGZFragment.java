@@ -26,6 +26,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +69,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             if (binding.rlTop.getVisibility() == View.GONE) {//顶部未展示
                 binding.nsv.setScrollingEnabled(false);
                 binding.viewPager2.setUserInputEnabled(true);
-            }else {
+            } else {
                 binding.nsv.setScrollingEnabled(true);
                 binding.viewPager2.setUserInputEnabled(false);
             }
-        }else {
+        } else {
             binding.nsv.setScrollingEnabled(false);
             binding.viewPager2.setUserInputEnabled(false);
         }
@@ -125,7 +126,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 page--;
             }
         });
-
         viewModel.firendDatas.observe(this, list -> {
             if (list != null && list.size() > 0) {
                 binding.rlTop.setVisibility(View.VISIBLE);
@@ -140,6 +140,20 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 binding.llShowTop.setVisibility(View.VISIBLE);
                 binding.viewPager2.setUserInputEnabled(true);
                 binding.nsv.setScrollingEnabled(false);
+            }
+        });
+        viewModel.liveInfo.observe(this, liveInfo -> {
+            if (liveInfo != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                startActivity(LiveGuanzhongActivity.class, bundle);
+            }
+        });
+        viewModel.dismissDialog.observe(this, dismiss -> {
+            if (dismiss != null) {
+                if (dismiss) {
+                    dismissDialog();
+                }
             }
         });
     }
@@ -163,6 +177,9 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         zbingAdapter = new ZhiBoingAvatarAdapter(R.layout.item_zbing_avatar);
         binding.rvZbList.setAdapter(zbingAdapter);
 
+        zbingAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            viewModel.joinLive(zbingAdapter.getData().get(position).liveRoomId);
+        }));
     }
 
     @Override

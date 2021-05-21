@@ -15,8 +15,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/gray_666">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/rl_top"
@@ -405,7 +404,6 @@
                 android:id="@+id/refreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
@@ -413,7 +411,6 @@
                     android:id="@+id/rv_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white"
                     android:overScrollMode="never"
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingTop="@dimen/dp_7" />

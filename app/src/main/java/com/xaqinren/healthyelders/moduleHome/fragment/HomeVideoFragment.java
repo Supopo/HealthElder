@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXVodPlayConfig;
@@ -42,6 +43,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -320,7 +322,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return true;
             }
         });
-
         binding.rlLike.setOnClickListener(lis -> {
             long secondTime = System.currentTimeMillis();
             if (secondTime - firstLikeTime < 500) {
@@ -337,7 +338,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             viewModel.videoInfo.setValue(videoInfo);
             firstLikeTime = secondTime;
         });
-
         //关注
         binding.followImageView.setOnClickListener(lis -> {
             avatarAddAnim = (AnimationDrawable) binding.followImageView.getBackground();
@@ -345,15 +345,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             viewModel.toFollow(videoInfo.userId);
             videoInfo.hasAttention = !videoInfo.hasAttention;
         });
-
         binding.ivComment.setOnClickListener(lis -> {
             showCommentDialog(videoInfo.resourceId);
         });
-
         binding.ivShare.setOnClickListener(lis -> {
             showShareDialog();
         });
-
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null) {
 
@@ -371,6 +368,27 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 if (publishDialog != null) {
                     publishDialog.keyBoardClosed();
                     openType = 0;
+                }
+            }
+        });
+        binding.llZhiBoTip.setOnClickListener(lis ->{
+            //判断是直播间
+            if (videoInfo.getVideoType() == 2) {
+                //进入直播间
+                viewModel.joinLive(videoInfo.liveRoomId);
+            }
+        });
+        viewModel.liveInfo.observe(this, liveInfo -> {
+            if (liveInfo != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                startActivity(LiveGuanzhongActivity.class, bundle);
+            }
+        });
+        viewModel.dismissDialog.observe(this, dismiss -> {
+            if (dismiss != null) {
+                if (dismiss) {
+                    dismissDialog();
                 }
             }
         });

@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class HomeGZViewModel extends BaseViewModel {
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> firendDatas = new MutableLiveData<>();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
     public void getVideoData(int page) {
         LiveRepository.getInstance().getHomeVideoList(page, Constant.loadVideoSize,1, datas);
@@ -33,5 +36,9 @@ public class HomeGZViewModel extends BaseViewModel {
             return;
         }
         LiveRepository.getInstance().getLiveFiends(firendDatas);
+    }
+
+    public void joinLive(String liveRoomId) {
+        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
     }
 }
