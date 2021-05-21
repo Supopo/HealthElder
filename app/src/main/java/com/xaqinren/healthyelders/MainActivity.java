@@ -30,6 +30,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
@@ -119,6 +120,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.v("----------","onNewIntent");
         getCacheUserInfo();
     }
 
@@ -277,6 +279,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //TODO token失效 重新登录
                 SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
+                startActivity(SelectLoginActivity.class);
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
                     if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {

@@ -29,6 +29,7 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.databinding.PopCommentBinding;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
@@ -82,8 +83,13 @@ public class CommentDialog {
 
         });
         //关闭dialog
-        binding.close.setOnClickListener(view -> popupWindow.dismiss());
-        //        binding.close.setOnClickListener(view -> rushData());
+        binding.close.setOnClickListener(view -> {
+            if (Constant.DEBUG) {
+                rushData();
+            } else {
+                popupWindow.dismiss();
+            }
+        });
         commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
             public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {

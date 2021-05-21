@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -271,6 +272,34 @@ public class UserRepository {
                     protected void onSuccess(MBaseResponse<Object> data) {
                         if (followSuccess != null) {
                             followSuccess.postValue(true);
+                        }
+                    }
+                });
+    }
+
+    public void toRenZheng(MutableLiveData<Boolean> renZhengSuccess, MutableLiveData<Boolean> dismissDialog, Map hashMap) {
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.saveUserIdCardInfo(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        if (dismissDialog != null) {
+                            dismissDialog.postValue(true);
+                        }
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        if (renZhengSuccess != null) {
+                            renZhengSuccess.postValue(true);
                         }
                     }
                 });

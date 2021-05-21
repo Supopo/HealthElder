@@ -277,4 +277,10 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/commentFavorite")
     Observable<MBaseResponse<Object>> setCommentLike(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //用户实名认证
+    @Headers({"content-type:application/json"})
+    @POST("user/saveUserIdCardInfo")
+    Observable<MBaseResponse<Object>> saveUserIdCardInfo(@Header("Authorization") String authorization,
+                                                         @Body RequestBody body);
 }

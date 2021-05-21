@@ -49,7 +49,8 @@
                     android:layout_width="@dimen/dp_242"
                     android:layout_height="@dimen/dp_162"
                     android:layout_centerHorizontal="true"
-                    android:background="@mipmap/sfz_zm" />
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/sfz_zm" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,7 +78,8 @@
                     android:layout_width="@dimen/dp_242"
                     android:layout_height="@dimen/dp_162"
                     android:layout_centerHorizontal="true"
-                    android:background="@mipmap/sfz_fm" />
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/sfz_fm" />
 
                 <TextView
                     android:layout_width="wrap_content"

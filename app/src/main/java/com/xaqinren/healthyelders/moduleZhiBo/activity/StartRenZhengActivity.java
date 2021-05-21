@@ -58,7 +58,8 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     private String fmPath;
     private int selectType;//1正面 2反面
     private boolean isAgree = true;
-    private Map<String, String> hashMap = new HashMap<>();
+    private Bundle bundle = new Bundle();
+
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -98,10 +99,8 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             selectImage();
         });
         binding.btnNext.setOnClickListener(lis -> {
-            Bundle bundle = new Bundle();
-            String json = JSON.toJSONString(hashMap);
-            bundle.putString("json", json);
             startActivity(StartRenZheng2Activity.class, bundle);
+            finish();
         });
     }
 
@@ -238,6 +237,8 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     }
 
     private void recIDCard(String idCardSide, String filePath) {
+        showDialog("识别中");
+
         IDCardParams param = new IDCardParams();
         param.setImageFile(new File(filePath));
         // 设置身份证正反面
@@ -250,38 +251,39 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         OCR.getInstance(this).recognizeIDCard(param, new OnResultListener<IDCardResult>() {
             @Override
             public void onResult(IDCardResult result) {
+                dismissDialog();
                 if (result != null) {
                     LogUtils.v(Constant.TAG_LIVE, result.toString());
                     if (result.getImageStatus().equals("normal")) {
                         if (selectType == 1) {
                             if (result.getAddress() != null) {
-                                hashMap.put("address", result.getAddress().toString());
+                                bundle.putString("address", result.getAddress().toString());
                             }
                             if (result.getIdNumber() != null) {
-                                hashMap.put("idNumber", result.getIdNumber().toString());
+                                bundle.putString("idNumber", result.getIdNumber().toString());
                             }
                             if (result.getBirthday() != null) {
-                                hashMap.put("birthday", result.getBirthday().toString());
+                                bundle.putString("birthday", result.getBirthday().toString());
                             }
                             if (result.getName() != null) {
-                                hashMap.put("name", result.getName().toString());
+                                bundle.putString("name", result.getName().toString());
                             }
                             if (result.getGender() != null) {
-                                hashMap.put("gender", result.getGender().toString());
+                                bundle.putString("gender", result.getGender().toString());
                             }
                             if (result.getEthnic() != null) {
-                                hashMap.put("ethnic", result.getEthnic().toString());
+                                bundle.putString("ethnic", result.getEthnic().toString());
                             }
 
                         } else {
                             if (result.getIssueAuthority() != null) {
-                                hashMap.put("issueAuthority", result.getIssueAuthority().toString());
+                                bundle.putString("issueAuthority", result.getIssueAuthority().toString());
                             }
                             if (result.getSignDate() != null) {
-                                hashMap.put("signDate", result.getSignDate().toString());
+                                bundle.putString("signDate", result.getSignDate().toString());
                             }
                             if (result.getExpiryDate() != null) {
-                                hashMap.put("expiryDate", result.getExpiryDate().toString());
+                                bundle.putString("expiryDate", result.getExpiryDate().toString());
                             }
                         }
                     } else {
@@ -292,6 +294,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
 
             @Override
             public void onError(OCRError error) {
+                dismissDialog();
                 LogUtils.v(Constant.TAG_LIVE, error.getMessage());
                 ToastUtil.toastShortMessage("身份证识别失败");
             }

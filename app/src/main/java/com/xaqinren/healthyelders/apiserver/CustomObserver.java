@@ -40,7 +40,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
         } else {
             ToastUtils.showShort(t.getMessage());
             //判断token过期
-            if (t.getCode().equals(CodeTable.TOKEN_ERR_CODE)) {
+            if (t.getCode().equals(CodeTable.TOKEN_ERR_CODE) ||t.getCode().equals(CodeTable.TOKEN_NO_CODE)) {
                 onTokenErr();
                 return;
             }

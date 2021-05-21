@@ -43,6 +43,10 @@ public class CodeTable {
      * token过期
      */
     public static final String TOKEN_ERR_CODE = "040010";
+    /**
+     * token不存在
+     */
+    public static final String TOKEN_NO_CODE = "040005";
 
 
     /* RxBus Event Code */

@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, CommentListAdapter.ViewHolder> implements LoadMoreModule {
@@ -65,10 +66,11 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         if (iCommentBean.commentCount > 0) {
 
             baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount + 1);
-            if (iCommentBean.shortVideoCommentReplyList.isEmpty() || iCommentBean.lodaState == 1) {
+            if (iCommentBean.shortVideoCommentReplyList == null || iCommentBean.shortVideoCommentReplyList.size() == 0 || iCommentBean.lodaState == 1) {
                 //增加一个加载更多底部
                 CommentListBean bean = new CommentListBean();
                 bean.viewType = 1;
+                iCommentBean.shortVideoCommentReplyList = new ArrayList<>();
                 iCommentBean.shortVideoCommentReplyList.add(bean);
                 baseViewHolder.commentChildAdapter.addData(bean);
                 baseViewHolder.commentChildAdapter.notifyDataSetChanged();
