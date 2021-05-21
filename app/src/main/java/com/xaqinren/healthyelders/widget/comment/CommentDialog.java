@@ -253,8 +253,6 @@ public class CommentDialog {
 
         CommentListBean adapterCommentBean = commentAdapter.getData().get(commentListBean.parentPos);
 
-        int index = adapterCommentBean.shortVideoCommentReplyList.size() == 0 ? 0 : adapterCommentBean.shortVideoCommentReplyList.size() - 1;
-
         adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
         adapterCommentBean.commentCount++;
         adapterCommentBean.lodaState = 1;//展示  展开回复

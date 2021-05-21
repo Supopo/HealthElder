@@ -38,14 +38,14 @@ public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentLi
     protected void convert(@NotNull BaseViewHolder baseViewHolder, CommentListBean iCommentBean) {
         if (iCommentBean.viewType == 1) {
             FooterCommentExpanBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
-            if (count > getData().size()) {
-                //加载更多
-                binding.hintTv.setText("展开" + (count - getData().size()) + "条回复");
-                binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
-            } else {
+            if (count == getData().size()) {
                 //收起
                 binding.hintTv.setText("收起");
                 binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_shouq));
+            } else {
+                //加载更多
+                binding.hintTv.setText("展开" + (count - getData().size()) + "条回复");
+                binding.ivDown.setBackground(getContext().getResources().getDrawable(R.mipmap.plhuif_xiala));
             }
         } else {
             ItemCommentListChildBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);

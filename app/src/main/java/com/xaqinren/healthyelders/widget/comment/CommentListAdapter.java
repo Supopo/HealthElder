@@ -92,7 +92,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             baseViewHolder.commentChildAdapter.notifyDataSetChanged();
             iCommentBean.lodaState = 0;
 
-            baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() + 1);
+            baseViewHolder.commentChildAdapter.setCount(iCommentBean.commentCount + 1);
 
             baseViewHolder.commentChildAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
@@ -100,10 +100,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                     int viewType = iCommentBean.allReply.get(position).viewType;
                     if (viewType == 1) {
                         //点击更多
-                        if (iCommentBean.allReply.size() == 0) {
-                            //加载更多
-                            loadMoreCommentListener.onLoadMore(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
-                        } else if (iCommentBean.allReply.size() == iCommentBean.commentCount + 1) {
+                      if (iCommentBean.allReply.size() == iCommentBean.commentCount + 1) {
                             //收起
                             iCommentBean.replyList.clear();
                             iCommentBean.allReply.clear();
