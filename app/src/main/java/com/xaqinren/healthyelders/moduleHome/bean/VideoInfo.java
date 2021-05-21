@@ -78,7 +78,7 @@ public class VideoInfo implements Serializable {
             return 2;
         } else if (resourceType.equals("VIDEO")) {
             return 1;
-        } else if (resourceType.equals("ARTICLE")) {
+        } else if (resourceType.equals("USER_DIARY")) {
             return 3;
         }
         return 0;
@@ -139,7 +139,7 @@ public class VideoInfo implements Serializable {
     }
 
     public boolean isArticle() {
-        if (resourceType.equals("ARTICLE")) {
+        if (resourceType.equals("USER_DIARY")) {
             return true;
         }
         return false;

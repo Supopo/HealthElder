@@ -29,7 +29,7 @@ public class VideoListViewModel extends BaseViewModel {
         if (type == 0) {
             resourceType = "LIVE";
         } else if (type == 2) {
-            resourceType = "LIVE,VIDEO,ARTICLE";
+            resourceType = "LIVE,VIDEO,USER_DIARY";
         }
 
         LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, type, datas, resourceType);
