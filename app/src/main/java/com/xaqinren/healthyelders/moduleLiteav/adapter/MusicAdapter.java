@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleLiteav.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
@@ -49,6 +50,7 @@ public class MusicAdapter extends BaseQuickAdapter<MMusicBean, MusicAdapter.View
         }
         baseViewHolder.viewPager.setAdapter(baseViewHolder.adapter);
         baseViewHolder.viewPager.setCurrentItem(baseViewHolder.page);
+        Log.e("MusicAdapter", "position = " + baseViewHolder.getAdapterPosition() + "\tpage = " + baseViewHolder.page);
         binding.seeAll.setOnClickListener(view -> {
             //TODO 查看全部
             Bundle bundle = new Bundle();

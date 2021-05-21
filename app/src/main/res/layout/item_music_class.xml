@@ -18,7 +18,7 @@
             android:id="@+id/icon"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:src="@mipmap/ic_aweme_yj" />
+           />
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,6 +26,6 @@
             android:textSize="@dimen/sp_12"
             android:textColor="@color/color_252525"
             android:layout_marginTop="@dimen/dp_4"
-            android:text="@{viewModel.menuName}" />
+            android:text="@{viewModel.name}" />
     </LinearLayout>
 </layout>

@@ -30,7 +30,6 @@ public class RightLeakageTransformer implements ViewPager.PageTransformer  {
             if (position < 0) {
                 tran = 0;
             }
-            LogUtils.e(TAG, "position -> " + position);
             page.setTranslationX(tran);
         }
     }

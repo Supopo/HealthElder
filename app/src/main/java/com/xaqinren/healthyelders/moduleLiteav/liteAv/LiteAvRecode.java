@@ -188,7 +188,6 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         VideoRecordSDK.getInstance().updateAspectRatio();
     }
 
-
     /**
      * 选择音乐
      */

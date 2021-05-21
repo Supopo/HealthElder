@@ -19,6 +19,6 @@ public class MusicClassAdapter extends BaseQuickAdapter<MusicClassBean, BaseView
     protected void convert(@NotNull BaseViewHolder baseViewHolder, MusicClassBean musicClassBean) {
         ItemMusicClassBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(musicClassBean);
-        Glide.with(getContext()).load(musicClassBean.jumpUrl).into(binding.icon);
+        Glide.with(getContext()).load(musicClassBean.iconUrl).into(binding.icon);
     }
 }

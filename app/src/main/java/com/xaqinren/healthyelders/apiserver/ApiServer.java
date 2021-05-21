@@ -299,7 +299,7 @@ public interface ApiServer {
 
     //首页歌单
     @GET("content/findRecommendMusicChannelSheet")
-    Observable<MBaseResponse<BaseListRes<List<MMusicBean>>>> getChannelSheet(@Header("Authorization") String authorization);
+    Observable<MBaseResponse<List<MMusicBean>>> getChannelSheet(@Header("Authorization") String authorization);
 
     //搜索音乐
     @GET("content/queryMusicPage")

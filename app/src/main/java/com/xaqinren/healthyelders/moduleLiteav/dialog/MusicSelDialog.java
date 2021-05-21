@@ -170,6 +170,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     bean.myMusicStatus = 1;
 //                    currentPlayCoIndex = -1;
                     currentPlayReIndex = position;
+                    record.setBGMNofify(itxbgmNotify);
                     loadTrialMusic(bean);
                     showTitleRight(true);
                     if (clickListener != null) {
@@ -185,6 +186,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     currentPlayReIndex = -1;
 //                    currentPlayCoIndex = -1;
                     showTitleRight(false);
+                    record.setBGMNofify(null);
                     stopPlayMusic();
                     playPage = -1;
                 }
@@ -208,6 +210,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     bean.myMusicStatus = 1;
                     currentPlayCoIndex = position;
 //                    currentPlayReIndex = -1;
+                    record.setBGMNofify(itxbgmNotify);
                     loadTrialMusic(bean);
                     showTitleRight(true);
                     if (clickListener != null) {
@@ -223,6 +226,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     currentPlayCoIndex = -1;
 //                    currentPlayReIndex = -1;
                     showTitleRight(false);
+                    record.setBGMNofify(null);
                     stopPlayMusic();
                     playPage = -1;
                 }
@@ -279,35 +283,35 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         downloadMusic = DownloadMusic.getInstance();
         downloadMusic.init(file.getAbsolutePath());
         record = VideoRecordSDK.getInstance().getRecorder();
-
-        record.setBGMNofify(new TXRecordCommon.ITXBGMNotify() {
-            @Override
-            public void onBGMStart() {
-                //通知隐藏加载转圈动画
-                handler.post(() -> {
-                    if (playPage == 0) {
-                        musicItemBeans.get(currentPlayReIndex).myMusicStatus = 2;
-                        musicSelAdapter.notifyItemChanged(currentPlayReIndex);
-                    } else {
-                        musicCollItemBeans.get(currentPlayCoIndex).myMusicStatus = 2;
-                        selCollAdapter.notifyItemChanged(currentPlayCoIndex);
-                    }
-                });
-            }
-
-            @Override
-            public void onBGMProgress(long l, long l1) {
-
-            }
-
-            @Override
-            public void onBGMComplete(int i) {
-                //重复播放
-                RecordMusicManager.getInstance().startMusic();
-            }
-        });
-
     }
+
+    private TXRecordCommon.ITXBGMNotify itxbgmNotify = new TXRecordCommon.ITXBGMNotify() {
+
+        @Override
+        public void onBGMStart() {
+            //通知隐藏加载转圈动画
+            handler.post(() -> {
+                if (playPage == 0) {
+                    musicItemBeans.get(currentPlayReIndex).myMusicStatus = 2;
+                    musicSelAdapter.notifyItemChanged(currentPlayReIndex);
+                } else {
+                    musicCollItemBeans.get(currentPlayCoIndex).myMusicStatus = 2;
+                    selCollAdapter.notifyItemChanged(currentPlayCoIndex);
+                }
+            });
+        }
+
+        @Override
+        public void onBGMProgress(long l, long l1) {
+
+        }
+
+        @Override
+        public void onBGMComplete(int i) {
+            //重复播放
+            RecordMusicManager.getInstance().startMusic();
+        }
+    };
 
     @Override
     public void show() {
@@ -489,6 +493,9 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 prepareSeekBar();
+                if (clickListener != null) {
+                    clickListener.onItemPlay(bean);
+                }
             }
         }.execute(new Object());
     }

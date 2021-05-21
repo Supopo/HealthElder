@@ -362,7 +362,7 @@ public class LiteAvRepository {
         userApi.getChannelSheet(UserInfoMgr.getInstance().getHttpToken())
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
-                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MMusicBean>>>>() {
+                .subscribe(new CustomObserver<MBaseResponse<List<MMusicBean>>>() {
 
                     @Override
                     protected void dismissDialog() {
@@ -370,8 +370,8 @@ public class LiteAvRepository {
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<BaseListRes<List<MMusicBean>>> data) {
-                        publish.postValue(data.getData().content);
+                    protected void onSuccess(MBaseResponse<List<MMusicBean>> data) {
+                        publish.postValue(data.getData());
                     }
                 });
     }
@@ -384,7 +384,7 @@ public class LiteAvRepository {
      * @param pagesize
      */
     public void getMusicList(String id, String name, int page, int pagesize ,MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<MMusicItemBean>> publish) {
-        userApi.getMusicList(UserInfoMgr.getInstance().getHttpToken(),page, pagesize, name, id)
+            userApi.getMusicList(UserInfoMgr.getInstance().getHttpToken(),page, pagesize, name, id)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MMusicItemBean>>>>() {

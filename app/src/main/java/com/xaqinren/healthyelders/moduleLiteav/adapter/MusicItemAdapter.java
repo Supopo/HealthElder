@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleLiteav.adapter;
 
+import android.view.View;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
@@ -13,6 +15,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ItemMusicItemBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +23,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
 
 public class MusicItemAdapter extends BaseQuickAdapter<MMusicItemBean, BaseViewHolder> {
-    private int operationIndex = -1;
-    private String currentPlayId;
+
     public MusicItemAdapter(int layoutResId) {
         super(layoutResId);
     }
@@ -31,52 +33,17 @@ public class MusicItemAdapter extends BaseQuickAdapter<MMusicItemBean, BaseViewH
         //item_music_item
         ItemMusicItemBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(mMusicItemBean);
-        Glide.with(getContext()).load(R.mipmap.ic_aweme_yj).apply(
-                new RequestOptions()
-                        .transforms(new CenterCrop(), new RoundedCorners((int) getContext().getResources().getDimension(R.dimen.dp_4))
-                        )
-        ).into(binding.cover);
-        baseViewHolder.itemView.setOnClickListener(view -> {
-            if (operationIndex == baseViewHolder.getAdapterPosition()) {
-                return;
-            }
-            if (operationIndex != -1) {
-                getData().get(operationIndex).setOperation(false);
-                notifyItemChanged(operationIndex);
-            }
-            operationIndex = baseViewHolder.getAdapterPosition();
-            getData().get(operationIndex).setOperation(true);
-            notifyItemChanged(operationIndex);
-            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,mMusicItemBean.getId()));
-        });
+        GlideUtil.intoCirImageView(getContext(),mMusicItemBean.coverUrl,binding.cover,4);
 
-    }
-
-    public void clear(String id) {
-        currentPlayId = id;
-        if (operationIndex != -1) {
-            if (getData().get(operationIndex).getId().equals(id)) {
-                return;
-            }
-            getData().get(operationIndex).setOperation(false);
-            notifyItemChanged(operationIndex);
-            operationIndex = -1;
+        if (mMusicItemBean.myMusicStatus == 1) {
+            //展示加载动画图标
+            binding.progress.setVisibility(View.VISIBLE);
+        }else{
+            //隐藏加载动画图标
+            binding.progress.setVisibility(View.GONE);
         }
+
     }
 
-    public int getOperationIndex() {
-        return operationIndex;
-    }
 
-    public void setOperationIndex(int operationIndex) {
-        this.operationIndex = operationIndex;
-        if (operationIndex != -1) {
-            if (!getData().get(operationIndex).getId().equals(currentPlayId)) {
-                this.operationIndex = -1;
-                getData().get(operationIndex).setOperation(false);
-            }else
-                getData().get(operationIndex).setOperation(true);
-            notifyItemChanged(operationIndex);
-        }
-    }
 }
