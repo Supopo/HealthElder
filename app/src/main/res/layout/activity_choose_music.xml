@@ -5,10 +5,29 @@
 
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </RelativeLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_34"
+            android:background="@drawable/bg_search"
+            android:drawableLeft="@mipmap/search_icon"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:singleLine="true"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_16"/>
+
+    </LinearLayout>
 </layout>

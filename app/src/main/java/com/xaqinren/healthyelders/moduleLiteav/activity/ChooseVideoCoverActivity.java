@@ -14,6 +14,7 @@ import com.nostra13.dcloudimageloader.utils.L;
 import com.tencent.qcloud.tim.uikit.utils.ImageUtil;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.module.effect.TimeLineView;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
 import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.tencent.qcloud.xiaoshipin.play.TCVideoPreviewActivity;
@@ -179,6 +180,7 @@ public class ChooseVideoCoverActivity extends BaseActivity<ActivityChooseVideoCo
         List<Long> list = new ArrayList<>();
         list.add(timeMsList.get(index));
         showDialog();
+        txVideoEditer.cancel();
         txVideoEditer.getThumbnail(list, 360, 640, false , mCoverListener);
     }
 }

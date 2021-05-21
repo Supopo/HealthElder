@@ -11,7 +11,7 @@ public class MusicDetailBean {
     private boolean isOriginal;//原声
     private boolean isCreate;//创作
     private boolean isColl;//收藏
-    private List<MusicBean> musicBeans;
+    private List<MMusicItemBean> musicBeans;
 
     public long getMusicId() {
         return musicId;
@@ -77,11 +77,11 @@ public class MusicDetailBean {
         isColl = coll;
     }
 
-    public List<MusicBean> getMusicBeans() {
+    public List<MMusicItemBean> getMusicBeans() {
         return musicBeans;
     }
 
-    public void setMusicBeans(List<MusicBean> musicBeans) {
+    public void setMusicBeans(List<MMusicItemBean> musicBeans) {
         this.musicBeans = musicBeans;
     }
 }

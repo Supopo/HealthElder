@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean" />
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16">
+
+        <FrameLayout
+            android:id="@+id/cover_layout"
+            android:layout_width="@dimen/dp_66"
+            android:layout_height="@dimen/dp_66">
+
+            <ImageView
+                android:id="@+id/cover"
+                android:layout_width="@dimen/dp_66"
+                android:layout_height="@dimen/dp_66"
+                 />
+
+            <ImageView
+                android:id="@+id/play_btn"
+                android:layout_width="@dimen/dp_66"
+                android:layout_height="@dimen/dp_66" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/music_name"
+            android:layout_width="@dimen/dp_84"
+            android:layout_height="wrap_content"
+            android:text="音乐名音乐名音乐名音乐名音乐名音乐名"
+            android:textColor="@color/color_252525"
+            android:textSize="@dimen/sp_14"
+            android:layout_toRightOf="@id/cover_layout"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_marginLeft="@dimen/dp_14" />
+
+        <TextView
+            android:id="@+id/author_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="制作人"
+            android:textColor="@color/gray_999"
+            android:textSize="@dimen/sp_13"
+            android:layout_toRightOf="@id/cover_layout"
+            android:layout_below="@id/music_name"
+            android:layout_marginTop="@dimen/dp_3"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_marginLeft="@dimen/dp_14" />
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03:56"
+            android:textColor="@color/gray_999"
+            android:textSize="@dimen/sp_12"
+            android:layout_toRightOf="@id/cover_layout"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:layout_alignBottom="@id/cover_layout" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_41">
+            <ImageView
+                android:id="@+id/jianji"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:src="@mipmap/icon_music_jianji"
+                android:layout_marginRight="@dimen/dp_18"
+                android:visibility="@{viewModel.operation ? View.VISIBLE : View.GONE}"
+                />
+            <ImageView
+                android:id="@+id/shoucang"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:src="@mipmap/icon_music_coll_nor"
+                 />
+
+            <TextView
+                android:id="@+id/use_btn"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_26"
+                android:text="使用"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_btn_comfrim_cir_shape"
+                android:gravity="center"
+                android:visibility="@{viewModel.operation ? View.VISIBLE : View.GONE}"
+                android:layout_marginLeft="@dimen/dp_18"
+                />
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

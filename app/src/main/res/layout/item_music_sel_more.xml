@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp_62"
+            android:layout_height="@dimen/dp_62"
+            android:layout_marginRight="@dimen/dp_4">
+
+            <View
+                android:id="@+id/item_cover"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:background="@drawable/bg_sel_music_more"
+                android:alpha="0.8"
+                android:layout_centerInParent="true" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/icon_search_dialog_white" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@drawable/color_sel_music_item_text"
+            android:text="更多音乐"
+            android:textSize="@dimen/sp_11"
+            android:layout_below="@id/cover_rl"
+            android:layout_marginTop="@dimen/dp_9" />
+    </LinearLayout>
+</layout>

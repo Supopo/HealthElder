@@ -103,6 +103,10 @@ public class SoftKeyBoardUtil {
         imm.hideSoftInputFromWindow(editor.getWindowToken(), 0);
     }
 
+    public static void showKeyBoard(EditText editor) {
+        imm.showSoftInput(editor, 0);
+    }
+
     public static void hideKeyBoard(IBinder token) {
 
         imm.hideSoftInputFromWindow(token, 0);

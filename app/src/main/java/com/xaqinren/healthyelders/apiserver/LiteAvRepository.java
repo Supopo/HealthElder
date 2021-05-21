@@ -10,12 +10,16 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MusicClassBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.utils.ACache;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.utils.RxUtils;
@@ -324,6 +330,143 @@ public class LiteAvRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
                         publish.postValue("发布成功");
+                    }
+                });
+    }
+
+    /**
+     * 音乐分类
+     */
+    public void getMusicClass(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<MusicClassBean>> publish) {
+        userApi.getMusicClass(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MusicClassBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<MusicClassBean>>> data) {
+                        publish.postValue(data.getData().content);
+                    }
+                });
+    }
+
+    /**
+     * 音乐首页
+     */
+    public void getMusicChannelSheet(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<MMusicBean>> publish) {
+        userApi.getChannelSheet(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MMusicBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<MMusicBean>>> data) {
+                        publish.postValue(data.getData().content);
+                    }
+                });
+    }
+
+    /**
+     * 音乐搜索
+     * @param id
+     * @param name
+     * @param page
+     * @param pagesize
+     */
+    public void getMusicList(String id, String name, int page, int pagesize ,MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<MMusicItemBean>> publish) {
+        userApi.getMusicList(UserInfoMgr.getInstance().getHttpToken(),page, pagesize, name, id)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MMusicItemBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<MMusicItemBean>>> data) {
+                        publish.postValue(data.getData().content);
+                    }
+                });
+    }
+
+    /**
+     * 推荐音乐
+     */
+    public void getMusicReComment(MutableLiveData<List<MMusicItemBean>> commentList) {
+        userApi.getMusicRecommend(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .onErrorResumeNext(new Observable() {
+                    @Override
+                    protected void subscribeActual(Observer observer) {
+                        LogUtils.e("getMusicReComment", "");
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<MMusicItemBean>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<MMusicItemBean>> data) {
+                        commentList.postValue(data.getData());
+                    }
+                });
+    }
+
+    /**
+     * 获取收藏音乐
+     */
+    public void getMusicColl(MutableLiveData<List<MMusicItemBean>> collList, int page, int pageSize) {
+        userApi.getMusicFavorite(UserInfoMgr.getInstance().getHttpToken(), page, pageSize)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MMusicItemBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<MMusicItemBean>>> data) {
+                        collList.postValue(data.getData().content);
+                    }
+                });
+    }
+    /**
+     * 获取收藏音乐
+     */
+    public void musicColl(MutableLiveData<Boolean> collList, String objectId , boolean favoriteStatus) {
+        HashMap hashMap = new HashMap();
+        hashMap.put("objectId", objectId);
+        hashMap.put("favoriteStatus", favoriteStatus);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.musicFavorite(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<MBaseResponse<Object>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<MBaseResponse<Object>> data) {
+                        collList.postValue(true);
                     }
                 });
     }

@@ -169,6 +169,7 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
             final int screenHeight = binding.rlContainer.getRootView().getHeight();
             final int heightDifference = screenHeight - r.bottom;
             boolean visible = heightDifference > screenHeight / 3;
+
             if (visible) {
                 LogUtils.e(TAG, "keyboardHeightInPx \t->\t" + heightDifference);
             } else {
@@ -179,6 +180,8 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
         };
         binding.rlContainer.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
     }
+
+
 
     //双击点赞
     private double before_press_Y;
@@ -472,7 +475,7 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
 
     @Override
     public void onPlayEvent(TXVodPlayer txVodPlayer, int event, Bundle param) {
-        LogUtils.e(Constant.TAG_LIVE, "Fragment" + position + "\tevent\t=\t" + event);
+//        LogUtils.e(Constant.TAG_LIVE, "Fragment" + position + "\tevent\t=\t" + event);
         if (event == TXLiveConstants.PLAY_EVT_CHANGE_RESOLUTION) {
             //判断设置是否满屏显示
             int width = param.getInt(TXLiveConstants.EVT_PARAM1);

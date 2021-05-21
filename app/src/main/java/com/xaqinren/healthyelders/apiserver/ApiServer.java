@@ -7,6 +7,9 @@ import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MusicClassBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
@@ -27,6 +30,8 @@ import me.goldze.mvvmhabit.http.BaseResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -283,4 +288,33 @@ public interface ApiServer {
     @POST("user/saveUserIdCardInfo")
     Observable<MBaseResponse<Object>> saveUserIdCardInfo(@Header("Authorization") String authorization,
                                                          @Body RequestBody body);
+    //一级评论列表
+    @GET("content/shortVideo/comment/findPageByShortVideoId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentList(@Header("Authorization") String authorization,
+                                                                                 @Query("page") int page, @Query("pageSize") int pageSize, @Query("shortVideoId") String shortVideoId);
+
+    //获取音乐分类
+    @GET("content/queryMusicChannelSheetPage")
+    Observable<MBaseResponse<BaseListRes<List<MusicClassBean>>>> getMusicClass(@Header("Authorization") String authorization);
+
+    //首页歌单
+    @GET("content/findRecommendMusicChannelSheet")
+    Observable<MBaseResponse<BaseListRes<List<MMusicBean>>>> getChannelSheet(@Header("Authorization") String authorization);
+
+    //搜索音乐
+    @GET("content/queryMusicPage")
+    Observable<MBaseResponse<BaseListRes<List<MMusicItemBean>>>> getMusicList(@Header("Authorization") String authorization,
+                                                                 @Query("page") int page , @Query("pageSize")int pageSize , @Query("name")String name ,@Query("sheetId")String sheetId );
+    //音乐 推荐音乐
+    @GET("content/queryMusicRecommend")
+    Observable<MBaseResponse<List<MMusicItemBean>>> getMusicRecommend(@Header("Authorization") String authorization);
+
+    //音乐 我的收藏
+    @GET("content/queryMusicFavoritePage")
+    Observable<MBaseResponse<BaseListRes<List<MMusicItemBean>>>> getMusicFavorite(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+
+    //音乐 收藏音乐
+    @Headers({"content-type:application/json"})
+    @POST("content/musicFavorite")
+    Observable<MBaseResponse<Object>> musicFavorite(@Header("Authorization") String authorization, @Body RequestBody body);
 }

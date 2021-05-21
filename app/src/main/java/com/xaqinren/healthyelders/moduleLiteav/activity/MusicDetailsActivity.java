@@ -9,7 +9,8 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityMusicDetailsBinding;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicDetailsAdapter;
-import com.xaqinren.healthyelders.moduleLiteav.bean.MusicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MusicDetailBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.MusicDetailsViewModel;
 import com.xaqinren.healthyelders.widget.GridDividerItemDecoration;
@@ -49,14 +50,9 @@ public class MusicDetailsActivity extends BaseActivity<ActivityMusicDetailsBindi
         detailBean.setMusicId(123456);
         detailBean.setUseCount("666");
         detailBean.setNickName("你好呀");
-        List<MusicBean> musicBeans = new ArrayList<>();
+        List<MMusicItemBean> musicBeans = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            MusicBean bean = new MusicBean();
-            bean.setMusicId(456789);
-            bean.setMusicName("测试音乐");
-            bean.setMusicType("摇滚");
-            bean.setCoverPath("https://gimg2.baidu.com/image_search/src=http%3A%2F%2F1812.img.pp.sohu.com.cn%2Fimages%2Fblog%2F2009%2F11%2F18%2F18%2F8%2F125b6560a6ag214.jpg&refer=http%3A%2F%2F1812.img.pp.sohu.com.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1623893011&t=a210e32b88b974220a2f20d5a9b7302a");
-            bean.setShoufa(true);
+            MMusicItemBean bean = new MMusicItemBean("123" + i);
             musicBeans.add(bean);
         }
         detailBean.setMusicBeans(musicBeans);

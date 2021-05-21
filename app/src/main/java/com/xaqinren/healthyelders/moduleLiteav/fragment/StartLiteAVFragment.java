@@ -37,7 +37,9 @@ import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.qcloud.tim.uikit.utils.FileUtil;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.PhotoSoundPlayer;
@@ -54,6 +56,8 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseMusicActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
+import com.xaqinren.healthyelders.moduleLiteav.dialog.MusicSelDialog;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.Constant;
@@ -80,7 +84,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     private BottomDialog mLvJingPop;            //滤镜弹窗
     private BottomDialog mMeiYanPop;            //美颜弹窗
-    private BottomDialog mMusicPop;            //美颜弹窗
+//    private BottomDialog mMusicPop;            //美颜弹窗
+    private MusicSelDialog mMusicPop;            //音乐弹窗
     private BeautyPanel mMeiYanControl;         //美颜控制器
     private BeautyPanel mLvJingControl;         //滤镜控制器
     private RecordMusicPannel musicPannel;         //滤镜控制器
@@ -94,6 +99,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private int REQUEST_MUSIC = 10003;
     private String photoPath;
     private int currentMode = RecordButton.VIDEO_MODE;
+    private String TAG = getClass().getSimpleName();
 
 
 
@@ -200,13 +206,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             showMYPop();
         });
         //屏幕比例
-        binding.scaleLayout.setOnClickListener(view -> {
-            showScalePop();
-        });
+        binding.scaleLayout.setOnClickListener(view -> showScalePop());
         //闪光灯
-        binding.lightLayout.setOnClickListener(view -> {
-            liteAvRecode.toggleTorch();
-        });
+        binding.lightLayout.setOnClickListener(view -> liteAvRecode.toggleTorch());
         //选择音乐
         binding.selMusic.setOnClickListener(view -> {
             showMusic();
@@ -245,8 +247,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
             @Override
             public void onRecordPause() {
-                showDialog();
+                LogUtils.e(TAG, "onRecordPause");
+                if (liteAvRecode.getCurrentRecodeTime() < liteAvRecode.getMinRecordTime()) {
+                    ToastUtils.showShort("录制时间过短");
+                    pauseRecode();
+                    return;
+                }
                 //手指松开,录制完成
+                showDialog();
                 pauseRecode();
             }
 
@@ -283,8 +291,6 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 onFragmentStatusListener.isRecode(false);
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
         });
-
-
     }
 
 
@@ -469,6 +475,73 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     private void showMusicPop() {
         if (mMusicPop == null) {
+            mMusicPop = new MusicSelDialog(getActivity());
+        }
+        mMusicPop.show();
+
+        Window window = mMusicPop.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams lp = window.getAttributes();
+            mMusicPop.getWindow().setDimAmount(0.f);
+            mMusicPop.getWindow().setAttributes(lp);
+        }
+
+        mMusicPop.setOnClickListener(new MusicSelDialog.OnClickListener() {
+            @Override
+            public void onMoreClick() {
+                startActivity(ChooseMusicActivity.class);
+            }
+
+            @Override
+            public void onItemPlay(MMusicItemBean bean) {
+                binding.musicName.setText(bean.name);
+            }
+
+            @Override
+            public void onJianJiClick(MMusicItemBean bean) {
+                //剪辑
+            }
+
+            @Override
+            public void onCollClick(MMusicItemBean bean) {
+                //收藏
+            }
+
+            @Override
+            public void onDismiss() {
+                showNormalPanel();
+            }
+
+            @Override
+            public void onStopPlay() {
+                binding.musicName.setText("选择音乐");
+            }
+        });
+    }
+
+    private void initCameraRecode(){
+        liteAvRecode = LiteAvRecode.getInstance();
+        liteAvRecode.init(getContext());
+        liteAvRecode.setRecodeLiteListener(this);
+        liteAvRecode.startPreview(binding.videoView);
+    }
+
+    /**
+     * 选择音乐
+     */
+    private void showMusic() {
+        showMusicPanel();
+        /*boolean isChooseMusicFlag = RecordMusicManager.getInstance().isChooseMusic();
+        if (isChooseMusicFlag) {
+            //展示音乐面板
+
+        }else{
+            Intent bgmIntent = new Intent(getContext(), ChooseMusicActivity.class);
+//            bgmIntent.putExtra(UGCKitConstants.MUSIC_POSITION, UGCKitRecordConfig.getInstance().musicInfo.position);
+            startActivityForResult(bgmIntent, UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE);
+        }*/
+
+        /*if (mMusicPop == null) {
             View filterView = View.inflate(getActivity(), R.layout.pop_music_control, null);
             musicPannel = filterView.findViewById(R.id.record_music_pannel);
             musicPannel.setOnMusicChangeListener(this);
@@ -487,29 +560,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         mMusicPop.setOnBottomItemClickListener((dialog, view) -> {
 
         });
-        mMusicPop.setOnDismissListener(dialogInterface -> showNormalPanel());
-    }
+        mMusicPop.setOnDismissListener(dialogInterface -> showNormalPanel());*/
 
-    private void initCameraRecode(){
-        liteAvRecode = LiteAvRecode.getInstance();
-        liteAvRecode.init(getContext());
-        liteAvRecode.setRecodeLiteListener(this);
-        liteAvRecode.startPreview(binding.videoView);
-    }
-
-    /**
-     * 选择音乐
-     */
-    private void showMusic() {
-        boolean isChooseMusicFlag = RecordMusicManager.getInstance().isChooseMusic();
-        if (isChooseMusicFlag) {
-            //展示音乐面板
-            showMusicPanel();
-        }else{
-            Intent bgmIntent = new Intent(getContext(), TCMusicActivity.class);
-            bgmIntent.putExtra(UGCKitConstants.MUSIC_POSITION, UGCKitRecordConfig.getInstance().musicInfo.position);
-            startActivityForResult(bgmIntent, UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE);
-        }
     }
 
 
@@ -543,6 +595,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         if (!success){
             //录制开启失败
             dismissDialog();
+            showNormalPanel();
             return;
         }
         //开始录制成功

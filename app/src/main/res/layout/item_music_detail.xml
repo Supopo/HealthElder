@@ -5,7 +5,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleLiteav.bean.MusicBean" />
+            type="com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean" />
     </data>
 
     <RelativeLayout
@@ -28,7 +28,6 @@
             android:gravity="center"
             android:background="@drawable/bg_shoufa"
             android:layout_margin="@dimen/dp_8"
-            android:visibility="@{viewModel.shoufa ? View.VISIBLE : View.GONE}"
             android:text="首发" />
     </RelativeLayout>
 </layout>

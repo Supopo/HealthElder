@@ -451,7 +451,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         for (LiteAvUserBean userBean : unLookUserList) {
             bean.refuseUserIds.add(userBean.userId+"");
         }
-        bean.summary = JSON.toJSONString(summaryBean);
+        bean.summary = summaryBean;
 
         LogUtils.e(TAG, JSON.toJSONString(bean));
         //发布到自己服务器

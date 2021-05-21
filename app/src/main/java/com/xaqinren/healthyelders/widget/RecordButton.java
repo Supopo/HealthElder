@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.color.CircleView;
+import com.bumptech.glide.Glide;
 import com.tencent.qcloud.ugckit.module.record.RecordModeView;
 import com.xaqinren.healthyelders.R;
 
@@ -26,6 +28,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     private ArcView arcView;
     private int tranColor;
     private boolean isClickRecode;
+    private boolean enableClickRecode = false;
     private int starts_idle = 0;
     private int starts_recode = 1;
     private int starts_complete = 2;
@@ -34,6 +37,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     public static final int PHOTO_MODE = 2;
     public static final int VIDEO_MODE = 1;
     private int mode = VIDEO_MODE;
+    private int minRecodeTime = 3 * 1000;
 
     private OnRecordButtonListener onRecordButtonListener;
 
@@ -42,6 +46,10 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             this.mode = mode;
             changeMode();
         }
+    }
+
+    public void setEnableClickRecode(boolean enableClickRecode) {
+        this.enableClickRecode = enableClickRecode;
     }
 
     public void setOnRecordButtonListener(OnRecordButtonListener onRecordButtonListener) {
@@ -90,13 +98,13 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
         int action = motionEvent.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                if (downTime != 0 && (System.currentTimeMillis() - downTime) < 100) {
+                if (downTime != 0 && (System.currentTimeMillis() - downTime) < 300) {
                     //判断是快速双击,不处理任何
                     return true;
                 }
                 downTime = System.currentTimeMillis();
                 if (mode == VIDEO_MODE) {
-                    if (isClickRecode) {
+                    if (isClickRecode && enableClickRecode) {
                         //点击播放中,再次点击则认为播放完成
                         endRecodeAnim();
                     }else
@@ -109,11 +117,11 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
             }
             case MotionEvent.ACTION_UP: {
                 if (mode == VIDEO_MODE) {
-                    if (System.currentTimeMillis() - downTime   < 100) {
+                    if (System.currentTimeMillis() - downTime   < 300) {
                         //认为是点击播放
                         isClickRecode = true;
                     }
-                    if (!isClickRecode) {
+                    if (!isClickRecode  || !enableClickRecode) {
                         endRecodeAnim();
                     }
                 } else if (mode == PHOTO_MODE) {
@@ -134,6 +142,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     public void setRecodeProgressBarWidth(int width) {
         arcView.setWidth(width);
     }
+
 
     private GradientDrawable createCircleGradientDrawable(int color) {
         GradientDrawable normalDrawable = new GradientDrawable();

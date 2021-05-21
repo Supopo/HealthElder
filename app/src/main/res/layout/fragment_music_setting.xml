@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_music_setting">
+        <LinearLayout
+            android:id="@+id/music_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_44"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/dp_11"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_16">
+                <TextView
+                    android:id="@+id/comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@drawable/color_music_setting_tab_text"
+                    android:textSize="@dimen/sp_14"
+                    android:drawableBottom="@drawable/bg_musci_setting_tag"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:clickable="true"
+                    android:text="推荐"/>
+                <TextView
+                    android:id="@+id/coll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@drawable/color_music_setting_tab_text"
+                    android:drawableBottom="@drawable/bg_musci_setting_tag"
+                    android:textSize="@dimen/sp_14"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_32"
+                    android:clickable="true"
+                    android:text="收藏"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+                <ImageView
+                    android:id="@+id/jianji_iv"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:src="@mipmap/icon_jianj_dialog_white"
+                    android:layout_marginRight="@dimen/dp_12"/>
+                <ImageView
+                    android:id="@+id/coll_iv"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:src="@mipmap/icon_collect_dialog_white"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/music_list"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_110"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_12"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/voice_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_154"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <RelativeLayout
+                android:id="@+id/original_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/dp_10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/white"
+                    android:layout_alignBottom="@id/original_seek_bar_third"
+                    android:text="原声"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_2"/>
+
+                <TextView
+                    android:id="@+id/original_tv_seek_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp" />
+
+                <SeekBar
+                    android:id="@+id/original_seek_bar_third"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/original_tv_seek_bar_value"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="20dp"
+                    android:indeterminate="false"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_56"
+                    android:max="200"
+                    android:maxHeight="5dp"
+                    android:minHeight="5dp"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/beauty_rebuild_seekbar_progress_drawable"
+                    android:thumb="@drawable/beauty_rebuild_seekbar_progress_thumb" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/bgm_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/white"
+                    android:layout_alignBottom="@id/bgm_seek_bar_third"
+                    android:text="配乐"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_2"/>
+
+                <TextView
+                    android:id="@+id/bgm_tv_seek_bar_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp" />
+
+                <SeekBar
+                    android:id="@+id/bgm_seek_bar_third"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/bgm_tv_seek_bar_value"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="20dp"
+                    android:indeterminate="false"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_56"
+                    android:max="200"
+                    android:maxHeight="5dp"
+                    android:minHeight="5dp"
+                    android:progress="100"
+                    android:progressDrawable="@drawable/beauty_rebuild_seekbar_progress_drawable"
+                    android:thumb="@drawable/beauty_rebuild_seekbar_progress_thumb" />
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_154">
+
+            <TextView
+                android:id="@+id/sel_music"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@drawable/color_music_setting_tab_text"
+                android:textSize="@dimen/sp_16"
+                android:gravity="center"
+                android:clickable="true"
+                android:text="配乐"/>
+            <TextView
+                android:id="@+id/sel_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@drawable/color_music_setting_tab_text"
+                android:textSize="@dimen/sp_16"
+                android:gravity="center"
+                android:clickable="true"
+                android:text="音量"/>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

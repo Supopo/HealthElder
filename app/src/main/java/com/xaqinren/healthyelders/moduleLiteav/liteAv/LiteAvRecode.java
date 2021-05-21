@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import com.tencent.liteav.demo.beauty.BeautyParams;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
 import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
 import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
@@ -50,7 +52,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
     private boolean cameraSwitch = true;        //是否前置摄像头UI判断
     private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
-    private int minRecordTime = 90;
+    private int minRecordTime = 3 * 1000;
     private int maxRecordTime = 60 * 1000;
     private int currentAsp = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;  //屏幕比
 
@@ -278,14 +280,16 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             }*/
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
             currentStatus = STATUS_IDLE;
-            if (currentRecodeTime < minRecordTime) {
-                ToastUtil.toastLongMessage("录制最少"+(minRecordTime/1000)+"秒");
-                return;
-            }
             recodeLiteListener.onRecodeComplete();
         } else {
             // 错误处理，错误码定义请参见 TXRecordCommon 中“录制结果回调错误码定义”
             LogUtils.e("LiteAVRecode", result.descMsg);
+            currentStatus = STATUS_IDLE;
+            if (currentRecodeTime < minRecordTime) {
+                ToastUtil.toastLongMessage("录制时间过短,录制最少"+(minRecordTime/1000)+"秒");
+                recodeLiteListener.onRecodeSuccess(false);
+                return;
+            }
         }
     }
 
@@ -349,6 +353,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             VideoRecordSDK.getInstance().deleteAllParts();
             recode();
         } else if (currentStatus == STATUS_PAUSE) {
+
             VideoRecordSDK.getInstance().getRecorder().resumeBGM();
             VideoRecordSDK.getInstance().resumeRecord();
             LogUtils.e("LiteAVRecode","已恢复录制");
@@ -360,51 +365,62 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         } else {
             recode();
         }
-//        VideoRecordSDK.getInstance().deleteAllParts();
-//        recode();
-
     }
     private void recode() {
-        int result = VideoRecordSDK.getInstance().startRecord();
-        if (result != TXRecordCommon.START_RECORD_OK) {
-            if (result == -4) {
-                //画面还没出来
-            } else if (result == -3) {//版本太低
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                int result = VideoRecordSDK.getInstance().startRecord();
+                return result;
+            }
 
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                int result = (int) o;
+                if (result != TXRecordCommon.START_RECORD_OK) {
+                    if (result == -4) {
+                        //画面还没出来
+                    } else if (result == -3) {//版本太低
+
+                    }
+                    else if (result == -5) {// licence 验证失败] }
+                    } else {
+                        // 启动成功}
+                        // 结束录
+                        //VideoRecordSDK.getInstance().stopRecord();
+                        // 录制完成回调
+                    }
+                    currentStatus = STATUS_IDLE;
+                    recodeLiteListener.onRecodeSuccess(false);
+                }else{
+                    recodeLiteListener.onRecodeSuccess(true);
+                    currentStatus = STATUS_RECODE;
+                }
             }
-            else if (result == -5) {// licence 验证失败] }
-            } else {
-                // 启动成功}
-                // 结束录
-                //VideoRecordSDK.getInstance().stopRecord();
-                // 录制完成回调
-            }
-            currentStatus = STATUS_IDLE;
-            recodeLiteListener.onRecodeSuccess(false);
-        }else{
-            recodeLiteListener.onRecodeSuccess(true);
-            currentStatus = STATUS_RECODE;
-        }
+        }.execute(1);
     }
 
     /**
      * 长按录制停止
      */
     public void shortPauseRecode() {
-        VideoRecordSDK.getInstance().getRecorder().stopBGM();
+        VideoRecordSDK.getInstance().getRecorder().pauseBGM();
         if (isIsRecodeStatus()) {
             VideoRecordSDK.getInstance().pauseRecord();
             currentStatus = STATUS_PAUSE;
             LogUtils.e("LiteAVRecode","已暂停录制");
+            recodeLiteListener.onRecodeSuccess(false);
         }
     }
     public void pauseRecode() {
         VideoRecordSDK.getInstance().stopCameraPreview();
-        VideoRecordSDK.getInstance().getRecorder().stopBGM();
+        VideoRecordSDK.getInstance().getRecorder().pauseBGM();
         if (isIsRecodeStatus()) {
             VideoRecordSDK.getInstance().pauseRecord();
             currentStatus = STATUS_PAUSE;
             LogUtils.e("LiteAVRecode","已暂停录制");
+            recodeLiteListener.onRecodeSuccess(false);
         }
     }
 

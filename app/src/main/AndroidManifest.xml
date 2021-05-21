@@ -196,7 +196,8 @@
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleLiteav.activity.LiteAvPlayActivity" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modulePicture.activity.PublishTextPhotoActivity"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
@@ -204,6 +205,7 @@
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
         <activity android:name=".moduleHome.activity.VideoListActivity" />
         <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" />
+        <activity android:name=".moduleLiteav.activity.MusicListActivity" />
     </application>
 
 </manifest>

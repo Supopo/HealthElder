@@ -51,6 +51,8 @@ public class BottomDialog extends Dialog implements View.OnClickListener {
         this.gravity = gravity;
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,11 +99,13 @@ public class BottomDialog extends Dialog implements View.OnClickListener {
     }
 
     public void setOnBottomItemClickListener(OnBottomItemClickListener listener) {
-        this.listener = listener;
+        if (this.listener == null)
+            this.listener = listener;
     }
 
     @Override
     public void onClick(View v) {
-        listener.onBottomItemClick(this, v);
+        if (this.listener != null)
+            listener.onBottomItemClick(this, v);
     }
 }

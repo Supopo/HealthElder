@@ -14,6 +14,7 @@ public class CodeTable {
     public static int SET_MENU_SUCCESS = 981;//设置首页底部菜单栏透明-成功
     public static int SHOW_TAB_LAYOUT = 96;//展示HomeFragment-TabLayout
     public static int EVENT_HOME = 10101001;
+    public static int EVENT_MUSIC_OP = 10086;
 
     /**
      * 成功

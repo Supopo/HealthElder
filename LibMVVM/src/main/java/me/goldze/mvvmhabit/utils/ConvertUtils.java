@@ -248,7 +248,30 @@ public final class ConvertUtils {
                 sb.append(mode).append(units[i]);
             }
         }
+
         return sb.toString();
+    }
+
+    /**
+     *
+     * @param second 秒
+     * @return
+     */
+    public static String second2FitTimeSpan(int second) {
+        if (second < 60) {
+            return cover2Time(second);
+        }
+        int mill = second / 60;
+        int s = second % 60;
+        return (mill > 10 ? mill : "0" + mill) + ":" + (s > 10 ? s : "0" + s);
+    }
+
+    public static String cover2Time(int value) {
+        if (value < 10) {
+            return "00:0" + value;
+        }else{
+            return "00:" + value;
+        }
     }
 
     /**

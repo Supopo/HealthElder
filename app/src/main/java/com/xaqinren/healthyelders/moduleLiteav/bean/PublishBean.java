@@ -14,7 +14,7 @@ public class PublishBean {
     public String shortVideoCover;
     public String shortVideoAuth;
     public String shortVideoId;
-    public String summary;
+    public PublishSummaryBean summary;
     public String latitude;
     public String longitude;
     public String address;

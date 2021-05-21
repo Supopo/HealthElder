@@ -3,10 +3,12 @@ package com.xaqinren.healthyelders.modulePicture.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -119,6 +121,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private int REQUEST_GALLERY = 189;
     private boolean isUploadFile;
     private int upLoadFileCount;
+    private boolean isShowKeyBord = false;
+    private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -276,6 +280,30 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
 
         initListView();
+
+        onGlobalLayoutListener = () -> {
+            final Rect r = new Rect();
+            binding.rlContainer.getWindowVisibleDisplayFrame(r);
+            final int screenHeight = binding.rlContainer.getRootView().getHeight();
+            final int heightDifference = screenHeight - r.bottom;
+            boolean visible = heightDifference > screenHeight / 3;
+            if (visible) {
+                if (isShowKeyBord) {
+                    return;
+                }
+                isShowKeyBord = true;
+                //上移布局
+
+            } else {
+                if (!isShowKeyBord) {
+                    return;
+                }
+                isShowKeyBord = false;
+                //下移布局
+
+            }
+        };
+        binding.rlContainer.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
     }
     private boolean checkParams() {
         if (getUploadFiles().isEmpty()) {
@@ -532,6 +560,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        binding.rlContainer.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
         eventDisposable.dispose();
     }
 

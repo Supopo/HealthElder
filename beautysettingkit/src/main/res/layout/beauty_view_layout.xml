@@ -35,8 +35,6 @@
             android:progress="0"
             android:progressDrawable="@drawable/beauty_rebuild_seekbar_progress_drawable"
             android:thumb="@drawable/beauty_rebuild_seekbar_progress_thumb" />
-
-
     </RelativeLayout>
 
     <RelativeLayout

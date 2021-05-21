@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="105dp"
+        android:layout_height="104.5dp"
         android:layout_alignParentBottom="true"
         android:background="@color/ugckit_editer_bottom"
         android:paddingBottom="18dp"
