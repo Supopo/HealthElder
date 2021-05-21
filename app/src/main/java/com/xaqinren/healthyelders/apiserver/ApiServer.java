@@ -236,7 +236,7 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>> getUserFriend(@Header("Authorization") String authorization,
                                                                                @Query("page") int page, @Query("pageSize") int pageSize, @Query("identity") String identity);
 
-    //用户，获取好友
+    //用户，搜索用户
     @GET("user/querySearchPage")
     Observable<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>> getSearchUserFriend(@Header("Authorization") String authorization,
                                                                                      @Query("page") int page, @Query("pageSize") int pageSize, @Query("key") String name);
@@ -288,10 +288,6 @@ public interface ApiServer {
     @POST("user/saveUserIdCardInfo")
     Observable<MBaseResponse<Object>> saveUserIdCardInfo(@Header("Authorization") String authorization,
                                                          @Body RequestBody body);
-    //一级评论列表
-    @GET("content/shortVideo/comment/findPageByShortVideoId")
-    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getCommentList(@Header("Authorization") String authorization,
-                                                                                 @Query("page") int page, @Query("pageSize") int pageSize, @Query("shortVideoId") String shortVideoId);
 
     //获取音乐分类
     @GET("content/queryMusicChannelSheetPage")

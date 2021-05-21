@@ -206,6 +206,10 @@
         <activity android:name=".moduleHome.activity.VideoListActivity" />
         <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" />
         <activity android:name=".moduleLiteav.activity.MusicListActivity" />
+        <activity android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            android:theme="@style/EditDialogStyle"
+            />
     </application>
 
 </manifest>

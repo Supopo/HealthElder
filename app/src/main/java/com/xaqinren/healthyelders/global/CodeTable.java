@@ -15,6 +15,7 @@ public class CodeTable {
     public static int SHOW_TAB_LAYOUT = 96;//展示HomeFragment-TabLayout
     public static int EVENT_HOME = 10101001;
     public static int EVENT_MUSIC_OP = 10086;
+    public static int VIDEO_SEND_COMMENT = 1010001;//发送评论
 
     /**
      * 成功

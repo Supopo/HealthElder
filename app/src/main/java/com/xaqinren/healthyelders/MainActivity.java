@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //初始化Fragment
         initFragment();
         getCacheUserInfo();
+
+        //设置底部背景线
+        ViewGroup.LayoutParams layoutParams = binding.lineBottom.getLayoutParams();
+        layoutParams.height = 1;
+        binding.lineBottom.setLayoutParams(layoutParams);
+
         //开启定位服务
         boolean check = PermissionUtils.checkPermission(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,

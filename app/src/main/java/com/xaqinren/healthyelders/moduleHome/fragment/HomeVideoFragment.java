@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -34,8 +35,10 @@ import com.tencent.rtmp.TXVodPlayConfig;
 import com.tencent.rtmp.TXVodPlayer;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeVideoBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
@@ -44,6 +47,7 @@ import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
 import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -114,6 +118,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         super.initData();
         TelephonyUtil.getInstance().setOnTelephoneListener(this);
         TelephonyUtil.getInstance().initPhoneListener();
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         commentId = videoInfo.resourceId;
         if (type.equals("home-list")) {
@@ -259,7 +265,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-                LogUtils.v(Constant.TAG_LIVE, "App: "+AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
+                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
@@ -291,6 +297,27 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }
         });
+
+
+        RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
+            if (bean != null) {
+                if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT) {
+                    String content = bean.content;
+                    if (openType == 0) {
+                        //发表评论
+                        viewModel.toComment(commentId, content);
+                    } else if (openType == 1) {
+                        //回复评论
+                        viewModel.toCommentReply(mCommentListBean, content, 0);
+
+                    } else if (openType == 2) {
+                        //回复回复
+                        viewModel.toCommentReply(mCommentListBean, content, 1);
+                    }
+                }
+            }
+        });
+
         //双击点赞事件/暂停
         binding.mainLikeLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -363,15 +390,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     commentDialog.addMReplyData(commentListBean);
                 }
 
-
-                //关闭输入Dialog，刷新
-                if (publishDialog != null) {
-                    publishDialog.keyBoardClosed();
-                    openType = 0;
-                }
+                openType = 0;
             }
         });
-        binding.llZhiBoTip.setOnClickListener(lis ->{
+        binding.llZhiBoTip.setOnClickListener(lis -> {
             //判断是直播间
             if (videoInfo.getVideoType() == 2) {
                 //进入直播间
@@ -424,7 +446,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void showCommentDialog(String videoId) {
         if (commentDialog == null)
-            commentDialog = new CommentDialog(getContext(), videoId);
+            commentDialog = new CommentDialog(getContext(), videoId, getActivity());
         commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
             @Override
             public void toComment(CommentListBean iCommentBean) {
@@ -463,40 +485,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         commentDialog.show(binding.mainRelativeLayout, videoInfo.commentCount);
     }
 
-    private CommentPublishDialog publishDialog;
-
     /**
      * 发表评论
      */
     private void showPublishCommentDialog(String nickName) {
-        if (publishDialog == null) {
-            publishDialog = new CommentPublishDialog(getActivity(), null);
-        }
-        publishDialog.setReplyHint(nickName);
-        publishDialog.show(binding.mainRelativeLayout);
-
-        publishDialog.setOnOperationListener(new CommentPublishDialog.OnOperationListener() {
-            @Override
-            public void onEmojiBtnClick() {
-
-            }
-
-            @Override
-            public void onPublish(String content) {
-                if (openType == 0) {
-                    //发表评论
-                    viewModel.toComment(commentId, content);
-                } else if (openType == 1) {
-                    //回复评论
-                    viewModel.toCommentReply(mCommentListBean, content, 0);
-
-                } else if (openType == 2) {
-                    //回复回复
-                    viewModel.toCommentReply(mCommentListBean, content, 1);
-                }
-
-            }
-        });
+        Bundle bundle = new Bundle();
+        bundle.putString("hint", nickName);
+        startActivity(VideoEditTextDialogActivity.class, bundle);
     }
 
 

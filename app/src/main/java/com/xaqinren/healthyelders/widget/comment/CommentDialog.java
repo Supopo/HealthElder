@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.widget.comment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
@@ -55,6 +57,7 @@ public class CommentDialog {
     private String videoId;
     private BaseLoadMoreModule loadMoreModule;
     private Context mContext;
+    private Activity activity;
     private int page = 1;
     private int mCommentCount;
 
@@ -62,6 +65,15 @@ public class CommentDialog {
         this.context = new SoftReference<>(context);
         this.videoId = videoId;
         mContext = context;
+        activity = (Activity) context;
+        init();
+    }
+
+    public CommentDialog(Context context, String videoId, Activity activity) {
+        this.context = new SoftReference<>(context);
+        this.videoId = videoId;
+        mContext = context;
+        this.activity = activity;
         init();
     }
 
@@ -70,10 +82,14 @@ public class CommentDialog {
     }
 
     private void init() {
+
+        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+
+
         viewModel = ViewModelProviders.of((FragmentActivity) context.get()).get(CommentViewModel.class);
         contentView = View.inflate(context.get(), R.layout.pop_comment, null);
         binding = DataBindingUtil.bind(contentView);
-        int height = (int) (ScreenUtil.getScreenHeight(context.get()) * 0.8f);
+        int height = (int) (ScreenUtil.getScreenHeight(context.get()) * 0.6f);
         popupWindow = new PopupWindow(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, height);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);

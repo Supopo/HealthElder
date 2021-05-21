@@ -46,6 +46,7 @@ public class CommentPublishDialog {
 
     private void init() {
 
+        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         contentView = View.inflate(context.get(), R.layout.pop_comment_publish, null);
         binding = DataBindingUtil.bind(contentView);
         dialog = new Dialog(context.get(), R.style.FullWidthDialog);
