@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.tencent.qcloud.ugckit.module.effect.bgm.TCMusicActivity;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
@@ -27,12 +28,16 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentMusicClassBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleLiteav.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicItemAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.DownMusicBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.DownMusicProBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.DownloadMusic;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.MusicClassViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
@@ -125,11 +130,31 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
             viewModel.getMusicList(classId, null, page, pageSize);
         }
         record = VideoRecordSDK.getInstance().getRecorder();
-
+        adapter.setOnItemChildClickListener((adapter, view, position) -> {
+            MMusicItemBean item = mMusicItemBeans.get(position);
+            switch (view.getId()) {
+                case R.id.shoucang:
+                    viewModel.collMusic(item.getId(), !item.hasFavorite);
+                    item.hasFavorite = !item.hasFavorite;
+                    break;
+                case R.id.use_btn:
+                    if (item.isUse) {
+                        item.isUse = false;
+                        MusicRecode.getInstance().setUseMusicItem(null);
+                    }else{
+                        item.isUse = true;
+                        MusicRecode.getInstance().setUseMusicItem(item);
+                        if (MusicRecode.CURRENT_BOURN == Constant.BOURN_RECODE)
+                            startActivity(StartLiveActivity.class);
+                        else
+                            startActivity(VideoEditerActivity.class);
+                    }
+                    break;
+            }
+            adapter.notifyItemChanged(position);
+        });
         adapter.setOnItemClickListener((adapter, view, position) -> {
-
             MMusicItemBean bean = mMusicItemBeans.get(position);
-
             if (bean.myMusicStatus == 0) {
                 if (operationIndex != -1) {
                     mMusicItemBeans.get(operationIndex).myMusicStatus = 0;
@@ -142,6 +167,7 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
                 bean.setOperation(true);
                 loadTrialMusic(bean);
                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,bean.getId()));
+                MusicRecode.getInstance().setUseMusicItem(bean);
             }else {
                 bean.myMusicStatus = 0;
                 bean.setOperation(false);
@@ -151,6 +177,7 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
             }
             adapter.notifyItemChanged(position);
         });
+
     }
 
     private TXRecordCommon.ITXBGMNotify bgmNotify = new TXRecordCommon.ITXBGMNotify() {
@@ -224,6 +251,14 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
         viewModel.requestSuccess.observe(this, aBoolean -> dismissDialog());
         viewModel.musicListData.observe(this, data ->{
             mMusicItemBeans.addAll(data);
+            MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
+            if (bean != null) {
+                for (int i = 0; i < mMusicItemBeans.size(); i++) {
+                    if (mMusicItemBeans.get(i).getId().equals(bean.getId())) {
+                        mMusicItemBeans.get(i).setOperation(true);
+                    }
+                }
+            }
             adapter.setList(mMusicItemBeans);
         });
 
@@ -234,7 +269,6 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
         mDownSubscription = RxBus.getDefault().toObservable(DownMusicProBean.class)
                 .observeOn(AndroidSchedulers.mainThread()) //回调到主线程更新UI
                 .subscribe(eventBean -> {
-
                     switch (eventBean.status) {
                         case DownMusicProBean.WAIT:
                             break;
@@ -258,6 +292,14 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
                 });
         //将订阅者加入管理站
         RxSubscriptions.add(mDownSubscription);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        operationIndex = -1;
+        record.setBGMNofify(null);
+        LogUtils.e(TAG, "MusicClassFragment onStop ->" + operationIndex);
     }
 
     @Override
@@ -337,5 +379,10 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
             record.setMicVolume(volume);
             record.setBGMVolume(bgmVolume);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

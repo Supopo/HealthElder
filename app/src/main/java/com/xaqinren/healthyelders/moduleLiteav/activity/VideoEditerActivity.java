@@ -56,12 +56,16 @@ import com.tencent.qcloud.ugckit.module.effect.paster.TCPasterFragment;
 import com.tencent.qcloud.ugckit.module.effect.time.TCTimeFragment;
 import com.tencent.qcloud.ugckit.module.effect.utils.DraftEditer;
 import com.tencent.qcloud.ugckit.module.effect.utils.Edit;
+import com.tencent.qcloud.ugckit.module.record.MusicInfo;
+import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
+import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
 import com.tencent.qcloud.ugckit.utils.DialogUtil;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoEffectActivity;
 import com.tencent.rtmp.TXLog;
+import com.tencent.ugc.TXUGCRecord;
 import com.tencent.ugc.TXVideoEditConstants;
 import com.tencent.ugc.TXVideoEditer;
 import com.tencent.ugc.TXVideoInfoReader;
@@ -69,8 +73,11 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoEditerBinding;
-import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
+import com.xaqinren.healthyelders.moduleLiteav.dialog.MusicSelDialog;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoEditerViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -234,6 +241,24 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onRestart() {
         super.onRestart();
+        //重回该页，停止预览音乐
+        RecordMusicManager.getInstance().stopPreviewMusic();
+
+        //重新被打开，由其他页面过来的
+        if (MusicRecode.getInstance().getUseMusicItem() != null) {
+            MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
+            resetMusicBGM(bean.name, bean.localPath);
+            VideoEditerSDK.getInstance().getEditer().setBGMVolume(1);
+            PlayerManagerKit.getInstance().restartPlay();
+            binding.musicName.setText(bean.name);
+        }else{
+            videoVolume();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     private void startOnRestart() {
@@ -324,8 +349,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         binding.timelineView.setVisibility(View.VISIBLE);
         binding.videoEditView.setVisibility(View.GONE);
         if (id == R.id.sel_music) {
-            Intent intent = new Intent(this, ChooseMusicActivity.class);
-            startActivityForResult(intent , REQUEST_MUSIC);
+            if (!isInitEffect)
+                initEffect();
+            isInitEffect = true;
+            showMusicPanel();
         } else if (id == R.id.action_layout) {
             startEffectActivity(UGCKitConstants.TYPE_EDITER_MOTION);
         } else if (id == R.id.speed_layout) {
@@ -355,15 +382,19 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
      *                   {@link UGCKitConstants#TYPE_EDITER_SUBTITLE} 添加字幕</p>
      */
     private void startEffectActivity(int effectType) {
-//        TCVideoEffectActivity
-//        Intent intent = new Intent(this, TCVideoEffectActivity.class);
-//        intent.putExtra(UGCKitConstants.KEY_FRAGMENT, effectType);
-//        startActivityForResult(intent, UGCKitConstants.ACTIVITY_OTHER_REQUEST_CODE);
         showEffect();
         if (!isInitEffect)
             initEffect();
         isInitEffect = true;
         showEffect(effectType);
+    }
+    private void showMusicPanel() {
+        binding.iconLayout.setVisibility(View.GONE);
+        binding.effectLayout.setVisibility(View.GONE);
+        showMusicPop();
+    }
+    private void hideMusicPanel() {
+        binding.iconLayout.setVisibility(View.VISIBLE);
     }
 
     private void showEffect() {
@@ -462,14 +493,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         mComplete = false;
 
         if (info == null) {
-            //DialogUtil.showDialog(getContext(), getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_video_cutter_activity_video_main_handler_edit_failed), getResources().getString(com.tencent.qcloud.ugckit.R.string.ugckit_does_not_support_android_version_below_4_3), null);
+
         } else {
-            /*getVideoCutLayout().setOnRotateVideoListener(new IVideoCutLayout.OnRotateVideoListener() {
-                @Override
-                public void onRotate(int rotation) {
-                    VideoEditerSDK.getInstance().getEditer().setRenderRotation(rotation);
-                }
-            });*/
             cutStartTime = 0;
             cutEndTime = info.duration ;
             setVideoInfo(info);
@@ -513,13 +538,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     }
 
     public void initPlayerLayout() {
-        /*TXVideoEditConstants.TXPreviewParam param = new TXVideoEditConstants.TXPreviewParam();
-        param.videoView = mLayoutPlayer;
-        param.renderMode = TXVideoEditConstants.PREVIEW_RENDER_MODE_FILL_EDGE;
-        TXVideoEditer videoEditer = VideoEditerSDK.getInstance().getEditer();
-        if (videoEditer != null) {
-            videoEditer.initWithPreview(param);
-        }*/
+
     }
 
     private void showEffect(int type) {
@@ -635,6 +654,117 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
         binding.videoEditView.setMediaFileInfo(videoInfo);
     }
+
+    private MusicSelDialog mMusicPop;
+    private void showMusicPop() {
+        if (mMusicPop == null) {
+            mMusicPop = new MusicSelDialog(this);
+        }
+        mMusicPop.show();
+
+        Window window = mMusicPop.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams lp = window.getAttributes();
+            mMusicPop.getWindow().setDimAmount(0.f);
+            mMusicPop.getWindow().setAttributes(lp);
+        }
+
+        mMusicPop.setOnClickListener(new MusicSelDialog.OnClickListener() {
+            @Override
+            public void onMusicPlay() {
+                muteVideo();
+                PlayerManagerKit.getInstance().restartPlay();
+            }
+
+            @Override
+            public void onMoreClick() {
+                mMusicPop.dismiss();
+                MusicRecode.CURRENT_BOURN = com.xaqinren.healthyelders.moduleLiteav.Constant.BOURN_EDIT;
+                startActivity(ChooseMusicActivity.class);
+            }
+
+            @Override
+            public void onItemPlay(MMusicItemBean bean) {
+                binding.musicName.setText(bean.name);
+                resetMusicBGM(bean.name , bean.localPath);
+                muteVideo();
+                PlayerManagerKit.getInstance().restartPlay();
+            }
+
+            @Override
+            public void onVolumeChange(float oVolume, float bgmVolume) {
+                ConfigureLoader.getInstance().setMusicVolume(bgmVolume / 100);
+                ConfigureLoader.getInstance().saveConfigFromDraft();
+
+                muteVideo();
+            }
+
+            @Override
+            public void onJianJiClick(MMusicItemBean bean) {
+                //剪辑
+            }
+
+            @Override
+            public void onCollClick(MMusicItemBean bean) {
+                //收藏
+            }
+
+            @Override
+            public void onDismiss() {
+                hideMusicPanel();
+                //如果选择了新的音乐,则吧原音静音
+                videoVolume();
+
+                VideoEditerSDK.getInstance().getEditer().setBGMStartTime(0, 10 * 60 * 1000);
+                VideoEditerSDK.getInstance().getEditer().setBGMLoop(true);
+                ConfigureLoader.getInstance().saveConfigFromDraft();
+
+                PlayerManagerKit.getInstance().restartPlay();
+            }
+
+            @Override
+            public void onStopPlay() {
+                binding.musicName.setText("选择音乐");
+            }
+        });
+    }
+
+    private void resetMusicBGM(String name , String path) {
+        VideoEditerSDK.getInstance().getEditer().setBGM(path);
+        VideoEditerSDK.getInstance().getEditer().setBGMStartTime(0, 10 * 60 * 1000);
+        ConfigureLoader.getInstance().setMusicPath(name, path, 1);
+        ConfigureLoader.getInstance().saveConfigFromDraft();
+    }
+
+    /**
+     * 静音视频
+     */
+    private void muteVideo() {
+        VideoEditerSDK.getInstance().getEditer().setVideoVolume(0);
+        VideoEditerSDK.getInstance().getEditer().setBGMVolume(0);
+    }
+
+    /**
+     * 重新设置视频音量
+     */
+    private void videoVolume() {
+        if (VideoEditerSDK.getInstance() != null) {
+            if (VideoEditerSDK.getInstance().getEditer() != null) {
+                float volume = ConfigureLoader.getInstance().getMusicVolume();
+                VideoEditerSDK.getInstance().getEditer().setBGMVolume(volume);
+            }
+        }
+    }
+
+    public void setVolum(float volume,float bgmVolume) {
+        TXUGCRecord record = VideoRecordSDK.getInstance().getRecorder();
+        if (record != null) {
+            record.setMicVolume(volume);
+            record.setBGMVolume(bgmVolume);
+        }
+
+    }
+
 
     /** 编辑部分 end */
 

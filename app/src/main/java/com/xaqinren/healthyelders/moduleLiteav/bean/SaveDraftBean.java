@@ -35,13 +35,15 @@ public class SaveDraftBean implements Serializable {
     //视频是否推荐,图文保存相册
     private boolean isComment;
     //音乐ID
-    private long musicId;
+    private String musicId;
     //类型
     private int type;//0视频 1图文
     //图片list
     private List<String> filePaths;
     //图片正文
     private String bodyStr;
+    //音乐名
+    private String musicName;
 
     public String getProvince() {
         return province;
@@ -187,11 +189,19 @@ public class SaveDraftBean implements Serializable {
         isComment = comment;
     }
 
-    public long getMusicId() {
+    public String getMusicId() {
         return musicId;
     }
 
-    public void setMusicId(long musicId) {
+    public void setMusicId(String musicId) {
         this.musicId = musicId;
+    }
+
+    public String getMusicName() {
+        return musicName;
+    }
+
+    public void setMusicName(String musicName) {
+        this.musicName = musicName;
     }
 }

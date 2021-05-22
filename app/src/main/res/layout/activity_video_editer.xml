@@ -45,11 +45,15 @@
                     android:src="@mipmap/icon_ship_yiny"/>
 
                 <TextView
+                    android:id="@+id/music_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/dp_14"
                     android:textColor="@color/white"
                     android:layout_marginLeft="@dimen/dp_4"
+                    android:singleLine="true"
+                    android:maxLength="5"
+                    android:ellipsize="end"
                     android:text="选择音乐"/>
             </LinearLayout>
             <RelativeLayout

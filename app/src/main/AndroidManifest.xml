@@ -150,7 +150,8 @@
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.StartLiveActivity"
-            android:theme="@style/AnimTheme" />
+            android:theme="@style/AnimTheme"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".moduleZhiBo.activity.StartRenZhengActivity"
             android:theme="@style/AnimTheme" />
@@ -173,7 +174,8 @@
         <activity
             android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
             android:theme="@style/EditDialogStyle" />
-        <activity android:name=".moduleLiteav.activity.VideoEditerActivity" />
+        <activity android:name=".moduleLiteav.activity.VideoEditerActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".moduleLiteav.activity.VideoPublishActivity"
             android:windowSoftInputMode="adjustPan" />

@@ -12,7 +12,7 @@ public class PublishBean {
     public String shortVideoName;
     public String shortVideoUrl;
     public String shortVideoCover;
-    public String shortVideoAuth;
+    public String creationViewAuth;
     public String shortVideoId;
     public PublishSummaryBean summary;
     public String latitude;

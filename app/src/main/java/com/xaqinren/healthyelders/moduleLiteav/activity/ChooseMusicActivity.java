@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,14 +11,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.tencent.qcloud.ugckit.module.record.MusicInfo;
+import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
+import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityChooseMusicBinding;
+import com.xaqinren.healthyelders.moduleLiteav.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicClassAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MusicClassBean;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseMusicViewModel;
 
 
@@ -60,6 +68,15 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
         binding.content.setLayoutManager(new LinearLayoutManager(this));
         viewModel.getMusicClass();
         viewModel.getMusicChannelSheet();
+        musicAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Intent intent = new Intent(ChooseMusicActivity.this, MusicListActivity.class);
+                intent.putExtra(Constant.MUSIC_CLASS_ID, mMusicBeans.get(position).id);
+                intent.putExtra(Constant.MUSIC_CLASS_NAME, classBeans.get(position).name);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -77,8 +94,10 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
         classListView.setNestedScrollingEnabled(false);
 
         musicClassAdapter.setOnItemClickListener((adapter, view1, position) -> {
-            //进入分类
-
+            Intent intent = new Intent(ChooseMusicActivity.this, MusicListActivity.class);
+            intent.putExtra(Constant.MUSIC_CLASS_ID, classBeans.get(position).id);
+            intent.putExtra(Constant.MUSIC_CLASS_NAME, classBeans.get(position).name);
+            startActivity(intent);
         });
     }
 
@@ -93,5 +112,11 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
             this.mMusicBeans = mMusicBeans;
             musicAdapter.setList(this.mMusicBeans);
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        RecordMusicManager.getInstance().stopPreviewMusic();
     }
 }

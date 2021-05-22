@@ -12,16 +12,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.tencent.bugly.proguard.B;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMusicBlockBinding;
-import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
-import com.xaqinren.healthyelders.moduleLiteav.Constant;
-import com.xaqinren.healthyelders.moduleLiteav.activity.MusicListActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
 import com.xaqinren.healthyelders.moduleLiteav.fragment.MusicClassFragment;
 import com.xaqinren.healthyelders.widget.transformer.RightLeakageTransformer;
-import com.xaqinren.healthyelders.widget.transformer.ScaleTransformer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +27,7 @@ import java.util.List;
 public class MusicAdapter extends BaseQuickAdapter<MMusicBean, MusicAdapter.ViewHolder> {
     public MusicAdapter(int layoutResId) {
         super(layoutResId);
+        addChildClickViewIds(R.id.see_all);
     }
 
     @Override
@@ -51,12 +47,7 @@ public class MusicAdapter extends BaseQuickAdapter<MMusicBean, MusicAdapter.View
         baseViewHolder.viewPager.setAdapter(baseViewHolder.adapter);
         baseViewHolder.viewPager.setCurrentItem(baseViewHolder.page);
         Log.e("MusicAdapter", "position = " + baseViewHolder.getAdapterPosition() + "\tpage = " + baseViewHolder.page);
-        binding.seeAll.setOnClickListener(view -> {
-            //TODO 查看全部
-            Bundle bundle = new Bundle();
-            bundle.putString(Constant.MUSIC_CLASS_ID, "123");
-            getContext().startActivity(new Intent(getContext(), MusicListActivity.class), bundle);
-        });
+
     }
 
     class ViewHolder extends BaseViewHolder {

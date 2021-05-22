@@ -52,5 +52,17 @@ public class ConfigureLoader {
         mEffectEditer.setBgmDuration(mDraftEditer.getBgmDuration());
     }
 
+    public void setMusicPath(String name , String path , float volume) {
+        mDraftEditer.setBgmName(name);
+        mDraftEditer.setBgmPath(path);
+        mDraftEditer.setBgmPos(-1);
+        mDraftEditer.setBgmVolume(volume);
+    }
+    public void setMusicVolume(float volume) {
+        mDraftEditer.setBgmVolume(volume);
+    }
+    public float getMusicVolume() {
+        return mDraftEditer.getBgmVolume();
+    }
 
 }

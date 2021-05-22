@@ -16,6 +16,8 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 public class MusicClassViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> requestSuccess = new MutableLiveData<>();
     public MutableLiveData<List<MMusicItemBean>> musicListData = new MutableLiveData<>();
+    public MutableLiveData<Boolean> collList = new MutableLiveData<>();
+
 
     public MusicClassViewModel(@NonNull Application application) {
         super(application);
@@ -26,5 +28,8 @@ public class MusicClassViewModel extends BaseViewModel {
         LiteAvRepository.getInstance().getMusicList(id, name, page, pagesize, requestSuccess, musicListData);
     }
 
+    public void collMusic(String musicId , boolean favorite) {
+        LiteAvRepository.getInstance().musicColl(collList, musicId, favorite);
+    }
 
 }

@@ -28,6 +28,7 @@ public class MMusicItemBean implements MultiItemEntity {
     public int itemType;
     public String localPath;
     public String musicId;
+    public boolean isUse;
 
 
     public int myMusicStatus = 0;//0常态 1加载中 2播放中

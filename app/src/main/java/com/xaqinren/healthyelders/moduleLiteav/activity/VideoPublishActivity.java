@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 import com.nostra13.dcloudimageloader.utils.L;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.squareup.haha.perflib.Main;
 import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
@@ -57,6 +58,7 @@ import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.ugc.TXVideoEditer;
 import com.tencent.weibo.sdk.android.component.PublishActivity;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -78,6 +80,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoPublishEditBean;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -425,12 +428,17 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         }
         bean.latitude = lat + "";
         bean.longitude = lon + "";
-        bean.shortVideoAuth = bean.getMode(publishMode);
+        bean.creationViewAuth = bean.getMode(publishMode);
         bean.shortVideoName = "小视频";
         bean.shortVideoCover = cover;
         bean.shortVideoUrl = shortVideoUrl;
         bean.shortVideoId = shortVideoId;
         bean.canRecommendFriends = isComment;
+
+        if (MusicRecode.getInstance().getUseMusicItem() != null) {
+            bean.musicId = MusicRecode.getInstance().getUseMusicItem().getId();
+            bean.musicName = MusicRecode.getInstance().getUseMusicItem().name;
+        }
 
         PublishSummaryBean summaryBean = new PublishSummaryBean();
 
@@ -457,7 +465,6 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         //发布到自己服务器
         viewModel.UploadUGCVideo(bean);
     }
-
 
     public void uploadCover() {
         ImageUtils.compressWithRx(mCoverPath, new Consumer() {
@@ -551,8 +558,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 ToastUtils.showLong("发布成功");
                 EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
                 NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
+                MusicRecode.getInstance().setUseMusicItem(null);
                 clearDrafts();
-                finish();
+                startActivity(MainActivity.class);
             }else{
                 //发布失败
                 LogUtils.e(TAG,"发布视频失败");
@@ -860,6 +868,10 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         saveDraftBean.setOpenMode(publishMode);
         saveDraftBean.setUnLookUser(unLookUserList);
         saveDraftBean.setComment(isComment);
+        if (MusicRecode.getInstance().getUseMusicItem() != null) {
+            saveDraftBean.setMusicId(MusicRecode.getInstance().getUseMusicItem().getId());
+            saveDraftBean.setMusicName(MusicRecode.getInstance().getUseMusicItem().name);
+        }
 
         saveDraftBean.setSaveTime(System.currentTimeMillis());
 

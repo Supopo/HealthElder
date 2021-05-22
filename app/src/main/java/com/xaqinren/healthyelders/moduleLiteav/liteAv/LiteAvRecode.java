@@ -460,4 +460,5 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         void onRecodeComplete();
         void onRecodeSuccess(boolean isSuccess);
     }
+
 }

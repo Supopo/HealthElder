@@ -51,6 +51,7 @@ import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.module.record.interfaces.IRecordMusicPannel;
 import com.tencent.qcloud.xiaoshipin.videochoose.TCPicturePickerActivity;
 import com.tencent.ugc.TXRecordCommon;
+import com.tencent.ugc.TXUGCRecord;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
@@ -59,6 +60,7 @@ import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.MusicSelDialog;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvRecode;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.Constant;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
@@ -488,7 +490,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
         mMusicPop.setOnClickListener(new MusicSelDialog.OnClickListener() {
             @Override
+            public void onMusicPlay() {
+
+            }
+
+            @Override
             public void onMoreClick() {
+                mMusicPop.dismiss();
+                MusicRecode.CURRENT_BOURN = com.xaqinren.healthyelders.moduleLiteav.Constant.BOURN_RECODE;
                 startActivity(ChooseMusicActivity.class);
             }
 
@@ -513,6 +522,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             }
 
             @Override
+            public void onVolumeChange(float oVolume, float bgmVolume) {
+
+            }
+
+            @Override
             public void onStopPlay() {
                 binding.musicName.setText("选择音乐");
             }
@@ -531,37 +545,6 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
      */
     private void showMusic() {
         showMusicPanel();
-        /*boolean isChooseMusicFlag = RecordMusicManager.getInstance().isChooseMusic();
-        if (isChooseMusicFlag) {
-            //展示音乐面板
-
-        }else{
-            Intent bgmIntent = new Intent(getContext(), ChooseMusicActivity.class);
-//            bgmIntent.putExtra(UGCKitConstants.MUSIC_POSITION, UGCKitRecordConfig.getInstance().musicInfo.position);
-            startActivityForResult(bgmIntent, UGCKitConstants.ACTIVITY_MUSIC_REQUEST_CODE);
-        }*/
-
-        /*if (mMusicPop == null) {
-            View filterView = View.inflate(getActivity(), R.layout.pop_music_control, null);
-            musicPannel = filterView.findViewById(R.id.record_music_pannel);
-            musicPannel.setOnMusicChangeListener(this);
-            mMusicPop = new BottomDialog(getActivity(), filterView,
-                    null);
-        }
-        mMusicPop.show();
-
-        Window window = mMusicPop.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams lp = window.getAttributes();
-            mMusicPop.getWindow().setDimAmount(0.f);
-            mMusicPop.getWindow().setAttributes(lp);
-        }
-
-        mMusicPop.setOnBottomItemClickListener((dialog, view) -> {
-
-        });
-        mMusicPop.setOnDismissListener(dialogInterface -> showNormalPanel());*/
-
     }
 
 
@@ -684,10 +667,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             musicInfo.position = data.getIntExtra(UGCKitConstants.MUSIC_POSITION, -1);
             liteAvRecode.setMusicInfo(musicInfo);
         }
-
     }
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -799,6 +779,28 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     public void onActivityRestart(){
         liteAvRecode.restart();
         VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
+        RecordMusicManager.getInstance().deleteMusic();
+        if (MusicRecode.getInstance().getUseMusicItem() != null) {
+            MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
+            MusicInfo musicInfo = new MusicInfo();
+            musicInfo.path = bean.musicUrl;
+            musicInfo.name = bean.name;
+            if (bean.localPath != null) {
+                musicInfo.path = bean.localPath;
+            }
+
+            RecordMusicManager.getInstance().setRecordMusicInfo(musicInfo);
+
+            TXUGCRecord record = VideoRecordSDK.getInstance().getRecorder();
+            if (record != null) {
+                long duration = record.setBGM(musicInfo.path);
+                record.setBGMVolume(1);
+                musicInfo.duration = duration;
+            }
+            // 设置音乐信息
+            binding.musicName.setText(bean.name);
+        }
+
     }
 
     /**
