@@ -319,4 +319,7 @@ public interface ApiServer {
     @GET("user/queryAttentionUserInfoPage")
     Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getFriendsList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
 
+    //获取用户IMSig
+    @GET("live/findUserSig")
+    Observable<MBaseResponse<Object>> getUserSig(@Header("Authorization") String authorization);
 }

@@ -65,6 +65,7 @@ public class Constant {
      * 登录用户
      */
     public static final String SP_KEY_LOGIN_USER = "loginUser";
+    public static final String SP_KEY_SIG_USER = "userSig";
 
 
     //腾讯云小视频加防盗链

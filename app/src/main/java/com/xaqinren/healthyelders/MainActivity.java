@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -65,6 +66,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Drawable dawable2;
     private Drawable dawable;
     private boolean isTranMenu;
+    private Handler handler;
+    private String userSig;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //初始化Fragment
         initFragment();
         getCacheUserInfo();
+        handler = new Handler();
 
         //设置底部背景线
         ViewGroup.LayoutParams layoutParams = binding.lineBottom.getLayoutParams();
@@ -112,6 +116,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //获取token
         accessToken = InfoCache.getInstance().getAccessToken();
         userInfoBean = InfoCache.getInstance().getLoginUser();
+        userSig = InfoCache.getInstance().getUserSig();
+
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {
             if (userInfoBean == null) {
@@ -122,6 +128,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 UserInfoMgr.getInstance().setAccessToken(accessToken);
                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
             }
+
+        }
+
+        //判断UserSig存在不存在
+        //获取UserSig
+        if (TextUtils.isEmpty(userSig)) {
+            viewModel.getUserSig(accessToken);
+        }else {
+            UserInfoMgr.getInstance().setUserSig(userSig);
         }
     }
 
@@ -284,12 +299,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.TOKEN_ERR) {
-                //TODO token失效 重新登录
                 SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                 startActivity(SelectLoginActivity.class);
             } else if (o.msgId == CodeTable.NO_CARD) {
-                startActivity(StartRenZhengActivity.class);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(StartRenZhengActivity.class);
+                    }
+                }, 500);
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
                     if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {
@@ -436,5 +455,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.onDestroy();
         disposable.dispose();
         eventDisposable.dispose();
+        handler.removeCallbacksAndMessages(null);
     }
 }

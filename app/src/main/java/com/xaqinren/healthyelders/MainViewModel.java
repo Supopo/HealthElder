@@ -26,4 +26,8 @@ public class MainViewModel extends BaseViewModel {
         UserRepository.getInstance().getUserInfo(userInfo, Constant.API_HEADER + token);
     }
 
+    public void getUserSig(String token) {
+        UserRepository.getInstance().getUserSig( Constant.API_HEADER + token);
+    }
+
 }

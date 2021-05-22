@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,11 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 
-
 import com.google.android.material.tabs.TabLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleLiteav.fragment.StartLiteAVFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
@@ -24,8 +26,10 @@ import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * 开启直播-发小视频页面
@@ -40,6 +44,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private int currentFragmentPosition = 0;
     private boolean isLiteAVRecode = false;
     private String TAG = getClass().getSimpleName();
+    private Disposable subscribe;
 
 
     @Override
@@ -54,7 +59,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        liveUiViewModel = createViewModel(this,StartLiveUiViewModel.class);
+        liveUiViewModel = createViewModel(this, StartLiveUiViewModel.class);
         super.onCreate(savedInstanceState);
         // 必须在代码中设置主题(setTheme)或者在AndroidManifest中设置主题(android:theme)
         setTheme(com.hjyy.liteav.R.style.RecordActivityTheme);
@@ -65,6 +70,18 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         setStatusBarTransparent();
         //初始化Fragment
         initFragment();
+
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
+            if (o.msgId == CodeTable.NO_CARD) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startLiveFragment.onActivityStop();
+                        finish();
+                    }
+                }, 600);
+            }
+        });
     }
 
     private void initFragment() {
@@ -92,7 +109,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                     po = 1;
                     commitAllowingStateLoss(po);
                     liveUiViewModel.getCurrentPage().setValue(2);
-                }else{
+                } else {
                     commitAllowingStateLoss(po);
                     liveUiViewModel.getCurrentPage().setValue(po);
                 }
@@ -156,7 +173,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             startLiteAVFragment.onActivityStop();
         } else if (currentFragmentPosition == 0) {
             //不能关闭 关闭会影响直播页面的推流
-//            startLiveFragment.onActivityStop();
+            //            startLiveFragment.onActivityStop();
         }
     }
 
@@ -166,7 +183,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityRestart();
         } else if (currentFragmentPosition == 0) {
-//            startLiveFragment.onActivityRestart();
+            //            startLiveFragment.onActivityRestart();
         }
     }
 
@@ -174,6 +191,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     protected void onDestroy() {
         startLiteAVFragment.setOnFragmentStatusListener(null);
         super.onDestroy();
+        subscribe.dispose();
     }
 
     @Override
@@ -182,7 +200,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         if (isLiteAVRecode) {
             //隐藏
             binding.llMenu.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             //显示
             binding.llMenu.setVisibility(View.VISIBLE);
         }

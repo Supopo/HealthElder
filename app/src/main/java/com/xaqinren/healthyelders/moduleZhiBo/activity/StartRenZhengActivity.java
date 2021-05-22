@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -59,6 +60,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     private int selectType;//1正面 2反面
     private boolean isAgree = true;
     private Bundle bundle = new Bundle();
+    private Handler handler;
 
 
     @Override
@@ -224,16 +226,33 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                         if (selectType == 1) {
                             zmPath = photoPath;
                             Glide.with(this).load(photoPath).into(binding.ivZm);
-                            recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, photoPath);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, photoPath);
+                                }
+                            },500);
                         } else if (selectType == 2) {
                             fmPath = photoPath;
                             Glide.with(this).load(photoPath).into(binding.ivFm);
-                            recIDCard(IDCardParams.ID_CARD_SIDE_BACK, photoPath);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recIDCard(IDCardParams.ID_CARD_SIDE_BACK, photoPath);
+                                }
+                            },500);
                         }
                     }
                     break;
             }
         }
+        handler = new Handler();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
     }
 
     private void recIDCard(String idCardSide, String filePath) {

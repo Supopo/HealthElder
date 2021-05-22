@@ -324,4 +324,28 @@ public class UserRepository {
                     }
                 });
     }
+
+    public void getUserSig( String token) {
+        userApi.getUserSig(token)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<String>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<String> data) {
+                        InfoCache.getInstance().setUserSig(data.getData());
+                        UserInfoMgr.getInstance().setUserSig(data.getData());
+                    }
+                });
+    }
 }

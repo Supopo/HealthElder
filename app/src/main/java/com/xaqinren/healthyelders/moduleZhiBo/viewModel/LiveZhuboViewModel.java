@@ -50,7 +50,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         //3887
-        loginInfo.userSig = "eJw9Tk0LgjAY-i87h73bcptCh4i6GJQkVtBF2ooXWzodEUT-vaHR8fl*3qTY7CPzarEzJGVCqhnAZCCfpiMpYRGQEfe6rtoWNUlp8PCECZCjgto8PF5xCFCuBOVScZAJxJxT9i-AW9CbjLv8mDXnael7BdXF2*RgEXPn3L3EYh1vdyfWrBZ2Wc9-SY82vKOCAVNhXHy*YwYz4w__";
+        loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         //4545
         //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
         mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {

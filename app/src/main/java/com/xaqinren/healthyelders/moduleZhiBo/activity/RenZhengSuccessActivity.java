@@ -30,6 +30,10 @@ public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSucces
     public void initData() {
         super.initData();
         tvTitle.setText("实名认证");
+        binding.btnToLive.setOnClickListener(lis -> {
+            startActivity(StartLiveActivity.class);
+            finish();
+        });
     }
 
 }
