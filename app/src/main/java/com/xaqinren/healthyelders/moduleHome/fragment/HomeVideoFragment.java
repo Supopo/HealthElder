@@ -301,7 +301,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
             if (bean != null) {
-                if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT) {
+                if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT && bean.pos == position && bean.type.equals(type)) {
                     String content = bean.content;
                     if (openType == 0) {
                         //发表评论
@@ -379,7 +379,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             showShareDialog();
         });
         viewModel.commentSuccess.observe(this, commentListBean -> {
-            if (commentListBean != null) {
+            if (commentListBean != null && commentDialog != null) {
 
                 //本地刷新
                 if (openType == 0) {
@@ -488,8 +488,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
      * 发表评论
      */
     private void showPublishCommentDialog(String nickName) {
+
+
         Bundle bundle = new Bundle();
         bundle.putString("hint", nickName);
+        bundle.putInt("pos", position);
+        bundle.putString("type", type);
         startActivity(VideoEditTextDialogActivity.class, bundle);
     }
 

@@ -50,12 +50,16 @@ import me.goldze.mvvmhabit.bus.RxBus;
 public class VideoEditTextDialogActivity extends Activity {
 
     private String hint;
+    private String type;
+    private int pos;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         hint = extras.getString("hint");
+        type = extras.getString("type");
+        pos = extras.getInt("pos");
         setContentView(R.layout.activity_input_video);
         setWindow();
         initView();
@@ -74,7 +78,7 @@ public class VideoEditTextDialogActivity extends Activity {
     }
 
     private void initView() {
-       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         VideoPublishEditTextView editTextView = findViewById(R.id.input_et);
         editTextView.setHint(hint);
@@ -83,7 +87,7 @@ public class VideoEditTextDialogActivity extends Activity {
         showSoftInput(this, editTextView);
         ivPublish.setOnClickListener(lis -> {
             //发送消息通知发送
-            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, editTextView.getText().toString()));
+            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, editTextView.getText().toString(), type, pos));
             finish();
         });
     }

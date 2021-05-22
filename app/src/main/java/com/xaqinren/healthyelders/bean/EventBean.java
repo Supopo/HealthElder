@@ -9,7 +9,9 @@ public class EventBean<T> {
     public int msgId;
     public int msgType;
     public int status;
+    public int pos;
     public boolean doIt;
+    public String type;
     public String content;
     public String name;
     public Object object;
@@ -35,6 +37,19 @@ public class EventBean<T> {
     public EventBean(int msgId, String content) {
         this.msgId = msgId;
         this.content = content;
+    }
+
+    public EventBean(int msgId, String content, int msgType) {
+        this.msgId = msgId;
+        this.content = content;
+        this.msgType = msgType;
+    }
+
+    public EventBean(int msgId, String content, String type, int pos) {
+        this.msgId = msgId;
+        this.content = content;
+        this.pos = pos;
+        this.type = type;
     }
 
 
