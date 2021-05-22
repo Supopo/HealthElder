@@ -77,4 +77,19 @@
         <!--行高，只对垂直滚动有效-->
         <attr name="lineSpace" format="integer" />
     </declare-styleable>
+
+
+    <declare-styleable name="RingProgressBar">
+        <attr name="ringColor" format="color" />
+        <attr name="ringProgressColor" format="color" />
+        <attr name="ringWidth" format="dimension" />
+        <attr name="barTextColor" format="color" />
+        <attr name="barTextSize" format="dimension" />
+        <attr name="max" format="integer" />
+        <attr name="textIsShow" format="boolean" />
+        <attr name="style">
+            <enum name="STROKE" value="0" />
+            <enum name="FILL" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>

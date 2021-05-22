@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.utils.DownloadUtil;
+import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
@@ -47,6 +50,7 @@ public class ShareDialog {
     public static int TP_TYPE = 1;//图文
     private int showType = VIDEO_TYPE;
     private Context mContext;
+    private DownLoadProgressDialog downloadProgress;
 
     public ShareDialog(Context context) {
         this.context = new SoftReference<>(context);
@@ -92,6 +96,7 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.shareSaveNative.setOnClickListener(view -> {
             //保存本地
+            saveVideo("http://oss.hjyiyuanjiankang.com/qnx0/M00/00/06/rBBcQmCo0K6ADl0kAFjrEn2Kx7g879.mp4");
         });
         binding.shareOperationLayout.shareSaveUrl.setOnClickListener(view -> {
             //复制链接
@@ -172,8 +177,6 @@ public class ShareDialog {
 
         }); //方法中设置asBitmap可以设置回调类型
 
-
-
     }
 
 
@@ -210,5 +213,31 @@ public class ShareDialog {
 
     public void getFriends() {
         UserRepository.getInstance().getFriendsList(datas, page, pageSize);
+    }
+
+    private void saveVideo(String url){
+        File downLoadUrl = DownloadUtil.get().getSaveFileFromUrl(url, mContext, "video");
+        if (downloadProgress == null) {
+            downloadProgress = new DownLoadProgressDialog(mContext);
+            downloadProgress.setICancelDownLoad(() -> DownloadUtil.get().cancelDownload());
+        }
+        downloadProgress.show();
+        DownloadUtil.get().download(url, downLoadUrl, new DownloadUtil.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess() {
+                ToastUtil.toastLongMessage("视频已下载至：" + downLoadUrl.getPath());
+                downloadProgress.dismiss();
+            }
+
+            @Override
+            public void onDownloading(int progress) {
+                downloadProgress.setProgress(progress);
+            }
+
+            @Override
+            public void onDownloadFailed() {
+                downloadProgress.dismiss();
+            }
+        });
     }
 }
