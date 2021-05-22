@@ -317,6 +317,6 @@ public interface ApiServer {
 
     //好友列表
     @GET("user/queryAttentionUserInfoPage")
-    Observable<MBaseResponse<BaseListRes<List<Object>>>> getFriendsList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+    Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getFriendsList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
 
 }

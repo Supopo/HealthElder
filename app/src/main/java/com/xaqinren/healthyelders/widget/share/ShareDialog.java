@@ -1,21 +1,38 @@
 package com.xaqinren.healthyelders.widget.share;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXTextObject;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
+import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.List;
 
@@ -66,6 +83,9 @@ public class ShareDialog {
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友
+            shareWebPage();
+            //            CommonExtKt.shareWxPage(mContext, 2, 0, "item.title", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be");
+            //            shareWx();
         });
         binding.shareClsLayout.shareWxCircle.setOnClickListener(view -> {
             //私信微信朋友圈
@@ -88,9 +108,74 @@ public class ShareDialog {
         binding.rlContainer.setOnClickListener(view -> popupWindow.dismiss());
 
         datas.observe((LifecycleOwner) mContext, datas -> {
-
+            if (datas != null) {
+                shareFriendAdapter.setNewInstance(datas);
+            }
         });
     }
+
+    private void shareWx() {
+        if (AppApplication.mWXapi.isWXAppInstalled()) {
+
+            //初始化一个 WXTextObject 对象，填写分享的文本内容
+            WXTextObject textObj = new WXTextObject();
+            textObj.text = "text";
+
+            //用 WXTextObject 对象初始化一个 WXMediaMessage 对象
+            WXMediaMessage msg = new WXMediaMessage();
+            msg.mediaObject = textObj;
+            msg.description = "text";
+
+
+            SendMessageToWX.Req req = new SendMessageToWX.Req();
+            req.message = msg;
+
+            //            分享到对话:
+            //            SendMessageToWX.Req.WXSceneSession
+            //            分享到朋友圈:
+            //            SendMessageToWX.Req.WXSceneTimeline ;
+            //            分享到收藏:
+            //            SendMessageToWX.Req.WXSceneFavorite
+            req.scene = SendMessageToWX.Req.WXSceneSession;
+
+            //发送给微信客户端
+
+            AppApplication.mWXapi.sendReq(req);
+        } else {
+            ToastUtil.toastShortMessage("您未安装微信");
+            return;
+        }
+    }
+
+    /*
+     * 分享链接
+     */
+    private void shareWebPage() {
+        String url = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be";
+
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = "www.baidu.com";
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = "分享链接";
+        msg.description = "分享描述";
+
+        Glide.with(mContext).asBitmap().load(url).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                msg.setThumbImage(resource);
+
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.message = msg;
+                req.scene = SendMessageToWX.Req.WXSceneSession;
+                AppApplication.mWXapi.sendReq(req);
+            }
+
+        }); //方法中设置asBitmap可以设置回调类型
+
+
+
+    }
+
 
     private void showType() {
         if (showType == VIDEO_TYPE) {
@@ -105,7 +190,7 @@ public class ShareDialog {
 
     public void setData(List<? extends IShareUser> data) {
         this.userList = data;
-        shareFriendAdapter.setList(userList);
+        //        shareFriendAdapter.setList(userList);
     }
 
     public void show(View Parent) {
@@ -119,7 +204,7 @@ public class ShareDialog {
         popupWindow.dismiss();
     }
 
-    private MutableLiveData<List<Object>> datas = new MutableLiveData<>();
+    private MutableLiveData<List<ZBUserListBean>> datas = new MutableLiveData<>();
     private int page = 1;
     private int pageSize = 10;
 

@@ -423,7 +423,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void showShareDialog() {
         if (shareDialog == null)
             shareDialog = new ShareDialog(getActivity());
-        shareDialog.setData(getShareData());
         shareDialog.show(binding.mainRelativeLayout);
     }
 

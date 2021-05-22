@@ -16,6 +16,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.io.File;
 import java.util.HashMap;
@@ -307,11 +308,11 @@ public class UserRepository {
                 });
     }
 
-    public void getFriendsList(MutableLiveData<List<Object>> datas, int page, int pagesize) {
+    public void getFriendsList(MutableLiveData<List<ZBUserListBean>> datas, int page, int pagesize) {
         userApi.getFriendsList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
-                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<Object>>>>() {
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<ZBUserListBean>>>>() {
 
                     @Override
                     protected void dismissDialog() {
@@ -319,7 +320,7 @@ public class UserRepository {
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<BaseListRes<List<Object>>> data) {
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<ZBUserListBean>>> data) {
                         datas.postValue(data.getData().content);
                     }
                 });
