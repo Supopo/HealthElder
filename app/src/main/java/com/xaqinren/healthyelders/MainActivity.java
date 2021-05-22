@@ -36,6 +36,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.v("----------","onNewIntent");
+        Log.v("----------", "onNewIntent");
         getCacheUserInfo();
     }
 
@@ -287,6 +288,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                 startActivity(SelectLoginActivity.class);
+            } else if (o.msgId == CodeTable.NO_CARD) {
+                startActivity(StartRenZhengActivity.class);
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
                     if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {

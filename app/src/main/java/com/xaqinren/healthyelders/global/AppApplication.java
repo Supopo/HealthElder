@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.TextUtils;
 
 import com.squareup.leakcanary.LeakCanary;
 
@@ -15,6 +16,7 @@ import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.config.CustomFaceConfig;
 import com.tencent.qcloud.tim.uikit.config.GeneralConfig;
 import com.tencent.qcloud.tim.uikit.config.TUIKitConfigs;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.tencent.qcloud.xiaoshipin.config.TCConfigManager;
@@ -24,6 +26,7 @@ import com.tencent.ugc.TXUGCBase;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
@@ -35,6 +38,7 @@ import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.sdk.MenuActionSheetItem;
 import me.goldze.mvvmhabit.base.BaseApplication;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.crash.CaocConfig;
 import me.goldze.mvvmhabit.utils.KLog;
 
@@ -241,4 +245,15 @@ public class AppApplication extends BaseApplication {
 
     private double mLat;
     private double mLon;
+
+
+    public static boolean isToLogin() {
+        //判断有无登录
+        if (TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
+            ToastUtil.toastShortMessage("请先登录！");
+            RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
+            return true;
+        }
+        return false;
+    }
 }

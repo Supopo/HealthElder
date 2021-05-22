@@ -488,7 +488,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
      * 发表评论
      */
     private void showPublishCommentDialog(String nickName) {
-
+        if (AppApplication.get().isToLogin())
+            return;
 
         Bundle bundle = new Bundle();
         bundle.putString("hint", nickName);

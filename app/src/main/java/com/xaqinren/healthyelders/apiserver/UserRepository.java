@@ -194,7 +194,6 @@ public class UserRepository {
                 .subscribe(new DisposableObserver<MBaseResponse<LoginTokenBean>>() {
                     @Override
                     public void onNext(MBaseResponse<LoginTokenBean> response) {
-                        SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                         if (response.isOk()) {
                             InfoCache.getInstance().setTokenInfo(response.getData());
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);

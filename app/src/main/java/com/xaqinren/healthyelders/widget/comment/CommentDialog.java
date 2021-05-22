@@ -26,11 +26,16 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.PopCommentBinding;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
@@ -40,6 +45,8 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.goldze.mvvmhabit.bus.RxBus;
 
 //评论PopUpWindow
 public class CommentDialog {
@@ -134,6 +141,9 @@ public class CommentDialog {
             @Override
             public void toLike(CommentListBean iCommentBean) {
                 onChildClick.toLike(iCommentBean);
+                if (AppApplication.get().isToLogin())
+                    return;
+
                 //点赞
                 setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
 
@@ -155,6 +165,9 @@ public class CommentDialog {
 
             @Override
             public void toLikeReply(CommentListBean iCommentBean) {
+                if (AppApplication.get().isToLogin())
+                    return;
+
                 //点赞
                 setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, true);
 
@@ -249,6 +262,8 @@ public class CommentDialog {
 
         });
     }
+
+
 
 
     //添加自己的评论数据

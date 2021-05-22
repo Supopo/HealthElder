@@ -49,6 +49,7 @@ public class CodeTable {
      * token不存在
      */
     public static final String TOKEN_NO_CODE = "040005";
+    public static final String NO_CARD_ID = "20025";
 
 
     /* RxBus Event Code */
@@ -68,6 +69,7 @@ public class CodeTable {
      * 定位成功
      */
     public static final int LOCATION_SUCCESS = 0x100015;
+    public static final int NO_CARD = 0x100016;
 
 
 }

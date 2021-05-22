@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.moduleLogin.bean;
 
-public class WeChatUserInfoBean {
+import java.io.Serializable;
+
+public class WeChatUserInfoBean implements Serializable {
     public String country;
     public String unionId;
     public String province;

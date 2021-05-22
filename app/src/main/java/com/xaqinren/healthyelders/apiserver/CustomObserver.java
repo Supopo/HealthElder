@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 
 import org.json.JSONException;
 
@@ -43,6 +44,9 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
             if (t.getCode().equals(CodeTable.TOKEN_ERR_CODE) ||t.getCode().equals(CodeTable.TOKEN_NO_CODE)) {
                 onTokenErr();
                 return;
+            }else if(t.getCode().equals(CodeTable.NO_CARD_ID)){
+                RxBus.getDefault().post(new EventBean(CodeTable.NO_CARD, null));
+                return;
             }
             onFail(t.getCode(), t);
         }
@@ -63,6 +67,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
     }
 
     public void onTokenErr() {
+        RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
         RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
     }
 

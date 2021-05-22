@@ -1,12 +1,16 @@
 package com.xaqinren.healthyelders.moduleLogin.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityPhoneLoginBinding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.PhoneLoginViewModel;
 
 import java.util.concurrent.TimeUnit;
@@ -17,6 +21,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, PhoneLoginViewModel> {
@@ -104,6 +109,13 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     public void initParam() {
         super.initParam();
         openId = getIntent().getStringExtra("openId");
+        if (TextUtils.isEmpty(openId)) {
+            String wxInfo = SPUtils.getInstance().getString(Constant.SP_KEY_WX_INFO);
+            WeChatUserInfoBean weChatUserInfoBean = JSON.parseObject(wxInfo, WeChatUserInfoBean.class);
+            if (weChatUserInfoBean != null) {
+                openId = weChatUserInfoBean.openId;
+            }
+        }
     }
 
     private boolean checkParam() {

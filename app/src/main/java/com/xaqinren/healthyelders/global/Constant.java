@@ -55,6 +55,7 @@ public class Constant {
     /**
      * 微信登录返回的数据
      */
+    public static final String WX_OPEN_ID = "wxOpenId";
     public static final String SP_KEY_WX_INFO = "wxUserInfo";
     /**
      * 登录token
