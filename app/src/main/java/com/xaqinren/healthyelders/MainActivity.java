@@ -299,6 +299,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.TOKEN_ERR) {
+                SPUtils.getInstance().put(Constant.SP_KEY_LOGIN_USER, "");
+                SPUtils.getInstance().put(Constant.SP_KEY_SIG_USER, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                 startActivity(SelectLoginActivity.class);
