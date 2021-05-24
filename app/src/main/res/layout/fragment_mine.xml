@@ -101,21 +101,22 @@
                                 android:layout_marginTop="@dimen/dp_50"
                                 android:gravity="start|bottom"
                                 android:maxLength="10"
-                                android:singleLine="true"
                                 android:paddingTop="@dimen/dp_16"
+                                android:singleLine="true"
                                 android:text="@{viewModel.userInfo.nickname}"
                                 android:textSize="@dimen/sp_20"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_userId"
-                                android:layout_width="@dimen/dp_84"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/tv_name"
                                 android:layout_marginLeft="@dimen/dp_19"
                                 android:layout_marginTop="@dimen/dp_12"
                                 android:layout_marginBottom="@dimen/dp_16"
                                 android:gravity="center"
+                                android:text="@{viewModel.userInfo.getJKCode()}"
                                 android:textColor="@color/gray_999"
                                 android:textSize="@dimen/sp_13" />
 
@@ -219,18 +220,18 @@
 
                                     <ImageView
                                         android:id="@+id/iv_sex"
-                                        android:layout_width="@dimen/dp_10"
-                                        android:layout_height="@dimen/dp_13"
+                                        android:layout_width="@dimen/dp_12"
+                                        android:layout_height="@dimen/dp_12"
                                         android:layout_marginRight="@dimen/dp_4"
                                         android:background="@mipmap/zy_female"
-                                         />
+                                        android:visibility="@{viewModel.userInfo.isMan()?View.GONE:View.VISIBLE}" />
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="@dimen/dp_12"
+                                        android:layout_height="@dimen/dp_12"
                                         android:layout_marginRight="@dimen/dp_4"
                                         android:background="@mipmap/zy_male"
-                                         />
+                                        android:visibility="@{viewModel.userInfo.isMan()?View.VISIBLE:View.GONE}" />
 
 
                                     <TextView
@@ -401,23 +402,23 @@
 
 
             <androidx.viewpager2.widget.ViewPager2
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:id="@+id/vp_content"
-                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/white"
                 android:orientation="horizontal"
-                android:overScrollMode="never" />
+                android:overScrollMode="never"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-<!--            &lt;!&ndash;        app:layout_behavior="@string/appbar_scrolling_view_behavior" 滑动的&ndash;&gt;-->
-<!--            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-<!--                android:id="@+id/refreshLayout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+            <!--            &lt;!&ndash;        app:layout_behavior="@string/appbar_scrolling_view_behavior" 滑动的&ndash;&gt;-->
+            <!--            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+            <!--                android:id="@+id/refreshLayout"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-<!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+            <!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

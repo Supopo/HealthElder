@@ -137,15 +137,14 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
 
-                Log.v("-----","滑动："+position);
                 if (!isFirst) {
                     menuPosition = position;
 
-                    if(menuPosition == 0){
+                    if (menuPosition == 0) {
                         mineZPFragment.getVideoList();
-                    }else if(menuPosition == 1){
+                    } else if (menuPosition == 1) {
                         mineSMFragment.getVideoList();
-                    }else {
+                    } else {
                         mineDZFragment.getVideoList();
                     }
 
@@ -218,7 +217,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.setMargins(oldLeft, oldTop + verticalOffset, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
 
-//                    binding.refreshLayout.setEnabled(false);
+                    //                    binding.refreshLayout.setEnabled(false);
 
                 } else if (verticalOffset == 0 && oldTop != 0) {
                     //下拉到开始位置让头像view的属性复原
@@ -227,16 +226,16 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.setMargins(oldLeft, oldTop, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
 
-//                    binding.refreshLayout.setEnabled(true);
+                    //                    binding.refreshLayout.setEnabled(true);
                 }
 
 
             }
         });
 
-//        binding.refreshLayout.setOnRefreshListener(() -> {
-//            binding.refreshLayout.setRefreshing(false);
-//        });
+        //        binding.refreshLayout.setOnRefreshListener(() -> {
+        //            binding.refreshLayout.setRefreshing(false);
+        //        });
         binding.tvZp.setOnClickListener(lis -> {
             menuPosition = 0;
             initTabMenu();

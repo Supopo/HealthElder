@@ -18,6 +18,17 @@ public class UserInfoBean {
     private int cumulativeAmount;
     private String id;
 
+    public boolean isMan(){
+        if (sex.equals("MALE")) {
+            return false;
+        }
+        return true;
+    }
+
+    public String getJKCode() {
+        return "健康号:" + recommendedCode;
+    }
+
     public String getAvatarUrl() {
         return avatarUrl;
     }
