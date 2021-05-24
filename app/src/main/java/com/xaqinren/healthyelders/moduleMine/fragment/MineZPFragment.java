@@ -13,6 +13,9 @@ import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMineZpBinding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
@@ -79,6 +82,28 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             }
         });
         getVideoList();
+
+
+        videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
+
+            Bundle bundle = new Bundle();
+            VideoListBean listBean = new VideoListBean();
+
+            listBean.videoInfos = videoAdapter.getData();
+            listBean.position = position;
+
+            //里面每页3条数据 重新计算
+            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
+                listBean.page = (videoAdapter.getData().size() / 2);
+            } else {
+                listBean.page = (videoAdapter.getData().size() / 2) + 1;
+            }
+            listBean.type = 3;
+
+            bundle.putSerializable("key", listBean);
+            startActivity(VideoListActivity.class, bundle);
+
+        }));
     }
 
     public void getVideoList() {

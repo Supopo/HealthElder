@@ -69,6 +69,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             position = videos.position;
             page = videos.page;
             mVideoInfoList.addAll(videos.videoInfos);
+        } else if (videos.type == 3) {
+            position = videos.position;
+            page = videos.page;
+            mVideoInfoList.addAll(videos.videoInfos);
         }
 
     }
@@ -96,8 +100,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
 
-        if (videos.type == 2) {
-            //从附近打开
+        if (videos.type == 2 || videos.type == 3 || videos.type == 4) {
+            //从附近打开-我的作品-我的私密作品
             binding.viewPager2.setCurrentItem(position, false);
             AppApplication.get().setPlayPosition(position);
             handler.postDelayed(new Runnable() {

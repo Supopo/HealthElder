@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -28,11 +29,15 @@ public class VideoListViewModel extends BaseViewModel {
         String resourceType = "";
         if (type == 0) {
             resourceType = "LIVE";
+            LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, type, datas, resourceType);
         } else if (type == 2) {
             resourceType = "LIVE,VIDEO,USER_DIARY";
+            LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, type, datas, resourceType);
+        } else if (type == 3) {
+            UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "");
+        } else if (type == 4) {
+            UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "PRIVETE");
         }
 
-        LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, type, datas, resourceType);
     }
-
 }

@@ -77,6 +77,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
                 binding.srl.setRefreshing(false);
             }
         });
+
     }
 
     public void getVideoList() {
