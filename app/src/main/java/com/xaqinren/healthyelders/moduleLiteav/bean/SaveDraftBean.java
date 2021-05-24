@@ -44,6 +44,26 @@ public class SaveDraftBean implements Serializable {
     private String bodyStr;
     //音乐名
     private String musicName;
+    //操作
+    private boolean isEdit;
+    //选择
+    private boolean isSel;
+
+    public boolean isSel() {
+        return isSel;
+    }
+
+    public void setSel(boolean sel) {
+        isSel = sel;
+    }
+
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+    }
 
     public String getProvince() {
         return province;

@@ -33,6 +33,7 @@ import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentXxxBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.viewModel.XxxViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiteAvPlay2Activity;
@@ -194,6 +195,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu106.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), TextPhotoDetailActivity.class);
             intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, "60a8ce59ea3225775c330043");
+            startActivity(intent);
+        });
+        binding.tvMenu107.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), DraftActivity.class);
             startActivity(intent);
         });
     }
