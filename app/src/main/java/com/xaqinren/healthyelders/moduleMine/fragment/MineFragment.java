@@ -79,15 +79,12 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.vpContent.setAdapter(pagerAdapter);
 
         //获取内存中的信息，如果没有调接口
-//        if (UserInfoMgr.getInstance().getUserInfo() != null) {
-//            viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
-//        } else {
-//            String accessToken = InfoCache.getInstance().getAccessToken();
-//            viewModel.getUserInfo(accessToken);
-//        }
-
-        String accessToken = InfoCache.getInstance().getAccessToken();
-        viewModel.getUserInfo(accessToken);
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
+        } else {
+            String accessToken = InfoCache.getInstance().getAccessToken();
+            viewModel.getUserInfo(accessToken);
+        }
 
         initEvent();
     }

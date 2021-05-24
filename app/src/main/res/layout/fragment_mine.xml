@@ -196,6 +196,7 @@
                                 android:layout_marginLeft="@dimen/dp_16"
                                 android:layout_marginTop="@dimen/dp_14"
                                 android:layout_marginRight="@dimen/dp_16"
+                                android:text="@{viewModel.userInfo.introduce}"
                                 android:gravity="center"
                                 android:singleLine="true"
                                 android:textColor="@color/gray_666" />
@@ -255,9 +256,11 @@
                                     android:paddingTop="@dimen/dp_6"
                                     android:paddingRight="@dimen/dp_5"
                                     android:paddingBottom="@dimen/dp_6"
+                                    android:text="@{viewModel.userInfo.cityAddress}"
                                     android:textSize="@dimen/sp_11" />
 
                                 <TextView
+                                    android:visibility="gone"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/bg_tag"

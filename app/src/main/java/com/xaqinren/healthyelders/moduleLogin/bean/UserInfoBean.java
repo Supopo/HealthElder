@@ -18,6 +18,25 @@ public class UserInfoBean {
     private int cumulativeAmount;
     private String id;
 
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public String getCityAddress() {
+        return cityAddress;
+    }
+
+    public void setCityAddress(String cityAddress) {
+        this.cityAddress = cityAddress;
+    }
+
+    private String introduce;
+    private String cityAddress;
+
     public int getFavoriteCount() {
         return favoriteCount;
     }
