@@ -61,6 +61,8 @@ public class VideoInfo implements Serializable {
     public boolean hasAttention;
     public boolean hasLive;
 
+    public boolean isDraft;//草稿箱
+
     //"resourceType": "VIDEO",需要
     public String content;
     public List<String> topicList;

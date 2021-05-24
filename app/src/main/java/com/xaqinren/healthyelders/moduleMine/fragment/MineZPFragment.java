@@ -14,7 +14,9 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMineZpBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
@@ -31,7 +33,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     private int pageSize = 10;
     private ZPVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
-
+    private boolean hasDraft;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     @Override
     public void initData() {
         super.initData();
-
+        hasDraft = true;
         videoAdapter = new ZPVideoAdapter(R.layout.item_mine_zp_video);
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
@@ -85,18 +87,34 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
 
 
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            if (hasDraft) {
+                //判断是否有草稿箱内容
+                if (position == 0) {
+                    //TODO 判断草稿箱内容数量
+                    startActivity(DraftActivity.class);
+                }
+            }
+
 
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 
             listBean.videoInfos = videoAdapter.getData();
-            listBean.position = position;
+
+            if (hasDraft) {
+                listBean.videoInfos.remove(0);
+            }
+            if (hasDraft) {
+                listBean.position = position - 1;
+            } else {
+                listBean.position = position;
+            }
 
             //里面每页3条数据 重新计算
-            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
-                listBean.page = (videoAdapter.getData().size() / 2);
+            if (listBean.videoInfos.size() % Constant.loadVideoSize == 0) {
+                listBean.page = (listBean.videoInfos.size() / 2);
             } else {
-                listBean.page = (videoAdapter.getData().size() / 2) + 1;
+                listBean.page = (listBean.videoInfos.size() / 2) + 1;
             }
             listBean.type = 3;
 
@@ -123,12 +141,15 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
+
+                    if (hasDraft) {
+                        VideoInfo videoInfo = new VideoInfo();
+                        videoInfo.isDraft = true;
+                        dataList.add(0, videoInfo);
+                    }
+
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);
-                    if (dataList.size() == 0) {
-                        //创建适配器.空布局，没有数据时候默认展示的
-                        videoAdapter.setEmptyView(R.layout.list_empty);
-                    }
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束
