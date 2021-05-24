@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
@@ -68,6 +69,15 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         binding.rvContent.setItemAnimator(null);
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
+
+        binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page = 1;
+                viewModel.getMyVideoList(page, pageSize);
+                binding.srl.setRefreshing(false);
+            }
+        });
         getVideoList();
     }
 

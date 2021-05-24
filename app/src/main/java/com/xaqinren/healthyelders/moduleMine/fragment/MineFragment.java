@@ -141,13 +141,13 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                 if (!isFirst) {
                     menuPosition = position;
 
-//                    if(menuPosition == 0){
-//                        mineZPFragment.getVideoList();
-//                    }else if(menuPosition == 1){
-//                        mineSMFragment.getVideoList();
-//                    }else {
-//                        mineDZFragment.getVideoList();
-//                    }
+                    if(menuPosition == 0){
+                        mineZPFragment.getVideoList();
+                    }else if(menuPosition == 1){
+                        mineSMFragment.getVideoList();
+                    }else {
+                        mineDZFragment.getVideoList();
+                    }
 
                     initTabMenu();
 
