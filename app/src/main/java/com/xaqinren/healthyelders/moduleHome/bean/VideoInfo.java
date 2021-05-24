@@ -11,6 +11,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
+import com.xaqinren.healthyelders.utils.DateUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
@@ -166,5 +167,12 @@ public class VideoInfo implements Serializable {
         }
 
         return false;
+    }
+
+    public String getMonth() {
+        return DateUtils.getMonth(createdAt);
+    }
+    public String getDay() {
+       return DateUtils.getDay(createdAt);
     }
 }

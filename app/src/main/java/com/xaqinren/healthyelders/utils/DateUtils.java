@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * Created by Lee. on 2021/5/20.
+ * 时间工具类
  */
 public class DateUtils {
 
@@ -23,6 +24,35 @@ public class DateUtils {
         }
         return "";
     }
+
+    public static String getMonth(String time) {
+        //转换时间戳
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = null;
+        try {
+            date = format.parse(time);
+            return months[date.getMonth() - 1];
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getDay(String time) {
+        //转换时间戳
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = null;
+        try {
+            date = format.parse(time);
+            return String.valueOf(date.getDay());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private static String[] months = {"一月", "二月", "三月", "四月", "五月", "六月",
+            "七月", "八月", "九月", "十月", "十一月", "十二月",};
 
     private static final long ONE_MINUTE = 60000L;
     private static final long ONE_HOUR = 3600000L;

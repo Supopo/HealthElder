@@ -4,11 +4,9 @@
 
     <data>
 
-
         <variable
             name="viewModel"
             type="com.xaqinren.healthyelders.moduleHome.bean.VideoInfo" />
-
     </data>
 
     <RelativeLayout
@@ -24,6 +22,62 @@
             app:qmui_corner_radius="@dimen/dp_4"
             app:url="@{viewModel.coverUrl}" />
 
+        <LinearLayout
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_btn_white"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="1dp"
+                android:includeFontPadding="false"
+                android:text="@{viewModel.getDay()}"
+                android:textColor="@color/color_252525"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:text="@{viewModel.getMonth()}"
+                android:textColor="@color/gray_666"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_btn_white"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="22"
+                android:textColor="@color/color_252525"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@{viewModel.getMonth()}"
+                android:textColor="@color/color_F6F6"
+                android:textSize="10sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -33,7 +87,8 @@
             android:layout_marginLeft="@dimen/dp_7"
             android:layout_marginBottom="@dimen/dp_9"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/iv_bf"
