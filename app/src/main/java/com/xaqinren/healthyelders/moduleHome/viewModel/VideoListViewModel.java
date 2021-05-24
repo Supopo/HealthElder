@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class VideoListViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
+    public MutableLiveData<List<DZVideoInfo>> dzDatas = new MutableLiveData<>();
     public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
 
     //type = 2 从附近打开 //type = 0 从推荐打开 之请求
@@ -36,7 +38,9 @@ public class VideoListViewModel extends BaseViewModel {
         } else if (type == 3) {
             UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "");
         } else if (type == 4) {
-            UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "PRIVETE");
+            UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "PRIVATE");
+        } else if (type == 5) {
+            UserRepository.getInstance().getMyLikeVideoList(dzDatas, page, Constant.loadVideoSize);
         }
 
     }

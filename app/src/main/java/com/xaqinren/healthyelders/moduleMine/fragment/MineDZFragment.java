@@ -13,9 +13,17 @@ import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMineDzBinding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.DZVideoAdapter;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineDZViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
@@ -78,6 +86,32 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             }
         });
 
+        videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
+
+            Bundle bundle = new Bundle();
+            VideoListBean listBean = new VideoListBean();
+
+            List<VideoInfo> temp = new ArrayList<>();
+
+            for (DZVideoInfo dzVideoInfo : videoAdapter.getData()) {
+                temp.add(dzVideoInfo.homeComprehensiveHall);
+            }
+
+            listBean.videoInfos = temp;
+            listBean.position = position;
+
+            //里面每页3条数据 重新计算
+            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
+                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize);
+            } else {
+                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
+            }
+            listBean.type = 5;
+
+            bundle.putSerializable("key", listBean);
+            startActivity(VideoListActivity.class, bundle);
+
+        }));
     }
 
     public void getVideoList() {

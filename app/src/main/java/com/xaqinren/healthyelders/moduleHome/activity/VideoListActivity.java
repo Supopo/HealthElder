@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeVideoFragment;
 import com.xaqinren.healthyelders.moduleHome.viewModel.VideoListViewModel;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +66,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         videos = (VideoListBean) bundle.getSerializable("key");
 
         //从附近打开
-        if (videos.type == 2) {
-            position = videos.position;
-            page = videos.page;
-            mVideoInfoList.addAll(videos.videoInfos);
-        } else if (videos.type == 3) {
+        if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
             position = videos.position;
             page = videos.page;
             mVideoInfoList.addAll(videos.videoInfos);
@@ -100,7 +97,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
 
-        if (videos.type == 2 || videos.type == 3 || videos.type == 4) {
+        if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
             //从附近打开-我的作品-我的私密作品
             binding.viewPager2.setCurrentItem(position, false);
             AppApplication.get().setPlayPosition(position);
@@ -179,6 +176,41 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 } else if (videos.type == 0) {
                     tempList.addAll(datas);
+                }
+
+                if (page == 1) {
+                    mVideoInfoList.clear();
+                    fragmentList.clear();
+                    fragmentPosition = 0;
+                    //需要重new否者会出现缓存
+                    homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    binding.viewPager2.setAdapter(homeAdapter);
+                }
+
+                mVideoInfoList.addAll(tempList);
+
+                //ViewPage添加
+                for (int i = 0; i < tempList.size(); i++) {
+                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition));
+                    fragmentPosition++;
+                }
+
+            } else {
+                if (page > 1) {
+                    page--;
+                }
+            }
+        });
+
+        //点赞视频列表接受数据
+        viewModel.dzDatas.observe(this, datas -> {
+            //            closeLoadView();
+
+            if (datas != null && datas.size() > 0) {
+                List<VideoInfo> tempList = new ArrayList<>();
+
+                for (DZVideoInfo dzVideoInfo : datas) {
+                    tempList.add(dzVideoInfo.homeComprehensiveHall);
                 }
 
                 if (page == 1) {

@@ -24,7 +24,7 @@ public class MineSMViewModel extends BaseViewModel {
     }
 
     public void getMyVideoList(int page, int pageSize) {
-        userRepository.getMyVideoList(mVideoList, page, pageSize,"PRIVETE");
+        userRepository.getMyVideoList(mVideoList, page, pageSize,"PRIVATE");
     }
 
 

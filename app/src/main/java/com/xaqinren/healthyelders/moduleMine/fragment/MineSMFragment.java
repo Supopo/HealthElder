@@ -91,9 +91,9 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
 
             //里面每页3条数据 重新计算
             if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
-                listBean.page = (videoAdapter.getData().size() / 2);
+                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize);
             } else {
-                listBean.page = (videoAdapter.getData().size() / 2) + 1;
+                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
             }
             listBean.type = 4;
 
