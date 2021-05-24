@@ -40,6 +40,8 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private int textCodeEndY;
     private int llInfoEndY;
 
+    private int page = 1;
+    private int pageSize = 10;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         //获取内存中的信息，如果没有调接口
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
+            viewModel.getMyVideoList(page, pageSize);
         } else {
             String accessToken = InfoCache.getInstance().getAccessToken();
             viewModel.getUserInfo(accessToken);
@@ -179,6 +182,11 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
+            viewModel.getMyVideoList(page, pageSize);
+        });
+
+        viewModel.mVideoList.observe(this, dataList ->{
+
         });
     }
 }

@@ -12,6 +12,8 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -325,7 +327,7 @@ public class UserRepository {
                 });
     }
 
-    public void getUserSig( String token) {
+    public void getUserSig(String token) {
         userApi.getUserSig(token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -348,4 +350,23 @@ public class UserRepository {
                     }
                 });
     }
+
+    public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize) {
+        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        datas.postValue(data.getData().content);
+                    }
+                });
+    }
+
 }

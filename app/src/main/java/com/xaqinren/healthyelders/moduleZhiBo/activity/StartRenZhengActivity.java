@@ -76,6 +76,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     @Override
     public void initData() {
         super.initData();
+        handler = new Handler();
         tvTitle.setText("实名认证");
         setMoreTextData("我已阅读并同意", "《健康长老视频号直播功能使用条款》", "及", "《健康长老视频号直播行为规范》");
         initEvent();
@@ -246,7 +247,6 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                     break;
             }
         }
-        handler = new Handler();
     }
 
     @Override

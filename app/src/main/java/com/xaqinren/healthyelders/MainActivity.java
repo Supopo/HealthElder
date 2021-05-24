@@ -135,7 +135,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //获取UserSig
         if (TextUtils.isEmpty(userSig)) {
             viewModel.getUserSig(accessToken);
-        }else {
+        } else {
             UserInfoMgr.getInstance().setUserSig(userSig);
         }
     }
@@ -227,6 +227,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu3;
         });
         binding.rlMenu4.setOnClickListener(lis -> {
+            //判断是否登录
+            if (TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
+                //跳转登录页面
+                startActivity(SelectLoginActivity.class);
+            }
+
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu4;

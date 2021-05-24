@@ -322,4 +322,9 @@ public interface ApiServer {
     //获取用户IMSig
     @GET("live/findUserSig")
     Observable<MBaseResponse<Object>> getUserSig(@Header("Authorization") String authorization);
+
+    //我的视频作品
+    @GET("content/queryUserCreationPage")
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+
 }
