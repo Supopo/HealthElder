@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -8,8 +9,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.alibaba.fastjson.JSON;
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -17,8 +21,12 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.utils.SPUtils;
@@ -40,8 +48,11 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private int textCodeEndY;
     private int llInfoEndY;
 
-    private int page = 1;
-    private int pageSize = 10;
+    private List<Fragment> fragmentList = new ArrayList<>();
+    private FragmentPagerAdapter pagerAdapter;
+    private MineZPFragment mineZPFragment;
+    private MineSMFragment mineSMFragment;
+    private MineDZFragment mineDZFragment;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,10 +67,20 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     @Override
     public void initData() {
         super.initData();
+        mineZPFragment = new MineZPFragment();
+        mineSMFragment = new MineSMFragment();
+        mineDZFragment = new MineDZFragment();
+        fragmentList.add(mineZPFragment);
+        fragmentList.add(mineSMFragment);
+        fragmentList.add(mineDZFragment);
+
+        pagerAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
+        binding.vpContent.setOffscreenPageLimit(3);
+        binding.vpContent.setAdapter(pagerAdapter);
+
         //获取内存中的信息，如果没有调接口
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
-            viewModel.getMyVideoList(page, pageSize);
         } else {
             String accessToken = InfoCache.getInstance().getAccessToken();
             viewModel.getUserInfo(accessToken);
@@ -67,7 +88,74 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         initEvent();
     }
 
+    private int menuPosition;
+
+    private void initTabMenu() {
+        if (menuPosition == 0) {
+            binding.tvZp.setTextColor(getResources().getColor(R.color.color_252525));
+            binding.tvSm.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvZg.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvZp.setTextSize(16);
+            binding.tvSm.setTextSize(14);
+            binding.tvZg.setTextSize(14);
+            binding.tvZp.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            binding.tvSm.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            binding.tvZg.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            Glide.with(this).load(R.mipmap.wode_sm_nor).into(binding.ivSm);
+        } else if (menuPosition == 1) {
+            binding.tvSm.setTextColor(getResources().getColor(R.color.color_252525));
+            binding.tvZp.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvZg.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvSm.setTextSize(16);
+            binding.tvZp.setTextSize(14);
+            binding.tvZg.setTextSize(14);
+            binding.tvSm.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            binding.tvZp.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            binding.tvZg.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            Glide.with(this).load(R.mipmap.wode_sm_sel).into(binding.ivSm);
+        } else {
+            binding.tvZp.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvSm.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvZg.setTextColor(getResources().getColor(R.color.color_252525));
+            binding.tvZp.setTextSize(14);
+            binding.tvSm.setTextSize(14);
+            binding.tvZg.setTextSize(16);
+            binding.tvZp.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            binding.tvSm.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            binding.tvZg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            Glide.with(this).load(R.mipmap.wode_sm_nor).into(binding.ivSm);
+        }
+    }
+
+
+    private boolean isFirst = true;
+
     private void initEvent() {
+
+        binding.vpContent.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                Log.v("-----","滑动："+position);
+                if (!isFirst) {
+                    menuPosition = position;
+
+//                    if(menuPosition == 0){
+//                        mineZPFragment.getVideoList();
+//                    }else if(menuPosition == 1){
+//                        mineSMFragment.getVideoList();
+//                    }else {
+//                        mineDZFragment.getVideoList();
+//                    }
+
+                    initTabMenu();
+
+                }
+                isFirst = false;
+            }
+        });
+
 
         oldWidth = binding.rivPhoto2.getLayoutParams().width;
         oldWidth3 = binding.rivPhoto3.getLayoutParams().width;
@@ -130,6 +218,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.setMargins(oldLeft, oldTop + verticalOffset, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
 
+//                    binding.refreshLayout.setEnabled(false);
 
                 } else if (verticalOffset == 0 && oldTop != 0) {
                     //下拉到开始位置让头像view的属性复原
@@ -138,20 +227,30 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.setMargins(oldLeft, oldTop, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
 
+//                    binding.refreshLayout.setEnabled(true);
                 }
 
 
             }
         });
 
-        binding.refreshLayout.setOnRefreshListener(() -> {
-            binding.refreshLayout.setRefreshing(false);
-        });
+//        binding.refreshLayout.setOnRefreshListener(() -> {
+//            binding.refreshLayout.setRefreshing(false);
+//        });
         binding.tvZp.setOnClickListener(lis -> {
+            menuPosition = 0;
+            initTabMenu();
+            binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.llSm.setOnClickListener(lis -> {
+            menuPosition = 1;
+            initTabMenu();
+            binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvZg.setOnClickListener(lis -> {
+            menuPosition = 2;
+            initTabMenu();
+            binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGz.setOnClickListener(lis -> {
         });
@@ -182,10 +281,9 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
-            viewModel.getMyVideoList(page, pageSize);
         });
 
-        viewModel.mVideoList.observe(this, dataList ->{
+        viewModel.mVideoList.observe(this, dataList -> {
 
         });
     }

@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.io.File;
@@ -351,8 +352,9 @@ public class UserRepository {
                 });
     }
 
-    public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize) {
-        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize)
+    public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type) {
+        //PRIVETE
+        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, type)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
@@ -364,6 +366,24 @@ public class UserRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        datas.postValue(data.getData().content);
+                    }
+                });
+    }
+
+    public void getMyLikeVideoList(MutableLiveData<List<DZVideoInfo>> datas, int page, int pagesize) {
+        userApi.getMyLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<DZVideoInfo>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<DZVideoInfo>>> data) {
                         datas.postValue(data.getData().content);
                     }
                 });

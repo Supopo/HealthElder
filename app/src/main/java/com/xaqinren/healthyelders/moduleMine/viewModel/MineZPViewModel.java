@@ -6,23 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.UserRepository;
-import com.xaqinren.healthyelders.bean.UserInfo;
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
-import com.xaqinren.healthyelders.moduleMine.bean.MinePageInfo;
 
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
-public class MineViewModel extends BaseViewModel {
+public class MineZPViewModel extends BaseViewModel {
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> mVideoList = new MutableLiveData<>();
     private UserRepository userRepository = UserRepository.getInstance();
 
-    public MineViewModel(@NonNull Application application) {
+    public MineZPViewModel(@NonNull Application application) {
         super(application);
     }
 
@@ -31,7 +28,7 @@ public class MineViewModel extends BaseViewModel {
     }
 
     public void getMyVideoList(int page, int pageSize) {
-        userRepository.getMyVideoList(mVideoList, page, pageSize,"");
+        userRepository.getMyVideoList(mVideoList, page, pageSize, "");
     }
 
 

@@ -71,12 +71,12 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         if (isStaggeredGrid) {
             StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
             //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
-             position = lp.getSpanIndex();
-        }else {
-             position = parent.getChildLayoutPosition(view);
+            position = lp.getSpanIndex();
+        } else {
+            position = parent.getChildLayoutPosition(view);
         }
 
-        if (((position + 1) % mColumns) == 0) {
+        if (((position + (1)) % mColumns) == 0) {
             outRect.right = 0;
         }
 

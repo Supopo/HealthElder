@@ -102,8 +102,14 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             selectImage();
         });
         binding.btnNext.setOnClickListener(lis -> {
-            startActivity(StartRenZheng2Activity.class, bundle);
-            finish();
+            if (isSuccess1 && isSuccess2) {
+                startActivity(StartRenZheng2Activity.class, bundle);
+                finish();
+            } else {
+                ToastUtil.toastShortMessage("请上传身份证");
+            }
+
+
         });
     }
 
@@ -232,7 +238,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                                 public void run() {
                                     recIDCard(IDCardParams.ID_CARD_SIDE_FRONT, photoPath);
                                 }
-                            },500);
+                            }, 500);
                         } else if (selectType == 2) {
                             fmPath = photoPath;
                             Glide.with(this).load(photoPath).into(binding.ivFm);
@@ -241,7 +247,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                                 public void run() {
                                     recIDCard(IDCardParams.ID_CARD_SIDE_BACK, photoPath);
                                 }
-                            },500);
+                            }, 500);
                         }
                     }
                     break;
@@ -254,6 +260,9 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
     }
+
+    private boolean isSuccess1;
+    private boolean isSuccess2;
 
     private void recIDCard(String idCardSide, String filePath) {
         showDialog("识别中");
@@ -293,7 +302,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                             if (result.getEthnic() != null) {
                                 bundle.putString("ethnic", result.getEthnic().toString());
                             }
-
+                            isSuccess1 = true;
                         } else {
                             if (result.getIssueAuthority() != null) {
                                 bundle.putString("issueAuthority", result.getIssueAuthority().toString());
@@ -304,6 +313,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                             if (result.getExpiryDate() != null) {
                                 bundle.putString("expiryDate", result.getExpiryDate().toString());
                             }
+                            isSuccess2 = false;
                         }
                     } else {
                         ToastUtil.toastShortMessage("身份证识别失败");

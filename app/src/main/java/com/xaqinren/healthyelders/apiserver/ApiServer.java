@@ -17,6 +17,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -332,7 +333,12 @@ public interface ApiServer {
 
     //我的视频作品
     @GET("content/queryUserCreationPage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("creationViewAuth") String creationViewAuth);
+
+    //我喜欢的视频作品
+    @GET("content/queryUserFavoriteCreationPage")
+    Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+
 
 
     //日志详情

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
@@ -64,6 +65,17 @@ public class VideoInfo implements Serializable {
     public List<String> topicList;
     public List<PublishAtBean> atList;
     public List<PublishFocusItemBean> publishFocusItemBeans;
+
+    public boolean showFollow() {
+        if (userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+            return false;
+        }
+        if (hasAttention) {
+            return false;
+        }
+
+        return true;
+    }
 
 
     public String getLiveRoomName() {

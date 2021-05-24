@@ -399,24 +399,25 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <!--        app:layout_behavior="@string/appbar_scrolling_view_behavior" 滑动的-->
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/refreshLayout"
+
+            <androidx.viewpager2.widget.ViewPager2
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:id="@+id/vp_content"
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:orientation="horizontal"
+                android:overScrollMode="never" />
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:overScrollMode="never"
-                    android:paddingLeft="@dimen/dp_4"
-                    android:paddingTop="@dimen/dp_7" />
+<!--            &lt;!&ndash;        app:layout_behavior="@string/appbar_scrolling_view_behavior" 滑动的&ndash;&gt;-->
+<!--            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--                android:id="@+id/refreshLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+<!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

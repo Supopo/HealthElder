@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.VideoInfo" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_151">
+
+        <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+            android:id="@+id/iv_video"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_151"
+            android:scaleType="center"
+            app:qmui_border_color="@color/transparent"
+            app:qmui_corner_radius="@dimen/dp_4"
+            app:url="@{viewModel.coverUrl}" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_marginBottom="@dimen/dp_9"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_bf"
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_12"
+                android:background="@mipmap/icon_mine_dz_dz" />
+
+            <TextView
+                android:id="@+id/tv_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:gravity="center_vertical"
+                android:text="999"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>
