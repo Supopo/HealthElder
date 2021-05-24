@@ -2,7 +2,10 @@ package com.xaqinren.healthyelders.moduleLiteav.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
@@ -33,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding, ChooseMusicViewModel> {
 
@@ -71,12 +76,33 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
         musicAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                Intent intent = new Intent(ChooseMusicActivity.this, MusicListActivity.class);
-                intent.putExtra(Constant.MUSIC_CLASS_ID, mMusicBeans.get(position).id);
-                intent.putExtra(Constant.MUSIC_CLASS_NAME, mMusicBeans.get(position).name);
-                startActivity(intent);
+                toMusicList(mMusicBeans.get(position).id, mMusicBeans.get(position).name, null);
             }
         });
+        binding.search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
+                    //搜索
+                    String search = binding.search.getText().toString();
+                    if (StringUtils.isEmpty(search)) {
+                        ToastUtils.showShort("请输入搜索内容");
+                        return false;
+                    }
+                    toMusicList(null, null, search);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void toMusicList(String id, String name , String search) {
+        Intent intent = new Intent(ChooseMusicActivity.this, MusicListActivity.class);
+        intent.putExtra(Constant.MUSIC_CLASS_ID, id);
+        intent.putExtra(Constant.MUSIC_CLASS_NAME, name);
+        intent.putExtra(Constant.MUSIC_SEARCH_NAME, search);
+        startActivity(intent);
     }
 
     /**

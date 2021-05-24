@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
+import com.tencent.qcloud.xiaoshipin.mainui.list.DividerGridItemDecoration;
 import com.tencent.ugc.TXRecordCommon;
 import com.tencent.ugc.TXUGCRecord;
 import com.xaqinren.healthyelders.BR;
@@ -33,6 +34,7 @@ import com.xaqinren.healthyelders.moduleLiteav.viewModel.MusicClassViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.MusicListViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, MusicClassViewModel> {
     private List<MMusicItemBean> mMusicItemBeans;
@@ -61,6 +64,7 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
     private Handler handler = new Handler(Looper.myLooper());
     private String TAG = "MusicListActivity";
     private String className;
+    private String searchName;
 
 
     @Override
@@ -90,8 +94,14 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         adapter.setList(mMusicItemBeans);
         classId = getIntent().getExtras().getString(Constant.MUSIC_CLASS_ID);
         className = getIntent().getExtras().getString(Constant.MUSIC_CLASS_NAME);
-        viewModel.getMusicList(classId, null, page, pageSize);
-        setTitle(className);
+        searchName = getIntent().getExtras().getString(Constant.MUSIC_SEARCH_NAME);
+        if (StringUtils.isEmpty(className)){
+            setTitle(searchName);
+        }else
+            setTitle(className);
+
+        viewModel.getMusicList(classId, searchName, page, pageSize);
+
         record = VideoRecordSDK.getInstance().getRecorder();
         adapter.setOnItemChildClickListener((adapter, view, position) -> {
             MMusicItemBean item = mMusicItemBeans.get(position);
@@ -144,7 +154,7 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         adapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                viewModel.getMusicList(classId, null, page, pageSize);
+                viewModel.getMusicList(classId, searchName, page, pageSize);
             }
         });
     }

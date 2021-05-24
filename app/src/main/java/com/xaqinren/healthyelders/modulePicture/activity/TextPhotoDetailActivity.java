@@ -2,20 +2,27 @@ package com.xaqinren.healthyelders.modulePicture.activity;
 
 import android.app.Dialog;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.tencent.bugly.proguard.T;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -43,7 +50,15 @@ import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
 import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 import com.youth.banner.Banner;
+import com.youth.banner.adapter.BannerAdapter;
+import com.youth.banner.adapter.BannerImageAdapter;
+import com.youth.banner.holder.BannerImageHolder;
+import com.youth.banner.indicator.CircleIndicator;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.listener.OnPageChangeListener;
 
+import java.net.URI;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +104,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     private Disposable disposable;
     private String diaryType = "diaryType";
     private Banner banner;
+    private TextView banneCount;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -328,6 +344,8 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         viewModel.favorite.observe(this, value ->{
             diaryInfoBean.hasFavorite = !diaryInfoBean.hasFavorite;
             binding.likeIv.setImageResource(diaryInfoBean.hasFavorite ? R.mipmap.icon_zan_red : R.mipmap.icon_zan_gray);
+            diaryInfoBean.favoriteCount = diaryInfoBean.hasFavorite ? diaryInfoBean.favoriteCount + 1 : diaryInfoBean.favoriteCount - 1;
+            binding.likeTv.setText(Num2TextUtil.num2Text(diaryInfoBean.favoriteCount));
         });
 
         //TODO 发表评论弹窗的接口
@@ -380,7 +398,60 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     }
 
     private void setBannerData(List<DiaryInfoBean.BannerImagesDTO> bannerImages) {
+        //计算banner最大的比例图
+        int height = mathScale(bannerImages);
+        ViewGroup.LayoutParams params = banner.getLayoutParams();
+        params.height = height;
+        banner.setLayoutParams(params);
+        if (bannerImages.size() > 1) {
+            banneCount.setVisibility(View.VISIBLE);
+            banner.addOnPageChangeListener(new OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    banneCount.setText((position + 1) + "/" + bannerImages.size());
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+            banneCount.setText("1/" + bannerImages.size());
+        }
+        banner.setDatas(bannerImages);
+        banner.setAdapter(new BannerImageAdapter<DiaryInfoBean.BannerImagesDTO>(bannerImages) {
+            @Override
+            public void onBindView(BannerImageHolder holder, DiaryInfoBean.BannerImagesDTO data, int position, int size) {
+                holder.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                Glide.with(holder.itemView)
+                        .load(data.url)
+                        .into(holder.imageView);
+            }
+        });
+        banner.setIndicator(new CircleIndicator(this));
+    }
+
+    private int mathScale(List<DiaryInfoBean.BannerImagesDTO> bannerImages) {
+        float scale = Integer.MAX_VALUE;
+        for (DiaryInfoBean.BannerImagesDTO dto : bannerImages) {
+            Uri uri = Uri.parse(dto.url);
+            String query = uri.getQuery();
+            String[] wh = query.split("&");
+            float w = Float.parseFloat(wh[0].split("=")[1]);
+            float h = Float.parseFloat(wh[1].split("=")[1]);
+            LogUtils.e(TAG, "w = " + w + "\th = " + h);
+            float s = w / h;
+            if (s < scale) {
+                scale = s;
+            }
+        }
+        int screenW = ScreenUtil.getScreenWidth(this);
+        return (int) (screenW / scale);
     }
 
     //添加自己的评论数据
@@ -428,19 +499,9 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        binding.rlContainer.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
         RxSubscriptions.remove(disposable);
     }
 
-    /**
-     * 展示评论弹窗
-     */
-    private void showComment() {
-        if (commentDialog == null) {
-            commentDialog = new CommentPublishDialog(this, "");
-        }
-        commentDialog.show(binding.rlTitle);
-    }
     /**
      * 展示分享弹窗
      */
@@ -458,7 +519,8 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
      */
     private void initBanner(View headerBanner) {
         banner = headerBanner.findViewById(R.id.banner);
-
+        banneCount = headerBanner.findViewById(R.id.banner_count);
+        banner.addBannerLifecycleObserver(this);
     }
 
     /**

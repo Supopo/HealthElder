@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_34"
             android:background="@drawable/bg_search"
@@ -21,7 +22,13 @@
             android:layout_marginTop="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:singleLine="true"/>
+            android:drawablePadding="@dimen/dp_7"
+            android:singleLine="true"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/color_252525"
+            android:textColorHint="@color/gray_999"
+            android:hint="搜索歌曲名称"
+            android:imeOptions="actionSearch"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/content"

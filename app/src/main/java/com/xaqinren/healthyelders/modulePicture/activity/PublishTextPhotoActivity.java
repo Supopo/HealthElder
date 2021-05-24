@@ -441,6 +441,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
         viewModel.publishLiveData.observe(this,s -> {
             ToastUtils.showShort(s);
+            finish();
         });
     }
 
@@ -473,7 +474,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         for (VideoPublishEditBean editBean : binding.contentInput.getTopicList()) {
             summaryBean.topicList.add(editBean.getContent().replace("#", ""));
         }
-        bean.summary = JSON.toJSONString(summaryBean);
+        bean.summary = summaryBean;
 
         viewModel.publish(bean);
     }

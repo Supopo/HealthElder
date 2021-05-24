@@ -154,7 +154,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
 
                 } else {
                     Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
-                    intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, adapterList.get(position).id);
+                    intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, adapterList.get(position).resourceId);
                     startActivity(intent);
                 }
             }
