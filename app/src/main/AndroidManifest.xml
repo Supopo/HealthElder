@@ -213,6 +213,7 @@
             android:theme="@style/EditDialogStyle"
             />
         <activity android:name=".moduleHome.activity.DraftActivity" />
+        <activity android:name=".moduleHome.activity.VideoGridActivity" />
     </application>
 
 </manifest>
