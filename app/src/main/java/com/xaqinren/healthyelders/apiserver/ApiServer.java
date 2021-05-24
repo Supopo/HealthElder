@@ -16,6 +16,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -283,6 +284,12 @@ public interface ApiServer {
     @POST("content/shortVideo/commentFavorite")
     Observable<MBaseResponse<Object>> setCommentLike(@Header("Authorization") String authorization, @Body RequestBody body);
 
+    //对本体点赞
+    @Headers({"content-type:application/json"})
+    @POST("content/userDiary/favorite")
+    Observable<MBaseResponse<HomeRes>> setUserDiaryLike(@Header("Authorization") String authorization, @Body RequestBody body);
+
+
     //用户实名认证
     @Headers({"content-type:application/json"})
     @POST("user/saveUserIdCardInfo")
@@ -326,5 +333,45 @@ public interface ApiServer {
     //我的视频作品
     @GET("content/queryUserCreationPage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+
+
+    //日志详情
+    @GET("content/open/userDiary/info")
+    Observable<MBaseResponse<DiaryInfoBean>> getDiaryInfo(@Header("Authorization") String authorization, @Query("id") String id);
+
+
+    /** 日记评论 */
+
+    //评论
+    @Headers({"content-type:application/json"})
+    @POST("content/userDiary/comment")
+    Observable<MBaseResponse<CommentListBean>> toDiaryComment(@Header("Authorization") String authorization,
+                                                              @Body RequestBody body);
+
+    //评论列表
+    @GET("content/open/userDiary/comment/findPageByUserDiaryId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getDiaryCommentList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("userDiaryId") String shortVideoId);
+
+    //回复评论
+    @Headers({"content-type:application/json"})
+    @POST("content/userDiary/commentReply")
+    Observable<MBaseResponse<CommentListBean>> toDiaryCommentReply(@Header("Authorization") String authorization,
+                                                                   @Body RequestBody body);
+
+    //回复列表
+    @GET("content/open/userDiary/commentReply/findPageByCommentId")
+    Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getDiaryCommentReplyList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("commentId") String commentId);
+
+    //评论点赞
+    @Headers({"content-type:application/json"})
+    @POST("content/userDiary/commentFavorite")
+    Observable<MBaseResponse<Object>> setDiaryCommentLike(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //评论点赞
+    @Headers({"content-type:application/json"})
+    @POST("content/userDiary/favorite")
+    Observable<MBaseResponse<Object>> setDiaryFavorite(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    /** 日记评论 */
 
 }

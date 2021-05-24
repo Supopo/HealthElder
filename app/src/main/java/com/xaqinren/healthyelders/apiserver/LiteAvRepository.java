@@ -9,6 +9,7 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
@@ -17,6 +18,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
+import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -470,4 +472,230 @@ public class LiteAvRepository {
                     }
                 });
     }
+
+    public void toComment(String id, String content, MutableLiveData<CommentListBean> commentSuccess) {
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("id", id);
+            hashMap.put("content", content);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+            userApi.toDiaryComment(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+            @Override
+            public void accept(Disposable disposable) throws Exception {
+            }
+        })
+                .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
+            @Override
+            protected void dismissDialog() {
+
+            }
+
+            @Override
+            protected void onSuccess(MBaseResponse< CommentListBean > data) {
+                commentSuccess.postValue(data.getData());
+            }
+
+        });
+    }
+
+    public void getCommentList(MutableLiveData<List<CommentListBean>> commentList, int page, String id) {
+
+        userApi.getDiaryCommentList(page, 10, id)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<CommentListBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<CommentListBean>>> data) {
+                        commentList.postValue(data.getData().content);
+                    }
+
+                });
+    }
+
+    public void toCommentReply(CommentListBean mCommentListBean, String content, int type, MutableLiveData<CommentListBean> commentSuccess) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("replyType", type == 0 ? "REPLY_COMMENT" : "REPLY_REPLY");
+        hashMap.put("id", mCommentListBean.id);
+        hashMap.put("content", content);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.toDiaryCommentReply(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<CommentListBean> data) {
+                        CommentListBean commentListBean = data.getData();
+                        commentListBean.parentPos = mCommentListBean.parentPos;
+                        commentSuccess.postValue(commentListBean);
+                    }
+
+                });
+    }
+
+    public void getCommentReplyList(CommentListBean commentListBean, MutableLiveData<CommentListBean> commentList) {
+        userApi.getDiaryCommentReplyList(commentListBean.itemPage, commentListBean.itemSize, commentListBean.id)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<CommentListBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<CommentListBean>>> data) {
+                        //不要引用传进来的commentListBean 会出错
+                        CommentListBean resBean = new CommentListBean();
+                        resBean.parentPos = commentListBean.parentPos;
+                        resBean.replyList = data.getData().content;
+                        commentList.postValue(resBean);
+                    }
+
+                });
+    }
+
+    public void toLikeComment(String shortVideoId, String commentId, boolean favoriteStatus, boolean notRoot) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("objectId", shortVideoId);
+        hashMap.put("id", commentId);
+        hashMap.put("favoriteStatus", favoriteStatus);
+        hashMap.put("notRoot", notRoot);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setDiaryCommentLike(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+
+                    }
+
+                });
+    }
+
+    //日记详情
+    public void getDiaryInfo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<DiaryInfoBean> diray, String id) {
+        userApi.getDiaryInfo(UserInfoMgr.getInstance().getHttpToken(), id)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(disposable -> {
+                })
+                .subscribe(new CustomObserver<MBaseResponse<DiaryInfoBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<DiaryInfoBean> data) {
+                        diray.postValue(data.getData());
+                    }
+                });
+    }
+
+    public void toFollow(MutableLiveData<Boolean> followSuccess, MutableLiveData<Boolean> dismissDialog, String userId) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("userId", userId);
+        hashMap.put("attentionSource", "USER_DIARY");
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setUserFollow(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        if (dismissDialog != null) {
+                            dismissDialog.postValue(true);
+                        }
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        if (followSuccess != null) {
+                            followSuccess.postValue(true);
+                        }
+                    }
+                });
+    }
+
+    public void toFavorite(MutableLiveData<Boolean> followSuccess, MutableLiveData<Boolean> dismissDialog, String userId, boolean isF) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("objectId", userId);
+        hashMap.put("favoriteStatus", isF);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setDiaryFavorite(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        if (dismissDialog != null) {
+                            dismissDialog.postValue(true);
+                        }
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        if (followSuccess != null) {
+                            followSuccess.postValue(true);
+                        }
+                    }
+                });
+    }
+
+
+
 }

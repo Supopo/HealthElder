@@ -309,7 +309,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     } else if (openType == 1) {
                         //回复评论
                         viewModel.toCommentReply(mCommentListBean, content, 0);
-
                     } else if (openType == 2) {
                         //回复回复
                         viewModel.toCommentReply(mCommentListBean, content, 1);

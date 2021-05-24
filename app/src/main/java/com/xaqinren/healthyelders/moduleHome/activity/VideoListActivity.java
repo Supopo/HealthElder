@@ -98,7 +98,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         if (videos.type == 2) {
             //从附近打开
-            binding.viewPager2.setCurrentItem(position);
+            binding.viewPager2.setCurrentItem(position, false);
             AppApplication.get().setPlayPosition(position);
             handler.postDelayed(new Runnable() {
                 @Override
@@ -125,8 +125,6 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     page++;
                     viewModel.getVideoData(page, videos.type);
                 }
-
-
             }
         });
 

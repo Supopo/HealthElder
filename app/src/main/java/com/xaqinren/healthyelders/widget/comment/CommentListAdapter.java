@@ -49,7 +49,6 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         if (iCommentBean.replyList == null) {
             iCommentBean.replyList = new ArrayList<>();
         }
-
         iCommentBean.parentPos = baseViewHolder.getAdapterPosition();//插入评论所在pos
         if (!iCommentBean.hasFavorite) {
             Glide.with(getContext()).load(R.mipmap.icon_pinl_zan_nor).into((ImageView) baseViewHolder.getView(R.id.like_iv));
@@ -110,7 +109,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                             notifyItemChanged(baseViewHolder.getAdapterPosition());
                         } else {
                             //加载更多
-                            loadMoreCommentListener.onLoadMore(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
+                          loadMoreCommentListener.onLoadMore(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
                         }
                     }
                 }

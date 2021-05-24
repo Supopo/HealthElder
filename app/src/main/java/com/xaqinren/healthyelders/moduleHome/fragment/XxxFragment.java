@@ -191,7 +191,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             startActivityForResult(intent, START_LIVE_PLAY);
         });
         binding.tvMenu106.setOnClickListener(view -> {
-            startActivity(TextPhotoDetailActivity.class);
+            Intent intent = new Intent(getActivity(), TextPhotoDetailActivity.class);
+            intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, "60a8ce59ea3225775c330043");
+            startActivity(intent);
         });
     }
 

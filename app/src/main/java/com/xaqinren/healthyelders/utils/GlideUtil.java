@@ -18,4 +18,8 @@ public class GlideUtil {
                         )
         ).into(view);
     }
+
+    public static void intoImageView(Context context , Object res , ImageView view ) {
+        Glide.with(context).load(res).into(view);
+    }
 }

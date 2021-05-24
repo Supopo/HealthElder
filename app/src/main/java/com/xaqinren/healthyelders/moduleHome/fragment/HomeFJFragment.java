@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeFJViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -151,6 +153,9 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                     startActivity(VideoListActivity.class, bundle);
 
                 } else {
+                    Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                    intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, adapterList.get(position).id);
+                    startActivity(intent);
                 }
             }
         });

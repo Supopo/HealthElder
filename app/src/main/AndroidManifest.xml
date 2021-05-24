@@ -206,7 +206,7 @@
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
         <activity android:name=".moduleHome.activity.VideoListActivity" />
-        <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" />
+        <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleLiteav.activity.MusicListActivity" />
         <activity android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden"

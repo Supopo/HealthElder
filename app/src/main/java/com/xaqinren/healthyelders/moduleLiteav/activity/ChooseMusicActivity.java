@@ -73,7 +73,7 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 Intent intent = new Intent(ChooseMusicActivity.this, MusicListActivity.class);
                 intent.putExtra(Constant.MUSIC_CLASS_ID, mMusicBeans.get(position).id);
-                intent.putExtra(Constant.MUSIC_CLASS_NAME, classBeans.get(position).name);
+                intent.putExtra(Constant.MUSIC_CLASS_NAME, mMusicBeans.get(position).name);
                 startActivity(intent);
             }
         });
