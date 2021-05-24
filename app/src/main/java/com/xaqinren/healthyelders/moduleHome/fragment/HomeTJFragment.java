@@ -14,7 +14,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
-import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -25,6 +24,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,12 +149,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         tjViewPager2 = binding.viewPager2;
         tjCardView = binding.cardView;
         binding.viewPager2.setUserInputEnabled(false);
-        screenWidth = ScreenUtil.getScreenWidth(getActivity());
+        screenWidth = MScreenUtil.getScreenWidth(getActivity());
 
         //变窄viewPager2
         ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
         int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-        params.height = ScreenUtils.getScreenHeight(getActivity());
+        params.height = MScreenUtil.getScreenHeight(getActivity());
         params.width = screenWidth - dimension;
         oldWidth = screenWidth - dimension;
         tjCardView.setLayoutParams(params);

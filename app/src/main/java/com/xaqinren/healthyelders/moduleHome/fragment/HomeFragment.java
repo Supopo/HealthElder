@@ -31,6 +31,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -137,7 +138,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     public void resetVVPHeight() {
         ViewGroup.LayoutParams layoutParams = binding.viewPager2.getLayoutParams();
-        layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
+        layoutParams.height = MScreenUtil.getScreenHeight(getActivity());
     }
 
     private boolean isFirst = true;

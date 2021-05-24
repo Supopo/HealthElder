@@ -1,17 +1,22 @@
 package com.xaqinren.healthyelders;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.dmcbig.mediapicker.utils.ScreenUtils;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -68,6 +74,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private boolean isTranMenu;
     private Handler handler;
     private String userSig;
+    private boolean isHasBar;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -79,6 +86,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         return com.xaqinren.healthyelders.BR.viewModel;
     }
 
+
     @Override
     public void initData() {
         setStatusBarTransparent();
@@ -86,6 +94,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         initFragment();
         getCacheUserInfo();
         handler = new Handler();
+
 
         //设置底部背景线
         ViewGroup.LayoutParams layoutParams = binding.lineBottom.getLayoutParams();

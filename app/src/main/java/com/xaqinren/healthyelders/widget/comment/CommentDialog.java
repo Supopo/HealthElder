@@ -41,6 +41,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class CommentDialog {
         viewModel = ViewModelProviders.of((FragmentActivity) context.get()).get(CommentViewModel.class);
         contentView = View.inflate(context.get(), R.layout.pop_comment, null);
         binding = DataBindingUtil.bind(contentView);
-        int height = (int) (ScreenUtil.getScreenHeight(context.get()) * 0.6f);
+        int height = (int) (MScreenUtil.getScreenHeight(context.get()) * 0.6f);
         popupWindow = new PopupWindow(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, height);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);

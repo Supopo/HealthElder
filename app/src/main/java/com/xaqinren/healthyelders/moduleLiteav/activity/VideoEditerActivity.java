@@ -80,6 +80,7 @@ import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoEditerViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.List;
 
@@ -165,8 +166,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         super.initData();
         margin220 = (int) getResources().getDimension(R.dimen.dp_220);
         margin66 = (int) getResources().getDimension(R.dimen.dp_66);
-        effVideoHeight = ScreenUtil.getScreenHeight(this) - margin220 - margin66;
-        screenVideoHeight = ScreenUtil.getScreenHeight(this);
+        effVideoHeight = MScreenUtil.getScreenHeight(this) - margin220 - margin66;
+        screenVideoHeight = MScreenUtil.getScreenHeight(this);
         setStatusBarTransparent();
         initView();
 

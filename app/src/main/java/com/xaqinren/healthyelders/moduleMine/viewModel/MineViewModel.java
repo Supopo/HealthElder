@@ -6,12 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.UserRepository;
-import com.xaqinren.healthyelders.bean.UserInfo;
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
-import com.xaqinren.healthyelders.moduleMine.bean.MinePageInfo;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.tencent.qcloud.tim.uikit.utils;
+package com.xaqinren.healthyelders.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -15,13 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.qcloud.tim.uikit.TUIKit;
+import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
+import com.xaqinren.healthyelders.global.AppApplication;
 
 import java.lang.reflect.Method;
 
 
-public class ScreenUtil {
+public class MScreenUtil {
 
-    private static final String TAG = ScreenUtil.class.getSimpleName();
+    private static final String TAG = MScreenUtil.class.getSimpleName();
 
     private static int navigationBarHeight = 0;
     private static int SOFT_INPUT_HEIGHT = 0;
@@ -82,6 +84,13 @@ public class ScreenUtil {
         DisplayMetrics metric = new DisplayMetrics();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getRealMetrics(metric);
+
+        //获取是否开启了虚拟按键
+        if (AppApplication.get().isHasNavBar()) {
+            int NavigationBarHeight = getNavigationBarHeight();
+            return metric.heightPixels - NavigationBarHeight;
+        }
+
         return metric.heightPixels;
 
     }

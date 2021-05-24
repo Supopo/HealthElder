@@ -7,10 +7,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.databinding.ActivitySplashBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SplashViewModel;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,6 +43,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             });
         }
     };
+    private boolean isHasBar;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -76,14 +81,30 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
         //如果有的手机开启全屏之后顶部有彩色条，那是因为手机的全屏设置没有设置该app
         setFullScreen();
         //状态栏透明的全屏效果
-//        setStatusBarTransparent();
-
+        //        setStatusBarTransparent();
 
         if (Build.VERSION.SDK_INT >= 28) {
             WindowManager.LayoutParams params = getWindow().getAttributes();
             params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(params);
         }
+
+
+        isHasBar = false;
+        int screenHeight = MScreenUtil.getScreenHeight(this);
+        binding.container.post(new Runnable() {
+            @Override
+            public void run() {
+                int height = binding.container.getMeasuredHeight();
+                if (screenHeight == height) {
+                    isHasBar = false;
+                } else {
+                    isHasBar = true;
+                }
+                AppApplication.get().setHasNavBar(isHasBar);
+            }
+        });
+
 
         rlTitle.setVisibility(View.GONE);
         binding.tvJump.setText("跳过 " + recLen);

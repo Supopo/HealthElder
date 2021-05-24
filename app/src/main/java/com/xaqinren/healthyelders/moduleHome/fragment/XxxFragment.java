@@ -52,6 +52,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginI
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -91,7 +92,7 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         checkPermission();
 
         ViewGroup.LayoutParams layoutParams = binding.container.getLayoutParams();
-        layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
+        layoutParams.height = MScreenUtil.getScreenHeight(getActivity());
 
         binding.tvMenu1.setOnClickListener(lis -> {
             try {

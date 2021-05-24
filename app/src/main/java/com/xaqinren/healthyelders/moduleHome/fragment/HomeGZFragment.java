@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -27,6 +28,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +176,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
     public void resetVVPHeight() {
         ViewGroup.LayoutParams layoutParams = binding.viewPager2.getLayoutParams();
-        layoutParams.height = ScreenUtils.getScreenHeight(getActivity());
+        layoutParams.height = MScreenUtil.getScreenHeight(getActivity());
     }
 
     private ZhiBoingAvatarAdapter zbingAdapter;

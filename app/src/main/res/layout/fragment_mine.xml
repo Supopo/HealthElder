@@ -133,6 +133,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_20"
+                                    android:text="@{String.valueOf(viewModel.userInfo.favoriteCount)}"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -149,6 +150,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_20"
+                                    android:text="@{String.valueOf(viewModel.userInfo.attentionCount)}"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -165,6 +167,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_20"
+                                    android:text="@{String.valueOf(viewModel.userInfo.fansCount)}"
                                     android:textStyle="bold" />
 
                                 <TextView

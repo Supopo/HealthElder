@@ -17,6 +17,7 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMoreLinkBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -37,8 +38,8 @@ public class MoreLinkAdapter extends BaseQuickAdapter<ZBUserListBean, BaseViewHo
 
         //动态计算高度
 
-        int screenHeight = ScreenUtil.getScreenHeight(getContext());
-        int screenWidth = ScreenUtil.getScreenWidth(getContext());
+        int screenHeight = MScreenUtil.getScreenHeight(getContext());
+        int screenWidth = MScreenUtil.getScreenWidth(getContext());
 
 
         //因为UI图按照2330/1080比例做的 比例约2.1

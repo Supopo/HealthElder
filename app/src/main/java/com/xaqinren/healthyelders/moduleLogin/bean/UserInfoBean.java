@@ -18,6 +18,34 @@ public class UserInfoBean {
     private int cumulativeAmount;
     private String id;
 
+    public int getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public int getFansCount() {
+        return fansCount;
+    }
+
+    public void setFansCount(int fansCount) {
+        this.fansCount = fansCount;
+    }
+
+    public int getAttentionCount() {
+        return attentionCount;
+    }
+
+    public void setAttentionCount(int attentionCount) {
+        this.attentionCount = attentionCount;
+    }
+
+    private int favoriteCount;
+    private int fansCount;
+    private int attentionCount;
+
     public boolean isMan(){
         if (sex.equals("MALE")) {
             return false;

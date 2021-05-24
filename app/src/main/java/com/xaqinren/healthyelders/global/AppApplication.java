@@ -181,6 +181,16 @@ public class AppApplication extends BaseApplication {
         this.showTopMenu = showTopMenu;
     }
 
+    public boolean isHasNavBar() {
+        return hasNavBar;
+    }
+
+    public void setHasNavBar(boolean hasNavBar) {
+        this.hasNavBar = hasNavBar;
+    }
+
+    private boolean hasNavBar;//是否开启了虚拟按键
+
     //顶部菜单是否展示
     private boolean showTopMenu = true;
 
