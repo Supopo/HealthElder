@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
+import com.tencent.bugly.proguard.C;
 import com.tencent.bugly.proguard.T;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
@@ -35,8 +36,10 @@ import com.xaqinren.healthyelders.moduleLiteav.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
+import com.xaqinren.healthyelders.moduleLiteav.dialog.CreatePostBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
+import com.xaqinren.healthyelders.modulePicture.dialog.PostPop;
 import com.xaqinren.healthyelders.modulePicture.viewModel.TextPhotoDetailViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
 import com.xaqinren.healthyelders.utils.GlideUtil;
@@ -48,6 +51,7 @@ import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentListAdapter;
 import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
 import com.xaqinren.healthyelders.widget.comment.ICommentBean;
+import com.xaqinren.healthyelders.widget.share.OnClickListenerImpl;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerAdapter;
@@ -228,8 +232,6 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             commentId = videoId;
             showPublishCommentDialog("说点什么吧");
         });
-//        dataList = new ArrayList<>();
-//        commentAdapter.setList(this.dataList);
 
         loadMoreModule = commentAdapter.getLoadMoreModule();
         loadMoreModule.setAutoLoadMore(true);
@@ -246,6 +248,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             //滚动到评论部分
             scrollComment();
         });
+        binding.back.setOnClickListener(view -> finish());
         binding.likeIv.setOnClickListener(this);
         binding.likeTv.setOnClickListener(this);
 
@@ -254,6 +257,12 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
         binding.shareIv.setOnClickListener(this);
         binding.shareTv.setOnClickListener(this);
+        binding.avatar.setOnClickListener(view -> {
+            //TODO 查看用户
+        });
+        binding.nickname.setOnClickListener(view -> {
+            //TODO 查看用户
+        });
 
         binding.guanzhu.setOnClickListener(this);
         viewModel.diaryInfo(videoId);
@@ -330,6 +339,13 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
         viewModel.diaryInfo.observe(this,diaryInfoBean -> {
             this.diaryInfoBean = diaryInfoBean;
+            if (UserInfoMgr.getInstance().getAccessToken() != null) {
+                String uid = UserInfoMgr.getInstance().getUserInfo().getId();
+                if (diaryInfoBean.userId.equals(uid)) {
+                    //是自己发的
+                    binding.guanzhu.setVisibility(View.GONE);
+                }
+            }
             setBannerData(diaryInfoBean.bannerImages);
             setContentData(this.diaryInfoBean);
         });
@@ -509,6 +525,13 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         if (shareDialog == null) {
             shareDialog = new ShareDialog(this);
             shareDialog.setShowType(ShareDialog.TP_TYPE);
+            shareDialog.setOnClickListener(new OnClickListenerImpl(){
+                @Override
+                public void onCreatePostClick() {
+                    super.onCreatePostClick();
+                    showPostDialog();
+                }
+            });
         }
         shareDialog.show(binding.rlTitle);
     }
@@ -568,5 +591,26 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         ToastUtils.showShort(R.string.un_login);
         startActivity(SelectLoginActivity.class);
         return false;
+    }
+
+    /**
+     * 生成海报页面
+     */
+    private PostPop postPop;
+    private void showPostDialog() {
+        CreatePostBean createPostBean = new CreatePostBean();
+        createPostBean.setAvatar(diaryInfoBean.avatarUrl);
+        createPostBean.setUrl(diaryInfoBean.bannerImages.get(banner.getCurrentItem()).url);
+        createPostBean.setNickName(diaryInfoBean.nickname);
+        createPostBean.setContent(diaryInfoBean.summary.content);
+        if (postPop == null) {
+            int w = ScreenUtil.getScreenWidth(this);
+//            int h = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight();
+            postPop = new PostPop(this, createPostBean, w, -1);
+        }else{
+            postPop.refreshData(createPostBean);
+        }
+
+        postPop.show();
     }
 }

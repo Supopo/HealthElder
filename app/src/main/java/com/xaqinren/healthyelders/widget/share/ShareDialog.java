@@ -22,6 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.dcloud.zxing2.BarcodeFormat;
+import com.dcloud.zxing2.MultiFormatWriter;
+import com.dcloud.zxing2.common.BitMatrix;
+import com.dcloud.zxing2.qrcode.QRCodeWriter;
+import com.dcloud.zxing2.qrcode.encoder.QRCode;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
@@ -51,6 +56,11 @@ public class ShareDialog {
     private int showType = VIDEO_TYPE;
     private Context mContext;
     private DownLoadProgressDialog downloadProgress;
+    private OnClickListener onClickListener;
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
 
     public ShareDialog(Context context) {
         this.context = new SoftReference<>(context);
@@ -109,6 +119,9 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.sharePost.setOnClickListener(view -> {
             //生成海报
+            if (onClickListener != null) {
+                onClickListener.onCreatePostClick();
+            }
         });
         binding.rlContainer.setOnClickListener(view -> popupWindow.dismiss());
 
@@ -176,7 +189,6 @@ public class ShareDialog {
             }
 
         }); //方法中设置asBitmap可以设置回调类型
-
     }
 
 
@@ -239,5 +251,8 @@ public class ShareDialog {
                 downloadProgress.dismiss();
             }
         });
+    }
+    public interface OnClickListener{
+        void onCreatePostClick();
     }
 }

@@ -85,9 +85,10 @@ public class FileUtil {
     }
 
     public static String saveBitmap(String dir, Bitmap b) {
-        String jpegName = TUIKitConstants.MEDIA_DIR + File.separator + "picture_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
+        String jpegName = "picture_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
         try {
-            FileOutputStream fout = new FileOutputStream(jpegName);
+            File file = new File(dir, jpegName);
+            FileOutputStream fout = new FileOutputStream(file);
             BufferedOutputStream bos = new BufferedOutputStream(fout);
             b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             bos.flush();
