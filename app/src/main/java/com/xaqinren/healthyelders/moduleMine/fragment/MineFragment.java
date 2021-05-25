@@ -227,16 +227,12 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.setMargins(oldLeft, oldTop, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
 
-                    //                    binding.refreshLayout.setEnabled(true);
                 }
 
 
             }
         });
 
-        //        binding.refreshLayout.setOnRefreshListener(() -> {
-        //            binding.refreshLayout.setRefreshing(false);
-        //        });
         binding.tvZp.setOnClickListener(lis -> {
             menuPosition = 0;
             initTabMenu();

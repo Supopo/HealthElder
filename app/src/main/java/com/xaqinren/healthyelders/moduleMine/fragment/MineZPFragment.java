@@ -12,15 +12,22 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineZpBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
+import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
@@ -34,6 +41,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     private ZPVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
     private boolean hasDraft;
+    private int draftCount;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,7 +56,8 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     @Override
     public void initData() {
         super.initData();
-        hasDraft = true;
+        getDraft();
+
         videoAdapter = new ZPVideoAdapter(R.layout.item_mine_zp_video);
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
@@ -79,6 +88,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             @Override
             public void onRefresh() {
                 page = 1;
+                getDraft();
                 viewModel.getMyVideoList(page, pageSize);
                 binding.srl.setRefreshing(false);
             }
@@ -90,8 +100,8 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             if (hasDraft) {
                 //判断是否有草稿箱内容
                 if (position == 0) {
-                    //TODO 判断草稿箱内容数量
                     startActivity(DraftActivity.class);
+                    return;
                 }
             }
 
@@ -124,6 +134,15 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         }));
     }
 
+    private void getDraft() {
+        String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+        List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(getActivity(), fileName);
+        if (list != null && list.size() > 0) {
+            hasDraft = true;
+            draftCount = list.size();
+        }
+    }
+
     public void getVideoList() {
         if (videoAdapter.getData().size() == 0) {
             page = 1;
@@ -146,6 +165,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                         VideoInfo videoInfo = new VideoInfo();
                         videoInfo.isDraft = true;
                         dataList.add(0, videoInfo);
+                        videoInfo.draftCount = draftCount;
                     }
 
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新

@@ -62,6 +62,11 @@ public class VideoInfo implements Serializable {
     public boolean hasLive;
 
     public boolean isDraft;//草稿箱
+    public int draftCount;//草稿箱数量
+
+    public String getDraftCount() {
+        return "草稿箱 +" + draftCount;
+    }
 
     //"resourceType": "VIDEO",需要
     public String content;
@@ -174,7 +179,8 @@ public class VideoInfo implements Serializable {
     public String getMonth() {
         return DateUtils.getMonth(createdAt);
     }
+
     public String getDay() {
-       return DateUtils.getDay(createdAt);
+        return DateUtils.getDay(createdAt);
     }
 }
