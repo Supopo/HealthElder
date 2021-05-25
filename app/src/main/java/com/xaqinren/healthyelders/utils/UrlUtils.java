@@ -60,6 +60,10 @@ public class UrlUtils {
         Uri uri = Uri.parse(url);
         return uri.getQuery();
     }
+    public static String getUrlPath(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getPath();
+    }
     public static HashMap<String, String> getUrlQueryList(String url) {
         Uri uri = Uri.parse(url);
         String query = uri.getQuery();
