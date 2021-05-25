@@ -43,7 +43,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     private Disposable subscribe;
     public RecyclerView recyclerView;
     private String title;
-
+    private String tags;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -67,6 +67,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         super.initData();
         setTitle(title);
 
+        tags = "美食,厨房";
         recyclerView = binding.rvVideo;
 
         mAdapter = new FJVideoAdapter(R.layout.item_fj_video);
@@ -80,7 +81,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                viewModel.getVideoData(page);
+                viewModel.getVideoData(page, tags);
             }
         });
 
@@ -90,7 +91,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                 mLoadMore.setEnableLoadMore(false);
                 page = 1;
                 showLoadView();
-                viewModel.getVideoData(page);
+                viewModel.getVideoData(page, tags);
                 binding.srlContent.setRefreshing(false);
             }
         });
@@ -105,7 +106,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         binding.rvVideo.setItemAnimator(null);
         binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(this, 3, true));
 
-        viewModel.getVideoData(page);
+        viewModel.getVideoData(page, tags);
 
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override

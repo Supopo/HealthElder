@@ -447,7 +447,7 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType) {
+    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
         String uid = "";
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
@@ -455,7 +455,7 @@ public class LiveRepository {
             }
         }
 
-        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, type, resourceType)
+        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, type, resourceType, tags)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -486,7 +486,13 @@ public class LiveRepository {
     public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList) {
         //不传默认返回三种类型的列表
         String resourceType = type == 2 ? "LIVE,VIDEO,USER_DIARY" : "";
-        getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType);
+        getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType, "");
+    }
+
+    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, String tags, MutableLiveData<List<VideoInfo>> videoList) {
+        //不传默认返回三种类型的列表
+        String resourceType = type == 2 ? "LIVE,VIDEO,USER_DIARY" : "";
+        getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType, tags);
     }
 
     public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {

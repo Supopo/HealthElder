@@ -245,7 +245,8 @@ public interface ApiServer {
 
     //获取首页视频直播
     @GET("content/open/queryComprehensivePage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid, @Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page, @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid, @Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page,
+                                                                             @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType, @Query("tags") String tags);
 
     //获取首页菜单信息
     @GET("content/open/findHomeData")
