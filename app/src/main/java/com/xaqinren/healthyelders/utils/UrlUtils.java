@@ -1,5 +1,9 @@
 package com.xaqinren.healthyelders.utils;
 
+import android.net.Uri;
+
+import java.util.HashMap;
+
 /**
  * Created by Lee. on 2021/5/24.
  * URL校验工具
@@ -40,4 +44,34 @@ public class UrlUtils {
         return urlBase;
     }
 
+    public static String getUrlScheme(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getScheme();
+    }
+    public static String getUrlHost(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getHost();
+    }
+    public static int getUrlPort(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getPort();
+    }
+    public static String getUrlQuery(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getQuery();
+    }
+    public static HashMap<String, String> getUrlQueryList(String url) {
+        Uri uri = Uri.parse(url);
+        String query = uri.getQuery();
+        String[] queryKeyValue = query.split("&");
+        HashMap<String, String> value = new HashMap<>();
+        for (String s : queryKeyValue) {
+            String[] kv = s.split("=");
+            value.put(kv[0], kv[1]);
+        }
+        return value;
+    }
+    public static String getUrlQueryByTag(String url,String tag) {
+        return getUrlQueryList(url).get(tag);
+    }
 }

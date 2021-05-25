@@ -331,7 +331,10 @@ public class LiteAvRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
-                        publish.postValue("发布成功");
+                        if (data.getData()!=null)
+                            publish.postValue("发布成功");
+                        else
+                            publish.postValue(data.getMessage());
                     }
                 });
     }

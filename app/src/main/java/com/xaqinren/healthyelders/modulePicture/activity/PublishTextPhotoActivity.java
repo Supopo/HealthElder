@@ -30,6 +30,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.bugly.proguard.M;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -441,7 +442,10 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
         viewModel.publishLiveData.observe(this,s -> {
             ToastUtils.showShort(s);
-            finish();
+            if (s.equals("发布成功")) {
+                startActivity(MainActivity.class);
+                finish();
+            }
         });
     }
 
@@ -740,6 +744,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         viewModel.saveDraftsById(this, fileName, saveDraftBean);
 
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
+        startActivity(MainActivity.class);
         finish();
     }
 

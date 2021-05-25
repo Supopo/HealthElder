@@ -878,6 +878,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         viewModel.saveDraftsById(this, fileName, saveDraftBean);
 
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
+        ToastUtils.showShort("保存成功");
+        startActivity(MainActivity.class);
         finish();
     }
 
