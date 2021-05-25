@@ -60,6 +60,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         super.initParam();
         Bundle extras = getIntent().getExtras();
         title = extras.getString("title");
+        tags = extras.getString("tags");
     }
 
     @Override
@@ -67,7 +68,6 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         super.initData();
         setTitle(title);
 
-        tags = "美食,厨房";
         recyclerView = binding.rvVideo;
 
         mAdapter = new FJVideoAdapter(R.layout.item_fj_video);

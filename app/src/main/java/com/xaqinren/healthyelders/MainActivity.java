@@ -140,13 +140,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         }
 
-        //判断UserSig存在不存在
         //获取UserSig
-        if (TextUtils.isEmpty(userSig)) {
-            viewModel.getUserSig(accessToken);
-        } else {
-            UserInfoMgr.getInstance().setUserSig(userSig);
-        }
+        viewModel.getUserSig(accessToken);
     }
 
     @Override

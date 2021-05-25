@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -297,8 +299,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putString("title",menu1Adapter.getData().get(position).menuName);
-                startActivity(VideoGridActivity.class,bundle);
+                bundle.putString("title", menu1Adapter.getData().get(position).menuName);
+                //获取tags
+                String tags = UrlUtils.getUrlQueryByTag(menu1Adapter.getData().get(position).jumpUrl, "tags");
+                bundle.putString("tags", tags);
+                startActivity(VideoGridActivity.class, bundle);
             }
         });
 
