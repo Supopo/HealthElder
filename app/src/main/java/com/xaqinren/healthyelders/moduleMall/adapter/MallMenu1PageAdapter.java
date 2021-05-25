@@ -28,7 +28,7 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
         binding.executePendingBindings();
 
         MallMenu1Adapter mallMenu1Adapter = new MallMenu1Adapter(R.layout.item_mall_menu1);
-        binding.rvMenu.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        binding.rvMenu.setLayoutManager(new GridLayoutManager(getContext(), 5));
         binding.rvMenu.setAdapter(mallMenu1Adapter);
         mallMenu1Adapter.setList(menuBean.menuBeans);
 

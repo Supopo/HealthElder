@@ -34,7 +34,7 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="推荐"
+                android:text="@{viewModel.menuName}"
                 android:textSize="@dimen/sp_16" />
 
             <TextView
@@ -47,7 +47,7 @@
                 android:paddingLeft="@dimen/dp_5"
                 android:paddingBottom="@dimen/dp_2"
                 android:paddingTop="@dimen/dp_2"
-                android:text="猜你喜欢"
+                android:text="@{viewModel.subMenuName}"
                 android:textColor="@color/gray_999"
                 android:textSize="@dimen/sp_12" />
 

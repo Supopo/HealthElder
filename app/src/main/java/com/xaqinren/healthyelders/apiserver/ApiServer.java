@@ -4,6 +4,7 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
+import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
@@ -381,4 +382,7 @@ public interface ApiServer {
     @GET("jkzl/open/findMallHomeMenu")
     Observable<MBaseResponse<MallMenuRes>> getMallMenu();
 
+    //获取商城菜单信息
+    @GET("jkzl/open/findMallHomeCategory")
+    Observable<MBaseResponse<List<MenuBean>>> getMallTypeMenu();
 }

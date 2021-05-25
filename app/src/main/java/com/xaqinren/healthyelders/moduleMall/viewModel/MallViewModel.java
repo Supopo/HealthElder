@@ -26,6 +26,7 @@ public class MallViewModel extends BaseViewModel {
     public MutableLiveData<List<GoodsBean>> datas = new MutableLiveData<>();
     public MutableLiveData<List<MenuBean>> menu3 = new MutableLiveData<>();
     public MutableLiveData<MallMenuRes> mallMenuRes = new MutableLiveData<>();
+    public MutableLiveData<MallMenuRes> mallTypeRes = new MutableLiveData<>();
 
     public void getMallGoods() {
         List<GoodsBean> goodsBeans = new ArrayList<>();
@@ -48,5 +49,9 @@ public class MallViewModel extends BaseViewModel {
 
     public void getMenuInfo() {
         MallRepository.getInstance().getMallMenuInfo(mallMenuRes);
+    }
+
+    public void getMenuType() {
+        MallRepository.getInstance().getMallTypeInfo(menu3);
     }
 }

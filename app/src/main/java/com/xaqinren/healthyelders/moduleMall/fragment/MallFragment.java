@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -88,9 +89,9 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
 
-        viewModel.getMenu3List();
         viewModel.getMallGoods();
         viewModel.getMenuInfo();
+        viewModel.getMenuType();
     }
 
     /**
@@ -110,7 +111,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     }
 
     int pageCount;
-    int pageSize = 8;
+    int pageSize = 10;
 
     @Override
     public void initViewObservable() {
@@ -125,7 +126,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 if (mallMenuRes.advertising != null) {
                     setMenu2Data(mallMenuRes.advertising.menuInfoList);
                 }
-                if(mallMenuRes.banners != null){
+                if (mallMenuRes.banners != null) {
                     setBannerData(mallMenuRes.banners.menuInfoList);
                 }
             }
@@ -175,6 +176,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 holder.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 Glide.with(holder.itemView)
                         .load(data.imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .thumbnail(0.3f)
                         .into(holder.imageView);
             }

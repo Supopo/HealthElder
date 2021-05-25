@@ -4,7 +4,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
+import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
+
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -48,6 +51,29 @@ public class MallRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<MallMenuRes> data) {
                         mallMenuRes.postValue(data.getData());
+                    }
+
+                });
+    }
+
+    public void getMallTypeInfo(MutableLiveData<List<MenuBean>> typeMenus) {
+        userApi.getMallTypeMenu()
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<MenuBean>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<MenuBean>> data) {
+                        typeMenus.postValue(data.getData());
                     }
 
                 });
