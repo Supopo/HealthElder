@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 
 import java.util.List;
@@ -21,9 +22,16 @@ public class VideoGridViewModel extends BaseViewModel {
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
     public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
+    public MutableLiveData<ResBean> dzSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+
 
     public void getVideoData(int page, String tags) {
         LiveRepository.getInstance().getHomeVideoList(closeRsl, page, 6, 2, tags, datas);
+    }
+
+    public void toLikeVideo(String videoId, boolean isLike, int position) {
+        LiveRepository.getInstance().toLikeVideo(videoId, isLike, position, dzSuccess, dismissDialog);
     }
 
 }

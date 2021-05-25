@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoGridBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FJVideoAdapter;
+import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.VideoGridViewModel;
@@ -37,13 +38,14 @@ import me.goldze.mvvmhabit.base.BaseActivity;
  */
 public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, VideoGridViewModel> {
 
-    private FJVideoAdapter mAdapter;
+    private GridVideoAdapter mAdapter;
     private int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private Disposable subscribe;
     public RecyclerView recyclerView;
     private String title;
     private String tags;
+    private long firstLikeTime;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -70,7 +72,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
 
         recyclerView = binding.rvVideo;
 
-        mAdapter = new FJVideoAdapter(R.layout.item_fj_video);
+        mAdapter = new GridVideoAdapter(R.layout.item_grid_video);
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
         mLoadMore.setAutoLoadMore(true);//自动加载
@@ -108,63 +110,91 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
 
         viewModel.getVideoData(page, tags);
 
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                //判断是不是文章类型
-                List<VideoInfo> adapterList = mAdapter.getData();
-
-                //不是文章
-                if (!adapterList.get(position).isArticle()) {
-
-                    //从数据中判断移除文章
-                    VideoInfo nowInfo = adapterList.get(position);
-                    List<VideoInfo> tempList = new ArrayList<>();
-                    //移除文章 计算position
-                    for (VideoInfo videoInfo : adapterList) {
-                        if (!videoInfo.isArticle()) {
-                            tempList.add(videoInfo);
-                        }
-                    }
-
-                    int tempPos = 0;
-                    for (int i = 0; i < tempList.size(); i++) {
-                        if (nowInfo.resourceId.equals(tempList.get(i).resourceId)) {
-                            tempPos = i;
-                        }
-                    }
-
-
-                    //跳页 传入数据 pos page list
-                    VideoListBean listBean = new VideoListBean();
-
-                    if (tempList.size() % Constant.loadVideoSize == 0) {
-                        listBean.page = (tempList.size() / 2);
-                    } else {
-                        listBean.page = (tempList.size() / 2) + 1;
-                    }
-
-
-                    listBean.videoInfos = tempList;
-                    listBean.position = tempPos;
-                    listBean.type = 2;
-
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("key", listBean);
-                    startActivity(VideoListActivity.class, bundle);
-
-                } else {
-                    Intent intent = new Intent(VideoGridActivity.this, TextPhotoDetailActivity.class);
-                    intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, adapterList.get(position).resourceId);
-                    startActivity(intent);
-                }
+        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            long secondTime = System.currentTimeMillis();
+            if (secondTime - firstLikeTime < 500) {
+                return;
             }
-        });
+            //点赞请求
+            viewModel.toLikeVideo(mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite,position);
+            firstLikeTime = secondTime;
+        }));
+
+
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            //判断是不是文章类型
+            List<VideoInfo> adapterList = mAdapter.getData();
+
+            //不是文章
+            if (!adapterList.get(position).isArticle()) {
+
+                //从数据中判断移除文章
+                VideoInfo nowInfo = adapterList.get(position);
+                List<VideoInfo> tempList = new ArrayList<>();
+                //移除文章 计算position
+                for (VideoInfo videoInfo : adapterList) {
+                    if (!videoInfo.isArticle()) {
+                        tempList.add(videoInfo);
+                    }
+                }
+
+                int tempPos = 0;
+                for (int i = 0; i < tempList.size(); i++) {
+                    if (nowInfo.resourceId.equals(tempList.get(i).resourceId)) {
+                        tempPos = i;
+                    }
+                }
+
+                //跳页 传入数据 pos page list
+                VideoListBean listBean = new VideoListBean();
+
+                if (tempList.size() % Constant.loadVideoSize == 0) {
+                    listBean.page = (tempList.size() / 2);
+                } else {
+                    listBean.page = (tempList.size() / 2) + 1;
+                }
+
+
+                listBean.videoInfos = tempList;
+                listBean.position = tempPos;
+                listBean.type = 2;
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("key", listBean);
+                startActivity(VideoListActivity.class, bundle);
+
+            } else {
+                Intent intent = new Intent(VideoGridActivity.this, TextPhotoDetailActivity.class);
+                intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, adapterList.get(position).resourceId);
+                startActivity(intent);
+            }
+        }));
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.dismissDialog.observe(this, dis -> {
+            dismissDialog();
+        });
+
+        viewModel.dzSuccess.observe(this, dzRes -> {
+            if (dzRes != null && dzRes.isSuccess) {
+                //点赞
+                mAdapter.getData().get(dzRes.position).hasFavorite = !mAdapter.getData().get(dzRes.position).hasFavorite;
+                int favoriteCount = mAdapter.getData().get(dzRes.position).getFavoriteCount();
+
+                if (mAdapter.getData().get(dzRes.position).hasFavorite) {
+                    favoriteCount++;
+                } else {
+                    favoriteCount--;
+                }
+                mAdapter.getData().get(dzRes.position).favoriteCount = String.valueOf(favoriteCount);
+                //刷新
+                mAdapter.notifyItemChanged(dzRes.position, 99);
+            }
+        });
+
         viewModel.closeRsl.observe(this, closeRsl -> {
             if (closeRsl != null && closeRsl) {
                 if (binding.srlContent.isRefreshing()) {

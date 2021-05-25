@@ -41,6 +41,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
@@ -354,14 +355,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return;
             }
 
-            videoInfo.hasFavorite = !videoInfo.hasFavorite;
-            viewModel.toLikeVideo(videoInfo.resourceId, videoInfo.hasFavorite);
-            if (videoInfo.hasFavorite) {
-                videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() + 1);
-            } else {
-                videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() - 1);
-            }
-            viewModel.videoInfo.setValue(videoInfo);
+            viewModel.toLikeVideo(videoInfo.resourceId, !videoInfo.hasFavorite,position);
+
             firstLikeTime = secondTime;
         });
         //关注
@@ -410,6 +405,20 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (dismiss != null) {
                 if (dismiss) {
                     dismissDialog();
+                }
+            }
+        });
+
+        viewModel.dzSuccess.observe(this, dzRes -> {
+            if (dzRes != null) {
+                if (dzRes.isSuccess) {
+                    videoInfo.hasFavorite = !videoInfo.hasFavorite;
+                    if (videoInfo.hasFavorite) {
+                        videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() + 1);
+                    } else {
+                        videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() - 1);
+                    }
+                    viewModel.videoInfo.setValue(videoInfo);
                 }
             }
         });

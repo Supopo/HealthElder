@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
+import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
@@ -518,7 +519,7 @@ public class LiveRepository {
                 });
     }
 
-    public void toLikeVideo(String shortVideoId, boolean favoriteStatus) {
+    public void toLikeVideo(String shortVideoId, boolean favoriteStatus, int position, MutableLiveData<ResBean> dzSuccess, MutableLiveData<Boolean> dismissDialog) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("objectId", shortVideoId);
         hashMap.put("favoriteStatus", favoriteStatus);
@@ -535,12 +536,15 @@ public class LiveRepository {
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
                     @Override
                     protected void dismissDialog() {
-
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
-
+                        ResBean resBean = new ResBean();
+                        resBean.position = position;
+                        resBean.isSuccess = true;
+                        dzSuccess.postValue(resBean);
                     }
 
                 });

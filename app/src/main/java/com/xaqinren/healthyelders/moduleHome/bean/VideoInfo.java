@@ -37,7 +37,7 @@ public class VideoInfo implements Serializable {
     public String avatarUrl;//":
 
     public int getFavoriteCount() {
-        if (TextUtils.isEmpty(favoriteCount)) {
+        if (TextUtils.isEmpty(favoriteCount) || Integer.parseInt(favoriteCount) < 0) {
             return 0;
         }
         return Integer.parseInt(favoriteCount);

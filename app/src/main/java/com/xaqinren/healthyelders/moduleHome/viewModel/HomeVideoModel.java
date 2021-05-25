@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
@@ -24,10 +25,11 @@ public class HomeVideoModel extends BaseViewModel {
     public MutableLiveData<VideoInfo> videoInfo = new MutableLiveData<>();
     public MutableLiveData<CommentListBean> commentSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<ResBean> dzSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
-    public void toLikeVideo(String videoId, boolean isLike) {
-        LiveRepository.getInstance().toLikeVideo(videoId, isLike);
+    public void toLikeVideo(String videoId, boolean isLike, int position) {
+        LiveRepository.getInstance().toLikeVideo(videoId, isLike, position, dzSuccess, dismissDialog);
     }
 
     public void toFollow(String userId) {
