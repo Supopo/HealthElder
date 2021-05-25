@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.MenuBean" />
+    </data>
+
+    <!--    随机背景颜色-->
+    <!--    android:background="@{viewModel.placeholderRes}"-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_141"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="限时购"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tv_subTitlel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_marginTop="@dimen/dp_6"
+            android:text="官方补贴限量低价9点抢"
+            android:textColor="@color/gray_999"
+            android:textSize="@dimen/sp_13" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_subTitlel"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_11"
+            android:background="@{viewModel.placeholderRes}" />
+
+    </RelativeLayout>
+
+</layout>

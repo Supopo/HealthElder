@@ -1,5 +1,10 @@
 package com.xaqinren.healthyelders.moduleHome.bean;
 
+import com.xaqinren.healthyelders.utils.ColorsUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Lee. on 2021/5/15.
  * 菜单类
@@ -20,4 +25,8 @@ public class MenuBean {
     public String imageUrl;//": "https://img.qianniux.com/BankLogo/WeChat.png",
     public int sortOrder;//": 1,
     public String showChannel;//": "commodityType"
+    public List<MenuBean> menuBeans = new ArrayList<>();
+    public int getPlaceholderRes() {
+        return ColorsUtils.randomColor();
+    }
 }

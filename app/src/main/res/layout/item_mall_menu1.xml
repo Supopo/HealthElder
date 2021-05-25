@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.MenuBean" />
+    </data>
+
+    <!--    随机背景颜色-->
+    <!--    android:background="@{viewModel.placeholderRes}"-->
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:background="@{viewModel.getPlaceholderRes()}"
+            android:id="@+id/iv_menu"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:text="健康药房"
+            android:textColor="#FF777777"
+            android:textSize="@dimen/sp_12" />
+
+    </LinearLayout>
+
+</layout>
