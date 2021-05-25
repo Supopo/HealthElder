@@ -66,8 +66,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Drawable dawable;
     private boolean isTranMenu;
     private Handler handler;
-    private String userSig;
-    private boolean isHasBar;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -118,7 +116,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //获取token
         accessToken = InfoCache.getInstance().getAccessToken();
         userInfoBean = InfoCache.getInstance().getLoginUser();
-        userSig = InfoCache.getInstance().getUserSig();
 
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {

@@ -9,10 +9,9 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
-import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
+import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
-import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -23,10 +22,8 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.Anchor
 import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableObserver;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -496,7 +493,7 @@ public class LiveRepository {
         getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType, tags);
     }
 
-    public void getHomeInfo(MutableLiveData<HomeRes> homeRes) {
+    public void getHomeInfo(MutableLiveData<HomeMenuRes> homeRes) {
         userApi.getHomeInfo()
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -505,14 +502,14 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<HomeRes>>() {
+                .subscribe(new CustomObserver<MBaseResponse<HomeMenuRes>>() {
                     @Override
                     protected void dismissDialog() {
 
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<HomeRes> data) {
+                    protected void onSuccess(MBaseResponse<HomeMenuRes> data) {
                         homeRes.postValue(data.getData());
                     }
 

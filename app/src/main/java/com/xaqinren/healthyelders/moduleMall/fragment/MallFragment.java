@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -24,7 +26,11 @@ import com.xaqinren.healthyelders.moduleMall.adapter.MallHotMenuAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu3Adapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.MallViewModel;
+import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+import com.youth.banner.adapter.BannerImageAdapter;
+import com.youth.banner.holder.BannerImageHolder;
+import com.youth.banner.indicator.CircleIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +65,9 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         pageAdapter = new MallMenu1PageAdapter(R.layout.item_mall_rv);
         binding.vpMenu1.setAdapter(pageAdapter);
 
+        binding.banner.addBannerLifecycleObserver(this);
+        binding.banner.setIndicator(new CircleIndicator(getActivity()));
+
         mallHotMenuAdapter = new MallHotMenuAdapter(R.layout.item_mall_hot);
         binding.rvMenu2.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         binding.rvMenu2.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1, false));
@@ -79,11 +88,9 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
 
-
-        viewModel.getMenu1List();
-        viewModel.getMenu2List();
         viewModel.getMenu3List();
         viewModel.getMallGoods();
+        viewModel.getMenuInfo();
     }
 
     /**
@@ -100,7 +107,6 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         } else {
             mAppBarParams.setScrollFlags(0);
         }
-
     }
 
     int pageCount;
@@ -109,37 +115,22 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.menu1.observe(this, datas -> {
-            if (datas != null && datas.size() > 0) {
 
-                if (datas.size() % pageSize == 0) {
-                    pageCount = (datas.size() / pageSize);
-                } else {
-                    pageCount = (datas.size() / pageSize) + 1;
+
+        viewModel.mallMenuRes.observe(this, mallMenuRes -> {
+            if (mallMenuRes != null) {
+                if (mallMenuRes.category != null) {
+                    setMenu1Data(mallMenuRes.category.menuInfoList);
                 }
-
-                List<MenuBean> pageList = new ArrayList<>();
-                for (int i = 0; i < pageCount; i++) {
-                    MenuBean menuBean = new MenuBean();
-                    if (i == pageCount - 1) {
-                        menuBean.menuBeans.addAll(datas.subList(i * pageSize, datas.size()));
-                    } else {
-                        menuBean.menuBeans.addAll(datas.subList(i * pageSize, (i + 1) * pageSize));
-                    }
-                    pageList.add(menuBean);
+                if (mallMenuRes.advertising != null) {
+                    setMenu2Data(mallMenuRes.advertising.menuInfoList);
                 }
-
-                binding.vpMenu1.setOffscreenPageLimit(pageCount);
-                pageAdapter.setNewInstance(pageList);
-
+                if(mallMenuRes.banners != null){
+                    setBannerData(mallMenuRes.banners.menuInfoList);
+                }
             }
         });
 
-        viewModel.menu2.observe(this, datas -> {
-            if (datas != null && datas.size() > 0) {
-                mallHotMenuAdapter.setNewInstance(datas);
-            }
-        });
         viewModel.menu3.observe(this, datas -> {
             if (datas != null && datas.size() > 0) {
                 mallMenu3Adapter.setNewInstance(datas);
@@ -174,5 +165,51 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 }
             }
         });
+    }
+
+    private void setBannerData(List<MenuBean> bannerImages) {
+        binding.banner.setDatas(bannerImages);
+        binding.banner.setAdapter(new BannerImageAdapter<MenuBean>(bannerImages) {
+            @Override
+            public void onBindView(BannerImageHolder holder, MenuBean data, int position, int size) {
+                holder.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                Glide.with(holder.itemView)
+                        .load(data.imageUrl)
+                        .thumbnail(0.3f)
+                        .into(holder.imageView);
+            }
+        });
+    }
+
+    private void setMenu2Data(List<MenuBean> datas) {
+        if (datas != null && datas.size() > 0) {
+            mallHotMenuAdapter.setNewInstance(datas);
+        }
+    }
+
+    private void setMenu1Data(List<MenuBean> datas) {
+        if (datas != null && datas.size() > 0) {
+
+            if (datas.size() % pageSize == 0) {
+                pageCount = (datas.size() / pageSize);
+            } else {
+                pageCount = (datas.size() / pageSize) + 1;
+            }
+
+            List<MenuBean> pageList = new ArrayList<>();
+            for (int i = 0; i < pageCount; i++) {
+                MenuBean menuBean = new MenuBean();
+                if (i == pageCount - 1) {
+                    menuBean.menuBeans.addAll(datas.subList(i * pageSize, datas.size()));
+                } else {
+                    menuBean.menuBeans.addAll(datas.subList(i * pageSize, (i + 1) * pageSize));
+                }
+                pageList.add(menuBean);
+            }
+
+            binding.vpMenu1.setOffscreenPageLimit(pageCount);
+            pageAdapter.setNewInstance(pageList);
+
+        }
     }
 }

@@ -1,10 +1,9 @@
 package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.bean.BaseListRes;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
-import com.xaqinren.healthyelders.moduleHome.bean.HomeRes;
+import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
@@ -12,34 +11,28 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MusicClassBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtMyBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -250,12 +243,12 @@ public interface ApiServer {
 
     //获取首页菜单信息
     @GET("content/open/findHomeData")
-    Observable<MBaseResponse<HomeRes>> getHomeInfo();
+    Observable<MBaseResponse<HomeMenuRes>> getHomeInfo();
 
     //首页点赞
     @Headers({"content-type:application/json"})
     @POST("content/shortVideo/favorite")
-    Observable<MBaseResponse<HomeRes>> setVideoLike(@Header("Authorization") String authorization, @Body RequestBody body);
+    Observable<MBaseResponse<HomeMenuRes>> setVideoLike(@Header("Authorization") String authorization, @Body RequestBody body);
 
     //获取正在直播的好友
     @GET("content/findAttentionUserLive")
@@ -289,7 +282,7 @@ public interface ApiServer {
     //对本体点赞
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/favorite")
-    Observable<MBaseResponse<HomeRes>> setUserDiaryLike(@Header("Authorization") String authorization, @Body RequestBody body);
+    Observable<MBaseResponse<HomeMenuRes>> setUserDiaryLike(@Header("Authorization") String authorization, @Body RequestBody body);
 
 
     //用户实名认证
@@ -341,13 +334,14 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
 
 
-
     //日志详情
     @GET("content/open/userDiary/info")
     Observable<MBaseResponse<DiaryInfoBean>> getDiaryInfo(@Header("Authorization") String authorization, @Query("id") String id);
 
 
-    /** 日记评论 */
+    /**
+     * 日记评论
+     */
 
     //评论
     @Headers({"content-type:application/json"})
@@ -379,6 +373,12 @@ public interface ApiServer {
     @POST("content/userDiary/favorite")
     Observable<MBaseResponse<Object>> setDiaryFavorite(@Header("Authorization") String authorization, @Body RequestBody body);
 
-    /** 日记评论 */
+    /**
+     * 日记评论
+     */
+
+    //获取商城菜单信息
+    @GET("jkzl/open/findMallHomeMenu")
+    Observable<MBaseResponse<MallMenuRes>> getMallMenu();
 
 }
