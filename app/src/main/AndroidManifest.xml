@@ -214,6 +214,7 @@
             />
         <activity android:name=".moduleHome.activity.DraftActivity" />
         <activity android:name=".moduleHome.activity.VideoGridActivity" />
+        <activity android:name=".modulePicture.activity.PublishAtActivity" />
     </application>
 
 </manifest>

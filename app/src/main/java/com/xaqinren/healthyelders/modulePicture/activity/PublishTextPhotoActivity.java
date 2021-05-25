@@ -120,6 +120,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private int MAX = 9;
     private int REQUEST_CAMERA = 188;
     private int REQUEST_GALLERY = 189;
+    private int AT_CODE = 190;
     private boolean isUploadFile;
     private int upLoadFileCount;
     private boolean isShowKeyBord = false;
@@ -206,6 +207,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             uploadFile();
         });
 
+        binding.contentInput.setDelEnablePost(false);
+
         binding.contentInput.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
             @Override
             public void inputTopic(String str) {
@@ -222,7 +225,10 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             @Override
             public void inputAt(String str) {
                 LogUtils.e(TAG, "inputTopic 提出@弹窗 -> " + str);
-                showAtView(str);
+//                showAtView(str);
+                binding.contentInput.setEnablePost(false);
+                Intent intent = new Intent(PublishTextPhotoActivity.this, PublishAtActivity.class);
+                startActivityForResult(intent, AT_CODE);
             }
 
             @Override
@@ -649,6 +655,23 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 String path = result.get(0).getPath();
                 addLast(path);
+            }
+            else if (requestCode == AT_CODE) {
+                if (data != null) {
+                    LiteAvUserBean bean = (LiteAvUserBean) data.getSerializableExtra(com.xaqinren.healthyelders.modulePicture.Constant.PUBLISH_AT);
+                    binding.contentInput.setAtStr("@" + bean.getName(), bean.userId);
+                }else{
+                    //删除at文字
+                    binding.contentInput.delLastChar();
+                }
+                binding.contentInput.setEnablePost(true);
+            }
+        }else{
+            if (requestCode == AT_CODE)
+            {
+                //删除at文字
+                binding.contentInput.delLastChar();
+                binding.contentInput.setEnablePost(true);
             }
         }
     }

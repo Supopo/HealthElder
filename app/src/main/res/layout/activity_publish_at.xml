@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56">
+
+            <EditText
+                android:id="@+id/input_et"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_32"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_search"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:drawableLeft="@mipmap/icon_search_weiz"
+                android:drawablePadding="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:hint="搜索"
+                android:textColorHint="@color/gray_999"
+                android:textSize="@dimen/sp_13"
+                android:textColor="@color/color_252525"
+                android:singleLine="true" />
+        </RelativeLayout>
+
+        <View
+            style="@style/line"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+    </LinearLayout>
+</layout>

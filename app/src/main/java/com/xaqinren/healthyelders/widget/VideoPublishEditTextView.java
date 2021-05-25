@@ -1,9 +1,15 @@
 package com.xaqinren.healthyelders.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.text.LineBreaker;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
@@ -16,10 +22,12 @@ import android.view.View;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoPublishEditBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.editor.EditFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +54,15 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private boolean isTopicEnable = true;
     //是否激活@
     private boolean isAtEnable = true;
+    //激活上发事件
+    private boolean enablePost = true;
+    //是否在删除
+    private boolean isDel = false;
+    //删除时，是否发送事件
+    private boolean delEnablePost = true;
+    //handel
+    private Handler handler = new Handler(Looper.myLooper());
+
 
     //特殊文字颜色
     private int colorTopic = Color.parseColor("#FF004E");
@@ -73,6 +90,14 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     private int textStart, textLengthBefore, getTextLengthAfter;
 
     private OnTextChangeListener onTextChangeListener;
+
+    public void setEnablePost(boolean enablePost) {
+        this.enablePost = enablePost;
+    }
+
+    public void setDelEnablePost(boolean delEnablePost) {
+        this.delEnablePost = delEnablePost;
+    }
 
     public void setColorTopic(int colorTopic) {
         this.colorTopic = colorTopic;
@@ -128,6 +153,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL) {
                     //删除键
+                    isDel = true;
                     if (checkDelAt()) {
                         return true;
                     } else {
@@ -138,16 +164,22 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 return false;
             }
         });
+
+        setEditableFactory(new EditFactory());
         initView = true;
+
     }
 
     @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+    public void beforeTextChanged(CharSequence charSequence, int start, int lengthBefore, int lengthAfter) {
+        if (lengthAfter > 0 ) {
+            isDel = false;
+        }
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int start, int lengthBefore, int lengthAfter) {
+
         textStart = start;
         textLengthBefore = lengthBefore;
         getTextLengthAfter = lengthAfter;
@@ -157,23 +189,37 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 isOptionDelAt = false;
             }
         }
-
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
+//        LogUtils.e(TAG, "afterTextChanged" );
         if (editable.length() > 0) {
             if (prepareTopic || isOptionDelAt) {
                 return;
             }
+//            LogUtils.e(TAG, "执行一次 加载文字 效果" );
             removeTextChangedListener(this);
             clearAtOptionNoColor();
             watchText(editable, textStart, textLengthBefore, getTextLengthAfter);
-            if (isTopicEnable)
-            sendBackTopic(editable);
-            if (isAtEnable)
-            sendBackAt(editable);
+            if (isTopicEnable) {//激活topic功能
+                if (enablePost){//激活发送事件
+                    if (!delEnablePost && isDel) {
+                        //空处理
+                    }else
+                        sendBackTopic(editable);
+                }
+            }
+            if (isAtEnable) {
+                if (enablePost) {//激活发送#事件
+                    if (!delEnablePost && isDel) {
+                        //空处理
+                    }else
+                        sendBackAt(editable);
+                }
+            }
             addTextChangedListener(this);
+//            LogUtils.e(TAG, "完成一次 加载文字 效果" );
         } else {
             if (onTextChangeListener != null) {
                 onTextChangeListener.inputNoTopic();
@@ -230,7 +276,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             }
         }
     }
-
     /**
      * 检查删除键
      *
@@ -258,7 +303,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             clearAtOption();
             return false;//非@区间
         }
-        cutStr = currentStr.substring(textLast, currentStr.length());
+        cutStr = currentStr.substring(textLast, selStart);
 
         //获取合法的@XX区间
         Matcher matcher = patternAt.matcher(cutStr);
@@ -452,6 +497,15 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     }
 
     /**
+     * 删除最后一个文字
+     */
+    public void delLastChar() {
+        char last = getText().charAt(getText().length() - 1);
+        if (last == '@' || last == '#')
+            getText().delete(length() - 1, length());
+    }
+
+    /**
      * 添加一个空格键以锁定光标位置
      */
     public void addBlackKey() {
@@ -512,7 +566,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         addBlackKey();
     }
 
-
     private void watchText(Editable text, int start, int lengthBefore, int lengthAfter) {
         //        LogUtils.e("VideoPublishEditTextView", "text = " + text.toString() + "\tstart =\t"+start+ "\tlengthBefore =\t"+lengthBefore+ "\tlengthAfter =\t"+lengthAfter);
         if (isTopicEnable)
@@ -524,7 +577,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 changeTextColor(videoPublishEditBeans, text, colorTopic, start, lengthBefore, lengthAfter);
             }
         }
-
         prepareTopic = false;
         videoPublishEditBeans.clear();
     }
@@ -568,6 +620,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
     }
 
     private void changeTextColor(List<VideoPublishEditBean> videoPublishEditBeans, Editable text, int color, int lengtStart, int lengthBefore, int lengthAfter) {
+        if (isDel)return;
         SpannableStringBuilder spanColor = new SpannableStringBuilder(text);
         spanColor.setSpan(new ForegroundColorSpan(colorNormal), 0, text.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         //正常字体
@@ -588,6 +641,7 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             spanColor.setSpan(new StyleSpan(textStyle[1]), editBean.getStartPoint(), editBean.getEndPoint(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             spanColor.setSpan(new ForegroundColorSpan(color), editBean.getStartPoint(), editBean.getEndPoint(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
+        //超费时间，卡UI
 
         text.replace(0, text.length(), spanColor);
         if (lengthBefore > 0 && lengthAfter == 0) {
@@ -615,7 +669,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         }
         prepareTopic = false;
         getText().replace(bean.getStartPoint(), bean.getEndPoint(), spanColor);
-
     }
 
     /**
@@ -697,7 +750,6 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
                 }
             }
         }
-
         setText(content);
     }
 
