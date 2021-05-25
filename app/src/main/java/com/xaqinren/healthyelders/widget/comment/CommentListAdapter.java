@@ -31,6 +31,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         this.operationItemClickListener = operationItemClickListener;
     }
 
+    private boolean isFirst = true;
 
     @Override
     protected void convert(@NotNull ViewHolder baseViewHolder, CommentListBean iCommentBean) {
@@ -46,6 +47,11 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         if (iCommentBean.shortVideoCommentReplyList == null) {
             iCommentBean.shortVideoCommentReplyList = new ArrayList<>();
         }
+        if (iCommentBean.mReplyList == null) {
+            iCommentBean.mReplyList = new ArrayList<>();
+        }
+
+
         if (iCommentBean.replyList == null) {
             iCommentBean.replyList = new ArrayList<>();
         }
@@ -99,7 +105,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                     int viewType = iCommentBean.allReply.get(position).viewType;
                     if (viewType == 1) {
                         //点击更多
-                      if (iCommentBean.allReply.size() == iCommentBean.commentCount + 1) {
+                        if (iCommentBean.allReply.size() == iCommentBean.commentCount + 1) {
                             //收起
                             iCommentBean.replyList.clear();
                             iCommentBean.allReply.clear();
@@ -109,7 +115,8 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                             notifyItemChanged(baseViewHolder.getAdapterPosition());
                         } else {
                             //加载更多
-                          loadMoreCommentListener.onLoadMore(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
+
+                            loadMoreCommentListener.onLoadMore(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
                         }
                     }
                 }

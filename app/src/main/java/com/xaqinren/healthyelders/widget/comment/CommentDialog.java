@@ -254,6 +254,9 @@ public class CommentDialog {
                             .replyList.addAll(index,
                             replyDatas.replyList);
 
+
+                    commentAdapter.getData().get(replyDatas.parentPos).shortVideoCommentReplyList.removeAll(commentAdapter.getData().get(replyDatas.parentPos).mReplyList);
+
                     commentAdapter.notifyItemChanged(replyDatas.parentPos);
 
                 }
@@ -263,8 +266,6 @@ public class CommentDialog {
 
         });
     }
-
-
 
 
     //添加自己的评论数据
@@ -286,6 +287,7 @@ public class CommentDialog {
         CommentListBean adapterCommentBean = commentAdapter.getData().get(commentListBean.parentPos);
 
         adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
+        adapterCommentBean.mReplyList.add(commentListBean);
         adapterCommentBean.commentCount++;
         adapterCommentBean.lodaState = 1;//展示  展开回复
 
