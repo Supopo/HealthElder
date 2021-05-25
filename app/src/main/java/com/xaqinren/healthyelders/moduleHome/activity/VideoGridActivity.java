@@ -158,6 +158,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                 listBean.videoInfos = tempList;
                 listBean.position = tempPos;
                 listBean.type = 2;
+                listBean.tags = tags;
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("key", listBean);

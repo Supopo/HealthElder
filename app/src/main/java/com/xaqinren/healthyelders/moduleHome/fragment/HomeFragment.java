@@ -120,7 +120,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
         binding.ivZhibo.setOnClickListener(lis -> {
             VideoListBean listBean = new VideoListBean();
-            listBean.type = 0;
+            listBean.type = 1;
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("key", listBean);

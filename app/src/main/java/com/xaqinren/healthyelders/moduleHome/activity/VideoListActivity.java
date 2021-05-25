@@ -108,9 +108,9 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                 }
             }, 500);
-        } else if (videos.type == 0) {
+        } else if (videos.type == 1) {
             //请求数据  推荐打开 主播列表
-            viewModel.getVideoData(page, videos.type);
+            viewModel.getVideoData(page, videos);
         }
 
 
@@ -124,7 +124,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 if ((position + 1) == fragmentList.size()) {
                     //加载更多数据
                     page++;
-                    viewModel.getVideoData(page, videos.type);
+                    viewModel.getVideoData(page, videos);
                 }
             }
         });
@@ -135,7 +135,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             public void onRefresh() {
                 page++;
                 //                showLoadView();
-                viewModel.getVideoData(page, videos.type);
+                viewModel.getVideoData(page, videos);
                 binding.srl.setRefreshing(false);
             }
         });
@@ -174,7 +174,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                         }
                     }
 
-                } else if (videos.type == 0) {
+                } else if (videos.type == 1) {
                     tempList.addAll(datas);
                 }
 
