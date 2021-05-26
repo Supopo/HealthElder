@@ -1,14 +1,21 @@
 package com.xaqinren.healthyelders.moduleMall.adapter;
 
+import android.graphics.Paint;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMallGoodBinding;
 import com.xaqinren.healthyelders.databinding.ItemMallHotBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
 
@@ -25,6 +32,21 @@ public class MallGoodsAdapter extends BaseQuickAdapter<GoodsBean, BaseViewHolder
         ItemMallGoodBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+
+        binding.tvRmb.getPaint().setAntiAlias(true);//抗锯齿
+        binding.tvRmb.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);//设置中划线并加清晰
+
+        binding.tvMinPrice.getPaint().setAntiAlias(true);//抗锯齿
+        binding.tvMinPrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);//设置中划线并加清晰
+
+
+        int screenWidth = ScreenUtil.getScreenWidth(getContext());
+        //瀑布流图片的宽度 4+3+4
+        int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_11)) / 2;
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.ivCover.getLayoutParams();
+        params.height = itemWidth;
+        binding.ivCover.setLayoutParams(params);
     }
 
     //局部刷新用的

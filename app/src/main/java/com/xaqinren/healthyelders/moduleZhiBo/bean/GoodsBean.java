@@ -2,6 +2,8 @@ package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 
+import java.math.BigDecimal;
+
 /**
  * Created by Lee. on 2021/4/21.
  */
@@ -11,6 +13,7 @@ public class GoodsBean {
     public String cover;//
     public String name;//
     public boolean isSelect;//
+
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
     }
@@ -43,4 +46,14 @@ public class GoodsBean {
     public int totalSoldCount;//": 0,
     public double minSalesPrice;//": 89.1,
     public double maxSalesPrice;//": 99
+
+    public String getMaxSalesPrice() {
+        BigDecimal maxPrice = new BigDecimal(maxSalesPrice).setScale(2, 1);
+        return String.valueOf(maxPrice);
+    }
+
+    public String getMinSalesPrice() {
+        BigDecimal minPrice = new BigDecimal(minSalesPrice).setScale(2, 1);
+        return String.valueOf(minPrice);
+    }
 }

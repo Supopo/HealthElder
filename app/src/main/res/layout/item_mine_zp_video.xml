@@ -26,6 +26,7 @@
             app:qmui_corner_radius="@dimen/dp_4" />
 
         <TextView
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_151"
             android:gravity="center"

@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleMall.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -47,6 +49,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     private int page = 1;
     private String category = "";
     private BaseLoadMoreModule mLoadMore;
+    public SwipeRefreshLayout srl;
+    public boolean isTop = true;
+    int pageCount;//menu1菜单页数 ViewPager+RecvclerView
+    int pageSize = 10;//menu1菜单页数数量
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,6 +70,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     public void initData() {
         super.initData();
 
+        srl = binding.srlTop;
         binding.srlTop.setEnabled(false);
         pageAdapter = new MallMenu1PageAdapter(R.layout.item_mall_rv);
         binding.vpMenu1.setAdapter(pageAdapter);
@@ -138,13 +145,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         }
     }
 
-    int pageCount;
-    int pageSize = 10;
-
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.dismissDialog.observe(this,isDismiss ->{
+        viewModel.dismissDialog.observe(this, isDismiss -> {
             dismissDialog();
         });
 
@@ -164,6 +168,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         viewModel.menu3.observe(this, datas -> {
             if (datas != null && datas.size() > 0) {
+
                 datas.get(0).isSelect = true;
                 mallMenu3Adapter.setNewInstance(datas);
 
@@ -206,6 +211,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         binding.appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
                 //为菜单栏固定位置
                 if (verticalOffset > -binding.rvMenu3.getTop()) {
                     binding.rvMenu3.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -215,8 +221,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
                 //判单只有滑倒最顶部才能下拉刷新
                 if (verticalOffset == 0) {
+                    isTop = true;
                     binding.srlTop.setEnabled(true);
                 } else {
+                    isTop = false;
                     binding.srlTop.setEnabled(false);
                 }
             }
@@ -249,6 +257,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     private void setMenu1Data(List<MenuBean> datas) {
         if (datas != null && datas.size() > 0) {
 
+            //重组ViewPager2的数据
+            //计算页数
             if (datas.size() % pageSize == 0) {
                 pageCount = (datas.size() / pageSize);
             } else {
@@ -267,6 +277,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
             }
 
             binding.vpMenu1.setOffscreenPageLimit(pageCount);
+
             pageAdapter.setNewInstance(pageList);
 
         }

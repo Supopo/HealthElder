@@ -70,6 +70,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Drawable dawable;
     private boolean isTranMenu;
     private Handler handler;
+    private MallFragment mallFragment;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -148,8 +149,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void initFragment() {
         mFragments = new ArrayList<>();
-        mFragments.add(new HomeFragment());
-        mFragments.add(new MallFragment());
+        homeFragment = new HomeFragment();
+        mallFragment = new MallFragment();
+        mFragments.add(homeFragment);
+        mFragments.add(mallFragment);
         mFragments.add(new MsgFragment());
         mFragments.add(new MineFragment());
         //默认选中第一个
@@ -162,7 +165,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         dawable2 = getResources().getDrawable(R.mipmap.line_bq_white);
         dawable2.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
 
-        homeFragment = (HomeFragment) mFragments.get(0);
         initEvent();
 
     }
@@ -178,36 +180,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             //底部菜单变白色
             setBottomColors(R.color.white, dawable, R.color.color_252525, false);
 
-
-            //            if (selectView.getId() == oldView.getId()) {
-            //                //判断只有处于推荐列表时候才有效
-            //                if (AppApplication.get().getLayoutPos() != 0) {
-            //                    return;
-            //                }
-            //
-            //                //发送推荐列表回顶消息
-            //                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
-            //                //发送停止播放消息
-            //                RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
-            //                //底部菜单变白色
-            //                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
-            //                //取消全屏
-            //                binding.line.setVisibility(View.VISIBLE);
-            //            }
-            //            else {
-            //                //判断
-            //                if (AppApplication.get().getLayoutPos() != 2) {
-            //                    //发送继续播放消息
-            //                    RxBus.getDefault().post(new VideoEvent(101, AppApplication.get().getLayoutPos()));
-            //                    isTranMenu = true;
-            //                }else {
-            //                    //原先是附近 需要变白
-            //                    //底部菜单变白色
-            //                    setBottomColors(R.color.white, dawable, R.color.color_252525, false);
-            //                }
-            //
-            //                initBottomTab();
-            //            }
             initBottomTab();
             oldView = binding.tvMenu1;
         });
@@ -276,16 +248,36 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 double scrollX = Math.abs(now_press_X - before_press_X);
                 double scrollY = Math.abs(now_press_Y - before_press_Y);
 
-                if (scrollX <= 50 || scrollX < scrollY) {
-                    //左右滑动过小，禁止滑动
-                    if (homeFragment != null && homeFragment.vp2 != null) {
-                        homeFragment.vp2.setUserInputEnabled(false);
-                    }
-                } else {
-                    if (homeFragment != null && homeFragment.vp2 != null) {
-                        homeFragment.vp2.setUserInputEnabled(true);
+                if (selectView.getId() == R.id.tv_menu1) {
+                    if (scrollX <= 50 || scrollX < scrollY) {
+                        //左右滑动过小，禁止滑动
+                        if (homeFragment != null && homeFragment.vp2 != null) {
+                            homeFragment.vp2.setUserInputEnabled(false);
+                        }
+                    } else {
+                        if (homeFragment != null && homeFragment.vp2 != null) {
+                            homeFragment.vp2.setUserInputEnabled(true);
+                        }
                     }
                 }
+
+                //判断商城页面appBar处于展开，且向下滑动超过左右滑动再打开下拉刷新
+                else if (selectView.getId() == R.id.tv_menu2) {
+                    if (scrollX > scrollY) {
+                        if (mallFragment.isTop) {
+                            if (mallFragment.srl != null) {
+                                mallFragment.srl.setEnabled(false);
+                            }
+                        }
+                    } else {
+                        if (mallFragment.isTop) {
+                            if (mallFragment.srl != null) {
+                                mallFragment.srl.setEnabled(true);
+                            }
+                        }
+                    }
+                }
+
                 break;
             case MotionEvent.ACTION_UP:
                 before_press_Y = 0;
