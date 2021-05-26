@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -58,6 +60,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         return BR.viewModel;
     }
 
+    private int menu3OldPos;
+
     @Override
     public void initData() {
         super.initData();
@@ -78,6 +82,15 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         mallMenu3Adapter = new MallMenu3Adapter(R.layout.item_mall_menu3);
         binding.rvMenu3.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
         binding.rvMenu3.setAdapter(mallMenu3Adapter);
+
+        mallMenu3Adapter.setOnItemClickListener(((adapter, view, position) -> {
+            mallMenu3Adapter.getData().get(menu3OldPos).isSelect = false;
+            mallMenu3Adapter.notifyItemChanged(menu3OldPos);
+            mallMenu3Adapter.getData().get(position).isSelect = true;
+            mallMenu3Adapter.notifyItemChanged(position);
+            menu3OldPos = position;
+            //请求对应商品数据
+        }));
 
         mallGoodsAdapter = new MallGoodsAdapter(R.layout.item_mall_good);
         //瀑布流
@@ -134,6 +147,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         viewModel.menu3.observe(this, datas -> {
             if (datas != null && datas.size() > 0) {
+                datas.get(0).isSelect = true;
                 mallMenu3Adapter.setNewInstance(datas);
             }
         });
@@ -185,6 +199,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
     private void setMenu2Data(List<MenuBean> datas) {
         if (datas != null && datas.size() > 0) {
+
+            datas.get(0).type = 1;
             mallHotMenuAdapter.setNewInstance(datas);
         }
     }

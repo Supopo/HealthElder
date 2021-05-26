@@ -26,9 +26,14 @@ public class MallMenu3Adapter extends BaseQuickAdapter<MenuBean, BaseViewHolder>
         binding.setViewModel(item);
         binding.executePendingBindings();
 
-        if (helper.getAdapterPosition() == 0) {
+        if (item.isSelect) {
             binding.tvSubTitle.setBackground(getContext().getResources().getDrawable(R.drawable.bg_mall_menu));
-            helper.setTextColor(R.id.tv_subTitle,getContext().getResources().getColor(R.color.white));
+            helper.setTextColor(R.id.tv_title, getContext().getResources().getColor(R.color.color_F81E4D));
+            helper.setTextColor(R.id.tv_subTitle, getContext().getResources().getColor(R.color.white));
+        } else {
+            binding.tvSubTitle.setBackground(null);
+            helper.setTextColor(R.id.tv_title, getContext().getResources().getColor(R.color.color_252525));
+            helper.setTextColor(R.id.tv_subTitle, getContext().getResources().getColor(R.color.gray_999));
         }
     }
 

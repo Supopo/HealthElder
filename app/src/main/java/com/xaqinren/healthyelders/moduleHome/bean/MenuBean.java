@@ -10,6 +10,7 @@ import java.util.List;
  * 菜单类
  */
 public class MenuBean {
+    public boolean isSelect;
     public String id;//": "1",
     public String createdAt;//": null,
     public String merchantId;//": "1",
@@ -26,6 +27,7 @@ public class MenuBean {
     public int sortOrder;//": 1,
     public String showChannel;//": "commodityType"
     public List<MenuBean> menuBeans = new ArrayList<>();
+    public int type;
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
     }

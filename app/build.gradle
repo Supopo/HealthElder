@@ -236,9 +236,7 @@ dependencies {
 
     //banner
     implementation 'io.github.youth5201314:banner:2.2.1'
-
-    implementation ('com.alibaba.android:vlayout:1.2.8@aar') {
-        transitive = true
-    }
+    //格子计时器
+    implementation 'com.github.zrunker:ZCountDownView:v1.1'
 }
 
