@@ -79,7 +79,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                         startLiveFragment.onActivityStop();
                         finish();
                     }
-                }, 600);
+                }, 500);
             }
         });
     }
@@ -167,15 +167,15 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityStop();
         } else if (currentFragmentPosition == 0) {
-            //不能关闭 关闭会影响直播页面的推流
-            //            startLiveFragment.onActivityStop();
+            startLiveFragment.onActivityStop();
         }
     }
+
 
     @Override
     protected void onRestart() {
@@ -183,7 +183,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityRestart();
         } else if (currentFragmentPosition == 0) {
-            //            startLiveFragment.onActivityRestart();
+            startLiveFragment.onActivityRestart();
         }
     }
 

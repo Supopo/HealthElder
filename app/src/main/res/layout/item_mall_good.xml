@@ -16,6 +16,7 @@
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
     <LinearLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -34,7 +35,7 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_6"
             android:maxLines="2"
             android:text="@{viewModel.title}"
             android:textSize="@dimen/sp_13" />

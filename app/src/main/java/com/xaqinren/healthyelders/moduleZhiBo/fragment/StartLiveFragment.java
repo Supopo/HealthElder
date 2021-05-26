@@ -101,6 +101,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private String cityCode;
     private String province;
     private String district;
+    private boolean isToZhibo;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -310,8 +311,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
+        isToZhibo = true;
         startActivity(LiveZhuboActivity.class, bundle);
-        getActivity().finish();
     }
 
 

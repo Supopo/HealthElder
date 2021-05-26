@@ -155,9 +155,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         setStatusBarTransparent();
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
+
         showDialog("进入中...");
         //后期判断是否登录，如果已经则登录注入用户信息一定要注入的
         viewModel.toLoginRoom(mLiveRoom);
+
         initEvent();
         initLiveInfo();
         initMsgList();
