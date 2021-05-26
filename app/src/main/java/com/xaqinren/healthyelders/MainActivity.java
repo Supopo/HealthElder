@@ -392,19 +392,23 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         switch (selectView.getId()) {
             case R.id.tv_menu1:
+                setStatusBarColorWhite();
                 binding.line.setVisibility(View.GONE);
                 commitAllowingStateLoss(0);
                 break;
             case R.id.tv_menu2:
-                //取消全屏
+                setStatusBarColorBlack();
+                //取消布局全屏
                 binding.line.setVisibility(View.VISIBLE);
                 commitAllowingStateLoss(1);
                 break;
             case R.id.tv_menu3:
+                setStatusBarColorBlack();
                 binding.line.setVisibility(View.VISIBLE);
                 commitAllowingStateLoss(2);
                 break;
             case R.id.tv_menu4:
+                setStatusBarColorWhite();
                 binding.line.setVisibility(View.VISIBLE);
                 commitAllowingStateLoss(3);
                 break;

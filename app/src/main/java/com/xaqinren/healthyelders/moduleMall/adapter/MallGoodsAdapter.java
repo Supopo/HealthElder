@@ -33,11 +33,11 @@ public class MallGoodsAdapter extends BaseQuickAdapter<GoodsBean, BaseViewHolder
         binding.setViewModel(item);
         binding.executePendingBindings();
 
-        binding.tvRmb.getPaint().setAntiAlias(true);//抗锯齿
-        binding.tvRmb.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);//设置中划线并加清晰
-
-        binding.tvMinPrice.getPaint().setAntiAlias(true);//抗锯齿
-        binding.tvMinPrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);//设置中划线并加清晰
+//        binding.tvRmb.getPaint().setAntiAlias(true);//抗锯齿
+//        binding.tvRmb.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);//设置中划线并加清晰
+//
+//        binding.tvMinPrice.getPaint().setAntiAlias(true);//抗锯齿
+//        binding.tvMinPrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);//设置中划线并加清晰
 
 
         int screenWidth = ScreenUtil.getScreenWidth(getContext());

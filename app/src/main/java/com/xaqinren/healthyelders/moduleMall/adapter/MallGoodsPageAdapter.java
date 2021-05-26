@@ -2,21 +2,25 @@ package com.xaqinren.healthyelders.moduleMall.adapter;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMallRvBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Lee. on 2021/5/25.
  */
-public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
+public class MallGoodsPageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
 
-    public MallMenu1PageAdapter(int layoutResId) {
+    public MallGoodsPageAdapter(int layoutResId) {
         super(layoutResId);
     }
 
@@ -26,11 +30,5 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
         ItemMallRvBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(menuBean);
         binding.executePendingBindings();
-
-        MallMenu1Adapter mallMenu1Adapter = new MallMenu1Adapter(R.layout.item_mall_menu1);
-        binding.rvContent.setLayoutManager(new GridLayoutManager(getContext(), 5));
-        binding.rvContent.setAdapter(mallMenu1Adapter);
-        mallMenu1Adapter.setList(menuBean.menuBeans);
-
     }
 }

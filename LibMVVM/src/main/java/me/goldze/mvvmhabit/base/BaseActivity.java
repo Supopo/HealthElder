@@ -473,11 +473,21 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
     }
 
+    public void setStatusBarColorBlack(){
+        // 设置状态栏字体黑色
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    }
+
+    public void setStatusBarColorWhite(){
+        // 设置状态栏字体黑色
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+    }
+
 
     /**
      * Android 6.0 以上设置状态栏颜色
      */
-    private void setLightMode() {
+    public void setLightMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             // 设置状态栏底色白色

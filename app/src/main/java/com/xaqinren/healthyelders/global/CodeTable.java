@@ -16,6 +16,7 @@ public class CodeTable {
     public static int EVENT_HOME = 10101001;
     public static int EVENT_MUSIC_OP = 10086;
     public static int VIDEO_SEND_COMMENT = 1010001;//发送评论
+    public static int RESH_MALL_LIST = 992;//刷新商城
 
     /**
      * 成功
