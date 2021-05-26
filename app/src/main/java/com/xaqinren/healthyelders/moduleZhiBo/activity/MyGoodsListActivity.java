@@ -121,10 +121,10 @@ public class MyGoodsListActivity extends BaseActivity<ActivityGoodsListBinding, 
         mAdapter.notifyItemChanged(position, CodeTable.RESH_VIEW_CODE);
 
         if (mAdapter.getData().get(position).isSelect) {
-            selectMap.put(mAdapter.getData().get(position).id, mAdapter.getData().get(position));
+            selectMap.put(mAdapter.getData().get(position).pos, mAdapter.getData().get(position));
         } else {
-            if (selectMap.get(mAdapter.getData().get(position).id) != null) {
-                selectMap.remove(mAdapter.getData().get(position).id);
+            if (selectMap.get(mAdapter.getData().get(position).pos) != null) {
+                selectMap.remove(mAdapter.getData().get(position).pos);
             }
         }
 

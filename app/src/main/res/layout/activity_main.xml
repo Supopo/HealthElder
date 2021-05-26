@@ -77,7 +77,7 @@
                     android:layout_marginTop="@dimen/dp_12"
                     android:drawablePadding="@dimen/dp_4"
                     android:gravity="center_horizontal"
-                    android:text="直播"
+                    android:text="商城"
                     android:textColor="@color/color_9292"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />

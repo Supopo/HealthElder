@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -389,4 +390,8 @@ public interface ApiServer {
     //获取商城菜单信息
     @GET("jkzl/open/findMallHomeCategory")
     Observable<MBaseResponse<List<MenuBean>>> getMallTypeMenu();
+
+    //商品列表
+    @GET("jkzl/open/queryCommodityPage")
+    Observable<MBaseResponse<BaseListRes<List<GoodsBean>>>> getMallGoodsList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("category") String category);
 }

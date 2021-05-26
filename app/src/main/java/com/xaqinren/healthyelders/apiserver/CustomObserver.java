@@ -96,7 +96,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
 
 
     private void onException(ExceptionReason reason) {
-
+        dismissDialog();
         switch (reason) {
             case CONNECT_ERROR:
                 ToastUtils.showShort("连接异常");

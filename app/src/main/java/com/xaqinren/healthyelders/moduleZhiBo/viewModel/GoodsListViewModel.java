@@ -24,7 +24,7 @@ public class GoodsListViewModel extends BaseViewModel {
         List<GoodsBean> objects = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             GoodsBean goodsBean = new GoodsBean();
-            goodsBean.id = i + 1;
+            goodsBean.pos = i + 1;
             goodsBean.name = "商品" + i;
             objects.add(goodsBean);
         }

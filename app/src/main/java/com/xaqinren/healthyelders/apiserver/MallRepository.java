@@ -2,10 +2,12 @@ package com.xaqinren.healthyelders.apiserver;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 
 import java.util.List;
 
@@ -78,5 +80,29 @@ public class MallRepository {
 
                 });
     }
+
+    public void getGoodsList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<GoodsBean>> goods, int page, String category) {
+        userApi.getMallGoodsList(page, 10, category)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<GoodsBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<GoodsBean>>> data) {
+                        goods.postValue(data.getData().content);
+                    }
+
+                });
+    }
+
 
 }

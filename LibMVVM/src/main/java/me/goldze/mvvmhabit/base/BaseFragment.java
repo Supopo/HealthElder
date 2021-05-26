@@ -2,6 +2,7 @@ package me.goldze.mvvmhabit.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     //    private MaterialDialog dialog;  //  普通Dialog
     private QMUITipDialog dialog;
     public RxPermissions permissions;
+    private Handler handler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -198,6 +200,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         if (!dialog.isShowing()) {
             dialog.show();
         }
+
     }
 
     public void dismissDialog() {
