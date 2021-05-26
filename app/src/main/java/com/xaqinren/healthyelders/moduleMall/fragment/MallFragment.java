@@ -53,7 +53,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     int pageCount;//menu1菜单页数 ViewPager+RecvclerView
     int pageSize = 10;//menu1菜单页数数量
     private List<Fragment> fragments;
-    private FragmentPagerAdapter pagerAdapter;
+    private FragmentPagerAdapter goodsPagerAdapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -116,11 +116,6 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         });
 
 
-        fragments = new ArrayList<>();
-        pagerAdapter = new FragmentPagerAdapter(getActivity(), fragments);
-        binding.vpContent.setAdapter(pagerAdapter);
-
-
         viewModel.getMenuInfo();
         viewModel.getMenuType();
     }
@@ -164,15 +159,15 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         viewModel.menu3.observe(this, datas -> {
             if (datas != null && datas.size() > 0) {
-                binding.vpContent.setCurrentItem(0,false);
 
-                fragments.clear();
+                fragments = new ArrayList<>();
                 for (int i = 0; i < datas.size(); i++) {
                     GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).subMenuName);
                     fragments.add(goodsListFragment);
                 }
                 binding.vpContent.setOffscreenPageLimit(datas.size());
-                pagerAdapter.notifyDataSetChanged();
+                goodsPagerAdapter = new FragmentPagerAdapter(getActivity(), fragments);
+                binding.vpContent.setAdapter(goodsPagerAdapter);
 
 
                 datas.get(0).isSelect = true;

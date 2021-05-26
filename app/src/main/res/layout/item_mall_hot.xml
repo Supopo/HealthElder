@@ -77,7 +77,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_10"
-            app:url="@{viewModel.icon}" />
+            app:url="@{viewModel.imageUrl}" />
 
         <ImageView
             android:layout_width="match_parent"
