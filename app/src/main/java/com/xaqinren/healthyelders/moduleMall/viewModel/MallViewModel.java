@@ -23,29 +23,9 @@ public class MallViewModel extends BaseViewModel {
         super(application);
     }
 
-    public MutableLiveData<List<GoodsBean>> goodsList = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<List<MenuBean>> menu3 = new MutableLiveData<>();
     public MutableLiveData<MallMenuRes> mallMenuRes = new MutableLiveData<>();
-
-    public void getMallGoods() {
-        List<GoodsBean> goodsBeans = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            GoodsBean goodsBean = new GoodsBean();
-            goodsBeans.add(goodsBean);
-        }
-        goodsList.setValue(goodsBeans);
-    }
-
-    public void getMenu3List() {
-        List<MenuBean> menuBeans = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            MenuBean menuBean = new MenuBean();
-            menuBean.menuName = "推荐" + i;
-            menuBeans.add(menuBean);
-        }
-        menu3.setValue(menuBeans);
-    }
 
     public void getMenuInfo() {
         MallRepository.getInstance().getMallMenuInfo(mallMenuRes);
@@ -55,7 +35,4 @@ public class MallViewModel extends BaseViewModel {
         MallRepository.getInstance().getMallTypeInfo(menu3);
     }
 
-    public void getGoodsList(int page, String category) {
-        MallRepository.getInstance().getGoodsList(dismissDialog, goodsList, page, category);
-    }
 }

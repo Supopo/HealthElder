@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleMall.viewModel.MallViewModel" />
+            type="com.xaqinren.healthyelders.moduleMall.viewModel.GoodsListViewModel" />
 
     </data>
 

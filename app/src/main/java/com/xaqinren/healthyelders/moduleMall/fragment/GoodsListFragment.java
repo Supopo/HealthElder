@@ -2,54 +2,36 @@ package com.xaqinren.healthyelders.moduleMall.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
-import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentGoodsListBinding;
-import com.xaqinren.healthyelders.databinding.FragmentMallBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallGoodsAdapter;
-import com.xaqinren.healthyelders.moduleMall.adapter.MallHotMenuAdapter;
-import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
-import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu3Adapter;
-import com.xaqinren.healthyelders.moduleMall.viewModel.MallViewModel;
+import com.xaqinren.healthyelders.moduleMall.viewModel.GoodsListViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
-import com.youth.banner.adapter.BannerImageAdapter;
-import com.youth.banner.holder.BannerImageHolder;
-import com.youth.banner.indicator.CircleIndicator;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/25.
  */
-public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, MallViewModel> {
+public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, GoodsListViewModel> {
     private MallGoodsAdapter mallGoodsAdapter;
     private int page = 1;
     private String category;
     private BaseLoadMoreModule mLoadMore;
     private int fPosition;
+    private Disposable subscribe;
 
 
     public GoodsListFragment(int position, String category) {
@@ -99,20 +81,27 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Ma
             }
         });
 
-        showDialog();
-        viewModel.getGoodsList(page, category);
-    }
 
+        isFirst = false;
+    }
+    private boolean isFirst = true;
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
 
-        RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
-                if (event.msgId == CodeTable.RESH_MALL_LIST && fPosition == event.msgType) {
-                    page = 1;
-                    viewModel.getGoodsList(page, category);
+                if (fPosition == event.msgType) {
+                    if (event.msgId == CodeTable.RESH_MALL_LIST ) {
+                        page = 1;
+                        viewModel.getGoodsList(page, category);
+                    }else if(event.msgId == CodeTable.ADD_MALL_LIST ){
+                        if (mallGoodsAdapter.getData().size() == 0) {
+                            page = 1;
+                            viewModel.getGoodsList(page, category);
+                        }
+                    }
                 }
             }
         });
@@ -147,5 +136,13 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Ma
 
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }
