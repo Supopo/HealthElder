@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 
+import retrofit2.http.PUT;
+
 /**
  * Created by Lee. on 2021/4/25.
  * 全局用户信息管理类
@@ -74,6 +76,14 @@ public class UserInfoMgr {
 
     public void setUserInfo(UserInfoBean userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public void clearLogin() {
+        userInfo = null;
+        httpToken = null;
+        accessToken = null;
+        userSig = null;
+        sdkAppID = null;
     }
 
 }

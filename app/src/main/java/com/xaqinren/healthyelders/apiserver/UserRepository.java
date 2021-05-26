@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
@@ -20,6 +21,10 @@ import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -349,8 +354,30 @@ public class UserRepository {
                     protected void onSuccess(MBaseResponse<String> data) {
                         InfoCache.getInstance().setUserSig(data.getData());
                         UserInfoMgr.getInstance().setUserSig(data.getData());
+                        toLoginRoom();
                     }
                 });
+    }
+
+    public void toLoginRoom() {
+        LoginInfo loginInfo = new LoginInfo();
+        loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
+        loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        loginInfo.sdkAppID = 1400392607;
+        loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
+        loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
+        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
+            @Override
+            public void onError(int errCode, String errInfo) {
+                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
+                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errInfo);
+            }
+
+            @Override
+            public void onSuccess() {
+                LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录成功");
+            }
+        });
     }
 
     public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type) {

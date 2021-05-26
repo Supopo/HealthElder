@@ -87,11 +87,7 @@ public class VideoPublishViewModel extends BaseViewModel {
         loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
-        //3887
-        //loginInfo.userSig = "eJw9Tk0LgjAY-i87h73bcptCh4i6GJQkVtBF2ooXWzodEUT-vaHR8fl*3qTY7CPzarEzJGVCqhnAZCCfpiMpYRGQEfe6rtoWNUlp8PCECZCjgto8PF5xCFCuBOVScZAJxJxT9i-AW9CbjLv8mDXnael7BdXF2*RgEXPn3L3EYh1vdyfWrBZ2Wc9-SY82vKOCAVNhXHy*YwYz4w__";
-        //9104
-        loginInfo.userSig = "eJw1jksLgkAUhf-LbAu796rzEFq0skhpYZuijTQzNfhAVCqM-nuitTyP73De7Jhknnk1rjUsIi5kALCczIdpWcTIAzbrThd50zjNIhw7viIOYk6cNnXvrJsA9GUohSJAJQmlCrn8D7jbmJeiM5bulKS5tefhuSvTy8pmC73dxIe6ug6tGPbqFId1Aesf2btqfIecgGOgBH6*YVgzug__";
-        //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
+        loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

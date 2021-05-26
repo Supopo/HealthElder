@@ -233,6 +233,7 @@
         </activity>
         <activity android:name=".moduleHome.activity.VideoGridActivity" />
         <activity android:name=".modulePicture.activity.PublishAtActivity" />
+        <activity android:name=".moduleMsg.activity.ChatActivity" />
 
         <service
             android:name=".push.IPushService"

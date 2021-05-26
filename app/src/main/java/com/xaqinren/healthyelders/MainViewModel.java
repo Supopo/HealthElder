@@ -22,6 +22,7 @@ public class MainViewModel extends BaseViewModel {
 
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     public MutableLiveData<Boolean> clientId = new MutableLiveData<>();
+    public MutableLiveData<Boolean> userSign = new MutableLiveData<>();
 
 
     public void getUserInfo(String token) {

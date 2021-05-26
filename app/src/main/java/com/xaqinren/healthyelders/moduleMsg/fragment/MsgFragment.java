@@ -8,9 +8,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
+import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
 import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
 
@@ -22,7 +24,7 @@ import me.goldze.mvvmhabit.base.BaseFragment;
  */
 public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> {
 
-    private MsgListAdapter msgListAdapter;
+//    private MsgListAdapter msgListAdapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,26 +39,30 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     @Override
     public void initData() {
         super.initData();
-        msgListAdapter = new MsgListAdapter(R.layout.item_msg);
-        binding.rvMsg.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.rvMsg.setAdapter(msgListAdapter);
-        msgListAdapter.setEmptyView(R.layout.item_empty_sqlm);
-        viewModel.getMsgList();
-        binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                binding.srlContent.setRefreshing(false);
-            }
+//        msgListAdapter = new MsgListAdapter(R.layout.item_msg);
+//        binding.rvMsg.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        binding.rvMsg.setAdapter(msgListAdapter);
+//        msgListAdapter.setEmptyView(R.layout.item_empty_sqlm);
+//        viewModel.getMsgList();
+//        binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                binding.srlContent.setRefreshing(false);
+//            }
+//        });
+        binding.ivAdd.setOnClickListener(view -> {
+            startActivity(ChatActivity.class);
         });
+        binding.conversationLayout.initDefault();
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.msgList.observe(this, msgs -> {
-            if (msgs != null) {
-                msgListAdapter.setNewInstance(msgs);
-            }
-        });
+//        viewModel.msgList.observe(this, msgs -> {
+//            if (msgs != null) {
+//                msgListAdapter.setNewInstance(msgs);
+//            }
+//        });
     }
 }

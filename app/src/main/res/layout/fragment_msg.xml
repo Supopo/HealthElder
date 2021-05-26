@@ -112,11 +112,16 @@
 
                 </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
+              <!--  <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_msg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never" />-->
+
+                <com.tencent.qcloud.tim.uikit.modules.conversation.ConversationLayout
+                    android:id="@+id/conversation_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

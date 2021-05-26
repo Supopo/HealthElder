@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.global;
 
 import com.alibaba.fastjson.JSON;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 
@@ -38,6 +39,8 @@ public class InfoCache {
             return true;
         }
     }
+
+
 
     public UserInfoBean getLoginUser() {
         synchronized (lock) {
@@ -96,6 +99,15 @@ public class InfoCache {
                 return null;
             return tokenBean.refresh_token;
         }
+    }
+
+    public void clearLogin() {
+        SPUtils.getInstance().put(Constant.SP_KEY_LOGIN_USER, "");
+        SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
+        SPUtils.getInstance().put(Constant.SP_KEY_SIG_USER, "");
+        SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
+
+        UserInfoMgr.getInstance().clearLogin();
     }
 
 }

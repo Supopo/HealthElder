@@ -340,46 +340,37 @@ public interface ApiServer {
     @GET("content/open/userDiary/info")
     Observable<MBaseResponse<DiaryInfoBean>> getDiaryInfo(@Header("Authorization") String authorization, @Query("id") String id);
 
-
-    /**
-     * 日记评论
-     */
-
-    //评论
+    //日记评论
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/comment")
     Observable<MBaseResponse<CommentListBean>> toDiaryComment(@Header("Authorization") String authorization,
                                                               @Body RequestBody body);
 
-    //评论列表
+    //日记评论列表
     @GET("content/open/userDiary/comment/findPageByUserDiaryId")
     Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getDiaryCommentList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("userDiaryId") String shortVideoId);
 
-    //回复评论
+    //日记回复评论
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/commentReply")
     Observable<MBaseResponse<CommentListBean>> toDiaryCommentReply(@Header("Authorization") String authorization,
                                                                    @Body RequestBody body);
 
-    //回复列表
+    //日记回复列表
     @GET("content/open/userDiary/commentReply/findPageByCommentId")
     Observable<MBaseResponse<BaseListRes<List<CommentListBean>>>> getDiaryCommentReplyList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("commentId") String commentId);
 
-    //评论点赞
+    //日记评论点赞
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/commentFavorite")
     Observable<MBaseResponse<Object>> setDiaryCommentLike(@Header("Authorization") String authorization, @Body RequestBody body);
 
-    //评论点赞
+    //日记评论点赞
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/favorite")
     Observable<MBaseResponse<Object>> setDiaryFavorite(@Header("Authorization") String authorization, @Body RequestBody body);
 
-    /**
-     * 日记评论
-     */
-    /** 日记评论 */
-    //绑定cid
+    //推送绑定cid
     @GET("content/bindAlias")
     Observable<MBaseResponse<Object>> bindAlias(@Header("Authorization") String authorization,@Query("cid") String  cid);
 
