@@ -67,7 +67,15 @@ public class UrlUtils {
     public static HashMap<String, String> getUrlQueryList(String url) {
         Uri uri = Uri.parse(url);
         String query = uri.getQuery();
-        String[] queryKeyValue = query.split("&");
+        return getMapByQuery(query);
+    }
+    public static HashMap<String,String> getMapByQuery(String query) {
+        String[] queryKeyValue;
+        if (query.contains("&")) {
+            queryKeyValue = query.split("&");
+        }else {
+            queryKeyValue = new String[]{query};
+        }
         HashMap<String, String> value = new HashMap<>();
         for (String s : queryKeyValue) {
             String[] kv = s.split("=");
@@ -77,5 +85,8 @@ public class UrlUtils {
     }
     public static String getUrlQueryByTag(String url,String tag) {
         return getUrlQueryList(url).get(tag);
+    }
+    public static String getUrlQueryByTag(Uri uri,String tag) {
+        return getUrlQueryByTag(uri.toString(),tag);
     }
 }

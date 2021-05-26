@@ -21,6 +21,8 @@ public class MainViewModel extends BaseViewModel {
     }
 
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
+    public MutableLiveData<Boolean> clientId = new MutableLiveData<>();
+
 
     public void getUserInfo(String token) {
         UserRepository.getInstance().getUserInfo(userInfo, Constant.API_HEADER + token);
@@ -28,6 +30,10 @@ public class MainViewModel extends BaseViewModel {
 
     public void getUserSig(String token) {
         UserRepository.getInstance().getUserSig( Constant.API_HEADER + token);
+    }
+
+    public void postClientId(String token) {
+        UserRepository.getInstance().bindAlias(clientId, token);
     }
 
 }

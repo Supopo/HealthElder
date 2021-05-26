@@ -50,6 +50,12 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
+
+        <!--<meta-data
+            android:name="PUSH_APPID"
+            android:value="XwYjxHNTw66jgnQkmO94d3" />-->
+        <meta-data android:name="GETUI_APPID" android:value="${GETUI_APPID}"/>
+
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -212,9 +218,29 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
             android:theme="@style/EditDialogStyle"
             />
-        <activity android:name=".moduleHome.activity.DraftActivity" />
+        <activity android:name=".moduleHome.activity.DraftActivity">
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/draft_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+            </intent-filter>
+        </activity>
         <activity android:name=".moduleHome.activity.VideoGridActivity" />
         <activity android:name=".modulePicture.activity.PublishAtActivity" />
+
+        <service
+            android:name=".push.IPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice"/>
+        <service android:name=".push.MyIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

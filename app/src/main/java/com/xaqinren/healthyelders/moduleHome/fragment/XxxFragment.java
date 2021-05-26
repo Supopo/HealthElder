@@ -51,6 +51,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
+import com.xaqinren.healthyelders.push.PushNotify;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
@@ -200,6 +201,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu107.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), DraftActivity.class);
             startActivity(intent);
+        });
+        binding.tvMenu108.setOnClickListener(view -> {
+            String data = "jkzl://app_open/draft_activity?key=value";
+            PushNotify.showNotify(getContext(),data);
         });
     }
 

@@ -318,6 +318,10 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                     commentAdapter.getData().get(position)
                             .replyList.addAll(index,
                             replyDatas.replyList);
+
+                    commentAdapter.getData().get(position)
+                            .shortVideoCommentReplyList.removeAll(commentAdapter.getData().get(position).mReplyList);
+
                     commentAdapter.notifyItemChanged(replyDatas.parentPos);
                 }
             }
@@ -486,6 +490,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         CommentListBean adapterCommentBean = commentAdapter.getData().get(position );
 
         adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
+        adapterCommentBean.mReplyList.add(commentListBean);
         adapterCommentBean.commentCount++;
         adapterCommentBean.lodaState = 1;//展示  展开回复
 

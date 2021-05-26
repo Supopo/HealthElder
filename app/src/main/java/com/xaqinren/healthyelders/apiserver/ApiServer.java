@@ -377,6 +377,10 @@ public interface ApiServer {
     /**
      * 日记评论
      */
+    /** 日记评论 */
+    //绑定cid
+    @GET("content/bindAlias")
+    Observable<MBaseResponse<Object>> bindAlias(@Header("Authorization") String authorization,@Query("cid") String  cid);
 
     //获取商城菜单信息
     @GET("jkzl/open/findMallHomeMenu")

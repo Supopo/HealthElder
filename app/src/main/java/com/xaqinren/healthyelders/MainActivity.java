@@ -18,8 +18,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 
 import com.dmcbig.mediapicker.utils.ScreenUtils;
+import com.igexin.sdk.PushManager;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -38,6 +41,7 @@ import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +137,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //获取UserSig
         viewModel.getUserSig(accessToken);
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -346,6 +351,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         });
         RxSubscriptions.add(eventDisposable);
+
+        viewModel.userInfo.observe(this, userInfoBean -> {
+            if (userInfoBean != null) {
+                //调用上传clientId接口[个推]
+                String clientId = PushManager.getInstance().getClientid(this);
+                LogUtils.e("MainActivity", "绑定 cid -> " + clientId);
+                viewModel.postClientId(clientId);
+            }
+        });
+        viewModel.clientId.observe(this,b-> LogUtils.e("MainActivity", "绑定cid结果 -> " + b));
     }
 
     private String[] textColors = {

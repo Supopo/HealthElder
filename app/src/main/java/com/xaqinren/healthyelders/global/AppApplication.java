@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
 
+import com.igexin.sdk.IUserLoggerInterface;
+import com.igexin.sdk.PushManager;
 import com.squareup.leakcanary.LeakCanary;
 
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
@@ -30,6 +32,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +97,9 @@ public class AppApplication extends BaseApplication {
         initLiveRoom();
         //初始化用户信息持有类
         UserInfoMgr.getInstance().initContext(getApplicationContext());
+        //个推
+        PushManager.getInstance().initialize(getApplicationContext());
+        PushManager.getInstance().setDebugLogger(getApplicationContext(), s -> LogUtils.e("PushManager", s));
     }
 
     private void initLiveRoom() {

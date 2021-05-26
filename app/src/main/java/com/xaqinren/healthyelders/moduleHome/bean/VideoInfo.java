@@ -75,6 +75,10 @@ public class VideoInfo implements Serializable {
     public List<PublishFocusItemBean> publishFocusItemBeans;
 
     public boolean showFollow() {
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            //未登录
+            return true;
+        }
         if (userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
             return false;
         }

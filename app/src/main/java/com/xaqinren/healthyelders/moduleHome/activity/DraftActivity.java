@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,6 +19,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.DraftAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.GridDividerItemDecoration;
 
 import java.util.List;
@@ -54,7 +56,14 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
         super.initData();
         setTitle("草稿箱");
         setTvRight("编辑");
+
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            String value = UrlUtils.getUrlQueryByTag(uri,"key");
+        }
+
         String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+
         draftAdapter = new DraftAdapter(R.layout.item_draft);
         reset();
         binding.content.setLayoutManager(new GridLayoutManager(this, 3));

@@ -329,6 +329,7 @@ public class UserRepository {
     }
 
     public void getUserSig(String token) {
+        if (UserInfoMgr.getInstance().getUserInfo()==null)return;
         userApi.getUserSig(token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -385,6 +386,25 @@ public class UserRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<List<DZVideoInfo>>> data) {
                         datas.postValue(data.getData().content);
+                    }
+                });
+    }
+
+
+    public void bindAlias( MutableLiveData<Boolean> clientIdData , String clientId) {
+        userApi.bindAlias(UserInfoMgr.getInstance().getHttpToken(),clientId)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        clientIdData.postValue(data.isOk());
                     }
                 });
     }
