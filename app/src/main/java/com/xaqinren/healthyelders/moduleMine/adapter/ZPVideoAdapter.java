@@ -4,16 +4,23 @@ import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.databinding.ItemMineZpVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 
 public class ZPVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> implements LoadMoreModule {
@@ -28,6 +35,14 @@ public class ZPVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         ItemMineZpVideoBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+
+        if (item.isDraft) {
+            GlideUtil.intoGSImageView(getContext(), item.coverUrl, binding
+                    .ivVideo, 3);
+        } else {
+            GlideUtil.intoImageView(getContext(), item.coverUrl, binding
+                    .ivVideo);
+        }
 
     }
 

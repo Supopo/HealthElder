@@ -16,7 +16,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,9 +31,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.google.gson.Gson;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -64,10 +61,9 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
-import com.xaqinren.healthyelders.widget.CenterDialog;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -120,7 +116,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private QMUITipDialog showLinkTip;//连麦请求
     private int linkStatus;//0未操作 1邀请中 2接受邀请连接中
     private boolean mPendingRequest;//是否在操作连麦请求
-    private CenterDialog showCloseLinkDialog;//关闭连麦弹窗
+    private YesOrNoDialog showCloseLinkDialog;//关闭连麦弹窗
     private MoreLinkAdapter moreLinkAdapter;
     private List<ZBUserListBean> moreLinkList;
     private int setType;//直播间设置类型 1聊天室
@@ -1594,7 +1590,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     //是否关闭连麦dialog
     public void showCloseLinkDialog() {
         if (showCloseLinkDialog == null) {
-            showCloseLinkDialog = new CenterDialog(this);
+            showCloseLinkDialog = new YesOrNoDialog(this);
             showCloseLinkDialog.setMessageText("确定关闭连线吗？");
             showCloseLinkDialog.setRightBtnClickListener(new View.OnClickListener() {
                 @Override

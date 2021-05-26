@@ -27,7 +27,6 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -54,7 +53,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
-import com.xaqinren.healthyelders.widget.CenterDialog;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +89,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private Animation ggAnimation;
     private int linkStatus = 1;//1未连麦 2申请中 3连麦中
     private int linkType;//0 双人连麦 1多人连麦
-    private CenterDialog closeLinkDialog;
+    private YesOrNoDialog closeLinkDialog;
     private Dialog waitLinkDialog;
     private Dialog selectLinkDialog;
     private QMUITipDialog linkWaitTip;
@@ -418,7 +417,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     //是否关闭连麦dialog
     public void showCloseLinkDialog() {
         if (closeLinkDialog == null) {
-            closeLinkDialog = new CenterDialog(this);
+            closeLinkDialog = new YesOrNoDialog(this);
             closeLinkDialog.setMessageText("确定要关闭连麦吗？");
             closeLinkDialog.setRightBtnClickListener(new View.OnClickListener() {
                 @Override

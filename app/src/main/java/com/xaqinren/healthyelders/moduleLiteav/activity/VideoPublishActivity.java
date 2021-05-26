@@ -3,60 +3,32 @@ package com.xaqinren.healthyelders.moduleLiteav.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.LruCache;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.fastjson.JSON;
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
-import com.google.gson.Gson;
-import com.nostra13.dcloudimageloader.utils.L;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
-import com.squareup.haha.perflib.Main;
-import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
-import com.tencent.qcloud.ugckit.UGCKitVideoPublish;
-import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
-import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.module.upload.TXUGCPublish;
 import com.tencent.qcloud.ugckit.module.upload.TXUGCPublishTypeDef;
-import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.NetworkUtil;
 import com.tencent.qcloud.ugckit.utils.Signature;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
-import com.tencent.qcloud.ugckit.utils.ToastUtil;
-import com.tencent.ugc.TXVideoEditer;
-import com.tencent.weibo.sdk.android.component.PublishActivity;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -74,7 +46,6 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishAtBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishSummaryBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
@@ -84,25 +55,16 @@ import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
-import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
-import com.xaqinren.healthyelders.widget.CenterDialog;
-import com.xaqinren.healthyelders.widget.ConciseDialog;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
-import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.File;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -112,10 +74,7 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ImageUtils;
 import me.goldze.mvvmhabit.utils.KeyBoardUtils;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
-import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.goldze.mvvmhabit.utils.Utils;
-import okhttp3.internal.cache.DiskLruCache;
 
 /**
  * 发布
@@ -252,13 +211,13 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         //保存到草稿箱
         binding.includePublish.saveDraftBtn.setOnClickListener(view -> {
-            CenterDialog centerDialog = new CenterDialog(this);
-            centerDialog.setMessageText("确定保存至草稿箱吗？");
-            centerDialog.showDialog();
-            centerDialog.setRightBtnClickListener(new View.OnClickListener() {
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(this);
+            yesOrNoDialog.setMessageText("确定保存至草稿箱吗？");
+            yesOrNoDialog.showDialog();
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    centerDialog.dismissDialog();
+                    yesOrNoDialog.dismissDialog();
                     createDraftContent();
                 }
             });

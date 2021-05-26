@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
@@ -108,6 +109,9 @@ public class InfoCache {
         SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
 
         UserInfoMgr.getInstance().clearLogin();
+
+        //退出IM
+        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).logout();
     }
 
 }

@@ -15,14 +15,17 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 
 
-public class CenterDialog {
+/**
+ * 确定-取消 Dialog
+ */
+public class YesOrNoDialog {
     private Dialog centerDialog;
     private TextView message;
     private TextView leftBtn, rightBtn;
     private Context context;
     private View.OnClickListener onClickListener;
 
-    public CenterDialog(Context context) {
+    public YesOrNoDialog(Context context) {
         this.context = context;
         init(context);
     }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -22,8 +23,11 @@ import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -257,6 +261,21 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.tvFriends.setOnClickListener(lis -> {
         });
         binding.ivSetting.setOnClickListener(lis -> {
+            //退出登录
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+            yesOrNoDialog.setMessageText("确定退出吗？");
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //清除缓存
+                    InfoCache.getInstance().clearLogin();
+                    //跳到登录页面
+                    startActivity(SelectLoginActivity.class);
+                    yesOrNoDialog.dismissDialog();
+                    getActivity().finish();
+                }
+            });
+            yesOrNoDialog.showDialog();
         });
         binding.rivPhoto2.setOnClickListener(lis -> {
         });

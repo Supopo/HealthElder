@@ -227,9 +227,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         binding.rlMenu4.setOnClickListener(lis -> {
             //判断是否登录
-            if (TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
+            if (!InfoCache.getInstance().checkLogin()) {
                 //跳转登录页面
                 startActivity(SelectLoginActivity.class);
+                return;
             }
 
             //发送停止播放消息
@@ -360,7 +361,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 viewModel.postClientId(clientId);
             }
         });
-        viewModel.clientId.observe(this,b-> LogUtils.e("MainActivity", "绑定cid结果 -> " + b));
+        viewModel.clientId.observe(this, b -> LogUtils.e("MainActivity", "绑定cid结果 -> " + b));
     }
 
     private String[] textColors = {
@@ -470,8 +471,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
-        eventDisposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
+        if (eventDisposable != null) {
+            eventDisposable.dispose();
+        }
         handler.removeCallbacksAndMessages(null);
     }
 }

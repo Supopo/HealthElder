@@ -16,24 +16,21 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_151">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_151"
-            android:background="@drawable/bg_btn_white"
-            android:gravity="center"
-            android:text="@{viewModel.getDraftCount()}"
-            android:visibility="@{viewModel.isDraft?View.VISIBLE:View.GONE}" />
 
         <com.qmuiteam.qmui.widget.QMUIRadiusImageView
             android:id="@+id/iv_video"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_151"
             android:scaleType="center"
-            android:visibility="@{viewModel.isDraft?View.GONE:View.VISIBLE}"
             app:qmui_border_color="@color/transparent"
-            app:qmui_corner_radius="@dimen/dp_4"
-            app:url="@{viewModel.coverUrl}" />
+            app:qmui_corner_radius="@dimen/dp_4" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_151"
+            android:gravity="center"
+            android:text="@{viewModel.getDraftCount()}"
+            android:visibility="@{viewModel.isDraft?View.VISIBLE:View.GONE}" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -251,7 +251,7 @@ dependencies {
     implementation 'io.github.youth5201314:banner:2.2.1'
     //格子计时器
     implementation 'com.github.zrunker:ZCountDownView:v1.1'
-    // 个推
+    //个推
     implementation 'com.getui:gtsdk:3.1.4.0'
     implementation 'com.getui:gtc:3.1.0.0'
 

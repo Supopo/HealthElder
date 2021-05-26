@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.fastjson.JSON;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
@@ -24,11 +21,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.tencent.bugly.proguard.M;
-import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -54,11 +48,10 @@ import com.xaqinren.healthyelders.modulePicture.adapter.PictureAdapter;
 import com.xaqinren.healthyelders.modulePicture.bean.LocalPhotoBean;
 import com.xaqinren.healthyelders.modulePicture.bean.PublishBean;
 import com.xaqinren.healthyelders.modulePicture.viewModel.PublishTextPhotoViewModel;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
-import com.xaqinren.healthyelders.widget.CenterDialog;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 
@@ -73,7 +66,6 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ImageUtils;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.goldze.mvvmhabit.utils.compression.Luban;
 
 /**
  * 图文发布
@@ -188,13 +180,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
         //保存到草稿箱
         binding.includePublish.saveDraftBtn.setOnClickListener(view -> {
-            CenterDialog centerDialog = new CenterDialog(this);
-            centerDialog.setMessageText("确定保存至草稿箱吗？");
-            centerDialog.showDialog();
-            centerDialog.setRightBtnClickListener(new View.OnClickListener() {
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(this);
+            yesOrNoDialog.setMessageText("确定保存至草稿箱吗？");
+            yesOrNoDialog.showDialog();
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    centerDialog.dismissDialog();
+                    yesOrNoDialog.dismissDialog();
                     createDraftContent();
                 }
             });

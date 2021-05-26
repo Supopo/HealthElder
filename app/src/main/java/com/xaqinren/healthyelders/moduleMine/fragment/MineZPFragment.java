@@ -42,6 +42,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     private BaseLoadMoreModule mLoadMore;
     private boolean hasDraft;
     private int draftCount;
+    private String draftDoverPath;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -135,11 +136,14 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     }
 
     private void getDraft() {
-        String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-        List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(getActivity(), fileName);
-        if (list != null && list.size() > 0) {
-            hasDraft = true;
-            draftCount = list.size();
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+            List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(getActivity(), fileName);
+            if (list != null && list.size() > 0) {
+                hasDraft = true;
+                draftCount = list.size();
+                draftDoverPath = list.get(0).getCoverPath();
+            }
         }
     }
 
@@ -164,6 +168,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                     if (hasDraft) {
                         VideoInfo videoInfo = new VideoInfo();
                         videoInfo.isDraft = true;
+                        videoInfo.coverUrl = draftDoverPath;
                         dataList.add(0, videoInfo);
                         videoInfo.draftCount = draftCount;
                     }
