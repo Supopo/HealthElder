@@ -25,9 +25,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import me.goldze.mvvmhabit.R;
 import me.goldze.mvvmhabit.base.BaseViewModel.ParameterField;
 import me.goldze.mvvmhabit.bus.Messenger;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 
 /**
  * Created by goldze on 2017/6/15.
@@ -37,7 +39,8 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     protected VM viewModel;
     private int viewModelId;
     //    private MaterialDialog dialog;  //  普通Dialog
-    private QMUITipDialog dialog;
+    //    private QMUITipDialog dialog;
+    private LoadingDialog dialog;
     public RxPermissions permissions;
     private Handler handler;
 
@@ -179,28 +182,37 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     //    }
 
     public void showDialog(String title) {
-        if (dialog == null) {
-            dialog = new QMUITipDialog.Builder(getActivity())
-                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                    .setTipWord(TextUtils.isEmpty(title) ? "请稍后" : title)
-                    .create();
-        }
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
+        //        if (dialog == null) {
+        //            dialog = new QMUITipDialog.Builder(getActivity())
+        //                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+        //                    .setTipWord(TextUtils.isEmpty(title) ? "请稍后" : title)
+        //                    .create();
+        //        }
+        //        if (!dialog.isShowing()) {
+        //            dialog.show();
+        //        }
+        showDialog();
     }
 
     public void showDialog() {
+        //        if (dialog != null && dialog.isShowing()) {
+        //            return;
+        //        }
+
+        //        dialog = new QMUITipDialog.Builder(getActivity())
+        //                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+        //                .setTipWord("请稍后")
+        //                .create();
+
         if (dialog == null) {
-            dialog = new QMUITipDialog.Builder(getActivity())
-                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                    .setTipWord("请稍后")
-                    .create();
-        }
-        if (!dialog.isShowing()) {
-            dialog.show();
+            dialog = new LoadingDialog(getActivity());
         }
 
+        if (dialog.isShowing()) {
+            return;
+        }
+
+        dialog.show();
     }
 
     public void dismissDialog() {

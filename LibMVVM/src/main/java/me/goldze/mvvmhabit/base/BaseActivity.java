@@ -47,6 +47,7 @@ import java.util.Map;
 
 import me.goldze.mvvmhabit.R;
 import me.goldze.mvvmhabit.bus.Messenger;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 
 
 /**
@@ -59,7 +60,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected VM viewModel;
     private int viewModelId;
     //    private MaterialDialog dialog;  //  普通Dialog
-    private QMUITipDialog dialog;
+    //    private QMUITipDialog dialog;
+    private LoadingDialog dialog;
     public ViewDataBinding baseBinding;
     public RelativeLayout rlTitle;
     public TextView tvTitle, tvRight;
@@ -294,26 +296,34 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     //    }
 
     public void showDialog(String title) {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-
-        dialog = new QMUITipDialog.Builder(this)
-                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                .setTipWord(TextUtils.isEmpty(title) ? "请稍后" : title)
-                .create();
-        dialog.show();
+        //        if (dialog == null) {
+        //            dialog = new QMUITipDialog.Builder(this)
+        //                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+        //                    .setTipWord(TextUtils.isEmpty(title) ? "请稍后" : title)
+        //                    .create();
+        //        }
+        //        if (!dialog.isShowing()) {
+        //            dialog.show();
+        //        }
+        showDialog();
     }
 
     public void showDialog() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        //        if (dialog != null && dialog.isShowing()) {
+        //            return;
+        //        }
 
-        dialog = new QMUITipDialog.Builder(this)
-                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                .setTipWord("请稍后")
-                .create();
+        //        dialog = new QMUITipDialog.Builder(getActivity())
+        //                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+        //                .setTipWord("请稍后")
+        //                .create();
+
+        if (dialog == null) {
+            dialog = new LoadingDialog(this);
+        }
+        if (dialog.isShowing()) {
+            return;
+        }
         dialog.show();
     }
 
@@ -496,12 +506,12 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
     }
 
-    public void setStatusBarColorBlack(){
+    public void setStatusBarColorBlack() {
         // 设置状态栏字体黑色
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
     }
 
-    public void setStatusBarColorWhite(){
+    public void setStatusBarColorWhite() {
         // 设置状态栏字体黑色
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
     }

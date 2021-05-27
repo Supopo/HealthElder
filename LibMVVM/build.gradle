@@ -75,4 +75,7 @@ dependencies {
     //QMUI小功能控件库
     api rootProject.ext.dependencies.qmui
     api rootProject.ext.dependencies.fastjson
+
+    //Lottie动画加载 支持加载json
+    implementation 'com.airbnb.android:lottie:3.7.0'
 }
