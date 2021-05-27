@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -48,32 +49,38 @@ public class UrlUtils {
         Uri uri = Uri.parse(url);
         return uri.getScheme();
     }
+
     public static String getUrlHost(String url) {
         Uri uri = Uri.parse(url);
         return uri.getHost();
     }
+
     public static int getUrlPort(String url) {
         Uri uri = Uri.parse(url);
         return uri.getPort();
     }
+
     public static String getUrlQuery(String url) {
         Uri uri = Uri.parse(url);
         return uri.getQuery();
     }
+
     public static String getUrlPath(String url) {
         Uri uri = Uri.parse(url);
         return uri.getPath();
     }
+
     public static HashMap<String, String> getUrlQueryList(String url) {
         Uri uri = Uri.parse(url);
         String query = uri.getQuery();
         return getMapByQuery(query);
     }
-    public static HashMap<String,String> getMapByQuery(String query) {
+
+    public static HashMap<String, String> getMapByQuery(String query) {
         String[] queryKeyValue;
         if (query.contains("&")) {
             queryKeyValue = query.split("&");
-        }else {
+        } else {
             queryKeyValue = new String[]{query};
         }
         HashMap<String, String> value = new HashMap<>();
@@ -83,14 +90,23 @@ public class UrlUtils {
         }
         return value;
     }
-    public static String getUrlQueryByTag(String url,String tag) {
+
+    public static String getUrlQueryByTag(String url, String tag) {
         return getUrlQueryList(url).get(tag);
     }
-    public static String getUrlQueryByTag(Uri uri,String tag) {
-        return getUrlQueryByTag(uri.toString(),tag);
+
+    public static String getUrlQueryByTag(Uri uri, String tag) {
+        return getUrlQueryByTag(uri.toString(), tag);
     }
 
-    public static String resetImgUrl(){
-        return "";
+    public static String resetImgUrl(String url, int width, int height) {
+        if (url.contains("oss.qianniux.com") || url.contains("oss.hjyiyuanjiankang.com")) {
+            int lastIndexOf = url.lastIndexOf(".");
+            StringBuffer stringBuffer = new StringBuffer(url);
+            String newData = "_" + width + "x" + height;
+            stringBuffer.insert(lastIndexOf, newData);
+            return stringBuffer.toString();
+        }
+        return url;
     }
 }

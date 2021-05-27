@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
 import com.xaqinren.healthyelders.utils.ColorsUtils;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.math.BigDecimal;
 
@@ -55,5 +56,9 @@ public class GoodsBean {
     public String getMinSalesPrice() {
         BigDecimal minPrice = new BigDecimal(minSalesPrice).setScale(2, 1);
         return String.valueOf(minPrice);
+    }
+
+    public String getImageUrl() {
+        return UrlUtils.resetImgUrl(imageUrl, 100, 100);
     }
 }

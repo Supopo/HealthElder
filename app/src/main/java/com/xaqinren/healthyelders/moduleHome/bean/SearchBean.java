@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,5 +10,5 @@ import java.util.List;
 public class SearchBean implements Serializable {
     public String content;
     public String icon;
-    public List<SearchBean> searchBeans;
+    public List<SearchBean> searchBeans = new ArrayList<>();
 }

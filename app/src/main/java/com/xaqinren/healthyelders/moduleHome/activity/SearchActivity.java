@@ -1,16 +1,25 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivitySearchBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HistoryTagAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.HotTagAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchViewModel;
+import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
+
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -22,6 +31,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
     private HotTagAdapter hotTagAdapter;
     private HistoryTagAdapter historyTagAdapter;
+    private SearchBean searchListCache;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -46,14 +56,57 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         binding.rvHot.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvHot.setAdapter(hotTagAdapter);
 
-        viewModel.getHistoryList();
+        //获取缓存数据
+        searchListCache = (SearchBean) ACache.get(this).getAsObject(Constant.SearchId);
+        if (searchListCache == null) {
+            searchListCache = new SearchBean();
+        } else if (searchListCache.searchBeans != null && searchListCache.searchBeans.size() > 0) {
+            binding.rlSearchHistory.setVisibility(View.VISIBLE);
+            historyTagAdapter.setNewInstance(searchListCache.searchBeans);
+        }
+
         viewModel.getHotList();
 
-        binding.tvBack.setOnClickListener(lis ->{
+        binding.tvBack.setOnClickListener(lis -> {
             finish();
         });
-        binding.tvClean.setOnClickListener(lis ->{
+        binding.tvClean.setOnClickListener(lis -> {
             //清除搜索历史
+            SearchBean searchBean = new SearchBean();
+            ACache.get(this).put(Constant.SearchId, searchBean);
+            //重新加载绘制 目前只能重new Adapter
+            historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
+            binding.rvHistory.setAdapter(historyTagAdapter);
+            historyTagAdapter.setNewInstance(searchBean);
+        });
+
+        binding.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    //往下面的搜索插入
+                    SearchBean searchBean = new SearchBean();
+                    searchBean.content = binding.etSearch.getText().toString().trim();
+
+                    //判断超过十条的话移除一条
+
+                    historyTagAdapter.addData(searchBean);
+                    List<SearchBean> searchBeans = historyTagAdapter.getData();
+                    if (historyTagAdapter.getData().size() > 10) {
+                        searchBeans.remove(0);
+                        //重新加载绘制 目前只能重new Adapter
+                        historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
+                        binding.rvHistory.setAdapter(historyTagAdapter);
+                        historyTagAdapter.setNewInstance(searchBeans);
+                    }
+                    //更新本地缓存
+                    searchListCache.searchBeans = searchBeans;
+                    ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
+                    //跳页
+
+                }
+                return false;
+            }
         });
     }
 
