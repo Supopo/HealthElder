@@ -134,7 +134,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private void closeLoadView() {
-        binding.loadView.stop();
+        binding.loadView.cancelAnimation();
         binding.loadView.setVisibility(View.GONE);
     }
 
@@ -218,7 +218,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
     private void showLoadView() {
         binding.loadView.setVisibility(View.VISIBLE);
-        binding.loadView.start();
+        binding.loadView.playAnimation();
     }
 
     private boolean firstInit = true;

@@ -25,10 +25,14 @@
                 android:layout_height="match_parent">
 
 
-                <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
+                <com.airbnb.lottie.LottieAnimationView
+                    android:visibility="gone"
                     android:id="@+id/loadView"
-                    style="@style/Layout.Wrap"
-                    android:layout_centerInParent="true" />
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    app:lottie_fileName="loading_anim.json"
+                    app:lottie_loop="true"
+                    android:layout_centerInParent="true"/>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"

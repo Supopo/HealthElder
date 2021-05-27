@@ -30,11 +30,14 @@
                     android:layout_height="wrap_content"
                     android:background="@color/color_252525">
 
-                    <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:visibility="gone"
                         android:id="@+id/loadView"
-                        style="@style/Layout.Main"
-                        android:layout_centerInParent="true"
-                        android:visibility="gone" />
+                        android:layout_width="@dimen/dp_70"
+                        android:layout_height="@dimen/dp_70"
+                        app:lottie_fileName="loading_anim.json"
+                        app:lottie_loop="true"
+                        android:layout_centerInParent="true"/>
 
                     <RelativeLayout
                         android:id="@+id/rl_top"
@@ -72,7 +75,7 @@
             android:background="@drawable/btn_2top"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_10"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_showZb"

@@ -28,9 +28,13 @@
                 />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
+        <com.airbnb.lottie.LottieAnimationView
+            android:visibility="gone"
             android:id="@+id/loadView"
-            style="@style/Layout.Main"
-            android:visibility="visible" />
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            app:lottie_fileName="loading_anim.json"
+            app:lottie_loop="true"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 </layout>

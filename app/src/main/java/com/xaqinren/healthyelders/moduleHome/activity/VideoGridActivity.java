@@ -230,12 +230,12 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     }
 
     private void showLoadView() {
-        binding.loadView.start();
+        binding.loadView.playAnimation();
         binding.loadView.setVisibility(View.VISIBLE);
     }
 
     private void closeLoadView() {
-        binding.loadView.stop();
+        binding.loadView.cancelAnimation();
         binding.loadView.setVisibility(View.GONE);
     }
 

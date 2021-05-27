@@ -13,15 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
-import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
@@ -139,9 +136,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 zbingAdapter.setNewInstance(list);
                 binding.viewPager2.setUserInputEnabled(false);
                 binding.nsv.setScrollingEnabled(true);
-            } else {
+            }
+            else {
                 binding.rlTop.setVisibility(View.GONE);
-                binding.llShowTop.setVisibility(View.VISIBLE);
+                //没有直播好友暂时不显示tip
+//                binding.llShowTop.setVisibility(View.VISIBLE);
                 binding.viewPager2.setUserInputEnabled(true);
                 binding.nsv.setScrollingEnabled(false);
             }
@@ -170,7 +169,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     }
 
     private void closeLoadView() {
-        binding.loadView.stop();
+        binding.loadView.cancelAnimation();
         binding.loadView.setVisibility(View.GONE);
     }
 
@@ -280,7 +279,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
     private void showLoadView() {
         binding.loadView.setVisibility(View.VISIBLE);
-        binding.loadView.start();
+        binding.loadView.playAnimation();
     }
 
     @Override
