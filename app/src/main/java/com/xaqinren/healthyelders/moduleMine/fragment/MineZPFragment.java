@@ -85,15 +85,6 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
 
-        binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                page = 1;
-                getDraft();
-                viewModel.getMyVideoList(page, pageSize);
-                binding.srl.setRefreshing(false);
-            }
-        });
         getVideoList();
 
 
@@ -133,6 +124,12 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             startActivity(VideoListActivity.class, bundle);
 
         }));
+    }
+
+    public void toRefresh() {
+        page = 1;
+        getDraft();
+        viewModel.getMyVideoList(page, pageSize);
     }
 
     private void getDraft() {

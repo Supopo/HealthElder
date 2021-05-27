@@ -72,15 +72,6 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
         binding.rvContent.setItemAnimator(null);
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
-        binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                page = 1;
-                viewModel.getMyVideoList(page, pageSize);
-                binding.srl.setRefreshing(false);
-            }
-        });
-
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
 
             Bundle bundle = new Bundle();
@@ -103,10 +94,14 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
         }));
     }
 
+    public void toRefresh() {
+        page = 1;
+        viewModel.getMyVideoList(page, pageSize);
+    }
+
     public void getVideoList() {
         if (videoAdapter.getData().size() == 0) {
-            page = 1;
-            viewModel.getMyVideoList(page, pageSize);
+            toRefresh();
         }
     }
 

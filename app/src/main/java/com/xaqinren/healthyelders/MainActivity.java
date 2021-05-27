@@ -71,6 +71,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private boolean isTranMenu;
     private Handler handler;
     private MallFragment mallFragment;
+    private MineFragment mineFragment;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -151,10 +152,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         mFragments = new ArrayList<>();
         homeFragment = new HomeFragment();
         mallFragment = new MallFragment();
+        mineFragment = new MineFragment();
         mFragments.add(homeFragment);
         mFragments.add(mallFragment);
         mFragments.add(new MsgFragment());
-        mFragments.add(new MineFragment());
+        mFragments.add(mineFragment);
         //默认选中第一个
         commitAllowingStateLoss(0);
         oldView = binding.tvMenu1;
@@ -262,7 +264,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
 
                 //判断商城页面appBar处于展开，且向下滑动超过左右滑动再打开下拉刷新
-                else if (selectView.getId() == R.id.tv_menu2) {
+                else if (selectView.getId() == R.id.tv_menu2 ) {
                     if (scrollX > scrollY) {
                         if (mallFragment.isTop) {
                             if (mallFragment.srl != null) {
@@ -273,6 +275,21 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         if (mallFragment.isTop) {
                             if (mallFragment.srl != null) {
                                 mallFragment.srl.setEnabled(true);
+                            }
+                        }
+                    }
+                }
+                else if (selectView.getId() == R.id.tv_menu4 ) {
+                    if (scrollX > scrollY) {
+                        if (mineFragment.isTop) {
+                            if (mineFragment.srl != null) {
+                                mineFragment.srl.setEnabled(false);
+                            }
+                        }
+                    } else {
+                        if (mineFragment.isTop) {
+                            if (mineFragment.srl != null) {
+                                mineFragment.srl.setEnabled(true);
                             }
                         }
                     }

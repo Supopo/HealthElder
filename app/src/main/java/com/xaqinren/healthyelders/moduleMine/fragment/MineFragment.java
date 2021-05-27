@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.alibaba.fastjson.JSON;
@@ -57,6 +58,8 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private MineZPFragment mineZPFragment;
     private MineSMFragment mineSMFragment;
     private MineDZFragment mineDZFragment;
+    public boolean isTop = true;
+    public SwipeRefreshLayout srl;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,6 +74,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     @Override
     public void initData() {
         super.initData();
+        srl = binding.srlTop;
         mineZPFragment = new MineZPFragment();
         mineSMFragment = new MineSMFragment();
         mineDZFragment = new MineDZFragment();
@@ -132,10 +136,22 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         }
     }
 
-
     private boolean isFirst = true;
 
     private void initEvent() {
+        binding.srlTop.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (menuPosition == 0) {
+                    mineZPFragment.toRefresh();
+                } else if (menuPosition == 1) {
+                    mineSMFragment.toRefresh();
+                } else {
+                    mineDZFragment.toRefresh();
+                }
+                binding.srlTop.setRefreshing(false);
+            }
+        });
 
         binding.vpContent.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -144,7 +160,6 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
 
                 if (!isFirst) {
                     menuPosition = position;
-
                     if (menuPosition == 0) {
                         mineZPFragment.getVideoList();
                     } else if (menuPosition == 1) {
@@ -152,14 +167,11 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     } else {
                         mineDZFragment.getVideoList();
                     }
-
                     initTabMenu();
-
                 }
                 isFirst = false;
             }
         });
-
 
         oldWidth = binding.rivPhoto2.getLayoutParams().width;
         oldWidth3 = binding.rivPhoto3.getLayoutParams().width;
@@ -170,6 +182,15 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                //判单只有滑倒最顶部才能下拉刷新
+                if (verticalOffset == 0) {
+                    isTop = true;
+                    binding.srlTop.setEnabled(true);
+                } else {
+                    isTop = false;
+                    binding.srlTop.setEnabled(false);
+                }
 
                 if (oldTop == 0 && verticalOffset == 0) {
                     oldTop3 = binding.rivPhoto3.getTop();//拿到最终位置的top
@@ -183,7 +204,6 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     textCodeEndY = binding.tvUserId.getBottom();
                     llInfoEndY = binding.llInfo.getBottom();
                 }
-
 
                 if (verticalOffset < 0 && oldTop != 0) {
                     if (verticalOffset < -textNameStartY) {
@@ -222,15 +242,12 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.setMargins(oldLeft, oldTop + verticalOffset, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
 
-                    //                    binding.refreshLayout.setEnabled(false);
-
                 } else if (verticalOffset == 0 && oldTop != 0) {
                     //下拉到开始位置让头像view的属性复原
                     layoutParams.width = oldWidth;
                     layoutParams.height = oldWidth;
                     layoutParams.setMargins(oldLeft, oldTop, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
-
                 }
 
 

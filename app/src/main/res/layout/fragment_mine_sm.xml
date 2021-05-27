@@ -14,12 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/srl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_content"
                 android:layout_width="match_parent"
@@ -28,7 +22,6 @@
                 android:paddingLeft="@dimen/dp_4"
                 android:paddingTop="@dimen/dp_4"
                 android:paddingRight="@dimen/dp_4" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 </layout>
