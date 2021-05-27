@@ -1,11 +1,16 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivitySearchBinding;
@@ -16,7 +21,11 @@ import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchViewModel;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 /**
@@ -63,8 +72,12 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
         viewModel.getHotList();
 
-        binding.tvBack.setOnClickListener(lis -> {
-            finish();
+        binding.tvCancel.setOnClickListener(lis -> {
+            if (isSearch) {
+                toSearch();
+            }else {
+                finish();
+            }
         });
         binding.tvClean.setOnClickListener(lis -> {
             //清除搜索历史
@@ -77,29 +90,61 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    //往下面的搜索插入
-                    SearchBean searchBean = new SearchBean();
-                    searchBean.content = binding.etSearch.getText().toString().trim();
-
-                    //判断超过十条的话移除一条
-
-                    historyTagAdapter.addData(searchBean);
-                    List<SearchBean> searchBeans = historyTagAdapter.getData();
-                    if (historyTagAdapter.getData().size() > 10) {
-                        searchBeans.remove(0);
-                        //重新加载绘制 目前只能重new Adapter
-                        resetHistoryTagAdapter(searchBeans);
-                    }
-                    //更新本地缓存
-                    searchListCache.searchBeans = searchBeans;
-                    ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
-                    //跳页
-
+                    toSearch();
                 }
                 return false;
             }
         });
+
+
+        binding.etSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!TextUtils.isEmpty(s)) {
+                    binding.tvCancel.setText("搜索");
+                    isSearch = true;
+                } else {
+                    binding.tvCancel.setText("取消");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
     }
+
+    private void toSearch() {
+        if (binding.rlSearchHistory.getVisibility() == View.GONE) {
+            binding.rlSearchHistory.setVisibility(View.VISIBLE);
+        }
+
+        //往下面的搜索插入
+        SearchBean searchBean = new SearchBean();
+        searchBean.content = binding.etSearch.getText().toString().trim();
+
+        //判断超过十条的话移除一条
+
+        historyTagAdapter.addData(searchBean);
+        List<SearchBean> searchBeans = historyTagAdapter.getData();
+        if (historyTagAdapter.getData().size() > 10) {
+            searchBeans.remove(0);
+            //重新加载绘制 目前只能重new Adapter
+            resetHistoryTagAdapter(searchBeans);
+        }
+        //更新本地缓存
+        searchListCache.searchBeans = searchBeans;
+        ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
+        //跳页
+    }
+
+    private boolean isSearch;
 
     //重新加载绘制 目前只能重new Adapter
     private void resetHistoryTagAdapter(List<SearchBean> searchBeans) {

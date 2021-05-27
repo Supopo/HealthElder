@@ -1,26 +1,14 @@
 package com.xaqinren.healthyelders.moduleMsg.fragment;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.igexin.sdk.PushManager;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
-import com.tencent.qcloud.tim.uikit.modules.contact.ContactAdapter;
-import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationLayout;
-import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationListLayout;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
-import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
-import com.tencent.qcloud.tim.uikit.modules.conversation.holder.ConversationCommonHolder;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
-import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
@@ -28,12 +16,9 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
-import com.xaqinren.healthyelders.moduleMsg.activity.ContactsActivity;
-import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.utils.PermissionUtils;
 
 /**
  * Created by Lee. on 2021/5/11.
