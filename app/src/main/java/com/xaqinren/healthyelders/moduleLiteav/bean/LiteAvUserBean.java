@@ -7,17 +7,36 @@ import com.xaqinren.healthyelders.widget.share.IShareUser;
 import java.io.Serializable;
 
 public class LiteAvUserBean implements MultiItemEntity , Serializable , IShareUser {
-    public String nickname;
-    public String avatarUrl;
-    public long id;
-    public long userId;
+    private String id;
+    private String userId;
+    private String attentionUserId;
     public int viewType;
     public boolean isSel;
     public boolean readOnly;
     public String identity;
+    public String attentionSource;
+    public String hasLive;
+    public String merchantId;
+    public String createdAt;
+    public UserInfoBean userInfo;
+    public UserInfoBean attentionUserInfo;
+    private String nickname;
+    private String avatarUrl;
+
 
     public LiteAvUserBean() {
 
+    }
+
+    public String getId() {
+        if (attentionUserId != null) {
+            return attentionUserId;
+        }
+        return id;
+    }
+
+    public void setId(String id) {
+        this.attentionUserId = id;
     }
 
     @Override
@@ -27,16 +46,29 @@ public class LiteAvUserBean implements MultiItemEntity , Serializable , IShareUs
 
     @Override
     public String getAvatar() {
-        return avatarUrl;
+        if (attentionUserInfo == null) return avatarUrl;
+        return attentionUserInfo.avatarUrl;
+    }
+
+    public void setAvatar(String avatar) {
+        if (attentionUserInfo == null) attentionUserInfo = new UserInfoBean();
+        attentionUserInfo.avatarUrl = avatar;
     }
 
     @Override
     public String getName() {
-        return nickname;
+        if (attentionUserInfo == null) return nickname;
+        return attentionUserInfo.nickname;
+    }
+
+    public void setName(String name) {
+        if (attentionUserInfo == null) attentionUserInfo = new UserInfoBean();
+        attentionUserInfo.nickname = name;
     }
 
     @Override
     public Object getKey() {
         return userId;
     }
+
 }

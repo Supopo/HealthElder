@@ -69,7 +69,18 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/main_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".moduleHome.activity.WebActivity"
             android:screenOrientation="portrait" />
@@ -235,6 +246,9 @@
         <activity android:name=".modulePicture.activity.PublishAtActivity" />
         <activity android:name=".moduleMsg.activity.ChatActivity" />
         <activity android:name=".moduleHome.activity.SearchActivity" />
+        <activity android:name=".moduleMsg.activity.InteractiveActivity" />
+        <activity android:name=".moduleMsg.activity.ContactsActivity" />
+        <activity android:name=".moduleMsg.activity.AddFriendActivity" />
 
         <service
             android:name=".push.IPushService"

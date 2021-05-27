@@ -415,7 +415,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 avUserBean.readOnly = true;
                 if (!singleSearchAt) {
                     //查询用户,只有ID,没有USerID,手动设置
-                    avUserBean.userId = avUserBean.id;
+                    avUserBean.setId(avUserBean.getId());
                 }
             }
             atPage++;
@@ -516,8 +516,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         userAdapter = new ChooseUserAdapter();
         userAdapter.setList(liteAvUserBeans);
         userAdapter.setOnItemClickListener((adapter, view, position) -> {
-            String name = liteAvUserBeans.get(position).nickname;
-            binding.contentInput.setAtStr("@" + name, liteAvUserBeans.get(position).userId);
+            String name = liteAvUserBeans.get(position).getName();
+            binding.contentInput.setAtStr("@" + name, liteAvUserBeans.get(position).getId());
         });
         chooseTopicAdapter = new ChooseTopicAdapter(R.layout.item_publish_topic_view_adapter);
         chooseTopicAdapter.setList(listTopicBeans);
@@ -651,7 +651,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             else if (requestCode == AT_CODE) {
                 if (data != null) {
                     LiteAvUserBean bean = (LiteAvUserBean) data.getSerializableExtra(com.xaqinren.healthyelders.modulePicture.Constant.PUBLISH_AT);
-                    binding.contentInput.setAtStr("@" + bean.getName(), bean.userId);
+                    binding.contentInput.setAtStr("@" + bean.getName(), bean.getId());
                 }else{
                     //删除at文字
                     binding.contentInput.delLastChar();

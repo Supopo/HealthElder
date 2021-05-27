@@ -30,6 +30,7 @@ import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -100,6 +101,8 @@ public class AppApplication extends BaseApplication {
         //个推
         PushManager.getInstance().initialize(getApplicationContext());
         PushManager.getInstance().setDebugLogger(getApplicationContext(), s -> LogUtils.e("PushManager", s));
+
+        ImManager.getInstance().init();
     }
 
     private void initLiveRoom() {

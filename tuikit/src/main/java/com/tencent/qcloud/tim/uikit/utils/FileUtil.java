@@ -88,12 +88,13 @@ public class FileUtil {
         String jpegName = "picture_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
         try {
             File file = new File(dir, jpegName);
+            Log.e("saveBitmap","filepath -> "+ file.getAbsolutePath());
             FileOutputStream fout = new FileOutputStream(file);
             BufferedOutputStream bos = new BufferedOutputStream(fout);
             b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             bos.flush();
             bos.close();
-            return jpegName;
+            return file.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
             return "";

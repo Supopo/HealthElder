@@ -202,10 +202,6 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             Intent intent = new Intent(getActivity(), DraftActivity.class);
             startActivity(intent);
         });
-        binding.tvMenu108.setOnClickListener(view -> {
-            String data = "jkzl://app_open/draft_activity?key=value";
-            PushNotify.showNotify(getContext(),data);
-        });
     }
 
     /**

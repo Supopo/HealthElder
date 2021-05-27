@@ -265,7 +265,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 //调用SDK拍照
                 PhotoSoundPlayer.playPhotoSound();
                 VideoRecordSDK.getInstance().takePhoto(bitmap -> {
-                    photoPath = FileUtil.saveBitmap(null, bitmap);
+                    LogUtils.e(TAG, getContext().getFilesDir().getAbsolutePath());
+                    photoPath = FileUtil.saveBitmap(getContext().getFilesDir().getAbsolutePath(), bitmap);
                     binding.photoPreview.rlContainer.setVisibility(View.VISIBLE);
                     binding.photoPreview.photoPreviewIv.setImageBitmap(bitmap);
                     //隐藏activity 底部bar

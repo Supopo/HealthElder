@@ -416,7 +416,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         }
 
         for (LiteAvUserBean userBean : unLookUserList) {
-            bean.refuseUserIds.add(userBean.userId+"");
+            bean.refuseUserIds.add(userBean.getId());
         }
         bean.summary = summaryBean;
 
@@ -458,8 +458,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         userAdapter = new ChooseUserAdapter();
         userAdapter.setList(liteAvUserBeans);
         userAdapter.setOnItemClickListener((adapter, view, position) -> {
-            String name = liteAvUserBeans.get(position).nickname;
-            binding.desText.setAtStr("@"+name,liteAvUserBeans.get(position).userId);
+            String name = liteAvUserBeans.get(position).getName();
+            binding.desText.setAtStr("@"+name,liteAvUserBeans.get(position).getId());
         });
         chooseTopicAdapter = new ChooseTopicAdapter(R.layout.item_publish_topic_view_adapter);
         chooseTopicAdapter.setList(listTopicBeans);
@@ -496,7 +496,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 avUserBean.readOnly = true;
                 if (!singleSearchAt) {
                     //查询用户,只有ID,没有USerID,手动设置
-                    avUserBean.userId = avUserBean.id;
+                    avUserBean.setId(avUserBean.getId()); ;
                 }
             }
             atPage++;
@@ -665,7 +665,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 if (unLookUserList.isEmpty()) {
                     return null;
                 }
-                return "不给谁看:" + unLookUserList.get(0).nickname + (unLookUserList.size() > 1 ? "等" + unLookUserList.size() + "人" : "");
+                return "不给谁看:" + unLookUserList.get(0).getName() + (unLookUserList.size() > 1 ? "等" + unLookUserList.size() + "人" : "");
             }
         }
         return null;

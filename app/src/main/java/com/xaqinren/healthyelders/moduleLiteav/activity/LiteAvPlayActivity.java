@@ -449,9 +449,9 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
         List<LiteAvUserBean> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             LiteAvUserBean bean = new LiteAvUserBean();
-            bean.avatarUrl = "";
-            bean.nickname = "";
-            bean.userId = i;
+            bean.setAvatar("");
+            bean.setName("");
+            bean.setId(i+"");
             list.add(bean);
         }
         return list;

@@ -33,6 +33,6 @@
             android:layout_marginRight="@dimen/dp_40"
             android:singleLine="true"
             android:ellipsize="end"
-            android:text="@{data.nickname}" />
+            android:text="@{data.name}" />
     </RelativeLayout>
 </layout>

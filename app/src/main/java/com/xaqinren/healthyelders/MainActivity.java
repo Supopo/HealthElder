@@ -367,7 +367,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //调用上传clientId接口[个推]
                 String clientId = PushManager.getInstance().getClientid(this);
                 LogUtils.e("MainActivity", "绑定 cid -> " + clientId);
-                viewModel.postClientId(clientId);
+//                viewModel.postClientId(clientId);
+                PushManager.getInstance().bindAlias(this,userInfoBean.getId());
             }
         });
         viewModel.clientId.observe(this, b -> LogUtils.e("MainActivity", "绑定cid结果 -> " + b));

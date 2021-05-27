@@ -100,7 +100,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                 if (this.liteAvUserBeans.isEmpty()) {
                     LiteAvUserBean bean = new LiteAvUserBean();
                     bean.viewType = 1;
-                    bean.nickname = "好友";
+                    bean.setName("好友");
                     this.liteAvUserBeans.add(bean);
                 }
             } else if (currentRequestType.equals(FANS)) {
@@ -108,7 +108,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                         this.liteAvUserBeans.get(this.liteAvUserBeans.size() - 1).viewType == 0) {
                     LiteAvUserBean bean = new LiteAvUserBean();
                     bean.viewType = 1;
-                    bean.nickname = "粉丝";
+                    bean.setName("粉丝");
                     this.liteAvUserBeans.add(bean);
                 }
             } else {
@@ -116,7 +116,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                 || this.liteAvUserBeans.get(this.liteAvUserBeans.size() - 1).viewType == 0) {
                     LiteAvUserBean bean = new LiteAvUserBean();
                     bean.viewType = 1;
-                    bean.nickname = "关注";
+                    bean.setName("关注");
                     this.liteAvUserBeans.add(bean);
                 }
             }
@@ -152,7 +152,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
             liteSelAvUserBeans.add(bean);
             for (LiteAvUserBean user : liteAvUserBeans) {
                 if (user.viewType == 1) continue;
-                if (user.userId == bean.userId) {
+                if (user.getId() .equals( bean.getId())) {
                     user.isSel = true;
                 }
             }
@@ -169,7 +169,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         for (int i = 0; i < temp.size(); i++) {
             LiteAvUserBean bean = temp.get(i);
             for (LiteAvUserBean user : liteSelAvUserBeans) {
-                if (user.userId == bean.userId) {
+                if (user.getId() .equals( bean.getId())) {
                     bean.isSel = true;
                 }
             }
@@ -204,18 +204,18 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     }
 
     @Override
-    public void onUserRemove(long uid) {
+    public void onUserRemove(String uid) {
         //通知列表刷新选中状态
         for (int i = 0; i < liteSelAvUserBeans.size(); i++) {
-            long id = liteSelAvUserBeans.get(i).userId;
-            if (id == uid) {
+            String  id = liteSelAvUserBeans.get(i).getId();
+            if (id.equals(uid)) {
                 liteSelAvUserBeans.remove(i);
                 break;
             }
         }
         for (int i = 0; i < liteAvUserBeans.size(); i++) {
-            long id = liteAvUserBeans.get(i).userId;
-            if (id == uid) {
+            String id = liteAvUserBeans.get(i).getId();
+            if (id.equals(uid)) {
                 liteAvUserBeans.get(i).isSel = false;
                 userAdapter.setData(i , liteAvUserBeans.get(i));
             }
@@ -233,7 +233,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                 binding.searchBar.addData(liteAvUserBean);
             }else {
                 liteSelAvUserBeans.remove(liteAvUserBean);
-                binding.searchBar.removeUser(liteAvUserBean.userId);
+                binding.searchBar.removeUser(liteAvUserBean.getId());
             }
         }
         userAdapter.setData(position, liteAvUserBean);

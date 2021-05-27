@@ -35,19 +35,19 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_centerVertical="true"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:background="@mipmap/icon_user_add"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:background="@mipmap/message_add"
             />
 
             <ImageView
                 android:id="@+id/iv_add2"
                 android:layout_toLeftOf="@id/iv_add"
-                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_22"
                 android:layout_centerVertical="true"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:background="@mipmap/icon_user_add"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
+                android:background="@mipmap/message_pengylb"
                 />
         </RelativeLayout>
 

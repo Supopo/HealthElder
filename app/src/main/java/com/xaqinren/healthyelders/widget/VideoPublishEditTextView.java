@@ -431,14 +431,14 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
      *
      * @param atStr
      */
-    public void setAtStr(String atStr, long id) {
+    public void setAtStr(String atStr, String id) {
         if (!isAtEnable){
             append(atStr);
             return;
         }
         //提交了一个热点话题，理所应当从当前#开始网后面替换topicStr的文字内容
         for (VideoPublishEditBean bean : videoAtEditBeans) {
-            if (bean.getId() == id) {
+            if (bean.getId() .equals( id)) {
                 //不能@同一个人
                 return;
             }

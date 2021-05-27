@@ -41,11 +41,9 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
-import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
-import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
@@ -435,18 +433,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (shareDialog == null)
             shareDialog = new ShareDialog(getActivity());
         shareDialog.show(binding.mainRelativeLayout);
-    }
-
-    private List<? extends IShareUser> getShareData() {
-        List<LiteAvUserBean> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            LiteAvUserBean bean = new LiteAvUserBean();
-            bean.avatarUrl = "";
-            bean.nickname = "";
-            bean.userId = i;
-            list.add(bean);
-        }
-        return list;
     }
 
     //评论弹窗

@@ -21,6 +21,6 @@ public class PublishAtAdapter extends BaseQuickAdapter<LiteAvUserBean, BaseViewH
     protected void convert(@NotNull BaseViewHolder baseViewHolder, LiteAvUserBean liteAvUserBean) {
         ItemPuglishAtBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setData(liteAvUserBean);
-        GlideUtil.intoImageView(getContext(),liteAvUserBean.avatarUrl,binding.avatar);
+        GlideUtil.intoImageView(getContext(),liteAvUserBean.getAvatar(),binding.avatar);
     }
 }

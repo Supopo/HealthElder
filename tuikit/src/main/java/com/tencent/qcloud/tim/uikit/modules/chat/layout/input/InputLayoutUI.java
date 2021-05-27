@@ -255,7 +255,7 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
             mMoreInputButton.setVisibility(GONE);
             mSendTextButton.setVisibility(VISIBLE);
         } else {
-            mMoreInputButton.setVisibility(GONE);
+            mMoreInputButton.setVisibility(VISIBLE);
             mSendTextButton.setVisibility(GONE);
         }
     }
@@ -326,7 +326,7 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
         if (mMoreInputDisable) {
             return;
         }
-        mMoreInputButton.setVisibility(GONE);
+        mMoreInputButton.setVisibility(visibility);
     }
 
     protected void showSendTextButton(int visibility) {

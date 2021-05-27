@@ -54,10 +54,11 @@ public class MyIntentService extends GTIntentService {
 
         if (payload == null) {
             Log.e(TAG, "receiver payload = null");
+            PushNotify.showNotify(this, null);
         } else {
             String data = new String(payload);
             Log.d(TAG, "receiver payload = " + data);
-            PushNotify.showNotify(this, data);
+            PushNotify.showNotify(this, JSON.parseObject(data,PayLoadBean.class));
         }
     }
     // cid 离线上线通知

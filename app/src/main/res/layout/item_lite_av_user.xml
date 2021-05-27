@@ -32,7 +32,7 @@
             android:layout_weight="1"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/color_252525"
-            android:text="@{viewModel.nickname}"
+            android:text="@{viewModel.name}"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
             android:singleLine="true"

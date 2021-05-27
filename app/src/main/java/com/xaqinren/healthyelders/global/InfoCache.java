@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.global;
 
 import com.alibaba.fastjson.JSON;
+import com.igexin.sdk.PushManager;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -107,11 +108,15 @@ public class InfoCache {
         SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
         SPUtils.getInstance().put(Constant.SP_KEY_SIG_USER, "");
         SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
+        //解绑推送
+        String uid = UserInfoMgr.getInstance().getUserInfo().getId();
+        PushManager.getInstance().unBindAlias(AppApplication.getContext(), uid, true);
 
         UserInfoMgr.getInstance().clearLogin();
 
         //退出IM
         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).logout();
+
     }
 
 }

@@ -21,6 +21,8 @@ import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 
+import java.io.File;
+
 public class CameraActivity extends Activity {
 
     private static final String TAG = CameraActivity.class.getSimpleName();
@@ -66,14 +68,18 @@ public class CameraActivity extends Activity {
             }
         });
         //JCameraView监听
+        final File file = new File(getFilesDir(), "JCamera");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
         jCameraView.setJCameraLisenter(new JCameraListener() {
             @Override
             public void captureSuccess(Bitmap bitmap) {
                 //获取图片bitmap
-                String path = FileUtil.saveBitmap("JCamera", bitmap);
-               /* Intent intent = new Intent();
-                intent.putExtra(ILiveConstants.CAMERA_IMAGE_PATH, path);
-                setResult(-1, intent);*/
+                String path = FileUtil.saveBitmap(file.getAbsolutePath(), bitmap);
+                Intent intent = new Intent();
+                intent.putExtra(TUIKitConstants.CAMERA_IMAGE_PATH, path);
+                setResult(-1, intent);
                 if (mCallBack != null) {
                     mCallBack.onSuccess(path);
                 }
@@ -83,7 +89,7 @@ public class CameraActivity extends Activity {
             @Override
             public void recordSuccess(String url, Bitmap firstFrame, long duration) {
                 //获取视频路径
-                String path = FileUtil.saveBitmap("JCamera", firstFrame);
+                String path = FileUtil.saveBitmap(file.getAbsolutePath(), firstFrame);
                 Intent intent = new Intent();
                 intent.putExtra(TUIKitConstants.IMAGE_WIDTH, firstFrame.getWidth());
                 intent.putExtra(TUIKitConstants.IMAGE_HEIGHT, firstFrame.getHeight());

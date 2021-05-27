@@ -42,6 +42,11 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
+/**
+ * =====================================================
+ * 描    述: 短视频网络请求仓库
+ * =====================================================
+ */
 public class LiteAvRepository {
     private static LiteAvRepository instance = new LiteAvRepository();
 

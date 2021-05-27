@@ -67,6 +67,19 @@ public class Constant {
      */
     public static final String SP_KEY_LOGIN_USER = "loginUser";
     public static final String SP_KEY_SIG_USER = "userSig";
+    /**
+     * 本地会话
+     */
+    public static final String SP_KEY_CONVERSATION = "conversation";
+
+    public static final String CONVERSATION_SYS_ID = "11111";//系统
+    public static final String CONVERSATION_INT_ID = "22222";//互动
+    public static final String CONVERSATION_FANS_ID = "33333";//粉丝
+    public static final String CONVERSATION_LIVE_ID = "44444";//直播
+    public static final String CONVERSATION_SERVICE_ID = "55555";//服务
+    public static final String CONVERSATION_WALLET_ID = "66666";//钱包
+    public static final String CONVERSATION_CUSTOMER_SERVICE_ID = "77777";//客服
+
 
 
     //腾讯云小视频加防盗链

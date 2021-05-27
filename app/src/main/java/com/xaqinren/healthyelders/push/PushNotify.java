@@ -16,6 +16,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleMsg.ImManager;
 
 import java.util.Random;
 
@@ -24,11 +26,12 @@ import java.util.Random;
  */
 public class PushNotify {
     private static NotificationManager manager ;
-    public static void showNotify(Context context,String data) {
+
+    public static void showNotify(Context context,PayLoadBean data) {
         if (manager==null)
             manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         //创建Notification，传入Context和channelId
-
+        pushMessage(data);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 233, createIntent(data), PendingIntent.FLAG_ONE_SHOT);
         Random random = new Random();
 
@@ -43,11 +46,10 @@ public class PushNotify {
             int importance = NotificationManager.IMPORTANCE_MAX;
             createNotificationChannel(context, channelId, channelName, importance);
         }
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.icon_app);
                 Notification notification = new NotificationCompat.Builder(context, "myChannelId")
                 .setAutoCancel(true)
-                .setContentTitle("这是一个通知标题")
-                .setContentText("这是通知内容")
+                .setContentTitle(PayLoadBean.getNameByGroup(data.messageGroup))
+                .setContentText(data.sendUser.nickname+data.content.body)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.push_small)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.push))
@@ -66,14 +68,79 @@ public class PushNotify {
         manager.createNotificationChannel(channel);
     }
 
-    private static Intent createIntent(String url) {
-        //协议打开草稿箱
-//        String url = "jkzl://app_open/draft_activity?key=value";
+    /**
+     * 创建会话
+     * @param url
+     */
+    private static void pushMessage(PayLoadBean url) {
+
+        if (url.messageGroup.equals(PayLoadBean.INTERACTIVE_MESSAGE)) {
+            //互动消息
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+        } else if (url.messageGroup.equals(PayLoadBean.SYSTEM)) {
+            //系统消息
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAO5faAAAGkY_MVxo087.png?w=75&h=75");
+        } else if (url.messageGroup.equals(PayLoadBean.FANS)) {
+            //粉丝
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_FANS_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAJdZTAAAPp3MftzI340.png?w=75&h=75");
+        } else if (url.messageGroup.equals(PayLoadBean.LIVE)) {
+            //直播
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_LIVE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAUeEDAAAMYchMDkk202.png?w=75&h=75");
+        } else if (url.messageGroup.equals(PayLoadBean.SERVICE)) {
+            //服务
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOWM5AAAOp2f1M9w588.png?w=75&h=75");
+        } else if (url.messageGroup.equals(PayLoadBean.WALLET)) {
+            //钱包
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOg2mAAAF7Iyfodc757.png?w=75&h=75");
+        } else if (url.messageGroup.equals(PayLoadBean.CUSTOMER_SERVICE)) {
+            //客服
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAbOAyAAAHXlHrNdM934.png?w=75&h=75");
+        }
+
+    }
+
+    /**
+     * 点击打开
+     * @param url
+     * @return
+     */
+    private static Intent createIntent(PayLoadBean url) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("jkzl://app_open");
+        if (url.messageGroup.equals(PayLoadBean.INTERACTIVE_MESSAGE)) {
+            //互动
+            buffer.append("/");
+        } else if (url.messageGroup.equals(PayLoadBean.SYSTEM)) {
+            //系统
+            buffer.append("/");
+        } else if (url.messageGroup.equals(PayLoadBean.FANS)) {
+            //粉丝
+            buffer.append("/");
+        } else if (url.messageGroup.equals(PayLoadBean.LIVE)) {
+            //直播
+            buffer.append("/");
+        } else if (url.messageGroup.equals(PayLoadBean.SERVICE)) {
+            //服务
+            buffer.append("/");
+        } else if (url.messageGroup.equals(PayLoadBean.WALLET)) {
+            //钱包
+            buffer.append("/");
+        } else if (url.messageGroup.equals(PayLoadBean.CUSTOMER_SERVICE)) {
+            //客服
+            buffer.append("/");
+        } else {
+            //首页
+            buffer.append("/main_activity");
+        }
+
+
         Intent action = new Intent(Intent.ACTION_VIEW);
         StringBuilder builder = new StringBuilder();
-        builder.append(url);
+        builder.append(buffer.toString());
         action.setData(Uri.parse(builder.toString()));
         return action;
     }
+
+
 }
 

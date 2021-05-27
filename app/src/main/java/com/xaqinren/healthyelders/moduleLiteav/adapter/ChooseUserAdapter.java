@@ -34,7 +34,7 @@ public class ChooseUserAdapter extends BaseMultiItemQuickAdapter<LiteAvUserBean,
             binding.setViewModel(liteAvUserBean);
             ImageView selIv = binding.selIv;
             selIv.setImageResource(liteAvUserBean.isSel ? R.mipmap.rad_py_sel : R.mipmap.rad_py_nor);
-            Glide.with(getContext()).load(liteAvUserBean.avatarUrl).into(binding.avatar);
+            Glide.with(getContext()).load(liteAvUserBean.getAvatar()).into(binding.avatar);
         }
     }
 }

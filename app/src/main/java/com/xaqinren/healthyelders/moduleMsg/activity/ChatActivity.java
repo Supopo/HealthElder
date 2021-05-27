@@ -1,6 +1,9 @@
 package com.xaqinren.healthyelders.moduleMsg.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.xaqinren.healthyelders.BR;
@@ -11,6 +14,13 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
 public class ChatActivity extends BaseActivity<ActivityChatBinding, BaseViewModel> {
+
+    public static void startChar(Context context, ChatInfo chatInfo) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra("info", chatInfo);
+        context.startActivity(intent);
+    }
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_chat;
@@ -24,11 +34,10 @@ public class ChatActivity extends BaseActivity<ActivityChatBinding, BaseViewMode
     @Override
     public void initData() {
         super.initData();
+        rlTitle.setVisibility(View.GONE);
+        ChatInfo chatInfo = (ChatInfo) getIntent().getSerializableExtra("info");
         binding.chatLayout.initDefault();
-        ChatInfo chatInfo = new ChatInfo();
-        chatInfo.setChatName("的范德萨发");
-        chatInfo.setTopChat(true);
-        chatInfo.setId("1396644406169178112");
         binding.chatLayout.setChatInfo(chatInfo);
+        binding.chatLayout.getInputLayout().disableMoreInput(false);
     }
 }

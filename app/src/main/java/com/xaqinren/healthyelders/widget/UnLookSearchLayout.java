@@ -133,13 +133,13 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         adapter.remove(bean);
         //需要通知edittext移除
         editText.removeUser();
-        onSearchChangeListener.onUserRemove(bean.userId);
+        onSearchChangeListener.onUserRemove(bean.getId());
         resize();
     }
-    public void removeUser(long id) {
+    public void removeUser(String id) {
         if (liteAvUserBeans.isEmpty())return;
         for (LiteAvUserBean liteAvUserBean : liteAvUserBeans) {
-            if (liteAvUserBean.userId == id) {
+            if (liteAvUserBean.getId() .equals( id)) {
                 adapter.remove(liteAvUserBean);
                 liteAvUserBeans.remove(liteAvUserBean);
                 editText.removeUser();
@@ -196,7 +196,7 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         LiteAvUserBean bean = liteAvUserBeans.remove(position);
         adapter.removeAt(position);
         editText.removeUser();
-        onSearchChangeListener.onUserRemove(bean.userId);
+        onSearchChangeListener.onUserRemove(bean.getId());
         resize();
     }
 
@@ -204,6 +204,6 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
 
     public interface OnSearchChangeListener{
         void onTextChange(String text);
-        void onUserRemove(long uId);
+        void onUserRemove(String uId);
     }
 }

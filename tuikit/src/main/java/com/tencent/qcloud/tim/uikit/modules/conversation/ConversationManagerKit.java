@@ -43,7 +43,8 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
     private SharedPreferences mConversationPreferences;
     private LinkedList<ConversationInfo> mTopLinkedList = new LinkedList<>();
     private int mUnreadTotal;
-
+    private LoadSelfConversation loadSelfConversation;
+    private boolean isLoadSelfData;
     private ConversationManagerKit() {
         init();
     }
@@ -55,6 +56,10 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
     private void init() {
         TUIKitLog.i(TAG, "init");
         MessageRevokedManager.getInstance().addHandler(this);
+    }
+
+    public void setLoadSelfData(boolean loadSelfData) {
+        isLoadSelfData = loadSelfData;
     }
 
     /**
@@ -94,6 +99,13 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                         infos.add(conversationInfo);
                     }
                 }
+
+                //插入自己的数据
+                if (loadSelfConversation != null && !isLoadSelfData) {
+                    infos.addAll(loadSelfConversation.getConversation());
+                    isLoadSelfData = true;
+                }
+
                 //排序，imsdk加载处理的已按时间排序，但应用层有置顶会话操作，所有需根据置顶标识再次排序（置顶可考虑做到imsdk同步到服务器？）
                 mProvider.setDataSource(sortConversations(infos));
                 SharedPreferenceUtils.putListData(mConversationPreferences, TOP_LIST, mTopLinkedList);
@@ -437,6 +449,29 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
     }
 
     /**
+     * 添加会话
+     *
+     * @param conversationInfo
+     * @return
+     */
+    public boolean addConversationTop(ConversationInfo conversationInfo) {
+        List<ConversationInfo> conversationInfos = new ArrayList<>();
+        conversationInfos.add(conversationInfo);
+        return mProvider.addConversationsToTop(conversationInfos);
+    }
+
+    /**
+     * 更新回话
+     * @param conversationInfo
+     * @return
+     */
+    public boolean updateConversation(ConversationInfo conversationInfo) {
+        List<ConversationInfo> conversationInfos = new ArrayList<>();
+        conversationInfos.add(conversationInfo);
+        return mProvider.updateConversations(conversationInfos);
+    }
+
+    /**
      * 会话数据排序，添加了置顶标识的处理
      *
      * @param sources
@@ -534,6 +569,10 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         }
     }
 
+    public void setLoadSelfConversation(LoadSelfConversation loadSelfConversation) {
+        this.loadSelfConversation = loadSelfConversation;
+    }
+
     /**
      * 与UI做解绑操作，避免内存泄漏
      */
@@ -570,6 +609,10 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
      */
     public interface MessageUnreadWatcher {
         void updateUnread(int count);
+    }
+
+    public interface LoadSelfConversation{
+        List<ConversationInfo> getConversation();
     }
 
 }

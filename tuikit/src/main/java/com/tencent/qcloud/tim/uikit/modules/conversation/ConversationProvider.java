@@ -42,11 +42,34 @@ public class ConversationProvider implements IConversationProvider {
         if (conversations.size() == 1) {
             ConversationInfo conversation = conversations.get(0);
             for (int i = 0; i < mDataSource.size(); i++) {
-                if (mDataSource.get(i).getId().equals(conversation.getId()))
+                if (mDataSource.get(i).getId().equals(conversation.getId())) {
                     return true;
+                }
             }
         }
         boolean flag = mDataSource.addAll(conversations);
+        if (flag) {
+            updateAdapter();
+        }
+        return flag;
+    }
+
+    /**
+     * 批量添加会话数据
+     *
+     * @param conversations 会话数据集合
+     * @return
+     */
+    public boolean addConversationsToTop(List<ConversationInfo> conversations) {
+        if (conversations.size() == 1) {
+            ConversationInfo conversation = conversations.get(0);
+            for (int i = 0; i < mDataSource.size(); i++) {
+                if (mDataSource.get(i).getId().equals(conversation.getId())) {
+                    return true;
+                }
+            }
+        }
+        boolean flag = mDataSource.addAll(0, conversations);
         if (flag) {
             updateAdapter();
         }
@@ -132,8 +155,12 @@ public class ConversationProvider implements IConversationProvider {
                     break;
                 }
             }
-
         }
+        if (!flag) {
+            flag = addConversationsToTop(conversations);
+            return flag;
+        }
+
         if (flag) {
             updateAdapter();
             return true;
