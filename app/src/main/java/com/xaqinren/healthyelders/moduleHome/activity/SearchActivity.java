@@ -75,7 +75,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         binding.tvCancel.setOnClickListener(lis -> {
             if (isSearch) {
                 toSearch();
-            }else {
+            } else {
                 finish();
             }
         });
@@ -118,6 +118,9 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             }
         });
 
+        historyTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            startActivity(SearchAllActivity.class);
+        }));
     }
 
     private void toSearch() {
@@ -142,6 +145,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         searchListCache.searchBeans = searchBeans;
         ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
         //跳页
+        startActivity(SearchAllActivity.class);
     }
 
     private boolean isSearch;

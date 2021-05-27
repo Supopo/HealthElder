@@ -1,8 +1,6 @@
 package com.xaqinren.healthyelders.widget.comment;
 
-import android.graphics.drawable.Icon;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -10,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -18,10 +15,6 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemCommentBinding;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-import retrofit2.http.PUT;
 
 public class CommentAdapter extends BaseQuickAdapter<ICommentBean , CommentAdapter.ViewHolder> implements LoadMoreModule {
     private OnChildLoadMoreCommentListener loadMoreCommentListener;

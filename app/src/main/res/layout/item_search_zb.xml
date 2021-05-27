@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.VideoInfo" />
+
+        <import type="android.view.View" />
+    </data>
+
+
+    <RelativeLayout
+        android:background="@{viewModel.placeholderRes}"
+        android:paddingBottom="@dimen/dp_9"
+        android:paddingLeft="@dimen/dp_14"
+        android:paddingRight="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_530"
+        >
+
+        <LinearLayout
+            android:id="@+id/ll_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_13"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
+                android:layout_marginRight="@dimen/dp_6">
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="@dimen/dp_38"
+                    android:layout_height="@dimen/dp_38"
+                    android:src="@color/color_EAEAEA"
+                    app:qmui_border_color="@color/qmui_s_transparent"
+                    app:qmui_is_circle="true" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名字"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+            android:id="@+id/riv_cover"
+            app:qmui_border_color="@color/transparent"
+            app:qmui_corner_radius="@dimen/dp_4"
+            android:src="@color/green"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_444"
+            android:layout_below="@id/ll_name"
+            />
+
+
+        <LinearLayout
+            android:layout_alignTop="@id/riv_cover"
+            android:id="@+id/ll_showZhibo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@mipmap/bg_search_zb"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
+            >
+
+            <ImageView
+                android:layout_width="@dimen/dp_6"
+                android:layout_height="@dimen/dp_6"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/dp_3"
+                android:background="@mipmap/zhiboz_circle" />
+
+            <TextView
+                android:id="@+id/tv_showZb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="直播中"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+            <View
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/dp_10"
+                android:background="#BDB1B3"
+                android:layout_gravity="center_vertical"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/dp_7"
+                android:layout_height="@dimen/dp_9"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/dp_3"
+                android:background="@mipmap/guankzb_rs" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="1000"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:text="标题"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_14"
+            />
+    </RelativeLayout>
+
+</layout>

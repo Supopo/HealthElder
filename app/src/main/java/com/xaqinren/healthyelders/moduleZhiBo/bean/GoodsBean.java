@@ -59,6 +59,6 @@ public class GoodsBean {
     }
 
     public String getImageUrl() {
-        return UrlUtils.resetImgUrl(imageUrl, 100, 100);
+        return UrlUtils.resetImgUrl(imageUrl, 400, 400);
     }
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
@@ -23,7 +24,7 @@ import java.util.List;
  * Created by Lee. on 2021/5/12.
  * 首页小视频
  */
-public class VideoInfo implements Serializable {
+public class VideoInfo implements Serializable, MultiItemEntity {
     public String id;//": "1392445338140332032",
     public String createdAt;//": "2021-05-12 19:43:33",
     public String merchantId;//": "1378618860613144576",
@@ -98,6 +99,10 @@ public class VideoInfo implements Serializable {
     }
 
     public int getVideoType() {
+        if (TextUtils.isEmpty(resourceType)) {
+            return 0;
+        }
+
         if (resourceType.equals("LIVE")) {
             return 2;
         } else if (resourceType.equals("VIDEO")) {
@@ -187,4 +192,12 @@ public class VideoInfo implements Serializable {
     public String getDay() {
         return DateUtils.getDay(createdAt);
     }
+
+    public int viewType;
+
+    @Override
+    public int getItemType() {
+        return viewType;
+    }
+
 }

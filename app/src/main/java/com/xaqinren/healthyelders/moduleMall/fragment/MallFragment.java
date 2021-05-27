@@ -162,7 +162,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
                 fragments = new ArrayList<>();
                 for (int i = 0; i < datas.size(); i++) {
-                    GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).subMenuName);
+                    GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).menuName);
                     fragments.add(goodsListFragment);
                 }
                 binding.vpContent.setOffscreenPageLimit(datas.size());

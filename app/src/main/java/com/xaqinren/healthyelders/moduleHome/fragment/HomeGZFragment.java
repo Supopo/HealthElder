@@ -252,6 +252,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                binding.srl.setRefreshing(false);
                 page = 1;
                 showLoadView();
                 viewModel.getVideoData(page);

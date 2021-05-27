@@ -226,7 +226,7 @@
         <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleLiteav.activity.MusicListActivity" />
         <activity android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
             android:theme="@style/EditDialogStyle"
             />
         <activity android:name=".moduleHome.activity.DraftActivity">
@@ -249,6 +249,7 @@
         <activity android:name=".moduleMsg.activity.InteractiveActivity" />
         <activity android:name=".moduleMsg.activity.ContactsActivity" />
         <activity android:name=".moduleMsg.activity.AddFriendActivity" />
+        <activity android:name=".moduleHome.activity.SearchAllActivity" />
 
         <service
             android:name=".push.IPushService"

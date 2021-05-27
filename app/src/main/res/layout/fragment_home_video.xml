@@ -222,9 +222,10 @@
 
                     <com.qmuiteam.qmui.widget.QMUIRadiusImageView
                         android:id="@+id/musicImageView"
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="@dimen/dp_40"
+                        android:layout_width="@dimen/dp_26"
+                        android:layout_height="@dimen/dp_26"
                         android:layout_centerInParent="true"
+                        android:src="@color/white"
                         app:qmui_border_color="@color/transparent"
                         app:qmui_is_circle="true" />
                 </RelativeLayout>

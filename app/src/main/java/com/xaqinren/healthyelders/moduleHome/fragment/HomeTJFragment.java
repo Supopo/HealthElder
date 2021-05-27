@@ -212,6 +212,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 page = 1;
                 showLoadView();
                 viewModel.getVideoData(page);
+                binding.srl.setRefreshing(false);
             }
         });
     }
