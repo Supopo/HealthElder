@@ -5,9 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivitySearchBinding;
@@ -18,9 +16,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchViewModel;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
-
 import java.util.List;
-
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 /**
@@ -74,10 +70,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             //清除搜索历史
             SearchBean searchBean = new SearchBean();
             ACache.get(this).put(Constant.SearchId, searchBean);
-            //重新加载绘制 目前只能重new Adapter
-            historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
-            binding.rvHistory.setAdapter(historyTagAdapter);
-            historyTagAdapter.setNewInstance(searchBean);
+            resetHistoryTagAdapter(searchBean.searchBeans);
         });
 
         binding.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -95,9 +88,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
                     if (historyTagAdapter.getData().size() > 10) {
                         searchBeans.remove(0);
                         //重新加载绘制 目前只能重new Adapter
-                        historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
-                        binding.rvHistory.setAdapter(historyTagAdapter);
-                        historyTagAdapter.setNewInstance(searchBeans);
+                        resetHistoryTagAdapter(searchBeans);
                     }
                     //更新本地缓存
                     searchListCache.searchBeans = searchBeans;
@@ -108,6 +99,13 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
                 return false;
             }
         });
+    }
+
+    //重新加载绘制 目前只能重new Adapter
+    private void resetHistoryTagAdapter(List<SearchBean> searchBeans) {
+        historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
+        binding.rvHistory.setAdapter(historyTagAdapter);
+        historyTagAdapter.setNewInstance(searchBeans);
     }
 
 
