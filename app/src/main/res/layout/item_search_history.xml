@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.SearchBean" />
+    </data>
+
+    <!--    随机背景颜色-->
+    <!--    android:background="@{viewModel.placeholderRes}"-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_9"
+            android:layout_marginBottom="@dimen/dp_9"
+            android:background="@drawable/bg_search_tag"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_11"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_11"
+            android:paddingBottom="@dimen/dp_8">
+
+            <TextView
+                android:id="@+id/iv_girls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.content}"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_13" />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

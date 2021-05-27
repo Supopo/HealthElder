@@ -255,5 +255,7 @@ dependencies {
     implementation 'com.getui:gtsdk:3.1.4.0'
     implementation 'com.getui:gtc:3.1.0.0'
 
+    //Lottie动画加载 支持加载json
+    implementation 'com.airbnb.android:lottie:3.7.0'
 }
 

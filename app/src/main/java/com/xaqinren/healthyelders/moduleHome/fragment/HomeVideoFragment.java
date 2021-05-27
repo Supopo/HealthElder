@@ -228,11 +228,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void initVideo() {
         //判断是推荐第一条开始未滑动时候不显示加载进度
         if ((AppApplication.get().getTjPlayPosition() == -1 && position == 0 && type.equals("home-tj"))) {
-            binding.mainLoadView.setVisibility(View.GONE);
+            binding.loadingView.setVisibility(View.GONE);
+            binding.loadingView.cancelAnimation();
+
         } else {
             //加载进度
-            binding.mainLoadView.setVisibility(View.VISIBLE);
-            binding.mainLoadView.start();
+            binding.loadingView.setVisibility(View.VISIBLE);
+            binding.loadingView.playAnimation();
+
         }
 
 
@@ -758,8 +761,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
 
         binding.coverImageView.setVisibility(View.GONE);
-        binding.mainLoadView.stop();
-        binding.mainLoadView.setVisibility(View.GONE);
+
+        binding.loadingView.cancelAnimation();
+        binding.loadingView.setVisibility(View.GONE);
+
+
         if (videoInfo.getVideoType() == 1) {
             //开启音乐Icon动画
             if (musicRotateAnim != null) {

@@ -31,10 +31,14 @@
             style="@style/Layout.Main"
             android:background="@mipmap/quanp_zhez">
 
-            <com.xaqinren.healthyelders.moduleHome.widget.LoadingView
-                android:id="@+id/mainLoadView"
-                style="@style/Layout.Wrap"
-                android:layout_centerInParent="true" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loadingView"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_100"
+                app:lottie_fileName="loading_anim.json"
+                app:lottie_loop="true"
+                android:layout_centerInParent="true"/>
 
             <RelativeLayout
                 android:id="@+id/mainLikeLayout"

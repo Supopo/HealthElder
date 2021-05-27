@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * =====================================================
- * 描    述: 自动换行的LayoutManager
+ * 描    述: 自动换行的LayoutManager 打造标签
  * =====================================================
  */
 public class AutoLineLayoutManager extends RecyclerView.LayoutManager {

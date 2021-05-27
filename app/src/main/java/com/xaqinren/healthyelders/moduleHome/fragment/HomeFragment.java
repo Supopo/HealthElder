@@ -26,6 +26,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
@@ -277,6 +278,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_COLOR, "", colorA));
                 }
             }
+        });
+
+        binding.ivSearch.setOnClickListener(lis ->{
+            startActivity(SearchActivity.class);
         });
     }
 

@@ -89,4 +89,8 @@ public class UrlUtils {
     public static String getUrlQueryByTag(Uri uri,String tag) {
         return getUrlQueryByTag(uri.toString(),tag);
     }
+
+    public static String resetImgUrl(){
+        return "";
+    }
 }
