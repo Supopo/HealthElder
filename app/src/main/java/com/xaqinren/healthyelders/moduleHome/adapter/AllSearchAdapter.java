@@ -42,28 +42,31 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
             int itemWidthHT = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_32));
             int itemWidthST = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_103));
             //判断是横图还是竖图
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rivCover.getLayoutParams();
+            int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_103));
+            int newHeight = itemWidth * 350 / 272;
+
 
             //图片真实宽高
             try {
                 int oldWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "w"));
                 int oldHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "h"));
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.rivCover.getLayoutParams();
 
-                int newHeight;
                 if (oldHeight > oldWidth) {
                     //竖图 计算新高度
                     newHeight = itemWidthST * oldHeight / oldWidth;
-                    params.height = newHeight;
+                    params.width = itemWidthST;
                 } else {
                     newHeight = itemWidthHT * oldHeight / oldWidth;
+                    params.width = itemWidthHT;
                 }
-                params.height = newHeight;
-                binding.rivCover.setLayoutParams(params);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            params.height = newHeight;
+            binding.rivCover.setLayoutParams(params);
 
         } else if (videoInfo.getItemType() == 1) {
             ItemSearchUserBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);

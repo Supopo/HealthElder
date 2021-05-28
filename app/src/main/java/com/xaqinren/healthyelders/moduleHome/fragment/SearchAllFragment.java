@@ -96,6 +96,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
+                    dataList.get(5).resourceType = "LIVE";
                     mAdapter.setNewInstance(dataList);
                     if (dataList.size() == 0) {
                         //创建适配器.空布局，没有数据时候默认展示的

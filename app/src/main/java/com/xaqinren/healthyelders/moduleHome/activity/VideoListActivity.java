@@ -152,14 +152,6 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     public void initViewObservable() {
         super.initViewObservable();
 
-        viewModel.closeRsl.observe(this, closeRsl -> {
-            if (closeRsl != null && closeRsl) {
-                if (binding.srl.isRefreshing()) {
-                    binding.srl.setRefreshing(false);
-                }
-            }
-        });
-
         //接受数据
         viewModel.datas.observe(this, datas -> {
             //            closeLoadView();

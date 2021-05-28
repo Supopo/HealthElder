@@ -196,14 +196,6 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
             }
         });
 
-        viewModel.closeRsl.observe(this, closeRsl -> {
-            if (closeRsl != null && closeRsl) {
-                if (binding.srlContent.isRefreshing()) {
-                    binding.srlContent.setRefreshing(false);
-                }
-            }
-        });
-
         viewModel.datas.observe(this, dataList -> {
             closeLoadView();
             if (dataList != null) {

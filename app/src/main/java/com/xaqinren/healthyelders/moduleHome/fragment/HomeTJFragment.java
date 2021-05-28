@@ -77,14 +77,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         });
         RxSubscriptions.add(subscribe);
 
-        viewModel.closeRsl.observe(this, closeRsl -> {
-            if (closeRsl != null && closeRsl) {
-                if (binding.srl.isRefreshing()) {
-                    binding.srl.setRefreshing(false);
-                }
-            }
-        });
-
         //接受数据
         viewModel.datas.observe(this, datas -> {
             closeLoadView();

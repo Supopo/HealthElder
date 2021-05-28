@@ -445,7 +445,7 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
+    public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
         String uid = "";
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
@@ -464,6 +464,7 @@ public class LiveRepository {
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
                     @Override
                     protected void dismissDialog() {
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
@@ -474,9 +475,6 @@ public class LiveRepository {
                     @Override
                     public void onFail(String code, MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
                         super.onFail(code, data);
-                        if (closeRsl != null) {
-                            closeRsl.postValue(true);
-                        }
                     }
                 });
     }

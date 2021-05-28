@@ -109,5 +109,10 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.dismissDialog.observe(this, dismissDialog -> {
+            if (dismissDialog != null) {
+                dismissDialog();
+            }
+        });
     }
 }

@@ -159,13 +159,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 }
             }
         });
-        viewModel.closeRsl.observe(this, closeRsl -> {
-            if (closeRsl != null && closeRsl) {
-                if (binding.srl.isRefreshing()) {
-                    binding.srl.setRefreshing(false);
-                }
-            }
-        });
     }
 
     private void closeLoadView() {

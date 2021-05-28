@@ -166,13 +166,6 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.closeRsl.observe(this, closeRsl -> {
-            if (closeRsl != null && closeRsl) {
-                if (binding.srlContent.isRefreshing()) {
-                    binding.srlContent.setRefreshing(false);
-                }
-            }
-        });
 
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {

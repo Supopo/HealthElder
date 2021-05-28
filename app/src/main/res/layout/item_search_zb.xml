@@ -56,6 +56,7 @@
 
         <com.qmuiteam.qmui.widget.QMUIRadiusImageView
             android:id="@+id/riv_cover"
+            app:url="@{viewModel.coverUrl}"
             app:qmui_border_color="@color/transparent"
             app:qmui_corner_radius="@dimen/dp_4"
             android:layout_width="match_parent"
@@ -71,7 +72,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginLeft="@dimen/dp_7"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@mipmap/bg_search_zb"
+            android:background="@drawable/btn_search_zbing"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_6"
             android:paddingRight="@dimen/dp_6"
@@ -93,29 +94,29 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_12" />
 
-            <View
-                android:layout_marginLeft="@dimen/dp_6"
-                android:layout_marginRight="@dimen/dp_6"
-                android:layout_width="1dp"
-                android:layout_height="@dimen/dp_10"
-                android:background="#BDB1B3"
-                android:layout_gravity="center_vertical"
-                />
+<!--            <View-->
+<!--                android:layout_marginLeft="@dimen/dp_6"-->
+<!--                android:layout_marginRight="@dimen/dp_6"-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="@dimen/dp_10"-->
+<!--                android:background="#BDB1B3"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                />-->
 
-            <ImageView
-                android:layout_width="@dimen/dp_7"
-                android:layout_height="@dimen/dp_9"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/dp_3"
-                android:background="@mipmap/guankzb_rs" />
+<!--            <ImageView-->
+<!--                android:layout_width="@dimen/dp_7"-->
+<!--                android:layout_height="@dimen/dp_9"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:layout_marginRight="@dimen/dp_3"-->
+<!--                android:background="@mipmap/guankzb_rs" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="1000"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_12" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:text="1000"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="@dimen/sp_12" />-->
 
         </LinearLayout>
 
