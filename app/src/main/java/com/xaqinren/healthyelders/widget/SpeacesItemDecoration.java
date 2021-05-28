@@ -35,26 +35,37 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * =====================================================
  */
 public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
-    private int mSpeace;
+    private int mBottom;
+    private int mRight;
     private int mColumns = 2;//列数 默认2列
     private boolean isStaggeredGrid;
 
-    public SpeacesItemDecoration(Context context, int speace) {
-        this.mSpeace = dp2px(context, speace);
+    public SpeacesItemDecoration(Context context, int bottom) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, bottom);
     }
 
-    public SpeacesItemDecoration(Context context, int speace, boolean isStaggeredGrid) {
-        this.mSpeace = dp2px(context, speace);
+    public SpeacesItemDecoration(Context context, int bottom, boolean isStaggeredGrid) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, bottom);
         this.isStaggeredGrid = isStaggeredGrid;
     }
 
-    public SpeacesItemDecoration(Context context, int speace, int columns) {
-        this.mSpeace = dp2px(context, speace);
+    public SpeacesItemDecoration(Context context, int bottom, int columns) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, bottom);
         this.mColumns = columns;
     }
 
-    public SpeacesItemDecoration(Context context, int speace, int columns, boolean isStaggeredGrid) {
-        this.mSpeace = dp2px(context, speace);
+    public SpeacesItemDecoration(Context context, int columns, int bottom, int right) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, right);
+        this.mColumns = columns;
+    }
+
+    public SpeacesItemDecoration(Context context, int bottom, int columns, boolean isStaggeredGrid) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, bottom);
         this.mColumns = columns;
         this.isStaggeredGrid = isStaggeredGrid;
     }
@@ -62,8 +73,8 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         //判断列数，如果是最后一列，则outRect.left = 0;
-        outRect.bottom = mSpeace;
-        outRect.right = mSpeace;
+        outRect.bottom = mBottom;
+        outRect.right = mRight;
         //        outRect.left = mSpeace;
         //        outRect.top = mSpeace;
 

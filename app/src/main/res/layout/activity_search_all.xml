@@ -10,7 +10,6 @@
     </data>
 
     <RelativeLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -68,6 +67,7 @@
             android:background="@color/color_EAEAEA" />
 
         <com.flyco.tablayout.SlidingTabLayout
+            android:background="@color/white"
             android:layout_below="@id/line_1"
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"

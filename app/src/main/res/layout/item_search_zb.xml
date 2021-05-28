@@ -14,13 +14,12 @@
 
 
     <RelativeLayout
-        android:background="@{viewModel.placeholderRes}"
+        android:background="@color/white"
         android:paddingBottom="@dimen/dp_9"
         android:paddingLeft="@dimen/dp_14"
         android:paddingRight="@dimen/dp_16"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_530"
-        >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/ll_name"
@@ -41,7 +40,7 @@
                     android:id="@+id/iv_avatar"
                     android:layout_width="@dimen/dp_38"
                     android:layout_height="@dimen/dp_38"
-                    android:src="@color/color_EAEAEA"
+                    app:url = "@{viewModel.avatarUrl}"
                     app:qmui_border_color="@color/qmui_s_transparent"
                     app:qmui_is_circle="true" />
 
@@ -50,7 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="名字"
+                android:text="@{viewModel.nickname}"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -59,7 +58,6 @@
             android:id="@+id/riv_cover"
             app:qmui_border_color="@color/transparent"
             app:qmui_corner_radius="@dimen/dp_4"
-            android:src="@color/green"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_444"
             android:layout_below="@id/ll_name"
@@ -123,13 +121,15 @@
 
 
         <TextView
-            android:layout_alignParentBottom="true"
-            android:text="标题"
+            android:layout_alignBottom="@id/riv_cover"
+            android:text="@{viewModel.title}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
+            android:singleLine="true"
             android:layout_marginLeft="@dimen/dp_14"
+            android:layout_marginRight="@dimen/dp_14"
             android:layout_marginBottom="@dimen/dp_14"
             />
     </RelativeLayout>

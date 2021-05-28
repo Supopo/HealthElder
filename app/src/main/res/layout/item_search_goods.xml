@@ -16,7 +16,8 @@
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
     <LinearLayout
-        android:background="@{viewModel.placeholderRes}"
+        android:id="@+id/ll_item"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -24,11 +25,9 @@
         <RelativeLayout
             android:id="@+id/rl_item"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_327"
-            android:background="@{viewModel.placeholderRes}">
+            android:layout_height="@dimen/dp_327">
 
             <ImageView
-                android:background="@color/gray_666"
                 android:id="@+id/iv_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

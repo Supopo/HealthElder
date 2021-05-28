@@ -14,9 +14,9 @@
 
 
     <RelativeLayout
-        android:background="@{viewModel.placeholderRes}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:paddingLeft="@dimen/dp_14"
         android:paddingRight="@dimen/dp_16">
 
@@ -25,32 +25,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_13"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:layout_marginRight="@dimen/dp_6">
-
-                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
-                    android:id="@+id/iv_avatar"
-                    android:layout_width="@dimen/dp_34"
-                    android:layout_height="@dimen/dp_34"
-                    android:layout_centerInParent="true"
-                    android:src="@color/color_EAEAEA"
-                    app:qmui_border_color="@color/qmui_s_transparent"
-                    app:qmui_is_circle="true" />
-
-            </RelativeLayout>
+            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="@dimen/dp_34"
+                android:layout_height="@dimen/dp_34"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_centerInParent="true"
+                app:qmui_border_color="@color/qmui_s_transparent"
+                app:qmui_is_circle="true"
+                app:url="@{viewModel.avatarUrl}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="名字"
+                android:text="@{viewModel.nickname}"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_25"
+                android:textColor="@color/gray_999"
+                android:text="·"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/gray_999"
+                android:text="@{viewModel.getRelativeTime}"
+                android:textStyle="bold"
+                />
         </LinearLayout>
 
         <com.xaqinren.healthyelders.widget.VideoPublishEditTextView
@@ -62,40 +75,51 @@
             android:background="@null"
             android:editable="false"
             android:maxLines="3"
-            android:text="内容"
+            android:text="@{viewModel.content}"
             android:textColor="@color/color_252525"
             android:textSize="@dimen/sp_16" />
 
 
         <com.qmuiteam.qmui.widget.QMUIRadiusImageView
             android:id="@+id/riv_cover"
+            android:layout_marginRight="@dimen/dp_71"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_444"
+            android:layout_height="@dimen/dp_350"
             android:layout_below="@id/descTextView"
             android:layout_marginBottom="@dimen/dp_12"
-            android:src="@color/yellow"
+            app:url = "@{viewModel.coverUrl}"
             app:qmui_border_color="@color/transparent"
             app:qmui_corner_radius="@dimen/dp_4" />
 
+        <ImageView
+            android:layout_width="@dimen/dp_15"
+            android:layout_height="@dimen/dp_17"
+            android:layout_alignEnd="@id/riv_cover"
+            android:layout_alignBottom="@id/riv_cover"
+            android:layout_marginRight="@dimen/dp_11"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:background="@mipmap/sous_icon_bof"
+            android:visibility="@{viewModel.isArticle ?View.GONE:View.VISIBLE}" />
 
         <LinearLayout
-            android:layout_marginBottom="@dimen/dp_18"
-            android:layout_below="@id/riv_cover"
+            android:visibility="gone"
             android:id="@+id/ll_tag"
-            android:background="@drawable/bg_tag_search_article"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingBottom="@dimen/dp_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/riv_cover"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:background="@drawable/bg_tag_search_article"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_2">
 
             <ImageView
-                android:layout_marginRight="@dimen/dp_3"
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_3"
                 android:background="@color/colorRed" />
 
             <TextView
@@ -108,61 +132,59 @@
 
 
         <LinearLayout
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_below="@id/ll_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:layout_below="@id/ll_tag"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_zan_gary"
-                />
+                android:background="@mipmap/icon_zan_gary" />
 
 
             <TextView
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:textColor="@color/gray_666"
-                android:textSize="@dimen/sp_14"
-                android:text="100w"
+                android:visibility="@{viewModel.getFavoriteCount == 0?View.INVISIBLE:View.VISIBLE}"
                 android:layout_width="@dimen/dp_55"
                 android:layout_height="wrap_content"
-                />
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:text="@{viewModel.getFavoriteCountEx}"
+                android:textColor="@color/gray_666"
+                android:textSize="@dimen/sp_14" />
+
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_pl_gray"
-                />
+                android:background="@mipmap/icon_pl_gray" />
 
 
             <TextView
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:textColor="@color/gray_666"
-                android:textSize="@dimen/sp_14"
-                android:text="100"
+                android:visibility="@{viewModel.getCommentCount == 0?View.INVISIBLE:View.VISIBLE}"
                 android:layout_width="@dimen/dp_55"
                 android:layout_height="wrap_content"
-                />
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:text="@{viewModel.getCommentCountEx}"
+                android:textColor="@color/gray_666"
+                android:textSize="@dimen/sp_14" />
+
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_share_gray"
-                />
+                android:background="@mipmap/icon_share_gray" />
 
 
             <TextView
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:textColor="@color/gray_666"
-                android:textSize="@dimen/sp_14"
-                android:text="100w"
+                android:visibility="@{viewModel.getShareCount == 0?View.INVISIBLE:View.VISIBLE}"
                 android:layout_width="@dimen/dp_55"
                 android:layout_height="wrap_content"
-                />
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:text="@{viewModel.getShareCountEx}"
+                android:textColor="@color/gray_666"
+                android:textSize="@dimen/sp_14" />
         </LinearLayout>
     </RelativeLayout>
 

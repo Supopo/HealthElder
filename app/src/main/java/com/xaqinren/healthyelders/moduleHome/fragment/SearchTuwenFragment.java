@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -15,9 +14,7 @@ import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentSearchTwBinding;
-import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
-import com.xaqinren.healthyelders.moduleHome.adapter.SearchTuwenAdapter;
-import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
+import com.xaqinren.healthyelders.moduleHome.adapter.SearchVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
@@ -30,7 +27,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
  */
 public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, BaseViewModel> {
 
-    private SearchTuwenAdapter mAdapter;
+    private SearchVideoAdapter mAdapter;
     private int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
@@ -52,7 +49,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
 
-        mAdapter = new SearchTuwenAdapter(R.layout.item_search_article);
+        mAdapter = new SearchVideoAdapter(R.layout.item_search_video);
         //瀑布流
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         //防止Item切换
@@ -73,7 +70,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                searchAllViewModel.searchDatas(page,5);
+                searchAllViewModel.searchDatas(page, 5);
             }
         });
 
@@ -83,7 +80,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
                 mLoadMore.setEnableLoadMore(false);
                 binding.srlContent.setRefreshing(false);
                 page = 1;
-                searchAllViewModel.searchDatas(page,5);
+                searchAllViewModel.searchDatas(page, 5);
             }
         });
 

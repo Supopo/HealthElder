@@ -58,6 +58,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         binding.rvContent.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvContent.setAdapter(mAdapter);
+        binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1,3,0));
 
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载

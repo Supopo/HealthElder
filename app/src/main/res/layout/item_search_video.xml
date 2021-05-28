@@ -16,7 +16,7 @@
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
     <LinearLayout
-        android:background="@{viewModel.placeholderRes}"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -24,8 +24,7 @@
         <RelativeLayout
             android:id="@+id/rl_item"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_327"
-            android:background="@{viewModel.placeholderRes}">
+            android:layout_height="@dimen/dp_327">
 
             <ImageView
                 android:id="@+id/iv_cover"
@@ -72,7 +71,6 @@
                 android:id="@+id/riv_photo"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_8"
                 android:src="@{viewModel.placeholderRes}"
                 app:qmui_border_color="@color/transparent"
                 app:qmui_is_circle="true"
@@ -96,8 +94,9 @@
 
                 <ImageView
                     android:id="@+id/iv_zan"
-                    android:layout_width="@dimen/dp_12"
-                    android:layout_height="@dimen/dp_11"
+                    android:layout_width="@dimen/dp_14"
+                    android:layout_height="@dimen/dp_12"
+                    android:background="@mipmap/wez_zan_nor"
                     android:layout_marginRight="@dimen/dp_4" />
 
                 <TextView

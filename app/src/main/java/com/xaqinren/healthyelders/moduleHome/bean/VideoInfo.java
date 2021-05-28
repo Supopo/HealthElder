@@ -45,6 +45,20 @@ public class VideoInfo implements Serializable, MultiItemEntity {
         return Integer.parseInt(favoriteCount);
     }
 
+    public int getCommentCount() {
+        if (TextUtils.isEmpty(commentCount) || Integer.parseInt(commentCount) < 0) {
+            return 0;
+        }
+        return Integer.parseInt(commentCount);
+    }
+
+    public int getShareCount() {
+        if (TextUtils.isEmpty(shareCount) || Integer.parseInt(shareCount) < 0) {
+            return 0;
+        }
+        return Integer.parseInt(shareCount);
+    }
+
     public String favoriteCount;//": "0",
     public String commentCount;//": "0",
     public String shareCount;//": "0",
@@ -131,6 +145,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
         return musicName;
     }
 
+
     public String getFavoriteCountEx() {
         if (favoriteCount == null || favoriteCount.equals("0")) {
             return "点赞";
@@ -204,6 +219,9 @@ public class VideoInfo implements Serializable, MultiItemEntity {
         return DateUtils.getDay(createdAt);
     }
 
+    public String getRelativeTime() {
+        return DateUtils.getRelativeTime(createdAt);
+    }
 
     @Override
     public int getItemType() {
