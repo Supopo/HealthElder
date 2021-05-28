@@ -76,25 +76,10 @@
             android:layout_height="@dimen/dp_30"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/btn_follow"
             android:gravity="center"
-            android:text="已关注"
-            android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
-            android:visibility="@{viewModel.showFollow()?View.GONE:View.VISIBLE}" />
+            />
 
-        <TextView
-            android:id="@+id/tv_unfollow"
-            android:layout_width="@dimen/dp_84"
-            android:layout_height="@dimen/dp_30"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/bg_btn_comfrim_shape_15"
-            android:gravity="center"
-            android:text="关注"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            android:visibility="@{viewModel.showFollow()?View.VISIBLE:View.GONE}" />
 
     </RelativeLayout>
 

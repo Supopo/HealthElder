@@ -17,9 +17,12 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchYhBinding;
 import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.moduleHome.viewModel.SearchUserViewModel;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -30,13 +33,14 @@ import me.goldze.mvvmhabit.bus.RxBus;
  * Created by Lee. on 2021/5/28.
  * 搜索 - 用户列表
  */
-public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, BaseViewModel> {
+public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, SearchUserViewModel> {
 
     private SearchUserAdapter mAdapter;
     private int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;
+    private int mPosition;
 
 
     @Override
@@ -70,7 +74,7 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Ba
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                searchAllViewModel.searchDatas(page,2);
+                searchAllViewModel.searchDatas(page, 2);
             }
         });
 
@@ -80,15 +84,31 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Ba
                 mLoadMore.setEnableLoadMore(false);
                 binding.srlContent.setRefreshing(false);
                 page = 1;
-                searchAllViewModel.searchDatas(page,2);
+                searchAllViewModel.searchDatas(page, 2);
             }
         });
 
+        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            //关注
+            if (!InfoCache.getInstance().checkLogin()) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+            mPosition = position;
+            viewModel.toFollow(mAdapter.getData().get(position).userId);
+        }));
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
+        viewModel.followSuccess.observe(this, isSuccess -> {
+            if (isSuccess != null && isSuccess) {
+                mAdapter.getData().get(mPosition).hasAttention = !mAdapter.getData().get(mPosition).hasAttention;
+                mAdapter.notifyItemChanged(mPosition, 99);
+            }
+        });
 
         searchAllViewModel.userDatas.observe(this, dataList -> {
             if (dataList != null) {

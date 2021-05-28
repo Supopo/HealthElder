@@ -129,6 +129,12 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     }
 
     private void toSearch() {
+        tags = binding.etSearch.getText().toString().trim();
+        if (TextUtils.isEmpty(tags)) {
+            toJump();
+            return;
+        }
+
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
         }
@@ -136,9 +142,8 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         //往下面的搜索插入
         SearchBean searchBean = new SearchBean();
         searchBean.hotWord = binding.etSearch.getText().toString().trim();
-        tags = binding.etSearch.getText().toString().trim();
-        //判断超过十条的话移除一条
 
+        //判断超过十条的话移除一条
         historyTagAdapter.addData(searchBean);
         List<SearchBean> searchBeans = historyTagAdapter.getData();
         if (historyTagAdapter.getData().size() > 10) {
