@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
@@ -700,6 +701,31 @@ public class LiteAvRepository {
                         if (followSuccess != null) {
                             followSuccess.postValue(true);
                         }
+                    }
+                });
+    }
+
+
+    public void videoDetail(MutableLiveData<Boolean> dismissDialog, MutableLiveData<VideoInfo> videoInfo, String id) {
+        userApi.getVideoInfo(UserInfoMgr.getInstance().getHttpToken(), id)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<VideoInfo>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        if (dismissDialog != null) {
+                            dismissDialog.postValue(true);
+                        }
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<VideoInfo> data) {
+                        videoInfo.postValue(data.getData());
                     }
                 });
     }

@@ -313,7 +313,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                             if (result.getExpiryDate() != null) {
                                 bundle.putString("expiryDate", result.getExpiryDate().toString());
                             }
-                            isSuccess2 = false;
+                            isSuccess2 = true;
                         }
                     } else {
                         ToastUtil.toastShortMessage("身份证识别失败");

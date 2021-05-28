@@ -124,7 +124,8 @@
                 android:visibility="gone"
                />
         </LinearLayout>
-        <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/private_layout"/>
+        <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/private_layout"
+            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/hide_layout"
             android:layout_width="match_parent"
@@ -133,7 +134,8 @@
             android:layout_below="@id/private_layout"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:visibility="gone">
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
@@ -163,11 +165,13 @@
                 />
         </LinearLayout>
         <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/hide_layout"
-            android:layout_marginLeft="0dp" android:layout_marginRight="0dp"/>
+            android:layout_marginLeft="0dp" android:layout_marginRight="0dp"
+            android:visibility="gone"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_below="@id/hide_layout"
+            android:visibility="gone"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16">
             <TextView

@@ -1,9 +1,16 @@
 package com.xaqinren.healthyelders.moduleMsg.activity;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tencent.bugly.proguard.C;
@@ -15,6 +22,8 @@ import com.xaqinren.healthyelders.moduleMsg.bean.ContactsBean;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.ContactsViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -46,6 +46,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private FragmentActivity fragmentActivity;
     private VideoListBean videos;
     private Handler handler;
+    private boolean isSingle;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         videos = (VideoListBean) bundle.getSerializable("key");
+        isSingle = bundle.getBoolean("key1", false);
 
         //从附近打开
         if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
@@ -113,11 +115,11 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             viewModel.getVideoData(page, videos);
         }
 
-
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                if (isSingle)return;
                 AppApplication.get().setPlayPosition(position);
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
                 //判断数据数量滑动到倒数第三个时候去进行加载

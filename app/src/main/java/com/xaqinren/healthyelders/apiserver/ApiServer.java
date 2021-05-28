@@ -17,6 +17,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
+import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
@@ -390,4 +391,15 @@ public interface ApiServer {
     //获取热门搜索关键词
     @GET("content/open/queryHotSearch")
     Observable<MBaseResponse<List<SearchBean>>> getHotWords();
+
+
+    //消息查询
+    @GET("content/queryMessagePage")
+    Observable<MBaseResponse<BaseListRes<List<InteractiveBean>>>> getMessageData(@Header("Authorization") String authorization,@Query("page") int page, @Query("pageSize") int pageSize, @Query("messageGroup") String messageGroup, @Query("messageType") String messageType);
+
+    //短视频详情
+    @GET("content/shortVideo/info")
+    Observable<MBaseResponse<VideoInfo>> getVideoInfo(@Header("Authorization") String authorization, @Query("id") String id);
+
 }
+

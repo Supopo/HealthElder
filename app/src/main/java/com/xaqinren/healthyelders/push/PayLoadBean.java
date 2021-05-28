@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.push;
 
 import com.google.gson.annotations.SerializedName;
+import com.xaqinren.healthyelders.moduleMsg.Constant;
 
 import java.util.List;
 
@@ -22,32 +23,22 @@ public class PayLoadBean {
 //    LIVE_NOTIFICATION("NOTIFICATION", "LIVE", "直播通知"),
 //    LIVE_SERVICE_OPEN("OPEN", "LIVE", "直播服务开通")
 
-    public static final String SYSTEM = "SYSTEM";
-    public static final String FANS = "FANS";
-    public static final String INTERACTIVE_MESSAGE = "INTERACTIVE_MESSAGE";
-    public static final String CUSTOMER_SERVICE = "CUSTOMER_SERVICE";
-    public static final String SERVICE = "SERVICE";
-    public static final String WALLET = "WALLET";
-    public static final String LIVE = "LIVE";
 
-    public static String getNameByGroup(String name) {
-        switch (name) {
-            case SYSTEM:
-                return "系统通知";
-            case FANS:
-                return "关注通知";
-            case INTERACTIVE_MESSAGE:
-                return "互动消息";
-            case LIVE:
-                return "直播通知";
-            case SERVICE:
-                return "服务通知";
-            case WALLET:
-                return "钱包通知";
-            case CUSTOMER_SERVICE:
-                return "客服消息";
+
+
+
+    public static String getInteractiveMessageBody(PayLoadBean url) {
+        if (url.messageType.equals(Constant.FAVORITE)) {
+            return url.sendUser.nickname + url.content.body;
+        } else if (url.messageType.equals(Constant.AT)) {
+            return url.sendUser.nickname + url.content.title;
+        } else if (url.messageType.equals(Constant.COMMENT)) {
+            return url.sendUser.nickname + url.content.title;
+        } else if (url.messageType.equals(Constant.REPLY)) {
+            return url.sendUser.nickname + url.content.title;
+        } else {
+            return url.sendUser.nickname + url.content.body;
         }
-        return null;
     }
 
     @SerializedName("content")

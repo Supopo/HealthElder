@@ -16,6 +16,9 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.ContactsActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.InteractiveActivity;
+import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -57,9 +60,10 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                     case Constant.CONVERSATION_SYS_ID:
                         ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_SYS_ID);
                         return;
-                    case Constant.CONVERSATION_INT_ID:
+                    case Constant.CONVERSATION_INT_ID: {
                         ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_INT_ID);
-                        return;
+                        startActivity(InteractiveActivity.class);
+                    }return;
                     case Constant.CONVERSATION_FANS_ID:
                         ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_FANS_ID);
                         return;

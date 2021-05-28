@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
+import com.igexin.sdk.PushManager;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
@@ -115,6 +116,9 @@ public class UserRepository {
                             }
                             InfoCache.getInstance().setLoginUser(response.getData());
                             UserInfoMgr.getInstance().setUserInfo(response.getData());
+                            //绑定cid
+                            PushManager.getInstance().bindAlias(AppApplication.get(),response.getData().getId());
+                            LogUtils.e("MainActivity", "绑定 cid -> " + response.getData().getId());
                         }
                     }
 

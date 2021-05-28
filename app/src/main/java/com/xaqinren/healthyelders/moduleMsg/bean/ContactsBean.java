@@ -3,7 +3,7 @@ package com.xaqinren.healthyelders.moduleMsg.bean;
 public class ContactsBean {
     private String name;
     private String phone;
-
+    private String photo;
 
     public String getName() {
         return name;
@@ -19,5 +19,13 @@ public class ContactsBean {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }

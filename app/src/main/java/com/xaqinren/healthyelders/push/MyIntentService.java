@@ -16,6 +16,9 @@ import com.igexin.sdk.message.SetTagCmdMessage;
 import com.igexin.sdk.message.UnBindAliasCmdMessage;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 public class MyIntentService extends GTIntentService {
@@ -33,6 +36,7 @@ public class MyIntentService extends GTIntentService {
     public void onReceiveClientId(Context context, String s) {
         LogUtils.e(TAG, "onReceiveClientId ->" + s);
     }
+
 
     // 处理透传消息
     @Override

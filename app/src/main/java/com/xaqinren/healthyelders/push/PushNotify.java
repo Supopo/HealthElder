@@ -31,10 +31,9 @@ public class PushNotify {
         if (manager==null)
             manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         //创建Notification，传入Context和channelId
-        pushMessage(data);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 233, createIntent(data), PendingIntent.FLAG_ONE_SHOT);
         Random random = new Random();
-
         int r = random.nextInt(99999999);
         //判断是否为8.0以上：Build.VERSION_CODES.O为26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -48,8 +47,8 @@ public class PushNotify {
         }
                 Notification notification = new NotificationCompat.Builder(context, "myChannelId")
                 .setAutoCancel(true)
-                .setContentTitle(PayLoadBean.getNameByGroup(data.messageGroup))
-                .setContentText(data.sendUser.nickname+data.content.body)
+                .setContentTitle(com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(data.messageGroup))
+                .setContentText(PayLoadBean.getInteractiveMessageBody(data))
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.push_small)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.push))
@@ -57,6 +56,7 @@ public class PushNotify {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .build();
         manager.notify(r, notification);
+        pushMessage(data);
     }
     //创建通知渠道
     @TargetApi(Build.VERSION_CODES.O)
@@ -68,33 +68,45 @@ public class PushNotify {
         manager.createNotificationChannel(channel);
     }
 
+
+
     /**
      * 创建会话
      * @param url
      */
     private static void pushMessage(PayLoadBean url) {
 
-        if (url.messageGroup.equals(PayLoadBean.INTERACTIVE_MESSAGE)) {
+        if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE)) {
             //互动消息
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
-        } else if (url.messageGroup.equals(PayLoadBean.SYSTEM)) {
+
+            if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.FAVORITE)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.AT)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.title, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.COMMENT)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.title, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.REPLY)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.title, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            }
+
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SYSTEM)) {
             //系统消息
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAO5faAAAGkY_MVxo087.png?w=75&h=75");
-        } else if (url.messageGroup.equals(PayLoadBean.FANS)) {
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAO5faAAAGkY_MVxo087.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.FANS)) {
             //粉丝
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_FANS_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAJdZTAAAPp3MftzI340.png?w=75&h=75");
-        } else if (url.messageGroup.equals(PayLoadBean.LIVE)) {
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_FANS_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAJdZTAAAPp3MftzI340.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.LIVE)) {
             //直播
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_LIVE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAUeEDAAAMYchMDkk202.png?w=75&h=75");
-        } else if (url.messageGroup.equals(PayLoadBean.SERVICE)) {
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_LIVE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAUeEDAAAMYchMDkk202.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SERVICE)) {
             //服务
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOWM5AAAOp2f1M9w588.png?w=75&h=75");
-        } else if (url.messageGroup.equals(PayLoadBean.WALLET)) {
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOWM5AAAOp2f1M9w588.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.WALLET)) {
             //钱包
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOg2mAAAF7Iyfodc757.png?w=75&h=75");
-        } else if (url.messageGroup.equals(PayLoadBean.CUSTOMER_SERVICE)) {
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOg2mAAAF7Iyfodc757.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.CUSTOMER_SERVICE)) {
             //客服
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, PayLoadBean.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAbOAyAAAHXlHrNdM934.png?w=75&h=75");
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAbOAyAAAHXlHrNdM934.png?w=75&h=75");
         }
 
     }
@@ -107,25 +119,25 @@ public class PushNotify {
     private static Intent createIntent(PayLoadBean url) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("jkzl://app_open");
-        if (url.messageGroup.equals(PayLoadBean.INTERACTIVE_MESSAGE)) {
+        if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE)) {
             //互动
-            buffer.append("/");
-        } else if (url.messageGroup.equals(PayLoadBean.SYSTEM)) {
+            buffer.append("/interactive_activity");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SYSTEM)) {
             //系统
             buffer.append("/");
-        } else if (url.messageGroup.equals(PayLoadBean.FANS)) {
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.FANS)) {
             //粉丝
             buffer.append("/");
-        } else if (url.messageGroup.equals(PayLoadBean.LIVE)) {
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.LIVE)) {
             //直播
             buffer.append("/");
-        } else if (url.messageGroup.equals(PayLoadBean.SERVICE)) {
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SERVICE)) {
             //服务
             buffer.append("/");
-        } else if (url.messageGroup.equals(PayLoadBean.WALLET)) {
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.WALLET)) {
             //钱包
             buffer.append("/");
-        } else if (url.messageGroup.equals(PayLoadBean.CUSTOMER_SERVICE)) {
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.CUSTOMER_SERVICE)) {
             //客服
             buffer.append("/");
         } else {
