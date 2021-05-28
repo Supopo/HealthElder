@@ -33,8 +33,11 @@ public class ImManager {
     private static final String TAG = "ImManager";
     private static ImManager imManager = new ImManager();
     private List<ConversationInfo> localCon;
-    private ImManager(){}
-    public static ImManager getInstance(){
+
+    private ImManager() {
+    }
+
+    public static ImManager getInstance() {
         return imManager;
     }
 
@@ -63,6 +66,7 @@ public class ImManager {
 
     /**
      * 更新头像
+     *
      * @param mIconUrl
      */
     public void upSelfInfo(String mIconUrl) {
@@ -76,6 +80,7 @@ public class ImManager {
             public void onError(int i, String s) {
                 LogUtils.e(TAG, "modifySelfProfile err code = " + i + ", desc = " + s);
             }
+
             @Override
             public void onSuccess() {
                 LogUtils.e(TAG, "modifySelfProfile success");
@@ -110,13 +115,15 @@ public class ImManager {
     private List<ConversationInfo> getLocalConversation() {
         String json = SPUtils.getInstance().getString(Constant.SP_KEY_CONVERSATION, "");
         List<ConversationInfo> temp = JSON.parseArray(json, ConversationInfo.class);
-        for (ConversationInfo info : temp) {
-            unReadCount += info.getUnRead();
+        if (temp != null) {
+            for (ConversationInfo info : temp) {
+                unReadCount += info.getUnRead();
+            }
         }
         return temp;
     }
 
-    public void saveConversationToLocal(String id , String title , String extra , String iconUrl) {
+    public void saveConversationToLocal(String id, String title, String extra, String iconUrl) {
         ConversationInfo conversation;
 
         List<Object> urlIons = new ArrayList<>();
@@ -124,14 +131,14 @@ public class ImManager {
         MessageInfo messageInfo = new MessageInfo();
         messageInfo.setMsgType(MessageInfo.MSG_TYPE_TEXT);
         messageInfo.setExtra(extra);
-        messageInfo.setMsgTime(System.currentTimeMillis()/1000);
+        messageInfo.setMsgTime(System.currentTimeMillis() / 1000);
         boolean flag;
         conversation = getConversationById(id);
         if (conversation == null) {
             conversation = new ConversationInfo();
             conversation.setUnRead(1);
             flag = false;
-        }else{
+        } else {
             flag = true;
             conversation.setUnRead(conversation.getUnRead() + 1);
         }
@@ -140,7 +147,7 @@ public class ImManager {
         conversation.setId(id);
         conversation.setConversationId(title);
         conversation.setGroup(false);
-        conversation.setLastMessageTime(System.currentTimeMillis()/1000);
+        conversation.setLastMessageTime(System.currentTimeMillis() / 1000);
         conversation.setTitle(title);
         conversation.setTop(false);
 
@@ -148,7 +155,7 @@ public class ImManager {
         conversation.setLastMessage(messageInfo);
         if (flag) {
             ConversationManagerKit.getInstance().updateConversation(conversation);
-        }else{
+        } else {
             ConversationManagerKit.getInstance().addConversationTop(conversation);
         }
         unReadCount++;
@@ -181,7 +188,7 @@ public class ImManager {
     }
 
     public void clearUnreadById(String id) {
-        ConversationInfo info =  getConversationById(id);
+        ConversationInfo info = getConversationById(id);
         unReadCount -= info.getUnRead();
         info.setUnRead(0);
         ConversationManagerKit.getInstance().updateConversation(info);
@@ -225,14 +232,14 @@ public class ImManager {
         }
     }
 
-    public interface OnUnReadWatch{
+    public interface OnUnReadWatch {
         void onUnReadWatch(int count);
     }
 
     public static void testAddConversation() {
-        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID,"服务消息","明天下午毁灭","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
-        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_WALLET_ID,"钱包消息","XXX对您点赞","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
-        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID,"客服消息","XXX关注了您","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
+        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, "服务消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
+        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_WALLET_ID, "钱包消息", "XXX对您点赞", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
+        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID, "客服消息", "XXX关注了您", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
     }
 
 

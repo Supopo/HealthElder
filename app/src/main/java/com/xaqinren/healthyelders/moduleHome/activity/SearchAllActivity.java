@@ -11,7 +11,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivitySearchAllBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.fragment.SearchAllFragment;
 import com.xaqinren.healthyelders.moduleHome.fragment.SearchGoodsFragment;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/27.
@@ -85,6 +88,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                 super.onPageSelected(position);
                 fragmentPos = position;
                 viewModel.searchDatas(1, fragmentPos);
+                RxBus.getDefault().post(new EventBean(CodeTable.SEARCH_TAG,1));
             }
         });
 
@@ -102,6 +106,11 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
 
         binding.ivBack.setOnClickListener(lis -> {
             finish();
+        });
+
+        binding.ivDel.setOnClickListener(lis -> {
+            binding.etSearch.setText("");
+            binding.etSearch.setHint("请输入需要搜索的内容");
         });
         viewModel.searchDatas(1, fragmentPos);
     }

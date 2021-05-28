@@ -15,7 +15,9 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -26,8 +28,10 @@ import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/27.
@@ -38,6 +42,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     private BaseLoadMoreModule mLoadMore;
     private int page = 1;
     private SearchAllViewModel searchAllViewModel;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,7 +63,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         binding.rvContent.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvContent.setAdapter(mAdapter);
-        binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1,3,0));
+        binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1, 3, 0));
 
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
@@ -70,7 +75,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                searchAllViewModel.searchDatas(page,0);
+                searchAllViewModel.searchDatas(page, 0);
             }
         });
 
@@ -80,7 +85,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 mLoadMore.setEnableLoadMore(false);
                 binding.srlContent.setRefreshing(false);
                 page = 1;
-                searchAllViewModel.searchDatas(page,0);
+                searchAllViewModel.searchDatas(page, 0);
             }
         });
 
@@ -96,7 +101,6 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
-                    dataList.get(5).resourceType = "LIVE";
                     mAdapter.setNewInstance(dataList);
                     if (dataList.size() == 0) {
                         //创建适配器.空布局，没有数据时候默认展示的
@@ -112,5 +116,19 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 }
             }
         });
+
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null && event.msgType == CodeTable.SEARCH_TAG) {
+                page = 1;
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }

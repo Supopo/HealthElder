@@ -13,15 +13,19 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchSpBinding;
 import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchGoodsAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/28.
@@ -33,6 +37,7 @@ public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, B
     private int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
+    private Disposable subscribe;
 
 
     @Override
@@ -116,10 +121,18 @@ public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, B
                 }
             }
         });
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null && event.msgType == CodeTable.SEARCH_TAG) {
+                page = 1;
+            }
+        });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }
