@@ -16,8 +16,10 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 public class UnreadCountTextView extends AppCompatTextView {
 
-    private int mNormalSize = ScreenUtil.getPxByDp(18.4f);
+    private int mNormalSize = ScreenUtil.getPxByDp(18.0f);
+    private int mNormalPadding = ScreenUtil.getPxByDp(1f);
     private Paint mPaint;
+    private Paint mWhitePaint;
 
     public UnreadCountTextView(Context context) {
         super(context);
@@ -37,10 +39,18 @@ public class UnreadCountTextView extends AppCompatTextView {
     private void init() {
         mPaint = new Paint();
         mPaint.setColor(getResources().getColor(R.color.read_dot_bg));
-        setTextColor(Color.WHITE);
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.6f);
-    }
+        mPaint.setAntiAlias(true);
+        mPaint.setDither(true);
 
+        mWhitePaint = new Paint();
+        mWhitePaint.setColor(getResources().getColor(R.color.white));
+        mWhitePaint.setAntiAlias(true);
+        mWhitePaint.setDither(true);
+
+
+        setTextColor(Color.WHITE);
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -51,16 +61,16 @@ public class UnreadCountTextView extends AppCompatTextView {
             int r = getMeasuredWidth() - l;
             int b = r;
             canvas.drawOval(new RectF(l, t, r, b), mPaint);
-        } else if (getText().length() == 1) {
-            canvas.drawOval(new RectF(0, 0, mNormalSize, mNormalSize), mPaint);
+        } else if (getText().length() >= 1) {
+            canvas.drawOval(new RectF(0, 0, mNormalSize, mNormalSize ), mWhitePaint);
+            canvas.drawOval(new RectF(mNormalPadding, mNormalPadding, mNormalSize - mNormalPadding, mNormalSize - mNormalPadding), mPaint);
         } else if (getText().length() > 1) {
             canvas.drawRoundRect(new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight()), getMeasuredHeight() / 2, getMeasuredHeight() / 2, mPaint);
         }
         super.onDraw(canvas);
-
     }
 
-    @Override
+    /*@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = mNormalSize;
         int height = mNormalSize;
@@ -68,5 +78,5 @@ public class UnreadCountTextView extends AppCompatTextView {
             width = mNormalSize + ScreenUtil.getPxByDp((getText().length() - 1) * 10);
         }
         setMeasuredDimension(width, height);
-    }
+    }*/
 }

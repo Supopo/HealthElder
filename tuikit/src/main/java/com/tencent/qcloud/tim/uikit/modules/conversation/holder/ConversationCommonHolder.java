@@ -5,6 +5,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tencent.qcloud.tim.uikit.R;
@@ -19,7 +20,7 @@ import java.util.Date;
 public class ConversationCommonHolder extends ConversationBaseHolder {
 
     public ConversationIconView conversationIconView;
-    protected LinearLayout leftItemLayout;
+    protected RelativeLayout leftItemLayout;
     protected TextView titleText;
     protected TextView messageText;
     protected TextView timelineText;
@@ -71,7 +72,7 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
         if (conversation.getUnRead() > 0) {
             unreadText.setVisibility(View.VISIBLE);
             if (conversation.getUnRead() > 99) {
-                unreadText.setText("99+");
+                unreadText.setText("99");
             } else {
                 unreadText.setText("" + conversation.getUnRead());
             }

@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
+import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationLayout;
+import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationListLayout;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
+import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
@@ -138,5 +141,4 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
         super.onDestroy();
 
     }
-
 }

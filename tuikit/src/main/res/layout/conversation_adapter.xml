@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_left"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,14 +11,26 @@
         <com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationIconView
             android:id="@+id/conversation_icon"
             android:layout_width="@dimen/conversation_avatar_width"
-            android:layout_height="@dimen/conversation_avatar_height" />
+            android:layout_height="@dimen/conversation_avatar_height"
+            />
+
+        <com.tencent.qcloud.tim.uikit.component.UnreadCountTextView
+            android:id="@+id/conversation_unread"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:gravity="center"
+            android:layout_marginLeft="36dp"
+            android:includeFontPadding="false"
+            android:textColor="#000"
+            android:textSize="10sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:paddingTop="1.37dp"
             android:paddingLeft="11.43dp"
             android:paddingRight="18.11dp"
-            android:layout_height="62.3dp">
+            android:layout_height="62.3dp"
+            android:layout_toRightOf="@id/conversation_icon">
 
             <TextView
                 android:id="@+id/conversation_title"
@@ -55,21 +67,6 @@
                 android:singleLine="true"
                 android:textColor="@color/list_bottom_text_bg"
                 android:textSize="12.86sp" />
-
-
-            <com.tencent.qcloud.tim.uikit.component.UnreadCountTextView
-                android:id="@+id/conversation_unread"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_above="@+id/view_line"
-                android:layout_marginBottom="15.54dp"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:textColor="#fff"
-                android:textSize="10sp" />
-
             <View
                 android:id="@+id/view_line"
                 android:layout_alignParentBottom="true"
@@ -79,4 +76,4 @@
                 android:background="@color/split_lint_color" />
         </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
