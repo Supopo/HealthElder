@@ -267,6 +267,7 @@
         <activity android:name=".moduleMsg.activity.LiveMsgActivity" />
         <activity android:name=".moduleMsg.activity.ServiceMsgActivity" />
         <activity android:name=".moduleMsg.activity.WalletMsgActivity" />
+        <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
 
         <service
             android:name=".push.IPushService"

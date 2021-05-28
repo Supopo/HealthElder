@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
+import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -274,6 +276,10 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.tvFs.setOnClickListener(lis -> {
         });
         binding.tvOrder.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra("show_area", 0);
+            intent.setClass(getActivity(), CityPickerActivity.class);
+            startActivity(intent);
         });
         binding.tvFriends.setOnClickListener(lis -> {
         });
