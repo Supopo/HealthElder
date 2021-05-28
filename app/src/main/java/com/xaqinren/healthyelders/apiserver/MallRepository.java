@@ -6,6 +6,7 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 
@@ -104,5 +105,27 @@ public class MallRepository {
                 });
     }
 
+    public void getHotWords(MutableLiveData<List<SearchBean>> hotWords) {
+        userApi.getHotWords()
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<SearchBean>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<SearchBean>> data) {
+                        hotWords.postValue(data.getData());
+                    }
+
+                });
+    }
 
 }

@@ -22,8 +22,6 @@ import com.xaqinren.healthyelders.moduleHome.viewModel.SearchViewModel;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -130,7 +128,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
         //往下面的搜索插入
         SearchBean searchBean = new SearchBean();
-        searchBean.content = binding.etSearch.getText().toString().trim();
+        searchBean.hotWord = binding.etSearch.getText().toString().trim();
 
         //判断超过十条的话移除一条
 

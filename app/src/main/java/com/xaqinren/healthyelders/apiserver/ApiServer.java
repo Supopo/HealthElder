@@ -5,6 +5,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicBean;
@@ -385,4 +386,8 @@ public interface ApiServer {
     //商品列表
     @GET("jkzl/open/queryCommodityPage")
     Observable<MBaseResponse<BaseListRes<List<GoodsBean>>>> getMallGoodsList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("category") String category);
+
+    //获取热门搜索关键词
+    @GET("content/open/queryHotSearch")
+    Observable<MBaseResponse<List<SearchBean>>> getHotWords();
 }

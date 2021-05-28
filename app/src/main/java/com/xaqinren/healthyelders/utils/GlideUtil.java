@@ -26,13 +26,13 @@ public class GlideUtil {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
     }
 
-    public static void intoGSImageView(Context context, Object res, ImageView view) {
+    public static void intoGaoSiImageView(Context context, Object res, ImageView view) {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))
                 .into(view);
     }
 
-    public static void intoGSImageView(Context context, Object res, ImageView view,int radius) {
+    public static void intoGaoSiImageView(Context context, Object res, ImageView view, int radius) {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(radius, 15)))
                 .into(view);

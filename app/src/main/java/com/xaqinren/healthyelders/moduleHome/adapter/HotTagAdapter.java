@@ -1,15 +1,22 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
+import android.content.res.Resources;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemSearchHistoryBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchHotBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
+import com.xaqinren.healthyelders.utils.GlideUtil;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
 
@@ -31,6 +38,21 @@ public class HotTagAdapter extends BaseQuickAdapter<SearchBean, BaseViewHolder> 
             binding.line.setVisibility(View.GONE);
         }
 
+        if (!TextUtils.isEmpty(item.levelImage)) {
+            GlideUtil.intoImageView(getContext(), item.levelImage, binding.ivTag);
+
+            try {
+                int width = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.levelImage, "w"));
+                int height = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.levelImage, "h"));
+                //计算新高度
+                int newW = (int) ((getContext().getResources().getDimension(R.dimen.dp_14)) * width / height);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.ivTag.getLayoutParams();
+                params.width = newW;
+                binding.ivTag.setLayoutParams(params);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //局部刷新用的

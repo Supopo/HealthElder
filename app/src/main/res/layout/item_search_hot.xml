@@ -32,19 +32,21 @@
                 android:background="@color/color_EAEAEA" />
 
             <TextView
+                android:maxLength="8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@{viewModel.content}"
+                android:text="@{viewModel.hotWord}"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14" />
 
             <ImageView
-                android:layout_width="@dimen/dp_20"
+                android:id="@+id/iv_tag"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_14"
                 android:layout_marginLeft="@dimen/dp_6"
                 android:layout_marginTop="@dimen/dp_9"
-                android:background="@color/green" />
+                />
 
         </LinearLayout>
 
