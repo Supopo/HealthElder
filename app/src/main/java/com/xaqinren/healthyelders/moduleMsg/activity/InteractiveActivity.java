@@ -23,6 +23,7 @@ import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMsg.Constant;
+import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.adapter.InteractiveAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.FriendProvider;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.InteractiveProvider;
@@ -53,7 +54,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
     private int page = 1;
     private int pageSize = 5;
 
-    private String messageGroup = "INTERACTIVE_MESSAGE";
+    private String messageGroup = Constant.INTERACTIVE_MESSAGE;
 
     String[] type = {
             "",//ALL
@@ -88,6 +89,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
     @Override
     public void initData() {
         super.initData();
+        ImManager.getInstance().clearUnreadById(com.xaqinren.healthyelders.global.Constant.CONVERSATION_INT_ID);
         rlTitle.setVisibility(View.GONE);
         interactiveAdapter = new InteractiveAdapter();
 

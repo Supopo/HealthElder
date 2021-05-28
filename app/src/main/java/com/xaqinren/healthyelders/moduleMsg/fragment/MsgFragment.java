@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMsg.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,17 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.activity.LiveAVActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ContactsActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.FansMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.InteractiveActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.LiveMsgActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.ServiceMsgActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.SysMsgActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.WalletMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
 import com.xaqinren.healthyelders.push.PayLoadBean;
@@ -62,25 +69,24 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
         binding.conversationLayout.getConversationList().setOnItemClickListener((view, position, messageInfo) -> {
                 String id = messageInfo.getId();
                 switch (id) {
-                    case Constant.CONVERSATION_SYS_ID:
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_SYS_ID);
-                        return;
+                    case Constant.CONVERSATION_SYS_ID: {
+                        startActivity(SysMsgActivity.class);
+                    }return;
                     case Constant.CONVERSATION_INT_ID: {
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_INT_ID);
                         startActivity(InteractiveActivity.class);
                     }return;
-                    case Constant.CONVERSATION_FANS_ID:
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_FANS_ID);
-                        return;
-                    case Constant.CONVERSATION_LIVE_ID:
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_LIVE_ID);
-                        return;
-                    case Constant.CONVERSATION_SERVICE_ID:
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_SERVICE_ID);
-                        return;
-                    case Constant.CONVERSATION_WALLET_ID:
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_WALLET_ID);
-                        return;
+                    case Constant.CONVERSATION_FANS_ID: {
+                        startActivity(FansMsgActivity.class);
+                    }return;
+                    case Constant.CONVERSATION_LIVE_ID:{
+                        startActivity(LiveMsgActivity.class);
+                    }return;
+                    case Constant.CONVERSATION_SERVICE_ID: {
+                        startActivity(ServiceMsgActivity.class);
+                    }return;
+                    case Constant.CONVERSATION_WALLET_ID: {
+                        startActivity(WalletMsgActivity.class);
+                    }return;
                     case Constant.CONVERSATION_CUSTOMER_SERVICE_ID:
                         ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
                         return;

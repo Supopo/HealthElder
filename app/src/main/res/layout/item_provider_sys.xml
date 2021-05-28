@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/bg_btn_white"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_18"
+                android:textColor="@color/color_252525"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textStyle="bold"
+                android:text="@{viewModel.content.title}" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.createdAt}"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_13"
+                android:layout_marginTop="@dimen/dp_10" />
+
+            <TextView
+                android:id="@+id/body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.content.body}"
+                android:textColor="@color/color_505050"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_30" />
+
+            <RelativeLayout
+                android:id="@+id/detail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_47"
+                android:layout_marginTop="@dimen/dp_6">
+                <View style="@style/lineMarginDp16" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="查看详情"
+                    android:textSize="@dimen/sp_15"
+                    android:textColor="@color/gray_666"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:src="@drawable/arrow_right"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

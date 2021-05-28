@@ -4,7 +4,7 @@ import com.xaqinren.healthyelders.push.PayLoadBean;
 
 import java.util.List;
 
-public class InteractiveBean extends MessageDetailBean{
+public class InteractiveBean extends MessageDetailBean {
 
     private String id;
     private String createdAt;
@@ -15,8 +15,6 @@ public class InteractiveBean extends MessageDetailBean{
     private ExtraDTO extra;
     private String messageType;
     private String messageGroup;
-
-
 
 
     public String getId() {

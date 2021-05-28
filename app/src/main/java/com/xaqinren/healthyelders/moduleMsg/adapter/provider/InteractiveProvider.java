@@ -66,11 +66,8 @@ public class InteractiveProvider<T extends MessageDetailBean> extends BaseItemPr
         GlideUtil.intoCirImageView(getContext(),
                 UrlUtils.resetImgUrl(bean.getContent().getLogoUrl(), (int) dp66, (int) dp66),
                 binding.cover, (int) dp4);
-        try {
-            binding.time.setText(getInteractiveMessageBody(bean));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+        binding.time.setText(getInteractiveMessageBody(bean));
         if (bean.getMessageType().equals(Constant.FAVORITE)) {
             binding.statusIcon.setImageResource(R.mipmap.icon_yongh_dianzan);
         } else if (bean.getMessageType().equals(Constant.AT)) {
@@ -82,9 +79,8 @@ public class InteractiveProvider<T extends MessageDetailBean> extends BaseItemPr
         }
     }
 
-    public String getInteractiveMessageBody(InteractiveBean url) throws ParseException {
-        String date = DateUtils.format(simpleDateFormat.parse(url.getCreatedAt()));
-//        date = url.getCreatedAt();
+    public String getInteractiveMessageBody(InteractiveBean url){
+        String date = DateUtils.getRelativeTime(url.getCreatedAt());
         if (url.getMessageType().equals(com.xaqinren.healthyelders.moduleMsg.Constant.FAVORITE)) {
             return date;
         } else if (url.getMessageType().equals(com.xaqinren.healthyelders.moduleMsg.Constant.AT)) {

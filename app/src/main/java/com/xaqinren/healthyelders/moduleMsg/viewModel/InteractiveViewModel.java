@@ -44,4 +44,5 @@ public class InteractiveViewModel extends BaseViewModel {
     public void getVideoInfo(String id) {
         LiteAvRepository.getInstance().videoDetail(requestSuccess,videoInfoLiveData,id);
     }
+
 }

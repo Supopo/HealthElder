@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleMsg.adapter;
 
 import com.chad.library.adapter.base.BaseProviderMultiAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.FriendProvider;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.LoadMoreProvider;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.TextProvider;
@@ -17,6 +18,7 @@ public class InteractiveAdapter<T extends MessageDetailBean> extends BaseProvide
         addItemProvider(new LoadMoreProvider());
         addItemProvider(new TextProvider());
         addItemProvider(new FriendProvider());
+        addChildClickViewIds(R.id.avatar,R.id.attention_btn);
     }
 
     @Override

@@ -260,8 +260,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.ContactsActivity" />
-        <activity android:name=".moduleMsg.activity.AddFriendActivity" />
+        <activity android:name=".moduleMsg.activity.AddFriendActivity"  android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleHome.activity.SearchAllActivity" />
+        <activity android:name=".moduleMsg.activity.FansMsgActivity" />
+        <activity android:name=".moduleMsg.activity.SysMsgActivity" />
+        <activity android:name=".moduleMsg.activity.LiveMsgActivity" />
+        <activity android:name=".moduleMsg.activity.ServiceMsgActivity" />
+        <activity android:name=".moduleMsg.activity.WalletMsgActivity" />
 
         <service
             android:name=".push.IPushService"

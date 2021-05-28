@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginLeft="@dimen/dp_16"
+            />
+
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:textSize="@dimen/sp_15"
+            android:textColor="@color/color_252525"
+            android:text="@{viewModel.sendUser.nickname}"
+            android:maxLines="2"
+            android:maxWidth="@dimen/dp_170"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/describe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_below="@id/nickname"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/gray_666"
+            android:text="@{viewModel.content.body}"
+            android:layout_marginRight="@dimen/dp_6"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_below="@id/describe"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/gray_999"
+            android:ellipsize="end"
+            />
+
+        <TextView
+            android:id="@+id/attention_btn"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignTop="@id/avatar"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/bg_btn_attention"
+            android:textColor="@drawable/color_btn_attention"
+            android:text="互相关注"
+            android:gravity="center"
+            android:textSize="@dimen/sp_14"/>
+    </RelativeLayout>
+</layout>
