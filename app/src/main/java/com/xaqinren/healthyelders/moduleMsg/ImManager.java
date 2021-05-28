@@ -18,6 +18,7 @@ import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -145,7 +146,7 @@ public class ImManager {
     private ConversationInfo getConversationById(String id) {
         for (int i = 0; i < localCon.size(); i++) {
             if (localCon.get(i).getId().equals(id)) {
-                return localCon.remove(i);
+                return localCon.get(i);
             }
         }
         return null;
@@ -173,10 +174,45 @@ public class ImManager {
         saveConversationToSp(info);
     }
 
+    public void pushMessage(PayLoadBean url) {
+        if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE)) {
+            //互动消息
+            if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.FAVORITE)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.AT)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.title, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.COMMENT)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.title, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.REPLY)) {
+                ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.title, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
+            }
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SYSTEM)) {
+            //系统消息
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAO5faAAAGkY_MVxo087.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.FANS)) {
+            //粉丝
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_FANS_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAJdZTAAAPp3MftzI340.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.LIVE)) {
+            //直播
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_LIVE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeyAUeEDAAAMYchMDkk202.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SERVICE)) {
+            //服务
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOWM5AAAOp2f1M9w588.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.WALLET)) {
+            //钱包
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAOg2mAAAF7Iyfodc757.png?w=75&h=75");
+        } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.CUSTOMER_SERVICE)) {
+            //客服
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAbOAyAAAHXlHrNdM934.png?w=75&h=75");
+        }
+    }
+
     public static void testAddConversation() {
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID,"系统消息","明天下午毁灭","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID,"互动消息","XXX对您点赞","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_FANS_ID,"粉丝消息","XXX关注了您","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_LIVE_ID,"直播消息","今天XXX点您要直播了","https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
     }
+
+
 }

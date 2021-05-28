@@ -37,16 +37,21 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
+import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
+import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.operators.parallel.ParallelRunOn;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
@@ -72,6 +77,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Handler handler;
     private MallFragment mallFragment;
     private MineFragment mineFragment;
+    private Disposable mSubscription;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -361,6 +367,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         });
         RxSubscriptions.add(eventDisposable);
+
+
+        mSubscription = RxBus.getDefault().toObservable(PayLoadBean.class)
+                .observeOn(AndroidSchedulers.mainThread()) //回调到主线程更新UI
+                .subscribe(new Consumer<PayLoadBean>() {
+                    @Override
+                    public void accept(final PayLoadBean progressLoadBean) throws Exception {
+                        ImManager.getInstance().pushMessage(progressLoadBean);
+                    }
+                });
+        //将订阅者加入管理站
+        RxSubscriptions.add(mSubscription);
     }
 
     private String[] textColors = {
@@ -481,5 +499,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             eventDisposable.dispose();
         }
         handler.removeCallbacksAndMessages(null);
+        RxSubscriptions.remove(mSubscription);
     }
 }

@@ -21,6 +21,8 @@ import com.xaqinren.healthyelders.moduleMsg.ImManager;
 
 import java.util.Random;
 
+import me.goldze.mvvmhabit.bus.RxBus;
+
 /**
  * 透传消息,展示
  */
@@ -56,7 +58,8 @@ public class PushNotify {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .build();
         manager.notify(r, notification);
-        pushMessage(data);
+//        pushMessage(data);
+        RxBus.getDefault().post(data);
     }
     //创建通知渠道
     @TargetApi(Build.VERSION_CODES.O)
@@ -73,12 +76,10 @@ public class PushNotify {
     /**
      * 创建会话
      * @param url
-     */
+     *//*
     private static void pushMessage(PayLoadBean url) {
-
         if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE)) {
             //互动消息
-
             if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.FAVORITE)) {
                 ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAV7mXAAANf-bU2kQ139.png?w=75&h=75");
             } else if (url.messageType.equals(com.xaqinren.healthyelders.moduleMsg.Constant.AT)) {
@@ -108,8 +109,7 @@ public class PushNotify {
             //客服
             ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAbOAyAAAHXlHrNdM934.png?w=75&h=75");
         }
-
-    }
+    }*/
 
     /**
      * 点击打开

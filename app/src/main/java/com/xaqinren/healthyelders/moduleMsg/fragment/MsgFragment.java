@@ -20,16 +20,21 @@ import com.xaqinren.healthyelders.moduleMsg.activity.ContactsActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.InteractiveActivity;
 import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
+import com.xaqinren.healthyelders.push.PayLoadBean;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.http.download.DownLoadStateBean;
 
 /**
  * Created by Lee. on 2021/5/11.
  * 消息列表
  */
 public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> {
-
-//    private MsgListAdapter msgListAdapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -119,6 +124,13 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 
 }
