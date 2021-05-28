@@ -38,6 +38,12 @@ public class ImManager {
         return imManager;
     }
 
+    private int unReadCount;
+    private OnUnReadWatch onUnReadWatch;
+
+    public void setOnUnReadWatch(OnUnReadWatch onUnReadWatch) {
+        this.onUnReadWatch = onUnReadWatch;
+    }
 
     public void init() {
         localCon = getLocalConversation();
@@ -53,7 +59,6 @@ public class ImManager {
         });
         ConversationManagerKit.getInstance().setLoadSelfConversation(() -> localCon);
         ConversationManagerKit.getInstance().loadConversation(null);
-
     }
 
     /**
@@ -92,16 +97,22 @@ public class ImManager {
         if (!flag) {
             localCon.add(0, conversation);
         }
-       saveSp();
+        saveSp();
     }
 
     private void saveSp() {
         SPUtils.getInstance().put(Constant.SP_KEY_CONVERSATION, JSON.toJSONString(localCon));
+        if (onUnReadWatch != null) {
+            onUnReadWatch.onUnReadWatch(unReadCount + ConversationManagerKit.getInstance().getUnreadTotal());
+        }
     }
 
     private List<ConversationInfo> getLocalConversation() {
         String json = SPUtils.getInstance().getString(Constant.SP_KEY_CONVERSATION, "");
         List<ConversationInfo> temp = JSON.parseArray(json, ConversationInfo.class);
+        for (ConversationInfo info : temp) {
+            unReadCount += info.getUnRead();
+        }
         return temp;
     }
 
@@ -140,6 +151,7 @@ public class ImManager {
         }else{
             ConversationManagerKit.getInstance().addConversationTop(conversation);
         }
+        unReadCount++;
         saveConversationToSp(conversation);
     }
 
@@ -156,6 +168,7 @@ public class ImManager {
         boolean flag = false;
         for (int i = 0; i < localCon.size(); i++) {
             if (localCon.get(i).getId().equals(id)) {
+                unReadCount -= localCon.get(i).getUnRead();
                 localCon.remove(i);
                 flag = true;
                 break;
@@ -169,9 +182,14 @@ public class ImManager {
 
     public void clearUnreadById(String id) {
         ConversationInfo info =  getConversationById(id);
+        unReadCount -= info.getUnRead();
         info.setUnRead(0);
         ConversationManagerKit.getInstance().updateConversation(info);
         saveConversationToSp(info);
+    }
+
+    public int getUnreadCount() {
+        return unReadCount;
     }
 
     public void pushMessage(PayLoadBean url) {
@@ -205,6 +223,10 @@ public class ImManager {
             //客服
             ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0E/rBBcQmCvBeuAbOAyAAAHXlHrNdM934.png?w=75&h=75");
         }
+    }
+
+    public interface OnUnReadWatch{
+        void onUnReadWatch(int count);
     }
 
     public static void testAddConversation() {

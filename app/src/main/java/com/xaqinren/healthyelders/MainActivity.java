@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer;
 
 import com.dmcbig.mediapicker.utils.ScreenUtils;
 import com.igexin.sdk.PushManager;
+import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -55,12 +56,13 @@ import io.reactivex.internal.operators.parallel.ParallelRunOn;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.http.download.DownLoadStateBean;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements ImManager.OnUnReadWatch {
     private List<Fragment> mFragments;
     private double firstTime;
     private TextView oldView;
@@ -172,9 +174,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         dawable.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
         dawable2 = getResources().getDrawable(R.mipmap.line_bq_white);
         dawable2.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
-
         initEvent();
-
     }
 
     private void initEvent() {
@@ -379,6 +379,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 });
         //将订阅者加入管理站
         RxSubscriptions.add(mSubscription);
+
+        ImManager.getInstance().setOnUnReadWatch(this);
+        onUnReadWatch(ImManager.getInstance().getUnreadCount());
     }
 
     private String[] textColors = {
@@ -500,5 +503,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
         handler.removeCallbacksAndMessages(null);
         RxSubscriptions.remove(mSubscription);
+    }
+
+    @Override
+    public void onUnReadWatch(int count) {
+        if (count > 0) {
+            binding.unread.setVisibility(View.VISIBLE);
+            if (count > 99) {
+                binding.unread.setText("99");
+            }else{
+                binding.unread.setText(count + "");
+            }
+        }else{
+            binding.unread.setVisibility(View.GONE);
+        }
     }
 }

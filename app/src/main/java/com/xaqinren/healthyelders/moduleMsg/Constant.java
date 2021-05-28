@@ -1,7 +1,7 @@
 package com.xaqinren.healthyelders.moduleMsg;
 
 public class Constant {
-    public static final String SHORT_VIDEO = "SHORT_VIDEO";
+    public static final String SHORT_VIDEO = "VIDEO";
 
 
 //    SYSTEM_NOTIFICATION("NOTIFICATION", "SYSTEM", "系统通知"),
