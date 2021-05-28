@@ -1,47 +1,39 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
-import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
+import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
-import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
-import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
-import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
- * Created by Lee. on 2021/5/27.
+ * Created by Lee. on 2021/5/28.
+ * 搜索 - 直播列表
  */
-public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, BaseViewModel> {
+public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, SearchAllViewModel> {
 
-    private AllSearchAdapter mAdapter;
-    private BaseLoadMoreModule mLoadMore;
+    private SearchZhiboAdapter mAdapter;
     private int page = 1;
+    private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
+
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return R.layout.fragment_all_search;
+        return R.layout.fragment_search_zb;
     }
 
     @Override
@@ -54,9 +46,8 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         super.initData();
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
-        mAdapter = new AllSearchAdapter();
-
-        binding.rvContent.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new SearchZhiboAdapter(R.layout.item_search_zb);
+        binding.rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.rvContent.setAdapter(mAdapter);
 
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
@@ -69,7 +60,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                searchAllViewModel.searchDatas(page,0);
+
             }
         });
 
@@ -79,23 +70,26 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 mLoadMore.setEnableLoadMore(false);
                 binding.srlContent.setRefreshing(false);
                 page = 1;
-                searchAllViewModel.searchDatas(page,0);
+                searchAllViewModel.searchDatas(page,4);
             }
         });
+
 
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        searchAllViewModel.allDatas.observe(this, dataList -> {
+
+        searchAllViewModel.zbDatas.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
-                    mAdapter.setNewInstance(dataList);
+                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                    mAdapter.setList(dataList);
                     if (dataList.size() == 0) {
                         //创建适配器.空布局，没有数据时候默认展示的
                         mAdapter.setEmptyView(R.layout.list_empty);
@@ -110,5 +104,10 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

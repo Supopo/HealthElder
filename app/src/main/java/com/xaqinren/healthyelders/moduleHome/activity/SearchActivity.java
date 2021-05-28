@@ -35,6 +35,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private HotTagAdapter hotTagAdapter;
     private HistoryTagAdapter historyTagAdapter;
     private SearchBean searchListCache;
+    private String tags;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -117,7 +118,13 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         });
 
         historyTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            startActivity(SearchAllActivity.class);
+            tags = historyTagAdapter.getData().get(position).hotWord;
+            toJump();
+        }));
+
+        hotTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            tags = hotTagAdapter.getData().get(position).hotWord;
+            toJump();
         }));
     }
 
@@ -129,7 +136,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         //往下面的搜索插入
         SearchBean searchBean = new SearchBean();
         searchBean.hotWord = binding.etSearch.getText().toString().trim();
-
+        tags = binding.etSearch.getText().toString().trim();
         //判断超过十条的话移除一条
 
         historyTagAdapter.addData(searchBean);
@@ -143,7 +150,13 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         searchListCache.searchBeans = searchBeans;
         ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
         //跳页
-        startActivity(SearchAllActivity.class);
+        toJump();
+    }
+
+    private void toJump() {
+        Bundle bundle = new Bundle();
+        bundle.putString("tags", tags);
+        startActivity(SearchAllActivity.class,bundle);
     }
 
     private boolean isSearch;

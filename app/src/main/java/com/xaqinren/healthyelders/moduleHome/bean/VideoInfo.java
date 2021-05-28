@@ -6,6 +6,7 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.Constant;
@@ -47,7 +48,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String favoriteCount;//": "0",
     public String commentCount;//": "0",
     public String shareCount;//": "0",
-    public String resourceType;//": "VIDEO",
+    public String resourceType;//": "VIDEO", LIVE,VIDEO,USER_DIARY
     public String location;//": "34.233237,108.946006",
     public String address;//": "西安北郊大学城",
     public String externalId;//": "5285890818169432613"
@@ -57,6 +58,16 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String musicId;//":
     public String musicIcon;//":
     public String musicName;//":
+
+    public VideoInfo share;//":
+    public String roomPassword;//":
+    public String refuseUserIds;//":
+    public String approvalStatus;//":
+    public String creationViewAuth;//":
+    public String businessHub;//":
+    public String district;//":
+    public String city;//":
+    public String province;//":
 
     public boolean hasFavorite;
     public boolean hasAttention;
@@ -193,11 +204,21 @@ public class VideoInfo implements Serializable, MultiItemEntity {
         return DateUtils.getDay(createdAt);
     }
 
-    public int viewType;
 
     @Override
     public int getItemType() {
-        return viewType;
+        if (resourceType.equals(Constant.REQ_TAG_SP)) {
+            return 0;
+        } else if (resourceType.equals(Constant.REQ_TAG_YH)) {
+            return 1;
+        } else if (resourceType.equals(Constant.REQ_TAG_SP)) {
+            return 2;
+        } else if (resourceType.equals(Constant.REQ_TAG_ZB)) {
+            return 3;
+        } else if (resourceType.equals(Constant.REQ_TAG_TW)) {
+            return 4;
+        }
+        return 0;
     }
 
 }

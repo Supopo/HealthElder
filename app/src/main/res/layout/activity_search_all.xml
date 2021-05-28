@@ -93,17 +93,11 @@
             android:layout_below="@id/tabLayout"
             android:background="@color/color_EAEAEA" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:layout_below="@id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <androidx.viewpager2.widget.ViewPager2
+                android:layout_below="@id/tabLayout"
                 android:id="@+id/viewPager2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 </layout>

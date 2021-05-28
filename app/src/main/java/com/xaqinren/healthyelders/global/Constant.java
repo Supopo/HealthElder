@@ -30,6 +30,13 @@ public class Constant {
     public static String SearchId = "SEARCH_ID";//搜索id
     public static int loadVideoSize = 2;
 
+    public static String REQ_TAG_ZB = "LIVE";//直播
+    public static String REQ_TAG_SP = "VIDEO";//视频
+    public static String REQ_TAG_TW = "USER_DIARY";//日记
+    public static String REQ_TAG_YH = "USER";//用户
+    public static String REQ_TAG_GOODS = "COMMODITY";//商品
+    public static String REQ_TAG_WZ = "ARTICLE";//文章
+
 
     //生成roomId
     public static String getRoomId(String userId) {
