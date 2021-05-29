@@ -276,4 +276,24 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <declare-styleable name="CircularImageView" >
+        <attr name="cirType" format="enum" >
+            <enum name="all" value="1">1</enum>
+            <enum name="top" value="2">2</enum>
+            <enum name="bottom" value="3">3</enum>
+            <enum name="left" value="4">4</enum>
+            <enum name="right" value="5">5</enum>
+            <enum name="four" value="6">6</enum>
+        </attr>
+        <attr name="cirValue" format="dimension"/>
+        <attr name="leftValue" format="dimension"/>
+        <attr name="rightValue" format="dimension"/>
+        <attr name="topValue" format="dimension"/>
+        <attr name="bottomValue" format="dimension"/>
+        <attr name="leftTopValue" format="dimension"/>
+        <attr name="rightTopValue" format="dimension"/>
+        <attr name="leftBottomValue" format="dimension"/>
+        <attr name="rightBottomValue" format="dimension"/>
+    </declare-styleable>
+
 </resources>
