@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.utils;
 
+import android.text.TextUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,13 +15,16 @@ public class DateUtils {
 
 
     public static String getRelativeTime(String time) {
+        if (TextUtils.isEmpty(time)) {
+            return "";
+        }
         //转换时间戳
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = null;
         try {
             date = format.parse(time);
             return format(date);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";

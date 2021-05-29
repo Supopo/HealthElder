@@ -1,9 +1,12 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
+import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
@@ -11,6 +14,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemAllSearchArticleBinding;
+import com.xaqinren.healthyelders.databinding.ItemAllSearchGoodsBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchGoodsBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchUserBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchZbBinding;
@@ -25,7 +29,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
     public AllSearchAdapter() {
         addItemType(0, R.layout.item_all_search_article);
         addItemType(1, R.layout.item_search_user);
-        addItemType(2, R.layout.item_search_goods);
+        addItemType(2, R.layout.item_all_search_goods);
         addItemType(3, R.layout.item_search_zb);
         addItemType(4, R.layout.item_all_search_article);
     }
@@ -72,15 +76,25 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
             ItemSearchUserBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             binding.setViewModel(videoInfo);
         } else if (videoInfo.getItemType() == 2) {
-            ItemSearchGoodsBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
+            ItemAllSearchGoodsBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             binding.setViewModel(videoInfo);
 
-            binding.llItem.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_all_goods));
             //计算View宽度
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.ivCover.getLayoutParams();
+            //            //图片真实宽高
+            //            try {
+            //                int oldWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "w"));
+            //                int oldHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "h"));
+            //
+            //                int newHeight = itemWidth * oldHeight / oldWidth;
+            //                params.height = newHeight;
+            //            } catch (Exception e) {
+            //                e.printStackTrace();
+            //            }
             int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_103));
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.llItem.getLayoutParams();
-            params.width = itemWidth;
-            binding.llItem.setLayoutParams(params);
+
+            params.height = itemWidth;
+            binding.ivCover.setLayoutParams(params);
 
         } else if (videoInfo.getItemType() == 3) {
             ItemSearchZbBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);

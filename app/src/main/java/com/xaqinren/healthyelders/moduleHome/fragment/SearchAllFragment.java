@@ -171,7 +171,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                         //创建适配器.空布局，没有数据时候默认展示的
                         mAdapter.setEmptyView(R.layout.list_empty);
                     }
-                    initHead();
+//                    initHead();
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束

@@ -30,8 +30,14 @@ public class MenuBean {
     public String showChannel;//": "commodityType"
     public List<MenuBean> menuBeans = new ArrayList<>();
     public int type;
+    public int menuRes;
 
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
+    }
+    public MenuBean(){}
+    public MenuBean(String menuName,int menuRes){
+        this.menuName = menuName;
+        this.menuRes = menuRes;
     }
 }

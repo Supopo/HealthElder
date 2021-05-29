@@ -17,24 +17,17 @@
 
     <LinearLayout
         android:id="@+id/ll_item"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/rl_item"
+        <ImageView
+            android:id="@+id/iv_cover"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_327">
-
-            <ImageView
-                android:id="@+id/iv_cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:url="@{viewModel.coverUrl}" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:url="@{viewModel.coverUrl}" />
 
         <TextView
             android:layout_width="match_parent"
@@ -48,33 +41,32 @@
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_marginBottom="@dimen/dp_9"
-            android:layout_marginTop="@dimen/dp_9"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            android:gravity="center_vertical"
             android:id="@+id/ll_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_9"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_9"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_16"
+                android:text="@{viewModel.getMinSalesPrice}"
                 android:textColor="@color/color_F81E4D"
-                android:textStyle="bold"
-                android:text="¥37.0"
-                />
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end|center_vertical"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_12"
+                android:text="@{viewModel.getTotalSoldCount}"
                 android:textColor="@color/gray_999"
-                android:text="已售100w"
-                />
+                android:textSize="@dimen/sp_12" />
 
 
         </LinearLayout>
@@ -86,24 +78,24 @@
             android:layout_marginRight="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_9"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.storeLogo == null?View.GONE:View.VISIBLE}">
 
             <com.qmuiteam.qmui.widget.QMUIRadiusImageView
                 android:id="@+id/riv_photo"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_8"
-                android:src="@{viewModel.placeholderRes}"
                 app:qmui_border_color="@color/transparent"
                 app:qmui_is_circle="true"
-                app:url="@{viewModel.avatarUrl}" />
+                app:url="@{viewModel.storeLogo}" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_weight="1"
-                android:text="@{viewModel.nickname}"
+                android:text="@{viewModel.storeName}"
                 android:textColor="@color/gray_666"
                 android:textSize="@dimen/sp_12" />
 

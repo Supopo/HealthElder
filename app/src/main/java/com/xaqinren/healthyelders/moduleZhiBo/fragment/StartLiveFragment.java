@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -50,10 +51,12 @@ import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.adapter.LiveMenuAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -129,8 +132,29 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         mLiveInitInfo.setHasLocation(true);
         LocationService.startService(getActivity());
-        LogUtils.v(Constant.TAG_LIVE, "token:" + UserInfoMgr.getInstance().getAccessToken());
+
+
+        initLiveMenu();
     }
+
+    private void initLiveMenu() {
+        LiveMenuAdapter menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
+        binding.rvMenu.setLayoutManager(new GridLayoutManager(getActivity(), 5));
+        binding.rvMenu.setAdapter(menuAdapter);
+
+        List<MenuBean> menus = new ArrayList<>();
+        for (int i = 0; i < menuNames.length; i++) {
+            menus.add(new MenuBean(menuNames[i], menuRes[i]));
+        }
+        menuAdapter.setNewInstance(menus);
+    }
+
+    private String[] menuNames = {"翻转", "镜像", "美颜", "滤镜", "商品", "公开", "设置"
+    };
+    private int[] menuRes = {
+            R.mipmap.icon_fanzhuan, R.mipmap.icon_jingxiang, R.mipmap.icon_meibai,
+            R.mipmap.icon_lvjing, R.mipmap.icon_shangpin, R.mipmap.icon_gongkai, R.mipmap.icon_shezhi
+    };
 
     private void initEvent() {
         binding.ivBack.setOnClickListener(lis -> {
@@ -298,10 +322,10 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         mLiveInitInfo.latitude = lat;
         mLiveInitInfo.longitude = lon;
-        mLiveInitInfo.address =  poiName;
-        mLiveInitInfo.province =  province;
-        mLiveInitInfo.city =  cityName;
-        mLiveInitInfo.district =  district;
+        mLiveInitInfo.address = poiName;
+        mLiveInitInfo.province = province;
+        mLiveInitInfo.city = cityName;
+        mLiveInitInfo.district = district;
 
         //设置美颜的参数传进去
         mLiveInitInfo.beautyStyle = mBeautyStyle;
@@ -576,7 +600,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     break;
             }
         } else if (requestCode == 1001) {
-            mLiveInitInfo.roomPassword = data.getDataString();
+            if (data != null) {
+                mLiveInitInfo.roomPassword = data.getDataString();
+            }
         }
     }
 

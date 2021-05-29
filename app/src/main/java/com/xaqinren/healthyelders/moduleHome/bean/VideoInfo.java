@@ -83,6 +83,20 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String city;//":
     public String province;//":
 
+    public String storeId;//": "1329045982251323392",
+    public String storeLogo;//": null,
+    public String storeName;//": null,
+    public String totalSoldCount;//": "0",
+    public double minSalesPrice;//": 302.4,
+
+    public String getMinSalesPrice() {
+        return "¥" + minSalesPrice;
+    }
+
+    public String getTotalSoldCount() {
+        return "库存" + totalSoldCount;
+    }
+
     public boolean hasFavorite;
     public boolean hasAttention;
     public boolean hasLive;
@@ -229,7 +243,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
             return 0;
         } else if (resourceType.equals(Constant.REQ_TAG_YH)) {
             return 1;
-        } else if (resourceType.equals(Constant.REQ_TAG_SP)) {
+        } else if (resourceType.equals(Constant.REQ_TAG_GOODS)) {
             return 2;
         } else if (resourceType.equals(Constant.REQ_TAG_ZB)) {
             return 3;
