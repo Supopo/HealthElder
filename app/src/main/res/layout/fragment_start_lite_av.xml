@@ -243,10 +243,10 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/dp_68"
             android:layout_marginRight="@dimen/dp_30">
-            <com.xaqinren.healthyelders.widget.CircleImageView
+            <ImageView
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                android:src="@mipmap/wode_bg"
+                android:src="@mipmap/icon_psp_xiangc_nor"
                 app:border_corlor="@color/white"
                 app:border_width="@dimen/dp_1"
                 app:civ_radius="@dimen/dp_8"

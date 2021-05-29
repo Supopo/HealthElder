@@ -276,10 +276,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.tvFs.setOnClickListener(lis -> {
         });
         binding.tvOrder.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.putExtra("show_area", 0);
-            intent.setClass(getActivity(), CityPickerActivity.class);
-            startActivity(intent);
+
         });
         binding.tvFriends.setOnClickListener(lis -> {
         });

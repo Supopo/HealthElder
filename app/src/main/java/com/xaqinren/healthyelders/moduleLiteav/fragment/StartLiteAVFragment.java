@@ -102,6 +102,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private String photoPath;
     private int currentMode = RecordButton.VIDEO_MODE;
     private String TAG = getClass().getSimpleName();
+    /**
+     * 拍照完成后,停留界面,点击返回键要重回拍照效果
+     */
+    private boolean holderScreen = false;
 
 
 
@@ -269,6 +273,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                     photoPath = FileUtil.saveBitmap(getContext().getFilesDir().getAbsolutePath(), bitmap);
                     binding.photoPreview.rlContainer.setVisibility(View.VISIBLE);
                     binding.photoPreview.photoPreviewIv.setImageBitmap(bitmap);
+                    holderScreen = true;
                     //隐藏activity 底部bar
                     if (onFragmentStatusListener!=null)
                         onFragmentStatusListener.isRecode(true);
@@ -280,11 +285,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         binding.recordSpeedLayout.setOnRecordSpeedListener(speed -> liteAvRecode.setRecodeSpeed(speed));
         binding.photoPreview.cancel.setOnClickListener(view -> {
             photoPath = "";
+            holderScreen = false;
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
             if (onFragmentStatusListener!=null)
                 onFragmentStatusListener.isRecode(false);
         });
         binding.photoPreview.save.setOnClickListener(view -> {
+            holderScreen = false;
             Intent intent = new Intent(getContext(), PublishTextPhotoActivity.class);
             ArrayList<String> paths = new ArrayList<>();
             paths.add(photoPath);
@@ -769,6 +776,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     /** 对应 activity 生命周期 */
     public boolean onBackPress() {
+        if (holderScreen) {
+            holderScreen = false;
+            binding.photoPreview.rlContainer.setVisibility(View.GONE);
+            if (onFragmentStatusListener!=null)
+                onFragmentStatusListener.isRecode(false);
+            return true;
+        }
         VideoRecordSDK.getInstance().deleteAllParts();
         return false;
     }
