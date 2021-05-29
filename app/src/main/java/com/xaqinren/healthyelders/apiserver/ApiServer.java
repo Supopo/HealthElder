@@ -241,12 +241,12 @@ public interface ApiServer {
                                                                                      @Query("page") int page, @Query("pageSize") int pageSize, @Query("key") String name);
 
     //获取首页视频直播 type 0 - 推荐 1 关注 2 附近
-    @GET("content/open/queryComprehensivePage")
+    @GET("jkzl/open/queryComprehensivePage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid, @Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page,
                                                                              @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType, @Query("tags") String tags);
 
     //获取首页菜单信息
-    @GET("content/open/findHomeData")
+    @GET("jkzl/open/findHomeData")
     Observable<MBaseResponse<HomeMenuRes>> getHomeInfo();
 
     //首页点赞
@@ -389,7 +389,7 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<GoodsBean>>>> getMallGoodsList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("category") String category);
 
     //获取热门搜索关键词
-    @GET("content/open/queryHotSearch")
+    @GET("jkzl/open/queryHotSearch")
     Observable<MBaseResponse<List<SearchBean>>> getHotWords();
 
 
