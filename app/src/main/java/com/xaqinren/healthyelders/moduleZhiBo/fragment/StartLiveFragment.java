@@ -147,6 +147,44 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             menus.add(new MenuBean(menuNames[i], menuRes[i]));
         }
         menuAdapter.setNewInstance(menus);
+
+        menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            switch (menuAdapter.getData().get(position).menuName) {
+                case "翻转":
+                    isBackCamera = !isBackCamera;
+                    mLiveRoom.switchCamera();
+                    break;
+                case "镜像":
+                    //开启之后设置才有用，需要传参进去设置
+                    mLiveInitInfo.isMirror = !mLiveInitInfo.isMirror;
+                    if (mLiveInitInfo.isMirror) {
+                        menuAdapter.getData().get(position).menuRes = R.mipmap.icon_jingxiang_fz;
+                    } else {
+                        menuAdapter.getData().get(position).menuRes = R.mipmap.icon_jingxiang;
+                    }
+                    menuAdapter.notifyItemChanged(position,99);
+                    break;
+                case "美颜":
+                    showMYPop();
+                    break;
+                case "滤镜":
+                    showLJPop();
+                    break;
+                case "商品":
+                    break;
+                case "公开":
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                    startActivityForResult(intent, 1001);
+                    break;
+                case "设置":
+                    startSettingPop = new ZBStartSettingPop(getActivity(), mLiveInitInfo);
+                    startSettingPop.showPopupWindow();
+                    break;
+
+            }
+        }));
+
     }
 
     private String[] menuNames = {"翻转", "镜像", "美颜", "滤镜", "商品", "公开", "设置"
@@ -177,40 +215,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 binding.ivSelect.setBackgroundResource(R.mipmap.radbox_nor);
             }
         });
-        //镜头翻转
-        binding.llJx.setOnClickListener(lis -> {
-            //开启之后设置才有用，需要传参进去设置
-            mLiveInitInfo.isMirror = !mLiveInitInfo.isMirror;
-            if (mLiveInitInfo.isMirror) {
-                binding.ivJx.setBackgroundResource(R.mipmap.icon_jingxiang_fz);
-            } else {
-                binding.ivJx.setBackgroundResource(R.mipmap.icon_jingxiang);
-            }
-        });
-        //摄像头设置
-        binding.llFanzhuan.setOnClickListener(lis -> {
-            isBackCamera = !isBackCamera;
-            mLiveRoom.switchCamera();
-        });
-        //美颜设置
-        binding.llPs.setOnClickListener(lis -> {
-            showMYPop();
-        });
-        //滤镜设置
-        binding.llLj.setOnClickListener(lis -> {
-            showLJPop();
-        });
-        //公开设置
-        binding.llPwd.setOnClickListener(lis -> {
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-            startActivityForResult(intent, 1001);
-        });
-        //设置
-        binding.llSet.setOnClickListener(lis -> {
-            startSettingPop = new ZBStartSettingPop(getActivity(), mLiveInitInfo);
-            startSettingPop.showPopupWindow();
-        });
+
         binding.btnStart.setOnClickListener(lis -> {
             if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
                 ToastUtil.toastShortMessage("请输入直播间名称");

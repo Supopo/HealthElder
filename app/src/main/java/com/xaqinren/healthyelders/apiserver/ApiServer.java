@@ -401,7 +401,7 @@ public interface ApiServer {
     @GET("content/shortVideo/info")
     Observable<MBaseResponse<VideoInfo>> getVideoInfo(@Header("Authorization") String authorization, @Query("id") String id);
 
-    //短视频详情
+    //搜素哦用户
     @GET("jkzl/open/queryUserPage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSearchUser(@Query("page") int page, @Query("pageSize") int pageSize, @Query("tag") String tag);
 

@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
@@ -88,7 +87,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 fragmentPos = position;
-                if (fragmentPos==0) {
+                if (fragmentPos == 0) {
                     viewModel.searchUsers(1, 3);
                 }
                 viewModel.searchDatas(1, fragmentPos);
@@ -127,6 +126,12 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
         viewModel.dismissDialog.observe(this, dismissDialog -> {
             if (dismissDialog != null) {
                 dismissDialog();
+            }
+        });
+        viewModel.toUsers.observe(this, toUsers -> {
+            if (toUsers != null && toUsers) {
+                binding.tabLayout.setCurrentTab(2);
+
             }
         });
     }

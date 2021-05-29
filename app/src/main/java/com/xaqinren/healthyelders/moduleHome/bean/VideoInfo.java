@@ -115,7 +115,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public List<PublishFocusItemBean> publishFocusItemBeans;
 
     public boolean showFollow() {
-        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+        if (UserInfoMgr.getInstance().getUserInfo() == null || TextUtils.isEmpty(userId)) {
             //未登录
             return true;
         }

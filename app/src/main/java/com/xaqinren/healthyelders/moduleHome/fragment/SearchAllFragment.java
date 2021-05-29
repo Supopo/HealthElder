@@ -2,7 +2,6 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,8 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
@@ -22,18 +19,15 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
-import com.xaqinren.healthyelders.databinding.HeaderAddFriendBinding;
 import com.xaqinren.healthyelders.databinding.HeaderAllSearchBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
-import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -133,7 +127,10 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         headBinding.rvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
         headBinding.rvUser.setAdapter(userAdapter);
 
-
+        headBinding.tvMore.setOnClickListener(lis ->{
+            //通知页面切换到
+            searchAllViewModel.toUsers.postValue(true);
+        });
         userAdapter.setNewInstance(temp);
         mAdapter.addHeaderView(headView);
         hasHead = true;

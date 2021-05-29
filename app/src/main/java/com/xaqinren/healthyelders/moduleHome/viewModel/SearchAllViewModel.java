@@ -23,6 +23,7 @@ public class SearchAllViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<Boolean> toUsers = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> allDatas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> videoDatas = new MutableLiveData<>();
