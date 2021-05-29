@@ -8,21 +8,23 @@
 
     <TextView
         android:id="@+id/tv_item_city_listview_letter"
-        style="@style/LetterIndexTextViewStyle"
-        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_32"
+        android:background="@color/color_FFF4F4F4"
+        android:textSize="@dimen/sp_12"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_16"
         android:clickable="false"/>
 
     <TextView
         android:id="@+id/tv_item_city_listview_name"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:layout_height="@dimen/dp_48"
+        android:paddingLeft="@dimen/dp_16"
+        android:textSize="@dimen/sp_15"
+        android:textColor="@color/color_252525"
         android:clickable="true"
         android:gravity="center_vertical" />
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="16dp" />
+        style="@style/lineMarginDp16"/>
 </LinearLayout>

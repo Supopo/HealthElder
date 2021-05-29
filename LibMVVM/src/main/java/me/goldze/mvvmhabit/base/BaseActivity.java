@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.DisplayCutout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,8 +46,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import me.goldze.mvvmhabit.BuildConfig;
 import me.goldze.mvvmhabit.R;
 import me.goldze.mvvmhabit.bus.Messenger;
+import me.goldze.mvvmhabit.http.interceptor.logging.Logger;
 import me.goldze.mvvmhabit.widget.LoadingDialog;
 
 
@@ -56,6 +59,7 @@ import me.goldze.mvvmhabit.widget.LoadingDialog;
  * 这里根据项目业务可以换成你自己熟悉的BaseActivity, 但是需要继承RxAppCompatActivity,方便LifecycleProvider管理生命周期
  */
 public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseViewModel> extends RxAppCompatActivity implements IBaseView {
+    protected String TAG = getClass().getSimpleName();
     protected V binding;
     protected VM viewModel;
     private int viewModelId;
@@ -132,6 +136,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         initViewObservable();
         //注册RxBus
         viewModel.registerRxBus();
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onCreate()");
+        }
     }
 
     @Override
@@ -144,6 +151,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
         if (binding != null) {
             binding.unbind();
+        }
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onDestroy()");
         }
     }
 
@@ -565,4 +575,35 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         return ColorUtils.calculateLuminance(color) >= 0.5;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onResume()");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onStop()");
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onStart()");
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onRestart()");
+        }
+    }
 }

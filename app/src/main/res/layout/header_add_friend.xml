@@ -6,9 +6,10 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/rl_header_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,7 +35,8 @@
                 android:layout_marginLeft="@dimen/dp_32"
                 android:layout_marginRight="@dimen/dp_32"
                 android:imeOptions="actionSearch"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="@dimen/sp_13"/>
 
             <ImageView
                 android:id="@+id/scan_iv"
@@ -97,7 +99,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="看看谁在玩"
+            android:text="推荐关注"
             android:textSize="@dimen/sp_13"
             android:textColor="@color/gray_666"
             android:layout_marginLeft="@dimen/dp_16"

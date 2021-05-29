@@ -60,7 +60,6 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
 
     private int showArea = 1;
     private MapLocationHelper mHelper;
-    private TextView mTvAll;
 
 
     @Override
@@ -74,8 +73,6 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_activity_city_list);
-
-        mTvAll = (TextView) findViewById(R.id.tv_all);
 
         String area = getIntent().getStringExtra("area");
         String city = getIntent().getStringExtra("city");
@@ -145,44 +142,42 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
         TextView overlay = (TextView) findViewById(R.id.tv_letter_overlay);
         mLetterBar = (SideLetterBar) findViewById(R.id.side_letter_bar);
         mLetterBar.setOverlay(overlay);
-        mLetterBar.setOnLetterChangedListener(new SideLetterBar.OnLetterChangedListener() {
-            @Override
-            public void onLetterChanged(String letter) {
-                int position = mCityAdapter.getLetterPosition(letter);
-                mListView.setSelection(position);
-            }
+        mLetterBar.setOnLetterChangedListener(letter -> {
+            int position = mCityAdapter.getLetterPosition(letter);
+            mListView.setSelection(position);
         });
 
         searchBox = (EditText) findViewById(R.id.et_search);
-//        searchBox.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                String keyword = s.toString();
-//                if (TextUtils.isEmpty(keyword)) {
-//                    clearBtn.setVisibility(View.GONE);
-//                    emptyView.setVisibility(View.GONE);
-//                    mResultListView.setVisibility(View.GONE);
-//                } else {
-//                    clearBtn.setVisibility(View.VISIBLE);
-//                    mResultListView.setVisibility(View.VISIBLE);
-//                    List<City> result = dbManager.searchCity(keyword);
-//                    if (result == null || result.size() == 0) {
-//                        emptyView.setVisibility(View.VISIBLE);
-//                    } else {
-//                        emptyView.setVisibility(View.GONE);
-//                        mResultAdapter.changeData(result);
-//                    }
-//                }
-//            }
-//        });
+        backBtn = findViewById(R.id.iv_left);
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String keyword = s.toString();
+                if (TextUtils.isEmpty(keyword)) {
+                    clearBtn.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
+                    mResultListView.setVisibility(View.GONE);
+                } else {
+                    clearBtn.setVisibility(View.VISIBLE);
+                    mResultListView.setVisibility(View.VISIBLE);
+                    List<City> result = dbManager.searchCity(keyword);
+                    if (result == null || result.size() == 0) {
+                        emptyView.setVisibility(View.VISIBLE);
+                    } else {
+                        emptyView.setVisibility(View.GONE);
+                        mResultAdapter.changeData(result);
+                    }
+                }
+            }
+        });
 
         emptyView = (ViewGroup) findViewById(R.id.empty_view);
         mResultListView = (ListView) findViewById(R.id.listview_search_result);
@@ -195,11 +190,10 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
         });
 
         clearBtn = (ImageView) findViewById(R.id.iv_search_clear);
-        backBtn = (ImageView) findViewById(R.id.back);
+//        backBtn = (ImageView) findViewById(R.id.back);
 
         clearBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
-        mTvAll.setOnClickListener(this);
 
     }
 
@@ -237,13 +231,9 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
             emptyView.setVisibility(View.GONE);
             mResultListView.setVisibility(View.GONE);
         }
-        if (i == R.id.back) {
+        if (i == R.id.iv_left) {
             finish();
         }
-        if (i == R.id.tv_all) {
-            back("全国");
-        }
-
     }
 
 

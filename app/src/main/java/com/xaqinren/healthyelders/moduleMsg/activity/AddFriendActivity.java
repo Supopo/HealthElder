@@ -1,16 +1,20 @@
 package com.xaqinren.healthyelders.moduleMsg.activity;
 
 import android.Manifest;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.ViewUtils;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
@@ -20,6 +24,7 @@ import com.xaqinren.healthyelders.databinding.HeaderAddFriendBinding;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.AddFriendViewModel;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,9 @@ import me.goldze.mvvmhabit.utils.PermissionUtils;
 public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, AddFriendViewModel> {
     private AddFriendAdapter addFriendAdapter;
     private List<FriendBean> friendBeans;
+    private String TAG = getClass().getSimpleName();
+    private int currentScroll;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_add_friend;
@@ -47,11 +55,22 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         friendBeans = new ArrayList<>();
         addFriendAdapter = new AddFriendAdapter(R.layout.item_msg_add_friend);
         addFriendAdapter.setList(friendBeans);
+        addFriendAdapter.addHeaderView(View.inflate(this, R.layout.header_empty_148dp, null));
         binding.content.setLayoutManager(new LinearLayoutManager(this));
         binding.content.setAdapter(addFriendAdapter);
-        //添加头布局
-        addHeader();
         viewModel.getRecommendFriend();
+
+        initHeader();
+        binding.content.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentScroll -= dy;
+                LogUtils.e(TAG, "滑动距离 -> "+dy);
+                binding.includeHeader.rlHeaderLayout.setTranslationY(currentScroll);
+            }
+        });
+
     }
 
     @Override
@@ -63,22 +82,19 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         });
     }
 
-    HeaderAddFriendBinding friendBinding;
-    private void addHeader() {
-        View view = View.inflate(this, R.layout.header_add_friend, null);
-        addFriendAdapter.addHeaderView(view);
-        friendBinding = DataBindingUtil.bind(view);
-        friendBinding.searchEt.setOnEditorActionListener((textView, i, keyEvent) -> {
+
+    private void initHeader() {
+        binding.includeHeader.searchEt.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_SEARCH) {
 
                 return true;
             }
             return false;
         });
-        friendBinding.contactsLayout.setOnClickListener(view1 -> {
+        binding.includeHeader.contactsLayout.setOnClickListener(view1 -> {
             checkPermission();
         });
-        friendBinding.scanIv.setOnClickListener(view1 -> {
+        binding.includeHeader.scanIv.setOnClickListener(view1 -> {
             //扫码
         });
 

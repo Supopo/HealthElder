@@ -67,6 +67,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
         binding.ivAdd2.setOnClickListener(view -> {
             ImManager.testAddConversation();
         });
+        binding.ivAdd2.setVisibility(View.GONE);
         binding.conversationLayout.initDefault();
         binding.conversationLayout.getTitleBar().setVisibility(View.GONE);
         binding.conversationLayout.getConversationList().setOnItemClickListener((view, position, messageInfo) -> {

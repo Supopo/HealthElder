@@ -41,8 +41,8 @@ public class CityListAdapter extends BaseAdapter {
         if (mCities == null) {
             mCities = new ArrayList<>();
         }
-        mCities.add(0, new City("定位", "0"));
-        mCities.add(1, new City("热门", "1"));
+//        mCities.add(0, new City("定位", "0"));
+//        mCities.add(1, new City("热门", "1"));
         int size = mCities.size();
         letterIndexes = new HashMap<>();
         sections = new String[size];
@@ -52,7 +52,7 @@ public class CityListAdapter extends BaseAdapter {
             //上个首字母，如果不存在设为""
             String previousLetter = index >= 1 ? PinyinUtils.getFirstLetter(mCities.get(index - 1).getPinyin()) : "";
             if (!TextUtils.equals(currentLetter, previousLetter)) {
-                letterIndexes.put(currentLetter, index);
+                letterIndexes.put(currentLetter, index + 2);
                 sections[index] = currentLetter;
             }
         }
@@ -125,19 +125,16 @@ public class CityListAdapter extends BaseAdapter {
                         state.setText(locatedCity);
                         break;
                 }
-                container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (locateState == LocateState.FAILED) {
-                            //重新定位
-                            if (onCityClickListener != null) {
-                                onCityClickListener.onLocateClick();
-                            }
-                        } else if (locateState == LocateState.SUCCESS) {
-                            //返回定位城市
-                            if (onCityClickListener != null) {
-                                onCityClickListener.onCityClick(locatedCity);
-                            }
+                container.setOnClickListener(v -> {
+                    if (locateState == LocateState.FAILED) {
+                        //重新定位
+                        if (onCityClickListener != null) {
+                            onCityClickListener.onLocateClick();
+                        }
+                    } else if (locateState == LocateState.SUCCESS) {
+                        //返回定位城市
+                        if (onCityClickListener != null) {
+                            onCityClickListener.onCityClick(locatedCity);
                         }
                     }
                 });
@@ -166,26 +163,28 @@ public class CityListAdapter extends BaseAdapter {
                 } else {
                     holder = (CityViewHolder) view.getTag();
                 }
-                if (position >= 1) {
-                    final String city = mCities.get(position).getName();
-                    holder.name.setText(city);
-                    String currentLetter = PinyinUtils.getFirstLetter(mCities.get(position).getPinyin());
-                    String previousLetter = position >= 1 ? PinyinUtils.getFirstLetter(mCities.get(position - 1).getPinyin()) : "";
-                    if (!TextUtils.equals(currentLetter, previousLetter)) {
-                        holder.letter.setVisibility(View.VISIBLE);
-                        holder.letter.setText(currentLetter);
-                    } else {
-                        holder.letter.setVisibility(View.GONE);
-                    }
-                    holder.name.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (onCityClickListener != null) {
-                                onCityClickListener.onCityClick(city);
-                            }
-                        }
-                    });
+                /*if (position >= 1) {
+
+                }*/
+                int cityPosition = position - 2;
+                final String city = mCities.get(cityPosition).getName();
+                holder.name.setText(city);
+                String currentLetter = PinyinUtils.getFirstLetter(mCities.get(cityPosition).getPinyin());
+                String previousLetter = cityPosition >= 1 ? PinyinUtils.getFirstLetter(mCities.get(cityPosition - 1).getPinyin()) : "";
+                if (!TextUtils.equals(currentLetter, previousLetter)) {
+                    holder.letter.setVisibility(View.VISIBLE);
+                    holder.letter.setText(currentLetter);
+                } else {
+                    holder.letter.setVisibility(View.GONE);
                 }
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onCityClickListener != null) {
+                            onCityClickListener.onCityClick(city);
+                        }
+                    }
+                });
                 break;
         }
 

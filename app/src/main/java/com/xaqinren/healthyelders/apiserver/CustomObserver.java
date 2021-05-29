@@ -8,6 +8,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.json.JSONException;
 

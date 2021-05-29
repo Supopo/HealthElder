@@ -8,7 +8,14 @@
     tools:ignore="RtlHardcoded">
 
     <TextView
-        style="@style/LetterIndexTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_35"
+        android:background="@color/color_FFF4F4F4"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/gray_999"
+        android:layout_marginBottom="@dimen/dp_12"
         android:text="热门城市"/>
 
     <com.xaqinren.healthyelders.widget.pickerView.cityPicker.view.WrapHeightGridView
@@ -16,11 +23,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:numColumns="3"
+        android:paddingRight="46dp"
+        android:numColumns="4"
         android:horizontalSpacing="12dp"
         android:verticalSpacing="12dp"
         android:listSelector="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:scrollbars="none"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_6" />
 </LinearLayout>
