@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -18,9 +22,12 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
+import com.xaqinren.healthyelders.databinding.HeaderAddFriendBinding;
+import com.xaqinren.healthyelders.databinding.HeaderAllSearchBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
+import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
@@ -110,6 +117,27 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 searchAllViewModel.joinLive(mAdapter.getData().get(position).liveRoomId);
             }
         }));
+
+    }
+
+    private boolean hasHead;
+    private void initHead() {
+        if (hasHead) {
+            return;
+        }
+
+        View headView = LinearLayout.inflate(getActivity(), R.layout.header_all_search, null);
+        HeaderAllSearchBinding headBinding = DataBindingUtil.bind(headView);
+        SearchUserAdapter userAdapter = new SearchUserAdapter(R.layout.item_search_user);
+        headBinding.rvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
+        headBinding.rvUser.setAdapter(userAdapter);
+
+        List<VideoInfo> temp = new ArrayList<>();
+        temp.add(mAdapter.getData().get(0));
+        temp.add(mAdapter.getData().get(1));
+        userAdapter.setNewInstance(temp);
+        mAdapter.addHeaderView(headView);
+        hasHead = true;
     }
 
 
@@ -143,6 +171,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                         //创建适配器.空布局，没有数据时候默认展示的
                         mAdapter.setEmptyView(R.layout.list_empty);
                     }
+                    initHead();
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束
