@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,10 +19,13 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
@@ -89,6 +93,39 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             }
         });
 
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            //视频
+            if (mAdapter.getData().get(position).getItemType() == 0) {
+                List<VideoInfo> tempList = new ArrayList<>();
+                VideoInfo videoInfo = mAdapter.getData().get(position);
+                tempList.add(videoInfo);
+                toVideoList(tempList);
+            } else if (mAdapter.getData().get(position).getItemType() == 4) {
+                //跳转图文详情
+                Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
+                intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, mAdapter.getData().get(position).resourceId);
+                startActivity(intent);
+            } else if (mAdapter.getData().get(position).getItemType() == 3) {
+                //进入直播
+                searchAllViewModel.joinLive(mAdapter.getData().get(position).liveRoomId);
+            }
+        }));
+    }
+
+
+    private void toVideoList(List<VideoInfo> tempList) {
+        //跳页 传入数据 pos page list
+        VideoListBean listBean = new VideoListBean();
+
+        listBean.page = 0;
+        listBean.position = 0;
+        listBean.videoInfos = tempList;
+        listBean.type = 2;
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("key", listBean);
+        bundle.putBoolean("key1", true);
+        startActivity(VideoListActivity.class, bundle);
     }
 
     @Override

@@ -16,8 +16,10 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -79,12 +81,23 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
             }
         });
 
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            searchAllViewModel.joinLive(mAdapter.getData().get(position).liveRoomId);
+        }));
 
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
+        searchAllViewModel.liveInfo.observe(this, liveInfo -> {
+            if (liveInfo != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                startActivity(LiveGuanzhongActivity.class, bundle);
+            }
+        });
 
         searchAllViewModel.zbDatas.observe(this, dataList -> {
             if (dataList != null) {

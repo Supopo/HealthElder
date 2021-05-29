@@ -9,6 +9,7 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class SearchAllViewModel extends BaseViewModel {
     public MutableLiveData<List<VideoInfo>> userDatas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> goodsDatas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> zbDatas = new MutableLiveData<>();
+    public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
+
     public String tags;
 
     public void searchDatas(int page, int searchType) {
@@ -59,5 +62,10 @@ public class SearchAllViewModel extends BaseViewModel {
                 LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, twDatas, Constant.REQ_TAG_TW, tags);
                 break;
         }
+    }
+
+    public void joinLive(String liveRoomId) {
+        showDialog();
+        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
     }
 }

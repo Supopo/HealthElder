@@ -1,28 +1,18 @@
 package com.xaqinren.healthyelders.modulePicture.activity;
 
-import android.app.Dialog;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
-import com.tencent.bugly.proguard.C;
-import com.tencent.bugly.proguard.T;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -34,8 +24,6 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleLiteav.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.CreatePostBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
@@ -46,38 +34,27 @@ import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
-import com.xaqinren.healthyelders.widget.comment.CommentAdapter;
-import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentListAdapter;
 import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
-import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 import com.xaqinren.healthyelders.widget.share.OnClickListenerImpl;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 import com.youth.banner.Banner;
-import com.youth.banner.adapter.BannerAdapter;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
 import com.youth.banner.indicator.CircleIndicator;
-import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.listener.OnPageChangeListener;
 
-import java.net.URI;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
-import me.goldze.mvvmhabit.bus.RxBusSubscriber;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.utils.ConvertUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.goldze.mvvmhabit.utils.Utils;
 
 /**
  * 图文详情页

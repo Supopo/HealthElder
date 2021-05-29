@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -88,7 +89,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                 super.onPageSelected(position);
                 fragmentPos = position;
                 viewModel.searchDatas(1, fragmentPos);
-                RxBus.getDefault().post(new EventBean(CodeTable.SEARCH_TAG,1));
+                RxBus.getDefault().post(new EventBean(CodeTable.SEARCH_TAG, 1));
             }
         });
 
@@ -123,5 +124,40 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                 dismissDialog();
             }
         });
+    }
+
+    private float before_press_Y;
+    private float before_press_X;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                before_press_Y = event.getY();
+                before_press_X = event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                double now_press_Y = event.getY();
+                double now_press_X = event.getX();
+
+                double scrollX = Math.abs(now_press_X - before_press_X);
+                double scrollY = Math.abs(now_press_Y - before_press_Y);
+
+                if (scrollX < scrollY) {
+                    //禁止Viewpager2左右滑动
+                    binding.viewPager2.setUserInputEnabled(false);
+                } else {
+                    binding.viewPager2.setUserInputEnabled(true);
+                }
+
+                break;
+            case MotionEvent.ACTION_UP:
+                before_press_Y = 0;
+                before_press_X = 0;
+                //恢复滑动
+                binding.viewPager2.setUserInputEnabled(true);
+                break;
+        }
+        return super.dispatchTouchEvent(event);
     }
 }

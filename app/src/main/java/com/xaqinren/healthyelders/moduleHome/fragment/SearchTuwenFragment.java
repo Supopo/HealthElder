@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.xaqinren.healthyelders.databinding.FragmentSearchTwBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import io.reactivex.disposables.Disposable;
@@ -89,6 +91,12 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
             }
         });
 
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            //跳转图文详情
+            Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+            intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, mAdapter.getData().get(position).resourceId);
+            startActivity(intent);
+        }));
 
     }
 

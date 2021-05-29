@@ -330,7 +330,7 @@ public interface ApiServer {
     Observable<MBaseResponse<Object>> getUserSig(@Header("Authorization") String authorization);
 
     //我的视频作品
-    @GET("content/queryUserCreationPage")
+    @GET("jkzl/queryUserCreationPage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("creationViewAuth") String creationViewAuth);
 
     //我喜欢的视频作品

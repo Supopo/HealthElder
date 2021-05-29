@@ -17,10 +17,16 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchVideoBinding;
 import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -90,8 +96,30 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
             }
         });
 
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            List<VideoInfo> tempList = new ArrayList<>();
+            VideoInfo videoInfo = mAdapter.getData().get(position);
+            tempList.add(videoInfo);
+            toVideoList(tempList);
+        }));
 
     }
+
+    private void toVideoList(List<VideoInfo> tempList) {
+        //跳页 传入数据 pos page list
+        VideoListBean listBean = new VideoListBean();
+
+        listBean.page = 0;
+        listBean.position = 0;
+        listBean.videoInfos = tempList;
+        listBean.type = 2;
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("key", listBean);
+        bundle.putBoolean("key1", true);
+        startActivity(VideoListActivity.class, bundle);
+    }
+
 
     @Override
     public void initViewObservable() {
