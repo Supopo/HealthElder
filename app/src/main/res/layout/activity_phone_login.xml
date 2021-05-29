@@ -52,7 +52,7 @@
             android:textStyle="bold"
             android:singleLine="true"
             android:inputType="phone"
-            android:maxLength="15"
+            android:maxLength="11"
             android:hint="输入手机号"
             />
 

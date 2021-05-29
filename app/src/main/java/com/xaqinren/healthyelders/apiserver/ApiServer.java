@@ -374,7 +374,7 @@ public interface ApiServer {
 
     //推送绑定cid
     @GET("content/bindAlias")
-    Observable<MBaseResponse<Object>> bindAlias(@Header("Authorization") String authorization,@Query("cid") String  cid);
+    Observable<MBaseResponse<Object>> bindAlias(@Header("Authorization") String authorization, @Query("cid") String cid);
 
     //获取商城菜单信息
     @GET("jkzl/open/findMallHomeMenu")
@@ -395,11 +395,15 @@ public interface ApiServer {
 
     //消息查询
     @GET("content/queryMessagePage")
-    Observable<MBaseResponse<BaseListRes<List<InteractiveBean>>>> getMessageData(@Header("Authorization") String authorization,@Query("page") int page, @Query("pageSize") int pageSize, @Query("messageGroup") String messageGroup, @Query("messageType") String messageType);
+    Observable<MBaseResponse<BaseListRes<List<InteractiveBean>>>> getMessageData(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("messageGroup") String messageGroup, @Query("messageType") String messageType);
 
     //短视频详情
     @GET("content/shortVideo/info")
     Observable<MBaseResponse<VideoInfo>> getVideoInfo(@Header("Authorization") String authorization, @Query("id") String id);
+
+    //短视频详情
+    @GET("jkzl/open/queryUserPage")
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSearchUser(@Query("page") int page, @Query("pageSize") int pageSize, @Query("tag") String tag);
 
 }
 

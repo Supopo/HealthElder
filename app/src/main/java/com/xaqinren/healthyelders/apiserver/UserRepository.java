@@ -421,7 +421,6 @@ public class UserRepository {
                 });
     }
 
-
     public void bindAlias( MutableLiveData<Boolean> clientIdData , String clientId) {
         userApi.bindAlias(UserInfoMgr.getInstance().getHttpToken(),clientId)
                 .compose(RxUtils.schedulersTransformer())
@@ -436,6 +435,24 @@ public class UserRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
                         clientIdData.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void searchUser(MutableLiveData<Boolean> dismissDialog,MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String tags ){
+        userApi.getSearchUser(page, pagesize, tags)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        datas.postValue(data.getData().content);
                     }
                 });
     }

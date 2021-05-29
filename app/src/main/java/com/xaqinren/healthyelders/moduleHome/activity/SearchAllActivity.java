@@ -88,6 +88,9 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 fragmentPos = position;
+                if (fragmentPos==0) {
+                    viewModel.searchUsers(1, 3);
+                }
                 viewModel.searchDatas(1, fragmentPos);
                 RxBus.getDefault().post(new EventBean(CodeTable.SEARCH_TAG, 1));
             }
@@ -113,6 +116,8 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
             binding.etSearch.setText("");
             binding.etSearch.setHint("请输入需要搜索的内容");
         });
+
+        viewModel.searchUsers(1, 3);
         viewModel.searchDatas(1, fragmentPos);
     }
 

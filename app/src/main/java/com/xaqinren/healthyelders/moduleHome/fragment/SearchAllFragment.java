@@ -121,7 +121,8 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     }
 
     private boolean hasHead;
-    private void initHead() {
+
+    private void initHead(List<VideoInfo> temp) {
         if (hasHead) {
             return;
         }
@@ -132,9 +133,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         headBinding.rvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
         headBinding.rvUser.setAdapter(userAdapter);
 
-        List<VideoInfo> temp = new ArrayList<>();
-        temp.add(mAdapter.getData().get(0));
-        temp.add(mAdapter.getData().get(1));
+
         userAdapter.setNewInstance(temp);
         mAdapter.addHeaderView(headView);
         hasHead = true;
@@ -159,6 +158,16 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        searchAllViewModel.userDatas.observe(this, dataList -> {
+            if (dataList != null && dataList.size() > 0) {
+//                List<VideoInfo> temp = new ArrayList<>();
+//                temp.add(mAdapter.getData().get(0));
+//                temp.add(mAdapter.getData().get(1));
+
+                initHead(dataList);
+            }
+        });
+
         searchAllViewModel.allDatas.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {
@@ -171,7 +180,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                         //创建适配器.空布局，没有数据时候默认展示的
                         mAdapter.setEmptyView(R.layout.list_empty);
                     }
-//                    initHead();
+
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束

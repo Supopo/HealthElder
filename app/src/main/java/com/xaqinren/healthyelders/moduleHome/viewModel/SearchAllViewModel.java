@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -47,7 +48,7 @@ public class SearchAllViewModel extends BaseViewModel {
                 break;
             case 2:
                 //用户
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, userDatas, Constant.REQ_TAG_YH, tags);
+                searchUsers(page, 10);
                 break;
             case 3:
                 //商品
@@ -67,5 +68,9 @@ public class SearchAllViewModel extends BaseViewModel {
     public void joinLive(String liveRoomId) {
         showDialog();
         LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
+    }
+
+    public void searchUsers(int page, int size) {
+        UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, tags);
     }
 }

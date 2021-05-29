@@ -1,12 +1,9 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
-import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
@@ -15,7 +12,6 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemAllSearchArticleBinding;
 import com.xaqinren.healthyelders.databinding.ItemAllSearchGoodsBinding;
-import com.xaqinren.healthyelders.databinding.ItemSearchGoodsBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchUserBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchZbBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -81,16 +77,6 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
 
             //计算View宽度
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.ivCover.getLayoutParams();
-            //            //图片真实宽高
-            //            try {
-            //                int oldWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "w"));
-            //                int oldHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "h"));
-            //
-            //                int newHeight = itemWidth * oldHeight / oldWidth;
-            //                params.height = newHeight;
-            //            } catch (Exception e) {
-            //                e.printStackTrace();
-            //            }
             int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_103));
 
             params.height = itemWidth;
