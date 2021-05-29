@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.amap.api.location.AMapLocation;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.databinding.CpActivityCityListBinding;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.adapter.AreaGridAdapter;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.adapter.CityListAdapter;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.adapter.ResultListAdapter;
@@ -35,10 +36,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.base.BaseViewModel;
+
 /**
  *
  */
-public class CityPickerActivity extends AppCompatActivity implements View.OnClickListener, MapLocationHelper.LocationCallBack {
+public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, BaseViewModel> implements View.OnClickListener, MapLocationHelper.LocationCallBack {
     public static final String KEY_PICKED_CITY = "picked_city";
     public static final String SHOW_AREA = "show_area"; // 0 是隐藏 1 是显示
 
@@ -69,30 +73,6 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
         mHelper.startMapLocation();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.cp_activity_city_list);
-
-        String area = getIntent().getStringExtra("area");
-        String city = getIntent().getStringExtra("city");
-        showArea = getIntent().getIntExtra(SHOW_AREA, 1);
-
-
-
-        initData();
-        initView();
-
-        if (city != null) {
-            mCityAdapter.updateLocateState(LocateState.SUCCESS, area);
-        } else {
-            mCityAdapter.updateLocateState(LocateState.FAILED, area);
-
-        }
-
-
-    }
-
     private void initLocation() {
         if (locateState) {
             mCityAdapter.updateLocateState(LocateState.SUCCESS, location);
@@ -102,12 +82,23 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Override
+    public void initData() {
+        setTitle("选择城市");
+        String area = getIntent().getStringExtra("area");
+        String city = getIntent().getStringExtra("city");
+        showArea = getIntent().getIntExtra(SHOW_AREA, 1);
 
-    private void initData() {
         dbManager = new DBManager(this);
         dbManager.copyDBFile();
         mAllCities = dbManager.getAllCities();
         mCityAdapter = new CityListAdapter(this, mAllCities);
+        if (city != null) {
+            mCityAdapter.updateLocateState(LocateState.SUCCESS, area);
+        } else {
+            mCityAdapter.updateLocateState(LocateState.FAILED, area);
+
+        }
         // 城市点击事件
         mCityAdapter.setOnCityClickListener(new CityListAdapter.OnCityClickListener() {
             @Override
@@ -133,6 +124,8 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
         });
 
         mResultAdapter = new ResultListAdapter(this, null);
+
+        initView();
     }
 
     private void initView() {
@@ -190,7 +183,8 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
         });
 
         clearBtn = (ImageView) findViewById(R.id.iv_search_clear);
-//        backBtn = (ImageView) findViewById(R.id.back);
+        clearBtn.setVisibility(View.GONE);
+
 
         clearBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
@@ -247,6 +241,16 @@ public class CityPickerActivity extends AppCompatActivity implements View.OnClic
     protected void onDestroy() {
         super.onDestroy();
         mHelper.destroyMapLocation();
+    }
+
+    @Override
+    public int initContentView(Bundle savedInstanceState) {
+        return R.layout.cp_activity_city_list;
+    }
+
+    @Override
+    public int initVariableId() {
+        return 0;
     }
 
     @Override

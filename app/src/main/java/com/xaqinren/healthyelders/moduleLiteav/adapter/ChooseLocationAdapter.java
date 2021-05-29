@@ -29,7 +29,11 @@ public class ChooseLocationAdapter extends BaseQuickAdapter<LocationBean, BaseVi
             binding.distanceView.setText(null);
         }else {
             float distance = Float.valueOf(selLocationBean.distance);
-            if (distance < 1000) {
+            if (distance == 0)
+            {
+                binding.distanceView.setText(null);
+            }
+            else if (distance < 1000) {
                 binding.distanceView.setText(distance + "m");
             }else {
                 String dis = decimalFormat.format(distance / 1000);

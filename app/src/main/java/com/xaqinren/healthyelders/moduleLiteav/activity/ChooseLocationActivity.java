@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.fastjson.JSON;
@@ -37,6 +38,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseLocationViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private String currentSearch = "";
     private GeocodeSearch geocoderSearch;
     private String clickDesName;
+    private int CITY_CODE = 123;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_lite_av_location;
@@ -94,6 +97,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                 cityName = locationBean.cityName;
                 poiName = locationBean.desName;
                 getAddressList();
+                binding.cityName.setText(cityName);
             }
         });
         RxSubscriptions.add(eventDisposable);
@@ -149,6 +153,13 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             }else {
                 getAddressList();
             }
+        });
+        binding.cityLayout.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.putExtra("show_area", 0);
+            intent.putExtra("city", cityName);
+            intent.setClass(this, CityPickerActivity.class);
+            startActivityForResult(intent,CITY_CODE);
         });
     }
 
@@ -278,9 +289,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                 bean.lon = item.getPoint().getLongitude();
             }
             item.getDistrict();
-            LatLng latLng2 = new LatLng(bean.lat,bean.lon);
-            int distance = (int) AMapUtils.calculateLineDistance(latLng1,latLng2);
-            bean.distance = distance+"";
+            if (bean.lat != 0 && bean.lon != 0) {
+                LatLng latLng2 = new LatLng(bean.lat,bean.lon);
+                int distance = (int) AMapUtils.calculateLineDistance(latLng1,latLng2);
+                bean.distance = distance+"";
+            }
             selLocationTipBeans.add(bean);
         }
         locationPageIndex++;
@@ -308,5 +321,19 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CITY_CODE) {
+                if (data != null) {
+                    cityName = data.getStringExtra(CityPickerActivity.KEY_PICKED_CITY);
+                    binding.cityName.setText(cityName);
+                    binding.searchView.setText(null);
+                }
+            }
+        }
     }
 }

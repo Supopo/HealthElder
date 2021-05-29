@@ -1,100 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-<!--    <include layout="@layout/cp_common_title_bar" />-->
+    <data>
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
-        android:layout_width="match_parent"
-        android:layout_height="51dp"
-        android:background="@color/white">
+    </data>
 
-        <ImageView
-            android:id="@+id/iv_left"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:background="@mipmap/icon_back_g"
-            android:onClick="toLeft" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:lines="1"
-            android:textColor="#FF252525"
-            android:textSize="18sp"
-            android:text="选择城市"/>
-    </RelativeLayout>
-    <include layout="@layout/cp_view_search" />
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_EAEAEA" />
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/listview_all_city"
+        <!--    <include layout="@layout/cp_common_title_bar" />-->
+
+        <include layout="@layout/cp_view_search" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_EAEAEA" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:cacheColorHint="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:scrollbars="none"
-            android:listSelector="@android:color/transparent" />
+            android:background="@android:color/white">
 
-        <TextView
-            android:id="@+id/tv_letter_overlay"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:background="@drawable/bg_city_overlay"
-            android:text="A"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            android:maxLength="1"
-            android:visibility="gone" />
+            <ListView
+                android:id="@+id/listview_all_city"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:scrollbars="none"
+                android:listSelector="@android:color/transparent" />
 
-        <com.xaqinren.healthyelders.widget.pickerView.cityPicker.view.SideLetterBar
-            android:id="@+id/side_letter_bar"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/dp_70"
-            android:layout_marginTop="@dimen/dp_70"
-            tools:ignore="RtlHardcoded" />
+            <TextView
+                android:id="@+id/tv_letter_overlay"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_city_overlay"
+                android:text="A"
+                android:textSize="48sp"
+                android:textStyle="bold"
+                android:maxLength="1"
+                android:visibility="gone" />
 
-        <ListView
-            android:id="@+id/listview_search_result"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:cacheColorHint="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:scrollbars="none"
-            android:dividerHeight="0dp"
-            android:listSelector="@android:color/transparent"
-            android:visibility="gone" />
+            <com.xaqinren.healthyelders.widget.pickerView.cityPicker.view.SideLetterBar
+                android:id="@+id/side_letter_bar"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/dp_70"
+                android:layout_marginTop="@dimen/dp_70"
+                tools:ignore="RtlHardcoded" />
 
-        <include layout="@layout/cp_view_no_search_result" />
-    </RelativeLayout>
-</LinearLayout>
+            <ListView
+                android:id="@+id/listview_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@android:color/transparent"
+                android:scrollbars="none"
+                android:dividerHeight="0dp"
+                android:listSelector="@android:color/transparent"
+                android:visibility="gone" />
+
+            <include layout="@layout/cp_view_no_search_result" />
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

@@ -12,51 +12,68 @@
         android:layout_height="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="true">
-
-        <EditText
-            android:id="@+id/search_view"
-            android:layout_width="@dimen/dp_300"
+        <LinearLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
-            android:background="@drawable/bg_search_edit"
-            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_38"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_252525"
-            android:textColorHint="@color/gray_999"
-            android:singleLine="true"
-            android:paddingRight="@dimen/dp_16"
-            android:imeOptions="actionSearch"
-            android:hint="搜索位置"/>
-
-        <ImageView
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:src="@mipmap/icon_search_weiz"
-            android:layout_alignTop="@id/search_view"
-            android:layout_alignBottom="@id/search_view"
-            android:layout_alignLeft="@id/search_view"
-            android:layout_marginLeft="@dimen/dp_13"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/search_view"
-            android:layout_alignBottom="@id/search_view"
             android:layout_marginRight="@dimen/dp_16"
-            android:text="搜索"
-            android:gravity="center"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/color_F81E4D"
-            />
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_search_edit">
+
+            <LinearLayout
+                android:id="@+id/city_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/city_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="西安"
+                    android:textSize="@dimen/sp_14"
+                    android:paddingLeft="@dimen/dp_14"
+                    android:paddingRight="@dimen/dp_7"
+                    android:textColor="@color/color_252525"
+                    android:gravity="center"
+                    />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_15"
+                    android:layout_height="@dimen/dp_14"
+                    android:src="@mipmap/icon_black_back"
+                    android:layout_marginRight="@dimen/dp_14"
+                    android:layout_gravity="center_vertical"
+                    android:rotation="-90"/>
+                <View
+                    android:layout_width="@dimen/dp_1"
+                    android:layout_height="@dimen/dp_16"
+                    android:background="#cbcbcb"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:background="@null"
+                android:paddingLeft="@dimen/dp_12"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_252525"
+                android:textColorHint="@color/gray_999"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:hint="搜索位置"/>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/location_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/search_view"
+            android:layout_below="@id/search_layout"
             android:layout_marginTop="@dimen/dp_12"/>
     </RelativeLayout>
 </layout>
