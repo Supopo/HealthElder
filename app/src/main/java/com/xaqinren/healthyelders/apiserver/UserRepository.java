@@ -123,12 +123,17 @@ public class UserRepository {
                             PushManager.getInstance().bindAlias(AppApplication.get(),response.getData().getId());
                             LogUtils.e("MainActivity", "绑定 cid -> " + response.getData().getId());
                             getUserSig(token);
-                            loginSuccess.postValue(true);
+                            if (loginSuccess != null) {
+                                loginSuccess.postValue(true);
+                            }
                         }else{
                             if (userInfo != null) {
                                 userInfo.postValue(response.getData());
                             }
-                            loginSuccess.postValue(false);
+
+                            if (loginSuccess != null) {
+                                loginSuccess.postValue(false);
+                            }
                         }
                     }
 
