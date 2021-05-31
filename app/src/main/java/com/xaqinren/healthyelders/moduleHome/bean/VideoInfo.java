@@ -83,6 +83,15 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String city;//":
     public String province;//":
 
+    public String recommendedCode;//":
+
+    public String getRecommendedCode() {
+        if (!TextUtils.isEmpty(recommendedCode)) {
+            return "健康号 "+recommendedCode;
+        }
+        return "";
+    }
+
     public String storeId;//": "1329045982251323392",
     public String storeLogo;//": null,
     public String storeName;//": null,

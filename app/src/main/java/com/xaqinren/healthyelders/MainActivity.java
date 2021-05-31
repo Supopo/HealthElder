@@ -264,7 +264,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         }
                     } else {
                         if (homeFragment != null && homeFragment.vp2 != null) {
-                            homeFragment.vp2.setUserInputEnabled(true);
+
+                            if (!homeFragment.isShowTop) {
+                                homeFragment.vp2.setUserInputEnabled(true);
+                            }
                         }
                     }
                 }

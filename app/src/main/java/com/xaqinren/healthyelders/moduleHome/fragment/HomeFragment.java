@@ -75,6 +75,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         return BR.viewModel;
     }
 
+
+    public boolean isShowTop = true;
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -82,10 +84,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             if (event != null) {
                 if (event.msgId == CodeTable.EVENT_HOME) {
                     if (event.msgType == CodeTable.SHOW_TAB_LAYOUT) {
+                        isShowTop = false;
+
                         //展示TabLayout
                         binding.rlTabMenu.setVisibility(View.VISIBLE);
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
                         AppApplication.get().setShowTopMenu(true);
+                        isShowTop = true;
 
                         //隐藏视频播放视图层
                         RxBus.getDefault().post(new VideoEvent(10010, 0));
@@ -214,7 +219,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_247)) {
                     AppApplication.get().setShowTopMenu(false);
 
-
+                    isShowTop = false;
                     //隐藏头部菜单
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);

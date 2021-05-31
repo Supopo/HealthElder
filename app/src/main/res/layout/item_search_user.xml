@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="粉丝"
+                android:text="粉丝 0"
                 android:textColor="@color/gray_999"
                 android:textSize="@dimen/sp_14" />
 
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="健康号"
+                android:text="@{viewModel.recommendedCode}"
                 android:textColor="@color/gray_999"
                 android:textSize="@dimen/sp_14" />
         </LinearLayout>
