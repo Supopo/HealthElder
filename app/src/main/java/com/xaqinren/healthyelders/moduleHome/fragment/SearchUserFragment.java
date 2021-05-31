@@ -95,13 +95,19 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
                 return;
             }
             mPosition = position;
-            viewModel.toFollow(mAdapter.getData().get(position).userId);
+            viewModel.toFollow(mAdapter.getData().get(position).id);
         }));
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
+        viewModel.dismissDialog.observe(this,disDialog ->{
+            if (disDialog != null && disDialog) {
+                dismissDialog();
+            }
+        });
 
         viewModel.followSuccess.observe(this, isSuccess -> {
             if (isSuccess != null && isSuccess) {

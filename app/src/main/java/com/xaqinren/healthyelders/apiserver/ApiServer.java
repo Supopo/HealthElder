@@ -403,7 +403,7 @@ public interface ApiServer {
 
     //搜素哦用户
     @GET("jkzl/open/queryUserPage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSearchUser(@Query("page") int page, @Query("pageSize") int pageSize, @Query("tag") String tag);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSearchUser(@Query("page") int page, @Query("pageSize") int pageSize, @Query("tags") String tag);
 
 }
 

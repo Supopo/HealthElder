@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="粉丝 0"
+                android:text="@{viewModel.getFansCount()}"
                 android:textColor="@color/gray_999"
                 android:textSize="@dimen/sp_14" />
 
@@ -78,7 +78,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:textSize="@dimen/sp_14"
-            />
+            android:visibility="@{viewModel.showSeachFollow()?View.VISIBLE:View.GONE}" />
 
 
     </RelativeLayout>

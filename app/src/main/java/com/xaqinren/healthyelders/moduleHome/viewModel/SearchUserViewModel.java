@@ -25,6 +25,7 @@ public class SearchUserViewModel extends BaseViewModel {
 
 
     public void toFollow(String userId) {
+        showDialog();
         UserRepository.getInstance().toFollow(followSuccess, dismissDialog, userId);
     }
 }

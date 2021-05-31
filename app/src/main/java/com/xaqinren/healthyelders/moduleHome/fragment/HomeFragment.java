@@ -288,6 +288,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.ivSearch.setOnClickListener(lis ->{
             startActivity(SearchActivity.class);
         });
+        binding.ivSearch2.setOnClickListener(lis ->{
+            startActivity(SearchActivity.class);
+        });
     }
 
     private void initTopMenu() {

@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.bean;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
@@ -84,10 +85,15 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String province;//":
 
     public String recommendedCode;//":
+    public int fansCount;
+
+    public String getFansCount() {
+        return "粉丝 " + Num2TextUtil.sNum2Text2(String.valueOf(fansCount));
+    }
 
     public String getRecommendedCode() {
         if (!TextUtils.isEmpty(recommendedCode)) {
-            return "健康号 "+recommendedCode;
+            return "健康号 " + recommendedCode;
         }
         return "";
     }
@@ -135,6 +141,13 @@ public class VideoInfo implements Serializable, MultiItemEntity {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean showSeachFollow() {
+        if (id.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+            return false;
+        }
         return true;
     }
 

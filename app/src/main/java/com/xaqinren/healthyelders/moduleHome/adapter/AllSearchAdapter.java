@@ -28,6 +28,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
         addItemType(2, R.layout.item_all_search_goods);
         addItemType(3, R.layout.item_search_zb);
         addItemType(4, R.layout.item_all_search_article);
+        addChildClickViewIds(R.id.iv_zan);
     }
 
     @Override

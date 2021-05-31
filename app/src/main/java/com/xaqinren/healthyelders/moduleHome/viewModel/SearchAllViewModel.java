@@ -74,4 +74,12 @@ public class SearchAllViewModel extends BaseViewModel {
     public void searchUsers(int page, int size) {
         UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, tags);
     }
+
+    public MutableLiveData<Boolean> followSuccess = new MutableLiveData<>();
+
+
+    public void toFollow(String userId) {
+        showDialog();
+        UserRepository.getInstance().toFollow(followSuccess, dismissDialog, userId);
+    }
 }

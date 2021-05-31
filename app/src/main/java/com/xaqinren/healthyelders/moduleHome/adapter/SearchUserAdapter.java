@@ -1,17 +1,14 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemSearchUserBinding;
-import com.xaqinren.healthyelders.databinding.ItemSearchVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 
 import java.util.List;
@@ -31,7 +28,7 @@ public class SearchUserAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolde
         binding.setViewModel(item);
         binding.executePendingBindings();
 
-        if (item.showFollow()) {
+        if (!item.hasAttention) {
             binding.tvFollow.setText("关注");
             binding.tvFollow.setTextColor(getContext().getResources().getColor(R.color.white));
             binding.tvFollow.setBackground(getContext().getResources().getDrawable(R.drawable.bg_btn_comfrim_shape_15));
@@ -51,7 +48,7 @@ public class SearchUserAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolde
             int type = (Integer) payloads.get(0);// 刷新哪个部分 标志位
             if (type == 99) {
                 TextView tvFollow = (TextView) helper.getView(R.id.tv_follow);
-                if (item.showFollow()) {
+                if (!item.hasAttention) {
                     tvFollow.setText("关注");
                     tvFollow.setTextColor(getContext().getResources().getColor(R.color.white));
                     tvFollow.setBackground(getContext().getResources().getDrawable(R.drawable.bg_btn_comfrim_shape_15));

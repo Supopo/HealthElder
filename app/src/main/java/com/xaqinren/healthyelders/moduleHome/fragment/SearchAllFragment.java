@@ -48,6 +48,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     private int page = 1;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;
+    private SearchUserAdapter userAdapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,6 +113,13 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             }
         }));
 
+        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            if (view.getId() == R.id.iv_zan) {
+                //视频点赞
+
+            }
+        }));
+
     }
 
     private boolean hasHead;
@@ -123,19 +131,25 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         View headView = LinearLayout.inflate(getActivity(), R.layout.header_all_search, null);
         HeaderAllSearchBinding headBinding = DataBindingUtil.bind(headView);
-        SearchUserAdapter userAdapter = new SearchUserAdapter(R.layout.item_search_user);
+        userAdapter = new SearchUserAdapter(R.layout.item_search_user);
         headBinding.rvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
         headBinding.rvUser.setAdapter(userAdapter);
 
-        headBinding.tvMore.setOnClickListener(lis ->{
+        headBinding.tvMore.setOnClickListener(lis -> {
             //通知页面切换到
             searchAllViewModel.toUsers.postValue(true);
         });
         userAdapter.setNewInstance(temp);
         mAdapter.addHeaderView(headView);
         hasHead = true;
+
+        userAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            followPosition = position;
+            searchAllViewModel.toFollow(userAdapter.getData().get(position).id);
+        }));
     }
 
+    private int followPosition;
 
     private void toVideoList(List<VideoInfo> tempList) {
         //跳页 传入数据 pos page list
@@ -155,12 +169,20 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        searchAllViewModel.dismissDialog.observe(this, disDialog -> {
+            if (disDialog != null && disDialog) {
+                dismissDialog();
+            }
+        });
+
+
+        searchAllViewModel.followSuccess.observe(this, dismissDialog -> {
+            userAdapter.notifyItemChanged(followPosition, 99);
+        });
+
+
         searchAllViewModel.userDatas.observe(this, dataList -> {
             if (dataList != null && dataList.size() > 0) {
-//                List<VideoInfo> temp = new ArrayList<>();
-//                temp.add(mAdapter.getData().get(0));
-//                temp.add(mAdapter.getData().get(1));
-
                 initHead(dataList);
             }
         });
