@@ -116,7 +116,7 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
             }
         });
 
-        searchAllViewModel.userDatas.observe(this, dataList -> {
+        searchAllViewModel.userDatas2.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成

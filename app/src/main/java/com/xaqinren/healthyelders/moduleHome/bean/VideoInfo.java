@@ -109,7 +109,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     }
 
     public String getTotalSoldCount() {
-        return "库存" + totalSoldCount;
+        return "已售出  " + totalSoldCount;
     }
 
     public boolean hasFavorite;

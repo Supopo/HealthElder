@@ -49,6 +49,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;
     private SearchUserAdapter userAdapter;
+    private HeaderAllSearchBinding headBinding;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 mLoadMore.setEnableLoadMore(false);
                 binding.srlContent.setRefreshing(false);
                 page = 1;
+                searchAllViewModel.searchUsers(page, 3);
                 searchAllViewModel.searchDatas(page, 0);
             }
         });
@@ -120,17 +122,18 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             }
         }));
 
+        initHead();
     }
 
     private boolean hasHead;
 
-    private void initHead(List<VideoInfo> temp) {
+    private void initHead() {
         if (hasHead) {
             return;
         }
 
         View headView = LinearLayout.inflate(getActivity(), R.layout.header_all_search, null);
-        HeaderAllSearchBinding headBinding = DataBindingUtil.bind(headView);
+        headBinding = DataBindingUtil.bind(headView);
         userAdapter = new SearchUserAdapter(R.layout.item_search_user);
         headBinding.rvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
         headBinding.rvUser.setAdapter(userAdapter);
@@ -139,7 +142,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             //通知页面切换到
             searchAllViewModel.toUsers.postValue(true);
         });
-        userAdapter.setNewInstance(temp);
+
         mAdapter.addHeaderView(headView);
         hasHead = true;
 
@@ -182,8 +185,14 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
 
         searchAllViewModel.userDatas.observe(this, dataList -> {
-            if (dataList != null && dataList.size() > 0) {
-                initHead(dataList);
+            if (dataList != null ) {
+                userAdapter.setNewInstance(dataList);
+                if (dataList.size() > 0) {
+                    headBinding.llHead.setVisibility(View.VISIBLE);
+                }else {
+                    headBinding.llHead.setVisibility(View.GONE);
+                }
+
             }
         });
 
@@ -192,22 +201,16 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();
-                }
-                if (page == 1) {
-                    mAdapter.setNewInstance(dataList);
-                    if (dataList.size() == 0) {
-                        //创建适配器.空布局，没有数据时候默认展示的
-                        mAdapter.setEmptyView(R.layout.list_empty);
+                    if (page == 1) {
+                        mAdapter.setNewInstance(dataList);
+                    } else {
+                        mAdapter.addData(dataList);
                     }
-
                 } else {
-                    if (dataList.size() == 0) {
-                        //加载更多加载结束
-                        mLoadMore.loadMoreEnd(true);
-                        page--;
-                    }
-                    mAdapter.addData(dataList);
+                    mLoadMore.loadMoreEnd(true);
+                    page--;
                 }
+
             }
         });
 

@@ -29,6 +29,7 @@ public class SearchAllViewModel extends BaseViewModel {
     public MutableLiveData<List<VideoInfo>> videoDatas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> twDatas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> userDatas = new MutableLiveData<>();
+    public MutableLiveData<List<VideoInfo>> userDatas2 = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> goodsDatas = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> zbDatas = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
@@ -72,7 +73,11 @@ public class SearchAllViewModel extends BaseViewModel {
     }
 
     public void searchUsers(int page, int size) {
-        UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, tags);
+        if (size == 10) {
+            UserRepository.getInstance().searchUser(dismissDialog, userDatas2, page, size, tags);
+        }else {
+            UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, tags);
+        }
     }
 
     public MutableLiveData<Boolean> followSuccess = new MutableLiveData<>();

@@ -101,6 +101,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     tags = binding.etSearch.getText().toString().trim();
                     viewModel.tags = tags;
+                    viewModel.searchUsers(1, 3);
                     viewModel.searchDatas(1, fragmentPos);
                 }
                 return false;
@@ -116,8 +117,6 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
             binding.etSearch.setHint("请输入需要搜索的内容");
         });
 
-        viewModel.searchUsers(1, 3);
-        viewModel.searchDatas(1, fragmentPos);
     }
 
     @Override

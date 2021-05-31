@@ -73,18 +73,12 @@
             </LinearLayout>
         </LinearLayout>
 
-        <View
-            android:id="@+id/line_1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignBottom="@id/ll_search"
-            android:background="@color/color_EAEAEA" />
 
         <com.flyco.tablayout.SlidingTabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
-            android:layout_below="@id/line_1"
+            android:layout_below="@id/ll_search"
             android:layout_centerHorizontal="true"
             android:background="@color/white"
             app:tabBackground="@android:color/transparent"
