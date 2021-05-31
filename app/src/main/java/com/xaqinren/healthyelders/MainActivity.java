@@ -43,6 +43,7 @@ import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.push.PayLoadBean;
+import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -115,6 +116,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         if (check)
             LocationService.startService(this);
+        UniService.startService(this);
     }
 
     @Override

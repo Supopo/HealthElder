@@ -277,6 +277,7 @@
             android:process=":pushservice"/>
         <service android:name=".push.MyIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name=".uniApp.UniService" />
     </application>
 
 </manifest>

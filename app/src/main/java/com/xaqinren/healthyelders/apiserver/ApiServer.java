@@ -25,6 +25,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.uniApp.bean.UniBean;
 
 import java.util.List;
 
@@ -404,6 +405,10 @@ public interface ApiServer {
     //搜素哦用户
     @GET("jkzl/open/queryUserPage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSearchUser(@Query("page") int page, @Query("pageSize") int pageSize, @Query("tags") String tag);
+
+    //小程序列表
+    @GET("merchant/open/queryAppletInfoPage")
+    Observable<MBaseResponse<BaseListRes<List<UniBean>>>> getUniList();
 
 }
 

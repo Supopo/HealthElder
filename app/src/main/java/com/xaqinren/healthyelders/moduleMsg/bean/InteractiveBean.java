@@ -97,7 +97,7 @@ public class InteractiveBean extends MessageDetailBean {
     public static class ExtraDTO {
         private String objectId;
         private String id;
-        private String creationType;
+        private String type;
 
         public String getId() {
             return id;
@@ -108,11 +108,11 @@ public class InteractiveBean extends MessageDetailBean {
         }
 
         public String getCreationType() {
-            return creationType;
+            return type;
         }
 
         public void setCreationType(String creationType) {
-            this.creationType = creationType;
+            this.type = creationType;
         }
 
         public String getObjectId() {

@@ -2,11 +2,15 @@ package com.xaqinren.healthyelders.moduleMall.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
@@ -16,11 +20,20 @@ import com.xaqinren.healthyelders.databinding.FragmentGoodsListBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallGoodsAdapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.GoodsListViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
+import org.json.JSONObject;
+
+import io.dcloud.feature.sdk.DCSDKInitConfig;
+import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/5/25.
@@ -32,6 +45,7 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
     private BaseLoadMoreModule mLoadMore;
     private int fPosition;
     private Disposable subscribe;
+    private Disposable uniSubscribe;
 
 
     public GoodsListFragment(int position, String category) {
@@ -81,7 +95,14 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
             }
         });
 
+        mallGoodsAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                GoodsBean goodsBean = (GoodsBean) adapter.getData().get(position);
 
+                UniService.startService(getContext(), "__UNI__DFE7692", 0x123456);
+            }
+        });
         isFirst = false;
     }
     private boolean isFirst = true;
@@ -105,6 +126,20 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
                 }
             }
         });
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    ToastUtils.showShort("打开小程序成功");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("key", "value");
+                    DCUniMPSDK.getInstance().startApp(getContext(), "__UNI__DFE7692", null,"/pages/index/index", jsonObject);
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+        RxSubscriptions.add(uniSubscribe);
 
         viewModel.dismissDialog.observe(this, isDismiss -> {
             dismissDialog();
@@ -143,6 +178,10 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         super.onDestroyView();
         if (subscribe != null) {
             subscribe.dispose();
+        }
+        RxSubscriptions.remove(uniSubscribe);
+        if (uniSubscribe != null) {
+            uniSubscribe.dispose();
         }
     }
 }

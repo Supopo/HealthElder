@@ -83,4 +83,9 @@ public class CodeTable {
      * 退出登录
      */
     public static final int LOGIN_OUT = 0x100018;
+    /**
+     * 小程序释放成功
+     */
+    public static final int UNI_RELEASE = 0x100020;
+    public static final int UNI_RELEASE_FAIL = 0x100021;
 }
