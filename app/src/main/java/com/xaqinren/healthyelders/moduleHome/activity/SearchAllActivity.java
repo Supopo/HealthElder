@@ -61,6 +61,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
         binding.etSearch.setText(tags);
         setStatusBarTransparentBlack();
 
+        showDialog();
         List<Fragment> fragments = new ArrayList<>();
 
         SearchAllFragment allFragment = new SearchAllFragment();

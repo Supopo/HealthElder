@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -23,6 +24,7 @@ public class SearchAllViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<ResBean> dzSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> toUsers = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> allDatas = new MutableLiveData<>();
@@ -73,9 +75,10 @@ public class SearchAllViewModel extends BaseViewModel {
     }
 
     public void searchUsers(int page, int size) {
+        showDialog();
         if (size == 10) {
             UserRepository.getInstance().searchUser(dismissDialog, userDatas2, page, size, tags);
-        }else {
+        } else {
             UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, tags);
         }
     }
@@ -86,5 +89,10 @@ public class SearchAllViewModel extends BaseViewModel {
     public void toFollow(String userId) {
         showDialog();
         UserRepository.getInstance().toFollow(followSuccess, dismissDialog, userId);
+    }
+
+    public void toLike(String shortVideoId, boolean favoriteStatus, int position) {
+        showDialog();
+        LiveRepository.getInstance().toLikeVideo(shortVideoId, favoriteStatus, position, dzSuccess, dismissDialog);
     }
 }

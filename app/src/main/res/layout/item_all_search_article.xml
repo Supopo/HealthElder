@@ -142,10 +142,11 @@
                 android:id="@+id/iv_zan"
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_zan_gary" />
+                android:background="@mipmap/icon_zan_gary_0" />
 
 
             <TextView
+                android:id="@+id/tv_zanNum"
                 android:visibility="@{viewModel.getFavoriteCount == 0?View.INVISIBLE:View.VISIBLE}"
                 android:layout_width="@dimen/dp_55"
                 android:layout_height="wrap_content"
@@ -158,7 +159,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_pl_gray" />
+                android:background="@mipmap/icon_pl_gray_0" />
 
 
             <TextView
@@ -174,7 +175,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_share_gray" />
+                android:background="@mipmap/icon_share_gray_0" />
 
 
             <TextView

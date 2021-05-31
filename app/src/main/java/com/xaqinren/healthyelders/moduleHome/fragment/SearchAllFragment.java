@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +119,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
             if (view.getId() == R.id.iv_zan) {
                 //视频点赞
-
+                searchAllViewModel.toLike(mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
             }
         }));
 
@@ -172,6 +173,20 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        searchAllViewModel.dzSuccess.observe(this, dzSuccess -> {
+            if (dzSuccess != null && dzSuccess.isSuccess) {
+                mAdapter.getData().get(dzSuccess.position).hasFavorite = !mAdapter.getData().get(dzSuccess.position).hasFavorite;
+                if (mAdapter.getData().get(dzSuccess.position).hasFavorite) {
+                    mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() + 1);
+                } else {
+                    mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() - 1);
+                }
+                //加1是因为设置了头布局
+                mAdapter.notifyItemChanged(dzSuccess.position + 1, 99);
+            }
+
+        });
+
         searchAllViewModel.dismissDialog.observe(this, disDialog -> {
             if (disDialog != null && disDialog) {
                 dismissDialog();
@@ -185,11 +200,11 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
 
         searchAllViewModel.userDatas.observe(this, dataList -> {
-            if (dataList != null ) {
+            if (dataList != null) {
                 userAdapter.setNewInstance(dataList);
                 if (dataList.size() > 0) {
                     headBinding.llHead.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     headBinding.llHead.setVisibility(View.GONE);
                 }
 
