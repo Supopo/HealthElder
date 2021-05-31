@@ -50,11 +50,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|right"
-                android:text="桃几"
                 android:textSize="@dimen/sp_14" />
 
         </LinearLayout>
@@ -85,11 +85,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_num"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|right"
-                android:text="610328199207140714"
                 android:textSize="@dimen/sp_14" />
 
         </LinearLayout>

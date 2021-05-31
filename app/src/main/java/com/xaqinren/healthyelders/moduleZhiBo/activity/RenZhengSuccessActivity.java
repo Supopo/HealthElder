@@ -34,6 +34,8 @@ public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSucces
             startActivity(StartLiveActivity.class);
             finish();
         });
+        binding.tvName.setText(getIntent().getExtras().getString("name"));
+        binding.tvNum.setText(getIntent().getExtras().getString("idNumber"));
     }
 
 }

@@ -68,7 +68,8 @@ public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2B
     public void initViewObservable() {
         super.initViewObservable();
         viewModel.renZhengSuccess.observe(this, isSuccess -> {
-            startActivity(RenZhengSuccessActivity.class);
+
+            startActivity(RenZhengSuccessActivity.class,extras);
             finish();
         });
     }
