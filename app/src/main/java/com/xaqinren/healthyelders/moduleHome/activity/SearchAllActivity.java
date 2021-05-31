@@ -120,6 +120,8 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
 
     }
 
+    private boolean isFirst = true;
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();

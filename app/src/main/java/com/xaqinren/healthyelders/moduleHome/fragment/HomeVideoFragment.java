@@ -41,6 +41,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
@@ -356,7 +357,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return;
             }
 
-            viewModel.toLikeVideo(videoInfo.resourceId, !videoInfo.hasFavorite,position);
+            viewModel.toLikeVideo(videoInfo.resourceId, !videoInfo.hasFavorite, position);
 
             firstLikeTime = secondTime;
         });
@@ -371,7 +372,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             showCommentDialog(videoInfo.resourceId);
         });
         binding.ivShare.setOnClickListener(lis -> {
-            showShareDialog();
+            showShareDialog(videoInfo);
         });
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null && commentDialog != null) {
@@ -429,9 +430,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     //分享弹窗
     private ShareDialog shareDialog;
 
-    private void showShareDialog() {
+    private void showShareDialog(VideoInfo videoInfo) {
         if (shareDialog == null)
-            shareDialog = new ShareDialog(getActivity());
+            videoInfo.share.downUrl = videoInfo.resourceUrl;
+            shareDialog = new ShareDialog(getActivity(), videoInfo.share);
         shareDialog.show(binding.mainRelativeLayout);
     }
 

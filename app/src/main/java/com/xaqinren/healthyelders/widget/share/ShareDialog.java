@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -36,6 +37,8 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.utils.DownloadUtil;
 import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
@@ -57,6 +60,7 @@ public class ShareDialog {
     private Context mContext;
     private DownLoadProgressDialog downloadProgress;
     private OnClickListener onClickListener;
+    private ShareBean shareBean;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -65,6 +69,13 @@ public class ShareDialog {
     public ShareDialog(Context context) {
         this.context = new SoftReference<>(context);
         mContext = context;
+        init();
+    }
+
+    public ShareDialog(Context context, ShareBean shareInfo) {
+        this.context = new SoftReference<>(context);
+        mContext = context;
+        shareBean = shareInfo;
         init();
     }
 
@@ -97,16 +108,18 @@ public class ShareDialog {
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友
-            shareWebPage();
-            //            CommonExtKt.shareWxPage(mContext, 2, 0, "item.title", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be");
-            //            shareWx();
+            shareWebPage(1);
         });
         binding.shareClsLayout.shareWxCircle.setOnClickListener(view -> {
             //私信微信朋友圈
+            shareWebPage(2);
         });
         binding.shareOperationLayout.shareSaveNative.setOnClickListener(view -> {
-            //保存本地
-            saveVideo("http://oss.hjyiyuanjiankang.com/qnx0/M00/00/06/rBBcQmCo0K6ADl0kAFjrEn2Kx7g879.mp4");
+            if (!TextUtils.isEmpty(shareBean.downUrl)) {
+                //保存本地
+                saveVideo(shareBean.downUrl);
+            }
+
         });
         binding.shareOperationLayout.shareSaveUrl.setOnClickListener(view -> {
             //复制链接
@@ -132,59 +145,30 @@ public class ShareDialog {
         });
     }
 
-    private void shareWx() {
-        if (AppApplication.mWXapi.isWXAppInstalled()) {
-
-            //初始化一个 WXTextObject 对象，填写分享的文本内容
-            WXTextObject textObj = new WXTextObject();
-            textObj.text = "text";
-
-            //用 WXTextObject 对象初始化一个 WXMediaMessage 对象
-            WXMediaMessage msg = new WXMediaMessage();
-            msg.mediaObject = textObj;
-            msg.description = "text";
-
-
-            SendMessageToWX.Req req = new SendMessageToWX.Req();
-            req.message = msg;
-
-            //            分享到对话:
-            //            SendMessageToWX.Req.WXSceneSession
-            //            分享到朋友圈:
-            //            SendMessageToWX.Req.WXSceneTimeline ;
-            //            分享到收藏:
-            //            SendMessageToWX.Req.WXSceneFavorite
-            req.scene = SendMessageToWX.Req.WXSceneSession;
-
-            //发送给微信客户端
-
-            AppApplication.mWXapi.sendReq(req);
-        } else {
-            ToastUtil.toastShortMessage("您未安装微信");
-            return;
-        }
-    }
 
     /*
      * 分享链接
      */
-    private void shareWebPage() {
-        String url = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be";
-
+    private void shareWebPage(int type) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = "www.baidu.com";
+        webpage.webpageUrl = shareBean.url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
-        msg.title = "分享链接";
-        msg.description = "分享描述";
+        msg.title = shareBean.title;
+        msg.description = shareBean.subTitle;
 
-        Glide.with(mContext).asBitmap().load(url).into(new SimpleTarget<Bitmap>() {
+        Glide.with(mContext).asBitmap().load(shareBean.coverUrl).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 msg.setThumbImage(resource);
 
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.message = msg;
-                req.scene = SendMessageToWX.Req.WXSceneSession;
+
+                if (type == 1) {
+                    req.scene = SendMessageToWX.Req.WXSceneSession;
+                } else if (type == 2) {
+                    req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                }
                 AppApplication.mWXapi.sendReq(req);
             }
 
@@ -227,7 +211,7 @@ public class ShareDialog {
         UserRepository.getInstance().getFriendsList(datas, page, pageSize);
     }
 
-    private void saveVideo(String url){
+    private void saveVideo(String url) {
         File downLoadUrl = DownloadUtil.get().getSaveFileFromUrl(url, mContext, "video");
         if (downloadProgress == null) {
             downloadProgress = new DownLoadProgressDialog(mContext);
@@ -252,7 +236,8 @@ public class ShareDialog {
             }
         });
     }
-    public interface OnClickListener{
+
+    public interface OnClickListener {
         void onCreatePostClick();
     }
 }
