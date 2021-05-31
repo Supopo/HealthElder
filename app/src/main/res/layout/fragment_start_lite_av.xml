@@ -259,6 +259,7 @@
                 android:textSize="@dimen/sp_12"
                 android:textColor="@color/white"
                 android:text="相册"/>
+
         </LinearLayout>
         <!-- 用于拍照以后生成的图片界面显示-->
         <include layout="@layout/layout_photo_preview"

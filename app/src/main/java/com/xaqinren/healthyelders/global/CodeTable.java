@@ -64,6 +64,7 @@ public class CodeTable {
      * token 过期
      */
     public static final int TOKEN_ERR = 0x100013;
+
     /**
      * 微信登录成功
      */
@@ -74,5 +75,12 @@ public class CodeTable {
     public static final int LOCATION_SUCCESS = 0x100015;
     public static final int NO_CARD = 0x100016;
 
-
+    /**
+     * IM 登录成功
+     */
+    public static final int IM_LOGIN_SUCCESS = 0x100017;
+    /**
+     * 退出登录
+     */
+    public static final int LOGIN_OUT = 0x100018;
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -35,6 +36,7 @@ import java.util.Map;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
@@ -98,7 +100,7 @@ public class UserRepository {
         return girlsList;
     }
 
-    public void getUserInfo(MutableLiveData<UserInfoBean> userInfo, String token) {
+    public void getUserInfo(MutableLiveData<Boolean> loginSuccess, MutableLiveData<UserInfoBean> userInfo, String token) {
         userApi.getUserInfo(token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -119,6 +121,13 @@ public class UserRepository {
                             //绑定cid
                             PushManager.getInstance().bindAlias(AppApplication.get(),response.getData().getId());
                             LogUtils.e("MainActivity", "绑定 cid -> " + response.getData().getId());
+                            getUserSig(token);
+                            loginSuccess.postValue(true);
+                        }else{
+                            if (userInfo != null) {
+                                userInfo.postValue(response.getData());
+                            }
+                            loginSuccess.postValue(false);
                         }
                     }
 
@@ -132,6 +141,9 @@ public class UserRepository {
 
                     }
                 });
+    }
+    public void getUserInfo(MutableLiveData<UserInfoBean> userInfo, String token) {
+        getUserInfo(null, userInfo, token);
     }
 
     public void loginByPhone(MutableLiveData<Boolean> loginSuccess, String phone, String code, String openId) {
@@ -350,6 +362,11 @@ public class UserRepository {
                 .subscribe(new CustomObserver<MBaseResponse<String>>() {
 
                     @Override
+                    public void onFail(String code, MBaseResponse<String> data) {
+                        super.onFail(code, data);
+                    }
+
+                    @Override
                     protected void dismissDialog() {
 
                     }
@@ -370,7 +387,7 @@ public class UserRepository {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
+         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
@@ -380,6 +397,7 @@ public class UserRepository {
             @Override
             public void onSuccess() {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录成功");
+                RxBus.getDefault().post(new EventBean(CodeTable.IM_LOGIN_SUCCESS, null));
             }
         });
     }

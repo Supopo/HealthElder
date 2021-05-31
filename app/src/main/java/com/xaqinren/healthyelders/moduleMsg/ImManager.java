@@ -17,14 +17,19 @@ import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.push.PayLoadBean;
+import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import master.flame.danmaku.danmaku.model.ICacheManager;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.compression.Luban;
 import retrofit2.http.PUT;
@@ -33,6 +38,9 @@ public class ImManager {
     private static final String TAG = "ImManager";
     private static ImManager imManager = new ImManager();
     private List<ConversationInfo> localCon;
+    private String rootDir;
+    private String fileName;
+    private ACache aCache;
 
     private ImManager() {
     }
@@ -48,7 +56,10 @@ public class ImManager {
         this.onUnReadWatch = onUnReadWatch;
     }
 
-    public void init() {
+    public void init(String rootDir) {
+        this.rootDir = rootDir;
+        getFileName();
+        aCache = ACache.get(new File(this.rootDir));
         localCon = getLocalConversation();
         if (localCon == null) {
             localCon = new ArrayList<>();
@@ -61,7 +72,27 @@ public class ImManager {
             }
         });
         ConversationManagerKit.getInstance().setLoadSelfConversation(() -> localCon);
-        ConversationManagerKit.getInstance().loadConversation(null);
+//        ConversationManagerKit.getInstance().loadConversation(null);
+        if (onUnReadWatch != null) {
+            onUnReadWatch.onUnReadWatch(unReadCount);
+        }
+
+    }
+    public void getFileName() {
+        UserInfoBean bean = UserInfoMgr.getInstance().getUserInfo();
+        if (bean != null) {
+            fileName = bean.getId();
+        }
+    }
+    //退出登录用的
+    public void clear() {
+        clearConversationByList();
+        unReadCount = 0;
+        localCon = new ArrayList<>();
+        fileName = null;
+        if (onUnReadWatch != null) {
+            onUnReadWatch.onUnReadWatch(unReadCount);
+        }
     }
 
     /**
@@ -106,14 +137,21 @@ public class ImManager {
     }
 
     private void saveSp() {
-        SPUtils.getInstance().put(Constant.SP_KEY_CONVERSATION, JSON.toJSONString(localCon));
+        if (fileName == null) {
+            return;
+        }
+
+        aCache.put(fileName, JSON.toJSONString(localCon));
         if (onUnReadWatch != null) {
             onUnReadWatch.onUnReadWatch(unReadCount + ConversationManagerKit.getInstance().getUnreadTotal());
         }
     }
 
     private List<ConversationInfo> getLocalConversation() {
-        String json = SPUtils.getInstance().getString(Constant.SP_KEY_CONVERSATION, "");
+        if (fileName == null) {
+            return null;
+        }
+        String json = aCache.getAsString(fileName);
         List<ConversationInfo> temp = JSON.parseArray(json, ConversationInfo.class);
         if (temp != null) {
             for (ConversationInfo info : temp) {
@@ -184,6 +222,14 @@ public class ImManager {
         if (flag) {
             ConversationManagerKit.getInstance().deleteConversation(id, false);
             saveSp();
+        }
+    }
+    //在列表上清除
+    public void clearConversationByList() {
+        if (localCon != null) {
+            for (ConversationInfo info : localCon) {
+                ConversationManagerKit.getInstance().deleteConversation(info.getId(), false);
+            }
         }
     }
 

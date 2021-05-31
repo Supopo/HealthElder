@@ -46,6 +46,7 @@ import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +95,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void initData() {
+        ImManager.getInstance().setOnUnReadWatch(this);
         setStatusBarTransparent();
         //初始化Fragment
         initFragment();
@@ -140,8 +142,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 UserInfoMgr.getInstance().setUserInfo(userInfoBean);
                 UserInfoMgr.getInstance().setAccessToken(accessToken);
                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
+                onUnReadWatch(ImManager.getInstance().getUnreadCount());
+                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
             }
-
         }
 
         //获取UserSig
@@ -199,6 +202,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu2;
         });
         binding.rlMenu3.setOnClickListener(lis -> {
+            if (!InfoCache.getInstance().checkLogin()) {
+                //跳转登录页面
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             selectView = binding.tvMenu3;
@@ -371,6 +379,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         RxSubscriptions.add(eventDisposable);
 
+        viewModel.userInfo.observe(this, userInfoBean -> {
+            //重置IM消息列表
+            UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
+            onUnReadWatch(ImManager.getInstance().getUnreadCount());
+            ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
+        });
+
 
         mSubscription = RxBus.getDefault().toObservable(PayLoadBean.class)
                 .observeOn(AndroidSchedulers.mainThread()) //回调到主线程更新UI
@@ -383,8 +398,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //将订阅者加入管理站
         RxSubscriptions.add(mSubscription);
 
-        ImManager.getInstance().setOnUnReadWatch(this);
-        onUnReadWatch(ImManager.getInstance().getUnreadCount());
     }
 
     private String[] textColors = {

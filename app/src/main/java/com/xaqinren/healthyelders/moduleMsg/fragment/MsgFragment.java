@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.open.im.IM;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationLayout;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationListLayout;
@@ -15,7 +17,10 @@ import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.activity.LiveAVActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
@@ -30,7 +35,10 @@ import com.xaqinren.healthyelders.moduleMsg.activity.SysMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.WalletMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.push.PayLoadBean;
+
+import java.io.File;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -39,12 +47,16 @@ import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.http.download.DownLoadStateBean;
+import me.goldze.mvvmhabit.utils.ConvertUtils;
 
 /**
  * Created by Lee. on 2021/5/11.
  * 消息列表
  */
 public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> {
+
+    boolean isInitIm;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,43 +71,63 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     @Override
     public void initData() {
         super.initData();
-        ConversationManagerKit.getInstance().setLoadSelfData(false);
         binding.ivAdd.setOnClickListener(view -> {
             //添加联系人
             startActivity(AddFriendActivity.class);
         });
         binding.ivAdd2.setOnClickListener(view -> {
             ImManager.testAddConversation();
+        binding.ivAdd2.setVisibility(View.GONE);
         });
         binding.srlContent.setEnabled(false);
-        binding.ivAdd2.setVisibility(View.GONE);
-        binding.conversationLayout.initDefault();
         binding.conversationLayout.getTitleBar().setVisibility(View.GONE);
+
+        int loginStatus = V2TIMManager.getInstance().getLoginStatus();
+        if (loginStatus == V2TIMManager.V2TIM_STATUS_LOGINED) {
+            if (!isInitIm) {
+                initView();
+            }
+        }
+
+    }
+
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    private void initView() {
+        ConversationManagerKit.getInstance().setLoadSelfData(false);
+        isInitIm = true;
+        ImManager.getInstance().init(new File(getContext().getFilesDir(), "msg").getAbsolutePath());
+        binding.conversationLayout.initDefault();
         binding.conversationLayout.getConversationList().setOnItemClickListener((view, position, messageInfo) -> {
-                String id = messageInfo.getId();
-                switch (id) {
-                    case Constant.CONVERSATION_SYS_ID: {
-                        startActivity(SysMsgActivity.class);
-                    }return;
-                    case Constant.CONVERSATION_INT_ID: {
-                        startActivity(InteractiveActivity.class);
-                    }return;
-                    case Constant.CONVERSATION_FANS_ID: {
-                        startActivity(FansMsgActivity.class);
-                    }return;
-                    case Constant.CONVERSATION_LIVE_ID:{
-                        startActivity(LiveMsgActivity.class);
-                    }return;
-                    case Constant.CONVERSATION_SERVICE_ID: {
-                        startActivity(ServiceMsgActivity.class);
-                    }return;
-                    case Constant.CONVERSATION_WALLET_ID: {
-                        startActivity(WalletMsgActivity.class);
-                    }return;
-                    case Constant.CONVERSATION_CUSTOMER_SERVICE_ID:
-                        ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
-                        return;
-                }
+            String id = messageInfo.getId();
+            switch (id) {
+                case Constant.CONVERSATION_SYS_ID: {
+                    startActivity(SysMsgActivity.class);
+                }return;
+                case Constant.CONVERSATION_INT_ID: {
+                    startActivity(InteractiveActivity.class);
+                }return;
+                case Constant.CONVERSATION_FANS_ID: {
+                    startActivity(FansMsgActivity.class);
+                }return;
+                case Constant.CONVERSATION_LIVE_ID:{
+                    startActivity(LiveMsgActivity.class);
+                }return;
+                case Constant.CONVERSATION_SERVICE_ID: {
+                    startActivity(ServiceMsgActivity.class);
+                }return;
+                case Constant.CONVERSATION_WALLET_ID: {
+                    startActivity(WalletMsgActivity.class);
+                }return;
+                case Constant.CONVERSATION_CUSTOMER_SERVICE_ID:
+                    ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
+                    return;
+            }
             //条目点击
             ChatInfo chatInfo = new ChatInfo();
             chatInfo.setChatName(messageInfo.getTitle());
@@ -135,12 +167,25 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(
+                eventBean -> {
+                    if (eventBean.msgId == CodeTable.IM_LOGIN_SUCCESS) {
+                        //登录成功,重新获取
+                        if (!isInitIm)
+                            initView();
+                    } else if (eventBean.msgId == CodeTable.LOGIN_OUT) {
+                        isInitIm = false;
+                        initView();
+                    }
+                }
+        );
+        RxSubscriptions.add(subscribe);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        isInitIm = false;
+        RxSubscriptions.remove(subscribe);
     }
 }

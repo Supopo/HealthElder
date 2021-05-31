@@ -2,11 +2,14 @@ package com.xaqinren.healthyelders.global;
 
 import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
 
@@ -113,10 +116,11 @@ public class InfoCache {
         PushManager.getInstance().unBindAlias(AppApplication.getContext(), uid, true);
 
         UserInfoMgr.getInstance().clearLogin();
-
+        //清理消息
+        ImManager.getInstance().clear();
         //退出IM
         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).logout();
-
+        RxBus.getDefault().post(new EventBean(CodeTable.LOGIN_OUT, null));
     }
 
 }

@@ -35,6 +35,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +103,6 @@ public class AppApplication extends BaseApplication {
         PushManager.getInstance().initialize(getApplicationContext());
         PushManager.getInstance().setDebugLogger(getApplicationContext(), s -> LogUtils.e("PushManager", s));
 
-        ImManager.getInstance().init();
     }
 
     private void initLiveRoom() {

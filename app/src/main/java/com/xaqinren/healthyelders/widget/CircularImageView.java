@@ -3,7 +3,11 @@ package com.xaqinren.healthyelders.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.AttributeSet;
@@ -52,6 +56,7 @@ public class CircularImageView extends androidx.appcompat.widget.AppCompatImageV
     private static final int TYPE_CIR = 7;
 
     private int cirType = 1;
+    private Paint mPaint;
 
 
     public void  setCirValue(int value){
@@ -76,6 +81,11 @@ public class CircularImageView extends androidx.appcompat.widget.AppCompatImageV
 
 
     private void init(Context context, AttributeSet attrs) {
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+
+
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircularImageView);
         int count = typedArray.getIndexCount();
         for (int i = 0; i < count; i++) {
@@ -111,10 +121,16 @@ public class CircularImageView extends androidx.appcompat.widget.AppCompatImageV
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         int height = getHeight();
         int width = getWidth();
         Path path = new Path();
+        canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
         if (cirTopLeftPxValue != 0) {
             RectF rectF = new RectF(0, 0, cirTopLeftPxValue * 2, cirTopLeftPxValue * 2);
             path.addArc(rectF, 180, 90);

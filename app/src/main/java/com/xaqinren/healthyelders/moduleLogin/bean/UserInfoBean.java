@@ -15,6 +15,7 @@ public class UserInfoBean {
     private Boolean enable;
     private WalletAccountBean walletAccount;
     private String nickname;
+    private String realName;
     private int cumulativeAmount;
     private String id;
 
