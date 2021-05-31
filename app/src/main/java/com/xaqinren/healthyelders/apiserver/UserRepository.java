@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -176,6 +177,7 @@ public class UserRepository {
                             getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
                         } else {
+                            ToastUtil.toastShortMessage(response.getMessage());
                             loginSuccess.postValue(false);
                         }
                     }

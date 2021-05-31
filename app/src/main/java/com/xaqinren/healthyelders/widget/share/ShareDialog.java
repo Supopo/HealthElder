@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.widget.share;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -123,6 +125,7 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.shareSaveUrl.setOnClickListener(view -> {
             //复制链接
+            toCopy();
         });
         binding.shareOperationLayout.shareColl.setOnClickListener(view -> {
             //收藏
@@ -145,6 +148,18 @@ public class ShareDialog {
         });
     }
 
+    private ClipboardManager cm;
+    private ClipData mClipData;
+
+    private void toCopy() {
+        //获取剪贴板管理器：
+        cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        // 创建普通字符型ClipData
+        mClipData = ClipData.newPlainText("Label", "AAAAA");
+        // 将ClipData内容放到系统剪贴板里。
+        cm.setPrimaryClip(mClipData);
+        ToastUtil.toastShortMessage("复制成功");
+    }
 
     /*
      * 分享链接
