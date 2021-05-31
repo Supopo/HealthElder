@@ -91,8 +91,8 @@ public class SearchAllViewModel extends BaseViewModel {
         UserRepository.getInstance().toFollow(followSuccess, dismissDialog, userId);
     }
 
-    public void toLike(String shortVideoId, boolean favoriteStatus, int position) {
+    public void toLike(int type, String shortVideoId, boolean favoriteStatus, int position) {
         showDialog();
-        LiveRepository.getInstance().toLikeVideo(shortVideoId, favoriteStatus, position, dzSuccess, dismissDialog);
+        LiveRepository.getInstance().toLikeVideo(type, shortVideoId, favoriteStatus, position, dzSuccess, dismissDialog);
     }
 }

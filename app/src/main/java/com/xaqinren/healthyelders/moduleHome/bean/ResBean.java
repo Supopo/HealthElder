@@ -6,4 +6,5 @@ package com.xaqinren.healthyelders.moduleHome.bean;
 public class ResBean {
     public boolean isSuccess;
     public int position;
+    public int type;
 }

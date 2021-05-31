@@ -514,7 +514,7 @@ public class LiveRepository {
                 });
     }
 
-    public void toLikeVideo(String shortVideoId, boolean favoriteStatus, int position, MutableLiveData<ResBean> dzSuccess, MutableLiveData<Boolean> dismissDialog) {
+    public void toLikeVideo(int type, String shortVideoId, boolean favoriteStatus, int position, MutableLiveData<ResBean> dzSuccess, MutableLiveData<Boolean> dismissDialog) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("objectId", shortVideoId);
         hashMap.put("favoriteStatus", favoriteStatus);
@@ -538,11 +538,16 @@ public class LiveRepository {
                     protected void onSuccess(MBaseResponse<Object> data) {
                         ResBean resBean = new ResBean();
                         resBean.position = position;
+                        resBean.type = type;
                         resBean.isSuccess = true;
                         dzSuccess.postValue(resBean);
                     }
 
                 });
+    }
+
+    public void toLikeVideo(String shortVideoId, boolean favoriteStatus, int position, MutableLiveData<ResBean> dzSuccess, MutableLiveData<Boolean> dismissDialog) {
+        toLikeVideo(0, shortVideoId, favoriteStatus, position, dzSuccess, dismissDialog);
     }
 
     public void getLiveFiends(MutableLiveData<List<VideoInfo>> videoList) {

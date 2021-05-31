@@ -119,7 +119,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
             if (view.getId() == R.id.iv_zan) {
                 //视频点赞
-                searchAllViewModel.toLike(mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
+                searchAllViewModel.toLike(0, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
             }
         }));
 
@@ -174,7 +174,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     public void initViewObservable() {
         super.initViewObservable();
         searchAllViewModel.dzSuccess.observe(this, dzSuccess -> {
-            if (dzSuccess != null && dzSuccess.isSuccess) {
+            if (dzSuccess != null && dzSuccess.type == 0 && dzSuccess.isSuccess) {
                 mAdapter.getData().get(dzSuccess.position).hasFavorite = !mAdapter.getData().get(dzSuccess.position).hasFavorite;
                 if (mAdapter.getData().get(dzSuccess.position).hasFavorite) {
                     mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() + 1);

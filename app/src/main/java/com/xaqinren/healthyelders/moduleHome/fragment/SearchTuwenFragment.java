@@ -98,11 +98,34 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
             startActivity(intent);
         }));
 
+        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            if (view.getId() == R.id.ll_like) {
+                //点赞
+                searchAllViewModel.toLike(2, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
+            }
+        }));
+
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        searchAllViewModel.dismissDialog.observe(this, dismissDialog -> {
+            if (dismissDialog != null) {
+                dismissDialog();
+            }
+        });
+        searchAllViewModel.dzSuccess.observe(this, dzSuccess -> {
+            if (dzSuccess != null && dzSuccess.type == 2 && dzSuccess.isSuccess) {
+                mAdapter.getData().get(dzSuccess.position).hasFavorite = !mAdapter.getData().get(dzSuccess.position).hasFavorite;
+                if (mAdapter.getData().get(dzSuccess.position).hasFavorite) {
+                    mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() + 1);
+                } else {
+                    mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() - 1);
+                }
+                mAdapter.notifyItemChanged(dzSuccess.position , 99);
+            }
+        });
 
         searchAllViewModel.twDatas.observe(this, dataList -> {
             if (dataList != null) {
