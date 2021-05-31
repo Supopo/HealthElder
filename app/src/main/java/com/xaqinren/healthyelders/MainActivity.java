@@ -51,6 +51,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -492,6 +493,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
      * 二次点击（返回键）退出
      */
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (DCUniMPSDK.getInstance().getRuningAppid() != null) {
+            return super.onKeyUp(keyCode, event);
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 long secondTime = System.currentTimeMillis();

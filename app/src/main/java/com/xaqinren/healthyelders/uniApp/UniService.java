@@ -118,12 +118,9 @@ public class UniService extends Service implements LifecycleOwner {
 
 
     private void initObservable() {
-        mutableLiveData.observe(this, new Observer<List<UniBean>>() {
-            @Override
-            public void onChanged(List<UniBean> list) {
-                uniBeans = list;
-                saveAllBean();
-            }
+        mutableLiveData.observe(this, list -> {
+            uniBeans = list;
+            saveAllBean();
         });
     }
 
@@ -194,7 +191,11 @@ public class UniService extends Service implements LifecycleOwner {
                     if (saveBean.isOpenActivity()) {
                         saveBean.setOpenActivity(false);
                         saveCache();
-                        RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid));
+                        if (saveBean.isAutoUpdateApplet()) {
+                            RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null,true));
+                        }else{
+                            RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null,false));
+                        }
                     }
                 } else {//释放wgt失败
                     LogUtils.e(TAG, saveBean.getAppId() + " >>>>>>> 释放失败");

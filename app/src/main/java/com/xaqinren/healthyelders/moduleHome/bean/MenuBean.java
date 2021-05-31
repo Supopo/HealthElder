@@ -24,6 +24,7 @@ public class MenuBean {
     public String icon;//": "https://img.qianniux.com/BankLogo/WeChat.png",
     public String jumpUrl;//": "https://xxxx",
     public String jumpType;//": "APPLET",
+    public String appId;//": "APPLET",
     public boolean onlyShowImage;//": false,
     public String imageUrl;//": "https://img.qianniux.com/BankLogo/WeChat.png",
     public int sortOrder;//": 1,

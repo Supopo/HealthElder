@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.dcloud.feature.sdk.DCSDKInitConfig;
+import io.dcloud.feature.sdk.DCUniMPActivity;
+import io.dcloud.feature.sdk.DCUniMPJSCallback;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.sdk.MenuActionSheetItem;
 import me.goldze.mvvmhabit.base.BaseApplication;
@@ -51,6 +53,7 @@ import static com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig.SDK
 
 
 public class AppApplication extends BaseApplication {
+    private String TAG = "AppApplication";
     public static Context mContext;
     public String WX_APP_ID = "wx4083c9a2be58173b";
     public static IWXAPI mWXapi;
@@ -123,10 +126,11 @@ public class AppApplication extends BaseApplication {
                 .setMenuDefFontWeight("normal")
                 .setMenuActionSheetItems(sheetItems)
                 .build();
-        DCUniMPSDK.getInstance().initialize(this, config, new DCUniMPSDK.IDCUNIMPPreInitCallback() {
-            @Override
-            public void onInitFinished(boolean isSuccess) {
-            }
+        DCUniMPSDK.getInstance().initialize(this, config, isSuccess -> {
+        });
+        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s -> LogUtils.e(TAG, "小程序关闭\t" + s));
+        DCUniMPSDK.getInstance().setOnUniMPEventCallBack((s, o, dcUniMPJSCallback) -> {
+            //
         });
     }
 

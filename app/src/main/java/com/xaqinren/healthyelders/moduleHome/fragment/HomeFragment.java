@@ -36,6 +36,10 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 
@@ -48,6 +52,7 @@ import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/5/11.
@@ -64,6 +69,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private int screenWidth;
     private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
     private MenuAdapter menu2Adapter;
+    private Disposable uniSubscribe;
+    private int clickIndex;
+
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -123,6 +131,21 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             }
         });
         RxSubscriptions.add(subscribe);
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 0x10111) {
+                        MenuBean menuBean = menu2Adapter.getData().get(clickIndex);
+                        String url = menuBean.jumpUrl;
+                        UniUtil.openUniApp(getContext(), menuBean.appId, url, null, true);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+        RxSubscriptions.add(uniSubscribe);
 
         binding.ivZhibo.setOnClickListener(lis -> {
             VideoListBean listBean = new VideoListBean();
@@ -326,9 +349,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.rvMenu2.setLayoutManager(linearLayoutManager2);
         menu2Adapter = new MenuAdapter(R.layout.item_home_menu2);
         binding.rvMenu2.setAdapter(menu2Adapter);
-
         viewModel.getHomeInfo();
-
+        menu2Adapter.setOnItemClickListener((adapter, view, position) -> {
+            clickIndex = position;
+            MenuBean menuBean = menu2Adapter.getData().get(position);
+            UniService.startService(getContext(), menuBean.appId, 0x10111);
+        });
     }
 
 
@@ -336,6 +362,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void onDestroyView() {
         super.onDestroyView();
         subscribe.dispose();
+        RxSubscriptions.remove(uniSubscribe);
     }
 
 
