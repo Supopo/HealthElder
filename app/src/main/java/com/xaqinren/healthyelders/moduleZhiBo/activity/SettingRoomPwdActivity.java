@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -33,7 +34,6 @@ public class SettingRoomPwdActivity extends BaseActivity<ActivitySettingRoomPwdB
     public void initData() {
         super.initData();
         tvTitle.setText("私密房间");
-        setResult(1001);
         binding.vcvCode.setOnCodeFinishListener(new VerificationCodeView.OnCodeFinishListener() {
             @Override
             public void onTextChange(View view, String content) {
@@ -45,11 +45,16 @@ public class SettingRoomPwdActivity extends BaseActivity<ActivitySettingRoomPwdB
                 code = content;
             }
         });
+        binding.btnOk.setOnClickListener(lis -> {
+            Intent intent = getIntent();
+            intent.putExtra("pwd", code);
+            setResult(1001, intent);
+            finish();
+        });
     }
 
     @Override
     public void finish() {
         super.finish();
-        getIntent().putExtra("pwd", code);
     }
 }

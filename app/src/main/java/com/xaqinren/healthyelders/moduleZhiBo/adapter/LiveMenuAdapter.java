@@ -30,8 +30,9 @@ public class LiveMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> 
         binding.setViewModel(item);
         binding.executePendingBindings();
 
-        GlideUtil.intoImageView(getContext(),item.menuRes,binding.ivMenu);
+        GlideUtil.intoImageView(getContext(), item.menuRes, binding.ivMenu);
     }
+
     //局部刷新用的
     @Override
     protected void convert(BaseViewHolder helper, MenuBean item, List<?> payloads) {
@@ -40,7 +41,8 @@ public class LiveMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> 
             //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新
             int type = (Integer) payloads.get(0);// 刷新哪个部分 标志位
             if (type == 99) {
-                GlideUtil.intoImageView(getContext(),item.menuRes,helper.getView(R.id.iv_menu));
+                GlideUtil.intoImageView(getContext(), item.menuRes, helper.getView(R.id.iv_menu));
+                helper.setText(R.id.tv_menu, item.menuName);
             }
         }
     }

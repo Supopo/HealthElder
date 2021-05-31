@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +44,9 @@ public class ZBDesSettingPop extends BasePopupWindow {
         sbKQJS = findViewById(R.id.sb_kqjs);
         btnSave = findViewById(R.id.btn_save);
         etContent = findViewById(R.id.et_content);
-        etContent.setText(liveInitInfo.liveRoomIntroduce);
+        if (!TextUtils.isEmpty(liveInitInfo.liveRoomIntroduce)) {
+            etContent.setText(liveInitInfo.liveRoomIntroduce);
+        }
         sbKQJS.setChecked(liveInitInfo.getHasIntroduce());
         btnSave.setOnClickListener(lis -> {
             liveInitInfo.liveRoomIntroduce = etContent.getText().toString().trim();

@@ -322,4 +322,5 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
 
         });
     }
+
 }

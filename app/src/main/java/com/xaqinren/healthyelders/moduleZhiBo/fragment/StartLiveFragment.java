@@ -105,6 +105,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private String province;
     private String district;
     private boolean isToZhibo;
+    private LiveMenuAdapter menuAdapter;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -138,7 +139,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     }
 
     private void initLiveMenu() {
-        LiveMenuAdapter menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
+        menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
         binding.rvMenu.setLayoutManager(new GridLayoutManager(getActivity(), 5));
         binding.rvMenu.setAdapter(menuAdapter);
 
@@ -162,7 +163,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     } else {
                         menuAdapter.getData().get(position).menuRes = R.mipmap.icon_jingxiang;
                     }
-                    menuAdapter.notifyItemChanged(position,99);
+                    menuAdapter.notifyItemChanged(position, 99);
                     break;
                 case "美颜":
                     showMYPop();
@@ -172,10 +173,22 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     break;
                 case "商品":
                     break;
+                case "私密":
                 case "公开":
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-                    startActivityForResult(intent, 1001);
+
+                    //密码锁图标变化
+                    if (TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                        startActivityForResult(intent, 1001);
+                    } else {
+                        mLiveInitInfo.roomPassword = "";
+                        menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
+                        menuAdapter.getData().get(5).menuName = "公开";
+                        menuAdapter.notifyItemChanged(5, 99);
+                    }
+
+
                     break;
                 case "设置":
                     startSettingPop = new ZBStartSettingPop(getActivity(), mLiveInitInfo);
@@ -348,13 +361,15 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private void initRoomInfo() {
         binding.etTitle.setText(mLiveInitInfo.liveRoomName);
         Glide.with(getActivity()).load(mLiveInitInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
-        if (TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
-            binding.tvPwd.setText("公开");
-            binding.ivPwd.setBackgroundResource(R.mipmap.icon_gongkai);
+        //密码锁图标变化
+        if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
+            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_jiami;
+            menuAdapter.getData().get(5).menuName = "私密";
         } else {
-            binding.tvPwd.setText("私密");
-            binding.ivPwd.setBackgroundResource(R.mipmap.icon_jiami);
+            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
+            menuAdapter.getData().get(5).menuName = "公开";
         }
+        menuAdapter.notifyItemChanged(5, 99);
     }
 
     private void showSelectDialog(String liveRoomRecordId) {
@@ -606,7 +621,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             }
         } else if (requestCode == 1001) {
             if (data != null) {
-                mLiveInitInfo.roomPassword = data.getDataString();
+                mLiveInitInfo.roomPassword = data.getStringExtra("pwd");
+                //密码锁图标变化
+                if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
+                    menuAdapter.getData().get(5).menuRes = R.mipmap.icon_jiami;
+                    menuAdapter.getData().get(5).menuName = "私密";
+                } else {
+                    menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
+                    menuAdapter.getData().get(5).menuName = "公开";
+                }
+                menuAdapter.notifyItemChanged(5, 99);
             }
         }
     }
