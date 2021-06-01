@@ -35,7 +35,7 @@ public class InteractiveViewModel extends BaseViewModel {
 
     public void getRecommendFriend() {
         List<FriendBean> beans = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 20; i++) {
             beans.add(new FriendBean());
         }
         friendListData.postValue(beans);

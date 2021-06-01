@@ -17,6 +17,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
+import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
@@ -414,6 +415,15 @@ public interface ApiServer {
     //礼物列表
     @GET("live/gift/list")
     Observable<MBaseResponse<List<GiftBean>>> getGiftList(@Header("Authorization") String authorization);
+
+    //保存通讯录
+    @Headers({"content-type:application/json"})
+    @POST("user/saveUserContactList")
+    Observable<MBaseResponse<Object>> postUserContact(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //通讯录好友
+    @GET("user/findRecommendContactFriends")
+    Observable<MBaseResponse<List<FriendBean>>> getRecommendContactF(@Header("Authorization") String authorization);
 
 }
 

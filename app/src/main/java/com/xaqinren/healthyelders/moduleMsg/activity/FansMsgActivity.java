@@ -75,6 +75,7 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
             LogUtils.e(TAG, "position->" + position + "\t type ->" + bean.getItemType());
             if (bean.getItemType() == MessageDetailBean.TYPE_LOAD_MORE) {
                 page++;
+                showDialog();
                 viewModel.getMessage(page, pageSize, messageGroup, messageType);
             } else if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
 
@@ -94,6 +95,12 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
                     case R.id.attention_btn:
                         LogUtils.e(TAG, "点击关注按钮->" + interactiveBean.getSendUser().getUserId());
                         break;
+                    case R.id.favorite: {
+                        //推荐列表,关注
+                    }break;
+                    case R.id.close: {
+                        //推荐列表,删除
+                    }break;
                 }
             }
         });
@@ -106,13 +113,16 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
                     viewModel.getRecommendFriend();
             });
         }
-
-         viewModel.getMessage(page, pageSize, messageGroup, "");
+        showDialog();
+        viewModel.getMessage(page, pageSize, messageGroup, "");
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.requestSuccess.observe(this, aBoolean -> {
+            dismissDialog();
+        });
         viewModel.musicListData.observe(this, interactiveBeans -> {
             if (page == 1) {
                 interactiveAdapter.getData().clear();
@@ -143,7 +153,7 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
         });
         viewModel.friendListData.observe(this, friendBeans -> {
             if (friendCount == 0 && !friendBeans.isEmpty()) {
-                interactiveAdapter.addData(messageCount, new MessageDetailBean() {
+                interactiveAdapter.addData(new MessageDetailBean() {
                     @Override
                     public int getItemType() {
                         return MessageDetailBean.TYPE_TEXT;

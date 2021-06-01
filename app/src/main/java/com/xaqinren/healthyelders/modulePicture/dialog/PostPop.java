@@ -140,7 +140,6 @@ public class PostPop extends BottomDialog {
             }
 
         }); //方法中设置asBitmap可以设置回调类型
-
     }
 
 

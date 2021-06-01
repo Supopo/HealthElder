@@ -504,6 +504,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
      * 展示分享弹窗
      */
     private void showShare() {
+
         if (shareDialog == null) {
             shareDialog = new ShareDialog(this);
             shareDialog.setShowType(ShareDialog.TP_TYPE);

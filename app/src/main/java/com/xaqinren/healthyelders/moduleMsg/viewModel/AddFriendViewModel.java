@@ -1,10 +1,12 @@
 package com.xaqinren.healthyelders.moduleMsg.viewModel;
 
 import android.app.Application;
+import android.text.BoringLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.xaqinren.healthyelders.apiserver.MsgRepository;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 
 import java.util.ArrayList;
@@ -14,16 +16,19 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 
 public class AddFriendViewModel extends BaseViewModel {
     public MutableLiveData<List<FriendBean>> friendLiveData = new MutableLiveData<>();
+    public MutableLiveData<Boolean> request = new MutableLiveData<>();
+    public MutableLiveData<Boolean> flow = new MutableLiveData<>();
 
     public AddFriendViewModel(@NonNull Application application) {
         super(application);
     }
 
     public void getRecommendFriend() {
-        List<FriendBean> friendBeans = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            friendBeans.add(new FriendBean());
-        }
-        friendLiveData.postValue(friendBeans);
+        MsgRepository.getInstance().getUserContactF(request, friendLiveData);
+    }
+
+    public void recommendFriend(String id) {
+        MsgRepository.getInstance().toFollow(request, flow, id);
     }
 }
+

@@ -72,7 +72,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
     private int friendPage = 1;
 
     private int friendPageSize = 20;
-    private boolean enableFriend = false;
+    private boolean enableFriend = true;
 
     private boolean hasLoadMore = false;
 
@@ -104,6 +104,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             LogUtils.e(TAG, "position->" + position + "\t type ->" + bean.getItemType());
             if (bean.getItemType() == MessageDetailBean.TYPE_LOAD_MORE) {
                 page++;
+                showDialog();
                 viewModel.getMessage(page, pageSize, messageGroup, messageType);
             } else if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
                 //跳转详情
@@ -118,9 +119,27 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             }
         });
 
+        interactiveAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            MessageDetailBean bean = (MessageDetailBean) adapter.getData().get(position);
+            switch (view.getId()){
+                case R.id.avatar:{
+                    //用户详情
+                }break;
+                case R.id.attention_btn: {
+                    //粉丝消息,关注
+                }break;
+                case R.id.favorite: {
+                    //推荐列表,关注
+                }break;
+                case R.id.close: {
+                    //推荐列表,删除
+                }break;
+            }
+        });
+
         if (enableFriend) {
             interactiveAdapter.getLoadMoreModule().setEnableLoadMore(true);
-            interactiveAdapter.getLoadMoreModule().setAutoLoadMore(true);
+            interactiveAdapter.getLoadMoreModule().setAutoLoadMore(false);
             interactiveAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
                 if (friendCount>0)
                     viewModel.getRecommendFriend();
@@ -159,7 +178,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             clickTitle();
         });
         binding.back.setOnClickListener(view -> finish());
-
+        showDialog();
         viewModel.getMessage(page, pageSize, messageGroup, messageType);
     }
 
@@ -185,6 +204,9 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.requestSuccess.observe(this, aBoolean -> {
+            dismissDialog();
+        });
         viewModel.musicListData.observe(this, interactiveBeans -> {
             if (page == 1) {
                 interactiveAdapter.getData().clear();
@@ -215,7 +237,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         });
         viewModel.friendListData.observe(this, friendBeans -> {
             if (friendCount == 0 && !friendBeans.isEmpty()) {
-                interactiveAdapter.addData(messageCount, new MessageDetailBean() {
+                interactiveAdapter.addData(new MessageDetailBean() {
                     @Override
                     public int getItemType() {
                         return MessageDetailBean.TYPE_TEXT;
@@ -224,7 +246,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             }
             interactiveAdapter.addData(friendBeans);
             if (friendBeans.size() >= friendPageSize) {
-                interactiveAdapter.getLoadMoreModule().loadMoreComplete();
+                interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
             }else{
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
             }

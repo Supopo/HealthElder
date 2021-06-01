@@ -283,6 +283,9 @@ public class ImManager {
     }
 
     public static void testAddConversation() {
+        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID, "系统消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
+        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, "互动消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
+
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, "服务消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_WALLET_ID, "钱包消息", "XXX对您点赞", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
         ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID, "客服消息", "XXX关注了您", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");

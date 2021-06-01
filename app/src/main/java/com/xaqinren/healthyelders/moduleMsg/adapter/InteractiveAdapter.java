@@ -18,7 +18,7 @@ public class InteractiveAdapter<T extends MessageDetailBean> extends BaseProvide
         addItemProvider(new LoadMoreProvider());
         addItemProvider(new TextProvider());
         addItemProvider(new FriendProvider());
-        addChildClickViewIds(R.id.avatar,R.id.attention_btn);
+        addChildClickViewIds(R.id.avatar, R.id.attention_btn, R.id.favorite, R.id.close);
     }
 
     @Override

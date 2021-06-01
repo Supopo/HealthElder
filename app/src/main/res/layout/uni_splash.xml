@@ -4,9 +4,21 @@
     android:background="@color/white">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/logo"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
-        android:src="@color/color_252525"
+        android:src="@mipmap/icon_app"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_100"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo"
+        android:layout_marginTop="@dimen/dp_30"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/color_252525"
+        android:gravity="center"
+        android:text="健康长老"/>
 </RelativeLayout>

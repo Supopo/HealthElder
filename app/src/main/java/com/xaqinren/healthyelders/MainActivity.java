@@ -52,6 +52,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.dcloud.feature.sdk.DCUniMPJSCallback;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -85,7 +86,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private MineFragment mineFragment;
     private Disposable mSubscription;
 
+    private DCUniMPJSCallback callBack;
+
+
     @Override
+
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_main;
     }
@@ -119,6 +124,21 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (check)
             LocationService.startService(this);
         UniService.startService(this);
+
+
+        DCUniMPSDK.getInstance().setOnUniMPEventCallBack((s, o, dcUniMPJSCallback) -> {
+            callBack = dcUniMPJSCallback;
+            //小程序下发的消息
+            //callback.invoke( "测试数据");  回传数据
+            if (s.equals(Constant.UNI_LOGIN)) {
+                //小程序掉登录
+                if (!InfoCache.getInstance().checkLogin()) {
+                    //跳转登录页面
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+            }
+        });
     }
 
     @Override
@@ -143,6 +163,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //获取用户信息
                 viewModel.getUserInfo(accessToken);
             } else {
+                if (callBack != null) {
+                    callBack.invoke(accessToken);
+                    callBack = null;
+                }
                 UserInfoMgr.getInstance().setUserInfo(userInfoBean);
                 UserInfoMgr.getInstance().setAccessToken(accessToken);
                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
@@ -285,7 +309,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
 
                 //判断商城页面appBar处于展开，且向下滑动超过左右滑动再打开下拉刷新
-                else if (selectView.getId() == R.id.tv_menu2 ) {
+                else if (selectView.getId() == R.id.tv_menu2) {
                     if (scrollX > scrollY) {
                         if (mallFragment.isTop) {
                             if (mallFragment.srl != null) {
@@ -299,8 +323,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                             }
                         }
                     }
-                }
-                else if (selectView.getId() == R.id.tv_menu4 ) {
+                } else if (selectView.getId() == R.id.tv_menu4) {
                     if (scrollX > scrollY) {
                         if (mineFragment.isTop) {
                             if (mineFragment.srl != null) {
@@ -534,10 +557,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             binding.unread.setVisibility(View.VISIBLE);
             if (count > 99) {
                 binding.unread.setText("99");
-            }else{
+            } else {
                 binding.unread.setText(count + "");
             }
-        }else{
+        } else {
             binding.unread.setVisibility(View.GONE);
         }
     }

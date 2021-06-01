@@ -128,9 +128,8 @@ public class AppApplication extends BaseApplication {
                 .build();
         DCUniMPSDK.getInstance().initialize(this, config, isSuccess -> {
         });
-        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s -> LogUtils.e(TAG, "小程序关闭\t" + s));
-        DCUniMPSDK.getInstance().setOnUniMPEventCallBack((s, o, dcUniMPJSCallback) -> {
-            //
+        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{
+            LogUtils.e(TAG, "小程序关闭\t" + s);
         });
     }
 

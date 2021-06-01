@@ -35,8 +35,10 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 public class ContactsActivity extends BaseActivity <ActivityContactsBinding, ContactsViewModel>{
     private String TAG = "ContactsActivity";
     //存放数据
-    List<ContactsBean> contactsList = new ArrayList<>();
+    private List<ContactsBean> contactsList = new ArrayList<>();
     private ContactsAdapter contactsAdapter;
+    private List<ContactsBean> nativeContact = new ArrayList<>();
+    private List<ContactsBean> diffBean = new ArrayList<>();
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -57,6 +59,27 @@ public class ContactsActivity extends BaseActivity <ActivityContactsBinding, Con
         contactsAdapter.setList(contactsList);
         binding.content.setLayoutManager(new LinearLayoutManager(this));
         binding.content.setAdapter(contactsAdapter);
+        nativeContact = viewModel.getNativeContact();
+        checkDiff();
+        if (!diffBean.isEmpty()) {
+            viewModel.postContact(diffBean);
+            viewModel.saveNativeContact(contactsList);
+        }
+    }
+
+    private void checkDiff() {
+        for (ContactsBean contactsBean : contactsList) {
+            boolean flag = false;
+            for (ContactsBean bean : nativeContact) {
+                if (contactsBean.getName().equals(bean.getName()) && contactsBean.getMobile().equals(bean.getMobile())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                diffBean.add(contactsBean);
+            }
+        }
     }
 
     //调用并获取联系人信息
@@ -73,7 +96,7 @@ public class ContactsActivity extends BaseActivity <ActivityContactsBinding, Con
                             ContactsContract.CommonDataKinds.Phone.NUMBER));
                     ContactsBean bean = new ContactsBean();
                     bean.setName(displayName);
-                    bean.setPhone(number);
+                    bean.setMobile(number.replaceAll(" ",""));
                     contactsList.add(bean);
                     LogUtils.e(TAG, "displayName -> " + displayName + "\tnumber -> " + number);
                 }
@@ -85,5 +108,13 @@ public class ContactsActivity extends BaseActivity <ActivityContactsBinding, Con
                 cursor.close();
             }
         }
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.liveData.observe(this,data->{
+            LogUtils.e(TAG, "上传联系人->" + data);
+        });
     }
 }

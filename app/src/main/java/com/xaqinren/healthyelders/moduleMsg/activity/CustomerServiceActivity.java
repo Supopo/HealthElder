@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
+/**
+ * 客服
+ */
 public class CustomerServiceActivity extends BaseActivity {
     @Override
     public int initContentView(Bundle savedInstanceState) {

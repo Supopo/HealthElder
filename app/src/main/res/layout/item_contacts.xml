@@ -17,7 +17,7 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@color/color_252525"/>
+            android:src="@drawable/ic_avatar"/>
 
         <TextView
             android:id="@+id/name"
@@ -55,7 +55,8 @@
             android:text="关注"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"/>
+            android:textSize="@dimen/sp_14"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 </layout>

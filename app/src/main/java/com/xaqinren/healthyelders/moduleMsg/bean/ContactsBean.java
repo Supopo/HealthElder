@@ -1,8 +1,10 @@
 package com.xaqinren.healthyelders.moduleMsg.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ContactsBean {
     private String name;
-    private String phone;
+    private String mobile;
     private String photo;
 
     public String getName() {
@@ -13,12 +15,12 @@ public class ContactsBean {
         this.name = name;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getPhoto() {

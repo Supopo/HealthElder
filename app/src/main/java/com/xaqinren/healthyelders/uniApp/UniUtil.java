@@ -3,12 +3,10 @@ package com.xaqinren.healthyelders.uniApp;
 import android.content.Context;
 
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.uniApp.widget.LoadingView;
 import com.xaqinren.healthyelders.uniApp.widget.SplashView;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.json.JSONObject;
-
-import java.util.Map;
 
 import io.dcloud.feature.sdk.DCUniMPSDK;
 
@@ -24,7 +22,8 @@ public class UniUtil {
                 String token = UserInfoMgr.getInstance().getAccessToken();
                 jsonObject.put("qnx_user_token", token);
             }
-            DCUniMPSDK.getInstance().startApp(context, appId, SplashView.class, page, jsonObject);
+            Class viewCls = page.contains("pages/index/index") ? SplashView.class : LoadingView.class;
+            DCUniMPSDK.getInstance().startApp(context, appId, viewCls, page, jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
         }

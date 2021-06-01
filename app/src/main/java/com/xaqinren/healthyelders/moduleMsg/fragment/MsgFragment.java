@@ -88,7 +88,6 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                 initView();
             }
         }
-
     }
 
 

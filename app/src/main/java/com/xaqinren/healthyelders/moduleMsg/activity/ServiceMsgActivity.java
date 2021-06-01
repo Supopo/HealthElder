@@ -19,6 +19,9 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
+/**
+ * 服务消息
+ */
 public class ServiceMsgActivity extends BaseActivity<ActivityInteractiveBinding, InteractiveViewModel> {
 
     private InteractiveAdapter interactiveAdapter;
@@ -29,7 +32,16 @@ public class ServiceMsgActivity extends BaseActivity<ActivityInteractiveBinding,
 
     private String messageGroup = com.xaqinren.healthyelders.moduleMsg.Constant.SERVICE;
 
+
     private String messageType = "";
+    private int friendPage = 1;
+    private int friendPageSize = 20;
+    private boolean enableFriend = true;
+    private boolean hasLoadMore = false;
+    private boolean isSelShow;
+    private int messageCount = 0;
+    private int friendCount = 0;
+
 
 
     @Override
@@ -61,35 +73,97 @@ public class ServiceMsgActivity extends BaseActivity<ActivityInteractiveBinding,
             LogUtils.e(TAG, "position->" + position + "\t type ->" + bean.getItemType());
             if (bean.getItemType() == MessageDetailBean.TYPE_LOAD_MORE) {
                 page++;
+                showDialog();
                 viewModel.getMessage(page, pageSize, messageGroup, messageType);
             } else if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
 
             }
         });
 
-        interactiveAdapter.getLoadMoreModule().setEnableLoadMore(true);
-        interactiveAdapter.getLoadMoreModule().setAutoLoadMore(true);
-        interactiveAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
-            viewModel.getMessage(page, pageSize, messageGroup, "");
+
+        interactiveAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            MessageDetailBean bean = (MessageDetailBean) adapter.getData().get(position);
+            switch (view.getId()){
+                case R.id.avatar:{
+                    //用户详情
+                }break;
+                case R.id.attention_btn: {
+                    //粉丝消息,关注
+                }break;
+                case R.id.favorite: {
+                    //推荐列表,关注
+                }break;
+                case R.id.close: {
+                    //推荐列表,删除
+                }break;
+            }
         });
+
+
+
+        if (enableFriend) {
+            interactiveAdapter.getLoadMoreModule().setEnableLoadMore(true);
+            interactiveAdapter.getLoadMoreModule().setAutoLoadMore(false);
+            interactiveAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
+                if (friendCount>0)
+                    viewModel.getRecommendFriend();
+            });
+        }
+
+
         viewModel.getMessage(page, pageSize, messageGroup, "");
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.requestSuccess.observe(this, aBoolean -> {
+            dismissDialog();
+        });
         viewModel.musicListData.observe(this, interactiveBeans -> {
             if (page == 1) {
                 interactiveAdapter.getData().clear();
+                messageCount = 0;
+                friendCount = 0;
+                friendPage = 1;
             }
-            interactiveAdapter.addData(interactiveBeans);
+            interactiveAdapter.addData(messageCount, interactiveBeans);
+            messageCount += interactiveBeans.size();
             if (interactiveBeans.size() >= pageSize) {
-                interactiveAdapter.getLoadMoreModule().loadMoreComplete();
-                page++;
+                if (isSelShow)return;
+                isSelShow = true;
+                interactiveAdapter.addData(messageCount, new MessageDetailBean() {
+                    @Override
+                    public int getItemType() {
+                        return MessageDetailBean.TYPE_LOAD_MORE;
+                    }
+                });
+            }else{
+                //加载完成，隐藏loadmore
+                if (isSelShow) {
+                    interactiveAdapter.removeAt(messageCount);
+                }
+            }
+            if (!enableFriend)return;
+            if (friendCount==0)
+                viewModel.getRecommendFriend();
+        });
+
+        viewModel.friendListData.observe(this, friendBeans -> {
+            if (friendCount == 0 && !friendBeans.isEmpty()) {
+                interactiveAdapter.addData(new MessageDetailBean() {
+                    @Override
+                    public int getItemType() {
+                        return MessageDetailBean.TYPE_TEXT;
+                    }
+                });
+            }
+            interactiveAdapter.addData(friendBeans);
+            if (friendBeans.size() >= friendPageSize) {
+                interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
             }else{
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
             }
         });
-
     }
 }

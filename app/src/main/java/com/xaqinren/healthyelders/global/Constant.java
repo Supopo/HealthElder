@@ -88,6 +88,11 @@ public class Constant {
     public static final String CONVERSATION_CUSTOMER_SERVICE_ID = "77777";//客服
 
 
+    /**
+     * UNI小程序 事件
+     */
+    public static final String UNI_LOGIN = "login";
+
 
     //腾讯云小视频加防盗链
     public static String setVideoSigUrl(String playUrl) {
