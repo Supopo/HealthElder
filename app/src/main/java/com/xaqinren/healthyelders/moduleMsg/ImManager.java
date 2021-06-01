@@ -143,7 +143,7 @@ public class ImManager {
 
         aCache.put(fileName, JSON.toJSONString(localCon));
         if (onUnReadWatch != null) {
-            onUnReadWatch.onUnReadWatch(unReadCount + ConversationManagerKit.getInstance().getUnreadTotal());
+            onUnReadWatch.onUnReadWatch(unReadCount);
         }
     }
 
@@ -151,6 +151,7 @@ public class ImManager {
         if (fileName == null) {
             return null;
         }
+        unReadCount = 0;
         String json = aCache.getAsString(fileName);
         List<ConversationInfo> temp = JSON.parseArray(json, ConversationInfo.class);
         if (temp != null) {

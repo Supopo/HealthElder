@@ -258,7 +258,7 @@ public interface ApiServer {
     Observable<MBaseResponse<HomeMenuRes>> setVideoLike(@Header("Authorization") String authorization, @Body RequestBody body);
 
     //获取正在直播的好友
-    @GET("content/findAttentionUserLive")
+    @GET("jkzl/findAttentionUserLive")
     Observable<MBaseResponse<List<VideoInfo>>> getLiveFirends(@Header("Authorization") String authorization);
 
     //评论
@@ -337,7 +337,7 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("creationViewAuth") String creationViewAuth);
 
     //我喜欢的视频作品
-    @GET("content/queryUserFavoriteCreationPage")
+    @GET("jkzl/queryUserFavoriteCreationPage")
     Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
 
 

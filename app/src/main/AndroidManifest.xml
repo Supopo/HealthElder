@@ -278,11 +278,66 @@
         <activity android:name=".moduleMsg.activity.ContactsActivity" />
         <activity android:name=".moduleMsg.activity.AddFriendActivity"  android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".moduleHome.activity.SearchAllActivity" />
-        <activity android:name=".moduleMsg.activity.FansMsgActivity" />
-        <activity android:name=".moduleMsg.activity.SysMsgActivity" />
-        <activity android:name=".moduleMsg.activity.LiveMsgActivity" />
-        <activity android:name=".moduleMsg.activity.ServiceMsgActivity" />
-        <activity android:name=".moduleMsg.activity.WalletMsgActivity" />
+        <activity android:name=".moduleMsg.activity.FansMsgActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/fans_msg_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".moduleMsg.activity.SysMsgActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/sys_msg_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".moduleMsg.activity.LiveMsgActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/live_msg_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".moduleMsg.activity.ServiceMsgActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/service_msg_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".moduleMsg.activity.WalletMsgActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/wallet_msg_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
 
         <service

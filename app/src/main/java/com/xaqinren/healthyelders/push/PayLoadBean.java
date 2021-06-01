@@ -55,6 +55,7 @@ public class PayLoadBean {
     public String messageType;
     @SerializedName("receiveUserIds")
     public List<String> receiveUserIds;
+    public List<String> identitys;
     @SerializedName("sendUser")
     public SendUserDTO sendUser;
 
