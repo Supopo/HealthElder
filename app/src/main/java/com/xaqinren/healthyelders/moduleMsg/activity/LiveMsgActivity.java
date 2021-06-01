@@ -149,6 +149,7 @@ public class LiveMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
                     }
                 });
             }
+            friendCount += friendBeans.size();
             interactiveAdapter.addData(friendBeans);
             if (friendBeans.size() >= friendPageSize) {
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);

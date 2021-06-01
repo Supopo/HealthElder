@@ -90,7 +90,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                 ArrayList<ConversationInfo> infos = new ArrayList<>();
                 List<V2TIMConversation> v2TIMConversationList = v2TIMConversationResult.getConversationList();
                 mUnreadTotal = 0;
-                for (V2TIMConversation v2TIMConversation : v2TIMConversationList) {
+                /*for (V2TIMConversation v2TIMConversation : v2TIMConversationList) {
                     //将 imsdk v2TIMConversation 转换为 UIKit ConversationInfo
                     ConversationInfo conversationInfo = TIMConversation2ConversationInfo(v2TIMConversation);
                     if (conversationInfo != null) {
@@ -99,7 +99,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                         infos.add(conversationInfo);
                     }
                 }
-
+*/
                 //插入自己的数据
                 if (loadSelfConversation != null && !isLoadSelfData) {
                     infos.addAll(loadSelfConversation.getConversation());

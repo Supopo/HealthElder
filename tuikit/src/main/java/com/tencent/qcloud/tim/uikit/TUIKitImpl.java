@@ -180,7 +180,8 @@ public class TUIKitImpl {
                 unInit();
             }
         });
-
+        //TODO 停止刷新会话
+        /*
         V2TIMManager.getConversationManager().setConversationListener(new V2TIMConversationListener() {
             @Override
             public void onSyncServerStart() {
@@ -212,7 +213,7 @@ public class TUIKitImpl {
                     listener.onRefreshConversation(conversationList);
                 }
             }
-        });
+        });*/
 
         V2TIMManager.getInstance().setGroupListener(new V2TIMGroupListener() {
             @Override

@@ -35,14 +35,17 @@ import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.DialogPostBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.CreatePostBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.QRCodeUtils;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 
 import java.io.File;
 import java.util.Hashtable;
 
+import io.dcloud.feature.barcode2.decoding.Intents;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -50,11 +53,12 @@ public class PostPop extends BottomDialog {
     DialogPostBinding binding;
     private CreatePostBean postBean;
     private String TAG = "PostPop";
+    private ShareBean shareBean;
 
-
-    public PostPop(Context context, CreatePostBean postBean,int w , int h) {
+    public PostPop(Context context, CreatePostBean postBean, int w, int h, ShareBean shareBean) {
         super(context, View.inflate(context, R.layout.dialog_post, null), null, w, h, Gravity.BOTTOM);
         this.postBean = postBean;
+        this.shareBean = shareBean;
     }
 
     public void refreshData(CreatePostBean postBean) {
@@ -67,10 +71,12 @@ public class PostPop extends BottomDialog {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.bind(getView());
         binding.shareWxCircle.setOnClickListener(view -> {
-
+            //私信微信朋友圈
+            shareWebPage(2);
         });
         binding.shareWxFriend.setOnClickListener(view -> {
-            shareWebPage();
+            //私信微信朋友
+            shareWebPage(1);
         });
         binding.shareSaveLocal.setOnClickListener(view -> {
             saveCanvas();
@@ -120,22 +126,26 @@ public class PostPop extends BottomDialog {
     /*
      * 分享链接
      */
-    private void shareWebPage() {
-        String url = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F754601d80986bd88e7ee18d14dbd17aa3b78897b27565-YPQ5qp_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1624266373&t=398646e20bbf7d28a01d0e24fc0758be";
-
+    private void shareWebPage(int type) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = "www.baidu.com";
+        webpage.webpageUrl = shareBean.url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
-        msg.title = "分享链接";
-        msg.description = "分享描述";
+        msg.title = shareBean.title;
+        msg.description = shareBean.subTitle;
 
-        Glide.with(getContext()).asBitmap().load(url).into(new SimpleTarget<Bitmap>() {
+        Glide.with(getContext()).asBitmap().load(UrlUtils.resetImgUrl(shareBean.coverUrl,100,100)).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 msg.setThumbImage(resource);
+
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.message = msg;
-                req.scene = SendMessageToWX.Req.WXSceneSession;
+
+                if (type == 1) {
+                    req.scene = SendMessageToWX.Req.WXSceneSession;
+                } else if (type == 2) {
+                    req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                }
                 AppApplication.mWXapi.sendReq(req);
             }
 

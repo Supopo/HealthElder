@@ -5,6 +5,8 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import me.goldze.mvvmhabit.utils.StringUtils;
+
 /**
  * Created by Lee. on 2021/5/24.
  * URL校验工具
@@ -75,15 +77,18 @@ public class UrlUtils {
         String query = uri.getQuery();
         return getMapByQuery(query);
     }
-
     public static HashMap<String, String> getMapByQuery(String query) {
+        HashMap<String, String> value = new HashMap<>();
+        if (StringUtils.isEmpty(query)) {
+            return value;
+        }
         String[] queryKeyValue;
         if (query.contains("&")) {
             queryKeyValue = query.split("&");
         } else {
             queryKeyValue = new String[]{query};
         }
-        HashMap<String, String> value = new HashMap<>();
+
         for (String s : queryKeyValue) {
             String[] kv = s.split("=");
             value.put(kv[0], kv[1]);

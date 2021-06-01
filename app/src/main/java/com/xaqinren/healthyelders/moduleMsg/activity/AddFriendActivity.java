@@ -96,6 +96,8 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 }
                 showDialog();
                 viewModel.recommendFriend(friendBean.getId());
+            } else if (view.getId() == R.id.close) {
+                adapter.removeAt(position);
             }
         });
     }
@@ -114,7 +116,6 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 } else if (position == 1) {
                     //wx分享
                     ShareDialog shareDialog = new ShareDialog(AddFriendActivity.this);
-
                 }
             }
         });

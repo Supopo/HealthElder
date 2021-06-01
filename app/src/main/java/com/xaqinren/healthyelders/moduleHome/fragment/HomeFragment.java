@@ -136,9 +136,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             if (event != null) {
                 if (event.msgId == CodeTable.UNI_RELEASE) {
                     if (event.taskId == 0x10111) {
-                        MenuBean menuBean = menu2Adapter.getData().get(clickIndex);
-                        String url = menuBean.jumpUrl;
-                        UniUtil.openUniApp(getContext(), menuBean.appId, url, null, true);
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
                     }
                 } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
                     ToastUtils.showShort("打开小程序失败");
@@ -351,9 +349,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.rvMenu2.setAdapter(menu2Adapter);
         viewModel.getHomeInfo();
         menu2Adapter.setOnItemClickListener((adapter, view, position) -> {
-            clickIndex = position;
             MenuBean menuBean = menu2Adapter.getData().get(position);
-            UniService.startService(getContext(), menuBean.appId, 0x10111);
+            UniService.startService(getContext(), menuBean.appId, 0x10111, menuBean.jumpUrl);
         });
     }
 

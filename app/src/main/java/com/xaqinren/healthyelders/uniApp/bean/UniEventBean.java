@@ -6,6 +6,7 @@ public class UniEventBean {
     public int taskId;
     public String data;
     public boolean isSelfUni;//是否是自身的应用
+    public String jumpUrl;
 
     public UniEventBean() {
     }
@@ -23,11 +24,12 @@ public class UniEventBean {
         this.data = data;
     }
 
-    public UniEventBean(int msgId, String appId, int taskId, String data, boolean isSelfUni) {
+    public UniEventBean(int msgId, String appId, int taskId, String data, boolean isSelfUni, String jumpUrl) {
         this.msgId = msgId;
         this.appId = appId;
         this.taskId = taskId;
         this.data = data;
         this.isSelfUni = isSelfUni;
+        this.jumpUrl = jumpUrl;
     }
 }

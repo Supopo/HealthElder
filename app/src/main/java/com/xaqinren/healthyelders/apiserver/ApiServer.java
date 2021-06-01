@@ -401,7 +401,7 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<InteractiveBean>>>> getMessageData(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("messageGroup") String messageGroup, @Query("messageType") String messageType);
 
     //短视频详情
-    @GET("content/shortVideo/info")
+    @GET("jkzl/shortVideo/info")
     Observable<MBaseResponse<VideoInfo>> getVideoInfo(@Header("Authorization") String authorization, @Query("id") String id);
 
     //搜素哦用户

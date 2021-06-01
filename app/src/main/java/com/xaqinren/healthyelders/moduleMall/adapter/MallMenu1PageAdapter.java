@@ -1,13 +1,18 @@
 package com.xaqinren.healthyelders.moduleMall.adapter;
 
+import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMallRvBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.uniApp.UniService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,5 +37,14 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
         binding.rvContent.setAdapter(mallMenu1Adapter);
         mallMenu1Adapter.setList(menuBean.menuBeans);
 
+        mallMenu1Adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                MenuBean menuBean1 = mallMenu1Adapter.getData().get(position);
+                String appId = menuBean1.appId;
+                String jumpUrl = menuBean1.jumpUrl;
+                UniService.startService(getContext(), appId, 0x10001, jumpUrl);
+            }
+        });
     }
 }

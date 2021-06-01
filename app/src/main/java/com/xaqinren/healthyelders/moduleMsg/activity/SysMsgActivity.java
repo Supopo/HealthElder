@@ -150,6 +150,7 @@ public class SysMsgActivity extends BaseActivity<ActivityInteractiveBinding, Int
                     }
                 });
             }
+            friendCount += friendBeans.size();
             interactiveAdapter.addData(friendBeans);
             if (friendBeans.size() >= friendPageSize) {
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);

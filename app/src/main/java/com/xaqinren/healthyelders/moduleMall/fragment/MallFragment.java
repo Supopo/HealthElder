@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,6 +17,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -28,16 +31,23 @@ import com.xaqinren.healthyelders.moduleMall.adapter.MallHotMenuAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu3Adapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.MallViewModel;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
 import com.youth.banner.indicator.CircleIndicator;
+import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
 
 /**
  * Created by Lee. on 2021/5/25.
@@ -54,6 +64,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     int pageSize = 10;//menu1菜单页数数量
     private List<Fragment> fragments;
     private FragmentPagerAdapter goodsPagerAdapter;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,6 +94,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         binding.rvMenu2.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         binding.rvMenu2.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1, false));
 
+        mallHotMenuAdapter.setOnItemClickListener((adapter, view, position) -> {
+            MenuBean menuBean = mallHotMenuAdapter.getData().get(position);
+            UniService.startService(getContext(), menuBean.appId, 0x10001, menuBean.jumpUrl);
+        });
         binding.rvMenu2.setAdapter(mallHotMenuAdapter);
 
         mallMenu3Adapter = new MallMenu3Adapter(R.layout.item_mall_menu3);
@@ -184,27 +199,32 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
             RxBus.getDefault().post(new EventBean(CodeTable.RESH_MALL_LIST, menu3OldPos));
 
         });
-        binding.appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        binding.appBar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
-                //为菜单栏固定位置
-                if (verticalOffset > -binding.rvMenu3.getTop()) {
-                    binding.rvMenu3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                } else {
-                    binding.rvMenu3.setBackgroundColor(getResources().getColor(R.color.white));
-                }
+            //为菜单栏固定位置
+            if (verticalOffset > -binding.rvMenu3.getTop()) {
+                binding.rvMenu3.setBackgroundColor(getResources().getColor(R.color.transparent));
+            } else {
+                binding.rvMenu3.setBackgroundColor(getResources().getColor(R.color.white));
+            }
 
-                //判单只有滑倒最顶部才能下拉刷新
-                if (verticalOffset == 0) {
-                    isTop = true;
-                    binding.srlTop.setEnabled(true);
-                } else {
-                    isTop = false;
-                    binding.srlTop.setEnabled(false);
-                }
+            //判单只有滑倒最顶部才能下拉刷新
+            if (verticalOffset == 0) {
+                isTop = true;
+                binding.srlTop.setEnabled(true);
+            } else {
+                isTop = false;
+                binding.srlTop.setEnabled(false);
             }
         });
+
+        subscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(uniEventBean -> {
+            if (uniEventBean.msgId == CodeTable.UNI_RELEASE) {
+                if (uniEventBean.taskId == 0x10001)
+                UniUtil.openUniApp(getContext(), uniEventBean.appId, uniEventBean.jumpUrl, null, uniEventBean.isSelfUni);
+            }
+        });
+        RxSubscriptions.add(subscribe);
     }
 
     private void setBannerData(List<MenuBean> bannerImages) {
@@ -218,6 +238,12 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .thumbnail(0.3f)
                         .into(holder.imageView);
+            }
+        });
+        binding.banner.setOnBannerListener(new OnBannerListener<MenuBean>() {
+            @Override
+            public void OnBannerClick(MenuBean data, int position) {
+                UniService.startService(getContext(), data.appId, 0x10001, data.jumpUrl);
             }
         });
     }
@@ -257,5 +283,11 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
             pageAdapter.setNewInstance(pageList);
 
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxSubscriptions.remove(subscribe);
     }
 }

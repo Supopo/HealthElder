@@ -506,7 +506,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     private void showShare() {
 
         if (shareDialog == null) {
-            shareDialog = new ShareDialog(this);
+            shareDialog = new ShareDialog(this,diaryInfoBean.share);
             shareDialog.setShowType(ShareDialog.TP_TYPE);
             shareDialog.setOnClickListener(new OnClickListenerImpl(){
                 @Override
@@ -589,7 +589,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         if (postPop == null) {
             int w = ScreenUtil.getScreenWidth(this);
 //            int h = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight();
-            postPop = new PostPop(this, createPostBean, w, -1);
+            postPop = new PostPop(this, createPostBean, w, -1,diaryInfoBean.share);
         }else{
             postPop.refreshData(createPostBean);
         }

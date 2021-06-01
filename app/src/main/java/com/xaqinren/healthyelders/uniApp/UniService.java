@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.uniApp.bean.UniBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.pickerView.cityPicker.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,11 +66,12 @@ public class UniService extends Service implements LifecycleOwner {
         context.startService(intent);
     }
 
-    public static void startService(Context context,String appId,int taskId) {
+    public static void startService(Context context, String appId, int taskId, String jumpUrl) {
         Intent intent = new Intent(context, UniService.class);
         intent.putExtra(KEY, KEY_OPEN);
         intent.putExtra("id", appId);
         intent.putExtra("tid", taskId);
+        intent.putExtra("url", jumpUrl);
         context.startService(intent);
     }
 
@@ -135,9 +137,10 @@ public class UniService extends Service implements LifecycleOwner {
                 //appId
                 String id = intent.getStringExtra("id");
                 int tid = intent.getIntExtra("tid", 0);
+                String url = intent.getStringExtra("url");
                 for (SaveBean saveBean : saveBeans) {
                     if (saveBean.getAppId().equals(id)) {
-                        releaseWgt(saveBean, tid);
+                        releaseWgt(saveBean, tid, url);
                         break;
                     }
                 }
@@ -162,7 +165,7 @@ public class UniService extends Service implements LifecycleOwner {
                 uniBean.setNeedDown(false);
                 uniBean.setDownComplete(true);
                 saveCache();
-                toXCX(uniBean, 0);
+                toXCX(uniBean, 0, null);
             }
 
             @Override
@@ -177,7 +180,7 @@ public class UniService extends Service implements LifecycleOwner {
         });
     }
     //自动下载的时候自动释放
-    private void toXCX(SaveBean saveBean,int tid) {
+    private void toXCX(SaveBean saveBean,int tid , String url) {
         if (!saveBean.isDownComplete()) {
             saveBean.setOpenActivity(true);
             down(saveBean);
@@ -192,9 +195,9 @@ public class UniService extends Service implements LifecycleOwner {
                         saveBean.setOpenActivity(false);
                         saveCache();
                         if (saveBean.isAutoUpdateApplet()) {
-                            RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null,true));
+                            RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null, true, url));
                         }else{
-                            RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null,false));
+                            RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null, false, url));
                         }
                     }
                 } else {//释放wgt失败
@@ -207,9 +210,9 @@ public class UniService extends Service implements LifecycleOwner {
     }
 
     //上层调用，某些非自动下载的
-    private void releaseWgt(SaveBean saveBean,int tid) {
+    private void releaseWgt(SaveBean saveBean, int tid, String url) {
         saveBean.setOpenActivity(true);
-        toXCX(saveBean,tid);
+        toXCX(saveBean, tid, url);
     }
 
     private Object look;

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
+import com.xaqinren.healthyelders.widget.pickerView.cityPicker.utils.StringUtils;
 
 import java.math.BigDecimal;
 
@@ -47,6 +48,8 @@ public class GoodsBean {
     public int totalSoldCount;//": 0,
     public double minSalesPrice;//": 89.1,
     public double maxSalesPrice;//": 99
+    public String appId;//": 99
+    public String jumpUrl;//": 99
 
     public String getMaxSalesPrice() {
         BigDecimal maxPrice = new BigDecimal(maxSalesPrice).setScale(2, 1);

@@ -26,6 +26,10 @@ public class GlideUtil {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
     }
 
+    public static void intoImageView(Context context, Object res, ImageView view, int holder) {
+        Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(holder).into(view);
+    }
+
     public static void intoGaoSiImageView(Context context, Object res, ImageView view) {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))

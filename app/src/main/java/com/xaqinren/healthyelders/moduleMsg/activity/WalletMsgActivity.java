@@ -152,6 +152,7 @@ public class WalletMsgActivity extends BaseActivity<ActivityInteractiveBinding, 
                     }
                 });
             }
+            friendCount += friendBeans.size();
             interactiveAdapter.addData(friendBeans);
             if (friendBeans.size() >= friendPageSize) {
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);

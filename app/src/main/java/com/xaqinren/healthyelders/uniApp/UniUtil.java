@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.uniApp.widget.LoadingView;
 import com.xaqinren.healthyelders.uniApp.widget.SplashView;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.json.JSONObject;
 
@@ -22,8 +23,19 @@ public class UniUtil {
                 String token = UserInfoMgr.getInstance().getAccessToken();
                 jsonObject.put("qnx_user_token", token);
             }
-            Class viewCls = page.contains("pages/index/index") ? SplashView.class : LoadingView.class;
-            DCUniMPSDK.getInstance().startApp(context, appId, viewCls, page, jsonObject);
+            LogUtils.e("UniUtil", "appid = " + appId + "\tpage = " + page);
+            Class viewCls;
+            if (page == null) {
+                viewCls = SplashView.class;
+            }else{
+                viewCls = page.contains("pages/index/index") ? SplashView.class : LoadingView.class;
+            }
+
+            if (page != null) {
+                DCUniMPSDK.getInstance().startApp(context, appId, viewCls, page, jsonObject);
+            }else{
+                DCUniMPSDK.getInstance().startApp(context, appId, viewCls,  jsonObject);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

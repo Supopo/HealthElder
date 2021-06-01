@@ -84,6 +84,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Handler handler;
     private MallFragment mallFragment;
     private MineFragment mineFragment;
+    private MsgFragment msgFragment;
     private Disposable mSubscription;
 
     private DCUniMPJSCallback callBack;
@@ -192,9 +193,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         homeFragment = new HomeFragment();
         mallFragment = new MallFragment();
         mineFragment = new MineFragment();
+        msgFragment = new MsgFragment();
         mFragments.add(homeFragment);
         mFragments.add(mallFragment);
-        mFragments.add(new XxxFragment());
+        mFragments.add(msgFragment);
         mFragments.add(mineFragment);
         //默认选中第一个
         commitAllowingStateLoss(0);

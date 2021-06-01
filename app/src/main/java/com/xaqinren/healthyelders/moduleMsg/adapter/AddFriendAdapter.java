@@ -23,7 +23,7 @@ public class AddFriendAdapter extends BaseQuickAdapter<FriendBean,BaseViewHolder
 
     public AddFriendAdapter(int layoutResId) {
         super(layoutResId);
-        addChildClickViewIds(R.id.avatar, R.id.favorite);
+        addChildClickViewIds(R.id.avatar, R.id.favorite, R.id.close);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class AddFriendAdapter extends BaseQuickAdapter<FriendBean,BaseViewHolder
         ItemMsgAddFriendBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(friendBean);
         binding.source.setText("通讯录好友" + friendBean.getName());
-        GlideUtil.intoImageView(getContext(),friendBean.getAvatarUrl(),binding.avatar);
+        GlideUtil.intoImageView(getContext(),friendBean.getAvatarUrl(),binding.avatar,R.mipmap.default_avatar);
         if (friendBean.getIdentity() == null){
             //陌生人
             binding.favorite.setText("分享");

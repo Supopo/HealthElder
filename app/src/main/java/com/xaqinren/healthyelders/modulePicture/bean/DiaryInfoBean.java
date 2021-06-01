@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.modulePicture.bean;
 
 import com.google.gson.annotations.SerializedName;
+import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
@@ -36,7 +37,7 @@ public class DiaryInfoBean {
     public Boolean hasFavorite;
     public Object contentViewAuth;
     public Object refuseUserIds;
-
+    public ShareBean share;
     public static class SummaryDTO {
         public List<?> topicList;
         public String content;

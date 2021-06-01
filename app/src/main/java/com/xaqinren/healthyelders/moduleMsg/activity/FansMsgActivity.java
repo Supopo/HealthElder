@@ -160,6 +160,7 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
                     }
                 });
             }
+            friendCount += friendBeans.size();
             interactiveAdapter.addData(friendBeans);
             if (friendBeans.size() >= friendPageSize) {
                 interactiveAdapter.getLoadMoreModule().loadMoreComplete();

@@ -28,6 +28,6 @@ public class ContactsAdapter extends BaseQuickAdapter<ContactsBean, BaseViewHold
     protected void convert(@NotNull BaseViewHolder baseViewHolder, ContactsBean contactsBean) {
         ItemContactsBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(contactsBean);
-        ContentResolver cr = getContext().getContentResolver();
+
     }
 }

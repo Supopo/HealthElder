@@ -47,8 +47,6 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
     private BaseLoadMoreModule mLoadMore;
     private int fPosition;
     private Disposable subscribe;
-    private Disposable uniSubscribe;
-    private int clickIndex;
 
     public GoodsListFragment(int position, String category) {
         fPosition = position;
@@ -100,8 +98,9 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         mallGoodsAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                clickIndex = position;
                 //UniService.startService(getContext(), "__UNI__DFE7692", 0x123456);
+                GoodsBean goodsBean = mallGoodsAdapter.getData().get(position);
+                UniService.startService(getContext(), goodsBean.appId, 0x10001, goodsBean.jumpUrl);
             }
         });
         isFirst = false;
@@ -128,18 +127,6 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
             }
         });
 
-        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
-            if (event != null) {
-                if (event.msgId == CodeTable.UNI_RELEASE) {
-                    //GoodsBean goodsBean = (GoodsBean) mallGoodsAdapter.getData().get(clickIndex);
-                    //UniUtil.openUniApp(getContext(), event.appId, "/page/index/index", null, true);
-                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
-                    //ToastUtils.showShort("打开小程序失败");
-                    //DCUniMPSDK.getInstance().sendUniMPEvent(event, data) 发送上层消息
-                }
-            }
-        });
-        RxSubscriptions.add(uniSubscribe);
 
         viewModel.dismissDialog.observe(this, isDismiss -> {
             dismissDialog();
@@ -178,10 +165,6 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         super.onDestroyView();
         if (subscribe != null) {
             subscribe.dispose();
-        }
-        RxSubscriptions.remove(uniSubscribe);
-        if (uniSubscribe != null) {
-            uniSubscribe.dispose();
         }
     }
 }
