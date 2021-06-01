@@ -72,7 +72,8 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * Created by Lee. on 2021/4/25.
  * 直播间-观众页面
  */
-public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener {
+public class
+LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener {
 
     private MLVBLiveRoom mLiveRoom;
     private LiveInitInfo mLiveInitInfo;

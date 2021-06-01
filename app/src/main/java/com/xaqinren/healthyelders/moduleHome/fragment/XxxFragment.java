@@ -50,6 +50,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.push.PushNotify;
 import com.xaqinren.healthyelders.utils.AnimUtils;
@@ -201,6 +202,10 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
         binding.tvMenu107.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), DraftActivity.class);
             startActivity(intent);
+        });
+        binding.tvMenu108.setOnClickListener(lis ->{
+            ZBGiftListPop giftListPop = new ZBGiftListPop(getActivity(), "");
+            giftListPop.showPopupWindow();
         });
     }
 

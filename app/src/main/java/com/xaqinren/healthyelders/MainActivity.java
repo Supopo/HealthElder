@@ -33,6 +33,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
+import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -169,7 +170,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         mineFragment = new MineFragment();
         mFragments.add(homeFragment);
         mFragments.add(mallFragment);
-        mFragments.add(new MsgFragment());
+        mFragments.add(new XxxFragment());
         mFragments.add(mineFragment);
         //默认选中第一个
         commitAllowingStateLoss(0);

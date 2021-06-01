@@ -133,10 +133,21 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-
                     <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/vp_content"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+
+                    <com.zhpan.indicator.IndicatorView
+                        android:id="@+id/indicator_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:vpi_slider_radius="@dimen/dp_3"
+                        app:vpi_slider_normal_color="@color/gray_666"
+                        app:vpi_slider_checked_color="@color/white"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/dp_20" />
 
                 </RelativeLayout>
 

@@ -87,7 +87,7 @@ android {
             buildConfigField("String", "MASTERSECRET", "\"\"")
             buildConfigField("String", "APPKEY", "\"${rootProject.ext.GETUI_APP_KEY}\"")
             manifestPlaceholders = [
-                    GETUI_APPID    : rootProject.ext.GETUI_APP_ID,
+                    GETUI_APPID: rootProject.ext.GETUI_APP_ID,
             ]
 
         }
@@ -101,7 +101,7 @@ android {
             //请勿在线上版本配置MASTERSECRET的值，避免泄漏
             buildConfigField("String", "MASTERSECRET", "\"${rootProject.ext.MASTERSECRET}\"")
             manifestPlaceholders = [
-                    GETUI_APPID    : rootProject.ext.GETUI_APP_ID,
+                    GETUI_APPID: rootProject.ext.GETUI_APP_ID,
             ]
         }
     }
@@ -257,7 +257,9 @@ dependencies {
 
     //Lottie动画加载 支持加载json
     implementation 'com.airbnb.android:lottie:3.7.0'
-    
+    //viewPager指示器
+    implementation 'com.github.zhpanvip:BannerViewPager:3.5.1'
+
 
 }
 

@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -409,6 +410,10 @@ public interface ApiServer {
     //小程序列表
     @GET("merchant/open/queryAppletInfoPage")
     Observable<MBaseResponse<BaseListRes<List<UniBean>>>> getUniList();
+
+    //礼物列表
+    @GET("live/gift/list")
+    Observable<MBaseResponse<List<GiftBean>>> getGiftList(@Header("Authorization") String authorization);
 
 }
 
