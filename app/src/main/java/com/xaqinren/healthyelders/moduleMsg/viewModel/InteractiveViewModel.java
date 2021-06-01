@@ -24,6 +24,9 @@ public class InteractiveViewModel extends BaseViewModel {
     public MutableLiveData<List<FriendBean>> friendListData = new MutableLiveData<>();
     public MutableLiveData<VideoInfo> videoInfoLiveData = new MutableLiveData<>();
 
+    public MutableLiveData<Boolean> request = new MutableLiveData<>();
+    public MutableLiveData<Boolean> flow = new MutableLiveData<>();
+
 
     public InteractiveViewModel(@NonNull Application application) {
         super(application);
@@ -34,15 +37,15 @@ public class InteractiveViewModel extends BaseViewModel {
     }
 
     public void getRecommendFriend() {
-        List<FriendBean> beans = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            beans.add(new FriendBean());
-        }
-        friendListData.postValue(beans);
+        MsgRepository.getInstance().getRecommendF(requestSuccess, friendListData);
     }
 
     public void getVideoInfo(String id) {
         LiteAvRepository.getInstance().videoDetail(requestSuccess,videoInfoLiveData,id);
+    }
+
+    public void recommendFriend(String id) {
+        MsgRepository.getInstance().toFollow(request, flow, id);
     }
 
 }

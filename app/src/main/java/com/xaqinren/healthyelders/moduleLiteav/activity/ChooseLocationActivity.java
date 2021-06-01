@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,6 +88,9 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     @Override
     public void initData() {
         super.initData();
+        setTitle("添加位置");
+        rlTitle.setVisibility(View.GONE);
+        binding.cancel.setOnClickListener(view -> finish());
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.LOCATION_SUCCESS) {
                 //定位成功

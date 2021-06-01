@@ -33,6 +33,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
+import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
@@ -44,6 +45,8 @@ import io.dcloud.feature.sdk.DCUniMPActivity;
 import io.dcloud.feature.sdk.DCUniMPJSCallback;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.sdk.MenuActionSheetItem;
+import io.dcloud.feature.uniapp.UniSDKEngine;
+import io.dcloud.feature.uniapp.common.UniException;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.crash.CaocConfig;
@@ -126,6 +129,13 @@ public class AppApplication extends BaseApplication {
                 .setMenuDefFontWeight("normal")
                 .setMenuActionSheetItems(sheetItems)
                 .build();
+
+        try {
+            UniSDKEngine.registerModule("city", CitySelModule.class);
+        } catch (UniException e) {
+            e.printStackTrace();
+        }
+
         DCUniMPSDK.getInstance().initialize(this, config, isSuccess -> {
         });
         DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{

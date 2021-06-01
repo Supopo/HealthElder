@@ -68,7 +68,6 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
     @Override
     public void initData() {
         super.initData();
-
         mallGoodsAdapter = new MallGoodsAdapter(R.layout.item_mall_good);
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
         //瀑布流

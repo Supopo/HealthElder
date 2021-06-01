@@ -210,7 +210,19 @@
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleLiteav.activity.ChooseLocationActivity" />
+        <activity android:name=".moduleLiteav.activity.ChooseLocationActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/location_activity"
+                    android:scheme="jkzl"
+                    />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+            </intent-filter>
+        </activity>
         <activity
             android:name=".moduleLiteav.activity.ChooseUnLookActivity"
             android:windowSoftInputMode="adjustPan" />

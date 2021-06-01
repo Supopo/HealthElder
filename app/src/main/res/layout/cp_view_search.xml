@@ -2,43 +2,59 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_40"
-    android:layout_marginBottom="8dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginTop="8dp"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/bg_search">
-
-    <ImageView
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_13"
-        android:src="@mipmap/icon_search_weiz"
-        tools:ignore="ContentDescription" />
-
-    <EditText
-        android:id="@+id/et_search"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
         android:layout_weight="1"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:inputType="text"
-        android:singleLine="true"
-        android:textSize="@dimen/dp_14"
-        android:textColorHint="@color/gray_999"
-        android:textColor="@color/color_252525"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:hint="输入城市名称或首字母查询"
-        tools:ignore="RtlHardcoded" />
+        android:orientation="horizontal"
+        android:background="@drawable/bg_search"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_13"
+            android:src="@mipmap/icon_search_weiz"
+            tools:ignore="ContentDescription" />
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="@dimen/dp_14"
+            android:textColorHint="@color/gray_999"
+            android:textColor="@color/color_252525"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:hint="输入城市名称或首字母查询"
+            tools:ignore="RtlHardcoded" />
+        <ImageView
+            android:id="@+id/iv_search_clear"
+            android:layout_width="@dimen/dp_13"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="@dimen/dp_13"
+            android:src="@mipmap/icon_search_del"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/gray_666"
+            android:text="取消"
+            android:layout_marginRight="@dimen/dp_16"
+            />
 
-    <ImageView
-        android:id="@+id/iv_search_clear"
-        android:layout_width="@dimen/dp_13"
-        android:layout_height="@dimen/dp_13"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="@dimen/dp_13"
-        android:src="@mipmap/icon_search_del"
-        tools:ignore="ContentDescription" />
 </LinearLayout>

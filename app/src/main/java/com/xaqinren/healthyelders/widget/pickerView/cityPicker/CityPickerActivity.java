@@ -55,6 +55,7 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
     private EditText searchBox;
     private ImageView clearBtn;
     private ImageView backBtn;
+    private TextView cancel;
     private ViewGroup emptyView;
 
     private CityListAdapter mCityAdapter;
@@ -85,6 +86,7 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
     @Override
     public void initData() {
         setTitle("选择城市");
+        rlTitle.setVisibility(View.GONE);
         String area = getIntent().getStringExtra("area");
         String city = getIntent().getStringExtra("city");
         showArea = getIntent().getIntExtra(SHOW_AREA, 1);
@@ -134,6 +136,7 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
 
         TextView overlay = (TextView) findViewById(R.id.tv_letter_overlay);
         mLetterBar = (SideLetterBar) findViewById(R.id.side_letter_bar);
+        cancel = findViewById(R.id.cancel);
         mLetterBar.setOverlay(overlay);
         mLetterBar.setOnLetterChangedListener(letter -> {
             int position = mCityAdapter.getLetterPosition(letter);
@@ -182,6 +185,9 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
             }
         });
 
+        cancel.setOnClickListener(view -> {
+            finish();
+        });
         clearBtn = (ImageView) findViewById(R.id.iv_search_clear);
         clearBtn.setVisibility(View.GONE);
 

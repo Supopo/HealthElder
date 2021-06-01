@@ -16,7 +16,9 @@ import androidx.core.app.NotificationCompat;
 
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 
 import java.util.Random;
@@ -119,7 +121,9 @@ public class PushNotify {
     private static Intent createIntent(PayLoadBean url) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("jkzl://app_open");
-        if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE)) {
+        if (!InfoCache.getInstance().checkLogin()) {
+            buffer.append("/main_activity");
+        }else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE)) {
             //互动
             buffer.append("/interactive_activity");
         } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.SYSTEM)) {

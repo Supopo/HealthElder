@@ -24,6 +24,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMsg.Constant;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
+import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.InteractiveAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.FriendProvider;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.InteractiveProvider;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import retrofit2.http.POST;
 
 /**
  * 互动消息
@@ -75,6 +77,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
     private boolean enableFriend = true;
 
     private boolean hasLoadMore = false;
+    private int opIndex;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -121,6 +124,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
 
         interactiveAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             MessageDetailBean bean = (MessageDetailBean) adapter.getData().get(position);
+            opIndex = position;
             switch (view.getId()){
                 case R.id.avatar:{
                     //用户详情
@@ -130,9 +134,13 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
                 }break;
                 case R.id.favorite: {
                     //推荐列表,关注
+                    showDialog();
+                    FriendBean friendBean = (FriendBean) bean;
+                    viewModel.recommendFriend(friendBean.getUserId());
                 }break;
                 case R.id.close: {
                     //推荐列表,删除
+                    adapter.removeAt(position);
                 }break;
             }
         });
@@ -257,6 +265,27 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             ArrayList<VideoInfo> list = new ArrayList<>();
             list.add(videoInfo);
             toVideoList(list);
+        });
+        viewModel.flow.observe(this, aBoolean -> {
+            dismissDialog();
+            FriendBean friendBean = (FriendBean) interactiveAdapter.getData().get(opIndex);
+            if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
+                //陌生人
+                friendBean.setIdentity(AddFriendAdapter.ATTENTION);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FANS)) {
+                //粉丝
+                friendBean.setIdentity(AddFriendAdapter.FRIEND);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
+                //关注的人
+                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
+                //朋友
+                friendBean.setIdentity(AddFriendAdapter.FANS);
+            }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+                //关注的人
+                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            }
+            interactiveAdapter.notifyItemChanged(opIndex);
         });
     }
 

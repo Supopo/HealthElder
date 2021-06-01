@@ -133,4 +133,24 @@ public class MsgRepository {
                     }
                 });
     }
+
+    public void getRecommendF( MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<FriendBean>> liveData) {
+        userApi.getRecommendF(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(disposable -> {
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<FriendBean>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<FriendBean>> data) {
+                        liveData.postValue(data.getData());
+                    }
+                });
+    }
 }

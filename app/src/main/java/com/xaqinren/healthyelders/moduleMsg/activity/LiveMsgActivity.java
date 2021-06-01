@@ -10,8 +10,10 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityInteractiveBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
+import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.InteractiveAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.SysProvider;
+import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.MessageDetailBean;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.InteractiveViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -38,6 +40,8 @@ public class LiveMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
     private boolean enableFriend = true;
     private boolean hasLoadMore = false;
     private boolean isSelShow;
+
+    private int opIndex;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -77,6 +81,7 @@ public class LiveMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
 
         interactiveAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             MessageDetailBean bean = (MessageDetailBean) adapter.getData().get(position);
+            opIndex = position;
             switch (view.getId()){
                 case R.id.avatar:{
                     //用户详情
@@ -86,9 +91,14 @@ public class LiveMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
                 }break;
                 case R.id.favorite: {
                     //推荐列表,关注
+                    //推荐列表,关注
+                    showDialog();
+                    FriendBean friendBean = (FriendBean) bean;
+                    viewModel.recommendFriend(friendBean.getUserId());
                 }break;
                 case R.id.close: {
                     //推荐列表,删除
+                    adapter.removeAt(position);
                 }break;
             }
         });
@@ -156,6 +166,27 @@ public class LiveMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
             }else{
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
             }
+        });
+        viewModel.flow.observe(this, aBoolean -> {
+            dismissDialog();
+            FriendBean friendBean = (FriendBean) interactiveAdapter.getData().get(opIndex);
+            if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
+                //陌生人
+                friendBean.setIdentity(AddFriendAdapter.ATTENTION);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FANS)) {
+                //粉丝
+                friendBean.setIdentity(AddFriendAdapter.FRIEND);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
+                //关注的人
+                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
+                //朋友
+                friendBean.setIdentity(AddFriendAdapter.FANS);
+            }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+                //关注的人
+                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            }
+            interactiveAdapter.notifyItemChanged(opIndex);
         });
 
     }

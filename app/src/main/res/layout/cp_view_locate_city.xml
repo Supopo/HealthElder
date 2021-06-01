@@ -30,7 +30,7 @@
             <ImageView
                 android:layout_width="14dp"
                 android:layout_height="18dp"
-                android:src="@mipmap/btn_fab"
+                android:src="@mipmap/icon_city_picer_dingw_red"
                 tools:ignore="ContentDescription"/>
 
             <TextView

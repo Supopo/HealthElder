@@ -17,7 +17,7 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_marginLeft="@dimen/dp_16"
-            android:src="@color/color_252525"/>
+            />
 
         <TextView
             android:id="@+id/nickname"
@@ -29,7 +29,7 @@
             android:layout_toRightOf="@id/avatar"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/color_252525"
-            android:text="漫步云端"/>
+            android:text="@{viewModel.nickname}"/>
 
         <TextView
             android:id="@+id/source"
@@ -41,7 +41,7 @@
             android:layout_toRightOf="@id/avatar"
             android:textSize="@dimen/sp_13"
             android:textColor="@color/gray_999"
-            android:text="有XXX一个共同好友"/>
+           />
         <TextView
             android:id="@+id/favorite"
             android:layout_width="@dimen/dp_66"
