@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -1157,7 +1158,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_GONGGAO_MSG:
                 //公告消息 顶部展示
                 String jsonMsg = (String) message;
-                LogUtils.v(Constant.TAG_LIVE, "jsonMsg: " + jsonMsg);
                 JsonMsgBean jsonMsgBean = JSON.parseObject(jsonMsg, JsonMsgBean.class);
                 binding.tvGgtype.setText("用户");
                 binding.tvGgname.setText(jsonMsgBean.nickname);
@@ -1313,7 +1313,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         ScaleAnimation animation2 = new ScaleAnimation(xx2, 1.0F, yy2, 1.0F, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
         animation2.setDuration(500);
         animation2.setFillAfter(true);
-
 
         binding.mTxVideoView.clearAnimation();
         binding.mTxVideoView.setAnimation(animation2);
@@ -1548,9 +1547,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 //发送礼物-接口请求
                 viewModel.sendGift(mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.userId, selectGift.id);
 
-                //测试 发送自定义送礼物消息
-                toSendGiftMsg(selectGift);
-                zbGiftListPop.dismiss();
             }
         });
         RxSubscriptions.add(disposable);
@@ -1677,7 +1673,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         });
         viewModel.sendGiftSuccess.observe(this, sendSuccess -> {
             //发送礼物自定义消息
+            if (sendSuccess != null &&sendSuccess) {
 
+                //测试 发送自定义送礼物消息
+                toSendGiftMsg(selectGift);
+                zbGiftListPop.dismiss();
+            }
         });
     }
 
@@ -1758,6 +1759,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         Glide.with(this).load(sendGiftBean.giftsIcon).into(binding.ivGift);
         binding.tvAudienceName.setText(sendGiftBean.sendUserName);
         binding.tvGiftName.setText("送" + sendGiftBean.giftsName);
+
 
 
         if (sendGiftBean.hasAnimation.equals("1")) {
@@ -1873,4 +1875,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             }
         });
     }
+
+
 }

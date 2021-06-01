@@ -272,9 +272,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     district = locationBean.district;
                     poiName = locationBean.desName;
                     binding.tvLoc.setText(cityName + poiName);
-
-                } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("startLive")) {
-                    getActivity().finish();
                 }
             }
         });

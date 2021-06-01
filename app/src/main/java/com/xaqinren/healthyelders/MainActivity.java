@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.http.HttpResponseCache;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -22,6 +23,8 @@ import androidx.lifecycle.Observer;
 
 import com.dmcbig.mediapicker.utils.ScreenUtils;
 import com.igexin.sdk.PushManager;
+import com.opensource.svgaplayer.SVGAParser;
+import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -43,12 +46,18 @@ import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,6 +217,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         dawable2 = getResources().getDrawable(R.mipmap.line_bq_white);
         dawable2.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
         initEvent();
+
+        viewModel.getGiftList();
     }
 
     private void initEvent() {
@@ -354,6 +365,40 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         return super.dispatchTouchEvent(event);
     }
 
+    //下载svga动画
+    private void loadCache(List<GiftBean> gifts) {
+
+        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "http");
+        try {
+            HttpResponseCache.install(cacheDir, 1024 * 1024 * 200);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try { // new URL needs try catch.
+            SVGAParser svgaParser = new SVGAParser(this);
+            svgaParser.setFrameSize(100, 100);
+            for (GiftBean gift : gifts) {
+                if (!TextUtils.isEmpty(gift.giftUrl)) {
+                    svgaParser.decodeFromURL(new URL(gift.giftUrl), new SVGAParser.ParseCompletion() {
+                        @Override
+                        public void onComplete(@NotNull SVGAVideoEntity videoItem) {
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                }
+            }
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -413,6 +458,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
             onUnReadWatch(ImManager.getInstance().getUnreadCount());
             ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
+        });
+
+        viewModel.giftList.observe(this, giftBeans -> {
+            if (giftBeans != null) {
+                loadCache(giftBeans);
+            }
         });
 
 

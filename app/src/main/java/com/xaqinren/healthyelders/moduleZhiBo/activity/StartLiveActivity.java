@@ -80,6 +80,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                         finish();
                     }
                 }, 500);
+            }else if (o.msgId == CodeTable.CODE_SUCCESS && o.content.equals("startLive")) {
+                finish();
             }
         });
     }
