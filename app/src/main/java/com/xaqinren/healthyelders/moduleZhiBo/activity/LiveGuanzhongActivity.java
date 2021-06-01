@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -65,6 +66,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -124,6 +126,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private SVGAImageView svgaImageView;
     private SVGAParser svgaParser;
     private ZBGiftListPop zbGiftListPop;
+    private int screenWidth;
+    private int screenHeight;
 
 
     @Override
@@ -153,6 +157,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         super.initData();
         //设置全屏
         setStatusBarTransparent();
+        screenWidth = MScreenUtil.getScreenWidth(this);
+        screenHeight = MScreenUtil.getScreenHeight(this);
+
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
         //登录直播间IM服务
@@ -192,7 +199,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
-        if (mLiveInitInfo.hasFollow) {
+        if (mLiveInitInfo.getHasFollow()) {
             binding.tvFollow.setText("已关注");
         } else {
             binding.tvFollow.setText("关注");
@@ -1233,7 +1240,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     stopIMLink();
                 } else {
                     linkType = 0;
-                    binding.rvMoreLink.setVisibility(View.GONE);
+                    closeMoreLinkAnim();
                     initMoreLinkData();
                 }
 
@@ -1265,10 +1272,59 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         }
     }
 
+    private void startMoreLinkAnim() {
+        //计算x轴缩放倍率
+        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()) / screenWidth;
+
+        //计算y轴缩放倍率 93*6+5*3 = 573
+        float yy = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));
+
+
+        ScaleAnimation animation = new ScaleAnimation(1.0F, xx, 1.0F, yy, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
+        animation.setDuration(500);
+        animation.setFillAfter(true);
+
+        binding.mTxVideoView.clearAnimation();
+        binding.mTxVideoView.setAnimation(animation);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                binding.rvMoreLink.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private void closeMoreLinkAnim() {
+        //计算x轴缩放倍率
+        float xx2 = (float) (screenWidth - binding.rvMoreLink.getWidth()) / screenWidth;
+        //计算y轴缩放倍率
+        float yy2 = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));
+        ScaleAnimation animation2 = new ScaleAnimation(xx2, 1.0F, yy2, 1.0F, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
+        animation2.setDuration(500);
+        animation2.setFillAfter(true);
+
+
+        binding.mTxVideoView.clearAnimation();
+        binding.mTxVideoView.setAnimation(animation2);
+        binding.rvMoreLink.setVisibility(View.INVISIBLE);
+    }
+
+
     private void startMoreLinkLayout() {
         linkType = 1;
         initMoreLinkData();
-        binding.rvMoreLink.setVisibility(View.VISIBLE);
+        startMoreLinkAnim();
     }
 
     @Override

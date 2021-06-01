@@ -41,8 +41,6 @@
                     android:id="@+id/mTxVideoView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignTop="@id/rv_moreLink"
-                    android:layout_toLeftOf="@id/rv_moreLink"
                     android:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -51,9 +49,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/dp_3"
+                    android:paddingLeft="@dimen/dp_3"
                     android:overScrollMode="never"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
 
             </RelativeLayout>
 

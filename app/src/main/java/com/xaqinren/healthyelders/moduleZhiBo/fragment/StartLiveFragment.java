@@ -52,6 +52,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
@@ -61,6 +62,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
@@ -106,6 +108,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private String district;
     private boolean isToZhibo;
     private LiveMenuAdapter menuAdapter;
+    private LiveZhuboViewModel liveZbViewModel;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -270,6 +273,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     poiName = locationBean.desName;
                     binding.tvLoc.setText(cityName + poiName);
 
+                } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("startLive")) {
+                    getActivity().finish();
                 }
             }
         });
@@ -331,6 +336,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 }
             }
         });
+
     }
 
     private void startLiveZhuboActivity() {
@@ -355,6 +361,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
         isToZhibo = true;
         startActivity(LiveZhuboActivity.class, bundle);
+
+        liveZbViewModel = ViewModelProviders.of(getActivity()).get(LiveZhuboViewModel.class);
+
     }
 
 

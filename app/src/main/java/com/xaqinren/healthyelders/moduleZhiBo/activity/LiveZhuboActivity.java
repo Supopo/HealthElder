@@ -18,7 +18,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -46,6 +49,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
@@ -69,6 +73,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -143,6 +148,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private TimerTask giftContentTask;
     private SVGAImageView svgaImageView;
     private SVGAParser svgaParser;
+    private int screenWidth;
+    private int screenHeight;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -171,6 +178,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         super.initData();
         //设置全屏
         setStatusBarTransparent();
+
+        screenWidth = MScreenUtil.getScreenWidth(this);
+        screenHeight = MScreenUtil.getScreenHeight(this);
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
 
@@ -1157,6 +1167,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         entity.setType(LiveConstants.IMCMD_GIFT);
         notifyMsg(entity);
     }
+
     //添加连麦申请消息
     private void addLinkMsg(ZBUserListBean bean, String userId) {
         //判断是否在列表中
@@ -1558,6 +1569,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //开启直播-继续直播通知服务器回调
         viewModel.startLiveInfo.observe(this, liveInitInfo -> {
             if (liveInitInfo != null) {
+
+                RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"startLive"));
                 if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
                     //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
@@ -1598,7 +1611,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //更新点赞人数
                 if (TextUtils.isEmpty(liveHeaderInfo.totalZanNum)) {
                     binding.tvZanNum.setText(mLiveInitInfo.nickname);
-                }else {
+                } else {
                     binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
                 }
                 //更新榜单头像
@@ -1627,47 +1640,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         }
                         //开启多人聊天
                         linkType = 1;
-
-
-                         Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_enter2);
-                        // int screenWidth = ScreenUtil.getScreenWidth(this);
-                        // int screenHeight = ScreenUtil.getScreenHeight(this);
-                        // //计算x轴缩放倍率
-                        // float xx = (float) (screenWidth - getResources().getDimension(R.dimen.dp_96)) / screenWidth;
-                        // //计算y轴缩放倍率
-                        // float yy = (float) (getResources().getDimension(R.dimen.dp_573)) / (screenHeight);
-                        // ScaleAnimation animation = new ScaleAnimation(1.0F, xx, 1.0F, yy, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
-                        // animation.setDuration(500);
-                        // animation.setFillAfter(true);
-                        // Animation scaleAnimation3 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_exit);
-                        // binding.mTxVideoView.clearAnimation();
-                        // binding.mTxVideoView.setAnimation(animation);
-
-                        // binding.rvMoreLink.setVisibility(View.VISIBLE);
-                        // binding.rvMoreLink.clearAnimation();
-                        // binding.rvMoreLink.setAnimation(scaleAnimation1);
-
-                        binding.rvMoreLink.clearAnimation();
-                        binding.rvMoreLink.setAnimation(scaleAnimation1);
-                        binding.rvMoreLink.setVisibility(View.VISIBLE);
-
-//                        animation.setAnimationListener(new Animation.AnimationListener() {
-//                            @Override
-//                            public void onAnimationStart(Animation animation) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onAnimationEnd(Animation animation) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onAnimationRepeat(Animation animation) {
-//
-//                            }
-//                        });
-
+                        startMoreLinkAnim();
 
                         //群发消息
                         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_OPEN_MORE_LINK), "", null);
@@ -1690,26 +1663,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
                         //关闭多人聊天
                         linkType = 0;
-
-                        Animation scaleAnimation2 = AnimationUtils.loadAnimation(this, R.anim.zbj_more_link_exit2);
-                        //                        binding.rvMoreLink.setAnimation(scaleAnimation2);
-                        binding.rvMoreLink.setVisibility(View.GONE);
-                        scaleAnimation2.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
-
+                        closeMoreLinkAnim();
 
                         //群发消息关闭多人连麦
                         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_CLOSE_MORE_LINK), "", null);
@@ -1768,6 +1722,54 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 moreLinkAdapter.setNewInstance(moreLinkList);
             }
         });
+    }
+
+    private void startMoreLinkAnim() {
+        //计算x轴缩放倍率
+        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()) / screenWidth;
+
+        //计算y轴缩放倍率 93*6+5*3 = 573
+        float yy = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));
+
+
+        ScaleAnimation animation = new ScaleAnimation(1.0F, xx, 1.0F, yy, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
+        animation.setDuration(500);
+        animation.setFillAfter(true);
+
+        binding.mTxVideoView.clearAnimation();
+        binding.mTxVideoView.setAnimation(animation);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                binding.rvMoreLink.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private void closeMoreLinkAnim() {
+        //计算x轴缩放倍率
+        float xx2 = (float) (screenWidth - binding.rvMoreLink.getWidth()) / screenWidth;
+        //计算y轴缩放倍率
+        float yy2 = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));
+        ScaleAnimation animation2 = new ScaleAnimation(xx2, 1.0F, yy2, 1.0F, Animation.RELATIVE_TO_PARENT, 0, Animation.RELATIVE_TO_PARENT, 1.0F);
+        animation2.setDuration(500);
+        animation2.setFillAfter(true);
+
+
+        binding.mTxVideoView.clearAnimation();
+        binding.mTxVideoView.setAnimation(animation2);
+        binding.rvMoreLink.setVisibility(View.INVISIBLE);
     }
 
     //是否关闭连麦dialog
