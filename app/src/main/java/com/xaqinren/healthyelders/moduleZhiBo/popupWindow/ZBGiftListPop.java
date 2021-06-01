@@ -13,12 +13,14 @@ import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.GiftListPageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftSelectBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.youth.banner.indicator.DrawableIndicator;
 import com.zhpan.indicator.IndicatorView;
@@ -77,6 +79,17 @@ public class ZBGiftListPop extends BasePopupWindow {
             if (eventBean != null) {
                 if (eventBean.msgId == 10010 && eventBean.msgType == 100) {
                     getUserInfo();
+                } else if (eventBean.msgId == CodeTable.ZHJ_SELECT_GIFT) {
+                    GiftSelectBean selectBean = (GiftSelectBean) eventBean.data;
+                    for (int i = 0; i < pageAdapter.getData().size(); i++) {
+                        if (i != selectBean.selectPage) {
+                            for (GiftBean giftBean : pageAdapter.getData().get(i).giftBeans) {
+                                giftBean.isSelect = false;
+                            }
+                            pageAdapter.notifyItemChanged(i);
+                        }
+                    }
+
                 }
             }
         });
@@ -131,35 +144,6 @@ public class ZBGiftListPop extends BasePopupWindow {
                     }
                 });
     }
-
-    private void sendGift(String giftId, int pos) {
-        //        RetrofitClient.getInstance().create(ApiServer.class).sendGift(
-        //                Constant.getToken(), giftId, mPusherId
-        //        )
-        //                .compose(RxUtils.schedulersTransformer()) //线程调度
-        //                .doOnSubscribe(new Consumer<Disposable>() {
-        //                    @Override
-        //                    public void accept(Disposable disposable) throws Exception {
-        //
-        //                    }
-        //                })
-        //                .subscribe(new Consumer<BaseResponse<Integer>>() {
-        //                    @Override
-        //                    public void accept(BaseResponse<Integer> bean) throws Exception {
-        //                        if (bean.isOk()) {
-        //                            //发送成功
-        //                            //通知页面发送自定义消息发送礼物
-        //                            RxBus.getDefault().post(new EventBean(Constant.ZB_SEND_GIFT, dataList.get(pos)));
-        //                            if (bean.getResult() != null) {
-        //                                SPUtils.getInstance().put(Constant.USER_GOLD, bean.getResult().toString());
-        //                            }
-        //                        } else {
-        //                            ToastUtils.showShort(bean.getMessage());
-        //                        }
-        //                    }
-        //                });
-    }
-
 
     private void getUserInfo() {
         //        RetrofitClient.getInstance().create(ApiServer.class).getUserInfo(

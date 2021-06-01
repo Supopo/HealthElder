@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ItemGiftRvBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftSelectBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,12 +42,20 @@ public class GiftListPageAdapter extends BaseQuickAdapter<GiftBean, BaseViewHold
                 //发送礼物
                 RxBus.getDefault().post(new EventBean(CodeTable.ZHJ_SEND_GIFT, listAdapter.getData().get(position)));
             } else {
+                GiftSelectBean selectBean = new GiftSelectBean();
+                selectBean.selectPage = helper.getAdapterPosition();
+                selectBean.selectPos = position;
+
                 item.nowPos = position;
                 listAdapter.getData().get(position).isSelect = true;
                 listAdapter.getData().get(item.lastPos).isSelect = false;
                 listAdapter.notifyItemChanged(position, 99);
                 listAdapter.notifyItemChanged(item.lastPos, 99);
                 item.lastPos = position;
+
+
+
+                RxBus.getDefault().post(new EventBean(CodeTable.ZHJ_SELECT_GIFT, selectBean));
             }
 
 

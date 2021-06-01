@@ -187,6 +187,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         //获取UserSig
         viewModel.getUserSig(accessToken);
+
+        viewModel.getGiftList();
     }
 
 
@@ -218,7 +220,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         dawable2.setBounds(0, 0, dawable.getMinimumWidth(), dawable.getMinimumHeight());
         initEvent();
 
-        viewModel.getGiftList();
     }
 
     private void initEvent() {
