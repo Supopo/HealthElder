@@ -6,10 +6,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ItemGiftRvBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 
 import org.jetbrains.annotations.NotNull;
+
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/25.
@@ -33,12 +37,19 @@ public class GiftListPageAdapter extends BaseQuickAdapter<GiftBean, BaseViewHold
         listAdapter.setList(item.giftBeans);
 
         listAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            item.nowPos = position;
-            listAdapter.getData().get(position).isSelect = true;
-            listAdapter.getData().get(item.lastPos).isSelect = false;
-            listAdapter.notifyItemChanged(position, 99);
-            listAdapter.notifyItemChanged(item.lastPos, 99);
-            item.lastPos = position;
+            if (listAdapter.getData().get(position).isSelect) {
+                //发送礼物
+                RxBus.getDefault().post(new EventBean(CodeTable.ZHJ_SEND_GIFT, listAdapter.getData().get(position)));
+            } else {
+                item.nowPos = position;
+                listAdapter.getData().get(position).isSelect = true;
+                listAdapter.getData().get(item.lastPos).isSelect = false;
+                listAdapter.notifyItemChanged(position, 99);
+                listAdapter.notifyItemChanged(item.lastPos, 99);
+                item.lastPos = position;
+            }
+
+
         }));
     }
 }

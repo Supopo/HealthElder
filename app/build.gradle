@@ -260,6 +260,8 @@ dependencies {
     //viewPager指示器
     implementation 'com.github.zhpanvip:BannerViewPager:3.5.1'
 
+    //SVG动画加载
+    implementation 'com.github.yyued:SVGAPlayer-Android:2.5.15'
 
 }
 

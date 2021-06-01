@@ -425,5 +425,9 @@ public interface ApiServer {
     @GET("user/findRecommendContactFriends")
     Observable<MBaseResponse<List<FriendBean>>> getRecommendContactF(@Header("Authorization") String authorization);
 
+    //发送礼物
+    @Headers({"content-type:application/json"})
+    @POST("live/gift/give")
+    Observable<MBaseResponse<Object>> sendGift(@Header("Authorization") String authorization, @Body RequestBody body);
 }
 

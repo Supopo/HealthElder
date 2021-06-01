@@ -204,7 +204,7 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             startActivity(intent);
         });
         binding.tvMenu108.setOnClickListener(lis ->{
-            ZBGiftListPop giftListPop = new ZBGiftListPop(getActivity(), "");
+            ZBGiftListPop giftListPop = new ZBGiftListPop(getActivity(), null);
             giftListPop.showPopupWindow();
         });
     }

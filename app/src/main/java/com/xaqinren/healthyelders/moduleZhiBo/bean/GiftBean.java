@@ -13,9 +13,9 @@ public class GiftBean {
     public String giftImage;//": "http://qinren.oss-cn-hangzhou.aliyuncs.com/20210330/a48f9fa85f5c40c98125946bf52e8290.png",
     public String giftUrl;//": "http://qinren.oss-cn-hangzhou.aliyuncs.com/20210330/2e80cf5cb3ae4e4991fe4279fed78322.svga",
     public String giftCode;//": "1254440",
-    public String giftPrice;//": 3599,
-    public String hasGroup;//": true,
-    public String hasAnimation;//": true,
+    public int giftPrice;//": 3599,
+    public boolean hasGroup;//": true,
+    public boolean hasAnimation;//": true,
     public String giftGroup;//": "GIFT_GROUP"
     public List<GiftBean> giftBeans = new ArrayList<>();
 

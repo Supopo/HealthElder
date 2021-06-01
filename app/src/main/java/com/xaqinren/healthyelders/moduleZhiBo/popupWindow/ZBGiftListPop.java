@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.GiftListPageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.youth.banner.indicator.DrawableIndicator;
 import com.zhpan.indicator.IndicatorView;
 
@@ -37,6 +38,7 @@ import razerdp.basepopup.BasePopupWindow;
 public class ZBGiftListPop extends BasePopupWindow {
 
     private Context context;
+    private LiveInitInfo mLiveInitInfo;
     private String mPusherId;
     private String userGold;
     private TextView tvGoldNum;
@@ -45,16 +47,14 @@ public class ZBGiftListPop extends BasePopupWindow {
     private ViewPager2 vpContent;
     private IndicatorView indView;
 
-    public ZBGiftListPop(Context context, String mPusherId) {
+    public ZBGiftListPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
         this.context = context;
-        this.mPusherId = mPusherId;
+        this.mLiveInitInfo = liveInitInfo;
         setBackPressEnable(true);
         setAlignBackground(true);
         initView();
     }
-
-    private int oldPos;
 
     private void initView() {
         indView = findViewById(R.id.indicator_view);

@@ -2,6 +2,8 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Dialog;
+import android.net.http.HttpResponseCache;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +34,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.google.gson.Gson;
+import com.opensource.svgaplayer.SVGACallback;
+import com.opensource.svgaplayer.SVGAImageView;
+import com.opensource.svgaplayer.SVGAParser;
+import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -46,6 +53,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkShowAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.SendGiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.SendUserLinkBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
@@ -63,6 +71,12 @@ import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -125,6 +139,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private Integer linkerPos;//当前上麦者所在位置
     private Dialog moreLinkSettingDialog;
     private ZBSettingBean zbSettingBean;
+    private Timer giftContentTimer;
+    private TimerTask giftContentTask;
+    private SVGAImageView svgaImageView;
+    private SVGAParser svgaParser;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -397,14 +415,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         TCChatEntity tcChatEntity = new TCChatEntity();
         tcChatEntity.setSenderName("");
         tcChatEntity.setType(LiveConstants.TYPE_SHOW);
-        tcChatEntity.setContent("本平台提倡绿色健康直播，严禁在平台内外出现诱导未成年人送礼打赏、诈骗、赌博、非法转移财产、低俗色情、吸烟酗酒等不当行为， 若有违反，平台有权对您采取包括暂停支付收益、冻结或封禁帐号等措施，同时向相关部门依法追究您的法律责任。如因此给平台造成损失，有权向您全额追偿。");
+        tcChatEntity.setContent(LiveConstants.TYPE_SHOW_TEXT);
         msgList.add(tcChatEntity);
         //再添加一条消息展示直播间介绍
-        TCChatEntity tcChatEntity2 = new TCChatEntity();
-        tcChatEntity2.setSenderName("");
-        tcChatEntity2.setType(LiveConstants.TYPE_DES);
-        tcChatEntity2.setContent(mLiveInitInfo.liveRoomIntroduce);
-        msgList.add(tcChatEntity2);
+        if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomIntroduce)) {
+            TCChatEntity tcChatEntity2 = new TCChatEntity();
+            tcChatEntity2.setSenderName("");
+            tcChatEntity2.setType(LiveConstants.TYPE_DES);
+            tcChatEntity2.setContent(mLiveInitInfo.liveRoomIntroduce);
+            msgList.add(tcChatEntity2);
+        }
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
@@ -910,8 +930,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     }
                 }, Constant.TIME_DIAN_ZAN_WAIT + 1000);
                 break;
-            case LiveConstants.IMCMD_FOLLOW:
-                //展示关注消息
+            case LiveConstants.IMCMD_FOLLOW://展示关注消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_FOLLOW, type);
                 break;
             case LiveConstants.IMCMD_TO_LINK://用户来申请连麦的消息
@@ -927,9 +946,161 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_RESH_MORELINK_INFO://刷新座位表
                 viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
                 break;
+            case LiveConstants.IMCMD_GIFT://礼物消息
+                SendGiftBean sendGiftBean = (SendGiftBean) message;
+                userInfo.giftIcon = sendGiftBean.giftsIcon;
+                userInfo.giftName = sendGiftBean.giftsName;
+                userInfo.giftIcon = sendGiftBean.giftsIcon;
+                handleGiftMSg(userInfo);
+
+                sendGiftBean.sendUserName = userName;
+                sendGiftBean.sendUserPhoto = userAvatar;
+                //存礼物消息
+                sendGiftBeans.add(sendGiftBean);
+                loadSvga();
+
+                break;
             default:
                 break;
         }
+    }
+
+    private boolean isLoading;//是否在加载动画
+    private List<SendGiftBean> sendGiftBeans = new ArrayList<>();
+
+    private void loadSvga() {
+        if (isLoading) {
+            return;
+        }
+
+
+        SendGiftBean sendGiftBean;
+        if (sendGiftBeans.size() > 0) {
+            sendGiftBean = sendGiftBeans.get(0);
+        } else {
+            return;
+        }
+
+        binding.rlGift.setVisibility(View.VISIBLE);
+        Glide.with(this).load(sendGiftBean.sendUserPhoto).into(binding.ivUserHeadPic);
+        Glide.with(this).load(sendGiftBean.giftsIcon).into(binding.ivGift);
+        binding.tvGiftName.setText(sendGiftBean.sendUserName);
+        binding.tvGiftName.setText("送" + sendGiftBean.giftsName);
+
+
+        if (sendGiftBean.hasAnimation.equals("1")) {
+            //没有播放的时候去播放
+            showGiftAnim(sendGiftBean.svgaUrl);
+        } else {
+            isLoading = true;
+            //礼物消息横幅3S结束
+            if (giftContentTimer == null) {
+                giftContentTimer = new Timer();
+            }
+
+            //初始化之前，一定要先将task取消，再重新创建
+            if (giftContentTask != null) {
+                giftContentTask.cancel();
+            }
+
+            giftContentTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            isLoading = false;
+                            binding.rlGift.setVisibility(View.GONE);
+                            if (sendGiftBeans.size() > 0) {
+                                sendGiftBeans.remove(0);
+                            }
+                            giftContentTask.cancel();
+                            giftContentTimer.cancel();
+                            giftContentTimer = null;
+                            loadSvga();
+                        }
+                    });
+
+                }
+            };
+
+            giftContentTimer.schedule(giftContentTask, 4000);//3秒后关闭
+        }
+
+    }
+
+    private void showGiftAnim(String nowUrl) {
+        binding.rlShowGift.setVisibility(View.VISIBLE);
+        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "http");
+        try {
+            HttpResponseCache.install(cacheDir, 1024 * 1024 * 200);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        binding.rlShowGift.removeAllViews();
+        //注意使用单例
+        if (svgaImageView == null) {
+            svgaImageView = new SVGAImageView(this);
+        }
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        svgaImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        svgaImageView.setLayoutParams(params);
+        svgaImageView.setLoops(1);
+        binding.rlShowGift.addView(svgaImageView);
+
+
+        svgaParser = new SVGAParser(this);
+        try {
+            svgaParser.decodeFromURL(new URL(nowUrl), new SVGAParser.ParseCompletion() {
+                @RequiresApi(api = Build.VERSION_CODES.P)
+                @Override
+                public void onComplete(@NotNull SVGAVideoEntity videoItem) {
+
+                    svgaImageView.setVideoItem(videoItem);
+                    svgaImageView.startAnimation();
+                    isLoading = true;
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+        svgaImageView.setCallback(new SVGACallback() {
+            @Override
+            public void onPause() {
+                //动画暂停
+            }
+
+            @Override
+            public void onFinished() {
+                isLoading = false;
+                //动画结束
+                binding.rlGift.setVisibility(View.GONE);
+                //将展示完的动画清除
+                if (sendGiftBeans.size() > 0) {
+                    sendGiftBeans.remove(0);
+                }
+                loadSvga();
+            }
+
+            @Override
+            public void onRepeat() {
+                //重复播放
+            }
+
+            @Override
+            public void onStep(int i, double v) {
+                //动画步骤
+            }
+        });
     }
 
     @Override
@@ -968,15 +1139,24 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 bean.nickname = userName;
                 bean.userId = senderId;
                 bean.position = linkPos;
-
                 handleMoreLinkMsg(bean);
-
-
                 break;
 
         }
     }
 
+    //处理礼物信息
+    protected void handleGiftMSg(TCUserInfo userInfo) {
+        TCChatEntity entity = new TCChatEntity();
+        if (TextUtils.isEmpty(userInfo.nickname)) {
+            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid);
+        } else {
+            entity.setSenderName(userInfo.nickname);
+        }
+        entity.setContent("送出" + userInfo.giftName);
+        entity.setType(LiveConstants.IMCMD_GIFT);
+        notifyMsg(entity);
+    }
     //添加连麦申请消息
     private void addLinkMsg(ZBUserListBean bean, String userId) {
         //判断是否在列表中
@@ -1003,6 +1183,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         hasLinkMsg = true;
     }
 
+    //处理多人连麦的消息
     private void handleMoreLinkMsg(ZBUserListBean bean, int position) {
         linksShowAdapter.remove(position);
         userLinkPopShow.dismiss();

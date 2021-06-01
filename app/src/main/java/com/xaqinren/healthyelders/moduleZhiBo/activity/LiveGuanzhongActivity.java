@@ -2,6 +2,8 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.net.http.HttpResponseCache;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +30,11 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.opensource.svgaplayer.SVGACallback;
+import com.opensource.svgaplayer.SVGAImageView;
+import com.opensource.svgaplayer.SVGAParser;
+import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -35,12 +43,15 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.SendGiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
@@ -49,12 +60,19 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -100,6 +118,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private int mLinkPos;//多人连麦自己的座位号
     private Dialog moreLinkToLinkDialog;
     private Dialog moreLinkSettingDialog;
+    private GiftBean selectGift;
+    private TimerTask giftContentTask;
+    private Timer giftContentTimer;
+    private SVGAImageView svgaImageView;
+    private SVGAParser svgaParser;
+    private ZBGiftListPop zbGiftListPop;
 
 
     @Override
@@ -344,14 +368,17 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         TCChatEntity tcChatEntity = new TCChatEntity();
         tcChatEntity.setSenderName("");
         tcChatEntity.setType(LiveConstants.TYPE_SHOW);
-        tcChatEntity.setContent("本平台提倡绿色健康直播，严禁在平台内外出现诱导未成年人送礼打赏、诈骗、赌博、非法转移财产、低俗色情、吸烟酗酒等不当行为， 若有违反，平台有权对您采取包括暂停支付收益、冻结或封禁帐号等措施，同时向相关部门依法追究您的法律责任。如因此给平台造成损失，有权向您全额追偿。");
+        tcChatEntity.setContent(LiveConstants.TYPE_SHOW_TEXT);
         msgList.add(tcChatEntity);
         //再添加一条消息展示直播间介绍
-        TCChatEntity tcChatEntity2 = new TCChatEntity();
-        tcChatEntity2.setSenderName("");
-        tcChatEntity2.setType(LiveConstants.TYPE_DES);
-        tcChatEntity2.setContent(mLiveInitInfo.liveRoomIntroduce);
-        msgList.add(tcChatEntity2);
+        if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomIntroduce)) {
+            TCChatEntity tcChatEntity2 = new TCChatEntity();
+            tcChatEntity2.setSenderName("");
+            tcChatEntity2.setType(LiveConstants.TYPE_DES);
+            tcChatEntity2.setContent(mLiveInitInfo.liveRoomIntroduce);
+            msgList.add(tcChatEntity2);
+        }
+
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
@@ -1217,6 +1244,22 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_RESH_HOME_INFO://刷新房间设置信息
                 viewModel.getLiveStatus(mLiveInitInfo.liveRoomId);
                 break;
+            case LiveConstants.IMCMD_GIFT://礼物消息
+
+                SendGiftBean sendGiftBean = (SendGiftBean) message;
+                userInfo.giftIcon = sendGiftBean.giftsIcon;
+                userInfo.giftName = sendGiftBean.giftsName;
+                userInfo.giftIcon = sendGiftBean.giftsIcon;
+                handleGiftMSg(userInfo);
+
+                sendGiftBean.sendUserName = userName;
+                sendGiftBean.sendUserPhoto = userAvatar;
+
+                //存礼物消息
+                sendGiftBeans.add(sendGiftBean);
+                loadSvga();
+
+                break;
             default:
                 break;
         }
@@ -1349,6 +1392,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.tvFollow.setOnClickListener(this);
         binding.btnLianmai.setOnClickListener(this);
         binding.btnJtfz.setOnClickListener(this);
+        binding.btnGift.setOnClickListener(this);
     }
 
     @Override
@@ -1423,6 +1467,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case R.id.btn_jtfz:
                 mLiveRoom.switchCamera();
                 break;
+            case R.id.btn_gift:
+                if (zbGiftListPop == null) {
+                    zbGiftListPop = new ZBGiftListPop(this, mLiveInitInfo);
+                }
+                zbGiftListPop.showPopupWindow();
+                break;
             default:
                 break;
         }
@@ -1437,6 +1487,14 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
                 toSendTextMsg(eventBean.content);
+            } else if (eventBean.msgId == CodeTable.ZHJ_SEND_GIFT) {
+                selectGift = (GiftBean) eventBean.data;
+                //发送礼物-接口请求
+                viewModel.sendGift(mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.userId, selectGift.id);
+
+                //测试 发送自定义送礼物消息
+                toSendGiftMsg(selectGift);
+                zbGiftListPop.dismiss();
             }
         });
         RxSubscriptions.add(disposable);
@@ -1559,6 +1617,203 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     mLiveInitInfo.chatRoomOnlyFansMic = setInitInfo.chatRoomOnlyFansMic;
                     mLiveInitInfo.chatRoomUserApplyMic = setInitInfo.chatRoomUserApplyMic;
                 }
+            }
+        });
+        viewModel.sendGiftSuccess.observe(this, sendSuccess -> {
+            //发送礼物自定义消息
+
+        });
+    }
+
+    //处理礼物信息
+    protected void handleGiftMSg(TCUserInfo userInfo) {
+        TCChatEntity entity = new TCChatEntity();
+        if (TextUtils.isEmpty(userInfo.nickname)) {
+            entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid);
+        } else {
+            entity.setSenderName(userInfo.nickname);
+        }
+        entity.setContent("送出" + userInfo.giftName);
+        entity.setType(LiveConstants.IMCMD_GIFT);
+        notifyMsg(entity);
+    }
+
+    //发送礼物消息
+    private void toSendGiftMsg(GiftBean giftBean) {
+        //聊天框的消息回显
+        TCChatEntity entity = new TCChatEntity();
+        entity.setSenderName("我  ");
+        entity.setContent("送出" + giftBean.giftName);
+        entity.setType(LiveConstants.IMCMD_TEXT_MSG);
+        notifyMsg(entity);
+
+        SendGiftBean sendGiftBean = new SendGiftBean();
+        sendGiftBean.giftsIcon = giftBean.giftImage;
+        sendGiftBean.giftsName = giftBean.giftName;
+        sendGiftBean.id = giftBean.id;
+        sendGiftBean.svgaUrl = giftBean.giftUrl;
+        sendGiftBean.hasAnimation = giftBean.hasAnimation ? "1" : "0";
+
+        //发送自定义消息
+        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_GIFT), sendGiftBean, new SendRoomCustomMsgCallback() {
+            @Override
+            public void onError(int errCode, String errInfo) {
+            }
+
+            @Override
+            public void onSuccess() {
+                sendGiftBean.sendUserName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+                sendGiftBean.sendUserPhoto = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
+
+                //存礼物消息
+
+                if (!isLoading) {
+                    sendGiftBeans.add(0, sendGiftBean);
+                    loadSvga();
+                } else {
+                    sendGiftBeans.add(1, sendGiftBean);
+                }
+
+
+            }
+        });
+    }
+
+    private boolean isLoading;//是否在加载动画
+    private List<SendGiftBean> sendGiftBeans = new ArrayList<>();
+
+    private void loadSvga() {
+        if (isLoading) {
+            return;
+        }
+
+
+        SendGiftBean sendGiftBean;
+        if (sendGiftBeans.size() > 0) {
+            sendGiftBean = sendGiftBeans.get(0);
+        } else {
+            return;
+        }
+
+
+        //送礼横幅
+        binding.rlGift.setVisibility(View.VISIBLE);
+        Glide.with(this).load(sendGiftBean.sendUserPhoto).into(binding.ivUserHeadPic);
+        Glide.with(this).load(sendGiftBean.giftsIcon).into(binding.ivGift);
+        binding.tvAudienceName.setText(sendGiftBean.sendUserName);
+        binding.tvGiftName.setText("送" + sendGiftBean.giftsName);
+
+
+        if (sendGiftBean.hasAnimation.equals("1")) {
+            //没有播放的时候去播放
+            showGiftAnim(sendGiftBean.svgaUrl);
+        } else {
+            isLoading = true;
+            //礼物消息横幅3S结束
+            if (giftContentTimer == null) {
+                giftContentTimer = new Timer();
+            }
+
+            if (giftContentTask != null) {
+                giftContentTask.cancel();
+            }
+
+            giftContentTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            isLoading = false;
+                            binding.rlGift.setVisibility(View.GONE);
+                            if (sendGiftBeans.size() > 0) {
+                                sendGiftBeans.remove(0);
+                            }
+                            giftContentTask.cancel();
+                            giftContentTimer.cancel();
+                            giftContentTimer = null;
+                            loadSvga();
+                        }
+                    });
+
+                }
+            };
+
+            giftContentTimer.schedule(giftContentTask, 4000);//3秒后关闭
+        }
+
+    }
+
+    private void showGiftAnim(String nowUrl) {
+        binding.rlShowGift.setVisibility(View.VISIBLE);
+        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "http");
+        try {
+            HttpResponseCache.install(cacheDir, 1024 * 1024 * 200);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        binding.rlShowGift.removeAllViews();
+        //注意使用单例
+        if (svgaImageView == null) {
+            svgaImageView = new SVGAImageView(this);
+        }
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        svgaImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        svgaImageView.setLayoutParams(params);
+        svgaImageView.setLoops(1);
+        binding.rlShowGift.addView(svgaImageView);
+
+
+        svgaParser = new SVGAParser(this);
+        try {
+            svgaParser.decodeFromURL(new URL(nowUrl), new SVGAParser.ParseCompletion() {
+                @RequiresApi(api = Build.VERSION_CODES.P)
+                @Override
+                public void onComplete(@NotNull SVGAVideoEntity videoItem) {
+
+                    svgaImageView.setVideoItem(videoItem);
+                    svgaImageView.startAnimation();
+                    isLoading = true;
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+        svgaImageView.setCallback(new SVGACallback() {
+            @Override
+            public void onPause() {
+                //动画暂停
+            }
+
+            @Override
+            public void onFinished() {
+                isLoading = false;
+                //动画结束
+                binding.rlGift.setVisibility(View.GONE);
+
+                if (sendGiftBeans.size() > 0) {
+                    sendGiftBeans.remove(0);
+                }
+                loadSvga();
+            }
+
+            @Override
+            public void onRepeat() {
+                //重复播放
+            }
+
+            @Override
+            public void onStep(int i, double v) {
+                //动画步骤
             }
         });
     }

@@ -12,6 +12,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -708,6 +709,59 @@ public class LiveRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
 
+                    }
+
+                });
+    }
+
+    public void sendGift(MutableLiveData<Boolean> sendSuccess, String liveRoomRecordId, String targetId, String giftId) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("liveRoomRecordId", liveRoomRecordId);
+        hashMap.put("giftId", giftId);
+        hashMap.put("count", 1);
+        hashMap.put("targetId", targetId);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.sendGift(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        sendSuccess.postValue(true);
+                    }
+
+                });
+    }
+
+    public void getGiftList(MutableLiveData<List<GiftBean>> giftList) {
+        userApi.getGiftList(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<GiftBean>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<GiftBean>> data) {
+                        giftList.postValue(data.getData());
                     }
 
                 });

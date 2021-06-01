@@ -20,6 +20,7 @@ public class CodeTable {
     public static int ADD_MALL_LIST = 982;//添加商城数据
     public static int SEARCH_TAG = 961;//搜索消息
     public static int WX_PAY_CODE = 8888;//微信支付消息
+    public static int ZHJ_SEND_GIFT = 77771;//直播间礼物发送事件
 
     /**
      * 成功

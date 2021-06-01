@@ -27,6 +27,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<Boolean> sendGiftSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginRoomSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> exitSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> zanSuccess = new MutableLiveData<>();
@@ -98,5 +99,9 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
 
     public void getLiveStatus(String liveRoomId) {
         LiveRepository.getInstance().getLiveStatus(liveRoomId, setInitInfo);
+    }
+
+    public void sendGift(String liveRoomRecordId, String targetId, String giftId) {
+        LiveRepository.getInstance().sendGift(sendGiftSuccess, liveRoomRecordId, targetId, giftId);
     }
 }

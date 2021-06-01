@@ -43,6 +43,7 @@ public class LiveConstants {
     public static final int SETTING_TICHU = 200203;                  // 踢出
     public static final int TYPE_SHOW = 0;                      // 直播间消息列表消息类型 - 展示消息
     public static final int TYPE_DES = -1;                      // 直播间消息列表消息类型 - 介绍消息
+    public static final String TYPE_SHOW_TEXT = "本平台提倡绿色健康直播，严禁在平台内外出现诱导未成年人送礼打赏、诈骗、赌博、非法转移财产、低俗色情、吸烟酗酒等不当行为， 若有违反，平台有权对您采取包括暂停支付收益、冻结或封禁帐号等措施，同时向相关部门依法追究您的法律责任。如因此给平台造成损失，有权向您全额追偿。";
 
     /**
      * IM 互动消息类型

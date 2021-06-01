@@ -46,7 +46,7 @@
                     android:textSize="@dimen/sp_13" />
 
                 <TextView
-                    android:text="@{viewModel.giftPrice}"
+                    android:text="@{String.valueOf(viewModel.giftPrice)}"
                     android:id="@+id/tv_gift_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
