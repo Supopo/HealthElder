@@ -1,7 +1,5 @@
 package com.xaqinren.healthyelders.moduleHome.bean;
 
-import com.xaqinren.healthyelders.moduleMall.adapter.MallGoodsAdapter;
-import com.xaqinren.healthyelders.moduleZhiBo.adapter.GoodsListAdapter;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 
 import java.util.ArrayList;

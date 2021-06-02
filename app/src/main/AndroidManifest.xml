@@ -57,7 +57,9 @@
         <!--<meta-data
             android:name="PUSH_APPID"
             android:value="XwYjxHNTw66jgnQkmO94d3" />-->
-        <meta-data android:name="GETUI_APPID" android:value="${GETUI_APPID}"/>
+        <meta-data
+            android:name="GETUI_APPID"
+            android:value="${GETUI_APPID}" />
 
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
@@ -78,11 +80,10 @@
                 <data
                     android:host="app_open"
                     android:path="/main_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
         <activity
@@ -171,8 +172,8 @@
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.StartLiveActivity"
-            android:theme="@style/AnimTheme"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.StartRenZhengActivity"
             android:theme="@style/AnimTheme" />
@@ -195,8 +196,9 @@
         <activity
             android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
             android:theme="@style/EditDialogStyle" />
-        <activity android:name=".moduleLiteav.activity.VideoEditerActivity"
-            android:launchMode="singleTask"/>
+        <activity
+            android:name=".moduleLiteav.activity.VideoEditerActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name=".moduleLiteav.activity.VideoPublishActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -210,16 +212,15 @@
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleLiteav.activity.ChooseLocationActivity" >
+        <activity android:name=".moduleLiteav.activity.ChooseLocationActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/location_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
             </intent-filter>
         </activity>
@@ -229,32 +230,40 @@
         <activity
             android:name=".moduleZhiBo.activity.ZhiboOverGZActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleLiteav.activity.LiteAvPlayActivity" android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".modulePicture.activity.PublishTextPhotoActivity"
+        <activity
+            android:name=".moduleLiteav.activity.LiteAvPlayActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".modulePicture.activity.PublishTextPhotoActivity"
             android:launchMode="singleInstance"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".modulePicture.activity.TackPictureActivity" android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".moduleLiteav.activity.LiteAvPlay2Activity" android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".modulePicture.activity.TackPictureActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".moduleLiteav.activity.LiteAvPlay2Activity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
         <activity android:name=".moduleHome.activity.VideoListActivity" />
-        <activity android:name=".modulePicture.activity.TextPhotoDetailActivity" android:windowSoftInputMode="adjustNothing"/>
+        <activity
+            android:name=".modulePicture.activity.TextPhotoDetailActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".moduleLiteav.activity.MusicListActivity" />
-        <activity android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
+        <activity
+            android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
             android:theme="@style/EditDialogStyle"
-            />
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity android:name=".moduleHome.activity.DraftActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/draft_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
             </intent-filter>
         </activity>
@@ -262,91 +271,96 @@
         <activity android:name=".modulePicture.activity.PublishAtActivity" />
         <activity android:name=".moduleMsg.activity.ChatActivity" />
         <activity android:name=".moduleHome.activity.SearchActivity" />
-        <activity android:name=".moduleMsg.activity.InteractiveActivity" >
+        <activity android:name=".moduleMsg.activity.InteractiveActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/interactive_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.ContactsActivity" />
-        <activity android:name=".moduleMsg.activity.AddFriendActivity"  android:windowSoftInputMode="adjustNothing"/>
+        <activity
+            android:name=".moduleMsg.activity.AddFriendActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".moduleHome.activity.SearchAllActivity" />
-        <activity android:name=".moduleMsg.activity.FansMsgActivity" >
+        <activity android:name=".moduleMsg.activity.FansMsgActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/fans_msg_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMsg.activity.SysMsgActivity" >
+        <activity android:name=".moduleMsg.activity.SysMsgActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/sys_msg_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMsg.activity.LiveMsgActivity" >
+        <activity android:name=".moduleMsg.activity.LiveMsgActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/live_msg_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMsg.activity.ServiceMsgActivity" >
+        <activity android:name=".moduleMsg.activity.ServiceMsgActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/service_msg_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMsg.activity.WalletMsgActivity" >
+        <activity android:name=".moduleMsg.activity.WalletMsgActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
                     android:path="/wallet_msg_activity"
-                    android:scheme="jkzl"
-                    />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
         <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
+        <activity
+            android:name=".moduleZhiBo.activity.PayPopupActivity"
+            android:theme="@style/EditDialogStyle"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+        <activity
+            android:name=".moduleZhiBo.activity.ChongZhiPopupActivity"
+            android:theme="@style/EditDialogStyle"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <service
             android:name=".push.IPushService"
             android:exported="true"
             android:label="PushService"
-            android:process=":pushservice"/>
-        <service android:name=".push.MyIntentService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:process=":pushservice" />
+        <service
+            android:name=".push.MyIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".uniApp.UniService" />
     </application>
 

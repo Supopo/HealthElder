@@ -28,6 +28,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.PayPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
@@ -276,7 +277,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.tvFs.setOnClickListener(lis -> {
         });
         binding.tvOrder.setOnClickListener(v -> {
-
+            startActivity(PayPopupActivity.class);
         });
         binding.tvFriends.setOnClickListener(lis -> {
         });

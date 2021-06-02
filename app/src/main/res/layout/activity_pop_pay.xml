@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+    </data>
+    
+
+        <RelativeLayout
+            android:id="@+id/rl_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_400"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_pop_bottom_20dp"
+            android:clickable="true"
+            android:focusable="true">
+
+
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/iv_close"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_above="@id/rl_num"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_16"
+                android:src="@mipmap/shipin_pl_close" />
+
+            <LinearLayout
+                android:id="@+id/rl_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/tv_tips"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_252525"
+                    android:text="¥"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_252525"
+                    android:text="99.0"
+                    android:textSize="@dimen/sp_34"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/line"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="99个金币"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_14" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_above="@id/rv_payType"
+                android:background="@color/color_EAEAEA"
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_payType"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_193"
+                android:layout_above="@id/rl_pay"
+                android:layout_marginTop="@dimen/dp_20" />
+
+            <RelativeLayout
+                android:id="@+id/rl_pay"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_56"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_44"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:background="@mipmap/btn_login"
+                    android:gravity="center"
+                    android:text="确认支付"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+</layout>
