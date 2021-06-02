@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.adapter;
 
+import android.view.View;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -39,6 +41,14 @@ public class ChongZhiKeyBordAdapter extends BaseQuickAdapter<MenuBean, BaseViewH
             binding.llItem.setLayoutParams(params);
         }
 
+
+        if (item.menuName.equals("-")) {
+            binding.ivMenu.setVisibility(View.VISIBLE);
+            binding.tvMenu.setVisibility(View.GONE);
+        }else {
+            binding.ivMenu.setVisibility(View.GONE);
+            binding.tvMenu.setVisibility(View.VISIBLE);
+        }
 
     }
 

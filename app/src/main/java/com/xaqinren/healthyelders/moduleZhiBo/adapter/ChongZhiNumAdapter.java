@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.adapter;
 
+import android.view.View;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 

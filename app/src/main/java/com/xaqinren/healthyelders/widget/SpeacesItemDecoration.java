@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * //             佛祖保佑             永无BUG
  * =====================================================
  * 描    述: RecyclerView间距设置，用法rv.addItemDecoration
+ * 会压缩item的距离来腾出空隙
  * =====================================================
  */
 public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {

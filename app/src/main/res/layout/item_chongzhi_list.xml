@@ -15,23 +15,22 @@
     <!--    随机背景颜色-->
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_item"
-        android:background="@drawable/bg_btn_white"
-        android:gravity="center"
         android:layout_width="@dimen/dp_54"
         android:layout_height="@dimen/dp_28"
         android:layout_marginRight="@dimen/dp_8"
-        android:orientation="vertical">
+        android:background="@drawable/bg_btn_white">
 
         <TextView
             android:id="@+id/tv_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="@{viewModel.menuName}"
             android:textColor="@color/color_252525"
             android:textSize="@dimen/sp_14" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </layout>

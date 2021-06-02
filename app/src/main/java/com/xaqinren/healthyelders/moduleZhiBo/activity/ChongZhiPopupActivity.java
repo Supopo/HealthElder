@@ -3,18 +3,23 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityPopChongzhiBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ChongZhiKeyBordAdapter;
@@ -58,6 +63,7 @@ public class ChongZhiPopupActivity extends Activity {
         win.setAttributes(lp);
     }
 
+    List<String> etTextList = new ArrayList<>();
     String[] czNums = {"50", "200", "500", "1000"};
     String[] contents = {"1", "2", "3",
             "-", "4", "5", "6", "充值", "7", "8", "9", "0"};
@@ -65,7 +71,7 @@ public class ChongZhiPopupActivity extends Activity {
     private void initView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pop_chongzhi);
-
+        binding.etContent.setInputType(InputType.TYPE_NULL);
         initCZList();
         initKeyBord();
     }
@@ -80,6 +86,11 @@ public class ChongZhiPopupActivity extends Activity {
             temp.add(menuBean);
         }
         numAdapter.setNewInstance(temp);
+        numAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            etTextList.clear();
+            etTextList.add(czNums[position]);
+            showEditText();
+        }));
     }
 
     private void initKeyBord() {
@@ -99,48 +110,34 @@ public class ChongZhiPopupActivity extends Activity {
             temp.add(menuBean);
         }
         mAdapter.setNewInstance(temp);
-    }
 
-
-    /**
-     * 自动弹软键盘
-     *
-     * @param context
-     * @param et
-     */
-    public void showSoftInput(final Context context, final EditText et) {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ((Activity) context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        et.setFocusable(true);
-                        et.setFocusableInTouchMode(true);
-                        //请求获得焦点
-                        et.requestFocus();
-                        //调用系统输入法
-                        InputMethodManager inputManager = (InputMethodManager) et
-                                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputManager.showSoftInput(et, 0);
-                    }
-                });
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            if (position == 3) {
+                //删除
+                if (etTextList.size() > 0) {
+                    etTextList.remove(etTextList.size() - 1);
+                    showEditText();
+                }
+            } else if (position == 7) {
+                //充值
+            } else {
+                if (etTextList.size() == 1 && etTextList.get(0).equals("0")) {
+                    etTextList.clear();
+                }
+                etTextList.add(contents[position]);
+                showEditText();
             }
-        }, 200);
-
+        }));
     }
 
-    /**
-     * 自动关闭软键盘
-     *
-     * @param activity
-     */
-    public void closeKeybord(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+    private void showEditText() {
+        String et = "";
+        for (String s : etTextList) {
+            et = et + s;
         }
+        binding.etContent.setText(et);
     }
+
 
     @Override
     protected void onDestroy() {
@@ -151,8 +148,6 @@ public class ChongZhiPopupActivity extends Activity {
     @Override
     public void finish() {
         super.finish();
-        //关闭键盘
-        closeKeybord(this);
         //更改关闭页面动画
         overridePendingTransition(R.anim.pop_bottom_2enter, R.anim.pop_bottom_2exit);
     }
