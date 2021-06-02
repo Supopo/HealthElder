@@ -436,6 +436,6 @@ public interface ApiServer {
 
     //解除用户关系
     @GET("user/dissolveRelationship")
-    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String  id);
+    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String  id); 
 }
 

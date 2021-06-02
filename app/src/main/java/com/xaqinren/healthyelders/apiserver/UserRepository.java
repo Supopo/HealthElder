@@ -498,5 +498,5 @@ public class UserRepository {
                         del.postValue(data.isOk());
                     }
                 });
-    } 
+    }
 }
