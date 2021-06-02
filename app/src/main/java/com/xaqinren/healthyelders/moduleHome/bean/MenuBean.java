@@ -34,8 +34,15 @@ public class MenuBean {
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
     }
-    public MenuBean(){}
-    public MenuBean(String menuName,int menuRes){
+
+    public MenuBean() {
+    }
+
+    public MenuBean(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public MenuBean(String menuName, int menuRes) {
         this.menuName = menuName;
         this.menuRes = menuRes;
     }
