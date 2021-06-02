@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/gray_666"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="我的名字"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_2">
+
+            <EditText
+                android:id="@+id/name_et"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/dp_35"
+                android:gravity="center_vertical"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_14"
+                android:singleLine="true"
+                android:maxLength="20"
+                android:background="@null"/>
+
+            <ImageView
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_search_del"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <View style="@style/line" android:layout_marginTop="@dimen/dp_2"/>
+
+        <TextView
+            android:id="@+id/text_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/gray_999"
+            android:text="0/20"/>
+
+    </LinearLayout>
+</layout>

@@ -77,6 +77,32 @@ public class InteractiveProvider<T extends MessageDetailBean> extends BaseItemPr
         } else if (bean.getMessageType().equals(Constant.REPLY)) {
             binding.statusIcon.setImageResource(R.mipmap.icon_yongh_pinl);
         }
+
+        if (bean.getIdentity() == null ){
+            //陌生人
+            binding.friendTag.setVisibility(View.GONE);
+        } else if (bean.getIdentity().equals(FriendProvider.STRANGER)) {
+            //陌生人
+            binding.friendTag.setVisibility(View.GONE);
+        } else if (bean.getIdentity().equals(FriendProvider.FANS)) {
+            //粉丝
+            binding.friendTag.setVisibility(View.VISIBLE);
+            binding.friendTag.setText("粉丝");
+        } else if (bean.getIdentity().equals(FriendProvider.ATTENTION)) {
+            //关注的人
+            binding.friendTag.setVisibility(View.VISIBLE);
+            binding.friendTag.setText("关注");
+        } else if (bean.getIdentity().equals(FriendProvider.FRIEND)) {
+            //朋友
+            binding.friendTag.setVisibility(View.VISIBLE);
+            binding.friendTag.setText("朋友");
+        } else if (bean.getIdentity().equals(FriendProvider.FOLLOW)) {
+            //关注的人
+            binding.friendTag.setVisibility(View.VISIBLE);
+            binding.friendTag.setText("关注");
+        }
+
+
     }
 
     public String getInteractiveMessageBody(InteractiveBean url){

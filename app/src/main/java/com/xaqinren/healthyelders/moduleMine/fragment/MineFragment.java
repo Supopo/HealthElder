@@ -1,10 +1,7 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,29 +12,25 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.PayPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
-import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
-import me.goldze.mvvmhabit.utils.SPUtils;
 
 /**
  * Created by Lee. on 2021/4/24.
@@ -299,6 +292,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             yesOrNoDialog.showDialog();
         });
         binding.rivPhoto2.setOnClickListener(lis -> {
+
         });
         binding.tvName.setOnClickListener(lis -> {
         });
@@ -309,6 +303,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.llTag.setOnClickListener(lis -> {
         });
         binding.tvEdit.setOnClickListener(lis -> {
+            startActivity(EditInfoActivity.class);
         });
     }
 

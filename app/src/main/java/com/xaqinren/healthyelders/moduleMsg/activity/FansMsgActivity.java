@@ -44,7 +44,7 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
     private int friendPage = 1;
 
     private int friendPageSize = 20;
-    private boolean enableFriend = false;
+    private boolean enableFriend = true;
 
     private boolean hasLoadMore = false;
     private FansProvider fansProvider;
@@ -91,16 +91,19 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
             //R.id.avatar,R.id.attention_btn
             MessageDetailBean bean = (MessageDetailBean) adapter.getData().get(position);
             opIndex = position;
-                InteractiveBean interactiveBean = (InteractiveBean) bean;
                 switch (view.getId()) {
-                    case R.id.avatar:
+                    case R.id.avatar: {
+                        InteractiveBean interactiveBean = (InteractiveBean) bean;
                         LogUtils.e(TAG, "点击头像->" + interactiveBean.getSendUser().getUserId());
-                        break;
+                    }break;
                     case R.id.attention_btn:
-                        LogUtils.e(TAG, "点击关注按钮->" + interactiveBean.getSendUser().getUserId());
+                    {
+                        showDialog();
+                        InteractiveBean interactiveBean = (InteractiveBean) bean;
+                        viewModel.recommendFriend(interactiveBean.getSendUser().getUserId() + "");
+                    }
                         break;
                     case R.id.favorite: {
-                        //推荐列表,关注
                         //推荐列表,关注
                         showDialog();
                         FriendBean friendBean = (FriendBean) bean;
@@ -115,7 +118,7 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
 
         if (enableFriend) {
             interactiveAdapter.getLoadMoreModule().setEnableLoadMore(true);
-            interactiveAdapter.getLoadMoreModule().setAutoLoadMore(true);
+            interactiveAdapter.getLoadMoreModule().setAutoLoadMore(false);
             interactiveAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
                 if (friendCount>0)
                     viewModel.getRecommendFriend();
@@ -178,23 +181,45 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
         });
         viewModel.flow.observe(this, aBoolean -> {
             dismissDialog();
-            FriendBean friendBean = (FriendBean) interactiveAdapter.getData().get(opIndex);
-            if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
-                //陌生人
-                friendBean.setIdentity(AddFriendAdapter.ATTENTION);
-            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FANS)) {
-                //粉丝
-                friendBean.setIdentity(AddFriendAdapter.FRIEND);
-            } else if (friendBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
-                //关注的人
-                friendBean.setIdentity(AddFriendAdapter.STRANGER);
-            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
-                //朋友
-                friendBean.setIdentity(AddFriendAdapter.FANS);
-            }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
-                //关注的人
-                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            MessageDetailBean detailBean = (MessageDetailBean) interactiveAdapter.getData().get(opIndex);
+            if (detailBean.getItemType() == MessageDetailBean.TYPE_FRIEND) {
+                FriendBean friendBean = (FriendBean) detailBean;
+                if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
+                    //陌生人
+                    friendBean.setIdentity(AddFriendAdapter.ATTENTION);
+                } else if (friendBean.getIdentity().equals(AddFriendAdapter.FANS)) {
+                    //粉丝
+                    friendBean.setIdentity(AddFriendAdapter.FRIEND);
+                } else if (friendBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
+                    //关注的人
+                    friendBean.setIdentity(AddFriendAdapter.STRANGER);
+                } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
+                    //朋友
+                    friendBean.setIdentity(AddFriendAdapter.FANS);
+                }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+                    //关注的人
+                    friendBean.setIdentity(AddFriendAdapter.STRANGER);
+                }
+            } else if (detailBean.getItemType() == MessageDetailBean.TYPE_TOP) {
+                InteractiveBean interactiveBean = (InteractiveBean) detailBean;
+                if (interactiveBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
+                    //陌生人
+                    interactiveBean.setIdentity(AddFriendAdapter.ATTENTION);
+                } else if (interactiveBean.getIdentity().equals(AddFriendAdapter.FANS)) {
+                    //粉丝
+                    interactiveBean.setIdentity( AddFriendAdapter.FRIEND);
+                } else if (interactiveBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
+                    //关注的人
+                    interactiveBean.setIdentity( AddFriendAdapter.STRANGER);
+                } else if (interactiveBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
+                    //朋友
+                    interactiveBean.setIdentity( AddFriendAdapter.FANS);
+                }  else if (interactiveBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+                    //关注的人
+                    interactiveBean.setIdentity(  AddFriendAdapter.STRANGER);
+                }
             }
+
             interactiveAdapter.notifyItemChanged(opIndex);
         });
     }

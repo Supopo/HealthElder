@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_16"
+        android:background="@color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/gray_666"
+            android:text="个人简介"/>
+
+        <EditText
+            android:id="@+id/info_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_210"
+            android:layout_marginTop="@dimen/dp_16"
+            android:textColor="@color/color_252525"
+            android:textColorHint="@color/gray_999"
+            android:hint="填写个人简介更容易获得别人关注哦"
+            android:background="@drawable/bg_edit_gray_cir"
+            android:maxLength="242"
+            android:padding="@dimen/sp_14"
+            android:gravity="top"
+            android:textSize="@dimen/sp_14"/>
+        <TextView
+            android:id="@+id/text_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textSize="@dimen/sp_18"
+            android:textColor="@color/color_F81E4D"
+            android:layout_gravity="right"
+            android:visibility="visible"
+            />
+    </LinearLayout>
+</layout>

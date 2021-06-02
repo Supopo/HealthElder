@@ -11,11 +11,28 @@ public class InteractiveBean extends MessageDetailBean {
     private String merchantId;
     private SendUserBean sendUser;
     private List<String> receiveUserIds;
+    private List<String> identitys;
+    private String identity;
     private MsgContentBean content;
     private ExtraDTO extra;
     private String messageType;
     private String messageGroup;
 
+    public List<String> getIdentitys() {
+        return identitys;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    public void setIdentitys(List<String> identitys) {
+        this.identitys = identitys;
+    }
 
     public String getId() {
         return id;

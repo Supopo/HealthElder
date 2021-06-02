@@ -352,6 +352,9 @@
             android:name=".moduleZhiBo.activity.ChongZhiPopupActivity"
             android:theme="@style/EditDialogStyle"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+        <activity android:name=".moduleMine.activity.EditInfoActivity" />
+        <activity android:name=".moduleMine.activity.EditNameActivity" />
+        <activity android:name=".moduleMine.activity.EditBriefActivity" />
 
         <service
             android:name=".push.IPushService"
