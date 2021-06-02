@@ -263,5 +263,7 @@ dependencies {
     //SVG动画加载
     implementation 'com.github.yyued:SVGAPlayer-Android:2.5.15'
 
+    //picker view
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 }
 

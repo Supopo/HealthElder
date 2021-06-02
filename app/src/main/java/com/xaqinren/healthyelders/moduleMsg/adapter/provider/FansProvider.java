@@ -54,7 +54,7 @@ public class FansProvider <T extends MessageDetailBean> extends BaseItemProvider
             binding.attentionBtn.setSelected(true);
         } else if (bean.getIdentity().equals(FriendProvider.ATTENTION)) {
             //关注的人
-            binding.attentionBtn.setText("取消关注");
+            binding.attentionBtn.setText("已关注");
             binding.attentionBtn.setSelected(false);
         } else if (bean.getIdentity().equals(FriendProvider.FRIEND)) {
             //朋友
@@ -62,7 +62,7 @@ public class FansProvider <T extends MessageDetailBean> extends BaseItemProvider
             binding.attentionBtn.setSelected(false);
         } else if (bean.getIdentity().equals(FriendProvider.FOLLOW)) {
             //关注的人
-            binding.attentionBtn.setText("取消关注");
+            binding.attentionBtn.setText("已关注");
             binding.attentionBtn.setSelected(false);
         }
 

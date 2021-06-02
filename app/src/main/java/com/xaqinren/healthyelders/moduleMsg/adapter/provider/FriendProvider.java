@@ -51,13 +51,13 @@ public class FriendProvider<T extends MessageDetailBean> extends BaseItemProvide
             binding.favorite.setText("回关");
         } else if (friendBean.getIdentity().equals(ATTENTION)) {
             //关注的人
-            binding.favorite.setText("取消关注");
+            binding.favorite.setText("已关注");
         } else if (friendBean.getIdentity().equals(FRIEND)) {
             //朋友
             binding.favorite.setText("互相关注");
         } else if (friendBean.getIdentity().equals(FOLLOW)) {
             //关注的人
-            binding.favorite.setText("取消关注");
+            binding.favorite.setText("已关注");
         }
     }
 }

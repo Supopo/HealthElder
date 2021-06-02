@@ -35,6 +35,14 @@ public class LiteAvUserBean implements MultiItemEntity , Serializable , IShareUs
         return id;
     }
 
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
     public void setId(String id) {
         this.attentionUserId = id;
     }

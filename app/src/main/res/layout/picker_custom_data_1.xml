@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/dp_16"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_16"
+            android:textColorHint="@color/color_252525"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:text="不展示"/>
+        <com.xaqinren.healthyelders.widget.SwitchButton
+            android:id="@+id/sb_menu1"
+            android:layout_width="@dimen/dp_51"
+            android:layout_height="@dimen/dp_31"
+            app:sb_checked="true"
+            app:sb_show_indicator="false"
+            app:sb_shadow_color="@color/transparent"
+            app:sb_checked_color="@color/color_34C"
+            app:sb_background="@color/color_E9E9A"
+            app:sb_uncheck_color="@color/color_E9E9A" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确定"
+            android:textColor="@color/color_F81E4D"
+            android:textSize="@dimen/sp_18"
+            android:layout_marginRight="@dimen/dp_16"
+            />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10"
+            >
+            <LinearLayout
+                android:id="@+id/timepicker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:minHeight="150dp"
+                android:orientation="horizontal">
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/year"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.96" />
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/month"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/day"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/hour"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/min"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/second"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

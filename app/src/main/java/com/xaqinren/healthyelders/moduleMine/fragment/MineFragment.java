@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
+import com.tencent.bugly.proguard.B;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -22,7 +23,10 @@ import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
+import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.ContactsActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.ChongZhiPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.PayPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -267,29 +271,35 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGz.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("name",UserInfoMgr.getInstance().getUserInfo().getNickname());
+            bundle.putInt("page",0);
+            startActivity(LookAttentionActivity.class,bundle);
         });
         binding.tvFs.setOnClickListener(lis -> {
+           /* Bundle bundle = new Bundle();
+            bundle.putString("name",UserInfoMgr.getInstance().getUserInfo().getNickname());
+            bundle.putInt("page",1);
+            startActivity(LookAttentionActivity.class,bundle);*/
             startActivity(ChongZhiPopupActivity.class);
         });
         binding.tvOrder.setOnClickListener(v -> {
             startActivity(PayPopupActivity.class);
         });
         binding.tvFriends.setOnClickListener(lis -> {
+            startActivity(AddFriendActivity.class);
         });
         binding.ivSetting.setOnClickListener(lis -> {
             //退出登录
             YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
             yesOrNoDialog.setMessageText("确定退出吗？");
-            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //清除缓存
-                    InfoCache.getInstance().clearLogin();
-                    //跳到登录页面
-                    startActivity(SelectLoginActivity.class);
-                    yesOrNoDialog.dismissDialog();
-                    getActivity().finish();
-                }
+            yesOrNoDialog.setRightBtnClickListener(v -> {
+                //清除缓存
+                InfoCache.getInstance().clearLogin();
+                //跳到登录页面
+                startActivity(SelectLoginActivity.class);
+                yesOrNoDialog.dismissDialog();
+                getActivity().finish();
             });
             yesOrNoDialog.showDialog();
         });

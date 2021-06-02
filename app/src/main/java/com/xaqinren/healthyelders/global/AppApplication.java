@@ -40,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.dcloud.common.util.RuningAcitvityUtil;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPActivity;
 import io.dcloud.feature.sdk.DCUniMPJSCallback;
@@ -109,6 +110,11 @@ public class AppApplication extends BaseApplication {
         PushManager.getInstance().initialize(getApplicationContext());
         PushManager.getInstance().setDebugLogger(getApplicationContext(), s -> LogUtils.e("PushManager", s));
 
+        // 非小程序进程
+        if(!RuningAcitvityUtil.getAppName(getBaseContext()).contains("io.dcloud.unimp")) {
+
+        }
+
     }
 
     private void initLiveRoom() {
@@ -128,6 +134,7 @@ public class AppApplication extends BaseApplication {
                 .setMenuDefFontColor("#ff00ff")
                 .setMenuDefFontWeight("normal")
                 .setMenuActionSheetItems(sheetItems)
+                .setEnableBackground(true)
                 .build();
 
         try {

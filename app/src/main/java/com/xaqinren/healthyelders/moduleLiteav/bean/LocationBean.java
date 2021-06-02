@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class LocationBean implements Serializable {
     public String desName;
     public String address;
+    public String addressInfo;
     public String distance;
     public String cityName;
     public String cityCode;

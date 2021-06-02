@@ -433,5 +433,9 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("live/gift/give")
     Observable<MBaseResponse<Object>> sendGift(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //解除用户关系
+    @GET("user/dissolveRelationship")
+    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String  id);
 }
 

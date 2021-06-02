@@ -1,15 +1,31 @@
 package com.xaqinren.healthyelders.uniApp;
 
 import android.content.Context;
+import android.nfc.Tag;
 
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
 import com.xaqinren.healthyelders.uniApp.widget.LoadingView;
 import com.xaqinren.healthyelders.uniApp.widget.SplashView;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
+import io.dcloud.feature.sdk.MenuActionSheetItem;
+import io.dcloud.feature.uniapp.UniSDKEngine;
+import io.dcloud.feature.uniapp.common.UniException;
+import io.dcloud.js.map.amap.IFMapDispose;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class UniUtil {
 
@@ -30,14 +46,62 @@ public class UniUtil {
             }else{
                 viewCls = page.contains("pages/index/index") ? SplashView.class : LoadingView.class;
             }
-
-            if (page != null) {
-                DCUniMPSDK.getInstance().startApp(context, appId, viewCls, page, jsonObject);
-            }else{
-                DCUniMPSDK.getInstance().startApp(context, appId, viewCls,  jsonObject);
+            int isDelay = 0;
+            if (!DCUniMPSDK.getInstance().isInitialize()) {
+                //需要重新初始化了
+                initUni();
             }
+            if (DCUniMPSDK.getInstance().getRuningAppid() != null) {
+                //则有正打开的小程序
+                if (appId.equals(DCUniMPSDK.getInstance().getRuningAppid())) {
+                    //表面打开的是正在运行的
+                    com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
+                    object.put("page", page);
+                    object.put("data", jsonObject);
+                    DCUniMPSDK.getInstance().sendUniMPEvent("reLaunch", object);
+                    isDelay = 200;
+                } else {
+                    //是其他小程序正在运行,需要销毁
+                    DCUniMPSDK.getInstance().closeCurrentApp();
+                }
+            }
+            LogUtils.e("UniUtil", "" + System.currentTimeMillis());
+            JSONObject finalJsonObject = jsonObject;
+            Observable.timer(isDelay, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> {
+                        LogUtils.e("UniUtil", "" + System.currentTimeMillis());
+                        DCUniMPSDK.getInstance().startApp(context, appId, viewCls, page, finalJsonObject);
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void initUni() {
+        MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
+        List<MenuActionSheetItem> sheetItems = new ArrayList<>();
+        sheetItems.add(item);
+        DCSDKInitConfig config = new DCSDKInitConfig.Builder()
+                .setCapsule(true)
+                .setMenuDefFontSize("16px")
+                .setMenuDefFontColor("#ff00ff")
+                .setMenuDefFontWeight("normal")
+//                .setMenuActionSheetItems(sheetItems)
+                .setEnableBackground(true)
+                .build();
+
+        try {
+            UniSDKEngine.registerModule("city", CitySelModule.class);
+        } catch (UniException e) {
+            e.printStackTrace();
+        }
+
+        DCUniMPSDK.getInstance().initialize(AppApplication.get(), config, isSuccess -> {
+        });
+        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{
+            LogUtils.e("UniUtil", "小程序关闭\t" + s);
+        });
     }
 }

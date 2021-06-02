@@ -102,5 +102,6 @@
     <color name="transparent">@android:color/transparent</color>
     <color name="color_33322D">#33322D</color>
     <color name="color_FF2051">#FF2051</color>
+    <color name="color_DEDEDE">#dedede</color>
 
 </resources>

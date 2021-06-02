@@ -482,4 +482,21 @@ public class UserRepository {
                 });
     }
 
+    public void delFans(MutableLiveData<Boolean> requestSuccess, MutableLiveData<Boolean> del, String id) {
+        userApi.delFans(UserInfoMgr.getInstance().getHttpToken(), id)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        requestSuccess.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        del.postValue(data.isOk());
+                    }
+                });
+    }
 }

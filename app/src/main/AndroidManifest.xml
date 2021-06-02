@@ -355,6 +355,7 @@
         <activity android:name=".moduleMine.activity.EditInfoActivity" />
         <activity android:name=".moduleMine.activity.EditNameActivity" />
         <activity android:name=".moduleMine.activity.EditBriefActivity" />
+        <activity android:name=".moduleMine.activity.LookAttentionActivity" />
 
         <service
             android:name=".push.IPushService"

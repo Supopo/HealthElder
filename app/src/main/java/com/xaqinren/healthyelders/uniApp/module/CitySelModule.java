@@ -47,8 +47,19 @@ public class CitySelModule extends UniModule {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 123) {
+                //longitude
+                //latitude
+                //region
+                //addreName
+                //addreInfo
                 LocationBean bean = (LocationBean) data.getSerializableExtra("bean");
-                callback.invoke(JSON.toJSONString(bean));
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("longitude", bean.lon);
+                jsonObject.put("latitude", bean.lat);
+                jsonObject.put("region", bean.province+bean.city+bean.district);
+                jsonObject.put("addreName", bean.address);
+                jsonObject.put("addreInfo", bean.addressInfo);
+                callback.invoke(jsonObject);
             }
         }
     }

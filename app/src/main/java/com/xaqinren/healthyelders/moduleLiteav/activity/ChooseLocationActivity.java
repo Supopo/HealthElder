@@ -315,6 +315,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         bean.city = regeocodeResult.getRegeocodeAddress().getCity();
         bean.district = regeocodeResult.getRegeocodeAddress().getDistrict();
         bean.desName = clickDesName;
+        bean.addressInfo = regeocodeResult.getRegeocodeAddress().getFormatAddress();
         //选择返回
         Intent intent = new Intent();
         intent.putExtra("bean", bean);
