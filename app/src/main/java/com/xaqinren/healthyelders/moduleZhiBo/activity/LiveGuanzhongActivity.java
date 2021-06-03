@@ -432,6 +432,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     //跳转结算页面
                     Bundle bundle = new Bundle();
                     bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                    bundle.putString("liveRoomId", mLiveInitInfo.liveRoomId);
                     startActivity(ZhiboOverGZActivity.class, bundle);
                 } else {
                     //群发退出直播间的消息

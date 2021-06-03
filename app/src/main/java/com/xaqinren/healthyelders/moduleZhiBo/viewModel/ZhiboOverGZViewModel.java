@@ -29,8 +29,8 @@ public class ZhiboOverGZViewModel extends BaseViewModel {
         LiveRepository.getInstance().liveOverInfoGZ(dismissDialog, liveOverInfo, liveRoomRecordId);
     }
 
-    public void getMoreLives(int page) {
-        LiveRepository.getInstance().getSomeLikeList(dismissDialog, page, 10, videoList, Constant.REQ_TAG_ZB);
+    public void getMoreLives(int page, String roomId) {
+        LiveRepository.getInstance().getSomeLikeList(dismissDialog, page, 10, videoList, Constant.REQ_TAG_ZB, roomId);
     }
 
     public void joinLive(String liveRoomId) {

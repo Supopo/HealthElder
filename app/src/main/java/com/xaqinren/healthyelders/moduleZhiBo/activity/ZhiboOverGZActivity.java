@@ -30,6 +30,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
  */
 public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding, ZhiboOverGZViewModel> {
     private String liveRoomRecordId;
+    private String liveRoomId;
     private SomeVideoListAdapter mAdapter;
     private BaseLoadMoreModule mLoadMore;
     private HeaderZhiboOverGzBinding headBinding;
@@ -50,6 +51,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
         super.initParam();
         Bundle extras = getIntent().getExtras();
         liveRoomRecordId = (String) extras.get("liveRoomRecordId");
+        liveRoomId = (String) extras.get("liveRoomId");
     }
 
     private int page = 1;
@@ -59,7 +61,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
         super.initData();
         setStatusBarTransparent();
         viewModel.getLiveOverInfo(liveRoomRecordId);
-        viewModel.getMoreLives(page);
+        viewModel.getMoreLives(page, liveRoomId);
 
         mAdapter = new SomeVideoListAdapter(R.layout.item_some_video);
         binding.rvContent.setLayoutManager(new GridLayoutManager(this, 2));
@@ -75,7 +77,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
             @Override
             public void onLoadMore() {
                 page++;
-                viewModel.getMoreLives(page);
+                viewModel.getMoreLives(page, liveRoomId);
             }
         });
         mAdapter.setOnItemClickListener(((adapter, view, position) -> {
@@ -101,7 +103,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
             public void onRefresh() {
                 binding.srlContent.setRefreshing(false);
                 page = 1;
-                viewModel.getMoreLives(page);
+                viewModel.getMoreLives(page, liveRoomId);
             }
         });
     }

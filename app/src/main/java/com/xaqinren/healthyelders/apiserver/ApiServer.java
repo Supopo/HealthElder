@@ -458,8 +458,8 @@ public interface ApiServer {
 
     //猜你喜欢
     @GET("jkzl/queryLikePage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSomeLikeVideoList(@Header("Authorization") String authorization,@Query("page") Integer page,
-                                                                                 @Query("pageSize") Integer count, @Query("resourceType") String resourceType);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSomeLikeVideoList(@Header("Authorization") String authorization, @Query("page") Integer page,
+                                                                                 @Query("pageSize") Integer count, @Query("resourceType") String resourceType, @Query("excludeId") String excludeId);
 
 }
 

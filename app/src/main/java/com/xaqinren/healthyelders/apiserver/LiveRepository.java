@@ -802,8 +802,8 @@ public class LiveRepository {
                 });
     }
 
-    public void getSomeLikeList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList, String resourceType) {
-        userApi.getSomeLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, resourceType)
+    public void getSomeLikeList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String roomId) {
+        userApi.getSomeLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, resourceType, roomId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
