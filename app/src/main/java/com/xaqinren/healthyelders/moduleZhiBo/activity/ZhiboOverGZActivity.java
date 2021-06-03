@@ -132,6 +132,10 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
                 if (page == 1) {
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     mAdapter.setList(dataList);
+
+                    if (dataList.size()==0) {
+                        headBinding.tvTip.setVisibility(View.GONE);
+                    }
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束

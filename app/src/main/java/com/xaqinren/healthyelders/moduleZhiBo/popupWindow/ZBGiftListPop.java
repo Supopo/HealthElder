@@ -53,6 +53,7 @@ public class ZBGiftListPop extends BasePopupWindow {
     private ViewPager2 vpContent;
     private IndicatorView indView;
     private Disposable subscribe;
+    private int nowPage;
 
     public ZBGiftListPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
@@ -63,6 +64,13 @@ public class ZBGiftListPop extends BasePopupWindow {
         initView();
     }
 
+    public void rushGold() {
+        UserRepository.getInstance().getBanlance(userBanlance);
+    }
+
+    private int lastPage;
+    private int selectPage;
+
     private void initView() {
         indView = findViewById(R.id.indicator_view);
         vpContent = findViewById(R.id.vp_content);
@@ -72,6 +80,13 @@ public class ZBGiftListPop extends BasePopupWindow {
         pageAdapter = new GiftListPageAdapter(R.layout.item_gift_rv);
         vpContent.setAdapter(pageAdapter);
 
+        vpContent.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                nowPage = position;
+            }
+        });
 
         //充值
         tvCZ.setOnClickListener(lis -> {
@@ -83,14 +98,21 @@ public class ZBGiftListPop extends BasePopupWindow {
             if (eventBean != null) {
                 if (eventBean.msgId == CodeTable.ZHJ_SELECT_GIFT) {
                     GiftSelectBean selectBean = (GiftSelectBean) eventBean.data;
-                    for (int i = 0; i < pageAdapter.getData().size(); i++) {
-                        if (i != selectBean.selectPage) {
-                            for (GiftBean giftBean : pageAdapter.getData().get(i).giftBeans) {
-                                giftBean.isSelect = false;
+                    selectPage = selectBean.selectPage;
+
+                    if (selectPage != lastPage) {
+                        for (int i = 0; i < pageAdapter.getData().size(); i++) {
+
+                            if (i != selectBean.selectPage) {
+                                for (GiftBean giftBean : pageAdapter.getData().get(i).giftBeans) {
+                                    giftBean.isSelect = false;
+                                }
+                                pageAdapter.notifyItemChanged(i);
                             }
-                            pageAdapter.notifyItemChanged(i);
+
                         }
                     }
+                    lastPage = selectPage;
 
                 } else if (eventBean.msgId == CodeTable.WX_PAY_CODE && eventBean.msgType == 1) {
                     //重新获取用户余额
@@ -101,7 +123,7 @@ public class ZBGiftListPop extends BasePopupWindow {
 
         userBanlance.observe((LifecycleOwner) context, userInfoBean -> {
             if (userInfoBean != null) {
-                tvGoldNum.setText(""+userInfoBean.getPointAccountBalance());
+                tvGoldNum.setText("" + userInfoBean.getPointAccountBalance());
             }
         });
 

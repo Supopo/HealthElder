@@ -1679,6 +1679,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 //测试 发送自定义送礼物消息
                 toSendGiftMsg(selectGift);
                 zbGiftListPop.dismiss();
+                //调接口刷新金币数量
+                zbGiftListPop.rushGold();
             }
         });
     }
