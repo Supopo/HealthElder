@@ -183,12 +183,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 onUnReadWatch(ImManager.getInstance().getUnreadCount());
                 ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
             }
+
+            //获取UserSig
+            viewModel.getUserSig(accessToken);
+            viewModel.getGiftList();
         }
 
-        //获取UserSig
-        viewModel.getUserSig(accessToken);
-
-        viewModel.getGiftList();
     }
 
 

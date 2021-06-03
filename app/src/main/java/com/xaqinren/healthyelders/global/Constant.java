@@ -11,6 +11,7 @@ import retrofit2.http.Url;
  */
 public class Constant {
     public static boolean DEBUG = true;
+    public static String payUrl = "http://e53eyt.natappfree.cc/merchant/unifiedPay";
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
     public static String debugUrl = "http://192.168.1.113:18080/";
     public static String lanUrl = DEBUG ? "http://test.hjyiyuanjiankang.com/" : baseUrl;

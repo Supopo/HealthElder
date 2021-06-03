@@ -445,5 +445,9 @@ public interface ApiServer {
     //查询账户余额
     @GET("user/findAccountBalance")
     Observable<MBaseResponse<UserInfoBean>> getMyBalance(@Header("Authorization") String authorization);
+
+    @POST
+    Observable<MBaseResponse<String>> toPay(
+            @Url String host, @Header("Authorization") String token, @Body RequestBody requestBody);
 }
 

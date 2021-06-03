@@ -70,6 +70,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
     private double czNum;
     private double yeNum;
     private int jbyeNum;
+    private int beiLv;
 
     private void initView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -95,25 +96,29 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
             lastPos = position;
         }));
 
-        UserRepository.getInstance().chongzhiList(datas);
+
         getBanlance();
 
         binding.btnCz.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
-            bundle.putDouble("czNum",czNum);
-            bundle.putDouble("yeNum",yeNum);
+            bundle.putDouble("czNum", czNum);
+            bundle.putDouble("yeNum", yeNum);
+            bundle.putInt("beiLv", beiLv);
             if (czNum == 0) {
-                startActivity(CZInputPopupActivity.class,bundle);
+                startActivity(CZInputPopupActivity.class, bundle);
             } else {
-                startActivity(PayActivity.class,bundle);
+                startActivity(PayActivity.class, bundle);
             }
         });
     }
+
     private MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
 
     public void getBanlance() {
+        UserRepository.getInstance().chongzhiList(datas);
         UserRepository.getInstance().getBanlance(userBanlance);
     }
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -137,6 +142,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
                     bean.beiLv = datas.rechargePercent;
                 }
 
+                beiLv = datas.rechargePercent;
                 selectAdapter.setNewInstance(menuBeans);
 
             }
@@ -151,6 +157,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
             }
         });
     }
+
     @Override
     public void finish() {
         super.finish();

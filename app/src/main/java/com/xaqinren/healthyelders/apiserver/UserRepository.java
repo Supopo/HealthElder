@@ -121,13 +121,13 @@ public class UserRepository {
                             InfoCache.getInstance().setLoginUser(response.getData());
                             UserInfoMgr.getInstance().setUserInfo(response.getData());
                             //绑定cid
-                            PushManager.getInstance().bindAlias(AppApplication.get(),response.getData().getId());
+                            PushManager.getInstance().bindAlias(AppApplication.get(), response.getData().getId());
                             LogUtils.e("MainActivity", "绑定 cid -> " + response.getData().getId());
                             getUserSig(token);
                             if (loginSuccess != null) {
                                 loginSuccess.postValue(true);
                             }
-                        }else{
+                        } else {
                             if (userInfo != null) {
                                 userInfo.postValue(response.getData());
                             }
@@ -149,6 +149,7 @@ public class UserRepository {
                     }
                 });
     }
+
     public void getUserInfo(MutableLiveData<UserInfoBean> userInfo, String token) {
         getUserInfo(null, userInfo, token);
     }
@@ -358,7 +359,8 @@ public class UserRepository {
     }
 
     public void getUserSig(String token) {
-        if (UserInfoMgr.getInstance().getUserInfo()==null)return;
+        if (UserInfoMgr.getInstance().getUserInfo() == null)
+            return;
         userApi.getUserSig(token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -395,7 +397,7 @@ public class UserRepository {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
+        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
@@ -447,8 +449,8 @@ public class UserRepository {
                 });
     }
 
-    public void bindAlias( MutableLiveData<Boolean> clientIdData , String clientId) {
-        userApi.bindAlias(UserInfoMgr.getInstance().getHttpToken(),clientId)
+    public void bindAlias(MutableLiveData<Boolean> clientIdData, String clientId) {
+        userApi.bindAlias(UserInfoMgr.getInstance().getHttpToken(), clientId)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
@@ -465,7 +467,7 @@ public class UserRepository {
                 });
     }
 
-    public void searchUser(MutableLiveData<Boolean> dismissDialog,MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String tags ){
+    public void searchUser(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String tags) {
         userApi.getSearchUser(page, pagesize, tags)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
@@ -535,5 +537,31 @@ public class UserRepository {
                     }
                 });
 
+    }
+
+    public void toPay(MutableLiveData<String> payJson,String accountOrderType, String payMethod, String payType, double paymentAmount) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("accountOrderType", accountOrderType);
+        hashMap.put("paymentMethod", payMethod);
+        hashMap.put("paymentChannel", payType);
+        hashMap.put("paymentAmount", paymentAmount);
+        hashMap.put("openid", "");
+
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.toPay(Constant.payUrl, UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<String>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<String> data) {
+                        payJson.postValue(data.getData());
+                    }
+                });
     }
 }
