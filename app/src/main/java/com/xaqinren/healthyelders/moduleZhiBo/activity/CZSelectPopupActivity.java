@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityPopCzSelectBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ChongZhiSelectAdapter;
@@ -23,8 +25,10 @@ import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee on 2021/4/2.
@@ -33,6 +37,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBinding, BaseViewModel> {
 
     private ChongZhiSelectAdapter selectAdapter;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -102,6 +107,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
         binding.btnCz.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putDouble("czNum", czNum);
+            bundle.putDouble("jbyeNum", jbyeNum);
             bundle.putDouble("yeNum", yeNum);
             bundle.putInt("beiLv", beiLv);
             if (czNum == 0) {
@@ -147,7 +153,6 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
 
             }
         });
-
         userBanlance.observe(this, datas -> {
             if (datas != null) {
                 UserInfoMgr.getInstance().getUserInfo().setWallAccountBalance(datas.getWallAccountBalance());
@@ -155,6 +160,14 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
                 jbyeNum = datas.getPointAccountBalance();
                 binding.tvTips.setText("余额：" + jbyeNum + "金币");
             }
+        });
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.WX_PAY_CODE && event.msgType == 1) {
+                    finish();
+                }
+            }
+
         });
     }
 
@@ -165,4 +178,11 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
         overridePendingTransition(R.anim.pop_bottom_2enter, R.anim.pop_bottom_2exit);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
+    }
 }

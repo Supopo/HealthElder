@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityPopCzInputBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ChongZhiKeyBordAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ChongZhiNumAdapter;
@@ -23,8 +26,10 @@ import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee on 2021/4/2.
@@ -34,6 +39,7 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
 
     private ChongZhiKeyBordAdapter mAdapter;
     private Bundle extras;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -128,6 +134,12 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
                 if (extras == null) {
                     extras = new Bundle();
                 }
+
+                if (Double.parseDouble(binding.etContent.getText().toString()) < 2) {
+                    ToastUtil.toastShortMessage("充值金额最少2元");
+                    return;
+                }
+
                 //充值
                 extras.putDouble("czNum", Double.parseDouble(binding.etContent.getText().toString()));
                 startActivity(PayActivity.class, extras);
@@ -151,8 +163,24 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
 
 
     @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.WX_PAY_CODE && event.msgType == 1) {
+                    finish();
+                }
+            }
+
+        });
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 
 

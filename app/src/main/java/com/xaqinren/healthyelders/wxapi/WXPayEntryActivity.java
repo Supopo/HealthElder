@@ -49,6 +49,7 @@ public class WXPayEntryActivity extends AbsWXPayCallbackActivity {
                     RxBus.getDefault().post(new EventBean(CodeTable.WX_PAY_CODE, 1));
                 }
             } else {
+                RxBus.getDefault().post(new EventBean(CodeTable.WX_PAY_CODE, 2));
                 Toast.makeText(WXPayEntryActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
             }
             finish();

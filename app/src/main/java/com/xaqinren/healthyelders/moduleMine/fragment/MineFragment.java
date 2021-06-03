@@ -267,13 +267,13 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGz.setOnClickListener(lis -> {
-            startActivity(CZSelectPopupActivity.class);
+
         });
         binding.tvFs.setOnClickListener(lis -> {
-            startActivity(CZInputPopupActivity.class);
+
         });
         binding.tvOrder.setOnClickListener(v -> {
-            startActivity(PayActivity.class);
+
         });
         binding.tvFriends.setOnClickListener(lis -> {
         });

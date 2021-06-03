@@ -106,6 +106,16 @@
                     android:textSize="@dimen/sp_16" />
 
             </RelativeLayout>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:visibility="gone"
+                android:id="@+id/loadingView"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                app:lottie_fileName="loading_anim.json"
+                app:lottie_loop="true"
+                android:layout_centerInParent="true"/>
+
         </RelativeLayout>
     </LinearLayout>
 

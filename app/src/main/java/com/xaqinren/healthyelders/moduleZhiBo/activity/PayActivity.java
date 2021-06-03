@@ -30,6 +30,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.PayTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
@@ -44,6 +45,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
     private double yeNum;
     private int beiLv;
     private PayTypeAdapter payTypeAdapter;
+    private Disposable subscribe;
 
 
     @Override
@@ -149,10 +151,18 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
-                if (event.msgId == CodeTable.WX_PAY_CODE && event.msgType == 1) {
-                            finish();
+                if (event.msgId == CodeTable.WX_PAY_CODE) {
+                    binding.loadingView.cancelAnimation();
+                    binding.loadingView.setVisibility(View.GONE);
+                    if (event.msgType == 1) {
+                        finish();
+                    } else {
+                        //支付失败
+                    }
+
+
                 }
             }
 
@@ -181,6 +191,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
             Toast.makeText(AppApplication.mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        binding.loadingView.setVisibility(View.VISIBLE);
+        binding.loadingView.playAnimation();
+
         PayReq payReq = new PayReq();
         payReq.appId = payRes.appId;
         payReq.partnerId = payRes.partnerId;
@@ -199,4 +213,11 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
         overridePendingTransition(R.anim.pop_bottom_2enter, R.anim.pop_bottom_2exit);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
+    }
 }

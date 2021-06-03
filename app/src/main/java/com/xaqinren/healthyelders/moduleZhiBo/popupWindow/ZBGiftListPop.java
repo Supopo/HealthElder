@@ -1,9 +1,12 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -11,13 +14,16 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.GiftListPageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftSelectBean;
@@ -41,13 +47,12 @@ public class ZBGiftListPop extends BasePopupWindow {
 
     private Context context;
     private LiveInitInfo mLiveInitInfo;
-    private String mPusherId;
-    private String userGold;
     private TextView tvGoldNum;
     private TextView tvCZ;
     private GiftListPageAdapter pageAdapter;
     private ViewPager2 vpContent;
     private IndicatorView indView;
+    private Disposable subscribe;
 
     public ZBGiftListPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
@@ -63,7 +68,6 @@ public class ZBGiftListPop extends BasePopupWindow {
         vpContent = findViewById(R.id.vp_content);
         tvGoldNum = findViewById(R.id.tv_num);
         tvCZ = findViewById(R.id.tv_cz);
-        tvGoldNum.setText(userGold);
 
         pageAdapter = new GiftListPageAdapter(R.layout.item_gift_rv);
         vpContent.setAdapter(pageAdapter);
@@ -71,15 +75,13 @@ public class ZBGiftListPop extends BasePopupWindow {
 
         //充值
         tvCZ.setOnClickListener(lis -> {
-
+            context.startActivity(new Intent(context, CZSelectPopupActivity.class));
         });
 
 
-        RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean != null) {
-                if (eventBean.msgId == 10010 && eventBean.msgType == 100) {
-                    getUserInfo();
-                } else if (eventBean.msgId == CodeTable.ZHJ_SELECT_GIFT) {
+                if (eventBean.msgId == CodeTable.ZHJ_SELECT_GIFT) {
                     GiftSelectBean selectBean = (GiftSelectBean) eventBean.data;
                     for (int i = 0; i < pageAdapter.getData().size(); i++) {
                         if (i != selectBean.selectPage) {
@@ -90,13 +92,24 @@ public class ZBGiftListPop extends BasePopupWindow {
                         }
                     }
 
+                } else if (eventBean.msgId == CodeTable.WX_PAY_CODE && eventBean.msgType == 1) {
+                    //重新获取用户余额
+                    UserRepository.getInstance().getBanlance(userBanlance);
                 }
             }
         });
 
+        userBanlance.observe((LifecycleOwner) context, userInfoBean -> {
+            if (userInfoBean != null) {
+                tvGoldNum.setText(""+userInfoBean.getPointAccountBalance());
+            }
+        });
+
         getGiftList();
-        getUserInfo();
+        UserRepository.getInstance().getBanlance(userBanlance);
     }
+
+    private MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
 
     int pageCount;//menu1菜单页数 ViewPager+RecvclerView
     int pageSize = 8;//menu1菜单页数数量
@@ -143,29 +156,6 @@ public class ZBGiftListPop extends BasePopupWindow {
                         }
                     }
                 });
-    }
-
-    private void getUserInfo() {
-        //        RetrofitClient.getInstance().create(ApiServer.class).getUserInfo(
-        //                Constant.getToken()
-        //        )
-        //                .compose(RxUtils.schedulersTransformer()) //线程调度
-        //                .doOnSubscribe(new Consumer<Disposable>() {
-        //                    @Override
-        //                    public void accept(Disposable disposable) throws Exception {
-        //
-        //                    }
-        //                })
-        //                .subscribe(new Consumer<UserInfoResBean>() {
-        //                    @Override
-        //                    public void accept(UserInfoResBean bean) throws Exception {
-        //                        if (bean.isSuccess()) {
-        //                            userGold = bean.user.goldCoin == null ? "0" : bean.user.goldCoin.toString();
-        //                            SPUtils.getInstance().put(Constant.USER_GOLD, userGold);
-        //                            tvGoldNum.setText(userGold);
-        //                        }
-        //                    }
-        //                });
     }
 
     @Override
