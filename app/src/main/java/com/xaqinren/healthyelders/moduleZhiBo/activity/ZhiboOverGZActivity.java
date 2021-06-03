@@ -144,6 +144,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
                 startActivity(LiveGuanzhongActivity.class, bundle);
+                finish();
             }
         });
     }

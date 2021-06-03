@@ -379,7 +379,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         tcChatEntity.setContent(LiveConstants.TYPE_SHOW_TEXT);
         msgList.add(tcChatEntity);
         //再添加一条消息展示直播间介绍
-        if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomIntroduce)) {
+        if (mLiveInitInfo.getHasIntroduce() && !TextUtils.isEmpty(mLiveInitInfo.liveRoomIntroduce)) {
             TCChatEntity tcChatEntity2 = new TCChatEntity();
             tcChatEntity2.setSenderName("");
             tcChatEntity2.setType(LiveConstants.TYPE_DES);

@@ -428,7 +428,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         tcChatEntity.setContent(LiveConstants.TYPE_SHOW_TEXT);
         msgList.add(tcChatEntity);
         //再添加一条消息展示直播间介绍
-        if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomIntroduce)) {
+        if (mLiveInitInfo.getHasIntroduce() && !TextUtils.isEmpty(mLiveInitInfo.liveRoomIntroduce)) {
             TCChatEntity tcChatEntity2 = new TCChatEntity();
             tcChatEntity2.setSenderName("");
             tcChatEntity2.setType(LiveConstants.TYPE_DES);
@@ -1553,7 +1553,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         });
         RxSubscriptions.add(disposable);
 
-        viewModel.startError.observe(this, startError ->{
+        viewModel.startError.observe(this, startError -> {
             if (startError != null) {
                 if (startError) {
                     ToastUtil.toastShortMessage("直播间开启失败，请重新尝试");
@@ -1577,7 +1577,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         viewModel.startLiveInfo.observe(this, liveInitInfo -> {
             if (liveInitInfo != null) {
 
-                RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"startLive"));
+                RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "startLive"));
                 if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
                     //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
