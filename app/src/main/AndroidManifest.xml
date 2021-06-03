@@ -344,13 +344,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
+        <activity android:name=".moduleMine.activity.EditInfoActivity" />
+        <activity android:name=".moduleMine.activity.EditNameActivity" />
+        <activity android:name=".moduleMine.activity.EditBriefActivity" />
         <activity
-            android:name=".moduleZhiBo.activity.PayPopupActivity"
+            android:name=".moduleZhiBo.activity.CZSelectPopupActivity"
             android:theme="@style/EditDialogStyle"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity
-            android:name=".moduleZhiBo.activity.ChongZhiPopupActivity"
-            android:theme="@style/EditDialogStyle"
+            android:name=".moduleZhiBo.activity.CZInputPopupActivity"
+            android:theme="@style/EditDialogStyleEx"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+        <activity
+            android:name=".moduleZhiBo.activity.PayActivity"
+            android:theme="@style/EditDialogStyleEx"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity android:name=".moduleMine.activity.EditInfoActivity" />
         <activity android:name=".moduleMine.activity.EditNameActivity" />

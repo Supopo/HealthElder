@@ -19,6 +19,25 @@ public class UserInfoBean {
     private int cumulativeAmount;
     private String id;
 
+    public Integer getPointAccountBalance() {
+        return pointAccountBalance;
+    }
+
+    public void setPointAccountBalance(Integer pointAccountBalance) {
+        this.pointAccountBalance = pointAccountBalance;
+    }
+
+    public Double getWallAccountBalance() {
+        return wallAccountBalance;
+    }
+
+    public void setWallAccountBalance(Double wallAccountBalance) {
+        this.wallAccountBalance = wallAccountBalance;
+    }
+
+    private Integer pointAccountBalance;//金币余额
+    private Double wallAccountBalance;//钱包
+
     public String getIntroduce() {
         return introduce;
     }

@@ -1,58 +1,68 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.bean.EventBean;
-import com.xaqinren.healthyelders.databinding.ActivityPopPayBinding;
-import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.databinding.ActivityPayBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.PayTypeAdapter;
-import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
- * Created by Lee on 2021/4/2.
+ * Created by Lee. on 2021/6/2.
  * 支付弹窗页面
  */
-public class PayPopupActivity extends Activity {
+public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel> {
 
-    private ActivityPopPayBinding binding;
+    private double czNum;
+    private double yeNum;
     private PayTypeAdapter payTypeAdapter;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle extras = getIntent().getExtras();
 
-        setContentView(R.layout.activity_pop_pay);
-        setWindow();
-        initView();
+    @Override
+    public int initContentView(Bundle savedInstanceState) {
+        return R.layout.activity_pay;
     }
 
+    @Override
+    public int initVariableId() {
+        return BR.viewModel;
+    }
+
+    @Override
+    public void initParam() {
+        super.initParam();
+        if (getIntent().getExtras() != null) {
+            czNum = getIntent().getExtras().getDouble("czNum", 0);
+            yeNum = getIntent().getExtras().getDouble("yeNum", 0);
+        }
+    }
+
+    @Override
+    public void initData() {
+        super.initData();
+        rlTitle.setVisibility(View.GONE);
+        setWindow();
+        initView();
+        binding.tvCzNum.setText("" + czNum);
+        binding.tvTips.setText(czNum * 10 + "个金币");
+    }
 
     private void setWindow() {
         //窗口对齐屏幕宽度
@@ -65,13 +75,11 @@ public class PayPopupActivity extends Activity {
         win.setAttributes(lp);
     }
 
-    String[] menuDes = {"", "(剩余：0.00)"};
     String[] menuNames = {"微信支付", "我的零钱"};
     int[] menuRes = {R.mipmap.zhifu_wechat, R.mipmap.zhifu_lingq};
 
     private void initView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_pop_pay);
         binding.ivClose.setOnClickListener(lis -> {
             finish();
         });
@@ -88,7 +96,6 @@ public class PayPopupActivity extends Activity {
             menuBean.id = String.valueOf(i);
             menuBean.menuName = menuNames[i];
             menuBean.menuRes = menuRes[i];
-            menuBean.subMenuName = menuDes[i];
             menuBeanList.add(menuBean);
         }
         payTypeAdapter.setNewInstance(menuBeanList);
@@ -101,15 +108,36 @@ public class PayPopupActivity extends Activity {
             payTypeAdapter.notifyItemChanged(selectPos, 99);
             lastPos = position;
         }));
+        getBanlance();
     }
 
     private int selectPos;
     private int lastPos;
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    private MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
+
+    public void getBanlance() {
+        UserRepository.getInstance().getBanlance(userBanlance);
     }
 
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        userBanlance.observe(this, datas -> {
+            if (datas != null) {
+                UserInfoMgr.getInstance().getUserInfo().setWallAccountBalance(datas.getWallAccountBalance());
+                UserInfoMgr.getInstance().getUserInfo().setPointAccountBalance(datas.getPointAccountBalance());
+                yeNum = datas.getWallAccountBalance();
+                payTypeAdapter.getData().get(1).subMenuName ="(剩余：" + yeNum + ")";
+                payTypeAdapter.notifyItemChanged(1,99);
+            }
+        });
+    }
 
+    @Override
+    public void finish() {
+        super.finish();
+        //更改关闭页面动画
+        overridePendingTransition(R.anim.pop_bottom_2enter, R.anim.pop_bottom_2exit);
+    }
 }

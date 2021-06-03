@@ -23,6 +23,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
@@ -498,5 +499,41 @@ public class UserRepository {
                         del.postValue(data.isOk());
                     }
                 });
+    }
+
+    public void chongzhiList(MutableLiveData<ChongZhiListRes> datas) {
+        userApi.getChongZhiList(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<ChongZhiListRes>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<ChongZhiListRes> data) {
+                        datas.postValue(data.getData());
+                    }
+                });
+
+    }
+
+    public void getBanlance(MutableLiveData<UserInfoBean> datas) {
+        userApi.getMyBalance(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<UserInfoBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<UserInfoBean> data) {
+                        datas.postValue(data.getData());
+                    }
+                });
+
     }
 }

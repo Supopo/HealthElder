@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.MenuBean" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/ll_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_68"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:background="@drawable/bg_btn_gray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="其他金额"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            android:visibility="@{viewModel.type == 1?View.VISIBLE:View.GONE}" />
+
+        <LinearLayout
+            android:id="@+id/ll_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_18"
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.type != 1?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(viewModel.rechargeAmount *viewModel.beiLv)}"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="金币"
+                android:textSize="@dimen/sp_11"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_gold"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_3"
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.type != 1?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(viewModel.rechargeAmount)}"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="元"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_11" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_zengsong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:background="@drawable/bg_btn_yellow"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_1"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_1"
+            android:text="@{viewModel.giveAmount()}"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_11"
+            android:visibility="@{viewModel.type != 1?View.VISIBLE:View.GONE}" />
+    </RelativeLayout>
+</layout>

@@ -31,6 +31,14 @@ public class MenuBean {
     public int type;
     public int menuRes;
 
+
+    public int beiLv;
+    public double rechargeAmount;
+    public int giveAmount;
+    public String giveAmount(){
+        return "送"+giveAmount;
+    }
+
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
     }

@@ -21,6 +21,7 @@ import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
@@ -436,6 +437,13 @@ public interface ApiServer {
 
     //解除用户关系
     @GET("user/dissolveRelationship")
-    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String  id); 
+    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String  id);
+    //充值列表
+    @GET("user/getRechargeList")
+    Observable<MBaseResponse<ChongZhiListRes>> getChongZhiList(@Header("Authorization") String authorization);
+
+    //查询账户余额
+    @GET("user/findAccountBalance")
+    Observable<MBaseResponse<UserInfoBean>> getMyBalance(@Header("Authorization") String authorization);
 }
 
