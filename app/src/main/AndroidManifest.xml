@@ -359,10 +359,8 @@
             android:name=".moduleZhiBo.activity.PayActivity"
             android:theme="@style/EditDialogStyleEx"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
-        <activity android:name=".moduleMine.activity.EditInfoActivity" />
-        <activity android:name=".moduleMine.activity.EditNameActivity" />
-        <activity android:name=".moduleMine.activity.EditBriefActivity" />
         <activity android:name=".moduleMine.activity.LookAttentionActivity" />
+        <activity android:name=".moduleMine.activity.MyRecommendCodeActivity" />
 
         <service
             android:name=".push.IPushService"

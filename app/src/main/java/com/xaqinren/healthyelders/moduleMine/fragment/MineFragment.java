@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
@@ -279,7 +280,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         });
         binding.ivSetting.setOnClickListener(lis -> {
             //退出登录
-            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+            /*YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
             yesOrNoDialog.setMessageText("确定退出吗？");
             yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
                 @Override
@@ -292,7 +293,9 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     getActivity().finish();
                 }
             });
-            yesOrNoDialog.showDialog();
+            yesOrNoDialog.showDialog();*/
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.openDrawer();
         });
         binding.rivPhoto2.setOnClickListener(lis -> {
 

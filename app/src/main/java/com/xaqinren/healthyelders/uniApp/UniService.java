@@ -244,11 +244,10 @@ public class UniService extends Service implements LifecycleOwner {
     private void saveBean(UniBean uniBean) {
         boolean flag = false;
         boolean find = false;
-        boolean idDebug = BuildConfig.DEBUG;
         for (SaveBean saveBean : saveBeans) {
             if (saveBean.getId().equals(uniBean.getId())) {
                 find = true;
-                if (idDebug || uniBean.getNewAppVersion().getVersionNumber() > saveBean.getCurrentVersion()) {
+                if (uniBean.getNewAppVersion().getVersionNumber() != saveBean.getCurrentVersion()) {
                     saveBean.setId(uniBean.getId());
                     saveBean.setAutoUpdateApplet(uniBean.getAutoUpdateApplet());
                     saveBean.setCurrentVersion(uniBean.getNewAppVersion().getVersionNumber());

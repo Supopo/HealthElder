@@ -9,22 +9,28 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 
+import com.dcloud.zxing2.maxicode.MaxiCodeReader;
 import com.dmcbig.mediapicker.utils.ScreenUtils;
 import com.igexin.sdk.PushManager;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
+import com.tencent.bugly.proguard.D;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -41,6 +47,7 @@ import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
+import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
@@ -98,6 +105,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private DCUniMPJSCallback callBack;
 
+    private int currentIndex;
+    private ActionBarDrawerToggle toggle;
 
     @Override
 
@@ -119,7 +128,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         initFragment();
         getCacheUserInfo();
         handler = new Handler();
-
 
         //设置底部背景线
         ViewGroup.LayoutParams layoutParams = binding.lineBottom.getLayoutParams();
@@ -149,6 +157,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
             }
         });
+        initDrawer();
+        disableDrawer();
     }
 
     @Override
@@ -292,6 +302,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private float before_press_Y;
     private float before_press_X;
 
+
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -352,7 +364,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         }
                     }
                 }
-
                 break;
             case MotionEvent.ACTION_UP:
                 before_press_Y = 0;
@@ -543,6 +554,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     private void commitAllowingStateLoss(int position) {
+        if (position == 3) {
+            enableDrawer();
+        }else{
+            disableDrawer();
+        }
+        currentIndex = position;
         hideAllFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(position + "");
@@ -576,6 +593,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
+                if (binding.drawer.isDrawerOpen(Gravity.RIGHT)) {
+                    closeDrawer();
+                    return true;
+                }
                 long secondTime = System.currentTimeMillis();
                 if (secondTime - firstTime > 2000) {
                     //如果两次按键时间间隔大于2秒，则不退出
@@ -617,5 +638,57 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         } else {
             binding.unread.setVisibility(View.GONE);
         }
+    }
+    private void disableDrawer() {
+        binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+    private void enableDrawer() {
+        binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+    private void initDrawer() {
+        toggle = new ActionBarDrawerToggle(
+                this,
+                binding.drawer,
+                null,
+                R.string.app_name,
+                R.string.app_name
+        );
+        float max = getResources().getDimension(R.dimen.dp_259);
+        binding.drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                LogUtils.e(TAG, "slideOffset " + slideOffset);
+                float tran = max * slideOffset;
+                binding.content.setTranslationX(-tran);
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+        binding.myCommCode.setOnClickListener(v -> {
+            //推广码
+            startActivity(MyRecommendCodeActivity.class);
+            closeDrawer();
+        });
+    }
+
+    public void openDrawer() {
+        binding.drawer.openDrawer(Gravity.RIGHT);
+    }
+    public void closeDrawer() {
+        binding.drawer.closeDrawer(Gravity.RIGHT);
     }
 }

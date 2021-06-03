@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/bg_tuijm_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
+                android:src="@mipmap/main_back"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="我的推荐码"
+                android:textSize="@dimen/sp_18"
+                android:textColor="@color/color_252525"
+                android:fontFamily="sans-serif-black" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_23"
+            android:layout_marginRight="@dimen/dp_23"
+            android:layout_marginTop="@dimen/dp_25">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/dp_32"
+                android:gravity="center_horizontal"
+                android:background="@drawable/bg_white_cir_8dp">
+
+                <TextView
+                    android:id="@+id/nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="狂奔的包子插画铺"
+                    android:textSize="@dimen/sp_22"
+                    android:textColor="@color/color_252525"
+                    android:layout_marginTop="@dimen/dp_41"
+                    android:includeFontPadding="false" />
+
+                <ImageView
+                    android:id="@+id/code"
+                    android:layout_width="@dimen/dp_230"
+                    android:layout_height="@dimen/dp_230"
+                    android:layout_marginTop="@dimen/dp_25" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="使用健康长老扫码，加我好友"
+                    android:layout_marginTop="@dimen/dp_22"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:textColor="@color/gray_999"
+                    android:textSize="@dimen/sp_14"
+                    android:includeFontPadding="false" />
+            </LinearLayout>
+
+            <com.tencent.qcloud.tim.uikit.component.CircleImageView
+                android:layout_width="@dimen/dp_64"
+                android:layout_height="@dimen/dp_64"
+                android:src="@color/white"
+                android:layout_centerHorizontal="true" />
+
+            <com.tencent.qcloud.tim.uikit.component.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_2"
+                android:src="@color/color_252525" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_60"
+            android:layout_marginRight="@dimen/dp_60"
+            android:layout_marginBottom="@dimen/dp_45">
+
+            <LinearLayout
+                android:id="@+id/save_layout"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@mipmap/icon_baocun" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/color_252525"
+                    android:text="保存到相册" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/scan_layout"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_alignParentRight="true">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@mipmap/icon_tuijm_sys" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/color_252525"
+                    android:text="扫一扫" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

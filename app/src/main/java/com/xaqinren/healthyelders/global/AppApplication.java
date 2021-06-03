@@ -33,6 +33,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -133,7 +134,7 @@ public class AppApplication extends BaseApplication {
                 .setMenuDefFontSize("16px")
                 .setMenuDefFontColor("#ff00ff")
                 .setMenuDefFontWeight("normal")
-                .setMenuActionSheetItems(sheetItems)
+//                .setMenuActionSheetItems(sheetItems)
                 .setEnableBackground(true)
                 .build();
 
@@ -142,7 +143,6 @@ public class AppApplication extends BaseApplication {
         } catch (UniException e) {
             e.printStackTrace();
         }
-
         DCUniMPSDK.getInstance().initialize(this, config, isSuccess -> {
         });
         DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{

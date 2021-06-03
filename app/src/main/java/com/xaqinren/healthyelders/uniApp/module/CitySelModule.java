@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tencent.mm.opensdk.utils.Log;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.PayActivity;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import io.dcloud.feature.sdk.DCUniMPActivity;
@@ -29,17 +31,19 @@ public class CitySelModule extends UniModule {
     @UniJSMethod(uiThread = true)
     public void openCity(JSONObject options, UniJSCallback callback) {
         this.callback = callback;
+        Activity context = (Activity) mUniSDKInstance.getContext();//DCUniMPActivity
+        LogUtils.e(TAG, context.toString());
         StringBuffer buffer = new StringBuffer();
         buffer.append("jkzl://app_open/location_activity");
         Intent action = new Intent(Intent.ACTION_VIEW);
         StringBuilder builder = new StringBuilder();
         builder.append(buffer.toString());
         action.setData(Uri.parse(builder.toString()));
-        Activity context = (Activity) mUniSDKInstance.getContext();//DCUniMPActivity
-        LogUtils.e(TAG, context.toString());
+
         if (context != null) {
             context.startActivityForResult(action, 123);
         }
+        //context.startActivity(new Intent(context, CZSelectPopupActivity.class));
     }
 
     @Override
