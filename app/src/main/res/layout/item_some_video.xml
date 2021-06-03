@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleHome.bean.VideoInfo" />
+    </data>
+
+    <!--    随机背景颜色-->
+    <!--    android:background="@{viewModel.placeholderRes}"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rl_item"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_212">
+
+            <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:qmui_corner_radius="@dimen/dp_8"
+                app:qmui_border_color="@color/transparent"
+                app:url="@{viewModel.coverUrl}" />
+
+            <LinearLayout
+                android:id="@+id/ll_showZhibo"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/dp_7"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/btn_2top"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_6"
+                android:visibility="@{viewModel.hasLive?View.VISIBLE:View.GONE}">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_6"
+                    android:layout_height="@dimen/dp_6"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dp_3"
+                    android:background="@mipmap/zhiboz_circle" />
+
+                <TextView
+                    android:id="@+id/tv_showZb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="直播中"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_12" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/dp_10"
+                android:textColor="@color/white"
+                android:text="@{viewModel.title}"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</layout>

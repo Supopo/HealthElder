@@ -37,13 +37,11 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private static final String TAG = "home-list";
 
     private List<VideoInfo> mVideoInfoList = new ArrayList<>();
-    private Disposable subscribe;
     private int page = 1;
     private int position;
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter homeAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
-    private FragmentActivity fragmentActivity;
     private VideoListBean videos;
     private Handler handler;
     private boolean isSingle;
@@ -177,7 +175,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     fragmentList.clear();
                     fragmentPosition = 0;
                     //需要重new否者会出现缓存
-                    homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
                     binding.viewPager2.setAdapter(homeAdapter);
                 }
 
@@ -212,7 +210,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     fragmentList.clear();
                     fragmentPosition = 0;
                     //需要重new否者会出现缓存
-                    homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
                     binding.viewPager2.setAdapter(homeAdapter);
                 }
 

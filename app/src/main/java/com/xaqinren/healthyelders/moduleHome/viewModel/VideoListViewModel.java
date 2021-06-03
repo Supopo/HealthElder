@@ -34,10 +34,10 @@ public class VideoListViewModel extends BaseViewModel {
         String resourceType = "";
         if (type == 1) {
             resourceType = "LIVE";
-            LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, type, datas, resourceType, "");
+            LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, videoListBean.isFollow, datas, resourceType, "");
         } else if (type == 2) {
             resourceType = "LIVE,VIDEO,USER_DIARY";
-            LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, type, datas, resourceType, tags);
+            LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, 0, datas, resourceType, tags);
         } else if (type == 3) {
             UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "");
         } else if (type == 4) {

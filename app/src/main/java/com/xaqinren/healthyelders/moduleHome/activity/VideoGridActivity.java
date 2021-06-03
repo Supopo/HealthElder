@@ -41,7 +41,6 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     private GridVideoAdapter mAdapter;
     private int page = 1;
     private BaseLoadMoreModule mLoadMore;
-    private Disposable subscribe;
     public RecyclerView recyclerView;
     private String title;
     private String tags;

@@ -80,7 +80,7 @@ public class LiveRepository {
                 });
     }
 
-    public void reStartLive(MutableLiveData<Boolean> startError,MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, String liveRoomRecordId) {
+    public void reStartLive(MutableLiveData<Boolean> startError, MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, String liveRoomRecordId) {
         userApi.reStartLive(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -801,4 +801,32 @@ public class LiveRepository {
 
                 });
     }
+
+    public void getSomeLikeList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, MutableLiveData<List<VideoInfo>> videoList, String resourceType) {
+        userApi.getSomeLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, resourceType)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        videoList.postValue(data.getData().content);
+                    }
+
+                    @Override
+                    public void onFail(String code, MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        super.onFail(code, data);
+                    }
+                });
+    }
+
 }

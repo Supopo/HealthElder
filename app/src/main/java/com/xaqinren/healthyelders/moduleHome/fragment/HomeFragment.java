@@ -85,6 +85,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
 
     public boolean isShowTop = true;
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -148,7 +149,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.ivZhibo.setOnClickListener(lis -> {
             VideoListBean listBean = new VideoListBean();
             listBean.type = 1;
-
+            listBean.isFollow = AppApplication.get().getLayoutPos() == 1 ? 1 : 0;
             Bundle bundle = new Bundle();
             bundle.putSerializable("key", listBean);
             startActivity(VideoListActivity.class, bundle);
@@ -306,10 +307,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             }
         });
 
-        binding.ivSearch.setOnClickListener(lis ->{
+        binding.ivSearch.setOnClickListener(lis -> {
             startActivity(SearchActivity.class);
         });
-        binding.ivSearch2.setOnClickListener(lis ->{
+        binding.ivSearch2.setOnClickListener(lis -> {
             startActivity(SearchActivity.class);
         });
     }

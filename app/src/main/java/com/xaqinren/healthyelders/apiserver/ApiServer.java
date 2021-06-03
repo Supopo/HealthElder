@@ -437,7 +437,8 @@ public interface ApiServer {
 
     //解除用户关系
     @GET("user/dissolveRelationship")
-    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String  id);
+    Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String id);
+
     //充值列表
     @GET("user/getRechargeList")
     Observable<MBaseResponse<ChongZhiListRes>> getChongZhiList(@Header("Authorization") String authorization);
@@ -454,6 +455,11 @@ public interface ApiServer {
     //直播间结束统计 - 观众端
     @GET("live/overAudienceStatistical")
     Observable<MBaseResponse<LiveOverInfo>> liveOverInfoGZ(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //猜你喜欢
+    @GET("jkzl/queryLikePage")
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSomeLikeVideoList(@Header("Authorization") String authorization,@Query("page") Integer page,
+                                                                                 @Query("pageSize") Integer count, @Query("resourceType") String resourceType);
 
 }
 

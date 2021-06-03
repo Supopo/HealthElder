@@ -65,6 +65,6 @@ public class LiveOverInfo {
 
 
     public String getUserCount() {
-        return "本场累计观看人次 : " + Num2TextUtil.sNum2Text2(userCount);
+        return Num2TextUtil.sNum2Text2(userCount);
     }
 }

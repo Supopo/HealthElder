@@ -40,6 +40,7 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
     private int mRight;
     private int mColumns = 2;//列数 默认2列
     private boolean isStaggeredGrid;
+    private boolean hasHead;
 
     public SpeacesItemDecoration(Context context, int bottom) {
         this.mBottom = dp2px(context, bottom);
@@ -50,6 +51,13 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
         this.isStaggeredGrid = isStaggeredGrid;
+    }
+
+    public SpeacesItemDecoration(Context context, int bottom, boolean isStaggeredGrid, boolean hasHead) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, bottom);
+        this.isStaggeredGrid = isStaggeredGrid;
+        this.hasHead = hasHead;
     }
 
     public SpeacesItemDecoration(Context context, int bottom, int columns) {
@@ -76,8 +84,6 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         //判断列数，如果是最后一列，则outRect.left = 0;
         outRect.bottom = mBottom;
         outRect.right = mRight;
-        //        outRect.left = mSpeace;
-        //        outRect.top = mSpeace;
 
         int position;
         if (isStaggeredGrid) {
@@ -86,6 +92,10 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
             position = lp.getSpanIndex();
         } else {
             position = parent.getChildLayoutPosition(view);
+        }
+
+        if (hasHead) {
+            position = position - 1;
         }
 
         if (((position + (1)) % mColumns) == 0) {
