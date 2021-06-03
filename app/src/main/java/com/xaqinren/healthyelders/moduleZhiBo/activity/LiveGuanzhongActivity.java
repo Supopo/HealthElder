@@ -432,7 +432,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     //跳转结算页面
                     Bundle bundle = new Bundle();
                     bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
-                    startActivity(ZhiboOverActivity.class, bundle);
+                    startActivity(ZhiboOverGZActivity.class, bundle);
                 } else {
                     //群发退出直播间的消息
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
@@ -1593,8 +1593,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         viewModel.followSuccess.observe(this, isFollow -> {
             if (isFollow != null) {
                 if (isFollow) {
-                    mLiveInitInfo.hasFollow = !mLiveInitInfo.hasFollow;
-                    if (mLiveInitInfo.hasFollow) {
+                    mLiveInitInfo.setHasFollow(!mLiveInitInfo.getHasFollow());
+                    if (mLiveInitInfo.getHasFollow()) {
                         binding.tvFollow.setText("已关注");
                         //群发关注消息
                         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_FOLLOW), "", null);
@@ -1673,7 +1673,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         });
         viewModel.sendGiftSuccess.observe(this, sendSuccess -> {
             //发送礼物自定义消息
-            if (sendSuccess != null &&sendSuccess) {
+            if (sendSuccess != null && sendSuccess) {
 
                 //测试 发送自定义送礼物消息
                 toSendGiftMsg(selectGift);
@@ -1759,7 +1759,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         Glide.with(this).load(sendGiftBean.giftsIcon).into(binding.ivGift);
         binding.tvAudienceName.setText(sendGiftBean.sendUserName);
         binding.tvGiftName.setText("送" + sendGiftBean.giftsName);
-
 
 
         if (sendGiftBean.hasAnimation.equals("1")) {

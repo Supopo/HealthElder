@@ -49,7 +49,7 @@ public class LiveRepository {
 
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
-    public void startLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, LiveInitInfo map) {
+    public void startLive(MutableLiveData<Boolean> startError, MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, LiveInitInfo map) {
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toStartLive(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -71,10 +71,16 @@ public class LiveRepository {
                     protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
                         startLiveInfo.postValue(data.getData());
                     }
+
+                    @Override
+                    public void onFail(String code, MBaseResponse<LiveInitInfo> data) {
+                        super.onFail(code, data);
+                        startError.postValue(true);
+                    }
                 });
     }
 
-    public void reStartLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, String liveRoomRecordId) {
+    public void reStartLive(MutableLiveData<Boolean> startError,MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> startLiveInfo, String liveRoomRecordId) {
         userApi.reStartLive(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -93,6 +99,12 @@ public class LiveRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
                         startLiveInfo.postValue(data.getData());
+                    }
+
+                    @Override
+                    public void onFail(String code, MBaseResponse<LiveInitInfo> data) {
+                        super.onFail(code, data);
+                        startError.postValue(true);
                     }
                 });
     }
@@ -767,4 +779,26 @@ public class LiveRepository {
                 });
     }
 
+    public void liveOverInfoGZ(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveOverInfo> liveOverInfo, String liveRoomRecordId) {
+        userApi.liveOverInfoGZ(UserInfoMgr.getInstance().getHttpToken(), liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<LiveOverInfo>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<LiveOverInfo> data) {
+                        liveOverInfo.postValue(data.getData());
+                    }
+
+                });
+    }
 }

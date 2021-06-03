@@ -181,7 +181,6 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
             if (data != null) {
                 PayRes payRes = JSON.parseObject(data, PayRes.class);
                 toWxPay(payRes);
-                Log.e("----------", payRes.toString());
             }
         });
     }

@@ -446,8 +446,14 @@ public interface ApiServer {
     @GET("user/findAccountBalance")
     Observable<MBaseResponse<UserInfoBean>> getMyBalance(@Header("Authorization") String authorization);
 
+    //支付接口
     @POST
     Observable<MBaseResponse<String>> toPay(
             @Url String host, @Header("Authorization") String token, @Body RequestBody requestBody);
+
+    //直播间结束统计 - 观众端
+    @GET("live/overAudienceStatistical")
+    Observable<MBaseResponse<LiveOverInfo>> liveOverInfoGZ(@Header("Authorization") String authorization, @Query("liveRoomRecordId") String liveRoomRecordId);
+
 }
 

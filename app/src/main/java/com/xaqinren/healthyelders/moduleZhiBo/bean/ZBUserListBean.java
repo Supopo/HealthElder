@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.xaqinren.healthyelders.utils.Num2TextUtil;
+
 import java.io.Serializable;
 
 /**
@@ -49,5 +51,8 @@ public class ZBUserListBean implements Serializable {
     public boolean isSelect;
     public int showTime;
 
-
+    public String contribution;//贡献值
+    public String getContribution(){
+        return "贡献值"+ Num2TextUtil.sNum2Text2(contribution);
+    }
 }

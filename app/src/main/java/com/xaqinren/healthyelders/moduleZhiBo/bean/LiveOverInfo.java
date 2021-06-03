@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.xaqinren.healthyelders.utils.Num2TextUtil;
+
 import java.util.List;
 
 /**
@@ -17,4 +19,52 @@ public class LiveOverInfo {
     public String commentUserCount;//
     public String favoriteCount;//
     public List<ZBUserListBean> liveRoomUsers;//
+
+    public String nickname;//
+    public String avatarUrl;//
+
+    public int getLiveRoomUsersSize() {
+        if (liveRoomUsers == null) {
+            return 0;
+        }
+        return liveRoomUsers.size();
+    }
+
+    public ZBUserListBean getTop1User() {
+        if (liveRoomUsers != null && liveRoomUsers.size() > 0) {
+            return liveRoomUsers.get(0);
+        }
+        ZBUserListBean bean = new ZBUserListBean();
+        bean.nickname = "";
+        bean.contribution = "0";
+        bean.avatarUrl = "";
+        return bean;
+    }
+
+    public ZBUserListBean getTop2User() {
+        if (liveRoomUsers != null && liveRoomUsers.size() > 1) {
+            return liveRoomUsers.get(1);
+        }
+        ZBUserListBean bean = new ZBUserListBean();
+        bean.nickname = "";
+        bean.contribution = "0";
+        bean.avatarUrl = "";
+        return bean;
+    }
+
+    public ZBUserListBean getTop3User() {
+        if (liveRoomUsers != null && liveRoomUsers.size() > 2) {
+            return liveRoomUsers.get(2);
+        }
+        ZBUserListBean bean = new ZBUserListBean();
+        bean.nickname = "";
+        bean.contribution = "0";
+        bean.avatarUrl = "";
+        return bean;
+    }
+
+
+    public String getUserCount() {
+        return "本场累计观看人次 : " + Num2TextUtil.sNum2Text2(userCount);
+    }
 }

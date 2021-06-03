@@ -43,7 +43,6 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
     //页面数据初始化方法
     @Override
     public void initData() {
-        rlTitle.setVisibility(View.GONE);
         setStatusBarTransparent();
         initAdapter();
         viewModel.getLiveOverInfo(liveRoomRecordId);

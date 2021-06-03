@@ -458,7 +458,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 isPlaying = true;
                 LogUtils.v(Constant.TAG_LIVE, "直播间创建成功");
                 //去通知服务器开启直播间
-                LogUtils.v(Constant.TAG_LIVE, mLiveRoom.getPushUrl());
                 mLiveInitInfo.pushUrl = mLiveRoom.getPushUrl();
                 //判断如果有上次记录就是继续直播，没有就重新开启直播
                 showDialog("连接服务器...");
@@ -1554,6 +1553,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         });
         RxSubscriptions.add(disposable);
 
+        viewModel.startError.observe(this, startError ->{
+            if (startError != null) {
+                if (startError) {
+                    ToastUtil.toastShortMessage("直播间开启失败，请重新尝试");
+                    finish();
+                }
+            }
+        });
         viewModel.loginRoomSuccess.observe(this, isSuccess -> {
             showDialog("创建直播间...");
             //开启推流
