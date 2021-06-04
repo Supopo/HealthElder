@@ -15,6 +15,7 @@
             android:id="@+id/share_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
@@ -33,12 +34,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginRight="@dimen/dp_16"
             android:id="@+id/share_wx_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/dp_16">
+            >
 
             <ImageView
                 android:layout_width="@dimen/dp_52"
@@ -59,8 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/dp_16">
+            android:gravity="center_horizontal">
 
             <ImageView
                 android:layout_width="@dimen/dp_52"

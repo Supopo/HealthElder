@@ -54,4 +54,10 @@ public class MenuBean {
         this.menuName = menuName;
         this.menuRes = menuRes;
     }
+    public MenuBean(String id,String menuName, int menuRes,int type) {
+        this.id = id;
+        this.type = type;
+        this.menuName = menuName;
+        this.menuRes = menuRes;
+    }
 }

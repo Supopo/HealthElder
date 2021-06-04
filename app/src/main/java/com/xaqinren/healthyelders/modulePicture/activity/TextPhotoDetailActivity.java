@@ -192,7 +192,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
             @Override
             public void toUser(CommentListBean iCommentBean) {
-//                onChildClick.toUser(iCommentBean);
+                //                onChildClick.toUser(iCommentBean);
                 //TODO 打开用户主页
             }
         });
@@ -215,7 +215,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         loadMoreModule.setEnableLoadMore(true);
         loadMoreModule.setOnLoadMoreListener(() -> {
             page++;
-            viewModel.getCommentList(page , videoId);
+            viewModel.getCommentList(page, videoId);
         });
         binding.commentIv.setOnClickListener(view -> {
             //滚动到评论部分
@@ -243,7 +243,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
         binding.guanzhu.setOnClickListener(this);
         viewModel.diaryInfo(videoId);
-        viewModel.getCommentList(page , videoId);
+        viewModel.getCommentList(page, videoId);
     }
 
     /**
@@ -285,7 +285,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                 if (replyDatas.replyList != null && replyDatas.replyList.size() > 0) {
                     int position = replyDatas.parentPos - 1;
                     CommentListBean bean = commentAdapter.getData().get(position);
-                     commentAdapter.getData().get(position).itemPage++;
+                    commentAdapter.getData().get(position).itemPage++;
                     //加载更多加载完成
                     replyDatas.replyList.get(replyDatas.replyList.size() - 1).lodaState = 1;
                     replyDatas.replyList.get(replyDatas.replyList.size() - 1).itemPage = commentAdapter.getData().get(position).itemPage;
@@ -318,7 +318,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             }
         });
 
-        viewModel.diaryInfo.observe(this,diaryInfoBean -> {
+        viewModel.diaryInfo.observe(this, diaryInfoBean -> {
             this.diaryInfoBean = diaryInfoBean;
             if (UserInfoMgr.getInstance().getAccessToken() != null) {
                 String uid = UserInfoMgr.getInstance().getUserInfo().getId();
@@ -331,14 +331,14 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             setContentData(this.diaryInfoBean);
         });
 
-        viewModel.follow.observe(this,follow->{
+        viewModel.follow.observe(this, follow -> {
             if (follow) {
                 diaryInfoBean.hasFavorite = !diaryInfoBean.hasFavorite;
                 follow();
             }
         });
 
-        viewModel.favorite.observe(this, value ->{
+        viewModel.favorite.observe(this, value -> {
             diaryInfoBean.hasFavorite = !diaryInfoBean.hasFavorite;
             binding.likeIv.setImageResource(diaryInfoBean.hasFavorite ? R.mipmap.icon_zan_red : R.mipmap.icon_zan_gray);
             diaryInfoBean.favoriteCount = diaryInfoBean.hasFavorite ? diaryInfoBean.favoriteCount + 1 : diaryInfoBean.favoriteCount - 1;
@@ -373,7 +373,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         desBean.content = diaryInfoBean.summary.content;
         desBean.publishFocusItemBeans = diaryInfoBean.summary.publishFocusItemBeans;
         publishEditTextView.initDesStr(desBean);
-        commentCountTv.setText("共" + diaryInfoBean.commentCount+"条评论");
+        commentCountTv.setText("共" + diaryInfoBean.commentCount + "条评论");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         try {
             Date date = simpleDateFormat.parse(diaryInfoBean.createdAt);
@@ -384,7 +384,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             e.printStackTrace();
         }
 
-        GlideUtil.intoImageView(this,diaryInfoBean.avatarUrl,binding.avatar);
+        GlideUtil.intoImageView(this, diaryInfoBean.avatarUrl, binding.avatar);
         binding.nickname.setText(diaryInfoBean.nickname);
 
         binding.likeTv.setText(Num2TextUtil.num2Text(diaryInfoBean.favoriteCount));
@@ -464,7 +464,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         mCommentCount++;
         commentCountTv.setText(mCommentCount + "条评论");
         int position = commentListBean.parentPos - 1;
-        CommentListBean adapterCommentBean = commentAdapter.getData().get(position );
+        CommentListBean adapterCommentBean = commentAdapter.getData().get(position);
 
         adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
         adapterCommentBean.mReplyList.add(commentListBean);
@@ -494,6 +494,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         LogUtils.e(TAG, "top -> " + top);
         binding.content.scrollBy(0, top);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -506,9 +507,9 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     private void showShare() {
 
         if (shareDialog == null) {
-            shareDialog = new ShareDialog(this,diaryInfoBean.share);
+            shareDialog = new ShareDialog(this, diaryInfoBean.share);
             shareDialog.setShowType(ShareDialog.TP_TYPE);
-            shareDialog.setOnClickListener(new OnClickListenerImpl(){
+            shareDialog.setOnClickListener(new OnClickListenerImpl() {
                 @Override
                 public void onCreatePostClick() {
                     super.onCreatePostClick();
@@ -521,6 +522,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
     /**
      * 初始化banner
+     *
      * @param headerBanner
      */
     private void initBanner(View headerBanner) {
@@ -531,6 +533,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
     /**
      * 初始化文详情
+     *
      * @param headerText
      */
     private void initContent(View headerText) {
@@ -547,18 +550,22 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             return;
         }
         switch (view.getId()) {
-            case R.id.like_iv: case R.id.like_tv:
+            case R.id.like_iv:
+            case R.id.like_tv:
                 viewModel.toFavorite(videoId, !diaryInfoBean.hasFavorite);
                 break;
-            case R.id.comment_iv: case R.id.comment_tv:
+            case R.id.comment_iv:
+            case R.id.comment_tv:
                 showPublishCommentDialog(null);
                 break;
-            case R.id.share_iv: case R.id.share_tv:
+            case R.id.share_iv:
+            case R.id.share_tv:
                 showShare();
                 break;
             case R.id.guanzhu: {
                 viewModel.toFollow(diaryInfoBean.userId);
-            }break;
+            }
+            break;
         }
     }
 
@@ -580,6 +587,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
      * 生成海报页面
      */
     private PostPop postPop;
+
     private void showPostDialog() {
         CreatePostBean createPostBean = new CreatePostBean();
         createPostBean.setAvatar(diaryInfoBean.avatarUrl);
@@ -588,9 +596,9 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         createPostBean.setContent(diaryInfoBean.summary.content);
         if (postPop == null) {
             int w = ScreenUtil.getScreenWidth(this);
-//            int h = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight();
-            postPop = new PostPop(this, createPostBean, w, -1,diaryInfoBean.share);
-        }else{
+            //            int h = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight();
+            postPop = new PostPop(this, createPostBean, w, -1, diaryInfoBean.share);
+        } else {
             postPop.refreshData(createPostBean);
         }
 

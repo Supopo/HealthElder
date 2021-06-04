@@ -21,18 +21,20 @@
 
         <com.qmuiteam.qmui.widget.QMUIRadiusImageView
             android:id="@+id/avatar"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/dp_52"
+            android:layout_height="@dimen/dp_52"
             app:qmui_is_circle="true"
             app:qmui_border_color="@color/transparent"
-            app:url="@{viewModel.avatarUrl}" />
+            app:url="@{viewModel.attentionUserInfo.avatarUrl}" />
 
         <TextView
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_11"
-            android:text="@{viewModel.nickname}"
+            android:gravity="center"
+            android:maxLength="5"
+            android:text="@{viewModel.attentionUserInfo.nickname}"
             android:textColor="@color/color_252525"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>

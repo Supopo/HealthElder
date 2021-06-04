@@ -345,6 +345,7 @@
 
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/btn_pk"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"

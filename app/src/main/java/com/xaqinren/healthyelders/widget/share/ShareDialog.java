@@ -59,6 +59,7 @@ public class ShareDialog {
     private List<? extends IShareUser> userList;
     public static int VIDEO_TYPE = 0;//短视频
     public static int TP_TYPE = 1;//图文
+    public static int LIVE_TYPE = 2;//直播
     private int showType = VIDEO_TYPE;
     private Context mContext;
     private DownLoadProgressDialog downloadProgress;
@@ -73,8 +74,25 @@ public class ShareDialog {
         this.context = new SoftReference<>(context);
         mContext = context;
         init();
+        showType();
     }
 
+    public ShareDialog(Context context,int showType) {
+        this.context = new SoftReference<>(context);
+        this.showType = showType;
+        mContext = context;
+        init();
+        showType();
+    }
+
+    public ShareDialog(Context context, ShareBean shareInfo,int showType) {
+        this.context = new SoftReference<>(context);
+        this.showType = showType;
+        mContext = context;
+        shareBean = shareInfo;
+        init();
+        showType();
+    }
     public ShareDialog(Context context, ShareBean shareInfo) {
         this.context = new SoftReference<>(context);
         mContext = context;
@@ -156,7 +174,7 @@ public class ShareDialog {
         //获取剪贴板管理器：
         cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         // 创建普通字符型ClipData
-        mClipData = ClipData.newPlainText("Label", "AAAAA");
+        mClipData = ClipData.newPlainText("Label", "复制内容");
         // 将ClipData内容放到系统剪贴板里。
         cm.setPrimaryClip(mClipData);
         ToastUtil.toastShortMessage("复制成功");
@@ -200,12 +218,15 @@ public class ShareDialog {
             binding.shareOperationLayout.shareColl.setVisibility(View.GONE);
             binding.shareOperationLayout.shareReport.setVisibility(View.GONE);
             binding.shareOperationLayout.sharePost.setVisibility(View.VISIBLE);
+        }else if (showType == LIVE_TYPE) {
+            binding.shareOperationLayout.shareSaveNative.setVisibility(View.GONE);
+            binding.shareOperationLayout.shareColl.setVisibility(View.GONE);
+            binding.shareOperationLayout.sharePost.setVisibility(View.GONE);
         }
     }
 
     public void setData(List<? extends IShareUser> data) {
         this.userList = data;
-        //        shareFriendAdapter.setList(userList);
     }
 
     public void show(View Parent) {

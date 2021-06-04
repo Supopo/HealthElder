@@ -26,6 +26,13 @@ public class BottomDialog extends Dialog implements View.OnClickListener {
     private int width;
     private int gravity;
 
+    public BottomDialog(Context context, View view, int[] clickIds,boolean nobg) {
+        super(context, R.style.EditDialogStyleEx);    //设置主题
+        this.context = context;
+        this.view = view;
+        this.clickIds = clickIds;
+    }
+
     public BottomDialog(Context context, int layoutRes, int[] clickIds) {
         super(context, R.style.dialog_full);    //设置主题
         this.context = context;
@@ -50,7 +57,6 @@ public class BottomDialog extends Dialog implements View.OnClickListener {
         this.height = height;
         this.gravity = gravity;
     }
-
 
 
     @Override

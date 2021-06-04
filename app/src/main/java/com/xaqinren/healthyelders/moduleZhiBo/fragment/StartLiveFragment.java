@@ -436,7 +436,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             mMeiYanControl.setBeautyManager(mLiveRoom.getBeautyManager());
             mMeiYanControl.setPopTitle("美颜");
             mMeiYanPop = new BottomDialog(getActivity(), filterView,
-                    null);
+                    null, true);
         }
         mMeiYanPop.show();
         mMeiYanControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
@@ -490,7 +490,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             mLvJingControl.setBeautyInfo(defaultBeautyInfo);
 
             mLvJingPop = new BottomDialog(getActivity(), filterView,
-                    null);
+                    null, true);
         }
 
         mLvJingPop.show();

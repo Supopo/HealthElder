@@ -69,6 +69,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBLinkUsersPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMoreSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
@@ -150,6 +151,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private SVGAParser svgaParser;
     private int screenWidth;
     private int screenHeight;
+    private ZBMoreSettingPop zbMoreSettingPop;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -1372,6 +1374,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     //没连麦消息或者没连麦时候展示选择类型pop
                     selectLinkTypePop();
                 }
+                break;
+            case R.id.btn_more:
+                zbMoreSettingPop = new ZBMoreSettingPop(this,mLiveRoom,mLiveInitInfo);
+                zbMoreSettingPop.showPopupWindow();
                 break;
         }
     }

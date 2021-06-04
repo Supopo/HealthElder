@@ -31,6 +31,9 @@ public class LiveMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> 
         binding.executePendingBindings();
 
         GlideUtil.intoImageView(getContext(), item.menuRes, binding.ivMenu);
+        if (item.type == 1) {
+            binding.tvMenu.setTextColor(getContext().getResources().getColor(R.color.color_252525));
+        }
     }
 
     //局部刷新用的

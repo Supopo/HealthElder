@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
 import java.io.Serializable;
@@ -55,4 +56,8 @@ public class ZBUserListBean implements Serializable {
     public String getContribution(){
         return "贡献值"+ Num2TextUtil.sNum2Text2(contribution);
     }
+
+    public ZBUserListBean attentionUserInfo;//用户信息
+    public String attentionUserId;//用户id
+
 }
