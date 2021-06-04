@@ -3,6 +3,8 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 import android.content.Context;
 import android.view.View;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,10 +13,16 @@ import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.LiveMenuAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
@@ -23,6 +31,8 @@ import com.xaqinren.healthyelders.widget.share.ShareDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 import razerdp.basepopup.BasePopupWindow;
 
 /**
@@ -37,27 +47,31 @@ public class ZBMoreSettingPop extends BasePopupWindow {
     private MLVBLiveRoom mLiveRoom;
     private LiveInitInfo mLiveInitInfo;
     private ShareDialog shareDialog;
+    private LoadingDialog loadingDialog;
+    private ZBSettingBean settingBean;
 
     public ZBMoreSettingPop(Context context, MLVBLiveRoom mLiveRoom, LiveInitInfo mLiveInitInfo) {
         super(context);
         this.mLiveRoom = mLiveRoom;
         this.mLiveInitInfo = mLiveInitInfo;
+
         //去掉背景
         setBackground(R.color.transparent);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
         initView();
-
+        initEvent();
     }
 
     private String[] menuNames = {"翻转", "设置", "分享", "开启连麦", "美颜", "开启评论", "开启刷礼物", "滤镜"
     };
     private int[] menuRes = {
             R.mipmap.icon_zb_fanzhuan, R.mipmap.icon_shezhi_hui, R.mipmap.icon_zb_share,
-            R.mipmap.icon_shar_dia, R.mipmap.icon_zb_meiy, R.mipmap.icon_zb_kqpl, R.mipmap.icon_zb_kqlw, R.mipmap.icon_zb_lj
+            R.mipmap.icon_zb_kqlm, R.mipmap.icon_zb_meiy, R.mipmap.icon_zb_kqpl, R.mipmap.icon_zb_kqlw, R.mipmap.icon_zb_lj
     };
 
     private void initView() {
+        loadingDialog = new LoadingDialog(getContext());
         rvContent = findViewById(R.id.rv_menu);
         menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
         rvContent.setLayoutManager(new GridLayoutManager(getContext(), 4));
@@ -67,15 +81,47 @@ public class ZBMoreSettingPop extends BasePopupWindow {
         for (int i = 0; i < menuNames.length; i++) {
             menus.add(new MenuBean("" + i, menuNames[i], menuRes[i], 1));
         }
+
+        settingBean = new ZBSettingBean();
+        settingBean.liveRoomId = mLiveInitInfo.liveRoomId;
+        settingBean.setCanGift(mLiveInitInfo.getCanGift());
+        settingBean.setCanComment(mLiveInitInfo.getCanComment());
+        settingBean.setCanMic(mLiveInitInfo.getCanMic());
+        if (mLiveInitInfo.getCanMic()) {
+            menus.get(3).menuName = "开启连麦";
+            menus.get(3).menuRes = R.mipmap.icon_zb_kqlm;
+        } else {
+            menus.get(3).menuName = "禁止连麦";
+            menus.get(3).menuRes = R.mipmap.icon_zb_jzlm;
+        }
+
+        if (mLiveInitInfo.getCanComment()) {
+            menus.get(5).menuName = "开启评论";
+            menus.get(5).menuRes = R.mipmap.icon_zb_kqpl;
+        } else {
+            menus.get(5).menuName = "禁止评论";
+            menus.get(5).menuRes = R.mipmap.icon_zb_jzpl;
+        }
+
+        if (mLiveInitInfo.getCanGift()) {
+            menus.get(6).menuName = "开启刷礼物";
+            menus.get(6).menuRes = R.mipmap.icon_zb_kqlw;
+        } else {
+            menus.get(6).menuName = "禁止刷礼物";
+            menus.get(6).menuRes = R.mipmap.icon_zb_jzlw;
+        }
+
         menuAdapter.setNewInstance(menus);
         menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            switch (menuAdapter.getData().get(position).menuName) {
-                case "翻转":
+            selectPos = position;
+
+            switch (position) {
+                case 0:
                     mLiveRoom.switchCamera();
                     break;
-                case "设置":
+                case 1:
                     break;
-                case "分享":
+                case 2:
                     if (shareDialog == null) {
                         ShareBean shareBean = new ShareBean();
                         shareBean.coverUrl = mLiveInitInfo.avatarUrl;
@@ -86,21 +132,88 @@ public class ZBMoreSettingPop extends BasePopupWindow {
                     }
                     shareDialog.show(rvContent);
                     break;
-                case "开启连麦":
+                case 3:
+                    loadingDialog.show();
+                    settingBean.setCanMic(!mLiveInitInfo.getCanMic());
+                    LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, settingBean);
                     break;
-                case "美颜":
+                case 4:
                     showMYPop();
                     break;
-                case "开启评论":
+                case 5:
+                    loadingDialog.show();
+                    settingBean.setCanComment(!mLiveInitInfo.getCanComment());
+                    LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, settingBean);
                     break;
-                case "开启刷礼物":
+                case 6:
+                    loadingDialog.show();
+                    settingBean.setCanGift(!mLiveInitInfo.getCanGift());
+                    LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, settingBean);
                     break;
-                case "滤镜":
+                case 7:
                     showLJPop();
                     break;
             }
         }));
     }
+
+    public int selectPos;
+
+    public void initEvent() {
+        dismissDialog.observe((LifecycleOwner) getContext(), dismiss -> {
+            if (dismiss != null) {
+                loadingDialog.dismiss();
+            }
+        });
+
+        setSuccess.observe((LifecycleOwner) getContext(), setSuccess -> {
+            if (setSuccess != null && setSuccess) {
+                if (selectPos == 3) {
+                    //更改 是否开启连麦
+                    mLiveInitInfo.setCanMic(!mLiveInitInfo.getCanMic());
+                    if (mLiveInitInfo.getCanMic()) {
+                        menuAdapter.getData().get(3).menuName = "开启连麦";
+                        menuAdapter.getData().get(3).menuRes = R.mipmap.icon_zb_kqlm;
+                    } else {
+                        menuAdapter.getData().get(3).menuName = "禁止连麦";
+                        menuAdapter.getData().get(3).menuRes = R.mipmap.icon_zb_jzlm;
+                    }
+                    menuAdapter.notifyItemChanged(3);
+                    //通知主播页面发送全局自定义消息
+                    RxBus.getDefault().post(new EventBean(LiveConstants.ZBJ_MORE_SETTING, mLiveInitInfo.getCanMic() ? 1 : 2));
+                } else if (selectPos == 5) {
+                    //更改 是否开启评论
+                    mLiveInitInfo.setCanComment(!mLiveInitInfo.getCanComment());
+                    if (mLiveInitInfo.getCanComment()) {
+                        menuAdapter.getData().get(5).menuName = "开启评论";
+                        menuAdapter.getData().get(5).menuRes = R.mipmap.icon_zb_kqpl;
+                    } else {
+                        menuAdapter.getData().get(5).menuName = "禁止评论";
+                        menuAdapter.getData().get(5).menuRes = R.mipmap.icon_zb_jzpl;
+                    }
+                    menuAdapter.notifyItemChanged(5);
+                    //通知主播页面发送全局自定义消息
+                    RxBus.getDefault().post(new EventBean(LiveConstants.ZBJ_MORE_SETTING, mLiveInitInfo.getCanComment() ? 3 : 4));
+                } else if (selectPos == 6) {
+                    //更改 是否开启礼物
+                    mLiveInitInfo.setCanGift(!mLiveInitInfo.getCanGift());
+                    if (mLiveInitInfo.getCanGift()) {
+                        menuAdapter.getData().get(6).menuName = "开启刷礼物";
+                        menuAdapter.getData().get(6).menuRes = R.mipmap.icon_zb_kqlw;
+                    } else {
+                        menuAdapter.getData().get(6).menuName = "禁止刷礼物";
+                        menuAdapter.getData().get(6).menuRes = R.mipmap.icon_zb_jzlw;
+                    }
+                    menuAdapter.notifyItemChanged(6);
+                    //通知主播页面发送全局自定义消息
+                    RxBus.getDefault().post(new EventBean(LiveConstants.ZBJ_MORE_SETTING, mLiveInitInfo.getCanComment() ? 5 : 6));
+                }
+            }
+        });
+    }
+
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<Boolean> setSuccess = new MutableLiveData<>();
 
 
     private BottomDialog mLvJingPop;

@@ -8,11 +8,45 @@ import java.io.Serializable;
  */
 public class ZBSettingBean implements Serializable {
     public String liveRoomId;
-    public boolean canComment;
-    public boolean canGift;
-    public boolean canRecordVideo;
+    private Boolean canComment;
+    private Boolean canGift;
+    private Boolean canRecordVideo;
+    private Boolean canMic;
+
+    public Boolean getCanComment() {
+        return canComment;
+    }
+
+    public void setCanComment(Boolean canComment) {
+        this.canComment = canComment;
+    }
+
+    public Boolean getCanGift() {
+        return canGift ;
+    }
+
+    public void setCanGift(Boolean canGift) {
+        this.canGift = canGift;
+    }
+
+    public Boolean getCanRecordVideo() {
+        return canRecordVideo ;
+    }
+
+    public void setCanRecordVideo(Boolean canRecordVideo) {
+        this.canRecordVideo = canRecordVideo;
+    }
+
+    public Boolean getCanMic() {
+        return canMic;
+    }
+
+    public void setCanMic(Boolean canMic) {
+        this.canMic = canMic;
+    }
+
     public String liveRoomConnection;//
-    public ChatStatusManageDto chatStatusManageDto;
-    public AnchorInteractionDto anchorInteractionDto;
-    public ConnectionDto connectionDto;
+    public ChatStatusManageDto chatStatusManageDto;//连麦
+    public AnchorInteractionDto anchorInteractionDto;//PL
+    public ConnectionDto connectionDto;//连线
 }

@@ -34,6 +34,7 @@ public class LiveMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> 
         if (item.type == 1) {
             binding.tvMenu.setTextColor(getContext().getResources().getColor(R.color.color_252525));
         }
+
     }
 
     //局部刷新用的

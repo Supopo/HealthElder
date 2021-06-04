@@ -329,10 +329,17 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         Glide.with(this).load(mLiveInitInfo.avatarUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.rivPhoto);
 
-        //禁止带货
-        if (!mLiveInitInfo.getCanSale()) {
+
+        //直播间禁止带货
+        if (!mLiveInitInfo.liveRoomLevel.canSale) {
             binding.btnGoods.setVisibility(View.GONE);
         }
+        //直播间禁止连麦
+        if (!mLiveInitInfo.liveRoomLevel.canMic) {
+            binding.btnLianmai.setVisibility(View.GONE);
+        }
+
+
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
@@ -1376,7 +1383,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
                 break;
             case R.id.btn_more:
-                zbMoreSettingPop = new ZBMoreSettingPop(this,mLiveRoom,mLiveInitInfo);
+                zbMoreSettingPop = new ZBMoreSettingPop(this, mLiveRoom, mLiveInitInfo);
                 zbMoreSettingPop.showPopupWindow();
                 break;
         }
@@ -1555,6 +1562,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     //群发消息通知大家刷新接口
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_RESH_HOME_INFO), "", null);
                     break;
+                case LiveConstants.ZBJ_MORE_SETTING://更多设置 1-开启连麦 2关闭连麦 3开启评论 4禁止评论 5开启礼物 6禁止礼物
+                    moreSetting(eventBean);
+                    break;
             }
         });
         RxSubscriptions.add(disposable);
@@ -1592,7 +1602,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 mLiveInitInfo.liveRoomId = liveInitInfo.liveRoomId;
                 mLiveInitInfo.liveRoomRecordId = liveInitInfo.liveRoomRecordId;
                 zbSettingBean = new ZBSettingBean();
+                //初始化设置
                 zbSettingBean.liveRoomId = mLiveInitInfo.liveRoomId;
+
                 //退掉之前的群
                 if (liveInitInfo.groupIds != null && liveInitInfo.groupIds.length > 0) {
                     for (String groupId : liveInitInfo.groupIds) {
@@ -1735,6 +1747,30 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 moreLinkAdapter.setNewInstance(moreLinkList);
             }
         });
+    }
+
+    //更多设置
+    private void moreSetting(EventBean eventBean) {
+        switch (eventBean.msgType) {
+            case 1:
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_MIC), "", null);
+                break;
+            case 2:
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_FORBIDDEN_MIC), "", null);
+                break;
+            case 3:
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SETTING_PL), "1", null);
+                break;
+            case 4:
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SETTING_PL), "0", null);
+                break;
+            case 5:
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SETTING_LW), "1", null);
+                break;
+            case 6:
+                mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SETTING_LW), "0", null);
+                break;
+        }
     }
 
     private void startMoreLinkAnim() {

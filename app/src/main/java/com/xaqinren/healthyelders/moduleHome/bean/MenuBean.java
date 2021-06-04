@@ -60,4 +60,6 @@ public class MenuBean {
         this.menuName = menuName;
         this.menuRes = menuRes;
     }
+
+    public boolean isOpen;
 }

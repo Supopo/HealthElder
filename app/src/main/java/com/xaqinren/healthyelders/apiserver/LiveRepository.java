@@ -307,6 +307,7 @@ public class LiveRepository {
                 });
     }
 
+    //直播间设置
     public void setZBStatus(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> setSuccess, ZBSettingBean zbSettingBean) {
         String json = JSON.toJSONString(zbSettingBean);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);

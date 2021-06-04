@@ -52,6 +52,7 @@ public class LiveInitInfo implements Serializable {
     public Boolean hasSpeech;//false, // 用户能否发言
     public Boolean hasAdmin;//false, // 是否是管理员
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
+    public LiveLevelInfo liveRoomLevel;//直播间等级信息
 
     public Boolean getAdminCanMuteAuth() {
         return adminCanMuteAuth == null ? false : adminCanMuteAuth;

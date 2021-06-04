@@ -17,6 +17,12 @@ public class LiveConstants {
     public static final String GONGGAO_TICHU = "被主播踢出房间";
     public static final String LINK_ONLY_FANS = "当前直播间只允许粉丝连线";
     public static final String LINK_ONLY_INVITE = "当前直播间只允许主播邀请连线";
+    public static final String SHOW_KQLM = "当前直播间已允许连麦";
+    public static final String SHOW_JZLM = "当前直播间已禁止连麦";
+    public static final String SHOW_KQPL = "当前直播间已允许发言";
+    public static final String SHOW_JZPL = "当前直播间已禁止发言";
+    public static final String SHOW_KQLW = "当前直播间已允许发礼物";
+    public static final String SHOW_JZLW = "当前直播间已禁止发礼物";
     public static int WAIT_MORE_LINK = 15;//等待多人连麦占座的时间
     public static int TO_LINK_TIME = 30;//申请连麦的时间
 
@@ -30,6 +36,7 @@ public class LiveConstants {
     public static final int ZBJ_SET_KQLTS = 101;                  // 直播间设置-开启聊天室
     public static final int ZBJ_SET_GBLTS = 102;                  // 直播间设置-关闭聊天室
     public static final int ZBJ_SET_SUCCESS = 103;                  // 直播间设置-成功
+    public static final int ZBJ_MORE_SETTING = 104;                  // 直播间设置-更多 1-开启连麦 2关闭连麦 3开启评论 4禁止评论 5开启礼物 6禁止礼物
 
     public static final int DISMISS_ET = 1002;                  // 直播间发送弹窗关闭
     public static final int SHOW_ET = 1001;                     // 直播间发送弹窗展示
@@ -82,6 +89,9 @@ public class LiveConstants {
     public static final int IMCMD_ZB_COMEBACK = 28;              // 主播断开重新回来了 通知大家重新拉一下流
     public static final int IMCMD_GONGGAO_MSG = 29;              // 公告消息 msg为json串 类型-名字-内容  msgType-nickname-content      msgType: 0-拉黑 1-踢出
     public static final int IMCMD_RESH_HOME_INFO = 30;           // 通知观众们刷新房间信息
+    public static final int IMCMD_SETTING_PL = 31;           // 设置-直播间评论状态 0 禁止 1允许
+    public static final int IMCMD_SETTING_LW = 32;           // 设置-直播间送礼状态 0 禁止 1允许
+
 
 }
 

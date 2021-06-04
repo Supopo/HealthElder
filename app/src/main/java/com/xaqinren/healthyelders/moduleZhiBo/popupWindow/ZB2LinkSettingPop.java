@@ -25,6 +25,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import razerdp.basepopup.BasePopupWindow;
@@ -42,7 +43,7 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
     private SwitchButton sbMenu3;
     private SwitchButton sbMenu4;
     private boolean needSetStuas;
-    private QMUITipDialog dialog;
+    private LoadingDialog dialog;
 
     public ZB2LinkSettingPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
@@ -96,10 +97,7 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
     private boolean canDismiss;
 
     private void setLiveStatus() {
-        dialog = new QMUITipDialog.Builder(getContext())
-                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                .setTipWord("请稍后")
-                .create();
+        dialog = new LoadingDialog(getContext());
         dialog.show();
 
         chatStatusManageDto.onlyFansMic = sbMenu1.isChecked();
