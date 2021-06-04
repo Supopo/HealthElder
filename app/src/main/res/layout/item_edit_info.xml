@@ -37,6 +37,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.value}"
+                android:maxLength="15"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/gray_999"/>
 

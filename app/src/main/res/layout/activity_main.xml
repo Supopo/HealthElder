@@ -230,7 +230,7 @@
                     android:includeFontPadding="false"
                     android:layout_marginLeft="@dimen/dp_13"/>
             </LinearLayout>
-            <LinearLayout
+      <!--      <LinearLayout
                 android:id="@+id/my_little"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_35"
@@ -251,8 +251,8 @@
                     android:textColor="@color/color_252525"
                     android:includeFontPadding="false"
                     android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>
-            <LinearLayout
+            </LinearLayout>-->
+            <!--<LinearLayout
                 android:id="@+id/my_car"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_35"
@@ -273,7 +273,7 @@
                     android:textColor="@color/color_252525"
                     android:includeFontPadding="false"
                     android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>
+            </LinearLayout>-->
             <LinearLayout
                 android:id="@+id/my_kefu"
                 android:layout_width="match_parent"

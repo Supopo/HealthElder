@@ -56,6 +56,11 @@ public class DateUtils {
         return "";
     }
 
+    public static String getYMR(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(date);
+    }
+
     private static String[] months = {"一月", "二月", "三月", "四月", "五月", "六月",
             "七月", "八月", "九月", "十月", "十一月", "十二月",};
 

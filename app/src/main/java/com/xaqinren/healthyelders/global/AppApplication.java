@@ -140,7 +140,7 @@ public class AppApplication extends BaseApplication {
                 .build();
 
         try {
-            UniSDKEngine.registerModule("city", CitySelModule.class);
+            UniSDKEngine.registerModule("qnx-selectCity", CitySelModule.class);
             UniSDKEngine.registerModule("qnx-dialog", NativeDialogModule.class);
         } catch (UniException e) {
             e.printStackTrace();

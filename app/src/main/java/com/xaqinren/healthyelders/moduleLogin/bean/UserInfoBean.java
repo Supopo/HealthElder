@@ -12,12 +12,22 @@ public class UserInfoBean {
     private String levelName;
     private Boolean hasRealName;
     private String recommendedCode;
+    private String birthday;
     private Boolean enable;
     private WalletAccountBean walletAccount;
     private String nickname;
     private String realName;
     private int cumulativeAmount;
     private String id;
+
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 
     public Integer getPointAccountBalance() {
         return pointAccountBalance;

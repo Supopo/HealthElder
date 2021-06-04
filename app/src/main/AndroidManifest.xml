@@ -371,6 +371,7 @@
         <activity android:name=".moduleMine.activity.BandCardActivity" />
         <activity android:name=".moduleMine.activity.AddBankCardActivity" />
         <activity android:name=".moduleMine.activity.AnchorActivity" />
+        <activity android:name=".moduleMine.activity.MiniActivity" />
 
         <service
             android:name=".push.IPushService"

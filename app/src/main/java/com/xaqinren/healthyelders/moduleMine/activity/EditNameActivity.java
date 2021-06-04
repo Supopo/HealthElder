@@ -4,15 +4,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityEditNameBinding;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.impl.TextWatcherImpl;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.EditInfoViewModel;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class EditNameActivity extends BaseActivity <ActivityEditNameBinding, EditInfoViewModel>{
     private UserInfoBean userInfoBean;
@@ -47,7 +50,13 @@ public class EditNameActivity extends BaseActivity <ActivityEditNameBinding, Edi
         binding.clear.setOnClickListener(view -> binding.nameEt.setText(null));
         tvRight.setOnClickListener(view -> {
             //TODO 修改名字接口
-
+            String name = binding.nameEt.getText().toString();
+            if (StringUtils.isEmpty(name)) {
+                ToastUtil.toastShortMessage("请输入名字");
+                return;
+            }
+            showDialog();
+            viewModel.updateNickname(name);
         });
     }
 
@@ -59,5 +68,23 @@ public class EditNameActivity extends BaseActivity <ActivityEditNameBinding, Edi
     private void showCount() {
         int count = binding.nameEt.getText().length();
         binding.textCount.setText(count + "/20");
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.requestSuccess.observe(this,aBoolean->{
+            dismissDialog();
+        });
+        viewModel.status.observe(this,aBoolean->{
+            if (aBoolean) {
+                UserInfoMgr.getInstance().getUserInfo().setNickname(binding.nameEt.getText().toString());
+                InfoCache.getInstance().setLoginUser(UserInfoMgr.getInstance().getUserInfo());
+                ToastUtil.toastShortMessage("修改成功");
+                finish();
+            }else{
+                ToastUtil.toastShortMessage("修改失败");
+            }
+        });
     }
 }

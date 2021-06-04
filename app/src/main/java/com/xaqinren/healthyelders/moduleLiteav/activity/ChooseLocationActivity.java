@@ -75,6 +75,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private GeocodeSearch geocoderSearch;
     private String clickDesName;
     private int CITY_CODE = 123;
+    private String addressName;
+    private String addressInfo;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_lite_av_location;
@@ -147,6 +149,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         adapter.setOnItemClickListener((adapter1, view, position) -> {
             LocationBean bean = (LocationBean) adapter1.getData().get(position);
             clickDesName = bean.desName;
+            addressName = bean.desName;
+            addressInfo = bean.address;
             getGeocodeSearch(new LatLonPoint(bean.lat, bean.lon));
         });
         adapter.getLoadMoreModule().setEnableLoadMore(true);
@@ -315,7 +319,9 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         bean.city = regeocodeResult.getRegeocodeAddress().getCity();
         bean.district = regeocodeResult.getRegeocodeAddress().getDistrict();
         bean.desName = clickDesName;
-        bean.addressInfo = regeocodeResult.getRegeocodeAddress().getFormatAddress();
+//        bean.addressInfo = regeocodeResult.getRegeocodeAddress().getFormatAddress();
+        bean.address = addressInfo;
+        bean.addressInfo = addressName;
         //选择返回
         Intent intent = new Intent();
         intent.putExtra("bean", bean);

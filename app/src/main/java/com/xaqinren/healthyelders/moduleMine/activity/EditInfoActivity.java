@@ -10,11 +10,13 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.configure.PickerOptions;
 import com.bigkoo.pickerview.listener.CustomListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -27,10 +29,12 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityEditInfoBinding;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.EditInfoAdapter;
 import com.xaqinren.healthyelders.moduleMine.bean.EditMenuBean;
@@ -38,9 +42,11 @@ import com.xaqinren.healthyelders.moduleMine.viewModel.EditInfoViewModel;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
+import com.xaqinren.healthyelders.utils.DateUtils;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.IntentUtils;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
@@ -48,6 +54,8 @@ import com.xaqinren.healthyelders.widget.SwitchButton;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +71,8 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
     private EditInfoAdapter editInfoAdapter;
     private TimePickerView pvTime;
     private int REQUEST_GALLERY = 666;
+    private int updateType = 0;//0头像1性别2生日3地址
+    private String updateValue = "";
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -87,6 +97,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         binding.menuList.setAdapter(editInfoAdapter);
         binding.selAvatar.setOnClickListener(view -> {
             //选择头像
+            updateType = 0;
             selAvatar();
         });
         editInfoAdapter.setOnItemClickListener((adapter, view, position) -> {
@@ -96,10 +107,13 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
             }else if (position == 2){
                 changeInfo();
             }else if (position == 3){
+                updateType = 1;
                 changeSex();
             }else if (position == 4){
+                updateType = 2;
                 changeBirth();
             }else if (position == 5){
+                updateType = 3;
                 changeCity();
             }
         });
@@ -111,7 +125,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         editMenuBeans.add(new EditMenuBean("健康号", userInfoBean.getRecommendedCode(), false, ""));
         editMenuBeans.add(new EditMenuBean("简介", getValue(userInfoBean.getIntroduce(),"点击设置") , true, ""));
         editMenuBeans.add(new EditMenuBean("性别", getValue(getSex( userInfoBean.getSex()),"不展示"), true, ""));
-        editMenuBeans.add(new EditMenuBean("生日", getValue(null,"不展示"), true, ""));
+        editMenuBeans.add(new EditMenuBean("生日", getValue(userInfoBean.getBirthday(),"不展示"), true, ""));
         editMenuBeans.add(new EditMenuBean("所在地", getValue(userInfoBean.getCityAddress(),"暂不设置"), true, ""));
     }
 
@@ -146,29 +160,54 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         listBottomPopup.setOnItemClickListener((adapter, view, position) -> {
             //掉接口
             if (position == 0) {
-
+                viewModel.updateSex("MALE");
+                updateValue = "MALE";
             } else if (position == 1) {
-
+                viewModel.updateSex("FEMALE");
+                updateValue = "FEMALE";
             } else if (position == 2) {
-
+                viewModel.updateSex("");
+                updateValue = "";
             }
+            listBottomPopup.dismiss();
         });
         listBottomPopup.showPopupWindow();
     }
 
+    private String birthday;
+    boolean hasBirth = false;
     private void changeBirth() {
         Calendar selData = Calendar.getInstance();
         selData.set(2000, 0, 1);
         Calendar startDate = Calendar.getInstance();
         startDate.set(1900, 0, 1);
         Calendar endDate = Calendar.getInstance();
-
-        pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date, View v) {//选中事件回调
-                //                tvTime.setText(getTime(date));
+        birthday = "2000-01-01";
+        String birth = userInfoBean.getBirthday();
+        if (birth != null) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date date = simpleDateFormat.parse(birth);
+                int year = date.getYear();
+                int month = date.getMonth();
+                int day = date.getDay();
+                selData.set(year, month, day);
+                hasBirth = true;
+                birthday = birth;
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+        }
+
+        pvTime = new TimePickerBuilder(this, (date, v) -> {
         })
+                .setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
+                    @Override
+                    public void onTimeSelectChanged(Date date) {
+                        birthday = DateUtils.getYMR(date);
+                        LogUtils.e(TAG, "data ->" + birthday);
+                    }
+                })
                 .setLayoutRes(R.layout.picker_custom_data_1, new CustomListener() {
                     @Override
                     public void customLayout(View v) {
@@ -176,9 +215,20 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                         switchButton.setOnCheckedChangeListener((view, isChecked) -> {
 
                         });
+                        if (hasBirth) {
+                            switchButton.setChecked(false);
+                        }
                         TextView confirm = v.findViewById(R.id.confirm);
+                        confirm.setOnClickListener(view->{
+                            updateValue = switchButton.isChecked() ? "" : birthday;
+                            viewModel.updateBirthday(
+                                    switchButton.isChecked() ? "" : birthday
+                            );
+                            pvTime.dismiss();
+                        });
                     }
                 })
+
                 .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
                 .setItemVisibleCount(3)
                 .setContentTextSize(20)//滚轮文字大小
@@ -198,6 +248,8 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                 .isDialog(false)//是否显示为对话框样式
                 .build();
         pvTime.show();
+
+
     }
 
     private void changeCity() {
@@ -213,17 +265,23 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 0x0030) {
                 if (data != null) {
-//                    cityName = data.getStringExtra(CityPickerActivity.KEY_PICKED_CITY);
-//                    binding.cityName.setText(cityName);
-//                    binding.searchView.setText(null);
+                    String cityName = data.getStringExtra(CityPickerActivity.KEY_PICKED_CITY);
+                    updateValue = cityName;
+                    viewModel.updateCity(cityName);
                 }
             }
             else if (requestCode == REQUEST_GALLERY) {
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 String path = result.get(0).getPath();
                 GlideUtil.intoImageView(this, path, binding.avatar);
+                showDialog();
+                updateAvatar(path);
             }
         }
+    }
+
+    private void updateAvatar(String path) {
+        viewModel.uploadFile(path);
     }
 
     private void selAvatar() {
@@ -277,4 +335,52 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                 .forResult(REQUEST_GALLERY);//结果回调onActivityResult code
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        String nick = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        String introduce = UserInfoMgr.getInstance().getUserInfo().getIntroduce();
+        editInfoAdapter.getData().get(0).setValue(nick);
+        editInfoAdapter.getData().get(2).setValue(introduce);
+        editInfoAdapter.notifyItemRangeChanged(0, 3);
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.requestSuccess.observe(this,aBoolean->{
+            dismissDialog();
+        });
+        viewModel.fileLiveData.observe(this, s -> {
+            updateValue = s;
+            viewModel.updateAvatar(s);
+        });
+        viewModel.status.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    ToastUtil.toastShortMessage("修改成功");
+                    if (updateType == 0) {
+                        UserInfoMgr.getInstance().getUserInfo().setAvatarUrl(updateValue);
+                    } else if (updateType == 1) {
+                        UserInfoMgr.getInstance().getUserInfo().setSex(updateValue);
+                        String sex = getSex(updateValue);
+                        editInfoAdapter.getData().get(3).setValue(sex == null ? "不展示" : sex);
+                        editInfoAdapter.notifyItemChanged(3);
+                    } else if (updateType == 2) {
+                        UserInfoMgr.getInstance().getUserInfo().setBirthday(updateValue);
+                        editInfoAdapter.getData().get(4).setValue(updateValue);
+                        editInfoAdapter.notifyItemChanged(4);
+                    } else if (updateType == 3) {
+                        UserInfoMgr.getInstance().getUserInfo().setCityAddress(updateValue);
+                        editInfoAdapter.getData().get(5).setValue(updateValue);
+                        editInfoAdapter.notifyItemChanged(5);
+                    }
+                    InfoCache.getInstance().setLoginUser(UserInfoMgr.getInstance().getUserInfo());
+                }else{
+                    ToastUtil.toastShortMessage("修改失败");
+                }
+            }
+        });
+    }
 }

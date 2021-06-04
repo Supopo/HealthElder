@@ -41,6 +41,7 @@ import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -252,20 +253,19 @@ public class UserRepository {
     }
 
     public void updatePhoto(MutableLiveData<Boolean> dismissDialog, MutableLiveData<String> fileUrl, String filePath) {
-        File file = new File(filePath);
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file))
-                .build();
-        RetrofitClient.getInstance().create(ApiServer.class).uploadFile(UserInfoMgr.getInstance().getHttpToken(), requestBody)
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
 
-                    }
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        File file = new File(filePath);
+        builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
+        RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
+                Constant.lanUrl + "content/filesUpload",
+                UserInfoMgr.getInstance().getHttpToken(), builder.build())
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(disposable -> {
+
                 })
-                .subscribe(new CustomObserver<MBaseResponse<String>>() {
+                .subscribe(new CustomObserver<MBaseResponse<List<String>>>() {
 
                     @Override
                     protected void dismissDialog() {
@@ -273,8 +273,8 @@ public class UserRepository {
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<String> data) {
-                        fileUrl.postValue(data.getData());
+                    protected void onSuccess(MBaseResponse<List<String>> data) {
+                        fileUrl.postValue(data.getData().get(0));
                     }
                 });
     }
@@ -579,5 +579,39 @@ public class UserRepository {
                     }
                 });
 
+    }
+
+    public void updateUserInfo(MutableLiveData<Boolean> request,MutableLiveData<Boolean> status ,
+                               String avatarUrl , String nickname ,String introduce , String sex , String birthday,String cityAddress) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        if (!StringUtils.isEmpty(avatarUrl))
+            hashMap.put("avatarUrl", avatarUrl);
+        if (!StringUtils.isEmpty(nickname))
+            hashMap.put("nickname", nickname);
+        if (!StringUtils.isEmpty(introduce))
+            hashMap.put("introduce", introduce);
+        if (!StringUtils.isEmpty(sex))
+            hashMap.put("sex", sex);//FEMALE MALE
+        if (!StringUtils.isEmpty(birthday))
+            hashMap.put("birthday", birthday);
+        if (!StringUtils.isEmpty(cityAddress))
+            hashMap.put("birthday", cityAddress);
+
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.updateUserInfo(UserInfoMgr.getInstance().getHttpToken()  , body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Boolean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Boolean> data) {
+                        status.postValue(data.isOk());
+                    }
+                });
     }
 }

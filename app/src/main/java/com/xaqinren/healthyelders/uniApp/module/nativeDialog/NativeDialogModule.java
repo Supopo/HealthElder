@@ -11,8 +11,10 @@ import io.dcloud.feature.uniapp.common.UniDestroyableModule;
 public class NativeDialogModule extends UniDestroyableModule {
 
     NativeDialog nativeDialog;
+
     @UniJSMethod(uiThread = true)
-    public void show(JSONObject options, UniJSCallback jsCallback) {
+    public void show(JSONObject options, UniJSCallback jsCallback, UniJSCallback cancelCallback) {
+
         if (nativeDialog == null) {
             nativeDialog = new NativeDialog(mUniSDKInstance.getContext());
         }
@@ -46,7 +48,7 @@ public class NativeDialogModule extends UniDestroyableModule {
 
         nativeDialog.showDialog();
         nativeDialog.setLeftBtnClickListener(v -> {
-            jsCallback.invoke(false);
+            cancelCallback.invoke(false);
             nativeDialog.dismissDialog();
         });
         nativeDialog.setRightBtnClickListener(v -> {

@@ -39,7 +39,7 @@ public class NativeDialog {
         //填充对话框的布局
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_uni_center_layout, null);
         //点击外部不可dismiss
-        centerDialog.setCancelable(false);
+        centerDialog.setCancelable(true);
         //将布局设置给Dialog
         centerDialog.setContentView(view);
         //获取当前Activity所在的窗体

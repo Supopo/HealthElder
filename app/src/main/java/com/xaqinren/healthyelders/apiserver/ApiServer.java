@@ -460,7 +460,9 @@ public interface ApiServer {
     @GET("jkzl/queryLikePage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSomeLikeVideoList(@Header("Authorization") String authorization, @Query("page") Integer page,
                                                                                  @Query("pageSize") Integer count, @Query("resourceType") String resourceType, @Query("excludeId") String excludeId);
-
+    //更新个人资料
+    @POST("user/updateUserInfo")
+    Observable<MBaseResponse<Object>> updateUserInfo(@Header("Authorization") String authorization, @Body RequestBody requestBody);
     //查看用户资料
     @GET("live/findUserProfile")
     Observable<MBaseResponse<UserInfoBean>> getLiveUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId, @Query("liveRoomRecordId") String liveRoomRecordId);

@@ -3,11 +3,13 @@ package com.xaqinren.healthyelders.uniApp;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.BundleCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -225,8 +227,9 @@ public class UniService extends Service implements LifecycleOwner {
 
     //检查版本号
     private void checkVersion() {
+        boolean debug = BuildConfig.DEBUG;
         for (SaveBean saveBean : saveBeans) {
-            if (saveBean.isNeedDown() && saveBean.isAutoUpdateApplet()) {
+            if (debug || (saveBean.isNeedDown() && saveBean.isAutoUpdateApplet())) {
                 down(saveBean);
             }
         }

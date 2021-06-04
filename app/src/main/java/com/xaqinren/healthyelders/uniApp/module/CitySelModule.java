@@ -29,7 +29,7 @@ public class CitySelModule extends UniModule {
     private UniJSCallback callback;
 
     @UniJSMethod(uiThread = true)
-    public void openCity(JSONObject options, UniJSCallback callback) {
+    public void openCity(UniJSCallback callback) {
         this.callback = callback;
         Activity context = (Activity) mUniSDKInstance.getContext();//DCUniMPActivity
         LogUtils.e(TAG, context.toString());
@@ -61,8 +61,9 @@ public class CitySelModule extends UniModule {
                 jsonObject.put("longitude", bean.lon);
                 jsonObject.put("latitude", bean.lat);
                 jsonObject.put("region", bean.province+bean.city+bean.district);
-                jsonObject.put("addreName", bean.address);
-                jsonObject.put("addreInfo", bean.addressInfo);
+                jsonObject.put("addreName", bean.addressInfo);
+                jsonObject.put("addreInfo", bean.address);
+                LogUtils.e(TAG, jsonObject.toJSONString());
                 callback.invoke(jsonObject);
             }
         }

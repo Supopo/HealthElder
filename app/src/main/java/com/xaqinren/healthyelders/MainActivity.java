@@ -48,6 +48,7 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
 import com.xaqinren.healthyelders.moduleMine.activity.AnchorActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.MiniActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;

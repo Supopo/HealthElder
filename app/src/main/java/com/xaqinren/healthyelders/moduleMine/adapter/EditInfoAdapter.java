@@ -19,6 +19,5 @@ public class EditInfoAdapter extends BaseQuickAdapter<EditMenuBean, BaseViewHold
     protected void convert(@NotNull BaseViewHolder baseViewHolder, EditMenuBean editMenuBean) {
         ItemEditInfoBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(editMenuBean);
-
     }
 }

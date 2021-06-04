@@ -325,4 +325,9 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
+    }
 }
