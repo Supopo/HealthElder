@@ -17,8 +17,6 @@ import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
-import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
@@ -539,7 +537,7 @@ public class UserRepository {
 
     }
 
-    public void toPay(MutableLiveData<String> payJson,String accountOrderType, String payMethod, String payType, double paymentAmount) {
+    public void toPay(MutableLiveData<String> payJson, String accountOrderType, String payMethod, String payType, double paymentAmount) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("accountOrderType", accountOrderType);
         hashMap.put("paymentMethod", payMethod);
@@ -563,5 +561,23 @@ public class UserRepository {
                         payJson.postValue(data.getData());
                     }
                 });
+    }
+
+    public void getLiveUserInfo(MutableLiveData<UserInfoBean> datas, String userId, String liveRoomRecordId) {
+        userApi.getLiveUserInfo(UserInfoMgr.getInstance().getHttpToken(), userId, liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<UserInfoBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<UserInfoBean> data) {
+                        datas.postValue(data.getData());
+                    }
+                });
+
     }
 }

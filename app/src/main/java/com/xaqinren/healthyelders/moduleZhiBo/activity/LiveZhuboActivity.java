@@ -70,6 +70,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.Anchor
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBLinkUsersPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMoreSettingPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
@@ -152,6 +153,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private int screenWidth;
     private int screenHeight;
     private ZBMoreSettingPop zbMoreSettingPop;
+    private ZBUserInfoPop userInfoPop;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -331,11 +333,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
 
         //直播间禁止带货
-        if (!mLiveInitInfo.liveRoomLevel.canSale) {
+        if (!mLiveInitInfo.liveRoomLevel.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
         //直播间禁止连麦
-        if (!mLiveInitInfo.liveRoomLevel.canMic) {
+        if (!mLiveInitInfo.liveRoomLevel.getCanMic()) {
             binding.btnLianmai.setVisibility(View.GONE);
         }
 
@@ -343,6 +345,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
+        topHeadAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo,topHeadAdapter.getData().get(position));
+            userInfoPop.showPopupWindow();
+        }));
+
 
         waitLinkAdapter = new ZBLinkShowAdapter(R.layout.item_zb_link_show);
         //展示观众申请消息

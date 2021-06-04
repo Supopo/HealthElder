@@ -85,7 +85,38 @@ public class UserInfoBean {
     private int fansCount;
     private int attentionCount;
 
-    public boolean isMan(){
+    public Boolean getHasAdmin() {
+        return hasAdmin == null ? false : hasAdmin;
+    }
+
+    public void setHasAdmin(Boolean hasAdmin) {
+        this.hasAdmin = hasAdmin;
+    }
+
+    private Boolean hasAdmin;//是否管理员
+    private Boolean hasSpeech;
+    private Boolean hasAttention;
+
+    public Boolean getHasSpeech() {
+        return hasSpeech;
+    }
+
+    public void setHasSpeech(Boolean hasSpeech) {
+        this.hasSpeech = hasSpeech;
+    }
+
+    public Boolean getHasAttention() {
+        return hasAttention;
+    }
+
+    public void setHasAttention(Boolean hasAttention) {
+        this.hasAttention = hasAttention;
+    }
+
+
+
+
+    public boolean isMan() {
         if (sex.equals("MALE")) {
             return false;
         }

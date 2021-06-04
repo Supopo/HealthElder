@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
-import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
 import java.io.Serializable;
@@ -13,7 +12,7 @@ public class ZBUserListBean implements Serializable {
     public Object createdAt;
     public String merchantId;
     public String liveRoomId;
-    public String liveRecordId;
+    public String liveRoomRecordId;
     public String userId;
     public String nickname;
     public String avatarUrl;

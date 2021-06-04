@@ -40,6 +40,7 @@ public class ListBottomPopup extends BasePopupWindow {
 
     public ListBottomPopup(Context context, List<ListPopMenuBean> menus) {
         super(context);
+        setBackground(R.color.transparent);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
         this.menus = menus;
