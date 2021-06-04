@@ -190,19 +190,19 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.tvName.setText(mLiveInitInfo.nickname);
 
         //直播间禁止送礼
-        if (!mLiveInitInfo.liveRoomLevel.canGift) {
+        if (!mLiveInitInfo.liveRoomLevel.canGift || mLiveInitInfo.getCanGift()) {
             binding.btnGift.setVisibility(View.GONE);
         }
         //直播间禁止带货
-        if (!mLiveInitInfo.liveRoomLevel.canSale) {
+        if (!mLiveInitInfo.liveRoomLevel.canSale || mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
         //直播间禁止连麦
-        if (!mLiveInitInfo.liveRoomLevel.canMic) {
+        if (!mLiveInitInfo.liveRoomLevel.canMic || mLiveInitInfo.getCanMic()) {
             binding.btnLianmai.setVisibility(View.GONE);
         }
         //直播间禁止评论
-        if (!mLiveInitInfo.liveRoomLevel.canComment) {
+        if (!mLiveInitInfo.liveRoomLevel.canComment || mLiveInitInfo.getCanComment()) {
             mLiveInitInfo.setCanComment(false);
         }
 
