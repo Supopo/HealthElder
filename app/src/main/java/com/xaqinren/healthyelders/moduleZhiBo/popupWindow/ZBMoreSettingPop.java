@@ -123,12 +123,7 @@ public class ZBMoreSettingPop extends BasePopupWindow {
                     break;
                 case 2:
                     if (shareDialog == null) {
-                        ShareBean shareBean = new ShareBean();
-                        shareBean.coverUrl = mLiveInitInfo.avatarUrl;
-                        shareBean.url = mLiveInitInfo.pullStreamUrl;
-                        shareBean.title = mLiveInitInfo.liveRoomName;
-                        shareBean.subTitle = mLiveInitInfo.liveRoomIntroduce;
-                        shareDialog = new ShareDialog(getContext(), shareBean, 2);
+                        shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, 2);
                     }
                     shareDialog.show(rvContent);
                     break;

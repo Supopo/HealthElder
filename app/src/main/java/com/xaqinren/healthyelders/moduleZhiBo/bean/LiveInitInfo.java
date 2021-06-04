@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
+
 import java.io.Serializable;
 
 /**
@@ -53,6 +55,8 @@ public class LiveInitInfo implements Serializable {
     public Boolean hasAdmin;//false, // 是否是管理员
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
     public LiveLevelInfo liveRoomLevel;//直播间等级信息
+    public ShareBean share;
+
 
     public Boolean getAdminCanMuteAuth() {
         return adminCanMuteAuth == null ? false : adminCanMuteAuth;

@@ -434,6 +434,7 @@
                 android:textSize="14sp" />
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/btn_more"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
