@@ -218,7 +218,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
 //                    binding.searchView.setText(null);
                 }
             }
-            else if (resultCode == REQUEST_GALLERY) {
+            else if (requestCode == REQUEST_GALLERY) {
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 String path = result.get(0).getPath();
                 GlideUtil.intoImageView(this, path, binding.avatar);

@@ -2,11 +2,14 @@ package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.os.Bundle;
 
+import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.databinding.ActivityCoinBinding;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.base.BaseViewModel;
 
-public class CoinActivity extends BaseActivity {
+public class CoinActivity extends BaseActivity<ActivityCoinBinding, BaseViewModel> {
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_coin;
@@ -14,6 +17,15 @@ public class CoinActivity extends BaseActivity {
 
     @Override
     public int initVariableId() {
-        return 0;
+        return BR.viewModel;
+    }
+
+    @Override
+    public void initData() {
+        super.initData();
+        setTvRight("零钱明细");
+        tvRight.setOnClickListener(v -> {
+
+        });
     }
 }

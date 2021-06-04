@@ -38,7 +38,15 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
             startActivity(StartRenZhengActivity.class, bundle);
         });
         binding.lqLayout.setOnClickListener(v -> {
-            startActivity(SettingPayPassActivity.class);
+            //设置完成,跳转
+            startActivity(CoinActivity.class);
+        });
+        //已实名但未设置支付密码也要跳转 startActivity(SettingPayPassActivity.class);
+        binding.cardLayout.setOnClickListener(v -> {
+            startActivity(BandCardActivity.class);
+        });
+        binding.cardLayout.setOnClickListener(v -> {
+            startActivity(BandCardActivity.class);
         });
     }
 
@@ -50,6 +58,7 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
             boolean pay_status = intent.getBooleanExtra("pay_status", false);
             if (status) {
                 //认证成功
+                startActivity(SettingPayPassActivity.class);
             }
             if (pay_status) {
                 //密码设置成功

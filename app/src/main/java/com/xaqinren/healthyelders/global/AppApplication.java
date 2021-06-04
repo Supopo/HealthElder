@@ -35,6 +35,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
+import com.xaqinren.healthyelders.uniApp.module.nativeDialog.NativeDialogModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
@@ -140,6 +141,7 @@ public class AppApplication extends BaseApplication {
 
         try {
             UniSDKEngine.registerModule("city", CitySelModule.class);
+            UniSDKEngine.registerModule("qnx-dialog", NativeDialogModule.class);
         } catch (UniException e) {
             e.printStackTrace();
         }

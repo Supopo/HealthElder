@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        android:background="@mipmap/yinhk_bg_jt"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:src="@mipmap/icon_yh_jt"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/logo"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12">
+
+            <TextView
+                android:id="@+id/bank_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="交通银行"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/white"
+                android:includeFontPadding="false" />
+
+            <TextView
+                android:id="@+id/card_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="储蓄卡"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/white"
+                android:includeFontPadding="false"
+                android:alpha="0.6" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/card_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_28"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:includeFontPadding="false"
+            android:textStyle="bold"
+            android:text="**** **** **** 9999" />
+    </RelativeLayout>
+</layout>

@@ -1,6 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-</LinearLayout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="@dimen/dp_52"
+            android:layout_height="@dimen/dp_52"
+            android:src="@mipmap/icon_zhifu_lingq"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_25" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的零钱"
+            android:textColor="@color/gray_999"
+            android:textSize="@dimen/sp_16"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_30" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_gravity="bottom|center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¥"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_22"
+                android:includeFontPadding="false"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_40"
+                android:includeFontPadding="false"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            style="@style/lineMarginDp16"
+            android:layout_marginTop="@dimen/dp_30" />
+
+        <LinearLayout
+            android:id="@+id/layout_recharge"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/icon_lq_chz" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="充值"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_252525"
+                android:drawableRight="@drawable/arrow_right"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_withdraw"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@mipmap/icon_lq_tx" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="提现"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_252525"
+                android:drawableRight="@drawable/arrow_right"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

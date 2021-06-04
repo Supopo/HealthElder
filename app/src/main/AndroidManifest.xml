@@ -173,7 +173,8 @@
         <activity
             android:name=".moduleZhiBo.activity.StartLiveActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AnimTheme" />
+            android:theme="@style/AnimTheme"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".moduleZhiBo.activity.StartRenZhengActivity"
             android:theme="@style/AnimTheme" />
@@ -367,6 +368,9 @@
         <activity android:name=".moduleMine.activity.SettingPayPassActivity" />
         <activity android:name=".moduleMine.activity.ConfirmPassActivity" />
         <activity android:name=".moduleMine.activity.CoinActivity" />
+        <activity android:name=".moduleMine.activity.BandCardActivity" />
+        <activity android:name=".moduleMine.activity.AddBankCardActivity" />
+        <activity android:name=".moduleMine.activity.AnchorActivity" />
 
         <service
             android:name=".push.IPushService"

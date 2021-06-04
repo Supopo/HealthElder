@@ -47,6 +47,7 @@ import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
+import com.xaqinren.healthyelders.moduleMine.activity.AnchorActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
@@ -68,9 +69,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.dcloud.feature.sdk.DCUniMPJSCallback;
 import io.dcloud.feature.sdk.DCUniMPSDK;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -681,15 +684,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         binding.myCommCode.setOnClickListener(v -> {
             //推广码
-            closeDrawer();
+            closeDelay();
             startActivity(MyRecommendCodeActivity.class);
         });
         binding.myWallet.setOnClickListener(v ->
         {
-            closeDrawer();
+            closeDelay();
             startActivity(WalletActivity.class);
         });
-
+        binding.myZhubo.setOnClickListener(v -> {
+            closeDelay();
+            startActivity(AnchorActivity.class);
+        });
     }
 
     public void openDrawer() {
@@ -697,5 +703,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
     public void closeDrawer() {
         binding.drawer.closeDrawer(Gravity.RIGHT);
+    }
+    public void closeDelay() {
+        Observable.timer(500, TimeUnit.MILLISECONDS)
+                .subscribe(aLong -> closeDrawer());
     }
 }

@@ -19,4 +19,11 @@ public class IntentUtils {
         sendIntent.putExtra("sms_body", content);
         context.startActivity(sendIntent);
     }
+
+    public static void sendPhone(Context context, String number) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        Uri data = Uri.parse("tel:" + number);
+        intent.setData(data);
+        context.startActivity(intent);
+    }
 }
