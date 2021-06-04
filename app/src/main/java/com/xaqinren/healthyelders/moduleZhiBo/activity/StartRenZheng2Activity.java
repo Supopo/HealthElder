@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzheng2Binding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartRenZheng2ViewModel;
 
 import org.json.JSONObject;
@@ -68,7 +69,8 @@ public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2B
     public void initViewObservable() {
         super.initViewObservable();
         viewModel.renZhengSuccess.observe(this, isSuccess -> {
-
+            int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
+            extras.putInt(Constant.REN_ZHENG_TYPE, key);
             startActivity(RenZhengSuccessActivity.class,extras);
             finish();
         });

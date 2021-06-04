@@ -37,6 +37,10 @@ public class Constant {
     public static String REQ_TAG_YH = "USER";//用户
     public static String REQ_TAG_GOODS = "COMMODITY";//商品
     public static String REQ_TAG_WZ = "ARTICLE";//文章
+    //认证类型
+    public static String REN_ZHENG_TYPE = "ren_zheng_type";
+    //支付密码
+    public static String PASSWORD = "pay_password";
 
 
     //生成roomId

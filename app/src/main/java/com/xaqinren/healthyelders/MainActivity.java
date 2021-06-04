@@ -48,6 +48,7 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
@@ -680,9 +681,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         binding.myCommCode.setOnClickListener(v -> {
             //推广码
-            startActivity(MyRecommendCodeActivity.class);
             closeDrawer();
+            startActivity(MyRecommendCodeActivity.class);
         });
+        binding.myWallet.setOnClickListener(v ->
+        {
+            closeDrawer();
+            startActivity(WalletActivity.class);
+        });
+
     }
 
     public void openDrawer() {

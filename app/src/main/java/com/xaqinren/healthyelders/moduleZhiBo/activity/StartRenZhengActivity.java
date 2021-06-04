@@ -103,6 +103,8 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         });
         binding.btnNext.setOnClickListener(lis -> {
             if (isSuccess1 && isSuccess2) {
+                int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
+                bundle.putInt(Constant.REN_ZHENG_TYPE,key);
                 startActivity(StartRenZheng2Activity.class, bundle);
                 finish();
             } else {

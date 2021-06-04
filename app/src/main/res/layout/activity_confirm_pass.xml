@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/color_252525"
+            android:fontFamily="sans-serif-black"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="在此输入支付密码"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请再次填写以确认"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/gray_999"
+            android:drawableLeft="@mipmap/icon_anq"
+            android:layout_gravity="center_horizontal"
+            android:drawablePadding="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_16"/>
+
+        <com.xaqinren.healthyelders.widget.pay.PayPassView
+            android:id="@+id/pass_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_marginLeft="@dimen/dp_28"
+            android:layout_marginRight="@dimen/dp_28"
+            android:layout_marginTop="@dimen/dp_65">
+        </com.xaqinren.healthyelders.widget.pay.PayPassView>
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginTop="@dimen/dp_33"
+            android:layout_marginLeft="@dimen/dp_28"
+            android:layout_marginRight="@dimen/dp_28"
+            android:background="@drawable/bg_pass_confirm"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            android:enabled="false"
+            android:text="完成"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+        <com.xaqinren.healthyelders.widget.pay.PayPassKeyBoard
+            android:id="@+id/key_board"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_270"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_50"
+            />
+    </LinearLayout>
+
+</layout>

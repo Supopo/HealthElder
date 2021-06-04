@@ -57,12 +57,12 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
             saveCanvas();
         });
         binding.scanLayout.setOnClickListener(v -> {
-            //扫码
+            //TODO 扫码
         });
     }
 
     private void saveCanvas() {
-        Bitmap bitmap = BitmapUtils.createViewBitmap(binding.saveLayout);
+        Bitmap bitmap = BitmapUtils.createViewBitmap(binding.canvasLayout);
         File directory_pictures = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         getExternalMediaDirs();
         String path = FileUtil.saveBitmap(directory_pictures.getAbsolutePath(), bitmap);

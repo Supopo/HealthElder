@@ -1,11 +1,14 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityRenzhengSuccessBinding;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzheng2Binding;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -31,7 +34,14 @@ public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSucces
         super.initData();
         tvTitle.setText("实名认证");
         binding.btnToLive.setOnClickListener(lis -> {
-            startActivity(StartLiveActivity.class);
+            int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
+            if (key == 0) {
+                startActivity(StartLiveActivity.class);
+            } else if (key == 1) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("status", true);
+                startActivity(WalletActivity.class, bundle);
+            }
             finish();
         });
         binding.tvName.setText(getIntent().getExtras().getString("name"));

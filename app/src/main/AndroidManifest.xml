@@ -361,6 +361,12 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity android:name=".moduleMine.activity.LookAttentionActivity" />
         <activity android:name=".moduleMine.activity.MyRecommendCodeActivity" />
+        <activity android:name=".moduleMine.activity.WalletActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleMine.activity.SettingPayPassActivity" />
+        <activity android:name=".moduleMine.activity.ConfirmPassActivity" />
+        <activity android:name=".moduleMine.activity.CoinActivity" />
 
         <service
             android:name=".push.IPushService"
