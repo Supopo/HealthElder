@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_pop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_428"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_pop_bottom"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/ll_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_52"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_16">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_centerVertical="true"
+                    android:background="@mipmap/icon_back" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:paddingLeft="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_10"
+                        android:gravity="center"
+                        android:id="@+id/tv_lh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="拉黑"
+                        android:textColor="@color/color_252525"
+                        android:textSize="@dimen/sp_16"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:paddingLeft="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_10"
+                        android:gravity="center"
+                        android:id="@+id/tv_jy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dp_28"
+                        android:text="禁言"
+                        android:textColor="@color/gray_999"
+                        android:textSize="@dimen/sp_16" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/ll_title"
+                android:background="@color/color_EAEAEA" />
+
+            <TextView
+                android:id="@+id/tv_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/line"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:text="已被拉黑的用户 (0/5000)"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_12" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tv_tips"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tv_tips"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</layout>

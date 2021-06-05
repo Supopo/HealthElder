@@ -98,7 +98,7 @@ public interface ApiServer {
      * @param authorization
      * @return
      */
-    @GET("user/findUserBaseInfo")
+    @GET("jkzl/findUserBaseInfo")
     Observable<MBaseResponse<UserInfoBean>> getUserInfo(@Header("Authorization") String authorization);
 
 
@@ -460,11 +460,25 @@ public interface ApiServer {
     @GET("jkzl/queryLikePage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getSomeLikeVideoList(@Header("Authorization") String authorization, @Query("page") Integer page,
                                                                                  @Query("pageSize") Integer count, @Query("resourceType") String resourceType, @Query("excludeId") String excludeId);
+
     //更新个人资料
     @POST("user/updateUserInfo")
     Observable<MBaseResponse<Object>> updateUserInfo(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
     //查看用户资料
     @GET("live/findUserProfile")
     Observable<MBaseResponse<UserInfoBean>> getLiveUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //查询直播间黑名单
+    @GET("live/findLiveRoomBlacklist")
+    Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getBlackList(@Header("Authorization") String authorization, @Query("page") Integer page,
+                                                                              @Query("pageSize") Integer count, @Query("liveRoomId") String liveRoomId);
+
+
+    //查询直播间禁言列表
+    @GET("live/findLiveRoomMuteList")
+    Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getJinYanList(@Header("Authorization") String authorization, @Query("page") Integer page,
+                                                                              @Query("pageSize") Integer count, @Query("liveRoomRecordId") String liveRoomRecordId);
+
 }
 

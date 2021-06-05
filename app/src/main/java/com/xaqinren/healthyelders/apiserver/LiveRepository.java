@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
@@ -830,4 +832,48 @@ public class LiveRepository {
                 });
     }
 
+    public void getBlackList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<BaseListRes<List<ZBUserListBean>>> userList, int page, String liveRoomId) {
+        userApi.getBlackList(UserInfoMgr.getInstance().getHttpToken(), page, 10, liveRoomId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<ZBUserListBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<ZBUserListBean>>> data) {
+                        userList.postValue(data.getData());
+                    }
+
+                });
+    }
+    public void getJinYanList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<BaseListRes<List<ZBUserListBean>>> userList, int page, String liveRoomRecordId) {
+        userApi.getJinYanList(UserInfoMgr.getInstance().getHttpToken(), page, 10, liveRoomRecordId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<ZBUserListBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<ZBUserListBean>>> data) {
+                        userList.postValue(data.getData());
+                    }
+
+                });
+    }
 }

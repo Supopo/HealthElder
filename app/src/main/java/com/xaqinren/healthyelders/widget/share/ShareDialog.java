@@ -233,8 +233,9 @@ public class ShareDialog {
         if (popupWindow == null) {
             init();
         }
-        popupWindow.showAsDropDown(Parent, Gravity.BOTTOM, 0, 0);
+        popupWindow.showAtLocation(binding.getRoot(), Gravity.BOTTOM, 0, 0);
     }
+
 
     public void hide() {
         popupWindow.dismiss();

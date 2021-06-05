@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_pop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_208"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_pop_bottom"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_52"
+                android:gravity="center"
+                android:text="设置"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/tv_title"
+                android:background="@color/color_EAEAEA" />
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_below="@id/line1"
+                android:id="@+id/ll_set"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_set"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/dp_52"
+                    android:gravity="center_vertical"
+                    android:text="直播间设置"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:background="@mipmap/icon_advance" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/ll_set"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@color/color_EAEAEA" />
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_below="@id/line2"
+                android:id="@+id/ll_des"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_des"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/dp_52"
+                    android:gravity="center_vertical"
+                    android:text="直播间介绍"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_14" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:background="@mipmap/icon_advance" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/ll_des"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@color/color_EAEAEA" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</layout>

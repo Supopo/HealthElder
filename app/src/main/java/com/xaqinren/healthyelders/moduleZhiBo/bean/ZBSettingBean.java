@@ -12,6 +12,9 @@ public class ZBSettingBean implements Serializable {
     private Boolean canGift;
     private Boolean canRecordVideo;
     private Boolean canMic;
+    private Boolean hasIntroduce;
+    private String liveRoomIntroduce;
+
 
     public Boolean getCanComment() {
         return canComment;

@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class ZBUserListBean implements Serializable {
     public String id;
-    public Object createdAt;
+    public String createdAt;
     public String merchantId;
     public String liveRoomId;
     public String liveRoomRecordId;
@@ -31,6 +31,13 @@ public class ZBUserListBean implements Serializable {
     public int active;//活跃度
     public String viewerDuration;//用户看播时间
 
+    public String operatorNickname;//操作
+
+    public String getOperatorNickname() {
+        return operatorNickname + " 处理";
+    }
+
+
     public int position;//麦序
     public boolean hasProsody;//连麦是否静音
 
@@ -40,6 +47,7 @@ public class ZBUserListBean implements Serializable {
         }
         return levelCode;
     }
+
     public String getLevelName() {
         if (levelName == null) {
             return "1";
@@ -52,11 +60,13 @@ public class ZBUserListBean implements Serializable {
     public int showTime;
 
     public String contribution;//贡献值
-    public String getContribution(){
-        return "贡献值"+ Num2TextUtil.sNum2Text2(contribution);
+
+    public String getContribution() {
+        return "贡献值" + Num2TextUtil.sNum2Text2(contribution);
     }
 
     public ZBUserListBean attentionUserInfo;//用户信息
     public String attentionUserId;//用户id
 
+    public int showType;
 }

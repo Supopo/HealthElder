@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -42,6 +43,7 @@ import razerdp.basepopup.BasePopupWindow;
 public class ZBMoreSettingPop extends BasePopupWindow {
 
 
+    private RelativeLayout rlItem;
     private RecyclerView rvContent;
     private LiveMenuAdapter menuAdapter;
     private MLVBLiveRoom mLiveRoom;
@@ -49,11 +51,14 @@ public class ZBMoreSettingPop extends BasePopupWindow {
     private ShareDialog shareDialog;
     private LoadingDialog loadingDialog;
     private ZBSettingBean settingBean;
+    private ZBMoreSettingSettingPop settingPop;
+    private Context context;
 
     public ZBMoreSettingPop(Context context, MLVBLiveRoom mLiveRoom, LiveInitInfo mLiveInitInfo) {
         super(context);
         this.mLiveRoom = mLiveRoom;
         this.mLiveInitInfo = mLiveInitInfo;
+        this.context = context;
 
         //去掉背景
         setBackground(R.color.transparent);
@@ -72,6 +77,7 @@ public class ZBMoreSettingPop extends BasePopupWindow {
 
     private void initView() {
         loadingDialog = new LoadingDialog(getContext());
+        rlItem = findViewById(R.id.rl_pop);
         rvContent = findViewById(R.id.rv_menu);
         menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
         rvContent.setLayoutManager(new GridLayoutManager(getContext(), 4));
@@ -120,12 +126,14 @@ public class ZBMoreSettingPop extends BasePopupWindow {
                     mLiveRoom.switchCamera();
                     break;
                 case 1:
+                    settingPop = new ZBMoreSettingSettingPop(context, mLiveInitInfo);
+                    settingPop.showPopupWindow();
                     break;
                 case 2:
                     if (shareDialog == null) {
                         shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, 2);
                     }
-                    shareDialog.show(rvContent);
+                    shareDialog.show(rlItem);
                     break;
                 case 3:
                     loadingDialog.show();

@@ -113,10 +113,10 @@ public class UserRepository {
                 .subscribe(new DisposableObserver<MBaseResponse<UserInfoBean>>() {
                     @Override
                     public void onNext(MBaseResponse<UserInfoBean> response) {
+                        if (userInfo != null) {
+                            userInfo.postValue(response.getData());
+                        }
                         if (response.isOk() && response.getData() != null) {
-                            if (userInfo != null) {
-                                userInfo.postValue(response.getData());
-                            }
                             InfoCache.getInstance().setLoginUser(response.getData());
                             UserInfoMgr.getInstance().setUserInfo(response.getData());
                             //绑定cid
@@ -127,10 +127,6 @@ public class UserRepository {
                                 loginSuccess.postValue(true);
                             }
                         } else {
-                            if (userInfo != null) {
-                                userInfo.postValue(response.getData());
-                            }
-
                             if (loginSuccess != null) {
                                 loginSuccess.postValue(false);
                             }
