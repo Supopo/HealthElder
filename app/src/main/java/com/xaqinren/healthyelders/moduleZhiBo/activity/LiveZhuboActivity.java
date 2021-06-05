@@ -20,7 +20,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +40,6 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -69,7 +67,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBLinkUsersPop;
-import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMoreSettingPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMorePop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
@@ -152,7 +150,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private SVGAParser svgaParser;
     private int screenWidth;
     private int screenHeight;
-    private ZBMoreSettingPop zbMoreSettingPop;
+    private ZBMorePop zbMorePop;
     private ZBUserInfoPop userInfoPop;
 
     @Override
@@ -1390,8 +1388,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
                 break;
             case R.id.btn_more:
-                zbMoreSettingPop = new ZBMoreSettingPop(this, mLiveRoom, mLiveInitInfo);
-                zbMoreSettingPop.showPopupWindow();
+                zbMorePop = new ZBMorePop(this, mLiveRoom, mLiveInitInfo);
+                zbMorePop.showPopupWindow();
                 break;
         }
     }

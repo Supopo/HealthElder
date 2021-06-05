@@ -2,24 +2,18 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
-import com.tencent.liteav.demo.beauty.model.BeautyInfo;
-import com.tencent.liteav.demo.beauty.model.ItemInfo;
-import com.tencent.liteav.demo.beauty.model.TabInfo;
-import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
@@ -29,19 +23,12 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
-import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
-import com.xaqinren.healthyelders.moduleZhiBo.adapter.LiveMenuAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBBlackListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
-import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.utils.AnimUtils;
-import com.xaqinren.healthyelders.widget.BottomDialog;
-import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +45,7 @@ import razerdp.basepopup.BasePopupWindow;
  * Created by Lee. on 2021/4/20.
  * 直播间更多设置-拉黑禁言名单
  */
-public class ZBMoreSettingUserListPop extends BasePopupWindow {
+public class ZBBlackUserListPop extends BasePopupWindow {
 
 
     private RecyclerView rvContent;
@@ -75,7 +62,7 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
     private BaseLoadMoreModule mLoadMore2;
     private Context context;
 
-    public ZBMoreSettingUserListPop(Context context, LiveInitInfo mLiveInitInfo) {
+    public ZBBlackUserListPop(Context context, LiveInitInfo mLiveInitInfo) {
         super(context);
         this.context = context;
         this.mLiveInitInfo = mLiveInitInfo;
@@ -102,7 +89,7 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
 
         initLaHei();
         initJinYan();
-        ivBack.setOnClickListener(lis ->{
+        ivBack.setOnClickListener(lis -> {
             dismiss();
         });
 
@@ -277,7 +264,9 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
                         zbBlackListAdapter.remove(blackPos);
-                        tvTips.setText("已被拉黑的用户 (" + (blackNum - 1) + "/5000)");
+                        if (blackNum > 1) {
+                            tvTips.setText("已被拉黑的用户 (" + (blackNum - 1) + "/5000)");
+                        }
                     }
                 });
     }
@@ -324,6 +313,6 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
 
     @Override
     public View onCreateContentView() {
-        return createPopupById(R.layout.pop_zbj_more_setting_user_list);
+        return createPopupById(R.layout.pop_zbj_black_user_list);
     }
 }
