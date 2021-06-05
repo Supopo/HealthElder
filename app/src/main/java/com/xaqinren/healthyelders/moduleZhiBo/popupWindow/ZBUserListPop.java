@@ -32,6 +32,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import razerdp.basepopup.BasePopupWindow;
@@ -50,7 +51,7 @@ public class ZBUserListPop extends BasePopupWindow {
     private int nowPosition;
     private BaseLoadMoreModule loadMore;
     private QMUIBottomSheet menuDialog;
-    private QMUITipDialog dialog;
+    private LoadingDialog dialog;
 
     public ZBUserListPop(Context context) {
         super(context);
@@ -107,10 +108,7 @@ public class ZBUserListPop extends BasePopupWindow {
 
     public void showWaitDialog() {
         if (dialog == null) {
-            dialog = new QMUITipDialog.Builder(getContext())
-                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                    .setTipWord("请稍后")
-                    .create();
+            dialog = new LoadingDialog(getContext());
         }
         dialog.show();
     }

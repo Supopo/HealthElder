@@ -53,7 +53,8 @@
                 android:layout_marginTop="@dimen/dp_39"
                 android:layout_toRightOf="@id/tv_num"
                 android:scaleType="centerInside"
-                android:src="@mipmap/icon_user_add" />
+                android:src="@mipmap/icon_user_add"
+                android:visibility="@{viewModel.showFollow() ?View.VISIBLE:View.GONE}" />
 
             <TextView
                 android:id="@+id/tv_name"

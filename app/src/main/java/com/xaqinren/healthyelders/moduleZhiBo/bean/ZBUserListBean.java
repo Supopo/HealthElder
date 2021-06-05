@@ -31,6 +31,13 @@ public class ZBUserListBean implements Serializable {
     public int active;//活跃度
     public String viewerDuration;//用户看播时间
 
+    public boolean showFollow(){
+        if (identity.equals("FOLLOW") || identity.equals("FRIEND")) {
+            return false;
+        }
+        return true;
+    }
+
     public String operatorNickname;//操作
 
     public String getOperatorNickname() {
