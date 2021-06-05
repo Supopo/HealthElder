@@ -190,21 +190,18 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.tvName.setText(mLiveInitInfo.nickname);
 
         //直播间禁止送礼
-        if (mLiveInitInfo.getCanGift()) {
+        if (!mLiveInitInfo.getCanGift()) {
             binding.btnGift.setVisibility(View.GONE);
         }
         //直播间禁止带货
-        if (mLiveInitInfo.getCanSale()) {
+        if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
         }
         //直播间禁止连麦
-        if (mLiveInitInfo.getCanMic()) {
+        if (!mLiveInitInfo.getCanMic()) {
             binding.btnLianmai.setVisibility(View.GONE);
         }
-        //直播间禁止评论
-        if (mLiveInitInfo.getCanComment()) {
-            mLiveInitInfo.setCanComment(false);
-        }
+
 
         if (mLiveInitInfo.getHasFollow()) {
             binding.tvFollow.setText("已关注");
@@ -1496,14 +1493,16 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 break;
             case R.id.tv_msg:
                 //判断是否被禁言
-                if (!mLiveInitInfo.hasSpeech && mLiveInitInfo.canComment) {
+                if (!mLiveInitInfo.getHasSpeech() && mLiveInitInfo.getCanComment()) {
                     startActivity(ZBEditTextDialogActivity.class);
                 } else {
-                    if (!mLiveInitInfo.canComment) {
+                    if (!mLiveInitInfo.getCanComment()) {
                         ToastUtil.toastShortMessage(LiveConstants.SHOW_JZPL);
+                        return;
                     }
-                    if (mLiveInitInfo.hasSpeech) {
+                    if (mLiveInitInfo.getHasSpeech()) {
                         ToastUtil.toastShortMessage(LiveConstants.SHOW_JINYAN);
+                        return;
                     }
                 }
                 break;

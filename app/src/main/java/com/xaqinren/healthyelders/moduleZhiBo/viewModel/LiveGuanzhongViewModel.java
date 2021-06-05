@@ -10,6 +10,7 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
@@ -41,9 +42,9 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         //判断登录
         LoginInfo loginInfo = new LoginInfo();
+        UserInfoBean userInfo = UserInfoMgr.getInstance().getUserInfo();
         loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
         loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
-        LogUtils.v(Constant.TAG_LIVE, "loginInfo.userName: " + loginInfo.userName);
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();

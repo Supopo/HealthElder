@@ -113,7 +113,7 @@ public class UserRepository {
                 .subscribe(new DisposableObserver<MBaseResponse<UserInfoBean>>() {
                     @Override
                     public void onNext(MBaseResponse<UserInfoBean> response) {
-                        if (response.isOk()) {
+                        if (response.isOk() && response.getData() != null) {
                             if (userInfo != null) {
                                 userInfo.postValue(response.getData());
                             }
@@ -257,7 +257,7 @@ public class UserRepository {
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
         File file = new File(filePath);
-        builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
+        builder.addFormDataPart("files", file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file));
         RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
                 Constant.lanUrl + "content/filesUpload",
                 UserInfoMgr.getInstance().getHttpToken(), builder.build())
@@ -581,8 +581,8 @@ public class UserRepository {
 
     }
 
-    public void updateUserInfo(MutableLiveData<Boolean> request,MutableLiveData<Boolean> status ,
-                               String avatarUrl , String nickname ,String introduce , String sex , String birthday,String cityAddress) {
+    public void updateUserInfo(MutableLiveData<Boolean> request, MutableLiveData<Boolean> status,
+                               String avatarUrl, String nickname, String introduce, String sex, String birthday, String cityAddress) {
         HashMap<String, Object> hashMap = new HashMap<>();
         if (!StringUtils.isEmpty(avatarUrl))
             hashMap.put("avatarUrl", avatarUrl);
@@ -599,7 +599,7 @@ public class UserRepository {
 
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.updateUserInfo(UserInfoMgr.getInstance().getHttpToken()  , body)
+        userApi.updateUserInfo(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Boolean>>() {

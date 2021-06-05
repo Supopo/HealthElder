@@ -201,7 +201,7 @@ public class ZBMoreSettingPop extends BasePopupWindow {
                     }
                     menuAdapter.notifyItemChanged(6);
                     //通知主播页面发送全局自定义消息
-                    RxBus.getDefault().post(new EventBean(LiveConstants.ZBJ_MORE_SETTING, mLiveInitInfo.getCanComment() ? 5 : 6));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.ZBJ_MORE_SETTING, mLiveInitInfo.getCanGift() ? 5 : 6));
                 }
             }
         });
