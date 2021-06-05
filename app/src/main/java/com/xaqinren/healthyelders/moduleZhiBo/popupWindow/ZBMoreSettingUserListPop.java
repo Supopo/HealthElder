@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -69,6 +70,7 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
     private TextView tvTips;
     private TextView tvLahei;
     private TextView tvJinyan;
+    private ImageView ivBack;
     private BaseLoadMoreModule mLoadMore;
     private BaseLoadMoreModule mLoadMore2;
     private Context context;
@@ -80,8 +82,8 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
 
         //去掉背景
         setBackground(R.color.transparent);
-        setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
-        setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
+        setShowAnimation(AnimUtils.PopAnimRight2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimRight2Exit(context));
         initView();
         initEvent();
     }
@@ -94,12 +96,15 @@ public class ZBMoreSettingUserListPop extends BasePopupWindow {
         tvTips = findViewById(R.id.tv_tips);
         rvContent = findViewById(R.id.rv_list);
         rvContent2 = findViewById(R.id.rv_list2);
+        ivBack = findViewById(R.id.iv_back);
         tvLahei = findViewById(R.id.tv_lh);
         tvJinyan = findViewById(R.id.tv_jy);
 
         initLaHei();
         initJinYan();
-
+        ivBack.setOnClickListener(lis ->{
+            dismiss();
+        });
 
     }
 

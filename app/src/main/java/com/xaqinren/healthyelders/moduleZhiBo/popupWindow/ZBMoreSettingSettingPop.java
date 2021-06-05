@@ -43,6 +43,8 @@ public class ZBMoreSettingSettingPop extends BasePopupWindow {
     private LinearLayout llSet;
     private LinearLayout llDes;
     private Context context;
+    private ZBMoreSettingUserListPop settingUserListPop;
+    private ZBDesSettingPop zbDesSettingPop;
 
     public ZBMoreSettingSettingPop(Context context, LiveInitInfo mLiveInitInfo) {
         super(context);
@@ -62,11 +64,11 @@ public class ZBMoreSettingSettingPop extends BasePopupWindow {
         llSet = findViewById(R.id.ll_set);
         llDes = findViewById(R.id.ll_des);
         llSet.setOnClickListener(lis -> {
-            ZBMoreSettingUserListPop settingUserListPop = new ZBMoreSettingUserListPop(context, mLiveInitInfo);
+            settingUserListPop = new ZBMoreSettingUserListPop(context, mLiveInitInfo);
             settingUserListPop.showPopupWindow();
         });
         llDes.setOnClickListener(lis -> {
-            ZBDesSettingPop zbDesSettingPop = new ZBDesSettingPop(context, mLiveInitInfo);
+            zbDesSettingPop = new ZBDesSettingPop(context, mLiveInitInfo,1);
             zbDesSettingPop.showPopupWindow();
         });
 

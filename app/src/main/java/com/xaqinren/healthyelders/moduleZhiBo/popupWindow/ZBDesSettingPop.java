@@ -7,10 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.widget.SwitchButton;
 
@@ -25,6 +30,8 @@ public class ZBDesSettingPop extends BasePopupWindow {
     private SwitchButton sbKQJS;
     private Button btnSave;
     private EditText etContent;
+    private int type;
+    private ZBSettingBean zbSettingBean;
 
 
     public ZBDesSettingPop(Context context, LiveInitInfo liveInfo) {
@@ -34,6 +41,17 @@ public class ZBDesSettingPop extends BasePopupWindow {
         setShowAnimation(AnimUtils.PopAnimRight2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimRight2Exit(context));
         this.liveInitInfo = liveInfo;
+        initView();
+    }
+
+    public ZBDesSettingPop(Context context, LiveInitInfo liveInfo, int type) {
+        super(context);
+        //去掉背景
+        setBackground(R.color.transparent);
+        setShowAnimation(AnimUtils.PopAnimRight2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimRight2Exit(context));
+        this.liveInitInfo = liveInfo;
+        this.type = type;
         initView();
     }
 
@@ -49,16 +67,40 @@ public class ZBDesSettingPop extends BasePopupWindow {
         }
         sbKQJS.setChecked(liveInitInfo.getHasIntroduce());
         btnSave.setOnClickListener(lis -> {
-            liveInitInfo.liveRoomIntroduce = etContent.getText().toString().trim();
-            ToastUtil.toastShortMessage("保存成功");
-            dismiss();
+            if (type == 1) {
+                zbSettingBean = new ZBSettingBean();
+                zbSettingBean.liveRoomId = liveInitInfo.liveRoomId;
+                zbSettingBean.setHasIntroduce(sbKQJS.isChecked());
+                zbSettingBean.liveRoomIntroduce = etContent.getText().toString().trim();
+                LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, zbSettingBean);
+            } else {
+                liveInitInfo.liveRoomIntroduce = etContent.getText().toString().trim();
+                ToastUtil.toastShortMessage("保存成功");
+                dismiss();
+            }
         });
+        setSuccess.observe((LifecycleOwner) getContext(), setSuccess -> {
+            if (setSuccess != null) {
+                liveInitInfo.liveRoomIntroduce = etContent.getText().toString().trim();
+                ToastUtil.toastShortMessage("保存成功");
+                dismiss();
+            }
+
+        });
+
+
     }
+
+    public MutableLiveData<Boolean> setSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+
 
     @Override
     public void dismiss() {
         super.dismiss();
-        liveInitInfo.setHasIntroduce(sbKQJS.isChecked());
+        if (type != 1) {
+            liveInitInfo.setHasIntroduce(sbKQJS.isChecked());
+        }
     }
 
     @Override
