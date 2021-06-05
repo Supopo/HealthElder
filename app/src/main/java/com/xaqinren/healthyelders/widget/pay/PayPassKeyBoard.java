@@ -86,9 +86,13 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
             item.setGravity(Gravity.CENTER);
             item.setClickable(true);
             item.setEnabled(true);
-            item.setText(values[i]);
             item.setOnClickListener(this);
             item.setTag(values[i]);
+            item.setText(values[i]);
+            if (i == itemSize - 1) {
+                //删除键
+//                item.setText(values[i]);
+            }
             addView(item);
         }
     }

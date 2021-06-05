@@ -71,6 +71,7 @@ public class ListBottomPopup extends BasePopupWindow {
             @Override
             protected void convert(@NotNull BaseViewHolder holder, ListPopMenuBean menuBean) {
                 TextView tvMenu = holder.getView(R.id.tv_menu);
+                TextView tvMenuSub = holder.getView(R.id.tv_menu_sub);
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tvMenu.getLayoutParams();
                 lp.height = (int) ScreenUtil.dp2px(getContext(), 56);
                 tvMenu.setLayoutParams(lp);
@@ -85,6 +86,22 @@ public class ListBottomPopup extends BasePopupWindow {
                 if (menuBean.textStyle == 1) {
                     tvMenu.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                 }
+                if (menuBean.subTitle == null) {
+                    tvMenuSub.setVisibility(View.GONE);
+                } else {
+                    tvMenuSub.setVisibility(View.VISIBLE);
+                    tvMenuSub.setText(menuBean.subTitle);
+                    if (menuBean.subTitleSize != 0) {
+                        tvMenuSub.setTextSize(menuBean.subTitleSize);
+                    }
+                    if (menuBean.subTitleColor != 0) {
+                        tvMenuSub.setTextColor(menuBean.subTitleColor);
+                    }
+                    if (menuBean.subTitleStyle == 1) {
+                        tvMenuSub.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                    }
+                }
+
             }
         };
         rvPop.setAdapter(adapter);

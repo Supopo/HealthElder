@@ -6,7 +6,6 @@ public class UserInfoBean {
     private String mobileNumber;
     private String sex;
     private int levelDiscount;
-    private int consumptionAmount;
     private Boolean defaultLevel;
     private String levelImage;
     private String levelName;
@@ -18,8 +17,39 @@ public class UserInfoBean {
     private String nickname;
     private String realName;
     private int cumulativeAmount;
+    private int consumptionAmount;
     private String id;
+    private Integer pointAccountBalance;//金币余额
+    private Double wallAccountBalance;//钱包
+    private int favoriteCount;
+    private int fansCount;
+    private int attentionCount;
+    private int bankCardCount;
+    private int pointAmount;
 
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public int getBankCardCount() {
+        return bankCardCount;
+    }
+
+    public void setBankCardCount(int bankCardCount) {
+        this.bankCardCount = bankCardCount;
+    }
+
+    public int getPointAmount() {
+        return pointAmount;
+    }
+
+    public void setPointAmount(int pointAmount) {
+        this.pointAmount = pointAmount;
+    }
 
     public String getBirthday() {
         return birthday;
@@ -44,9 +74,6 @@ public class UserInfoBean {
     public void setWallAccountBalance(Double wallAccountBalance) {
         this.wallAccountBalance = wallAccountBalance;
     }
-
-    private Integer pointAccountBalance;//金币余额
-    private Double wallAccountBalance;//钱包
 
     public String getIntroduce() {
         return introduce;
@@ -90,10 +117,6 @@ public class UserInfoBean {
     public void setAttentionCount(int attentionCount) {
         this.attentionCount = attentionCount;
     }
-
-    private int favoriteCount;
-    private int fansCount;
-    private int attentionCount;
 
     public Boolean getHasAdmin() {
         return hasAdmin == null ? false : hasAdmin;
@@ -255,5 +278,15 @@ public class UserInfoBean {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getAuthStatus() {
+        return hasRealName ? "已认证" : "未认证";
+    }
+    public String getAuthSuccessRealName() {
+        return "真实姓名: " + realName;
+    }
+    public String getAuthSuccessIdCard() {
+        return "身份证号: " + realName;
     }
 }

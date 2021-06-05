@@ -10,6 +10,11 @@ public class ListPopMenuBean {
     public int textStyle;
     public int textColor;
 
+    public String subTitle;
+    public float subTitleSize;
+    public int subTitleStyle;
+    public int subTitleColor;
+
     public ListPopMenuBean() {
     }
     public ListPopMenuBean(String menuName) {
@@ -24,4 +29,6 @@ public class ListPopMenuBean {
         this.textColor = textColor;
         this.textSize = textSize;
     }
+
+
 }

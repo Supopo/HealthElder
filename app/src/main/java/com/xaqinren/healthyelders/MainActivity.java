@@ -50,6 +50,7 @@ import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
 import com.xaqinren.healthyelders.moduleMine.activity.AnchorActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MiniActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.SettingActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
@@ -693,9 +694,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             closeDelay();
             startActivity(WalletActivity.class);
         });
-        binding.myZhubo.setOnClickListener(v -> {
+        /*binding.myZhubo.setOnClickListener(v -> {
             closeDelay();
             startActivity(AnchorActivity.class);
+        });*/
+        binding.mySetting.setOnClickListener(v -> {
+            closeDelay();
+            startActivity(SettingActivity.class);
         });
     }
 

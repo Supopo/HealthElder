@@ -2,13 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="data"
+            type="com.xaqinren.healthyelders.moduleMine.bean.WalletBean" />
     </data>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <ImageView
             android:layout_width="@dimen/dp_52"
@@ -46,7 +49,7 @@
                 android:id="@+id/balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.00"
+                android:text="@{data.wallAccountBalance}"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_40"
                 android:includeFontPadding="false"

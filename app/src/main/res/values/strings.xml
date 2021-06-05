@@ -3,4 +3,6 @@
     <string name="un_login">您未登录,请先登录</string>
     <item name="tag_first" type="id"></item>
     <item name="tag_second" type="id"></item>
+    <string name="un_auth">未认证</string>
+    <string name="has_auth">已认证</string>
 </resources>

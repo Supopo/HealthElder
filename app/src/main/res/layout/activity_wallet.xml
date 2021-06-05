@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="data"
+            type="com.xaqinren.healthyelders.moduleMine.bean.WalletBean" />
     </data>
 
     <LinearLayout
@@ -34,7 +36,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_26"
                     android:layout_centerHorizontal="true"
-                    android:text="999" />
+                    android:text="@{data.pointAccountBalance}" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -74,7 +76,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_26"
                     android:layout_centerHorizontal="true"
-                    android:text="0.00"
+                    android:text="@{data.wallAccountBalance}"
                     android:visibility="gone" />
 
                 <TextView
@@ -103,7 +105,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_26"
                     android:layout_centerHorizontal="true"
-                    android:text="1" />
+                    android:text="@{data.cardCount}" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -157,7 +159,7 @@
                     android:id="@+id/live_in_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="289.34"
+                    android:text="0.00"
                     android:textColor="@color/color_252525"
                     android:textSize="@dimen/sp_20"
                     android:includeFontPadding="false"
@@ -201,7 +203,7 @@
                     android:id="@+id/create_in_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="289.34"
+                    android:text="0.00"
                     android:textColor="@color/color_252525"
                     android:textSize="@dimen/sp_20"
                     android:includeFontPadding="false"
@@ -243,7 +245,7 @@
                     android:id="@+id/red_in_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="289.34"
+                    android:text="0.00"
                     android:textColor="@color/color_252525"
                     android:textSize="@dimen/sp_20"
                     android:includeFontPadding="false"

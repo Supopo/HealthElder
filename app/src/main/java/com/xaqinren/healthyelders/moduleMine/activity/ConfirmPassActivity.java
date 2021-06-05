@@ -2,6 +2,8 @@ package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.os.Bundle;
 
+import androidx.lifecycle.Observer;
+
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -41,9 +43,7 @@ public class ConfirmPassActivity extends BaseActivity<ActivityConfirmPassBinding
                 ToastUtil.toastShortMessage("密码不一致");
                 return;
             }
-            ToastUtil.toastShortMessage("密码设置成功");
-            //设置成功
-            startActivity(WalletActivity.class);
+            viewModel.setPassWord(passWord);
         });
     }
 
@@ -67,5 +67,24 @@ public class ConfirmPassActivity extends BaseActivity<ActivityConfirmPassBinding
     @Override
     public void onInputVacancy() {
         binding.confirm.setEnabled(false);
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.passWord.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    ToastUtil.toastShortMessage("密码设置成功");
+                    //设置成功
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("pay_status", true);
+                    startActivity(WalletActivity.class, bundle);
+                }else{
+                    ToastUtil.toastShortMessage("密码设置失败");
+                }
+            }
+        });
     }
 }

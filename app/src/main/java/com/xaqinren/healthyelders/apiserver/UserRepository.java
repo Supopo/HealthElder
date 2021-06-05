@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
+import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -20,7 +21,11 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
+import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
@@ -29,6 +34,8 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginI
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +52,7 @@ import me.goldze.mvvmhabit.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okio.BufferedSink;
 
 /**
  * =====================================================
@@ -577,6 +585,68 @@ public class UserRepository {
 
     }
 
+    public void getVersionInfo(MutableLiveData<VersionBean> datas) {
+        userApi.checkVersion()
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<VersionBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<VersionBean> data) {
+                        if (data.isOk())
+                        datas.postValue(data.getData());
+                        else
+                            datas.postValue(null);
+                    }
+                });
+
+    }
+
+    public void getWalletInfo(MutableLiveData<Boolean> request , MutableLiveData<WalletBean> datas) {
+        userApi.getWalletInfo(UserInfoMgr.getInstance().getHttpToken())
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<WalletBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<WalletBean> data) {
+                        datas.postValue(data.getData());
+                    }
+                });
+
+    }
+
+
+    public void getBillInfo(MutableLiveData<Boolean> request, MutableLiveData<BillRecodeBean> datas, String key) {
+
+        userApi.getBillInfo(UserInfoMgr.getInstance().getHttpToken(),key)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BillRecodeBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BillRecodeBean> data) {
+                        if (data.isOk())
+                            datas.postValue(data.getData());
+                        else datas.postValue(null);
+                    }
+                });
+
+    }
+
+
     public void updateUserInfo(MutableLiveData<Boolean> request, MutableLiveData<Boolean> status,
                                String avatarUrl, String nickname, String introduce, String sex, String birthday, String cityAddress) {
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -609,5 +679,34 @@ public class UserRepository {
                         status.postValue(data.isOk());
                     }
                 });
+    }
+
+    public void setPassWord(MutableLiveData<Boolean> request, MutableLiveData<Boolean> datas, String key) {
+        RequestBody requestBody = new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return MediaType.parse("application/json");
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                sink.writeString(key, Charset.defaultCharset());
+            }
+        };
+        userApi.setPassWord(UserInfoMgr.getInstance().getHttpToken(),requestBody)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        datas.postValue(data.isOk());
+                    }
+                });
+
     }
 }

@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
@@ -17,6 +18,9 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
+import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
+import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
@@ -468,6 +472,22 @@ public interface ApiServer {
     //查看用户资料
     @GET("live/findUserProfile")
     Observable<MBaseResponse<UserInfoBean>> getLiveUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //版本更新
+    @GET("merchant/open/findUpdateAppVersion?appId="+BuildConfig.APPLICATION_ID)
+    Observable<MBaseResponse<Object>> checkVersion();
+
+    //查询账户余额
+    @GET("user/findAccountBalance")
+    Observable<MBaseResponse<WalletBean>> getWalletInfo(@Header("Authorization") String authorization);
+
+    //查询账单
+    @GET("user/findUserWalletAccountRecordPage")
+    Observable<MBaseResponse<BillRecodeBean>> getBillInfo(@Header("Authorization") String authorization, @Query("date") String key);
+
+    //设置支付密码
+    @POST("user/setPayPassword")
+    Observable<MBaseResponse<Object>> setPassWord(@Header("Authorization") String authorization, @Body RequestBody requestBody);
 
     //查询直播间黑名单
     @GET("live/findLiveRoomBlacklist")
