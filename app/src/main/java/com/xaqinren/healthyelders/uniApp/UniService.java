@@ -173,7 +173,7 @@ public class UniService extends Service implements LifecycleOwner {
 
             @Override
             public void progress(long progress, long total) {
-                LogUtils.e(TAG, uniBean.getAppId() + " >>>>>>> 下载进度 \t " + progress);
+//                LogUtils.e(TAG, uniBean.getAppId() + " >>>>>>> 下载进度 \t " + progress);
             }
 
             @Override

@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentMineDzBinding;
+import com.xaqinren.healthyelders.databinding.FragmentUserXhBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.DZVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineDZViewModel;
+import com.xaqinren.healthyelders.moduleMine.viewModel.UserXHViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ import me.goldze.mvvmhabit.base.BaseFragment;
 
 /**
  * Created by Lee. on 2021/5/24.
- * 我的-点赞作品
+ * 用户-喜欢
  */
-public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZViewModel> {
+public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHViewModel> {
     private int page = 1;
     private int pageSize = 10;
     private DZVideoAdapter videoAdapter;
@@ -40,7 +41,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return R.layout.fragment_mine_dz;
+        return R.layout.fragment_user_xh;
     }
 
     @Override

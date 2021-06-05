@@ -1,13 +1,9 @@
-package com.xaqinren.healthyelders.moduleMine.fragment;
+package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
@@ -15,30 +11,24 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
-import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
-import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
-import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.databinding.ActivityUserInfoBinding;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
-import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
-import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
-import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.CZInputPopupActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.PayActivity;
-import com.xaqinren.healthyelders.widget.YesOrNoDialog;
+import com.xaqinren.healthyelders.moduleMine.fragment.UserXHFragment;
+import com.xaqinren.healthyelders.moduleMine.fragment.UserZPFragment;
+import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.base.BaseActivity;
 
 /**
- * Created by Lee. on 2021/4/24.
- * 我的页面
+ * Created by Lee. on 2021/6/5.
+ * 用户信息页面
  */
-public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewModel> {
+public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, UserInfoViewModel> {
+
     private RelativeLayout.LayoutParams layoutParams;
     private int oldLeft;
     private int oldTop; //初始位置
@@ -53,15 +43,21 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
 
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter pagerAdapter;
-    private MineZPFragment mineZPFragment;
-    private MineSMFragment mineSMFragment;
-    private MineDZFragment mineDZFragment;
+    private UserZPFragment userZPFragment;
+    private UserXHFragment userXHFragment;
     public boolean isTop = true;
     public SwipeRefreshLayout srl;
+    private String userId;
 
     @Override
-    public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return R.layout.fragment_mine;
+    public void initParam() {
+        super.initParam();
+        userId = getIntent().getExtras().getString("userId");
+    }
+
+    @Override
+    public int initContentView(Bundle savedInstanceState) {
+        return R.layout.activity_user_info;
     }
 
     @Override
@@ -72,26 +68,18 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     @Override
     public void initData() {
         super.initData();
+        setStatusBarTransparent();
         srl = binding.srlTop;
-        mineZPFragment = new MineZPFragment();
-        mineSMFragment = new MineSMFragment();
-        mineDZFragment = new MineDZFragment();
-        fragmentList.add(mineZPFragment);
-        fragmentList.add(mineSMFragment);
-        fragmentList.add(mineDZFragment);
+        userZPFragment = new UserZPFragment();
+        userXHFragment = new UserXHFragment();
+        fragmentList.add(userZPFragment);
+        fragmentList.add(userXHFragment);
 
-        pagerAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
-        binding.vpContent.setOffscreenPageLimit(3);
+        pagerAdapter = new FragmentPagerAdapter(this, fragmentList);
+        binding.vpContent.setOffscreenPageLimit(2);
         binding.vpContent.setAdapter(pagerAdapter);
 
-        //获取内存中的信息，如果没有调接口
-        if (UserInfoMgr.getInstance().getUserInfo() != null) {
-            viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
-        } else {
-            String accessToken = InfoCache.getInstance().getAccessToken();
-            viewModel.getUserInfo(accessToken);
-        }
-
+        viewModel.getUserInfo(userId);
         initEvent();
     }
 
@@ -100,37 +88,20 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private void initTabMenu() {
         if (menuPosition == 0) {
             binding.tvZp.setTextColor(getResources().getColor(R.color.color_252525));
-            binding.tvSm.setTextColor(getResources().getColor(R.color.gray_666));
-            binding.tvZg.setTextColor(getResources().getColor(R.color.gray_666));
+            binding.tvXh.setTextColor(getResources().getColor(R.color.gray_666));
             binding.tvZp.setTextSize(16);
-            binding.tvSm.setTextSize(14);
-            binding.tvZg.setTextSize(14);
+            binding.tvXh.setTextSize(14);
             binding.tvZp.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            binding.tvSm.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-            binding.tvZg.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            binding.tvXh.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             Glide.with(this).load(R.mipmap.wode_sm_nor).into(binding.ivSm);
         } else if (menuPosition == 1) {
-            binding.tvSm.setTextColor(getResources().getColor(R.color.color_252525));
+            binding.tvXh.setTextColor(getResources().getColor(R.color.color_252525));
             binding.tvZp.setTextColor(getResources().getColor(R.color.gray_666));
-            binding.tvZg.setTextColor(getResources().getColor(R.color.gray_666));
-            binding.tvSm.setTextSize(16);
+            binding.tvXh.setTextSize(16);
             binding.tvZp.setTextSize(14);
-            binding.tvZg.setTextSize(14);
-            binding.tvSm.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            binding.tvXh.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
             binding.tvZp.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-            binding.tvZg.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             Glide.with(this).load(R.mipmap.wode_sm_sel).into(binding.ivSm);
-        } else {
-            binding.tvZp.setTextColor(getResources().getColor(R.color.gray_666));
-            binding.tvSm.setTextColor(getResources().getColor(R.color.gray_666));
-            binding.tvZg.setTextColor(getResources().getColor(R.color.color_252525));
-            binding.tvZp.setTextSize(14);
-            binding.tvSm.setTextSize(14);
-            binding.tvZg.setTextSize(16);
-            binding.tvZp.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-            binding.tvSm.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-            binding.tvZg.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            Glide.with(this).load(R.mipmap.wode_sm_nor).into(binding.ivSm);
         }
     }
 
@@ -141,11 +112,9 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             @Override
             public void onRefresh() {
                 if (menuPosition == 0) {
-                    mineZPFragment.toRefresh();
+                    userZPFragment.toRefresh();
                 } else if (menuPosition == 1) {
-                    mineSMFragment.toRefresh();
-                } else {
-                    mineDZFragment.toRefresh();
+                    userXHFragment.toRefresh();
                 }
                 binding.srlTop.setRefreshing(false);
             }
@@ -159,11 +128,9 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                 if (!isFirst) {
                     menuPosition = position;
                     if (menuPosition == 0) {
-                        mineZPFragment.getVideoList();
+                        userZPFragment.getVideoList();
                     } else if (menuPosition == 1) {
-                        mineSMFragment.getVideoList();
-                    } else {
-                        mineDZFragment.getVideoList();
+                        userXHFragment.getVideoList();
                     }
                     initTabMenu();
                 }
@@ -257,48 +224,16 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             initTabMenu();
             binding.vpContent.setCurrentItem(menuPosition);
         });
-        binding.llSm.setOnClickListener(lis -> {
+        binding.llXh.setOnClickListener(lis -> {
             menuPosition = 1;
             initTabMenu();
             binding.vpContent.setCurrentItem(menuPosition);
         });
-        binding.tvZg.setOnClickListener(lis -> {
-            menuPosition = 2;
-            initTabMenu();
-            binding.vpContent.setCurrentItem(menuPosition);
-        });
         binding.tvGz.setOnClickListener(lis -> {
-
         });
         binding.tvFs.setOnClickListener(lis -> {
-
-        });
-        binding.tvOrder.setOnClickListener(v -> {
-
-        });
-        binding.tvFriends.setOnClickListener(lis -> {
         });
         binding.ivSetting.setOnClickListener(lis -> {
-            //退出登录
-            /*YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
-            yesOrNoDialog.setMessageText("确定退出吗？");
-            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //清除缓存
-                    InfoCache.getInstance().clearLogin();
-                    //跳到登录页面
-                    startActivity(SelectLoginActivity.class);
-                    yesOrNoDialog.dismissDialog();
-                    getActivity().finish();
-                }
-            });
-            yesOrNoDialog.showDialog();*/
-            MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.openDrawer();
-        });
-        binding.rivPhoto2.setOnClickListener(lis -> {
-
         });
         binding.tvName.setOnClickListener(lis -> {
         });
@@ -308,9 +243,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         });
         binding.llTag.setOnClickListener(lis -> {
         });
-        binding.tvEdit.setOnClickListener(lis -> {
-            startActivity(EditInfoActivity.class);
-        });
+
     }
 
     @Override
@@ -319,12 +252,6 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
         });
-
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
-    }
 }

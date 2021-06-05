@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
 
-import com.igexin.sdk.IUserLoggerInterface;
 import com.igexin.sdk.PushManager;
-import com.squareup.leakcanary.LeakCanary;
-
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -30,22 +27,17 @@ import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
-import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
-import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
 import com.xaqinren.healthyelders.uniApp.module.nativeDialog.NativeDialogModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.dcloud.common.util.RuningAcitvityUtil;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
-import io.dcloud.feature.sdk.DCUniMPActivity;
-import io.dcloud.feature.sdk.DCUniMPJSCallback;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.sdk.MenuActionSheetItem;
 import io.dcloud.feature.uniapp.UniSDKEngine;
@@ -88,14 +80,14 @@ public class AppApplication extends BaseApplication {
         mContext = getApplicationContext();
         //是否开启打印日志
         KLog.init(BuildConfig.DEBUG);
-        //初始化全局异常崩溃
-        initCrash();
-        //内存泄漏检测
-        if (BuildConfig.DEBUG) {
-            if (!LeakCanary.isInAnalyzerProcess(this)) {
-                LeakCanary.install(this);
-            }
-        }
+//        //初始化全局异常崩溃
+//        initCrash();
+//        //内存泄漏检测
+//        if (BuildConfig.DEBUG) {
+//            if (!LeakCanary.isInAnalyzerProcess(this)) {
+//                LeakCanary.install(this);
+//            }
+//        }
         //初始化Uni小程序
         initUni();
         //注册微信

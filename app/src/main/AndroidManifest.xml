@@ -372,6 +372,7 @@
         <activity android:name=".moduleMine.activity.AddBankCardActivity" />
         <activity android:name=".moduleMine.activity.AnchorActivity" />
         <activity android:name=".moduleMine.activity.MiniActivity" />
+        <activity android:name=".moduleMine.activity.UserInfoActivity" />
         <activity android:name=".moduleMine.activity.SettingActivity" />
         <activity android:name=".moduleMine.activity.LookAuthActivity" />
         <activity android:name=".moduleMine.activity.CoinDetailActivity" />

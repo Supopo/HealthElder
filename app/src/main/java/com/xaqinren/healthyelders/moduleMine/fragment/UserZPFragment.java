@@ -6,41 +6,46 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.databinding.FragmentMineDzBinding;
+import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.databinding.FragmentMineZpBinding;
+import com.xaqinren.healthyelders.databinding.FragmentUserZpBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
-import com.xaqinren.healthyelders.moduleMine.adapter.DZVideoAdapter;
-import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
-import com.xaqinren.healthyelders.moduleMine.viewModel.MineDZViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
+import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
+import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
+import com.xaqinren.healthyelders.moduleMine.viewModel.UserZPViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
 /**
  * Created by Lee. on 2021/5/24.
- * 我的-点赞作品
+ * 用户-作品
  */
-public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZViewModel> {
+public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPViewModel> {
     private int page = 1;
     private int pageSize = 10;
-    private DZVideoAdapter videoAdapter;
+    private ZPVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
-
+    private boolean hasDraft;
+    private int draftCount;
+    private String draftDoverPath;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return R.layout.fragment_mine_dz;
+        return R.layout.fragment_user_zp;
     }
 
     @Override
@@ -51,8 +56,9 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
     @Override
     public void initData() {
         super.initData();
+        getDraft();
 
-        videoAdapter = new DZVideoAdapter(R.layout.item_mine_dz_video);
+        videoAdapter = new ZPVideoAdapter(R.layout.item_mine_zp_video);
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
@@ -63,7 +69,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             @Override
             public void onLoadMore() {
                 page++;
-                viewModel.getMyLikeVideoList(page, pageSize);
+                viewModel.getMyVideoList(page, pageSize);
             }
         });
 
@@ -77,27 +83,41 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
         binding.rvContent.setItemAnimator(null);
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
+
+        getVideoList();
+
+
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            if (hasDraft) {
+                //判断是否有草稿箱内容
+                if (position == 0) {
+                    startActivity(DraftActivity.class);
+                    return;
+                }
+            }
+
 
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 
-            List<VideoInfo> temp = new ArrayList<>();
+            listBean.videoInfos = videoAdapter.getData();
 
-            for (DZVideoInfo dzVideoInfo : videoAdapter.getData()) {
-                temp.add(dzVideoInfo.homeComprehensiveHall);
+            if (hasDraft) {
+                listBean.videoInfos.remove(0);
             }
-
-            listBean.videoInfos = temp;
-            listBean.position = position;
+            if (hasDraft) {
+                listBean.position = position - 1;
+            } else {
+                listBean.position = position;
+            }
 
             //里面每页3条数据 重新计算
-            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize);
+            if (listBean.videoInfos.size() % Constant.loadVideoSize == 0) {
+                listBean.page = (listBean.videoInfos.size() / 2);
             } else {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
+                listBean.page = (listBean.videoInfos.size() / 2) + 1;
             }
-            listBean.type = 5;
+            listBean.type = 3;
 
             bundle.putSerializable("key", listBean);
             startActivity(VideoListActivity.class, bundle);
@@ -107,12 +127,26 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
     public void toRefresh() {
         page = 1;
-        viewModel.getMyLikeVideoList(page, pageSize);
+        getDraft();
+        viewModel.getMyVideoList(page, pageSize);
+    }
+
+    private void getDraft() {
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+            List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(getActivity(), fileName);
+            if (list != null && list.size() > 0) {
+                hasDraft = true;
+                draftCount = list.size();
+                draftDoverPath = list.get(0).getCoverPath();
+            }
+        }
     }
 
     public void getVideoList() {
         if (videoAdapter.getData().size() == 0) {
-            toRefresh();
+            page = 1;
+            viewModel.getMyVideoList(page, pageSize);
         }
     }
 
@@ -126,12 +160,17 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
+
+                    if (hasDraft) {
+                        VideoInfo videoInfo = new VideoInfo();
+                        videoInfo.isDraft = true;
+                        videoInfo.coverUrl = draftDoverPath;
+                        dataList.add(0, videoInfo);
+                        videoInfo.draftCount = draftCount;
+                    }
+
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);
-                    if (dataList.size() == 0) {
-                        //创建适配器.空布局，没有数据时候默认展示的
-                        videoAdapter.setEmptyView(R.layout.list_empty);
-                    }
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束

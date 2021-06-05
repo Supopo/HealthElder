@@ -46,6 +46,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
 import com.xaqinren.healthyelders.utils.AnimUtil;
@@ -361,6 +362,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             firstLikeTime = secondTime;
         });
+
+        binding.avatarImageView.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", videoInfo.userId);
+            startActivity(UserInfoActivity.class,bundle);
+        });
         //关注
         binding.followImageView.setOnClickListener(lis -> {
             avatarAddAnim = (AnimationDrawable) binding.followImageView.getBackground();
@@ -433,7 +440,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void showShareDialog(VideoInfo videoInfo) {
         if (shareDialog == null)
             videoInfo.share.downUrl = videoInfo.resourceUrl;
-            shareDialog = new ShareDialog(getActivity(), videoInfo.share,0);
+        shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
         shareDialog.show(binding.mainRelativeLayout);
     }
 
