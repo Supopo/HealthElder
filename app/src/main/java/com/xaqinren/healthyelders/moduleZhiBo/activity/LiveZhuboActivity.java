@@ -1780,7 +1780,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     private void startMoreLinkAnim() {
         //计算x轴缩放倍率
-        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()) / screenWidth;
+        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()-(getResources().getDimension(R.dimen.dp_3))) / screenWidth;
 
         //计算y轴缩放倍率 93*6+5*3 = 573
         float yy = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));

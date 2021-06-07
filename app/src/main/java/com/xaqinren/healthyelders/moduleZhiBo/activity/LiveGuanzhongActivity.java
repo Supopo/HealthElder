@@ -242,14 +242,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         }));
 
-        if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomConnection)) {
-            if (mLiveInitInfo.liveRoomConnection.equals(LiveConstants.LIVE_STATUS_CHAT_ROOM)) {
-                //判断是否开启了多人聊天
-                startMoreLinkLayout();
-                viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
-            }
-        }
-
     }
 
     //多人连麦-用户申请连麦
@@ -417,6 +409,14 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 //群发进入直播间的消息
                 mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ENTER_LIVE), "", null);
                 isPlaying = true;
+
+                if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomConnection)) {
+                    if (mLiveInitInfo.liveRoomConnection.equals(LiveConstants.LIVE_STATUS_CHAT_ROOM)) {
+                        //判断是否开启了多人聊天
+                        startMoreLinkLayout();
+                        viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
+                    }
+                }
             }
         });
 
@@ -1308,7 +1308,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     private void startMoreLinkAnim() {
         //计算x轴缩放倍率
-        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()) / screenWidth;
+        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()-(getResources().getDimension(R.dimen.dp_3))) / screenWidth;
 
         //计算y轴缩放倍率 93*6+5*3 = 573
         float yy = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));

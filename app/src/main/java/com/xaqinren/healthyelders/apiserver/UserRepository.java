@@ -399,6 +399,7 @@ public class UserRepository {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
+        LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录"+loginInfo.userSig);
         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

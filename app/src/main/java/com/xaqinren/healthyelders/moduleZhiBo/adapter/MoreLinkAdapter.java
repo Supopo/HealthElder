@@ -84,12 +84,15 @@ public class MoreLinkAdapter extends BaseQuickAdapter<ZBUserListBean, BaseViewHo
             if (helper.getLayoutPosition() != 0) {
                 layoutParams.setMargins(0, (int) (getContext().getResources().getDimension(R.dimen.dp_3)), 0, 0);
             }
+
+//            ViewGroup.LayoutParams params2 = binding.ivBg.getLayoutParams();
+//            params2.width = (int) (getContext().getResources().getDimension(R.dimen.dp_93));
+//            params2.height = (int) (getContext().getResources().getDimension(R.dimen.dp_93));
+//            binding.ivBg.setLayoutParams(params2);
+            layoutParams.width = (int) (getContext().getResources().getDimension(R.dimen.dp_93));
+            layoutParams.height = (int) (getContext().getResources().getDimension(R.dimen.dp_93));
             binding.rlItem.setLayoutParams(layoutParams);
 
-            ViewGroup.LayoutParams params2 = binding.ivBg.getLayoutParams();
-            params2.width = (int) (getContext().getResources().getDimension(R.dimen.dp_93));
-            params2.height = (int) (getContext().getResources().getDimension(R.dimen.dp_93));
-            binding.ivBg.setLayoutParams(params2);
         }
 
         if (!TextUtils.isEmpty(item.avatarUrl)) {
