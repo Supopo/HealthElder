@@ -288,38 +288,65 @@
 
                                 <RelativeLayout
                                     android:id="@+id/rl_follow"
-                                    android:layout_width="@dimen/dp_186"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@id/iv_bg"
                                     android:layout_marginTop="@dimen/dp_7"
                                     android:layout_marginRight="@dimen/dp_4"
-                                    android:layout_toLeftOf="@id/iv_down"
-                                    android:background="@drawable/bg_btn_comfrim">
+                                    android:layout_toLeftOf="@id/iv_down">
 
                                     <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:id="@+id/ll_follow"
+                                        android:layout_width="@dimen/dp_186"
+                                        android:layout_height="@dimen/dp_38"
                                         android:layout_centerInParent="true"
-                                        android:gravity="center_vertical"
-                                        android:orientation="horizontal">
+                                        android:background="@drawable/bg_btn_comfrim"
+                                        android:gravity="center"
+                                        android:orientation="horizontal"
+                                        android:visibility="@{viewModel.userInfo.getShowFollow()?View.VISIBLE:View.GONE}">
 
-                                        <ImageView
-                                            android:id="@+id/iv_follow"
+                                        <LinearLayout
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginRight="@dimen/dp_4"
-                                            android:background="@mipmap/icon_addpy" />
+                                            android:gravity="center_vertical"
+                                            android:orientation="horizontal">
+
+                                            <ImageView
+                                                android:id="@+id/iv_follow"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginRight="@dimen/dp_4"
+                                                android:background="@mipmap/icon_addpy" />
+
+                                            <TextView
+                                                android:id="@+id/tv_follow"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="关注"
+                                                android:textColor="@color/white"
+                                                android:textSize="@dimen/sp_15" />
+
+                                        </LinearLayout>
+                                    </LinearLayout>
+
+                                    <RelativeLayout
+                                        android:background="@drawable/bg_btn_comfrim_shape_g"
+                                        android:layout_width="@dimen/dp_112"
+                                        android:layout_height="@dimen/dp_38"
+                                        android:layout_alignParentRight="true"
+                                        android:visibility="@{viewModel.userInfo.getShowFollow?View.GONE:View.VISIBLE}">
 
                                         <TextView
-                                            android:id="@+id/tv_follow"
+                                            android:id="@+id/tv_qxfollow"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="关注"
-                                            android:textColor="@color/white"
+                                            android:layout_centerInParent="true"
+                                            android:text="取消关注"
+                                            android:textColor="@color/color_252525"
                                             android:textSize="@dimen/sp_15" />
-
-                                    </LinearLayout>
+                                    </RelativeLayout>
                                 </RelativeLayout>
+
 
                                 <ImageView
                                     android:id="@+id/iv_down"
@@ -341,7 +368,6 @@
                                 android:layout_height="@dimen/dp_100"
                                 android:layout_marginLeft="@dimen/dp_15"
                                 android:visibility="invisible"
-                                app:url = "@{viewModel.userInfo.avatarUrl}"
                                 app:qmui_border_color="@color/white"
                                 app:qmui_border_width="@dimen/dp_1"
                                 app:qmui_is_circle="true" />

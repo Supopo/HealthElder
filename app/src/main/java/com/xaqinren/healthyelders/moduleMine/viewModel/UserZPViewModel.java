@@ -24,8 +24,8 @@ public class UserZPViewModel extends BaseViewModel {
     }
 
 
-    public void getMyVideoList(int page, int pageSize) {
-//        userRepository.getMyVideoList(mVideoList, page, pageSize, "");
+    public void getMyVideoList(int page, int pageSize, String tagerId) {
+        userRepository.getMyVideoList(mVideoList, page, pageSize, "", tagerId);
     }
 
 

@@ -26,4 +26,10 @@ public class UserInfoViewModel extends BaseViewModel {
         UserRepository.getInstance().getOtherUserInfo(userInfo, userId);
     }
 
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<Boolean> followSuccess = new MutableLiveData<>();
+
+    public void toFollow(String userId) {
+        UserRepository.getInstance().toFollow(followSuccess, dismissDialog, userId);
+    }
 }

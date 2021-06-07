@@ -39,9 +39,11 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
     private int pageSize = 10;
     private ZPVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
-    private boolean hasDraft;
-    private int draftCount;
-    private String draftDoverPath;
+    private String userId;
+
+    public UserZPFragment(String userId) {
+        this.userId = userId;
+    }
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,7 +58,6 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
     @Override
     public void initData() {
         super.initData();
-        getDraft();
 
         videoAdapter = new ZPVideoAdapter(R.layout.item_mine_zp_video);
 
@@ -69,7 +70,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             @Override
             public void onLoadMore() {
                 page++;
-                viewModel.getMyVideoList(page, pageSize);
+                viewModel.getMyVideoList(page, pageSize,userId);
             }
         });
 
@@ -83,33 +84,16 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
         binding.rvContent.setItemAnimator(null);
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
-
         getVideoList();
 
-
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            if (hasDraft) {
-                //判断是否有草稿箱内容
-                if (position == 0) {
-                    startActivity(DraftActivity.class);
-                    return;
-                }
-            }
-
 
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 
             listBean.videoInfos = videoAdapter.getData();
 
-            if (hasDraft) {
-                listBean.videoInfos.remove(0);
-            }
-            if (hasDraft) {
-                listBean.position = position - 1;
-            } else {
-                listBean.position = position;
-            }
+            listBean.position = position;
 
             //里面每页3条数据 重新计算
             if (listBean.videoInfos.size() % Constant.loadVideoSize == 0) {
@@ -127,26 +111,13 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
 
     public void toRefresh() {
         page = 1;
-        getDraft();
-        viewModel.getMyVideoList(page, pageSize);
-    }
-
-    private void getDraft() {
-        if (UserInfoMgr.getInstance().getUserInfo() != null) {
-            String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-            List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(getActivity(), fileName);
-            if (list != null && list.size() > 0) {
-                hasDraft = true;
-                draftCount = list.size();
-                draftDoverPath = list.get(0).getCoverPath();
-            }
-        }
+        viewModel.getMyVideoList(page, pageSize,userId);
     }
 
     public void getVideoList() {
         if (videoAdapter.getData().size() == 0) {
             page = 1;
-            viewModel.getMyVideoList(page, pageSize);
+            viewModel.getMyVideoList(page, pageSize,userId);
         }
     }
 
@@ -160,14 +131,6 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
-
-                    if (hasDraft) {
-                        VideoInfo videoInfo = new VideoInfo();
-                        videoInfo.isDraft = true;
-                        videoInfo.coverUrl = draftDoverPath;
-                        dataList.add(0, videoInfo);
-                        videoInfo.draftCount = draftCount;
-                    }
 
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);

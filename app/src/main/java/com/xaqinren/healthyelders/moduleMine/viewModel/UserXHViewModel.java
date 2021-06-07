@@ -22,8 +22,8 @@ public class UserXHViewModel extends BaseViewModel {
         super(application);
     }
 
-    public void getMyLikeVideoList(int page, int pageSize) {
-//        userRepository.getMyLikeVideoList(mVideoList, page, pageSize);
+    public void getMyLikeVideoList(int page, int pageSize, String tagerId) {
+        userRepository.getMyLikeVideoList(mVideoList, page, pageSize, tagerId);
     }
 
 

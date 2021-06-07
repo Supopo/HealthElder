@@ -416,7 +416,12 @@ public class UserRepository {
 
     public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type) {
         //PRIVETE
-        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, type)
+        getMyVideoList(datas, page, pagesize, type, "");
+    }
+
+    public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type, String tagerId) {
+        //PRIVETE
+        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, type, tagerId)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
@@ -434,6 +439,10 @@ public class UserRepository {
     }
 
     public void getMyLikeVideoList(MutableLiveData<List<DZVideoInfo>> datas, int page, int pagesize) {
+        getMyLikeVideoList(datas, page, pagesize, "");
+    }
+
+    public void getMyLikeVideoList(MutableLiveData<List<DZVideoInfo>> datas, int page, int pagesize, String tagerId) {
         userApi.getMyLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
@@ -450,6 +459,7 @@ public class UserRepository {
                     }
                 });
     }
+
 
     public void bindAlias(MutableLiveData<Boolean> clientIdData, String clientId) {
         userApi.bindAlias(UserInfoMgr.getInstance().getHttpToken(), clientId)

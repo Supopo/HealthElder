@@ -27,6 +27,16 @@ public class UserInfoBean {
     private int bankCardCount;
     private int pointAmount;
 
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    private String identity;//": "STRANGER",
+
     public String getRealName() {
         return realName;
     }
@@ -145,8 +155,6 @@ public class UserInfoBean {
     public void setHasAttention(Boolean hasAttention) {
         this.hasAttention = hasAttention;
     }
-
-
 
 
     public boolean isMan() {
@@ -283,10 +291,19 @@ public class UserInfoBean {
     public String getAuthStatus() {
         return hasRealName ? "已认证" : "未认证";
     }
+
     public String getAuthSuccessRealName() {
         return "真实姓名: " + realName;
     }
+
     public String getAuthSuccessIdCard() {
         return "身份证号: " + realName;
+    }
+
+    public boolean getShowFollow() {
+        if (getIdentity().equals("FRIEND") || getIdentity().equals("FOLLOW")) {
+            return false;
+        }
+        return true;
     }
 }

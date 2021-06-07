@@ -37,6 +37,11 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
     private int pageSize = 10;
     private DZVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
+    private String userId;
+
+    public UserXHFragment(String userId) {
+        this.userId = userId;
+    }
 
 
     @Override
@@ -64,7 +69,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             @Override
             public void onLoadMore() {
                 page++;
-                viewModel.getMyLikeVideoList(page, pageSize);
+                viewModel.getMyLikeVideoList(page, pageSize, userId);
             }
         });
 
@@ -108,7 +113,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
 
     public void toRefresh() {
         page = 1;
-        viewModel.getMyLikeVideoList(page, pageSize);
+        viewModel.getMyLikeVideoList(page, pageSize, userId);
     }
 
     public void getVideoList() {
@@ -129,10 +134,6 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
                 if (page == 1) {
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);
-                    if (dataList.size() == 0) {
-                        //创建适配器.空布局，没有数据时候默认展示的
-                        videoAdapter.setEmptyView(R.layout.list_empty);
-                    }
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束

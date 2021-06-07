@@ -14,6 +14,7 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityUserInfoBinding;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserXHFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserZPFragment;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
@@ -70,8 +71,8 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         super.initData();
         setStatusBarTransparent();
         srl = binding.srlTop;
-        userZPFragment = new UserZPFragment();
-        userXHFragment = new UserXHFragment();
+        userZPFragment = new UserZPFragment(userId);
+        userXHFragment = new UserXHFragment(userId);
         fragmentList.add(userZPFragment);
         fragmentList.add(userXHFragment);
 
@@ -244,6 +245,10 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         binding.llTag.setOnClickListener(lis -> {
         });
 
+        binding.rlFollow.setOnClickListener(lis -> {
+            viewModel.toFollow(userId);
+            showDialog();
+        });
     }
 
     @Override
@@ -251,6 +256,22 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
+        });
+        viewModel.dismissDialog.observe(this, isDis -> {
+            if (isDis != null) {
+                if (isDis) {
+                    dismissDialog();
+                }
+            }
+        });
+        viewModel.followSuccess.observe(this, followSuccess -> {
+            if (followSuccess != null) {
+                if (followSuccess) {
+                    UserInfoBean userInfoBean = viewModel.userInfo.getValue();
+                    userInfoBean.setIdentity("FOLLOW");
+                    viewModel.userInfo.setValue(userInfoBean);
+                }
+            }
         });
     }
 
