@@ -344,7 +344,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
         topHeadAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo,topHeadAdapter.getData().get(position));
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, topHeadAdapter.getData().get(position));
             userInfoPop.showPopupWindow();
         }));
 
@@ -1486,7 +1486,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                                 //群发公告消息-拉黑
                                 String jsonMsg = JsonMsgBean.json("1", eventBean.nickname, LiveConstants.GONGGAO_TICHU);
                                 mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_GONGGAO_MSG), jsonMsg, null);
-                                LogUtils.v(Constant.TAG_LIVE, "踢出成功");
                             }
                         });
                     }
@@ -1718,11 +1717,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //                if (!hasPos) {
                 //                    return;
                 //                }
-
                 //断开成功 / 加入失败
                 if (micAnchorInfo.netStatus == 1 || micAnchorInfo.netStatus == 3) {
                     mLiveRoom.kickoutJoinAnchor(micAnchorInfo.userID);
-                    onAnchorExit(micAnchorInfo);
                 }
 
                 //断开成功 / 加入成功
@@ -1780,7 +1777,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     private void startMoreLinkAnim() {
         //计算x轴缩放倍率
-        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()-(getResources().getDimension(R.dimen.dp_3))) / screenWidth;
+        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth() - (getResources().getDimension(R.dimen.dp_3))) / screenWidth;
 
         //计算y轴缩放倍率 93*6+5*3 = 573
         float yy = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));
