@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.bean;
 
 import com.xaqinren.healthyelders.utils.ColorsUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by Lee. on 2021/5/15.
  * 菜单类
  */
-public class MenuBean {
+public class MenuBean implements Serializable {
     public boolean isSelect;
     public String id;//": "1",
     public String createdAt;//": null,
@@ -30,6 +31,12 @@ public class MenuBean {
     public List<MenuBean> menuBeans = new ArrayList<>();
     public int type;
     public int menuRes;
+
+    public String groupName;
+    public String groupCode;
+    public String groupDesc;
+    public List<MenuBean> menuInfoList;
+
 
 
     public int beiLv;

@@ -120,36 +120,32 @@ public class UserRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new DisposableObserver<MBaseResponse<UserInfoBean>>() {
+                .subscribe(new CustomObserver<MBaseResponse<UserInfoBean>>() {
+
                     @Override
-                    public void onNext(MBaseResponse<UserInfoBean> response) {
-                        if (userInfo != null) {
-                            userInfo.postValue(response.getData());
-                        }
-                        if (response.isOk() && response.getData() != null) {
-                            InfoCache.getInstance().setLoginUser(response.getData());
-                            UserInfoMgr.getInstance().setUserInfo(response.getData());
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<UserInfoBean> data) {
+                        if (data.getData() != null) {
+                            userInfo.postValue(data.getData());
+
+                            InfoCache.getInstance().setLoginUser(data.getData());
+                            UserInfoMgr.getInstance().setUserInfo(data.getData());
                             //绑定cid
-                            PushManager.getInstance().bindAlias(AppApplication.get(), response.getData().getId());
-                            LogUtils.e("MainActivity", "绑定 cid -> " + response.getData().getId());
+                            PushManager.getInstance().bindAlias(AppApplication.get(), data.getData().getId());
                             getUserSig(token);
                             if (loginSuccess != null) {
                                 loginSuccess.postValue(true);
                             }
+
                         } else {
                             if (loginSuccess != null) {
                                 loginSuccess.postValue(false);
                             }
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
 
                     }
                 });
@@ -186,7 +182,7 @@ public class UserRepository {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
+//                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
                         } else {
                             ToastUtil.toastShortMessage(response.getMessage());

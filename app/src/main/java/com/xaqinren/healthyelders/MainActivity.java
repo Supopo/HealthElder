@@ -203,7 +203,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {
-            if (userInfoBean == null) {
+            if (userInfoBean == null ||TextUtils.isEmpty(userInfoBean.getId())) {
                 //获取用户信息
                 viewModel.getUserInfo(accessToken);
             } else {
@@ -229,7 +229,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.v("----------", "onNewIntent");
         getCacheUserInfo();
     }
 

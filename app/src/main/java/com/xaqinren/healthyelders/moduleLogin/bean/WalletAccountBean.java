@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.moduleLogin.bean;
 
-public class WalletAccountBean {
+import java.io.Serializable;
+
+public class WalletAccountBean implements Serializable {
 
     private int depositAmount;// 保证金金额
     private int outstandingAmount;// 未结算金额

@@ -270,6 +270,7 @@
 
             <!-- 更多展示-->
             <LinearLayout
+                android:visibility="invisible"
                 android:id="@+id/ll_moreZb"
                 android:layout_width="@dimen/dp_104"
                 android:layout_height="@dimen/dp_24"

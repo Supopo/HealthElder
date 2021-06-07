@@ -74,7 +74,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
     private int nowPos;
     private double czNum;
     private double yeNum;
-    private int jbyeNum;
+    private double jbyeNum;
     private int beiLv;
 
     private void initView() {

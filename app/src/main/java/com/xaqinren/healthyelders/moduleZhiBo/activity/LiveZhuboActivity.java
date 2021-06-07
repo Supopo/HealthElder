@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -72,6 +73,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
@@ -1806,6 +1808,12 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             }
         });
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.width = screenWidth;
+        layoutParams.height = screenHeight;
+        binding.ivBg.setLayoutParams(layoutParams);
+        Log.e("-----", "BG: " + binding.ivBg.getHeight());
     }
 
     private void closeMoreLinkAnim() {
@@ -1821,6 +1829,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.mTxVideoView.clearAnimation();
         binding.mTxVideoView.setAnimation(animation2);
         binding.rvMoreLink.setVisibility(View.INVISIBLE);
+        Log.e("-----", "BG2: " + binding.ivBg.getHeight());
+
     }
 
     //是否关闭连麦dialog

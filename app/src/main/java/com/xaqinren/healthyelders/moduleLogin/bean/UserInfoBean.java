@@ -1,8 +1,14 @@
 package com.xaqinren.healthyelders.moduleLogin.bean;
 
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import android.text.TextUtils;
 
-public class UserInfoBean {
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+
+import java.io.Serializable;
+import java.util.List;
+
+public class UserInfoBean implements Serializable {
 
     private String avatarUrl;
     private String mobileNumber;
@@ -21,13 +27,50 @@ public class UserInfoBean {
     private int cumulativeAmount;
     private int consumptionAmount;
     private String id;
-    private Integer pointAccountBalance;//金币余额
-    private Double wallAccountBalance;//钱包
+    private double pointAccountBalance;//金币余额
+    private double wallAccountBalance;//钱包
     private int favoriteCount;
     private int fansCount;
     private int attentionCount;
     private int bankCardCount;
     private int pointAmount;
+
+    private MenuBean menu;
+    private Boolean hasOpenAccount;
+    private List<Object> userBankCardList;
+
+    private String introduce;
+    private String cityAddress;
+
+    private Boolean hasAdmin;//是否管理员
+    private Boolean hasSpeech;
+    private Boolean hasAttention;
+
+    public boolean hasFollow;
+
+    public MenuBean getMenu() {
+        return menu;
+    }
+
+    public void setMenu(MenuBean menu) {
+        this.menu = menu;
+    }
+
+    public Boolean getHasOpenAccount() {
+        return hasOpenAccount;
+    }
+
+    public void setHasOpenAccount(Boolean hasOpenAccount) {
+        this.hasOpenAccount = hasOpenAccount;
+    }
+
+    public List<Object> getUserBankCardList() {
+        return userBankCardList;
+    }
+
+    public void setUserBankCardList(List<Object> userBankCardList) {
+        this.userBankCardList = userBankCardList;
+    }
 
     public String getIdentity() {
         return identity;
@@ -71,11 +114,11 @@ public class UserInfoBean {
         this.birthday = birthday;
     }
 
-    public Integer getPointAccountBalance() {
+    public Double getPointAccountBalance() {
         return pointAccountBalance;
     }
 
-    public void setPointAccountBalance(Integer pointAccountBalance) {
+    public void setPointAccountBalance(Double pointAccountBalance) {
         this.pointAccountBalance = pointAccountBalance;
     }
 
@@ -103,8 +146,6 @@ public class UserInfoBean {
         this.cityAddress = cityAddress;
     }
 
-    private String introduce;
-    private String cityAddress;
 
     public int getFavoriteCount() {
         return favoriteCount;
@@ -138,9 +179,6 @@ public class UserInfoBean {
         this.hasAdmin = hasAdmin;
     }
 
-    private Boolean hasAdmin;//是否管理员
-    private Boolean hasSpeech;
-    private Boolean hasAttention;
 
     public Boolean getHasSpeech() {
         return hasSpeech;
@@ -302,10 +340,9 @@ public class UserInfoBean {
         return "身份证号: " + realName;
     }
 
-    public boolean hasFollow;
 
     public boolean getShowFollow() {
-        if (getIdentity().equals("FRIEND") || getIdentity().equals("FOLLOW")) {
+        if (!TextUtils.isEmpty(getIdentity()) && (getIdentity().equals("FRIEND") || getIdentity().equals("FOLLOW"))) {
             hasFollow = true;
             return false;
         }
@@ -314,8 +351,10 @@ public class UserInfoBean {
     }
 
     public boolean isMe() {
-        if (getId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
-            return true;
+        if (UserInfoMgr.getInstance().getUserInfo() != null ) {
+            if (getId().equals(UserInfoMgr.getInstance().getUserInfo().getId()) ) {
+                return true;
+            }
         }
         return false;
     }
