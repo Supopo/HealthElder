@@ -1,49 +1,23 @@
 package com.xaqinren.healthyelders.moduleMine.bean;
 
 public class VersionBean {
-    private String versionName;
-    private int versionCode;
-    private String versionInfo;
-    private int size;
-    private String versionUrl;
+    public String id;
+    public String createdAt;
+    public String merchantId;
+    public String appId;
+    public String appName;
+    public String appLogo;
+    public boolean putApplet;
+    public boolean autoUpdateApplet;
+    public VersionBean newAppVersion;
 
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
-    }
-
-    public int getVersionCode() {
-        return versionCode;
-    }
-
-    public void setVersionCode(int versionCode) {
-        this.versionCode = versionCode;
-    }
-
-    public String getVersionInfo() {
-        return versionInfo;
-    }
-
-    public void setVersionInfo(String versionInfo) {
-        this.versionInfo = versionInfo;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public String getVersionUrl() {
-        return versionUrl;
-    }
-
-    public void setVersionUrl(String versionUrl) {
-        this.versionUrl = versionUrl;
-    }
+    public long appletInfoId;//1401714462154559488,
+    public int versionNumber;//100,
+    public String resVersionNumber;//"1.0.0",
+    public String upgradeUrl;
+    public String upgradeContent;//"第一",
+    public String upgradeType;//"VERSION_UPGRADE",
+    public String upgradeSystem;// "ANDROID",
+    public String upgradeTypeName;// "版本升级",
+    public String upgradeSystemName;//"安卓"
 }

@@ -23,7 +23,7 @@ public class UserInfoViewModel extends BaseViewModel {
     }
 
     public void getUserInfo(String userId) {
-        UserRepository.getInstance().getLiveUserInfo(userInfo, userId, "");
+        UserRepository.getInstance().getOtherUserInfo(userInfo, userId);
     }
 
 }

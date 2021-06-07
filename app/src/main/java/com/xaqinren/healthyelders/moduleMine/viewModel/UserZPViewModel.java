@@ -23,12 +23,9 @@ public class UserZPViewModel extends BaseViewModel {
         super(application);
     }
 
-    public void getUserInfo(String token) {
-        userRepository.getUserInfo(userInfo, Constant.API_HEADER + token);
-    }
 
     public void getMyVideoList(int page, int pageSize) {
-        userRepository.getMyVideoList(mVideoList, page, pageSize, "");
+//        userRepository.getMyVideoList(mVideoList, page, pageSize, "");
     }
 
 

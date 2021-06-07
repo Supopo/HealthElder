@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
 import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
+import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
@@ -469,13 +470,13 @@ public interface ApiServer {
     @POST("user/updateUserInfo")
     Observable<MBaseResponse<Object>> updateUserInfo(@Header("Authorization") String authorization, @Body RequestBody requestBody);
 
-    //查看用户资料
+    //查看用户资料-直播间用户信息
     @GET("live/findUserProfile")
     Observable<MBaseResponse<UserInfoBean>> getLiveUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId, @Query("liveRoomRecordId") String liveRoomRecordId);
 
     //版本更新
     @GET("merchant/open/findUpdateAppVersion?appId="+BuildConfig.APPLICATION_ID)
-    Observable<MBaseResponse<Object>> checkVersion();
+    Observable<MBaseResponse<VersionBean>> checkVersion();
 
     //查询账户余额
     @GET("user/findAccountBalance")
@@ -499,6 +500,11 @@ public interface ApiServer {
     @GET("live/findLiveRoomMuteList")
     Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getJinYanList(@Header("Authorization") String authorization, @Query("page") Integer page,
                                                                               @Query("pageSize") Integer count, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //查看用户资料
+    @GET("jkzl/findUserProfile")
+    Observable<MBaseResponse<UserInfoBean>> getOtherUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId);
+
 
 }
 

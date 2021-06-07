@@ -1,7 +1,9 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -52,7 +54,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
     private String downUrl;
     private String updateInfo;
     private double size;
-    private int mustUpdate;
+    private boolean mustUpdate;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -77,8 +79,8 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
             if (userInfoBean.getHasRealName()) {
                 //查看认证
                 startActivity(LookAuthActivity.class);
-            }else{
-//去认证
+            } else {
+                //去认证
                 Bundle bundle = new Bundle();
                 bundle.putInt(Constant.REN_ZHENG_TYPE, 2);
                 startActivity(StartRenZhengActivity.class, bundle);
@@ -135,7 +137,16 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
         super.initViewObservable();
         viewModel.versionBean.observe(this, versionBean -> {
             if (versionBean != null) {
-                //处理更新
+                //版本号比较
+                if (versionBean != null) {
+                    if (versionBean.newAppVersion.versionNumber != getVersionCode(this)) {
+                        updateInfo = versionBean.newAppVersion.upgradeContent;
+                        versionName = versionBean.newAppVersion.resVersionNumber;
+                        downUrl = versionBean.newAppVersion.upgradeUrl;
+                        mustUpdate = versionBean.autoUpdateApplet;
+                        updateDialog();
+                    }
+                }
             }
         });
     }
@@ -145,8 +156,8 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
         long sizeMb = size / 1024 / 1024;
         List<ListPopMenuBean> menus = new ArrayList<>();
         ListPopMenuBean listPopMenuBean = new ListPopMenuBean("是否退出当前账号?");
-//        listPopMenuBean.subTitle = "@" + userInfoBean.getNickname();
-//        listPopMenuBean.subTitleColor = Color.parseColor("#999999");
+        //        listPopMenuBean.subTitle = "@" + userInfoBean.getNickname();
+        //        listPopMenuBean.subTitleColor = Color.parseColor("#999999");
         menus.add(listPopMenuBean);
         menus.add(new ListPopMenuBean("退出登录", Color.parseColor("#F81E4D")));
         ListBottomPopup listBottomPopup = new ListBottomPopup(this, menus);
@@ -200,6 +211,16 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
     }
 
 
+    //    获取本地软件版本号
+    private int getVersionCode(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (Exception e) {
+            return 0;
+        }
+
+    }
 
     /**
      * 更新提示
@@ -212,7 +233,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                     @Override
                     public void onClick(QMUIDialog dialog, int index) {
                         dialog.dismiss();
-                        if (mustUpdate == 1) {
+                        if (mustUpdate) {
                             finish();
                         }
                     }

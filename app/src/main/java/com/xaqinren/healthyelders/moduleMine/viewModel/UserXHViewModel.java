@@ -23,7 +23,7 @@ public class UserXHViewModel extends BaseViewModel {
     }
 
     public void getMyLikeVideoList(int page, int pageSize) {
-        userRepository.getMyLikeVideoList(mVideoList, page, pageSize);
+//        userRepository.getMyLikeVideoList(mVideoList, page, pageSize);
     }
 
 

@@ -180,6 +180,7 @@ public class ZBBlackUserListPop extends BasePopupWindow {
     public int selectType;
 
     public int blackNum;
+    public int jinyanNum;
 
     public void initEvent() {
         dismissDialog.observe((LifecycleOwner) getContext(), dismiss -> {
@@ -194,9 +195,9 @@ public class ZBBlackUserListPop extends BasePopupWindow {
                 for (ZBUserListBean bean : userList.content) {
                     bean.showType = selectType;
                 }
-                blackNum = userList.totalElements;
 
                 if (selectType == 0) {
+                    blackNum = userList.totalElements;
                     tvTips.setText("已被拉黑的用户 (" + userList.totalElements + "/5000)");
                     if (userList.content.size() > 0) {
                         //加载更多加载完成
@@ -213,6 +214,7 @@ public class ZBBlackUserListPop extends BasePopupWindow {
                         zbBlackListAdapter.addData(userList.content);
                     }
                 } else {
+                    jinyanNum = userList.totalElements;
                     tvTips.setText("已被禁言的用户 (" + userList.totalElements + "/5000)");
                     if (userList.content.size() > 0) {
                         //加载更多加载完成

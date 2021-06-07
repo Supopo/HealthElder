@@ -597,16 +597,13 @@ public class UserRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<VersionBean> data) {
-                        if (data.isOk())
                         datas.postValue(data.getData());
-                        else
-                            datas.postValue(null);
                     }
                 });
 
     }
 
-    public void getWalletInfo(MutableLiveData<Boolean> request , MutableLiveData<WalletBean> datas) {
+    public void getWalletInfo(MutableLiveData<Boolean> request, MutableLiveData<WalletBean> datas) {
         userApi.getWalletInfo(UserInfoMgr.getInstance().getHttpToken())
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
@@ -627,7 +624,7 @@ public class UserRepository {
 
     public void getBillInfo(MutableLiveData<Boolean> request, MutableLiveData<BillRecodeBean> datas, String key) {
 
-        userApi.getBillInfo(UserInfoMgr.getInstance().getHttpToken(),key)
+        userApi.getBillInfo(UserInfoMgr.getInstance().getHttpToken(), key)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BillRecodeBean>>() {
@@ -640,7 +637,8 @@ public class UserRepository {
                     protected void onSuccess(MBaseResponse<BillRecodeBean> data) {
                         if (data.isOk())
                             datas.postValue(data.getData());
-                        else datas.postValue(null);
+                        else
+                            datas.postValue(null);
                     }
                 });
 
@@ -693,7 +691,7 @@ public class UserRepository {
                 sink.writeString(key, Charset.defaultCharset());
             }
         };
-        userApi.setPassWord(UserInfoMgr.getInstance().getHttpToken(),requestBody)
+        userApi.setPassWord(UserInfoMgr.getInstance().getHttpToken(), requestBody)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
@@ -707,6 +705,24 @@ public class UserRepository {
                         datas.postValue(data.isOk());
                     }
                 });
+    }
+
+    public void getOtherUserInfo(MutableLiveData<UserInfoBean> datas, String userId) {
+        userApi.getOtherUserInfo(UserInfoMgr.getInstance().getHttpToken(), userId)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<UserInfoBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<UserInfoBean> data) {
+                        datas.postValue(data.getData());
+                    }
+                });
 
     }
+
 }
