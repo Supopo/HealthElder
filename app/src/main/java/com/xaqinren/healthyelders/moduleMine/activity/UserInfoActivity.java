@@ -220,6 +220,9 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             }
         });
 
+        binding.ivBack.setOnClickListener(lis -> {
+            finish();
+        });
         binding.tvZp.setOnClickListener(lis -> {
             menuPosition = 0;
             initTabMenu();
@@ -268,7 +271,12 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             if (followSuccess != null) {
                 if (followSuccess) {
                     UserInfoBean userInfoBean = viewModel.userInfo.getValue();
-                    userInfoBean.setIdentity("FOLLOW");
+                    userInfoBean.hasFollow = !userInfoBean.hasFollow;
+                    if (userInfoBean.hasFollow) {
+                        userInfoBean.setIntroduce("FOLLOW");
+                    } else {
+                        userInfoBean.setIntroduce("STRANGER");
+                    }
                     viewModel.userInfo.setValue(userInfoBean);
                 }
             }

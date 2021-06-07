@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +26,8 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.ZBEditTextDialogActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
@@ -73,6 +77,7 @@ public class ZBUserInfoPop extends BasePopupWindow {
         TextView tvFansNum = findViewById(R.id.tv_fansNum);
         TextView tvFollowNum = findViewById(R.id.tv_followNum);
         TextView tvDes = findViewById(R.id.tv_des);
+        TextView tvHome = findViewById(R.id.tv_home);
         tvGz = findViewById(R.id.tv_gz);
         TextView tvAt = findViewById(R.id.tv_at);
         ivGz = findViewById(R.id.iv_gz);
@@ -99,10 +104,12 @@ public class ZBUserInfoPop extends BasePopupWindow {
                 }
                 if (userInfoBean.getHasAttention()) {
                     tvGz.setText("已关注");
+                    tvGz.setTextColor(getContext().getResources().getColor(R.color.gray_999));
                     ivGz.setVisibility(View.GONE);
                 } else {
                     tvGz.setText("关注");
                     ivGz.setVisibility(View.VISIBLE);
+                    tvGz.setTextColor(getContext().getResources().getColor(R.color.color_DC3530));
                 }
                 zbUserListBean.hasSpeech = userInfoBean.getHasSpeech();
             }
@@ -114,6 +121,25 @@ public class ZBUserInfoPop extends BasePopupWindow {
 
         llGz.setOnClickListener(lis -> {
             setUserFollow();
+        });
+
+        tvAt.setOnClickListener(lis -> {
+            //弹出输入dialog
+            Bundle bundle = new Bundle();
+            bundle.putString("content", "@" + zbUserListBean.nickname + " ");
+            Intent intent = new Intent(getContext(), ZBEditTextDialogActivity.class);
+            intent.putExtras(bundle);
+            getContext().startActivity(intent);
+            dismiss();
+        });
+
+        tvHome.setOnClickListener(lis ->{
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", zbUserListBean.userId);
+            Intent intent = new Intent(getContext(), UserInfoActivity.class);
+            intent.putExtras(bundle);
+            getContext().startActivity(intent);
+            dismiss();
         });
     }
 
@@ -152,9 +178,11 @@ public class ZBUserInfoPop extends BasePopupWindow {
                         if (userInfoBean.getHasAttention()) {
                             tvGz.setText("已关注");
                             ivGz.setVisibility(View.GONE);
+                            tvGz.setTextColor(getContext().getResources().getColor(R.color.gray_999));
                         } else {
                             tvGz.setText("关注");
                             ivGz.setVisibility(View.VISIBLE);
+                            tvGz.setTextColor(getContext().getResources().getColor(R.color.color_DC3530));
                         }
                     }
                 });

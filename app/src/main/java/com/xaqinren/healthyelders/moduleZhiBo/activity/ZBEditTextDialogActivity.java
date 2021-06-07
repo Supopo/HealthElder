@@ -70,10 +70,20 @@ public class ZBEditTextDialogActivity extends Activity {
     private List<Integer> highs = new ArrayList<>();
 
     private void initView() {
+
+
         rlView = findViewById(R.id.rl_view);
         btnSend = findViewById(R.id.btn_send);
         etView = findViewById(R.id.et_input_message);
         rldlgview = findViewById(R.id.rl_inputdlg_view);
+
+        if (getIntent().getExtras() != null) {
+            String content = getIntent().getExtras().getString("content");
+            if (!TextUtils.isEmpty(content)) {
+                etView.setText(content);
+                etView.setSelection(content.length());//将光标移至文字末尾
+            }
+        }
 
         //弹出键盘
         showSoftInput(this, etView);

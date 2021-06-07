@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleLogin.bean;
 
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
+
 public class UserInfoBean {
 
     private String avatarUrl;
@@ -300,10 +302,21 @@ public class UserInfoBean {
         return "身份证号: " + realName;
     }
 
+    public boolean hasFollow;
+
     public boolean getShowFollow() {
         if (getIdentity().equals("FRIEND") || getIdentity().equals("FOLLOW")) {
+            hasFollow = true;
             return false;
         }
+        hasFollow = false;
         return true;
+    }
+
+    public boolean isMe() {
+        if (getId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+            return true;
+        }
+        return false;
     }
 }

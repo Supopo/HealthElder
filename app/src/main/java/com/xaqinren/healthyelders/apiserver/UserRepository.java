@@ -443,7 +443,7 @@ public class UserRepository {
     }
 
     public void getMyLikeVideoList(MutableLiveData<List<DZVideoInfo>> datas, int page, int pagesize, String tagerId) {
-        userApi.getMyLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize)
+        userApi.getMyLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, tagerId)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<DZVideoInfo>>>>() {

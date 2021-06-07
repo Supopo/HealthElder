@@ -28,6 +28,15 @@
                 android:layout_height="@dimen/dp_140"
                 android:background="@mipmap/wode_bg">
 
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_marginTop="@dimen/dp_55"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:background="@mipmap/icon_back_w"
+                    />
+
                 <com.qmuiteam.qmui.widget.QMUIRadiusImageView
                     android:id="@+id/riv_photo3"
                     android:layout_width="@dimen/dp_28"
@@ -53,6 +62,7 @@
 
 
                 <ImageView
+                    android:visibility="invisible"
                     android:id="@+id/iv_setting"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
@@ -293,7 +303,8 @@
                                     android:layout_below="@id/iv_bg"
                                     android:layout_marginTop="@dimen/dp_7"
                                     android:layout_marginRight="@dimen/dp_4"
-                                    android:layout_toLeftOf="@id/iv_down">
+                                    android:layout_toLeftOf="@id/iv_down"
+                                    android:visibility="@{viewModel.userInfo.isMe()?View.INVISIBLE:View.VISIBLE}">
 
                                     <LinearLayout
                                         android:id="@+id/ll_follow"
@@ -330,10 +341,10 @@
                                     </LinearLayout>
 
                                     <RelativeLayout
-                                        android:background="@drawable/bg_btn_comfrim_shape_g"
                                         android:layout_width="@dimen/dp_112"
                                         android:layout_height="@dimen/dp_38"
                                         android:layout_alignParentRight="true"
+                                        android:background="@drawable/bg_btn_comfrim_shape_g"
                                         android:visibility="@{viewModel.userInfo.getShowFollow?View.GONE:View.VISIBLE}">
 
                                         <TextView
@@ -349,6 +360,7 @@
 
 
                                 <ImageView
+                                    android:visibility="invisible"
                                     android:id="@+id/iv_down"
                                     android:layout_width="@dimen/dp_38"
                                     android:layout_height="@dimen/dp_38"

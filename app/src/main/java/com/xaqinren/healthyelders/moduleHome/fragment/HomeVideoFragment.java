@@ -228,14 +228,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void initVideo() {
         //判断是推荐第一条开始未滑动时候不显示加载进度
         if ((AppApplication.get().getTjPlayPosition() == -1 && position == 0 && type.equals("home-tj"))) {
-            binding.loadingView.setVisibility(View.GONE);
-            binding.loadingView.cancelAnimation();
-
+            dismissLoading();
         } else {
-            //加载进度
-            binding.loadingView.setVisibility(View.VISIBLE);
-            binding.loadingView.playAnimation();
-
+            showLoading();
         }
 
 
@@ -258,6 +253,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer.setConfig(config);
         vodPlayer.setPlayerView(binding.mainVideoView);
         startPlay(false);
+    }
+
+    private void showLoading() {
+        //加载进度
+        binding.loadingView.setVisibility(View.VISIBLE);
+        binding.loadingView.playAnimation();
     }
 
 
@@ -399,6 +400,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         binding.llZhiBoTip.setOnClickListener(lis -> {
             //判断是直播间
             if (videoInfo.getVideoType() == 2) {
+                dismissLoading();
+
                 //进入直播间
                 viewModel.joinLive(videoInfo.liveRoomId);
             }
@@ -431,6 +434,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }
         });
+    }
+
+    private void dismissLoading() {
+        binding.loadingView.cancelAnimation();
+        binding.loadingView.setVisibility(View.GONE);
     }
 
 
@@ -688,8 +696,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     pausePlay();
                 }
             }
-
-            LogUtils.v(Constant.TAG_LIVE, type + position + "onResume()");
         }
     }
 
@@ -736,12 +742,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //EVT_PLAY_DURATION 总时间  EVT_PLAY_PROGRESS 当前进度
             //有此回调说明是点播
             if (param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS) > 0) {
-
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.progressBar.setMax(param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
                 binding.progressBar.setProgress(param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
                 showStartLayout();
-                LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_PROGRESS");
             }
 
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
@@ -757,8 +761,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         binding.coverImageView.setVisibility(View.GONE);
 
-        binding.loadingView.cancelAnimation();
-        binding.loadingView.setVisibility(View.GONE);
+        dismissLoading();
 
 
         if (videoInfo.getVideoType() == 1) {

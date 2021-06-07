@@ -344,7 +344,7 @@ public interface ApiServer {
 
     //我喜欢的视频作品
     @GET("jkzl/queryUserFavoriteCreationPage")
-    Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize);
+    Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize,@Query("targetId") String id);
 
 
     //日志详情

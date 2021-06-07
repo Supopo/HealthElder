@@ -190,9 +190,12 @@
         <activity
             android:name=".moduleLiteav.activity.LiveAVActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleZhiBo.activity.LiveZhuboActivity" />
+        <activity android:name=".moduleZhiBo.activity.LiveZhuboActivity"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
+            />
         <activity
             android:name=".moduleZhiBo.activity.LiveGuanzhongActivity"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
@@ -372,7 +375,9 @@
         <activity android:name=".moduleMine.activity.AddBankCardActivity" />
         <activity android:name=".moduleMine.activity.AnchorActivity" />
         <activity android:name=".moduleMine.activity.MiniActivity" />
-        <activity android:name=".moduleMine.activity.UserInfoActivity" />
+        <activity android:name=".moduleMine.activity.UserInfoActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleMine.activity.SettingActivity" />
         <activity android:name=".moduleMine.activity.LookAuthActivity" />
         <activity android:name=".moduleMine.activity.CoinDetailActivity" />
