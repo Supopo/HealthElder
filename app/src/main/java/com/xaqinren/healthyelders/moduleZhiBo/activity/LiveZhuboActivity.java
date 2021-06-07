@@ -185,6 +185,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         screenWidth = MScreenUtil.getScreenWidth(this);
         screenHeight = MScreenUtil.getScreenHeight(this);
+
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
 
@@ -1808,12 +1809,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             }
         });
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.width = screenWidth;
-        layoutParams.height = screenHeight;
-        binding.ivBg.setLayoutParams(layoutParams);
-        Log.e("-----", "BG: " + binding.ivBg.getHeight());
+        setStatusBarTransparent();
     }
 
     private void closeMoreLinkAnim() {
@@ -1829,7 +1825,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.mTxVideoView.clearAnimation();
         binding.mTxVideoView.setAnimation(animation2);
         binding.rvMoreLink.setVisibility(View.INVISIBLE);
-        Log.e("-----", "BG2: " + binding.ivBg.getHeight());
 
     }
 

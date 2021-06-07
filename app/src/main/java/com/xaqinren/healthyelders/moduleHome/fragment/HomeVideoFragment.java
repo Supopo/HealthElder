@@ -361,6 +361,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
 
         binding.avatarImageView.setOnClickListener(lis -> {
+            if (AppApplication.isToLogin()) {
+                return;
+            }
+
             Bundle bundle = new Bundle();
             bundle.putString("userId", videoInfo.userId);
             startActivity(UserInfoActivity.class, bundle);
@@ -616,6 +620,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startPlay(boolean b) {
+        if (isPause) {
+            return;
+        }
+
         if (binding.rlView.getVisibility() == View.GONE) {
             binding.rlView.setVisibility(View.VISIBLE);
         }
@@ -664,16 +672,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onPause() {
         super.onPause();
+        isPause = true;
         if (hasPlaying) {
             pausePlay();
-            LogUtils.v(Constant.TAG_LIVE, type + position + "onPause()");
         }
 
     }
 
+    private boolean isPause;
+
     @Override
     public void onResume() {
         super.onResume();
+        isPause = false;
         if (hasPlaying) {
             if (type.equals("home-tj")) {
                 if (AppApplication.get().getTjPlayPosition() == position) {
@@ -757,6 +768,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void showStartLayout() {
+
         if (hasPlaying) {
             return;
         }

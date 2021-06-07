@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:background="@mipmap/zbj_bg" />
+            android:src="@mipmap/zbj_bg" />
 
         <!--视频区域-->
         <LinearLayout
@@ -80,6 +80,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_menu">
+
+<!--            开启多人连麦时候背景会跟随最高View的位置变化-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_showLike"
@@ -267,31 +272,31 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:textSize="@dimen/sp_14"
                             android:maxLength="5"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_14" />
 
                         <TextView
                             android:id="@+id/tv_gift_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/sp_10"
-                            android:textColor="@color/color_E6" />
+                            android:textColor="@color/color_E6"
+                            android:textSize="@dimen/sp_10" />
                     </LinearLayout>
 
                     <ImageView
-                        android:layout_gravity="center_vertical"
                         android:id="@+id/iv_gift"
                         android:layout_width="@dimen/dp_38"
                         android:layout_height="@dimen/dp_38"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/dp_12"
                         android:scaleType="centerInside" />
 
                     <LinearLayout
-                        android:layout_marginRight="@dimen/dp_20"
-                        android:layout_marginLeft="@dimen/dp_13"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_13"
+                        android:layout_marginRight="@dimen/dp_20"
                         android:orientation="horizontal">
 
                         <TextView
@@ -344,12 +349,12 @@
 
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/btn_pk"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
-                android:background="@mipmap/zbj_menu_pk" />
+                android:background="@mipmap/zbj_menu_pk"
+                android:visibility="gone" />
 
 
             <RelativeLayout
@@ -407,7 +412,6 @@
             android:id="@+id/rl_showGift"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_54"
-            />
+            android:layout_marginBottom="@dimen/dp_54" />
     </RelativeLayout>
 </layout>
