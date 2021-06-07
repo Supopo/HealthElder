@@ -55,7 +55,8 @@
                 android:id="@+id/detail"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_47"
-                android:layout_marginTop="@dimen/dp_6">
+                android:layout_marginTop="@dimen/dp_6"
+                android:visibility="gone">
                 <View style="@style/lineMarginDp16" />
                 <TextView
                     android:layout_width="wrap_content"

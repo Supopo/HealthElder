@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
@@ -46,7 +47,15 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
     private int beiLv;
     private PayTypeAdapter payTypeAdapter;
     private Disposable subscribe;
+    private String orderNo;
+    private String orderType;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        int theme = getIntent().getIntExtra("theme", R.style.EditDialogStyleEx);
+        setTheme(theme);
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -62,9 +71,11 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
     public void initParam() {
         super.initParam();
         if (getIntent().getExtras() != null) {
-            czNum = getIntent().getExtras().getDouble("czNum", 0);
-            yeNum = getIntent().getExtras().getDouble("yeNum", 0);
-            beiLv = getIntent().getExtras().getInt("beiLv", 0);
+            czNum = getIntent().getExtras().getDouble("czNum", 0);//充值，付款
+            yeNum = getIntent().getExtras().getDouble("yeNum", 0);//余额，我的零钱
+            beiLv = getIntent().getExtras().getInt("beiLv", 0);//倍率
+            orderNo = getIntent().getExtras().getString("orderNo", "");//订单编号
+            orderType = getIntent().getExtras().getString("orderType", "POINT_RECHARGE");//订单类型
         }
     }
 
@@ -133,8 +144,8 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
             } else if (selectPos == 1) {
                 payType = "WALLET_PAY";
             }
-
-            UserRepository.getInstance().toPay(wxPayJson, "POINT_RECHARGE", "APP_PAY", payType, czNum);
+            //COMMODITY_CONSUMPTION 购物消费  POINT_RECHARGE 积分充值
+            UserRepository.getInstance().toPay(wxPayJson, orderType, "APP_PAY", payType, czNum, orderNo);
         });
     }
 

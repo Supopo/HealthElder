@@ -87,16 +87,13 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
             }
         });
         binding.agreeLayout.setOnClickListener(v -> {
-            //__UNI__DFE7692  pages/agreement/userService  用户协议
-            UniUtil.openUniApp(this, "__UNI__DFE7692", "pages/agreement/userService", null, true);
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, "pages/agreement/userService", null, true);
         });
         binding.privacyLayout.setOnClickListener(v -> {
-            //__UNI__DFE7692 pages/agreement/userPrivacy 隐私协议
-            UniUtil.openUniApp(this, "__UNI__DFE7692", "pages/agreement/userPrivacy", null, true);
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, "pages/agreement/userPrivacy", null, true);
         });
         binding.aboutLayout.setOnClickListener(v -> {
-            //__UNI__DFE7692 pages/agreement/aboutUs  关于我们
-            UniUtil.openUniApp(this, "__UNI__DFE7692", "pages/agreement/aboutUs", null, true);
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, "pages/agreement/aboutUs", null, true);
         });
         binding.memoryLayout.setOnClickListener(v -> {
             //清理内存

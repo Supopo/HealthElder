@@ -10,19 +10,28 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityWalletBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.WalletViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.PayActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletViewModel> {
     private UserInfoBean userInfoBean;
     private WalletBean walletBean;
+    private Disposable uniSubscribe;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -63,12 +72,23 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
             startActivity(CoinActivity.class);
         });
         binding.cardLayout.setOnClickListener(v -> {
-            startActivity(BandCardActivity.class);
-        });
-        binding.cardLayout.setOnClickListener(v -> {
-            startActivity(BandCardActivity.class);
+//            startActivity(BandCardActivity.class);
+            if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+            UniService.startService(this, Constant.JKZL_MINI_APP_ID, 0x10009, "pages_user/wallet/bankCardList");
         });
 
+        binding.createLive.setOnClickListener(v -> {
+            startActivity(WithdrawActivity.class);
+        });
+        binding.txLive.setOnClickListener(v -> {
+            startActivity(WithdrawActivity.class);
+        });
+        binding.redLive.setOnClickListener(v -> {
+            startActivity(WithdrawActivity.class);
+        });
         binding.jkbCountTv.setText(userInfoBean.getPointAccountBalance()+"");
         showDialog();
         viewModel.getWalletInfo();
@@ -95,12 +115,31 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
             }
             binding.setData(this.walletBean);
         });
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 0x10009) {
+                        UniUtil.openUniApp(this, event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+        RxSubscriptions.add(uniSubscribe);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         viewModel.getWalletInfo();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxSubscriptions.remove(uniSubscribe);
     }
 
     @Override

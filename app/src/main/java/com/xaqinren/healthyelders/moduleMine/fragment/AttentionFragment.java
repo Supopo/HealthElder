@@ -37,6 +37,10 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
+/**
+ *
+ * 关注/粉丝
+ */
 public class AttentionFragment extends BaseFragment<FramentAttentionBinding, AttentionViewModel> {
     private int type;
     private AttentionAdapter adapter;
@@ -73,7 +77,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         adapter.setEmptyView(R.layout.list_empty);
-        adapter.addHeaderView(View.inflate(getContext(), R.layout.header_empty_56dp, null));
+//        adapter.addHeaderView(View.inflate(getContext(), R.layout.header_empty_56dp, null));
         initHeader();
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

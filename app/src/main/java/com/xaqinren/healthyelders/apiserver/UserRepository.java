@@ -22,8 +22,10 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
+import com.xaqinren.healthyelders.moduleMine.bean.BillDetailBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.moduleMine.bean.OrderListBean;
 import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
@@ -552,12 +554,13 @@ public class UserRepository {
 
     }
 
-    public void toPay(MutableLiveData<String> payJson, String accountOrderType, String payMethod, String payType, double paymentAmount) {
+    public void toPay(MutableLiveData<String> payJson, String accountOrderType, String payMethod, String payType, double paymentAmount,String orderNo) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("accountOrderType", accountOrderType);
         hashMap.put("paymentMethod", payMethod);
         hashMap.put("paymentChannel", payType);
         hashMap.put("paymentAmount", paymentAmount);
+        hashMap.put("orderNo", orderNo);
         hashMap.put("openid", "");
 
         String json = JSON.toJSONString(hashMap);
@@ -632,6 +635,24 @@ public class UserRepository {
 
     }
 
+    public void getOrderList(MutableLiveData<Boolean> request , MutableLiveData<List<OrderListBean>>datas,int type,int page) {
+        userApi.getOrderList(UserInfoMgr.getInstance().getHttpToken(),type,page)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<OrderListBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<OrderListBean>>> data) {
+                        datas.postValue(data.getData().content);
+                    }
+                });
+
+    }
+
 
     public void getBillInfo(MutableLiveData<Boolean> request, MutableLiveData<BillRecodeBean> datas, String key) {
 
@@ -650,6 +671,27 @@ public class UserRepository {
                             datas.postValue(data.getData());
                         else
                             datas.postValue(null);
+                    }
+                });
+
+    }
+
+
+    public void getBillInfoDetail(MutableLiveData<Boolean> request, MutableLiveData<BillDetailBean> datas, String key) {
+        userApi.getBillInfoDetail(UserInfoMgr.getInstance().getHttpToken(),key)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BillDetailBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BillDetailBean> data) {
+                        if (data.isOk())
+                            datas.postValue(data.getData());
+                        else datas.postValue(null);
                     }
                 });
 
@@ -734,6 +776,99 @@ public class UserRepository {
                     }
                 });
 
+    }
+
+    public void cancelOrder(MutableLiveData<Boolean> request, MutableLiveData<Boolean> datas, String key) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", key);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.cancelOrder(UserInfoMgr.getInstance().getHttpToken(),body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+//                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        datas.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void delOrder(MutableLiveData<Boolean> request, MutableLiveData<Boolean> datas, String key) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", key);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.delOrder(UserInfoMgr.getInstance().getHttpToken(),body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+//                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        datas.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void receiptOrder(MutableLiveData<Boolean> request, MutableLiveData<Boolean> datas, String key) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", key);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.receiptOrder(UserInfoMgr.getInstance().getHttpToken(),body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+//                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        datas.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void getWithdraw(MutableLiveData<Boolean> request, MutableLiveData<Boolean> datas,
+                            double appealAmount,
+                            String accountBank,
+                            String accountName,
+                            String accountNo,
+                            String cardType) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("appealAmount", appealAmount);
+        hashMap.put("accountBank", accountBank);
+        hashMap.put("accountName", accountName);
+        hashMap.put("accountNo", accountNo);
+        hashMap.put("cardType", cardType);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.withdrawal(UserInfoMgr.getInstance().getHttpToken(),body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        request.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        datas.postValue(data.isOk());
+                    }
+                });
     }
 
 }

@@ -167,6 +167,7 @@
                     android:layout_marginTop="@dimen/dp_20" />
 
                 <TextView
+                    android:id="@+id/tx_live"
                     android:layout_width="@dimen/dp_72"
                     android:layout_height="@dimen/dp_28"
                     android:text="去提现"
@@ -211,6 +212,7 @@
                     android:layout_marginTop="@dimen/dp_20" />
 
                 <TextView
+                    android:id="@+id/create_live"
                     android:layout_width="@dimen/dp_72"
                     android:layout_height="@dimen/dp_28"
                     android:text="去提现"
@@ -253,6 +255,7 @@
                     android:layout_marginTop="@dimen/dp_20" />
 
                 <TextView
+                    android:id="@+id/red_live"
                     android:layout_width="@dimen/dp_72"
                     android:layout_height="@dimen/dp_28"
                     android:text="去提现"

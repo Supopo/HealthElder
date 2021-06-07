@@ -23,10 +23,12 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMallBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallHotMenuAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu3Adapter;
@@ -95,6 +97,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         binding.rvMenu2.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1, false));
 
         mallHotMenuAdapter.setOnItemClickListener((adapter, view, position) -> {
+            if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
             MenuBean menuBean = mallHotMenuAdapter.getData().get(position);
             UniService.startService(getContext(), menuBean.appId, 0x10001, menuBean.jumpUrl);
         });
@@ -243,6 +249,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         binding.banner.setOnBannerListener(new OnBannerListener<MenuBean>() {
             @Override
             public void OnBannerClick(MenuBean data, int position) {
+                if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
                 UniService.startService(getContext(), data.appId, 0x10001, data.jumpUrl);
             }
         });

@@ -19,7 +19,9 @@ import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
 import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
+import com.xaqinren.healthyelders.moduleMine.bean.BillDetailBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
+import com.xaqinren.healthyelders.moduleMine.bean.OrderListBean;
 import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
@@ -486,6 +488,10 @@ public interface ApiServer {
     @GET("user/findUserWalletAccountRecordPage")
     Observable<MBaseResponse<BillRecodeBean>> getBillInfo(@Header("Authorization") String authorization, @Query("date") String key);
 
+    //查询账单详情
+    @GET("user/findUserWalletAccountRecordInfo")
+    Observable<MBaseResponse<BillDetailBean>> getBillInfoDetail(@Header("Authorization") String authorization, @Query("id") String key);
+
     //设置支付密码
     @POST("user/setPayPassword")
     Observable<MBaseResponse<Object>> setPassWord(@Header("Authorization") String authorization, @Body RequestBody requestBody);
@@ -500,6 +506,26 @@ public interface ApiServer {
     @GET("live/findLiveRoomMuteList")
     Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getJinYanList(@Header("Authorization") String authorization, @Query("page") Integer page,
                                                                               @Query("pageSize") Integer count, @Query("liveRoomRecordId") String liveRoomRecordId);
+
+    //订单列表
+    @GET("commodity/queryUserCommodityOrderPage")
+    Observable<MBaseResponse<BaseListRes<List<OrderListBean>>>> getOrderList(@Header("Authorization") String authorization, @Query("statusNumber") int type, @Query("page") int page);
+
+    //取消订单
+    @POST("commodity/cancelCommodityOrder")
+    Observable<MBaseResponse<Object>> cancelOrder(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
+    //删除订单
+    @POST("commodity/deleteCommodityOrder")
+    Observable<MBaseResponse<Object>> delOrder(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
+    //订单收货
+    @POST("commodity/confirmCommodityReceipt")
+    Observable<MBaseResponse<Object>> receiptOrder(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
+    //提现申请
+    @POST("user/withdrawalApplication")
+    Observable<MBaseResponse<Object>> withdrawal(@Header("Authorization") String authorization, @Body RequestBody requestBody);
 
     //查看用户资料
     @GET("jkzl/findUserProfile")

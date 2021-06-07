@@ -9,6 +9,7 @@ import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
+import com.xaqinren.healthyelders.moduleMine.bean.BillDetailBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 
@@ -21,6 +22,11 @@ public class WalletViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> request = new MutableLiveData<>();
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     public MutableLiveData<BillRecodeBean> billList = new MutableLiveData<>();
+
+    public MutableLiveData<BillDetailBean> billDetail = new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> appeal = new MutableLiveData<>();
+
     public WalletViewModel(@NonNull Application application) {
         super(application);
     }
@@ -33,7 +39,18 @@ public class WalletViewModel extends BaseViewModel {
         UserRepository.getInstance().getBillInfo(request, billList, key);
     }
 
+    public void getBillInfoDetail(String key) {
+        UserRepository.getInstance().getBillInfoDetail(request, billDetail, key);
+    }
+
     public void refreshUserInfo() {
         UserRepository.getInstance().getUserInfo(request,userInfo, UserInfoMgr.getInstance().getAccessToken());
+    }
+    public void getWithdraw( double appealAmount,
+                             String accountBank,
+                             String accountName,
+                             String accountNo,
+                             String cardType) {
+        UserRepository.getInstance().getWithdraw(request,appeal,appealAmount,accountBank,accountName,accountNo,cardType);
     }
 }

@@ -33,7 +33,6 @@ public class CoinActivity extends BaseActivity<ActivityCoinBinding, WalletViewMo
         setTvRight("零钱明细");
         tvRight.setOnClickListener(v -> startActivity(CoinDetailActivity.class));
 
-        showDialog();
         viewModel.getWalletInfo();
 
         binding.layoutRecharge.setOnClickListener(v -> {
@@ -42,7 +41,7 @@ public class CoinActivity extends BaseActivity<ActivityCoinBinding, WalletViewMo
         });
         binding.layoutWithdraw.setOnClickListener(v -> {
             //提现
-            
+            startActivity(WithdrawActivity.class);
         });
     }
 
@@ -58,6 +57,7 @@ public class CoinActivity extends BaseActivity<ActivityCoinBinding, WalletViewMo
         viewModel.wallet.observe(this, walletBean -> {
             this.walletBean = walletBean;
             binding.setData(this.walletBean);
+            binding.balance.setText(walletBean.getWallAccountBalance());
             if (walletBean.isHasOpenAccount()) {
                 //已实名认证
             }else{

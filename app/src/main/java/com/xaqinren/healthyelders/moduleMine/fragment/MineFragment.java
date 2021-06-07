@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
+import com.tencent.bugly.proguard.B;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -23,6 +24,8 @@ import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.CZInputPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
@@ -268,13 +271,15 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGz.setOnClickListener(lis -> {
-
+            startActivity(LookAttentionActivity.class);
         });
         binding.tvFs.setOnClickListener(lis -> {
-
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 1);
+            startActivity(LookAttentionActivity.class, bundle);
         });
         binding.tvOrder.setOnClickListener(v -> {
-
+            startActivity(OrderListActivity.class);
         });
         binding.tvFriends.setOnClickListener(lis -> {
         });

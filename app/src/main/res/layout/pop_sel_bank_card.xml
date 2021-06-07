@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bg_pop_bottom_20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/color_252525"
+            android:text="选择到账方式"
+            android:gravity="center"/>
+
+        <View style="@style/line" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/card_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/bg_btn_comfrim"
+            android:gravity="center"
+            android:textSize="@dimen/sp_16"
+            android:layout_marginBottom="@dimen/dp_30"
+            />
+    </LinearLayout>
+</LinearLayout>

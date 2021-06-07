@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMall.adapter;
 
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,8 +11,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ItemMallRvBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.uniApp.UniService;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +43,11 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
         mallMenu1Adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                    Intent intent = new Intent(getContext(),SelectLoginActivity.class);
+                    getContext().startActivity(intent);
+                    return;
+                }
                 MenuBean menuBean1 = mallMenu1Adapter.getData().get(position);
                 String appId = menuBean1.appId;
                 String jumpUrl = menuBean1.jumpUrl;

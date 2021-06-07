@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="data"
+            type="com.xaqinren.healthyelders.moduleMine.bean.OrderListItemBean" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/goods_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_13">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:src="@color/gray_999"/>
+        <LinearLayout
+            android:id="@+id/amount_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_12">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_11"
+                android:textColor="@color/color_252525"
+                android:text="¥"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_252525"
+                android:text="@{data.itemPrice+``}"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{data.itemName}"
+            android:textSize="@dimen/sp_15"
+            android:textColor="@color/color_252525"
+            android:includeFontPadding="false"
+            android:layout_toRightOf="@id/logo"
+            android:maxLines="2"
+            android:minLines="2"
+            android:ellipsize="end"
+            android:layout_marginRight="@dimen/dp_28"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_toLeftOf="@id/amount_layout"/>
+
+        <TextView
+            android:id="@+id/sku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/gray_999"
+            android:layout_below="@id/title"
+            android:layout_alignLeft="@id/title"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@{data.itemSpec}"/>
+        <TextView
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/gray_999"
+            android:text="@{`x`+data.itemNumber}"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/amount_layout"
+            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginRight="@dimen/dp_12"/>
+    </RelativeLayout>
+</layout>

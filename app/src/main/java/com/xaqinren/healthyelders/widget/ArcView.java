@@ -39,7 +39,6 @@ public class ArcView extends View {
     private float currentEnd = 00;
 
     private boolean isShow = false;
-
     public ArcView(Context context) {
         super(context);
         initView();

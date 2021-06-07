@@ -49,7 +49,7 @@
                 android:id="@+id/balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{data.wallAccountBalance}"
+                android:text="0.00"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_40"
                 android:includeFontPadding="false"
@@ -68,7 +68,8 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16">
+            android:paddingRight="@dimen/dp_16"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="@dimen/dp_16"

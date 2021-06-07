@@ -23,9 +23,11 @@ import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
@@ -36,6 +38,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
@@ -140,7 +143,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
                     }
                 } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
-                    ToastUtils.showShort("打开小程序失败");
+                    //ToastUtils.showShort("打开小程序失败");
                 }
             }
         });
@@ -351,6 +354,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         viewModel.getHomeInfo();
         menu2Adapter.setOnItemClickListener((adapter, view, position) -> {
             MenuBean menuBean = menu2Adapter.getData().get(position);
+            if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
             UniService.startService(getContext(), menuBean.appId, 0x10111, menuBean.jumpUrl);
         });
     }

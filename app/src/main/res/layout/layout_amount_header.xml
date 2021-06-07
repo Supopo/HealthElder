@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/include_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_34"
+            android:textSize="@dimen/sp_15"
+            android:textColor="@color/color_252525"
+            android:text="直播收入提现 微信"/>
+        <TextView
+            android:id="@+id/include_amonut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textSize="@dimen/sp_32"
+            android:textColor="@color/color_252525"
+            android:textStyle="bold"
+            android:text="0.00"/>
+
+        <TextView
+            android:id="@+id/include_stauts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textSize="@dimen/sp_13"
+            android:textColor="@color/gray_999"
+            android:text="提现成功"
+             />
+
+        <View style="@style/lineMarginDp16" android:layout_marginTop="@dimen/dp_30"/>
+    </LinearLayout>
+</layout>

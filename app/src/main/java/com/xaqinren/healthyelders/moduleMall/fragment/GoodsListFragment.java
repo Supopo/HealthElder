@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentGoodsListBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallGoodsAdapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.GoodsListViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
@@ -97,7 +98,10 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         mallGoodsAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                //UniService.startService(getContext(), "__UNI__DFE7692", 0x123456);
+                if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
                 GoodsBean goodsBean = mallGoodsAdapter.getData().get(position);
                 UniService.startService(getContext(), goodsBean.appId, 0x10001, goodsBean.jumpUrl);
             }

@@ -1,11 +1,16 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.tencent.bugly.proguard.B;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityCoinDetailBinding;
@@ -53,7 +58,15 @@ public class CoinDetailActivity extends BaseActivity<ActivityCoinDetailBinding, 
             viewModel.getBillInfo(getDate());
         });
         binding.swipeContent.setEnabled(false);
-
+        coinDetailAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                BillBean billBean = coinDetailAdapter.getData().get(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("id",billBean.getId());
+                startActivity(WithdrawWXActivity.class,bundle);
+            }
+        });
     }
 
     @Override

@@ -382,6 +382,10 @@
         <activity android:name=".moduleMine.activity.LookAuthActivity" />
         <activity android:name=".moduleMine.activity.CoinDetailActivity" />
         <activity android:name=".moduleMine.activity.ChangePhoneActivity" />
+        <activity android:name=".moduleMine.activity.WithdrawWXActivity" />
+        <activity android:name=".moduleMine.activity.WithdrawActivity" />
+        <activity android:name=".moduleMine.activity.OrderListActivity" />
+        <activity android:name=".moduleMine.activity.WithdrawApplySuccess" />
 
         <service
             android:name=".push.IPushService"

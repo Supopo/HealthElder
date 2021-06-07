@@ -28,7 +28,8 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_12"
-                    android:layout_marginBottom="@dimen/dp_16">
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
