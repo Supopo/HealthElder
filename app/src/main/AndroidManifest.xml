@@ -209,6 +209,7 @@
         <activity android:name=".moduleLiteav.activity.ChooseVideoCoverActivity" />
         <activity
             android:name=".moduleLogin.activity.SelectLoginActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.MyGoodsListActivity"

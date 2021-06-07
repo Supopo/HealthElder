@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
-import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXVodPlayConfig;
@@ -40,12 +39,13 @@ import com.xaqinren.healthyelders.databinding.FragmentHomeVideoBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
-import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
@@ -53,13 +53,9 @@ import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
-import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
-import com.xaqinren.healthyelders.widget.share.IShareUser;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
@@ -367,10 +363,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         binding.avatarImageView.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putString("userId", videoInfo.userId);
-            startActivity(UserInfoActivity.class,bundle);
+            startActivity(UserInfoActivity.class, bundle);
         });
         //关注
         binding.followImageView.setOnClickListener(lis -> {
+            //先判断是否登录
+            if (!InfoCache.getInstance().checkLogin()) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+
             avatarAddAnim = (AnimationDrawable) binding.followImageView.getBackground();
             avatarAddAnim.start();
             viewModel.toFollow(videoInfo.userId);

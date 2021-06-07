@@ -1,17 +1,12 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
 
 import com.google.android.material.tabs.TabLayout;
 import com.xaqinren.healthyelders.BR;
@@ -19,8 +14,8 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityStartLiveBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleLiteav.fragment.StartLiteAVFragment;
+import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 
 import java.util.ArrayList;

@@ -303,6 +303,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu4;
         });
         binding.ivLive.setOnClickListener(lis -> {
+            //先判断是否登录
+            if (!InfoCache.getInstance().checkLogin()) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+
             disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                     .subscribe(granted -> {
                         if (granted) {

@@ -114,7 +114,7 @@ public class OrderListActivity extends BaseActivity<ActivityOrderListBinding, Or
             @Override
             public void onChanged(UserInfoBean datas) {
                 if (datas != null) {
-                    int jbyeNum = datas.getPointAccountBalance();
+                    double jbyeNum = datas.getPointAccountBalance();
 //                    binding.tvTips.setText("余额：" + jbyeNum + "金币");
                     for (OrderListFragment listFragment : listFragments) {
                         listFragment.setBalance(jbyeNum);
