@@ -119,7 +119,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
                     videoAdapter.setList(dataList);
                     if (dataList.size() == 0) {
                         //创建适配器.空布局，没有数据时候默认展示的
-                        videoAdapter.setEmptyView(R.layout.list_empty);
+                        videoAdapter.setEmptyView(R.layout.item_empty);
                     }
                 } else {
                     if (dataList.size() == 0) {

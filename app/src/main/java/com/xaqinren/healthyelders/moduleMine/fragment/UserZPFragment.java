@@ -131,8 +131,11 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
+                    if (dataList.size() == 0) {
+                        videoAdapter.setEmptyView(R.layout.item_empty);
+                    }
 
-                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                        //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);
                 } else {
                     if (dataList.size() == 0) {

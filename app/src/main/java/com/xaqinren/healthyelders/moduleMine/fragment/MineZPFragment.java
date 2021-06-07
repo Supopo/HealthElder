@@ -170,6 +170,9 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                         videoInfo.draftCount = draftCount;
                     }
 
+                    if (dataList.size() == 0) {
+                        videoAdapter.setEmptyView(R.layout.item_empty);
+                    }
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);
                 } else {
