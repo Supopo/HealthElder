@@ -7,14 +7,15 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +26,6 @@ import androidx.annotation.Nullable;
 import com.tencent.qcloud.tim.uikit.component.face.Emoji;
 import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
 import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
@@ -51,7 +51,8 @@ public class ZBEditTextDialogActivity extends Activity {
 
     private EditText etView;
     private LinearLayout llInput;
-    private Button btnSend;
+    private ImageView ivSend;
+    private ImageView ivFace;
     private RelativeLayout rlView;
     private FragmentManager mFragmentManager;
     private FaceFragment mFaceFragment;
@@ -77,16 +78,24 @@ public class ZBEditTextDialogActivity extends Activity {
         win.setAttributes(lp);
     }
 
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etView.getWindowToken(), 0);
+        etView.clearFocus();
+        moreGroups.setVisibility(View.GONE);
+    }
+
     private void showFaceViewGroup() {
         if (mFragmentManager == null) {
-            mFragmentManager = getFragmentManager();
+            mFragmentManager = this.getFragmentManager();
         }
         if (mFaceFragment == null) {
             mFaceFragment = new FaceFragment();
         }
-
+        hideSoftInput();
         moreGroups.setVisibility(View.VISIBLE);
-        etView.requestFocus();
+        //        先不要获取焦点 点击键盘再获取焦点 这样方便隐藏表情列表
+        //        etView.requestFocus();
         mFaceFragment.setListener(new FaceFragment.OnEmojiClickListener() {
             @Override
             public void onEmojiDelete() {
@@ -126,7 +135,7 @@ public class ZBEditTextDialogActivity extends Activity {
 
             }
         });
-        mFragmentManager.beginTransaction().replace(com.tencent.qcloud.tim.uikit.R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
+        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
 
     }
 
@@ -134,7 +143,8 @@ public class ZBEditTextDialogActivity extends Activity {
 
     private void initView() {
         rlView = findViewById(R.id.rl_view);
-        btnSend = findViewById(R.id.btn_send);
+        ivSend = findViewById(R.id.iv_send);
+        ivFace = findViewById(R.id.iv_face);
         etView = findViewById(R.id.et_input_message);
         llInput = findViewById(R.id.ll_input);
         moreGroups = findViewById(R.id.more_groups);
@@ -150,7 +160,16 @@ public class ZBEditTextDialogActivity extends Activity {
         //弹出键盘
         showSoftInput(this, etView);
 
-
+        etView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (moreGroups.getVisibility() == View.VISIBLE) {
+                        moreGroups.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
         etView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -211,12 +230,12 @@ public class ZBEditTextDialogActivity extends Activity {
                 finish();
             }
         });
-        btnSend.setOnClickListener(lis -> {
+        ivSend.setOnClickListener(lis -> {
             if (TextUtils.isEmpty(etView.getText().toString())) {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
                 RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString()));
-                LogUtils.v(Constant.TAG_LIVE,"发送消息");
+                LogUtils.v(Constant.TAG_LIVE, "发送消息");
                 finish();
             }
 
@@ -225,6 +244,9 @@ public class ZBEditTextDialogActivity extends Activity {
             etView.setFocusable(false);
             etView.setFocusableInTouchMode(false);
             finish();
+        });
+        ivFace.setOnClickListener(lis -> {
+            showFaceViewGroup();
         });
     }
 

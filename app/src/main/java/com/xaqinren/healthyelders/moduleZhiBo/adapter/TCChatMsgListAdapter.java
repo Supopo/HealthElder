@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
@@ -179,6 +180,10 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
 
         // 设置控件实际宽度以便计算列表项实际高度
         //holder.sendContext.fixViewWidth(mListView.getWidth());
+
+        //设置处理加载聊天表情文字
+        FaceManager.handlerEmojiText(holder.sendContext, holder.sendContext.getText().toString(), false);
+
         return convertView;
     }
 

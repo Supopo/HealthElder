@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleMsg.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,45 +8,31 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.open.im.IM;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
-import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationLayout;
-import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationListLayout;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
-import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
-import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleLiteav.activity.LiveAVActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
-import com.xaqinren.healthyelders.moduleMsg.activity.ContactsActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.FansMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.InteractiveActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.LiveMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ServiceMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.SysMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.WalletMsgActivity;
-import com.xaqinren.healthyelders.moduleMsg.adapter.MsgListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
-import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
-import com.xaqinren.healthyelders.push.PayLoadBean;
 
 import java.io.File;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.http.download.DownLoadStateBean;
-import me.goldze.mvvmhabit.utils.ConvertUtils;
 
 /**
  * Created by Lee. on 2021/5/11.
