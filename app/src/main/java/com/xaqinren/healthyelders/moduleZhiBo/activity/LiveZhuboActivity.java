@@ -614,13 +614,19 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             moreLinkSettingDialog.dismiss();
         });
         tvJinYin.setOnClickListener(lis -> {
-            if (!voiceMicMute) {
+            if (voiceMicMute) {
                 //取消静音操作 发消息让用户去操作
                 mLiveRoom.sendC2CCustomMsg(userId, String.valueOf(LiveConstants.IMCMD_MORE_ANCHOR_QXJY), "取消静音", null);
             } else {
                 //设置静音操作
                 mLiveRoom.sendC2CCustomMsg(userId, String.valueOf(LiveConstants.IMCMD_MORE_ANCHOR_JY), "开启静音", null);
             }
+            moreLinkSettingDialog.dismiss();
+        });
+        tvInfo.setOnClickListener(lis ->{
+            //查看资料
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, moreLinkAdapter.getData().get(postion));
+            userInfoPop.showPopupWindow();
             moreLinkSettingDialog.dismiss();
         });
 
