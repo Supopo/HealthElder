@@ -43,16 +43,15 @@
                 android:id="@+id/describe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/avatar"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_12"
                 android:layout_below="@id/nickname"
-                android:textSize="@dimen/sp_14"
-                android:textColor="@color/gray_666"
-                android:text="昨天直播过"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_6"
+                android:layout_toRightOf="@id/avatar"
+                android:ellipsize="end"
                 android:maxLines="2"
-                android:ellipsize="end" />
+                android:textColor="@color/gray_666"
+                android:textSize="@dimen/sp_14" />
         </LinearLayout>
         <TextView
             android:id="@+id/attention_btn"

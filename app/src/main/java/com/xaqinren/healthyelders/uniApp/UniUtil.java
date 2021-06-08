@@ -46,6 +46,7 @@ public class UniUtil {
                 viewCls = page.contains("pages/index/index") ? SplashView.class : LoadingView.class;
             }
             int isDelay = 0;
+            LogUtils.e("UniUtil", "小程序是否初始化  " + DCUniMPSDK.getInstance().isInitialize());
             if (!DCUniMPSDK.getInstance().isInitialize()) {
                 //需要重新初始化了
                 initUni();

@@ -146,6 +146,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void initData() {
+        SPUtils.getInstance().put(Constant.PAY_WAY,"uni");
         ImManager.getInstance().setOnUnReadWatch(this);
         setStatusBarTransparent();
         //初始化Fragment

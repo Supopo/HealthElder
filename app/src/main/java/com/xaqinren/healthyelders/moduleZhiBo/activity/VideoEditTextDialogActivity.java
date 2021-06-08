@@ -60,11 +60,12 @@ public class VideoEditTextDialogActivity extends Activity {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;//设置对话框置顶显示
+//        lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         win.setAttributes(lp);
     }
 
     private void initView() {
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         etView = findViewById(R.id.et_input_message);
         moreGroups = findViewById(R.id.more_groups);
