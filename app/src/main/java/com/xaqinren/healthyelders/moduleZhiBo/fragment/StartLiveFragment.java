@@ -308,7 +308,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.fileUrl.observe(this, url -> {
             if (!TextUtils.isEmpty(url)) {
                 mLiveInitInfo.liveRoomCover = url;
-                Log.e("--", "上传图片URL：" + url);
                 startLiveZhuboActivity();
             }
         });
@@ -619,9 +618,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                             Uri uri = Uri.parse(photoPath);
                             photoPath = getFilePathByUri(uri, getActivity());
                         }
-
                         Glide.with(this).load(photoPath).into(binding.ivCover);
-                        viewModel.updatePhoto(photoPath);
                     }
                     break;
             }

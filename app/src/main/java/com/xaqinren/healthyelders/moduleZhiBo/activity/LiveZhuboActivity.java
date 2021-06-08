@@ -329,7 +329,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     //初始化房间信息
     private void initLiveInfo() {
-
+        binding.tvZanNum.setText(UserInfoMgr.getInstance().getUserInfo().getNickname());
         Glide.with(this).load(mLiveInitInfo.avatarUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.rivPhoto);
 
 

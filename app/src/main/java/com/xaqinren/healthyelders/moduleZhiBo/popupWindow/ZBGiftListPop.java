@@ -2,7 +2,6 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
