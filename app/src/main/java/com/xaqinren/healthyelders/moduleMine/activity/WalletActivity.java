@@ -1,11 +1,15 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.lifecycle.Observer;
 
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
+import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -50,6 +54,7 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
         userInfoBean = UserInfoMgr.getInstance().getUserInfo();
         binding.jkbLayoaut.setOnClickListener(v -> {
             startActivity(CZSelectPopupActivity.class);
+            ScreenUtils.setWindowAlpha(this, 1.0f, 0.6f, 400);
         });
         binding.lqKaihu.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -92,6 +97,7 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
         binding.jkbCountTv.setText("0");
         showDialog();
         viewModel.getWalletInfo();
+
     }
 
     @Override
@@ -140,6 +146,16 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
     protected void onDestroy() {
         super.onDestroy();
         RxSubscriptions.remove(uniSubscribe);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        float alpha = lp.alpha;
+        if (alpha < 1) {
+            ScreenUtils.setWindowAlpha(this, 0.6f, 1f, 400);
+        }
     }
 
     @Override

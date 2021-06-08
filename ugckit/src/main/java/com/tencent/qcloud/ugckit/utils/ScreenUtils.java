@@ -1,5 +1,7 @@
 package com.tencent.qcloud.ugckit.utils;
 
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
@@ -64,6 +66,37 @@ public class ScreenUtils {
     public static float sp2px(@NonNull Context context, float sp) {
         final float scale = context.getResources().getDisplayMetrics().scaledDensity;
         return sp * scale;
+    }
+
+    /**
+     * 设置window透明值，带动画
+     * @param context
+     * @param startalpha
+     * @param endalpha
+     * @param count
+     */
+    public static void setWindowAlpha(final Context context , final float startalpha , final float endalpha , int count){
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(startalpha, endalpha);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (Float) animation.getAnimatedValue();
+                setWindowAlpha(context,value);
+            }
+        });
+        valueAnimator.setDuration(count);
+        valueAnimator.start();
+    }
+
+    /**
+     * 设置window透明值
+     * @param context
+     * @param alpha
+     */
+    public static void setWindowAlpha(Context context , float alpha){
+        WindowManager.LayoutParams lp = ((Activity)context).getWindow().getAttributes();
+        lp.alpha = alpha;
+        ((Activity)context).getWindow().setAttributes(lp);
     }
 
 }

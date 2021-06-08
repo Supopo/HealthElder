@@ -56,6 +56,7 @@ public class WXPayEntryActivity extends MyAbsWXPayCallbackActivity {
     public void onResp(BaseResp resp) {
         super.onResp(resp);
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+            LogUtils.e("WXPayEntryActivity", "支付回调 " + resp.errCode);
             if (resp.errCode == 0) {
                 // 成功
                 if (resp instanceof PayResp) {
@@ -64,7 +65,21 @@ public class WXPayEntryActivity extends MyAbsWXPayCallbackActivity {
                     RxBus.getDefault().post(new EventBean(CodeTable.WX_PAY_CODE, 1));
                 }
             } else {
-                RxBus.getDefault().post(new EventBean(CodeTable.WX_PAY_CODE, resp.errStr, 2));
+                String str = "";
+                if (resp.errCode == BaseResp.ErrCode.ERR_USER_CANCEL) {
+                    str = "用户取消支付";
+                } else if (resp.errCode == BaseResp.ErrCode.ERR_COMM) {
+                    str = "微信调用失败";
+                } else if (resp.errCode == BaseResp.ErrCode.ERR_SENT_FAILED) {
+                    str = "微信支付请求失败";
+                } else if (resp.errCode == BaseResp.ErrCode.ERR_AUTH_DENIED) {
+                    str = "微信认证失败";
+                } else if (resp.errCode == BaseResp.ErrCode.ERR_UNSUPPORT) {
+                    str = "微信不支持的支付方式";
+                } else if (resp.errCode == BaseResp.ErrCode.ERR_BAN) {
+                    str = "账号被微信禁止支付";
+                }
+                RxBus.getDefault().post(new EventBean(CodeTable.WX_PAY_CODE, str, 2));
                 Toast.makeText(WXPayEntryActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
             }
             String string = SPUtils.getInstance().getString(Constant.PAY_WAY, "");

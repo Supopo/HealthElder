@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="bottom"
-        android:background="@color/color_252525">
+        >
 
         <RelativeLayout
             android:id="@+id/rl_content"

@@ -35,7 +35,6 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
-import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
 import com.xaqinren.healthyelders.uniApp.module.JSCommModule;
 import com.xaqinren.healthyelders.uniApp.module.nativeDialog.NativeDialogModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -144,7 +143,7 @@ public class AppApplication extends BaseApplication {
         MLVBLiveRoomImpl.sharedInstance(this);
     }
 
-    private void initUni() {
+    public void initUni() {
         MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
         List<MenuActionSheetItem> sheetItems = new ArrayList<>();
         sheetItems.add(item);

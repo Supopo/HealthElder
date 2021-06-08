@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -193,12 +195,20 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
                     binding.loadingView.cancelAnimation();
                     binding.loadingView.setVisibility(View.GONE);
                     if (event.msgType == 1) {
+                        Intent intent = new Intent();
+                        intent.putExtra("status", true);
+                        setResult(Activity.RESULT_OK,intent);
                         finish();
                     } else {
                         //支付失败
+                        if (orderNo != null) {
+                            Intent intent = new Intent();
+                            intent.putExtra("status", false);
+                            intent.putExtra("msg", event.content);
+                            setResult(Activity.RESULT_OK,intent);
+                            finish();
+                        }
                     }
-
-
                 }
             }
 

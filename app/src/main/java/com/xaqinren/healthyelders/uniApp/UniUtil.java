@@ -5,7 +5,6 @@ import android.nfc.Tag;
 
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
-import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
 import com.xaqinren.healthyelders.uniApp.widget.LoadingView;
 import com.xaqinren.healthyelders.uniApp.widget.SplashView;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -80,28 +79,6 @@ public class UniUtil {
     }
 
     private static void initUni() {
-        MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
-        List<MenuActionSheetItem> sheetItems = new ArrayList<>();
-        sheetItems.add(item);
-        DCSDKInitConfig config = new DCSDKInitConfig.Builder()
-                .setCapsule(true)
-                .setMenuDefFontSize("16px")
-                .setMenuDefFontColor("#ff00ff")
-                .setMenuDefFontWeight("normal")
-//                .setMenuActionSheetItems(sheetItems)
-                .setEnableBackground(true)
-                .build();
-
-        try {
-            UniSDKEngine.registerModule("city", CitySelModule.class);
-        } catch (UniException e) {
-            e.printStackTrace();
-        }
-
-        DCUniMPSDK.getInstance().initialize(AppApplication.get(), config, isSuccess -> {
-        });
-        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{
-            LogUtils.e("UniUtil", "小程序关闭\t" + s);
-        });
+        AppApplication.get().initUni();
     }
 }

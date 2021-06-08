@@ -165,6 +165,8 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
     private void initHeader() {
         binding.includeHeader.searchEt.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_SEARCH) {
+                //搜索
+
                 return true;
             }
             return false;

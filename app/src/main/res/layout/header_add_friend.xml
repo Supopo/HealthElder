@@ -46,7 +46,8 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dp_13"
-                android:layout_marginLeft="@dimen/dp_12" />
+                android:layout_marginLeft="@dimen/dp_12"
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <RelativeLayout

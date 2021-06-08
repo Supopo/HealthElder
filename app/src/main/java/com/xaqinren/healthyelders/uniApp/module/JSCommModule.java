@@ -20,6 +20,7 @@ import io.dcloud.feature.uniapp.common.UniModule;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class JSCommModule extends UniModule {
     private String TAG = "JSCommModule";
@@ -52,13 +53,13 @@ public class JSCommModule extends UniModule {
         bundle.putString("orderNo", options.getString("orderNo"));//订单号
         bundle.putString("orderType", options.getString("orderType"));
         bundle.putInt("theme", R.style.EditDialogStyle);
-        bundle.putString("payWay", "");
+        bundle.putString("payWay", "uni");
 
         action.putExtras(bundle);
         action.setData(Uri.parse(builder.toString()));
 
         if (context != null) {
-            context.startActivityForResult(action, 123);
+            context.startActivityForResult(action, 456);
         }
     }
 
@@ -82,27 +83,22 @@ public class JSCommModule extends UniModule {
     @Override
     public void onActivityCreate() {
         super.onActivityCreate();
-        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
-            if (event != null) {
-                if (event.msgId == CodeTable.WX_PAY_CODE) {
-                    if (event.msgType == 1) {
-                        callbackSuccess.invoke(true);
-                    } else {
-                        //支付失败
-                        callbackFail.invoke(event.content);
-                    }
-                }
-            }
-        });
-        LogUtils.e(TAG,"onActivityCreate 挂载 监听" );
-        RxSubscriptions.add(subscribe);
+
     }
 
     @Override
     public void onActivityDestroy() {
         super.onActivityDestroy();
-        LogUtils.e(TAG,"onActivityCreate 移除 监听" );
-        RxSubscriptions.remove(subscribe);
+    }
+
+    @Override
+    public void onActivityResume() {
+        super.onActivityResume();
+    }
+
+    @Override
+    public void onActivityStop() {
+        super.onActivityStop();
     }
 
     @Override
@@ -119,6 +115,16 @@ public class JSCommModule extends UniModule {
                 jsonObject.put("addreInfo", bean.address);
                 LogUtils.e(TAG, jsonObject.toJSONString());
                 callback.invoke(jsonObject);
+            } else if (requestCode == 456) {
+                //支付回调
+                boolean status = data.getBooleanExtra("status", false);
+                LogUtils.e(TAG, "支付回调" + status);
+                if (status) {
+                    callbackSuccess.invoke(true);
+                }else{
+                    String msg = data.getStringExtra("msg");
+                    callbackFail.invoke(msg);
+                }
             }
         }
     }
