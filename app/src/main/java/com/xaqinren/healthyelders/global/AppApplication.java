@@ -105,7 +105,7 @@ public class AppApplication extends BaseApplication {
 //            }
 //        }
         //初始化Uni小程序
-        initUni();
+        initUni(null);
         //注册微信
         registerWx();
         //短视频
@@ -143,7 +143,7 @@ public class AppApplication extends BaseApplication {
         MLVBLiveRoomImpl.sharedInstance(this);
     }
 
-    public void initUni() {
+    public void initUni(OnUniIntCallBack callBack) {
         MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
         List<MenuActionSheetItem> sheetItems = new ArrayList<>();
         sheetItems.add(item);
@@ -162,6 +162,8 @@ public class AppApplication extends BaseApplication {
             e.printStackTrace();
         }
         DCUniMPSDK.getInstance().initialize(this, config, isSuccess -> {
+            if (callBack!=null)
+                callBack.initSuccess();
         });
         DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{
             LogUtils.e(TAG, "小程序关闭\t" + s);
@@ -173,6 +175,7 @@ public class AppApplication extends BaseApplication {
                 LogUtils.e(TAG, "小程序点击 \t" + s + " \t s1 -> " + s1);
             }
         });
+        LogUtils.e(TAG, "小程序初始化完成\t" );
     }
 
     private void initCrash() {
@@ -319,5 +322,9 @@ public class AppApplication extends BaseApplication {
             return true;
         }
         return false;
+    }
+
+    public interface OnUniIntCallBack{
+        void initSuccess();
     }
 }

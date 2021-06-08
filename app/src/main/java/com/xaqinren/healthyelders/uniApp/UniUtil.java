@@ -49,7 +49,10 @@ public class UniUtil {
             LogUtils.e("UniUtil", "小程序是否初始化  " + DCUniMPSDK.getInstance().isInitialize());
             if (!DCUniMPSDK.getInstance().isInitialize()) {
                 //需要重新初始化了
-                initUni();
+                initUni(() -> {
+                    openUniApp(context, appId, page, data, isSelf);
+                });
+                return;
             }
             if (DCUniMPSDK.getInstance().getRuningAppid() != null) {
                 //则有正打开的小程序
@@ -79,7 +82,11 @@ public class UniUtil {
         }
     }
 
-    private static void initUni() {
-        AppApplication.get().initUni();
+    private static void initUni(AppApplication.OnUniIntCallBack callBack) {
+        AppApplication.get().initUni(callBack);
     }
+
+
+
+
 }
