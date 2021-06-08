@@ -136,11 +136,10 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 zbingAdapter.setNewInstance(list);
                 binding.viewPager2.setUserInputEnabled(false);
                 binding.nsv.setScrollingEnabled(true);
-            }
-            else {
+            } else {
                 binding.rlTop.setVisibility(View.GONE);
                 //没有直播好友暂时不显示tip
-//                binding.llShowTop.setVisibility(View.VISIBLE);
+                //                binding.llShowTop.setVisibility(View.VISIBLE);
                 binding.viewPager2.setUserInputEnabled(true);
                 binding.nsv.setScrollingEnabled(false);
             }
@@ -195,6 +194,9 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
     private boolean isInit;//设置懒加载，点到关注才开始加载
 
+
+    private int lastPos = -1;
+
     private void initVideoViews() {
 
         videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
@@ -215,6 +217,10 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                //防止创建新Fragment时候多走一次
+                if (position == lastPos) {
+                    return;
+                }
 
                 AppApplication.get().setGzPlayPosition(position);
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
@@ -224,6 +230,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     page++;
                     viewModel.getVideoData(page);
                 }
+
+                lastPos = position;
             }
         });
 

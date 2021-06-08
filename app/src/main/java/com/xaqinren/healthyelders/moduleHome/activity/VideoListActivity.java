@@ -80,6 +80,9 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         handler.removeCallbacksAndMessages(null);
     }
 
+
+    private int lastPos = -1;
+
     @Override
     public void initData() {
         super.initData();
@@ -117,7 +120,13 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if (isSingle)return;
+                if (isSingle)
+                    return;
+
+                //防止创建新Fragment时候多走一次
+                if (position == lastPos) {
+                    return;
+                }
                 AppApplication.get().setPlayPosition(position);
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
                 //判断数据数量滑动到倒数第三个时候去进行加载
@@ -126,6 +135,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     page++;
                     viewModel.getVideoData(page, videos);
                 }
+
+                lastPos = position;
             }
         });
 
