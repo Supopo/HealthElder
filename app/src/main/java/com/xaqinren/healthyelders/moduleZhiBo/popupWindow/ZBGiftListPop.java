@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -93,18 +94,11 @@ public class ZBGiftListPop extends BasePopupWindow {
                 if (eventBean.msgId == CodeTable.ZHJ_SELECT_GIFT) {
                     GiftSelectBean selectBean = (GiftSelectBean) eventBean.data;
                     selectPage = selectBean.selectPage;
-
                     if (selectPage != lastPage) {
-                        for (int i = 0; i < pageAdapter.getData().size(); i++) {
-
-                            if (i != selectBean.selectPage) {
-                                for (GiftBean giftBean : pageAdapter.getData().get(i).giftBeans) {
-                                    giftBean.isSelect = false;
-                                }
-                                pageAdapter.notifyItemChanged(i);
-                            }
-
+                        for (GiftBean giftBean : pageAdapter.getData().get(lastPage).giftBeans) {
+                            giftBean.isSelect = false;
                         }
+                        pageAdapter.notifyItemChanged(lastPage);
                     }
                     lastPage = selectPage;
 
