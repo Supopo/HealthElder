@@ -16,12 +16,10 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,17 +40,14 @@ import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
-import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiveBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
-import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
@@ -97,7 +92,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private QMUIDialog showSelectDialog;
     private LiveInitInfo mLiveInitInfo = new LiveInitInfo();
     private StartLiveUiViewModel liveUiViewModel;
-    private boolean checkInfo;
+    private boolean hasCheckInfo;
     private double lat;
     private double lon;
     private Disposable subscribe;
@@ -109,6 +104,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private boolean isToZhibo;
     private LiveMenuAdapter menuAdapter;
     private LiveZhuboViewModel liveZbViewModel;
+    private List<MenuBean> menus;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,28 +125,27 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
         //打开本地摄像头预览
         mLiveRoom.startLocalPreview(true, binding.videoView);
+        initLiveMenu();
         //检查直播权限
         showDialog();
         viewModel.checkLiveInfo();
         initEvent();
-
         mLiveInitInfo.setHasLocation(true);
         LocationService.startService(getActivity());
 
 
-        initLiveMenu();
     }
 
     private void initLiveMenu() {
         menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
         binding.rvMenu.setLayoutManager(new GridLayoutManager(getActivity(), 5));
-        binding.rvMenu.setAdapter(menuAdapter);
 
-        List<MenuBean> menus = new ArrayList<>();
+        menus = new ArrayList<>();
         for (int i = 0; i < menuNames.length; i++) {
             menus.add(new MenuBean(menuNames[i], menuRes[i]));
         }
-        menuAdapter.setNewInstance(menus);
+        menus.remove(5);
+
 
         menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
             switch (menuAdapter.getData().get(position).menuName) {
@@ -278,9 +273,14 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
-                checkInfo = true;
+                hasCheckInfo = true;
                 //初始化房间信息
                 mLiveInitInfo = liveInfo;
+                if (mLiveInitInfo.liveRoomLevel != null && !mLiveInitInfo.liveRoomLevel.getCanSale()) {
+                    menus.remove(4);
+                }
+                menuAdapter.setNewInstance(menus);
+                binding.rvMenu.setAdapter(menuAdapter);
                 initRoomInfo();
                 //有上次记录，说明没有结束直播，弹选择框
                 if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId)) {
@@ -336,7 +336,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     }
 
     private void startLiveZhuboActivity() {
-        if (!checkInfo) {
+        if (!hasCheckInfo) {
             return;
         }
 
@@ -367,14 +367,14 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         binding.etTitle.setText(mLiveInitInfo.liveRoomName);
         Glide.with(getActivity()).load(mLiveInitInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
         //密码锁图标变化
-        if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
-            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_jiami;
-            menuAdapter.getData().get(5).menuName = "私密";
-        } else {
-            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
-            menuAdapter.getData().get(5).menuName = "公开";
-        }
-        menuAdapter.notifyItemChanged(5, 99);
+        //        if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
+        //            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_jiami;
+        //            menuAdapter.getData().get(5).menuName = "私密";
+        //        } else {
+        //            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
+        //            menuAdapter.getData().get(5).menuName = "公开";
+        //        }
+        //        menuAdapter.notifyItemChanged(5, 99);
     }
 
     private void showSelectDialog(String liveRoomRecordId) {
