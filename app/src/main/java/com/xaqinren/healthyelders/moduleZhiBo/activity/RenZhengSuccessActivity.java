@@ -5,9 +5,12 @@ import android.os.Bundle;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityRenzhengSuccessBinding;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzheng2Binding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.activity.SettingActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 
@@ -49,8 +52,14 @@ public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSucces
             }
             finish();
         });
-        binding.tvName.setText(getIntent().getExtras().getString("name"));
-        binding.tvNum.setText(getIntent().getExtras().getString("idNumber"));
+        String name = getIntent().getExtras().getString("name");
+        binding.tvName.setText(name);
+        String idNumber = getIntent().getExtras().getString("idNumber");
+        binding.tvNum.setText(idNumber);
+        UserInfoBean userInfo = UserInfoMgr.getInstance().getUserInfo();
+        userInfo.setRealName(name);
+        userInfo.setHasRealName(true);
+        InfoCache.getInstance().setLoginUser(userInfo);
         if (key != 0) {
             binding.btnToLive.setText("完成");
         }

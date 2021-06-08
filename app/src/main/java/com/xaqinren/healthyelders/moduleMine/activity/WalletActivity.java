@@ -56,11 +56,6 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
             startActivity(CZSelectPopupActivity.class);
             ScreenUtils.setWindowAlpha(this, 1.0f, 0.6f, 400);
         });
-        binding.lqKaihu.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt(Constant.REN_ZHENG_TYPE, 1);
-            startActivity(StartRenZhengActivity.class, bundle);
-        });
         binding.lqLayout.setOnClickListener(v -> {
             //设置完成,跳转
             /* //TODO有设置过支付密码*/
@@ -70,7 +65,9 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
                     startActivity(SettingPayPassActivity.class);
                 }else{
                     //认证
-                    startActivity(StartRenZhengActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constant.REN_ZHENG_TYPE, 1);
+                    startActivity(StartRenZhengActivity.class,bundle);
                 }
                 return;
             }
@@ -111,14 +108,7 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
         });
         viewModel.wallet.observe(this, walletBean -> {
             this.walletBean = walletBean;
-            if (walletBean.isHasOpenAccount()) {
-                //已实名认证
-                binding.lqKaihu.setVisibility(View.GONE);
-                binding.lqCountTv.setVisibility(View.VISIBLE);
-            }else{
-                binding.lqKaihu.setVisibility(View.VISIBLE);
-                binding.lqCountTv.setVisibility(View.GONE);
-            }
+            initKaiHu();
             binding.setData(this.walletBean);
         });
         uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
@@ -139,7 +129,18 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
     protected void onRestart() {
         super.onRestart();
         viewModel.getWalletInfo();
+        userInfoBean = UserInfoMgr.getInstance().getUserInfo();
+    }
 
+    private void initKaiHu() {
+        if (walletBean.isHasOpenAccount()) {
+            //已实名认证
+            binding.lqKaihu.setVisibility(View.GONE);
+            binding.lqCountTv.setVisibility(View.VISIBLE);
+        }else{
+            binding.lqKaihu.setVisibility(View.VISIBLE);
+            binding.lqCountTv.setVisibility(View.GONE);
+        }
     }
 
     @Override

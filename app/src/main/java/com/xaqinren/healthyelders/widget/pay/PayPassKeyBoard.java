@@ -24,6 +24,7 @@ import me.goldze.mvvmhabit.utils.ConvertUtils;
 public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener {
     private List<TextView> textViews;
     private int itemBgRes;
+    private int itemDelRes;
     private int itemColorRes;
     private float itemTextSize;
     private int itemMargin;
@@ -65,6 +66,7 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PayPassKeyBoard);
         int backGroundResId = typedArray.getResourceId(R.styleable.PayPassKeyBoard_board_back_ground_res, R.color.color_D5D7DD);
         itemBgRes =  typedArray.getResourceId(R.styleable.PayPassKeyBoard_board_item_bg_res, R.drawable.bg_pass_board_item);
+        itemDelRes =  typedArray.getResourceId(R.styleable.PayPassKeyBoard_board_item_del_res, R.drawable.bg_pass_del_board_item);
         itemColorRes =  typedArray.getColor(R.styleable.PayPassKeyBoard_board_item_text_color_res, getResources().getColor(R.color.color_252525));
         itemTextSize = typedArray.getDimension(R.styleable.PayPassKeyBoard_board_item_text_size, 25F);
         itemMargin = (int) typedArray.getDimension(R.styleable.PayPassKeyBoard_board_item_margin,
@@ -91,7 +93,8 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
             item.setText(values[i]);
             if (i == itemSize - 1) {
                 //删除键
-//                item.setText(values[i]);
+                item.setText(null);
+                item.setBackgroundResource(itemDelRes);
             }
             addView(item);
         }
@@ -116,7 +119,6 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
     }
 
     private void resetChildLayout() {
-        //先布局1-9
         int line = 0;
         int itemWidth = ( width - itemMargin * (lineCount - 1) )/ lineCount;
         int itemHeight = (height - itemMargin * 3) / 4;
@@ -135,11 +137,8 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
             } else {
                 liftMargin = itemMargin * (i % lineCount);
             }
-            int a = i % lineCount;
             params.topMargin = itemHeight * line  + line * itemMargin;
-            if (child.getTag().toString().equals("0") || child.getTag().toString().equals(
-                    values[values.length - 1]
-            ) ){
+            if (child.getTag().toString().equals("0") || child.getTag().toString().equals(values[values.length - 1])){
                 liftMargin += itemWidth + itemMargin;
             }
             params.leftMargin = itemWidth * (i % lineCount) + liftMargin;

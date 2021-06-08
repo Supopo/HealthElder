@@ -100,6 +100,7 @@
     <declare-styleable name="PayPassKeyBoard">
         <attr name="board_back_ground_res" format="reference"/>
         <attr name="board_item_bg_res" format="reference"/>
+        <attr name="board_item_del_res" format="reference"/>
         <attr name="board_item_text_color_res" format="color"/>
         <attr name="board_item_text_size" format="dimension"/>
         <attr name="board_item_margin" format="dimension"/>
