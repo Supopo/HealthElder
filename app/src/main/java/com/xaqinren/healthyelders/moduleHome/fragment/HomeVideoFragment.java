@@ -620,7 +620,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startPlay(boolean b) {
-        if (isPause) {
+        if (!AppApplication.get().isOnHomeStart()) {
             return;
         }
 
@@ -630,6 +630,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         vodPlayer.setAutoPlay(b);
         vodPlayer.startPlay(videoInfo.resourceUrl);
+        LogUtils.v(Constant.TAG_LIVE,position+"加载了"+b);
     }
 
     private void pausePlay() {
@@ -637,6 +638,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.pause();
         }
+        LogUtils.v(Constant.TAG_LIVE,position+"暂停了");
     }
 
     private void resumePlay() {
@@ -645,6 +647,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //判断之前是不暂停状态
             if (isPlaying) {
                 vodPlayer.resume();
+                LogUtils.v(Constant.TAG_LIVE,position+"resume");
+
             } else {
                 vodPlayer.pause();
             }
@@ -666,25 +670,26 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
+        LogUtils.v("--------",position+"stopPlay");
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        isPause = true;
+
         if (hasPlaying) {
             pausePlay();
         }
 
     }
 
-    private boolean isPause;
+
 
     @Override
     public void onResume() {
         super.onResume();
-        isPause = false;
+
         if (hasPlaying) {
             if (type.equals("home-tj")) {
                 if (AppApplication.get().getTjPlayPosition() == position) {

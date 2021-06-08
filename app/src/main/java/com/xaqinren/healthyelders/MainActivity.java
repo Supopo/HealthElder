@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -146,7 +147,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     @Override
     public void initData() {
-        SPUtils.getInstance().put(Constant.PAY_WAY,"uni");
+        SPUtils.getInstance().put(Constant.PAY_WAY, "uni");
         ImManager.getInstance().setOnUnReadWatch(this);
         setStatusBarTransparent();
         //初始化Fragment
@@ -184,7 +185,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         initDrawer();
         disableDrawer();
-        viewModel.checkVersion();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewModel.checkVersion();
+            }
+        },500);
     }
 
     @Override
@@ -205,7 +211,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {
-            if (userInfoBean == null ||TextUtils.isEmpty(userInfoBean.getId())) {
+            if (userInfoBean == null || TextUtils.isEmpty(userInfoBean.getId())) {
                 //获取用户信息
                 viewModel.getUserInfo(accessToken);
             } else {
@@ -407,6 +413,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         return super.dispatchTouchEvent(event);
     }
 
+    public boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+
     //下载svga动画
     private void loadCache(List<GiftBean> gifts) {
 
@@ -421,10 +431,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             SVGAParser svgaParser = new SVGAParser(this);
             svgaParser.setFrameSize(100, 100);
             for (GiftBean gift : gifts) {
+
                 if (!TextUtils.isEmpty(gift.giftUrl)) {
                     svgaParser.decodeFromURL(new URL(gift.giftUrl), new SVGAParser.ParseCompletion() {
                         @Override
                         public void onComplete(@NotNull SVGAVideoEntity videoItem) {
+
                         }
 
                         @Override
@@ -516,7 +528,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         viewModel.giftList.observe(this, giftBeans -> {
             if (giftBeans != null) {
-                loadCache(giftBeans);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadCache(giftBeans);
+                    }
+                }).start();
             }
         });
 
@@ -999,9 +1017,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onResume() {
         super.onResume();
-//        getCurrentProcessNameByActivityManager(this);
+        //        getCurrentProcessNameByActivityManager(this);
     }
-
 
 
 }
