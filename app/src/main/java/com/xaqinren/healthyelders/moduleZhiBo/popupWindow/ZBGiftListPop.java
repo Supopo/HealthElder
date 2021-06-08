@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.xaqinren.healthyelders.R;
@@ -19,22 +18,17 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.http.RetrofitClient;
-import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
-import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
-import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
-import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.GiftListPageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftSelectBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
-import com.youth.banner.indicator.DrawableIndicator;
 import com.zhpan.indicator.IndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
@@ -65,7 +59,7 @@ public class ZBGiftListPop extends BasePopupWindow {
     }
 
     public void rushGold() {
-        UserRepository.getInstance().getBanlance(userBanlance);
+        UserRepository.getInstance().getWalletInfo(null, userBanlance);
     }
 
     private int lastPage;
@@ -116,22 +110,22 @@ public class ZBGiftListPop extends BasePopupWindow {
 
                 } else if (eventBean.msgId == CodeTable.WX_PAY_CODE && eventBean.msgType == 1) {
                     //重新获取用户余额
-                    UserRepository.getInstance().getBanlance(userBanlance);
+                    UserRepository.getInstance().getWalletInfo(null, userBanlance);
                 }
             }
         });
 
         userBanlance.observe((LifecycleOwner) context, userInfoBean -> {
             if (userInfoBean != null) {
-                tvGoldNum.setText("" + userInfoBean.getPointAccountBalance());
+                tvGoldNum.setText("" + userInfoBean.getPointBalance());
             }
         });
 
         getGiftList();
-        UserRepository.getInstance().getBanlance(userBanlance);
+        UserRepository.getInstance().getWalletInfo(null, userBanlance);
     }
 
-    private MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
+    private MutableLiveData<WalletBean> userBanlance = new MutableLiveData<>();
 
     int pageCount;//menu1菜单页数 ViewPager+RecvclerView
     int pageSize = 8;//menu1菜单页数数量
