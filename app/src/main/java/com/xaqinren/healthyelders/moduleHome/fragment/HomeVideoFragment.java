@@ -266,7 +266,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
+//                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
@@ -630,7 +630,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         vodPlayer.setAutoPlay(b);
         vodPlayer.startPlay(videoInfo.resourceUrl);
-        LogUtils.v(Constant.TAG_LIVE,position+"加载了"+b);
     }
 
     private void pausePlay() {
@@ -638,7 +637,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.pause();
         }
-        LogUtils.v(Constant.TAG_LIVE,position+"暂停了");
     }
 
     private void resumePlay() {
@@ -670,7 +668,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
-        LogUtils.v("--------",position+"stopPlay");
 
     }
 

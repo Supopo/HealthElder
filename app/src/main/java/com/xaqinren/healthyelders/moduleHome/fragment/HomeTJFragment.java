@@ -24,6 +24,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.ArrayList;
@@ -159,6 +160,8 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         tjCardView.setLayoutParams(params);
     }
 
+    private int lastPos = -1;
+
     private void initVideoViews() {
 
         homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
@@ -178,13 +181,21 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+
+
                 //第一次加载所有Fragment完会触发
                 if (!firstInit) {
+                    //防止加载新的VideoFragment时候会多走一次
+                    if (position == lastPos) {
+                        return;
+                    }
+
                     if (position == 0) {
                         binding.viewPager2.setUserInputEnabled(true);
                     }
 
                     AppApplication.get().setTjPlayPosition(position);
+
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                     //判断数据数量滑动到倒数第三个时候去进行加载
                     if ((position + 1) == fragmentList.size()) {
@@ -195,6 +206,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 }
 
                 firstInit = false;
+                lastPos = position;
             }
         });
 

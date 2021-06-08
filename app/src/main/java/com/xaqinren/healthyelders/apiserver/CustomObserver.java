@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -98,24 +99,35 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
 
     private void onException(ExceptionReason reason) {
         dismissDialog();
+
         switch (reason) {
             case CONNECT_ERROR:
-                ToastUtils.showShort("连接异常");
+                if (Constant.DEBUG) {
+                    ToastUtils.showShort("连接异常");
+                }
                 break;
             case CONNECT_TIMEOUT:
                 ToastUtils.showShort("连接超时");
                 break;
             case BAD_NETWORK:
-                ToastUtils.showShort("网络异常");
+                if (Constant.DEBUG) {
+                    ToastUtils.showShort("网络异常");
+                }
                 break;
             case PARSE_ERROR:
-                ToastUtils.showShort("解析异常");
+                if (Constant.DEBUG) {
+                    ToastUtils.showShort("解析异常");
+                }
                 break;
             case UNKNOWN_ERROR:
-                ToastUtils.showShort("未知异常");
+                if (Constant.DEBUG) {
+                    ToastUtils.showShort("未知异常");
+                }
                 break;
             case DATA_ERROR:
-                ToastUtils.showShort(msg);
+                if (Constant.DEBUG) {
+                    ToastUtils.showShort(msg);
+                }
                 break;
             default:
                 break;

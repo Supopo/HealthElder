@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
@@ -43,6 +44,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 

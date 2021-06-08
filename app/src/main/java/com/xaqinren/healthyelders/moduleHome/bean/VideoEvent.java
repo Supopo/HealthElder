@@ -8,6 +8,7 @@ public class VideoEvent {
     public int msgId;//1-说明是上下滑了 101-说明是 首页左右滑动了 10010-说明回到首页顶部了 暂停播放 隐藏视图
     public int position;
     public String fragmentId;
+    public String tag;
 
     public VideoEvent(int msgId) {
         this.msgId = msgId;
@@ -23,6 +24,11 @@ public class VideoEvent {
         this.fragmentId = fragmentId;
     }
 
+    public VideoEvent(int msgId, String fragmentId,String tag) {
+        this.msgId = msgId;
+        this.fragmentId = fragmentId;
+        this.tag = tag;
+    }
     public VideoEvent(int msgId, int position, String fragmentId) {
         this.msgId = msgId;
         this.position = position;
