@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -71,6 +72,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/4/23.
@@ -105,6 +107,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private LiveMenuAdapter menuAdapter;
     private LiveZhuboViewModel liveZbViewModel;
     private List<MenuBean> menus;
+    private Disposable disposable;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -228,21 +231,31 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
 
         binding.btnStart.setOnClickListener(lis -> {
-            if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
-                ToastUtil.toastShortMessage("请输入直播间名称");
-                return;
-            }
-            mLiveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
-            if (TextUtils.isEmpty(mLiveInitInfo.liveRoomCover)) {
-                if (TextUtils.isEmpty(photoPath)) {
-                    ToastUtil.toastShortMessage("请先选择照片");
-                    return;
-                }
-                showDialog("正在上传照片...");
-                viewModel.updatePhoto(photoPath);
-            } else {
-                startLiveZhuboActivity();
-            }
+            disposable = permissions.request(Manifest.permission.RECORD_AUDIO)
+                    .subscribe(granted -> {
+                        if (granted) {
+                            if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
+                                ToastUtil.toastShortMessage("请输入直播间名称");
+                                return;
+                            }
+                            mLiveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
+                            if (TextUtils.isEmpty(mLiveInitInfo.liveRoomCover)) {
+                                if (TextUtils.isEmpty(photoPath)) {
+                                    ToastUtil.toastShortMessage("请先选择照片");
+                                    return;
+                                }
+                                showDialog("正在上传照片...");
+                                viewModel.updatePhoto(photoPath);
+                            } else {
+                                startLiveZhuboActivity();
+                            }
+                        } else {
+                            ToastUtils.showShort("请先打开摄像头与麦克风权限");
+                        }
+
+                    });
+
+
 
 
         });
