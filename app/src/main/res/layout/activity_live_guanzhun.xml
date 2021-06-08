@@ -83,6 +83,7 @@
             android:layout_height="match_parent"
             android:layout_above="@id/ll_menu">
 
+
             <RelativeLayout
                 android:id="@+id/rl_showLike"
                 android:layout_width="match_parent"
@@ -93,6 +94,11 @@
                 android:layout_width="@dimen/dp_140"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true" />
+
+            <!--开启多人连麦时候背景会跟随最高View的位置变化-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
 
             <!--主播信息-->
             <RelativeLayout
@@ -300,13 +306,20 @@
                     android:textColor="@color/color_DDDBDB"
                     android:textSize="@dimen/sp_12" />
             </LinearLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_alignParentBottom="true" />
+
             <!-- 消息列表-->
             <ListView
                 android:id="@+id/lv_msg"
                 android:layout_width="@dimen/dp_250"
                 android:layout_height="@dimen/dp_220"
+                android:layout_above="@id/view"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:cacheColorHint="#00000000"
@@ -316,6 +329,7 @@
                 android:scrollbars="none"
                 android:stackFromBottom="true"
                 android:transcriptMode="normal" />
+
 
             <!--礼物横幅-->
             <RelativeLayout

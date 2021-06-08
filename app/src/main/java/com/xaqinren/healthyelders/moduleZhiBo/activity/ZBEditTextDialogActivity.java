@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -42,7 +41,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 public class ZBEditTextDialogActivity extends Activity {
 
     private EditText etView;
-    private LinearLayout rldlgview;
+    private LinearLayout llInput;
     private Button btnSend;
     private RelativeLayout rlView;
 
@@ -75,7 +74,7 @@ public class ZBEditTextDialogActivity extends Activity {
         rlView = findViewById(R.id.rl_view);
         btnSend = findViewById(R.id.btn_send);
         etView = findViewById(R.id.et_input_message);
-        rldlgview = findViewById(R.id.rl_inputdlg_view);
+        llInput = findViewById(R.id.ll_input);
 
         if (getIntent().getExtras() != null) {
             String content = getIntent().getExtras().getString("content");
@@ -123,7 +122,6 @@ public class ZBEditTextDialogActivity extends Activity {
 
                 //用map存为了防止重复记录
                 highss.put(screenHeight, 1);
-                Log.e("--", "screenHeight：" + screenHeight);
 
                 //此处就是用来获取键盘的高度的， 在键盘没有弹出的时候 此高度为0 键盘弹出的时候为一个正数
                 int heightDifference = screenHeight - r.bottom;
@@ -136,7 +134,7 @@ public class ZBEditTextDialogActivity extends Activity {
                     }
                     heightDifference = highs.get(0) - highs.get(1);
                     //键盘弹出去后通知页面调整消息列表位置
-                    RxBus.getDefault().post(new EventBean(LiveConstants.SHOW_ET, Math.abs(heightDifference)));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SHOW_ET, Math.abs(heightDifference) + llInput.getHeight()));
                     highs.clear();
                     highss.clear();
                 }
@@ -144,7 +142,7 @@ public class ZBEditTextDialogActivity extends Activity {
             }
         });
 
-        rldlgview.setOnClickListener(new View.OnClickListener() {
+        llInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

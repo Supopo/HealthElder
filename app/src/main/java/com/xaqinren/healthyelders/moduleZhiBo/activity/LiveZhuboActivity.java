@@ -1572,6 +1572,19 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 case LiveConstants.ZBJ_MORE_SETTING://更多设置 1-开启连麦 2关闭连麦 3开启评论 4禁止评论 5开启礼物 6禁止礼物
                     moreSetting(eventBean);
                     break;
+                case LiveConstants.SHOW_ET:
+                    //消息列表位置变化
+                    int height = eventBean.msgType;
+                    ViewGroup.LayoutParams params = binding.view.getLayoutParams();
+                    params.height = height;
+                    binding.view.setLayoutParams(params);
+                    break;
+                case LiveConstants.DISMISS_ET:
+                    //消息列表位置变化
+                    ViewGroup.LayoutParams params1 = binding.view.getLayoutParams();
+                    params1.height = 0;
+                    binding.view.setLayoutParams(params1);
+                    break;
             }
         });
         RxSubscriptions.add(disposable);

@@ -217,13 +217,19 @@
             </LinearLayout>
 
 
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_alignParentBottom="true" />
+
             <!-- 消息列表-->
             <ListView
                 android:id="@+id/lv_msg"
                 android:layout_width="@dimen/dp_250"
                 android:layout_height="@dimen/dp_220"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
+                android:layout_above="@id/view"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:cacheColorHint="#00000000"

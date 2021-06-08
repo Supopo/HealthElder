@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -1308,7 +1309,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     private void startMoreLinkAnim() {
         //计算x轴缩放倍率
-        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth()-(getResources().getDimension(R.dimen.dp_3))) / screenWidth;
+        float xx = (float) (screenWidth - binding.rvMoreLink.getWidth() - (getResources().getDimension(R.dimen.dp_3))) / screenWidth;
 
         //计算y轴缩放倍率 93*6+5*3 = 573
         float yy = (float) (binding.rvMoreLink.getHeight()) / (screenHeight - (getResources().getDimension(R.dimen.dp_54)));
@@ -1587,7 +1588,17 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 selectGift = (GiftBean) eventBean.data;
                 //发送礼物-接口请求
                 viewModel.sendGift(mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.userId, selectGift.id);
-
+            } else if (eventBean.msgId == LiveConstants.SHOW_ET) {
+                //消息列表位置变化
+                int height = eventBean.msgType;
+                ViewGroup.LayoutParams params = binding.view.getLayoutParams();
+                params.height = height;
+                binding.view.setLayoutParams(params);
+            } else if (eventBean.msgId == LiveConstants.DISMISS_ET) {
+                //消息列表位置变化
+                ViewGroup.LayoutParams params = binding.view.getLayoutParams();
+                params.height = 0;
+                binding.view.setLayoutParams(params);
             }
         });
         RxSubscriptions.add(disposable);
