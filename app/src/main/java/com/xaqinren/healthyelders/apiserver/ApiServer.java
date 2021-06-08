@@ -141,9 +141,9 @@ public interface ApiServer {
     Observable<MBaseResponse<String>> uploadFile(@Header("Authorization") String token, @Body RequestBody requestBody);
 
     //上传文件
-    @POST
+    @POST("content/filesUpload")
     Observable<MBaseResponse<List<String>>> uploadMultiFile(
-            @Url String host, @Header("Authorization") String token, @Body MultipartBody requestBody);
+            /*@Url String host,*/ @Header("Authorization") String token, @Body MultipartBody requestBody);
 
     //直播间信息刷新接口-点赞数-观众数-榜单
     @GET("live/findLiveRoomRefreshParams")
@@ -244,7 +244,8 @@ public interface ApiServer {
     //用户，获取好友
     @GET("user/queryFriendsPage")
     Observable<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>> getUserFriend(@Header("Authorization") String authorization,
-                                                                               @Query("page") int page, @Query("pageSize") int pageSize, @Query("identity") String identity);
+                                                                               @Query("page") int page, @Query("pageSize") int pageSize, @Query("identity") String identity,
+                                                                               @Query("targetId") String tagetId);
 
     //用户，搜索用户
     @GET("user/querySearchPage")
@@ -451,9 +452,9 @@ public interface ApiServer {
     Observable<MBaseResponse<ChongZhiListRes>> getChongZhiList(@Header("Authorization") String authorization);
 
     //支付接口
-    @POST
+    @POST("merchant/unifiedPay")
     Observable<MBaseResponse<String>> toPay(
-            @Url String host, @Header("Authorization") String token, @Body RequestBody requestBody);
+            /*@Url String host,*/ @Header("Authorization") String token, @Body RequestBody requestBody);
 
     //直播间结束统计 - 观众端
     @GET("live/overAudienceStatistical")

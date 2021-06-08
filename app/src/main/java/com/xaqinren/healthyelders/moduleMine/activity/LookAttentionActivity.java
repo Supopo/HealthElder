@@ -35,11 +35,12 @@ public class LookAttentionActivity extends BaseActivity<ActivityLookAttentionBin
     public void initData() {
         super.initData();
         String name = getIntent().getStringExtra("name");
+        String uid = getIntent().getStringExtra("uid");
         int page = getIntent().getIntExtra("page", 0);
         setTitle(name);
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new AttentionFragment(0));
-        fragments.add(new AttentionFragment(1));
+        fragments.add(new AttentionFragment(0, uid));
+        fragments.add(new AttentionFragment(1, uid));
         binding.tablayout.setupWithViewPager(binding.viewpager);
         FragmentViewPagerAdapter adapter = new FragmentViewPagerAdapter(getSupportFragmentManager(),fragments);
         binding.viewpager.setAdapter(adapter);

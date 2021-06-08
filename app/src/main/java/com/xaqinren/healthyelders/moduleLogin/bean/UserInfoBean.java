@@ -5,8 +5,10 @@ import android.text.TextUtils;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
+import com.xaqinren.healthyelders.utils.DateUtils;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.List;
 
 public class UserInfoBean implements Serializable {
@@ -171,9 +173,9 @@ public class UserInfoBean implements Serializable {
 
     public boolean isMan() {
         if (sex.equals("MALE")) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public String getJKCode() {
@@ -306,5 +308,21 @@ public class UserInfoBean implements Serializable {
             }
         }
         return false;
+    }
+
+    public String getAge() {
+        if (birthday == null) {
+            return null;
+        }
+        int ageByTime = 0;
+        try {
+            ageByTime = DateUtils.getAgeByTime(birthday);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (ageByTime == -1) {
+            return null;
+        }
+        return ageByTime + "岁";
     }
 }

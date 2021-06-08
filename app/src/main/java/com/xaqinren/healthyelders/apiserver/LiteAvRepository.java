@@ -133,9 +133,30 @@ public class LiteAvRepository {
                     }
                 });
     }
+    public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, String token ,int page, int pageSize, String identity) {
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity,token)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>>() {
 
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<LiteAvUserBean>>> data) {
+                        listMutableLiveData.postValue(data.getData().content);
+                    }
+                });
+    }
     public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, int page, int pageSize, String identity) {
-        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity)
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity,null)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -258,9 +279,10 @@ public class LiteAvRepository {
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
         File file = new File(filePath);
+        LogUtils.e("updatePhoto", "file size  -> " + file.length());
         builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
         RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
-                Constant.lanUrl + "content/filesUpload",
+
                 UserInfoMgr.getInstance().getHttpToken(), builder.build())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(disposable -> {
@@ -294,7 +316,6 @@ public class LiteAvRepository {
             builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
         }
         RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
-                Constant.lanUrl + "content/filesUpload",
                 UserInfoMgr.getInstance().getHttpToken(), builder.build())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(disposable -> {

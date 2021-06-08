@@ -144,6 +144,14 @@ public class ConversationListAdapter extends IConversationAdapter {
         notifyDataSetChanged();
     }
 
+    public void removeItemById(int position) {
+        mDataSource.remove(position);
+    }
+
+    public void removeAllItem() {
+        mDataSource.clear();
+    }
+
     public void notifyDataSourceChanged(String info) {
         for (int i = 0; i < mDataSource.size(); i++) {
             if (TextUtils.equals(info, mDataSource.get(i).getConversationId())) {

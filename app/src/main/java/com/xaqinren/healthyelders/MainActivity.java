@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -993,6 +994,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         MainActivity.this.startActivity(intent);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        getCurrentProcessNameByActivityManager(this);
+    }
+
 
 
 }

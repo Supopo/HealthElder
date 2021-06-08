@@ -9,12 +9,14 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityInteractiveBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.InteractiveAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.ServiceProvider;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.WalletProvider;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
+import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.MessageDetailBean;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.InteractiveViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -86,6 +88,14 @@ public class WalletMsgActivity extends BaseActivity<ActivityInteractiveBinding, 
             switch (view.getId()){
                 case R.id.avatar:{
                     //用户详情
+                    if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
+                        InteractiveBean bean1 = (InteractiveBean) bean;
+                        UserInfoActivity.startActivity(this,bean1.getSendUser().getUserId()+"");
+                    } else if (bean.getItemType() == MessageDetailBean.TYPE_FRIEND) {
+                        FriendBean friendBean = (FriendBean) bean;
+                        InteractiveBean bean1 = (InteractiveBean) bean;
+                        UserInfoActivity.startActivity(this,friendBean.getUserId());
+                    }
                 }break;
                 case R.id.attention_btn: {
                     //粉丝消息,关注

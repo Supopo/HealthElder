@@ -8,6 +8,7 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityInteractiveBinding;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.InteractiveAdapter;
@@ -93,8 +94,15 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
             opIndex = position;
                 switch (view.getId()) {
                     case R.id.avatar: {
-                        InteractiveBean interactiveBean = (InteractiveBean) bean;
-                        LogUtils.e(TAG, "点击头像->" + interactiveBean.getSendUser().getUserId());
+
+                        if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
+                            InteractiveBean bean1 = (InteractiveBean) bean;
+                            UserInfoActivity.startActivity(this,bean1.getSendUser().getUserId()+"");
+                        } else if (bean.getItemType() == MessageDetailBean.TYPE_FRIEND) {
+                            FriendBean friendBean = (FriendBean) bean;
+                            InteractiveBean bean1 = (InteractiveBean) bean;
+                            UserInfoActivity.startActivity(this,friendBean.getUserId());
+                        }
                     }break;
                     case R.id.attention_btn:
                     {

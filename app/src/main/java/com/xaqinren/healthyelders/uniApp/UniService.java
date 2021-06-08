@@ -228,6 +228,7 @@ public class UniService extends Service implements LifecycleOwner {
     //检查版本号
     private void checkVersion() {
         boolean debug = BuildConfig.DEBUG;
+        debug = false;
         for (SaveBean saveBean : saveBeans) {
             if (debug || (saveBean.isNeedDown() && saveBean.isAutoUpdateApplet())) {
                 down(saveBean);

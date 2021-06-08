@@ -12,11 +12,10 @@ import retrofit2.http.Url;
 public class Constant {
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
     public static boolean DEBUG = true;
-//    public static String payUrl = "http://e53eyt.natappfree.cc/merchant/unifiedPay";
-    public static String payUrl = "http://1870p686h8.iask.in/merchant/unifiedPay";
+
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
     public static String debugUrl = "http://192.168.1.113:18080/";
-    public static String lanUrl = DEBUG ? "http://test.hjyiyuanjiankang.com/" : baseUrl;
+
     public static String PageUrl = "WEB_URL";
     public static String PageTitle = "WEB_TITLE";
     public static final int NET_SPEED = 10086;
@@ -43,6 +42,9 @@ public class Constant {
     public static String REN_ZHENG_TYPE = "ren_zheng_type";
     //支付密码
     public static String PASSWORD = "pay_password";
+
+    //支付标记
+    public static String PAY_WAY = "PAY_WAY";
 
 
     //生成roomId

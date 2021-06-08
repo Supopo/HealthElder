@@ -18,6 +18,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemCoinDetailBinding;
 import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,11 +35,7 @@ public class CoinDetailAdapter extends BaseQuickAdapter<BillBean,BaseViewHolder>
         ItemCoinDetailBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setData(billBean);
         String orderType = billBean.getOrderType();
-        if (orderType.equals(GIVE_GIFT_SUB_POINT)) {
-            binding.setIcon(getContext().getResources().getDrawable(R.mipmap.zhangd_xiaof));
-        } else if (orderType.equals(POINT_RECHARGE)) {
-            binding.setIcon(getContext().getResources().getDrawable(R.mipmap.zhangd_jkb));
-        }
+        GlideUtil.intoImageView(getContext(),billBean.getOrderTypeIcon(),binding.logo);
     }
 
     public boolean isGroupHeader(int p) {

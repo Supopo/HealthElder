@@ -363,7 +363,17 @@
         <activity
             android:name=".moduleZhiBo.activity.PayActivity"
             android:theme="@style/EditDialogStyleEx"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden|adjustResize" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/pay_activity"
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
         <activity android:name=".moduleMine.activity.LookAttentionActivity" />
         <activity android:name=".moduleMine.activity.MyRecommendCodeActivity" />
         <activity android:name=".moduleMine.activity.WalletActivity"

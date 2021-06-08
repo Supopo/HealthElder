@@ -58,7 +58,7 @@ public class UniUtil {
                     com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
                     object.put("page", page);
                     object.put("data", jsonObject);
-                    DCUniMPSDK.getInstance().sendUniMPEvent("reLaunch", object);
+                    DCUniMPSDK.getInstance().sendUniMPEvent("navigateTo", object);
                     isDelay = 200;
                 } else {
                     //是其他小程序正在运行,需要销毁

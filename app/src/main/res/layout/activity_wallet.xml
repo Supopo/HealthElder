@@ -36,7 +36,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_26"
                     android:layout_centerHorizontal="true"
-                    android:text="@{String.valueOf(data.pointBalance)}" />
+                    android:text="@{data.pointBalance+``}" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_26"
                     android:layout_centerHorizontal="true"
-                    android:text="@{data.wallAccountBalance}"
+                    android:text="@{data.walletAccount.accountBalance+``}"
                     android:visibility="gone" />
 
                 <TextView

@@ -20,6 +20,15 @@ public class OrderListBean {
     private String distributionChannelName;
     private String createdAt;
     private String jumpUrl;
+    private String storeLogo;
+
+    public String getStoreLogo() {
+        return storeLogo;
+    }
+
+    public void setStoreLogo(String storeLogo) {
+        this.storeLogo = storeLogo;
+    }
 
     public String getJumpUrl() {
         return jumpUrl;

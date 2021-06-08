@@ -27,8 +27,11 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityAddFriendBinding;
 import com.xaqinren.healthyelders.databinding.HeaderAddFriendBinding;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
+import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
+import com.xaqinren.healthyelders.moduleMsg.bean.MessageDetailBean;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.AddFriendViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.utils.IntentUtils;
@@ -86,6 +89,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
             opIndex = position;
             FriendBean friendBean = addFriendAdapter.getData().get(position);
             if (view.getId() == R.id.avatar) {
+                UserInfoActivity.startActivity(this,friendBean.getUserId());
                 //用户详情
             } else if (view.getId() == R.id.favorite) {
                 //关注，回关

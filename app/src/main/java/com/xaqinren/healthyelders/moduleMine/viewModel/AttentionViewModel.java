@@ -13,6 +13,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class AttentionViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> requestSuccess = new MutableLiveData<>();
@@ -27,6 +28,13 @@ public class AttentionViewModel extends BaseViewModel {
 
     public void getUserList(int page, int pageSize, String identity) {
         LiteAvRepository.getInstance().getUserList(requestSuccess, userList, page, pageSize, identity);
+    }
+
+    public void getUserList(int page, int pageSize, String identity, String uid) {
+        if (StringUtils.isEmpty(uid)) {
+            LiteAvRepository.getInstance().getUserList(requestSuccess, userList, page, pageSize, identity);
+        }else
+            LiteAvRepository.getInstance().getUserList(requestSuccess, userList, uid ,page, pageSize, identity);
     }
 
     public void searchUserList(int page, int pageSize, String identity) {

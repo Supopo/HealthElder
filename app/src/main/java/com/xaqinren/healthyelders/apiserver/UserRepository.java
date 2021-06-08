@@ -261,7 +261,6 @@ public class UserRepository {
         File file = new File(filePath);
         builder.addFormDataPart("files", file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file));
         RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
-                Constant.lanUrl + "content/filesUpload",
                 UserInfoMgr.getInstance().getHttpToken(), builder.build())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(disposable -> {
@@ -543,7 +542,7 @@ public class UserRepository {
 
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.toPay(Constant.payUrl, UserInfoMgr.getInstance().getHttpToken(), body)
+        userApi.toPay(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<String>>() {
@@ -692,7 +691,7 @@ public class UserRepository {
         if (!StringUtils.isEmpty(birthday))
             hashMap.put("birthday", birthday);
         if (!StringUtils.isEmpty(cityAddress))
-            hashMap.put("birthday", cityAddress);
+            hashMap.put("cityAddress", cityAddress);
 
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);

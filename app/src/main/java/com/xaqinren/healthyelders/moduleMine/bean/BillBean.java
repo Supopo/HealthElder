@@ -54,6 +54,15 @@ public class BillBean implements MultiItemEntity {
     private String body;
     private String recordTypeName;
     private String orderTypeName;
+    private String orderTypeIcon;
+
+    public String getOrderTypeIcon() {
+        return orderTypeIcon;
+    }
+
+    public void setOrderTypeIcon(String orderTypeIcon) {
+        this.orderTypeIcon = orderTypeIcon;
+    }
 
     public String getId() {
         return id;

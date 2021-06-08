@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
@@ -12,12 +14,14 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityUserInfoBinding;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserXHFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserZPFragment;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
+import com.xaqinren.healthyelders.utils.IntentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,15 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
     public boolean isTop = true;
     public SwipeRefreshLayout srl;
     private String userId;
+    private UserInfoBean userInfoBean;
+
+    public static void startActivity(Context context , String uid) {
+        Bundle bundle = new Bundle();
+        bundle.putString("userId", uid);
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
 
     @Override
     public void initParam() {
@@ -234,8 +247,18 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGz.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 0);
+            bundle.putString("name", userInfoBean.getNickname());
+            bundle.putString("uid", userInfoBean.getId());
+            startActivity(LookAttentionActivity.class,bundle);
         });
         binding.tvFs.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 1);
+            bundle.putString("name", userInfoBean.getNickname());
+            bundle.putString("uid", userInfoBean.getId());
+            startActivity(LookAttentionActivity.class, bundle);
         });
         binding.ivSetting.setOnClickListener(lis -> {
         });
@@ -259,6 +282,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
             dismissDialog();
+            userInfoBean = userInfo;
         });
         viewModel.dismissDialog.observe(this, isDis -> {
             if (isDis != null) {
@@ -270,7 +294,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         viewModel.followSuccess.observe(this, followSuccess -> {
             if (followSuccess != null) {
                 if (followSuccess) {
-                    UserInfoBean userInfoBean = viewModel.userInfo.getValue();
+
                     userInfoBean.hasFollow = !userInfoBean.hasFollow;
                     if (userInfoBean.hasFollow) {
                         userInfoBean.setIntroduce("FOLLOW");

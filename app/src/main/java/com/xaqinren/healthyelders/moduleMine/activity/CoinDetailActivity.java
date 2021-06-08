@@ -58,14 +58,11 @@ public class CoinDetailActivity extends BaseActivity<ActivityCoinDetailBinding, 
             viewModel.getBillInfo(getDate());
         });
         binding.swipeContent.setEnabled(false);
-        coinDetailAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                BillBean billBean = coinDetailAdapter.getData().get(position);
-                Bundle bundle = new Bundle();
-                bundle.putString("id",billBean.getId());
-                startActivity(WithdrawWXActivity.class,bundle);
-            }
+        coinDetailAdapter.setOnItemClickListener((adapter, view, position) -> {
+            BillBean billBean = coinDetailAdapter.getData().get(position);
+            Bundle bundle = new Bundle();
+            bundle.putString("id",billBean.getId());
+            startActivity(WithdrawWXActivity.class,bundle);
         });
     }
 

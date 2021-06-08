@@ -1,10 +1,16 @@
 package com.xaqinren.healthyelders.global;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.igexin.sdk.PushManager;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
@@ -30,12 +36,15 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.uniApp.module.CitySelModule;
+import com.xaqinren.healthyelders.uniApp.module.JSCommModule;
 import com.xaqinren.healthyelders.uniApp.module.nativeDialog.NativeDialogModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import io.dcloud.common.adapter.util.Logger;
 import io.dcloud.common.util.RuningAcitvityUtil;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
@@ -64,6 +73,9 @@ public class AppApplication extends BaseApplication {
     private static AppApplication instance = null;
 
 
+    public static HashMap<String, Object> activityTask = new HashMap<>();
+
+
     public static Context getContext() {
         return mContext;
     }
@@ -71,6 +83,11 @@ public class AppApplication extends BaseApplication {
     public static AppApplication get() {
         return instance;
     }
+
+    /**
+     * 是否打开了小程序
+     */
+    public static boolean isUserMini = false;
 
 
     @Override
@@ -104,11 +121,20 @@ public class AppApplication extends BaseApplication {
         PushManager.getInstance().initialize(getApplicationContext());
         PushManager.getInstance().setDebugLogger(getApplicationContext(), s -> LogUtils.e("PushManager", s));
 
+        int pid = android.os.Process.myPid();
+        LogUtils.e(TAG, "进程 id -> " + pid);
         // 非小程序进程
-        if(!RuningAcitvityUtil.getAppName(getBaseContext()).contains("io.dcloud.unimp")) {
-
+        if(RuningAcitvityUtil.getAppName(getBaseContext()).contains("io.dcloud.unimp")) {
+            LogUtils.e(TAG, "小程序进程");
         }
 
+//        registerLife();
+    }
+
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
     }
 
     private void initLiveRoom() {
@@ -132,8 +158,7 @@ public class AppApplication extends BaseApplication {
                 .build();
 
         try {
-            UniSDKEngine.registerModule("qnx-selectCity", CitySelModule.class);
-            UniSDKEngine.registerModule("qnx-dialog", NativeDialogModule.class);
+            UniSDKEngine.registerModule("qnx-extPlugin", JSCommModule.class);
         } catch (UniException e) {
             e.printStackTrace();
         }
@@ -141,6 +166,13 @@ public class AppApplication extends BaseApplication {
         });
         DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{
             LogUtils.e(TAG, "小程序关闭\t" + s);
+        });
+        DCUniMPSDK.getInstance().setDefMenuButtonClickCallBack(new DCUniMPSDK.IMenuButtonClickCallBack() {
+
+            @Override
+            public void onClick(String s, String s1) {
+                LogUtils.e(TAG, "小程序点击 \t" + s + " \t s1 -> " + s1);
+            }
         });
     }
 

@@ -183,14 +183,27 @@ public class ConversationProvider implements IConversationProvider {
      * 会话会话列界面，在数据源更新的地方调用
      */
     public void updateAdapter() {
+        clearDisableData();
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
     }
 
     public void updateAdapter(String id) {
+        clearDisableData();
         if (mAdapter != null) {
             mAdapter.notifyDataSourceChanged(id);
+        }
+    }
+
+    private void clearDisableData() {
+        if (mAdapter != null) {
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                ConversationInfo item = mAdapter.getItem(i);
+                if (item.getConversationId().length() > 6) {
+                    mAdapter.removeItemById(i);
+                }
+            }
         }
     }
 

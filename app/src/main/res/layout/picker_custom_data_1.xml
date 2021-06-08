@@ -26,7 +26,7 @@
             android:id="@+id/sb_menu1"
             android:layout_width="@dimen/dp_51"
             android:layout_height="@dimen/dp_31"
-            app:sb_checked="true"
+            app:sb_checked="false"
             app:sb_show_indicator="false"
             app:sb_shadow_color="@color/transparent"
             app:sb_checked_color="@color/color_34C"

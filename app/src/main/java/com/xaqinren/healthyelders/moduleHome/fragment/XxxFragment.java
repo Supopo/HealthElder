@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -14,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -63,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.dcloud.common.DHInterface.ICallBack;
+import io.dcloud.feature.sdk.DCUniMPAloneTaskActivity;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.http.DownLoadManager;
@@ -207,6 +211,16 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             ZBGiftListPop giftListPop = new ZBGiftListPop(getActivity(), null);
             giftListPop.showPopupWindow();
         });
+        binding.tvMenu109.setOnClickListener(lis ->{
+            try {
+                Class cls = Class.forName("io.dcloud.feature.sdk.DCUniMPAloneTaskActivity");
+                Intent intent = new Intent(getContext(), cls);
+                startActivity(intent);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        });
     }
 
     /**
@@ -343,6 +357,40 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
             }
         }
         return true;
+    }
+
+    /**
+     * 通过ActivityManager 获取进程名，需要IPC通信
+     */
+    public String getCurrentProcessNameByActivityManager(@NonNull Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<String> aryListTaskID = new ArrayList<String>();
+        ArrayList<String> aryListTaskName = new ArrayList<String>();
+        //以getRunningTasks()取得进程TaskInfo
+        List<ActivityManager.RunningTaskInfo> mRunningTasks = am.getRunningTasks(10);
+        int intTaskNum = 0;
+        for (ActivityManager.RunningTaskInfo amTask : mRunningTasks) {
+//            LogUtils.e("WXPayEntryActivity", "amTask ->" + amTask.baseIntent.toString());
+//            LogUtils.e("WXPayEntryActivity", "amTask ->" + amTask.isRunning);
+            LogUtils.e("WXPayEntryActivity", "amTask ->" + amTask.topActivity.getPackageName());
+            LogUtils.e("WXPayEntryActivity", "amTask ->" + amTask.topActivity.getClassName());
+            if (amTask.topActivity.getClassName().equals("DCUniMPAloneTaskActivity")) {
+                //小程序进程打开过
+                try {
+                    Class cls = Class.forName(amTask.topActivity.getClassName());
+                    Intent intent = new Intent(getContext(),cls);
+                    startActivity(intent);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+//            LogUtils.e("WXPayEntryActivity", "amTask ->" + amTask.taskId);
+            aryListTaskName.add(amTask.baseActivity.getClassName());
+            aryListTaskID.add("" + amTask.id);
+            intTaskNum++;
+        }
+        return null;
     }
 
 }

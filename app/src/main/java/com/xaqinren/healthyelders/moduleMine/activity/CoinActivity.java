@@ -57,7 +57,7 @@ public class CoinActivity extends BaseActivity<ActivityCoinBinding, WalletViewMo
         viewModel.wallet.observe(this, walletBean -> {
             this.walletBean = walletBean;
             binding.setData(this.walletBean);
-            binding.balance.setText(walletBean.getWallAccountBalance());
+            binding.balance.setText(walletBean.getWalletAccount().getAccountBalance()+"");
             if (walletBean.isHasOpenAccount()) {
                 //已实名认证
             }else{

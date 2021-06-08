@@ -13,6 +13,42 @@ import java.util.Date;
  */
 public class DateUtils {
 
+    public static int getAgeByTime(String str) throws ParseException {
+        // 使用默认时区和语言环境获得一个日历
+        Calendar cal = Calendar.getInstance();
+//        int a = Integer.parseInt((str.subSequence(0, 4).toString())); // 输入的年
+//        int a1 = Integer.parseInt((str.subSequence(4, 6).toString())); // 输入的月
+//        int a2 = Integer.parseInt((str.subSequence(6, 8).toString())); // 输入的日
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date parse = simpleDateFormat.parse(str);
+        Calendar bCal = Calendar.getInstance();
+        bCal.setTime(parse);
+        int a = bCal.get(Calendar.YEAR);
+        int a1 = bCal.get(Calendar.MONTH) + 1;
+        int a2 = bCal.get(Calendar.DAY_OF_MONTH);
+        int b = cal.get(Calendar.YEAR); // 当前的年
+        int b1 = cal.get(Calendar.MONDAY) + 1; // 当前的月
+        int b2 = cal.get(Calendar.DAY_OF_MONTH); // 当前的日
+
+        // 粗略判断
+        if (a > b || a < 1000 || a1 > 12 || a1 <= 0 || a2 > 31 || a2 <= 0) {
+            return -1;
+        }
+
+        // 进一步判断
+        if ((a % 4 == 0 && a1 == 2 && a2 > 29) || (a % 4 != 0 && a1 == 2 && a2 > 28)
+                || ((a1 == 4 || a1 == 6 || a1 == 9 || a1 == 11) && a2 > 30)
+                || (a == b && (a1 < b1 || (a1 == b1 && a2 > b2)))) {
+            return -1;
+        }
+
+        // 计算年龄
+        int age = b - a;
+        if (b1 < a1 || (b1 == a1 && b2 <= a2)) {
+            age--;
+        }
+        return age;
+    }
 
     public static String getRelativeTime(String time) {
         if (TextUtils.isEmpty(time)) {

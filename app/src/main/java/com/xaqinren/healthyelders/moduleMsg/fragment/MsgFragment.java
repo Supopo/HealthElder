@@ -75,9 +75,10 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             //添加联系人
             startActivity(AddFriendActivity.class);
         });
+        binding.ivAdd2.setVisibility(View.GONE);
         binding.ivAdd2.setOnClickListener(view -> {
             ImManager.testAddConversation();
-        binding.ivAdd2.setVisibility(View.GONE);
+            binding.ivAdd2.setVisibility(View.GONE);
         });
         binding.srlContent.setEnabled(false);
         binding.conversationLayout.getTitleBar().setVisibility(View.GONE);
@@ -134,7 +135,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             chatInfo.setId(messageInfo.getId());
             ChatActivity.startChar(getContext(), chatInfo);
         });
-        binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
+        /*binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
             //条目长按,置顶，删除，
             String id = messageInfo.getId();
             switch (id) {
@@ -160,7 +161,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                     ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
                     return;
             }
-        });
+        });*/
     }
 
     @Override

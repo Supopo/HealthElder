@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.bean.OrderListBean;
 import com.xaqinren.healthyelders.moduleMine.bean.OrderListItemBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -74,14 +75,14 @@ public class OrderListAdapter extends BaseQuickAdapter<OrderListBean, BaseViewHo
             }
             UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, uniSubKey, orderListBean.getJumpUrl());
         });
-
+        GlideUtil.intoImageView(getContext(),orderListBean.getStoreLogo(),binding.storeLogo);
         String status = orderListBean.getQueryStatus();
         int childCount = binding.orderStatusLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childAt = binding.orderStatusLayout.getChildAt(i);
             childAt.setVisibility(View.GONE);
         }
-
+        binding.orderStatusLayout.setVisibility(View.GONE);
         if (status.equals("NOT_PAID")) {
             //待支付
             binding.orderStatusLayout.setVisibility(View.VISIBLE);
@@ -98,7 +99,7 @@ public class OrderListAdapter extends BaseQuickAdapter<OrderListBean, BaseViewHo
 //            binding.ycsh.setVisibility(View.VISIBLE);
             binding.ckwl.setVisibility(View.VISIBLE);
             binding.qrsh.setVisibility(View.VISIBLE);
-        } else if (status.equals("FINISHED")) {
+        } else if (status.equals("RECEIPT") ||  status.equals("FINISHED")) {
             //交易成功,待评价
             binding.orderStatusLayout.setVisibility(View.VISIBLE);
             binding.scdd.setVisibility(View.VISIBLE);

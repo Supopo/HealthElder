@@ -59,7 +59,7 @@ public class WithdrawActivity extends BaseActivity<ActivityWithdrawBinding, Wall
             showSelBankCardList();
         });
         binding.allAmount.setOnClickListener(v -> {
-            binding.inputAmount.setText(walletBean.getWallAccountBalance());
+            binding.inputAmount.setText(walletBean.getWalletAccount().getAccountBalance() + "");
         });
         binding.confirm.setOnClickListener(v -> {
             if (bankCardBean == null) {
@@ -92,6 +92,10 @@ public class WithdrawActivity extends BaseActivity<ActivityWithdrawBinding, Wall
                 binding.confirm.setEnabled(editable.length() > 0);
             }
         });
+        binding.serviceClause.setOnClickListener(v -> {
+            //服务条款
+
+        });
         viewModel.getWalletInfo();
     }
 
@@ -104,7 +108,7 @@ public class WithdrawActivity extends BaseActivity<ActivityWithdrawBinding, Wall
         viewModel.wallet.observe(this, walletBean -> {
             this.walletBean = walletBean;
             binding.setData(this.walletBean);
-            binding.inputAmount.setHint("本次可提现" + walletBean.getWallAccountBalance() + "元");
+            binding.inputAmount.setHint("本次可提现" + walletBean.getWalletAccount().getAccountBalance() + "元");
             if (this.walletBean.getUserBankCardList() != null && !this.walletBean.getUserBankCardList().isEmpty()) {
                 bankCardBean = walletBean.getUserBankCardList().get(0);
                 bankCardBean.setSel(true);

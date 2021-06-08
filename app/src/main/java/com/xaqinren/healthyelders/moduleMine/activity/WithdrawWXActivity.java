@@ -22,7 +22,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
 /**
- * 提现微信详情
+ * 账单详情
  */
 public class WithdrawWXActivity extends BaseActivity<ActivityWithdrawDetailBinding, WalletViewModel> {
     BillDetailBean billDetailBean;
@@ -59,6 +59,12 @@ public class WithdrawWXActivity extends BaseActivity<ActivityWithdrawDetailBindi
     private void bindView() {
 
     }
+
+    private void addNormalType(String time1,String time2,String order) {
+
+        createValue("交易单号", /*"1029920202093939030328 "*/order, true);
+    }
+
 
     private void addWxType(String time1,String time2,String order) {
         createValue("提现时间", /*"2021-04-29 15:07:02"*/time1, false);

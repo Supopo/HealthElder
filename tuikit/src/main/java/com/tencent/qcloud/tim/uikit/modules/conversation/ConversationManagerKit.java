@@ -96,7 +96,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     if (conversationInfo != null) {
                         mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
-                        infos.add(conversationInfo);
+//                        infos.add(conversationInfo);
                     }
                 }
                 //插入自己的数据

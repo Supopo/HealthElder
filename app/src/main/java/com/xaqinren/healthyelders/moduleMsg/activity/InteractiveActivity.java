@@ -22,6 +22,7 @@ import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMsg.Constant;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
@@ -128,6 +129,14 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             switch (view.getId()){
                 case R.id.avatar:{
                     //用户详情
+                    if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
+                        InteractiveBean bean1 = (InteractiveBean) bean;
+                        UserInfoActivity.startActivity(this,bean1.getSendUser().getUserId()+"");
+                    } else if (bean.getItemType() == MessageDetailBean.TYPE_FRIEND) {
+                        FriendBean friendBean = (FriendBean) bean;
+                        InteractiveBean bean1 = (InteractiveBean) bean;
+                        UserInfoActivity.startActivity(this,friendBean.getUserId());
+                    }
                 }break;
                 case R.id.attention_btn: {
                     //粉丝消息,关注

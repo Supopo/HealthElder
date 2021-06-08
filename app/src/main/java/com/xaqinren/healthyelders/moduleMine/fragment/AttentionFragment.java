@@ -26,6 +26,7 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FramentAttentionBinding;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.adapter.AttentionAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.AttentionViewModel;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
@@ -50,7 +51,9 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
 
     private int currentPage = 1;
     private int pageSize = 10;
-    public AttentionFragment(int i) {
+    private String uid;
+
+    public AttentionFragment(int i, String uid) {
         super();
         this.type = i;
         if (type == 0) {
@@ -58,6 +61,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
         } else if (type == 1) {
             currentRequestType = "FANS";
         }
+        this.uid = uid;
     }
 
     @Override
@@ -94,7 +98,9 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
             opIndex = position;
             switch (view.getId()) {
                 case R.id.avatar: {
-
+                    Bundle bundle = new Bundle();
+                    bundle.putString("userId", userBean.getId());
+                    startActivity(UserInfoActivity.class,bundle);
                 }break;
                 case R.id.attention_btn:
                 {
@@ -109,19 +115,19 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
             }
         });
         showDialog();
-        viewModel.getUserList(currentPage , pageSize , currentRequestType);
+        viewModel.getUserList(currentPage, pageSize, currentRequestType, uid);
         adapter.getLoadMoreModule().setEnableLoadMore(true);
         adapter.getLoadMoreModule().setAutoLoadMore(true);
         adapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
             showDialog();
-            viewModel.getUserList(currentPage , pageSize , currentRequestType);
+            viewModel.getUserList(currentPage, pageSize, currentRequestType, uid);
         });
         binding.swipeContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 currentPage = 1;
                 showDialog();
-                viewModel.getUserList(currentPage , pageSize , currentRequestType);
+                viewModel.getUserList(currentPage, pageSize, currentRequestType, uid);
             }
         });
     }

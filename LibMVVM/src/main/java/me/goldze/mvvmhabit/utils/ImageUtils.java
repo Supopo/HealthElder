@@ -942,7 +942,6 @@ public class ImageUtils {
      * 压缩单张图片 RxJava 方式
      */
     public static void compressWithRx(String url, Consumer consumer) {
-
         Luban.get(getContext())
                 .load(url)
                 .putGear(Luban.THIRD_GEAR)

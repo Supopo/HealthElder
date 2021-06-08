@@ -61,11 +61,13 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
     private void setWindow() {
         //窗口对齐屏幕宽度
         Window win = this.getWindow();
-        win.getDecorView().setPadding(0, 0, 0, 0);
+//        win.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams lp = win.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;//设置对话框置顶显示
+        //lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         win.setAttributes(lp);
     }
 

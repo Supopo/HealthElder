@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
+import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.CZInputPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.PayActivity;
@@ -271,34 +272,24 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGz.setOnClickListener(lis -> {
-            startActivity(LookAttentionActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 0);
+            bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());
+            startActivity(LookAttentionActivity.class,bundle);
         });
         binding.tvFs.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putInt("page", 1);
+            bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());
             startActivity(LookAttentionActivity.class, bundle);
         });
         binding.tvOrder.setOnClickListener(v -> {
             startActivity(OrderListActivity.class);
         });
         binding.tvFriends.setOnClickListener(lis -> {
+            startActivity(AddFriendActivity.class);
         });
         binding.ivSetting.setOnClickListener(lis -> {
-            //退出登录
-            /*YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
-            yesOrNoDialog.setMessageText("确定退出吗？");
-            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //清除缓存
-                    InfoCache.getInstance().clearLogin();
-                    //跳到登录页面
-                    startActivity(SelectLoginActivity.class);
-                    yesOrNoDialog.dismissDialog();
-                    getActivity().finish();
-                }
-            });
-            yesOrNoDialog.showDialog();*/
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.openDrawer();
         });

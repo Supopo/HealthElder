@@ -24,10 +24,12 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityPayBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.PayTypeAdapter;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,10 @@ import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.utils.SPUtils;
+import me.goldze.mvvmhabit.utils.StringUtils;
+
+import static android.view.WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
 /**
  * Created by Lee. on 2021/6/2.
@@ -50,6 +56,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
     private Disposable subscribe;
     private String orderNo;
     private String orderType;
+    private String payWay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +84,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
             beiLv = getIntent().getExtras().getInt("beiLv", 0);//倍率
             orderNo = getIntent().getExtras().getString("orderNo", "");//订单编号
             orderType = getIntent().getExtras().getString("orderType", "POINT_RECHARGE");//订单类型
+            payWay = getIntent().getExtras().getString("payWay", "app");//订单类型
         }
     }
 
@@ -87,18 +95,34 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
         setWindow();
         initView();
         binding.tvCzNum.setText("" + czNum);
-        binding.tvTips.setText("金币 " + beiLv * czNum);
+        if(StringUtils.isEmpty(orderNo)){
+            binding.tvTips.setText("金币 " + beiLv * czNum);
+        }
+        SPUtils.getInstance().put(Constant.PAY_WAY,payWay);
     }
 
     private void setWindow() {
         //窗口对齐屏幕宽度
+        int theme = getIntent().getIntExtra("theme", R.style.EditDialogStyleEx);
         Window win = this.getWindow();
-        win.getDecorView().setPadding(0, 0, 0, 0);
+//        if (AppApplication.get().isHasNavBar()) {
+//            win.getDecorView().setPadding(0, 0, 0, MScreenUtil.getBottomStatusHeight(this));
+//        }else
+//            win.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams lp = win.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;//设置对话框置顶显示
+
+        //lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        if (theme != R.style.EditDialogStyleEx) {
+            lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        }else{
+            lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        }
+
         win.setAttributes(lp);
+
     }
 
     String[] menuNames = {"微信支付", "我的零钱"};

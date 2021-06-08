@@ -183,14 +183,16 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         startDate.set(1900, 0, 1);
         Calendar endDate = Calendar.getInstance();
         birthday = "2000-01-01";
-        String birth = userInfoBean.getBirthday();
+        String birth = UserInfoMgr.getInstance().getUserInfo().getBirthday();
         if (birth != null) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 Date date = simpleDateFormat.parse(birth);
-                int year = date.getYear();
-                int month = date.getMonth();
-                int day = date.getDay();
+                Calendar instance = Calendar.getInstance();
+                instance.setTime(date);
+                int year = instance.get(Calendar.YEAR);
+                int month = instance.get(Calendar.MONTH);
+                int day = instance.get(Calendar.DAY_OF_MONTH);
                 selData.set(year, month, day);
                 hasBirth = true;
                 birthday = birth;
