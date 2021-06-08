@@ -32,9 +32,10 @@
                 android:id="@+id/iv_avatar"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
-                app:url = "@{viewModel.avatarUrl}"
+                app:placeholderRes="@mipmap/icon_def_photo"
                 app:qmui_border_color="@color/qmui_s_transparent"
-                app:qmui_is_circle="true" />
+                app:qmui_is_circle="true"
+                app:url="@{viewModel.avatarUrl}" />
 
             <TextView
                 android:id="@+id/tv_name"
@@ -43,8 +44,8 @@
                 android:layout_marginLeft="@dimen/dp_9"
                 android:layout_weight="1"
                 android:text="名字"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/sp_15"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_yq"
@@ -53,9 +54,9 @@
                 android:background="@drawable/btn_jslm"
                 android:gravity="center"
                 android:text="邀请"
-                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

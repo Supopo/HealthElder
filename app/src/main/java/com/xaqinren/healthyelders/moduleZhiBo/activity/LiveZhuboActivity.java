@@ -650,7 +650,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         entity.setContent(msg);
         entity.setType(LiveConstants.IMCMD_TEXT_MSG);
         notifyMsg(entity);
-        mLiveRoom.sendRoomTextMsg(msg, null);
+        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TEXT_MSG), msg, null);
+
     }
 
     //接受处理文字消息
@@ -916,13 +917,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     @Override
     public void onRecvRoomTextMsg(String roomID, String userID, String userName, String userAvatar, String message) {
-        if (!roomID.equals(mRoomID)) {
-            return;
-        }
-        //统计评论人数
-        commentSet.add(userName);
-        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
-        toRecvTextMsg(userInfo, message, LiveConstants.IMCMD_TEXT_MSG);
     }
 
     @Override
@@ -933,6 +927,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
         int type = Integer.parseInt(cmd);
         switch (type) {
+            case LiveConstants.IMCMD_TEXT_MSG:
+                //统计评论人数
+                commentSet.add(userName);
+                toRecvTextMsg(userInfo, (String)message, LiveConstants.IMCMD_TEXT_MSG);
+
+                break;
+
             case LiveConstants.IMCMD_ENTER_LIVE:
                 //用户进入房间消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
@@ -1368,7 +1369,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         switch (v.getId()) {
             case R.id.tv_members_num:
                 if (zbUserListPop == null) {
-                    zbUserListPop = new ZBUserListPop(this, mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.liveRoomId, "婆婆酥的守护团");
+                    zbUserListPop = new ZBUserListPop(this, mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.liveRoomId, "守护团");
                 }
                 zbUserListPop.showPopupWindow();
                 break;
@@ -1447,6 +1448,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     }
                     break;
                 case LiveConstants.SEND_MSG:
+                    //发送文本消息
                     toSendTextMsg(eventBean.content);
                     break;
                 case LiveConstants.ZB_USER_SET:
@@ -1617,6 +1619,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
                     //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);
+                    if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomConnection) && mLiveInitInfo.liveRoomConnection.equals("CHAT_ROOM")) {
+                        //防止主播是继续直播观众还是多人连麦，通知大家关闭多人连麦
+                        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_CLOSE_MORE_LINK), "", null);
+                    }
                 }
 
                 mLiveInitInfo.liveRoomId = liveInitInfo.liveRoomId;

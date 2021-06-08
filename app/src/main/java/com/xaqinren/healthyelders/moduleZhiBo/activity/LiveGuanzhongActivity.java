@@ -480,7 +480,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     //发送文字消息
     private void toSendTextMsg(String msg) {
         addMsg2List("我 ", msg, LiveConstants.IMCMD_TEXT_MSG);
-        mLiveRoom.sendRoomTextMsg(msg, null);
+        mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TEXT_MSG), msg, null);
     }
 
     private void addMsg2List(String sendName, String msg, int type) {
@@ -1118,11 +1118,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     @Override
     public void onRecvRoomTextMsg(String roomID, String userID, String userName, String userAvatar, String message) {
-        if (!roomID.equals(mRoomID)) {
-            return;
-        }
-        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
-        toRecvTextMsg(userInfo, message, LiveConstants.IMCMD_TEXT_MSG);
     }
 
     @Override
@@ -1133,6 +1128,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
         int type = Integer.parseInt(cmd);
         switch (type) {
+            case LiveConstants.IMCMD_TEXT_MSG:
+                toRecvTextMsg(userInfo, (String)message, LiveConstants.IMCMD_TEXT_MSG);
+                break;
             case LiveConstants.IMCMD_ENTER_LIVE:
                 //用户进入房间消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
@@ -1239,6 +1237,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 startMoreLinkLayout();
                 break;
             case LiveConstants.IMCMD_CLOSE_MORE_LINK://主播关闭多人连麦
+                if (linkType == 0) {
+                    return;
+                }
+
                 //判断如果在连麦状态先退出连麦
                 if (linkStatus == 3) {
                     //退出连麦

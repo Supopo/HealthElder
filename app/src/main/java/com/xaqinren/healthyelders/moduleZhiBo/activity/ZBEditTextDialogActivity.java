@@ -1,9 +1,11 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -20,10 +22,17 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.tencent.qcloud.tim.uikit.component.face.Emoji;
+import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
+import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +53,9 @@ public class ZBEditTextDialogActivity extends Activity {
     private LinearLayout llInput;
     private Button btnSend;
     private RelativeLayout rlView;
+    private FragmentManager mFragmentManager;
+    private FaceFragment mFaceFragment;
+    private RelativeLayout moreGroups;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,16 +77,67 @@ public class ZBEditTextDialogActivity extends Activity {
         win.setAttributes(lp);
     }
 
+    private void showFaceViewGroup() {
+        if (mFragmentManager == null) {
+            mFragmentManager = getFragmentManager();
+        }
+        if (mFaceFragment == null) {
+            mFaceFragment = new FaceFragment();
+        }
+
+        moreGroups.setVisibility(View.VISIBLE);
+        etView.requestFocus();
+        mFaceFragment.setListener(new FaceFragment.OnEmojiClickListener() {
+            @Override
+            public void onEmojiDelete() {
+                int index = etView.getSelectionStart();
+                Editable editable = etView.getText();
+                boolean isFace = false;
+                if (index <= 0) {
+                    return;
+                }
+                if (editable.charAt(index - 1) == ']') {
+                    for (int i = index - 2; i >= 0; i--) {
+                        if (editable.charAt(i) == '[') {
+                            String faceChar = editable.subSequence(i, index).toString();
+                            if (FaceManager.isFaceChar(faceChar)) {
+                                editable.delete(i, index);
+                                isFace = true;
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (!isFace) {
+                    editable.delete(index - 1, index);
+                }
+            }
+
+            @Override
+            public void onEmojiClick(Emoji emoji) {
+                int index = etView.getSelectionStart();
+                Editable editable = etView.getText();
+                editable.insert(index, emoji.getFilter());
+                FaceManager.handlerEmojiText(etView, editable.toString(), true);
+            }
+
+            @Override
+            public void onCustomFaceClick(int groupIndex, Emoji emoji) {
+
+            }
+        });
+        mFragmentManager.beginTransaction().replace(com.tencent.qcloud.tim.uikit.R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
+
+    }
 
     private List<Integer> highs = new ArrayList<>();
 
     private void initView() {
-
-
         rlView = findViewById(R.id.rl_view);
         btnSend = findViewById(R.id.btn_send);
         etView = findViewById(R.id.et_input_message);
         llInput = findViewById(R.id.ll_input);
+        moreGroups = findViewById(R.id.more_groups);
 
         if (getIntent().getExtras() != null) {
             String content = getIntent().getExtras().getString("content");
@@ -153,6 +216,7 @@ public class ZBEditTextDialogActivity extends Activity {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
                 RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString()));
+                LogUtils.v(Constant.TAG_LIVE,"发送消息");
                 finish();
             }
 
