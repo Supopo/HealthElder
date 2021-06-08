@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.OrderListBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 
 import java.util.List;
 
@@ -21,26 +22,29 @@ public class OrderListViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> orderDelStatus = new MutableLiveData<>();
     public MutableLiveData<Boolean> orderReceiptStatus = new MutableLiveData<>();
 
-    public MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
+    public MutableLiveData<WalletBean> userBanlance = new MutableLiveData<>();
 
     public OrderListViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public void getOrderList(int type , int page , int pageCount) {
+    public void getOrderList(int type, int page, int pageCount) {
         UserRepository.getInstance().getOrderList(requestSuccess, orderList, type, page);
     }
 
     public void cancelOrder(String orderId) {
-        UserRepository.getInstance().cancelOrder(requestSuccess,orderCancelStatus,orderId);
+        UserRepository.getInstance().cancelOrder(requestSuccess, orderCancelStatus, orderId);
     }
+
     public void delOrder(String orderId) {
-        UserRepository.getInstance().delOrder(requestSuccess,orderDelStatus,orderId);
+        UserRepository.getInstance().delOrder(requestSuccess, orderDelStatus, orderId);
     }
+
     public void receiptOrder(String orderId) {
-        UserRepository.getInstance().receiptOrder(requestSuccess,orderReceiptStatus,orderId);
+        UserRepository.getInstance().receiptOrder(requestSuccess, orderReceiptStatus, orderId);
     }
+
     public void getBalance() {
-        UserRepository.getInstance().getBanlance(userBanlance);
+        UserRepository.getInstance().getWalletInfo(null, userBanlance);
     }
 }

@@ -26,6 +26,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.PayTypeAdapter;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
         super.initParam();
         if (getIntent().getExtras() != null) {
             czNum = getIntent().getExtras().getDouble("czNum", 0);//充值，付款
-            yeNum = getIntent().getExtras().getDouble("yeNum", 0);//余额，我的零钱
+            yeNum = getIntent().getExtras().getInt("yeNum", 0);//余额，我的零钱
             beiLv = getIntent().getExtras().getInt("beiLv", 0);//倍率
             orderNo = getIntent().getExtras().getString("orderNo", "");//订单编号
             orderType = getIntent().getExtras().getString("orderType", "POINT_RECHARGE");//订单类型
@@ -152,11 +153,11 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
     private int selectPos;
     private int lastPos;
 
-    private MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
+    private MutableLiveData<WalletBean> userBanlance = new MutableLiveData<>();
     private MutableLiveData<String> wxPayJson = new MutableLiveData<>();
 
     public void getBanlance() {
-        UserRepository.getInstance().getBanlance(userBanlance);
+        UserRepository.getInstance().getWalletInfo(null, userBanlance);
     }
 
     @Override
@@ -181,9 +182,8 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
 
         userBanlance.observe(this, datas -> {
             if (datas != null) {
-                UserInfoMgr.getInstance().getUserInfo().setWallAccountBalance(datas.getWallAccountBalance());
-                UserInfoMgr.getInstance().getUserInfo().setPointAccountBalance(datas.getPointAccountBalance());
-                yeNum = datas.getWallAccountBalance();
+                yeNum = datas.getWalletAccount().getAccountBalance();
+                UserInfoMgr.getInstance().getUserInfo().setAccountInfo(datas);
                 payTypeAdapter.getData().get(1).subMenuName = "(剩余：" + yeNum + ")";
                 payTypeAdapter.notifyItemChanged(1, 99);
             }

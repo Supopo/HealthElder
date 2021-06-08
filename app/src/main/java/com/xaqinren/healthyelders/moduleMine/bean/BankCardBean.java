@@ -1,8 +1,8 @@
 package com.xaqinren.healthyelders.moduleMine.bean;
 
-import android.app.Activity;
+import java.io.Serializable;
 
-public class BankCardBean {
+public class BankCardBean implements Serializable {
 
     private String id;
     private String createdAt;

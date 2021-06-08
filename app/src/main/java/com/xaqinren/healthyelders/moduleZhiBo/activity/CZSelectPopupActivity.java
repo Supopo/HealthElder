@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.databinding.ActivityPopCzSelectBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ChongZhiSelectAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
@@ -73,8 +74,8 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
     private int lastPos;
     private int nowPos;
     private double czNum;
-    private double yeNum;
-    private double jbyeNum;
+    private int yeNum;
+    private int jbyeNum;
     private int beiLv;
 
     private void initView() {
@@ -107,8 +108,8 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
         binding.btnCz.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putDouble("czNum", czNum);
-            bundle.putDouble("jbyeNum", jbyeNum);
-            bundle.putDouble("yeNum", yeNum);
+            bundle.putInt("jbyeNum", jbyeNum);
+            bundle.putInt("yeNum", yeNum);
             bundle.putInt("beiLv", beiLv);
             if (czNum == 0) {
                 startActivity(CZInputPopupActivity.class, bundle);
@@ -118,11 +119,11 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
         });
     }
 
-    private MutableLiveData<UserInfoBean> userBanlance = new MutableLiveData<>();
+    private MutableLiveData<WalletBean> userBanlance = new MutableLiveData<>();
 
     public void getBanlance() {
         UserRepository.getInstance().chongzhiList(datas);
-        UserRepository.getInstance().getBanlance(userBanlance);
+        UserRepository.getInstance().getWalletInfo(null, userBanlance);
     }
 
     @Override
@@ -155,9 +156,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
         });
         userBanlance.observe(this, datas -> {
             if (datas != null) {
-                UserInfoMgr.getInstance().getUserInfo().setWallAccountBalance(datas.getWallAccountBalance());
-                UserInfoMgr.getInstance().getUserInfo().setPointAccountBalance(datas.getPointAccountBalance());
-                jbyeNum = datas.getPointAccountBalance();
+                jbyeNum = datas.getPointBalance();
                 binding.tvTips.setText("余额：" + jbyeNum + "金币");
             }
         });

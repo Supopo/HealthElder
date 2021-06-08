@@ -14,7 +14,7 @@
     <RelativeLayout
         android:id="@+id/mainRelativeLayout"
         style="@style/Layout.Main"
-        android:background="@color/color_252525">
+        android:background="@mipmap/zbj_bg">
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"

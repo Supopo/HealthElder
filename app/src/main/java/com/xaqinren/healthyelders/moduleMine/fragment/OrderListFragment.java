@@ -56,14 +56,14 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
     private int uniSubKey;
     private boolean visibleToUser;
     private boolean isCanInitData;
-    private double balance;
+    private int balance;
 
     public OrderListFragment(int type) {
         this.type = type ;
         uniSubKey = 0x10020 + type;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(int balance) {
         this.balance = balance;
     }
 
@@ -176,7 +176,7 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
     private void showPayOrder(OrderListBean orderListBean) {
         Bundle bundle = new Bundle();
         bundle.putDouble("czNum", orderListBean.getPayableAmount());
-        bundle.putDouble("yeNum", balance);
+        bundle.putInt("yeNum", balance);
         bundle.putString("orderNo", orderListBean.getOrderNo());
         bundle.putString("orderType", "COMMODITY_CONSUMPTION");
         bundle.putInt("theme", R.style.EditDialogStyle);

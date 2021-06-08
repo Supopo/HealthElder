@@ -89,7 +89,7 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
         binding.redLive.setOnClickListener(v -> {
             startActivity(WithdrawActivity.class);
         });
-        binding.jkbCountTv.setText(userInfoBean.getPointAccountBalance()+"");
+        binding.jkbCountTv.setText(userInfoBean.getAccountInfo().getPointBalance()+"");
         showDialog();
         viewModel.getWalletInfo();
     }

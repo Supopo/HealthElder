@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,23 +22,33 @@ public class UserInfoBean implements Serializable {
     private String recommendedCode;
     private String birthday;
     private Boolean enable;
-    private WalletAccountBean walletAccount;
     private String nickname;
     private String realName;
-    private int cumulativeAmount;
-    private int consumptionAmount;
     private String id;
-    private double pointAccountBalance;//金币余额
-    private double wallAccountBalance;//钱包
     private int favoriteCount;
     private int fansCount;
     private int attentionCount;
-    private int bankCardCount;
-    private int pointAmount;
-
     private MenuBean menu;
-    private Boolean hasOpenAccount;
+
+    public WalletBean getAccountInfo() {
+        return accountInfo;
+    }
+
+    public void setAccountInfo(WalletBean accountInfo) {
+        this.accountInfo = accountInfo;
+    }
+
+    public boolean isHasFollow() {
+        return hasFollow;
+    }
+
+    public void setHasFollow(boolean hasFollow) {
+        this.hasFollow = hasFollow;
+    }
+
+    private WalletBean accountInfo;
     private List<Object> userBankCardList;
+
 
     private String introduce;
     private String cityAddress;
@@ -54,14 +65,6 @@ public class UserInfoBean implements Serializable {
 
     public void setMenu(MenuBean menu) {
         this.menu = menu;
-    }
-
-    public Boolean getHasOpenAccount() {
-        return hasOpenAccount;
-    }
-
-    public void setHasOpenAccount(Boolean hasOpenAccount) {
-        this.hasOpenAccount = hasOpenAccount;
     }
 
     public List<Object> getUserBankCardList() {
@@ -90,22 +93,6 @@ public class UserInfoBean implements Serializable {
         this.realName = realName;
     }
 
-    public int getBankCardCount() {
-        return bankCardCount;
-    }
-
-    public void setBankCardCount(int bankCardCount) {
-        this.bankCardCount = bankCardCount;
-    }
-
-    public int getPointAmount() {
-        return pointAmount;
-    }
-
-    public void setPointAmount(int pointAmount) {
-        this.pointAmount = pointAmount;
-    }
-
     public String getBirthday() {
         return birthday;
     }
@@ -114,21 +101,6 @@ public class UserInfoBean implements Serializable {
         this.birthday = birthday;
     }
 
-    public Double getPointAccountBalance() {
-        return pointAccountBalance;
-    }
-
-    public void setPointAccountBalance(Double pointAccountBalance) {
-        this.pointAccountBalance = pointAccountBalance;
-    }
-
-    public Double getWallAccountBalance() {
-        return wallAccountBalance;
-    }
-
-    public void setWallAccountBalance(Double wallAccountBalance) {
-        this.wallAccountBalance = wallAccountBalance;
-    }
 
     public String getIntroduce() {
         return introduce;
@@ -240,13 +212,6 @@ public class UserInfoBean implements Serializable {
         this.levelDiscount = levelDiscount;
     }
 
-    public int getConsumptionAmount() {
-        return consumptionAmount;
-    }
-
-    public void setConsumptionAmount(int consumptionAmount) {
-        this.consumptionAmount = consumptionAmount;
-    }
 
     public Boolean getDefaultLevel() {
         return defaultLevel;
@@ -296,28 +261,12 @@ public class UserInfoBean implements Serializable {
         this.enable = enable;
     }
 
-    public WalletAccountBean getWalletAccount() {
-        return walletAccount;
-    }
-
-    public void setWalletAccount(WalletAccountBean walletAccount) {
-        this.walletAccount = walletAccount;
-    }
-
     public String getNickname() {
         return nickname;
     }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public int getCumulativeAmount() {
-        return cumulativeAmount;
-    }
-
-    public void setCumulativeAmount(int cumulativeAmount) {
-        this.cumulativeAmount = cumulativeAmount;
     }
 
     public String getId() {

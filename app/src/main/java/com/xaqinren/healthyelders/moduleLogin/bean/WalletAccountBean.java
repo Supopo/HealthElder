@@ -6,7 +6,7 @@ public class WalletAccountBean implements Serializable {
 
     private int depositAmount;// 保证金金额
     private int outstandingAmount;// 未结算金额
-    private int withdrawalAmount;
+    private int withdrawalAmount;//提款金额
     private int accountBalance;//账户余额
 
     public int getDepositAmount() {

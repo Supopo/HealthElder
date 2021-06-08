@@ -532,24 +532,6 @@ public class UserRepository {
 
     }
 
-    public void getBanlance(MutableLiveData<UserInfoBean> datas) {
-        userApi.getMyBalance(UserInfoMgr.getInstance().getHttpToken())
-                .compose(RxUtils.schedulersTransformer())
-                .compose(RxUtils.exceptionTransformer())
-                .subscribe(new CustomObserver<MBaseResponse<UserInfoBean>>() {
-                    @Override
-                    protected void dismissDialog() {
-
-                    }
-
-                    @Override
-                    protected void onSuccess(MBaseResponse<UserInfoBean> data) {
-                        datas.postValue(data.getData());
-                    }
-                });
-
-    }
-
     public void toPay(MutableLiveData<String> payJson, String accountOrderType, String payMethod, String payType, double paymentAmount,String orderNo) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("accountOrderType", accountOrderType);
@@ -620,7 +602,9 @@ public class UserRepository {
                 .subscribe(new CustomObserver<MBaseResponse<WalletBean>>() {
                     @Override
                     protected void dismissDialog() {
-                        request.postValue(true);
+                        if (request != null) {
+                            request.postValue(true);
+                        }
                     }
 
                     @Override

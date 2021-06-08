@@ -16,6 +16,7 @@ import com.xaqinren.healthyelders.databinding.ActivityOrderListBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.FragmentViewPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.OrderListFragment;
 import com.xaqinren.healthyelders.moduleMine.viewModel.OrderListViewModel;
 
@@ -110,11 +111,11 @@ public class OrderListActivity extends BaseActivity<ActivityOrderListBinding, Or
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.userBanlance.observe(this, new Observer<UserInfoBean>() {
+        viewModel.userBanlance.observe(this, new Observer<WalletBean>() {
             @Override
-            public void onChanged(UserInfoBean datas) {
+            public void onChanged(WalletBean datas) {
                 if (datas != null) {
-                    double jbyeNum = datas.getPointAccountBalance();
+                    int jbyeNum = datas.getPointBalance();
 //                    binding.tvTips.setText("余额：" + jbyeNum + "金币");
                     for (OrderListFragment listFragment : listFragments) {
                         listFragment.setBalance(jbyeNum);

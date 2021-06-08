@@ -450,10 +450,6 @@ public interface ApiServer {
     @GET("user/getRechargeList")
     Observable<MBaseResponse<ChongZhiListRes>> getChongZhiList(@Header("Authorization") String authorization);
 
-    //查询账户余额
-    @GET("user/findAccountBalance")
-    Observable<MBaseResponse<UserInfoBean>> getMyBalance(@Header("Authorization") String authorization);
-
     //支付接口
     @POST
     Observable<MBaseResponse<String>> toPay(
@@ -481,7 +477,7 @@ public interface ApiServer {
     Observable<MBaseResponse<VersionBean>> checkVersion();
 
     //查询账户余额
-    @GET("user/findAccountBalance")
+    @GET("user/findAccountInfo")
     Observable<MBaseResponse<WalletBean>> getWalletInfo(@Header("Authorization") String authorization);
 
     //查询账单
