@@ -12,6 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemCommentListBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
@@ -144,6 +145,9 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                 }
             });
         }
+
+        //设置处理加载聊天表情文字
+        FaceManager.handlerEmojiText(binding.content, iCommentBean.content, false);
     }
 
     //局部刷新用的

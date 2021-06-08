@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FooterCommentExpanBinding;
 import com.xaqinren.healthyelders.databinding.ItemCommentListChildBinding;
@@ -58,7 +59,11 @@ public class CommentListChildAdapter extends BaseMultiItemQuickAdapter<CommentLi
             } else {
                 Glide.with(getContext()).load(R.mipmap.pinl_zan_sel).into((ImageView) baseViewHolder.getView(R.id.like_iv));
             }
+
+            //设置处理加载聊天表情文字
+            FaceManager.handlerEmojiText(binding.content, iCommentBean.content, false);
         }
+
 
     }
 

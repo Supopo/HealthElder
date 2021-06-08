@@ -259,7 +259,8 @@
         <activity
             android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
             android:theme="@style/EditDialogStyle"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".moduleHome.activity.DraftActivity">
             <intent-filter>
                 <data

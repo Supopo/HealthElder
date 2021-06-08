@@ -1,81 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <data></data>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:windowSoftInputMode="adjustNothing"
-        android:id="@+id/rl_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:gravity="bottom"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/comment_layout"
+        <LinearLayout
+            android:id="@+id/ll_input"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_60"
             android:background="@color/white"
-            android:clickable="true"
-            android:paddingTop="@dimen/dp_11"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_11">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
 
-            <com.xaqinren.healthyelders.widget.VideoPublishEditTextView
-                android:id="@+id/input_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+
+            <EditText
+                android:id="@+id/et_input_message"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_38"
+                android:layout_weight="1"
+                android:background="@drawable/bg_edit_zb"
+                android:hint="发条评论吧"
+                android:imeOptions="actionUnspecified"
+                android:inputType="text"
+                android:maxLength="32"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:singleLine="true"
+                android:textColor="@color/black" />
+
+
+            <ImageView
+                android:id="@+id/iv_face"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_toLeftOf="@id/icon_at"
-                android:background="@drawable/bg_comm_input"
-                android:gravity="center_vertical"
-                android:hint="说点什么吧"
-                android:maxHeight="@dimen/dp_120"
-                android:minHeight="@dimen/dp_38"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:textColor="@color/color_252525"
-                android:textColorHint="@color/color_AFAFAF"
-                android:textSize="@dimen/sp_15" />
-
-
-            <ImageView
-                android:id="@+id/icon_at"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_toLeftOf="@id/icon_btn"
-                android:background="@mipmap/pl_at"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/icon_btn"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_toLeftOf="@id/publish_btn"
+                android:layout_toLeftOf="@id/iv_send"
                 android:background="@mipmap/pl_biaoq" />
 
 
             <ImageView
-                android:id="@+id/publish_btn"
+                android:id="@+id/iv_send"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="@dimen/dp_13"
-                android:layout_marginTop="@dimen/dp_5"
                 android:background="@mipmap/btn_fab" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/emoji_list"
+        <View
+            android:background="@color/color_F3F3F3"
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp" />
+
+        <RelativeLayout
+            android:id="@+id/more_groups"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white" />
+            android:background="@color/white"
+            android:visibility="gone" />
     </LinearLayout>
-
-</layout>
+</RelativeLayout>

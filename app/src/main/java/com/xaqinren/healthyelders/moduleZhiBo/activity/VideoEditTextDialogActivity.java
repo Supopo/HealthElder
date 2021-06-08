@@ -1,46 +1,31 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
+import android.text.Editable;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
-import com.xaqinren.healthyelders.BR;
+import com.tencent.qcloud.tim.uikit.component.face.Emoji;
+import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
-import com.xaqinren.healthyelders.databinding.ActivityInputVideoBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
-import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import me.goldze.mvvmhabit.base.BaseActivity;
-import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
@@ -52,6 +37,7 @@ public class VideoEditTextDialogActivity extends Activity {
     private String hint;
     private String type;
     private int pos;
+    private EditText etView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,16 +66,95 @@ public class VideoEditTextDialogActivity extends Activity {
     private void initView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
-        VideoPublishEditTextView editTextView = findViewById(R.id.input_et);
-        editTextView.setHint(hint);
-        ImageView ivPublish = findViewById(R.id.publish_btn);
+        etView = findViewById(R.id.et_input_message);
+        moreGroups = findViewById(R.id.more_groups);
+        etView.setHint(hint);
+        ImageView ivPublish = findViewById(R.id.iv_send);
+        ImageView ivFace = findViewById(R.id.iv_face);
         //弹出键盘
-        showSoftInput(this, editTextView);
+        showSoftInput(this, etView);
         ivPublish.setOnClickListener(lis -> {
             //发送消息通知发送
-            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, editTextView.getText().toString(), type, pos));
+            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, etView.getText().toString(), type, pos));
             finish();
         });
+        ivFace.setOnClickListener(lis -> {
+            showFaceViewGroup();
+        });
+        etView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (moreGroups.getVisibility() == View.VISIBLE) {
+                        moreGroups.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+    }
+
+    private FragmentManager mFragmentManager;
+    private FaceFragment mFaceFragment;
+    private RelativeLayout moreGroups;
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etView.getWindowToken(), 0);
+        etView.clearFocus();
+        moreGroups.setVisibility(View.GONE);
+    }
+
+    private void showFaceViewGroup() {
+        if (mFragmentManager == null) {
+            mFragmentManager = this.getFragmentManager();
+        }
+        if (mFaceFragment == null) {
+            mFaceFragment = new FaceFragment();
+        }
+        hideSoftInput();
+        moreGroups.setVisibility(View.VISIBLE);
+        //        先不要获取焦点 点击键盘再获取焦点 这样方便隐藏表情列表
+        //        etView.requestFocus();
+        mFaceFragment.setListener(new FaceFragment.OnEmojiClickListener() {
+            @Override
+            public void onEmojiDelete() {
+                int index = etView.getSelectionStart();
+                Editable editable = etView.getText();
+                boolean isFace = false;
+                if (index <= 0) {
+                    return;
+                }
+                if (editable.charAt(index - 1) == ']') {
+                    for (int i = index - 2; i >= 0; i--) {
+                        if (editable.charAt(i) == '[') {
+                            String faceChar = editable.subSequence(i, index).toString();
+                            if (FaceManager.isFaceChar(faceChar)) {
+                                editable.delete(i, index);
+                                isFace = true;
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (!isFace) {
+                    editable.delete(index - 1, index);
+                }
+            }
+
+            @Override
+            public void onEmojiClick(Emoji emoji) {
+                int index = etView.getSelectionStart();
+                Editable editable = etView.getText();
+                editable.insert(index, emoji.getFilter());
+                FaceManager.handlerEmojiText(etView, editable.toString(), true);
+            }
+
+            @Override
+            public void onCustomFaceClick(int groupIndex, Emoji emoji) {
+
+            }
+        });
+        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
+
     }
 
 
