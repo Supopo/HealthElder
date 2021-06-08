@@ -620,9 +620,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startPlay(boolean b) {
-        if (!AppApplication.get().isOnHomeStart()) {
-            return;
-        }
 
         if (binding.rlView.getVisibility() == View.GONE) {
             binding.rlView.setVisibility(View.VISIBLE);

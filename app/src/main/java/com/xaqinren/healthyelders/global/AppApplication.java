@@ -246,17 +246,6 @@ public class AppApplication extends BaseApplication {
         this.hasNavBar = hasNavBar;
     }
 
-    public boolean isOnHomeStart() {
-        return onHomeStart;
-    }
-
-    public void setOnHomeStart(boolean onHomeStart) {
-        this.onHomeStart = onHomeStart;
-    }
-
-    private boolean onHomeStart;
-
-
     private boolean hasNavBar;//是否开启了虚拟按键
 
     //顶部菜单是否展示
