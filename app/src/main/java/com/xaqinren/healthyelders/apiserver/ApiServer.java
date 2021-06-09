@@ -423,7 +423,7 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<UniBean>>>> getUniList();
 
     //礼物列表
-    @GET("live/gift/list")
+    @GET("live/open/gift/list")
     Observable<MBaseResponse<List<GiftBean>>> getGiftList(@Header("Authorization") String authorization);
 
     //保存通讯录

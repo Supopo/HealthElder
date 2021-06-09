@@ -12,6 +12,7 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.databinding.ActivitySplashBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SplashViewModel;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
@@ -89,6 +90,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             getWindow().setAttributes(params);
         }
 
+        LoadGiftService.startService(this);
 
         isHasBar = false;
         int screenHeight = MScreenUtil.getScreenHeight(this);
