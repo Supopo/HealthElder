@@ -32,6 +32,7 @@
                 android:id="@+id/iv_avatar"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
+                app:placeholderRes="@mipmap/default_avatar"
                 app:qmui_border_color="@color/qmui_s_transparent"
                 app:qmui_is_circle="true"
                 app:url="@{viewModel.avatarUrl}" />

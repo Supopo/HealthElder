@@ -375,12 +375,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     @Override
     public void onStart() {
         super.onStart();
-        AppApplication.get().setOnHomeStart(true);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        AppApplication.get().setOnHomeStart(false);
     }
 }

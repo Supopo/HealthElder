@@ -124,7 +124,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     return;
 
                 //防止创建新Fragment时候多走一次
-                if (position == lastPos) {
+                if ( position != 0 && position == lastPos) {
                     return;
                 }
                 AppApplication.get().setPlayPosition(position);

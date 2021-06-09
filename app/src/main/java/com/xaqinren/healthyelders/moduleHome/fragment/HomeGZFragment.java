@@ -218,7 +218,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 //防止创建新Fragment时候多走一次
-                if (position == lastPos) {
+                if ( position != 0 && position == lastPos) {
                     return;
                 }
 

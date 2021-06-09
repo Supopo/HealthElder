@@ -40,6 +40,7 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tv_num"
+                app:placeholderRes="@mipmap/default_avatar"
                 app:qmui_border_color="@color/qmui_s_transparent"
                 app:qmui_border_width="@dimen/dp_1"
                 app:qmui_is_circle="true" />

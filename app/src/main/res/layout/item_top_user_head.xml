@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="center"
+            app:placeholderRes="@mipmap/default_avatar"
             app:qmui_border_color="@color/transparent"
             app:qmui_is_circle="true"
             app:url="@{viewModel.avatarUrl}" />

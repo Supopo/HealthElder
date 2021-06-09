@@ -25,7 +25,7 @@
             android:layout_height="@dimen/dp_52"
             app:qmui_is_circle="true"
             app:qmui_border_color="@color/transparent"
-            app:placeholderRes="@mipmap/icon_def_photo"
+            app:placeholderRes="@mipmap/default_avatar"
             app:url="@{viewModel.attentionUserInfo.avatarUrl}" />
 
         <TextView

@@ -186,7 +186,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 //第一次加载所有Fragment完会触发
                 if (!firstInit) {
                     //防止加载新的VideoFragment时候会多走一次
-                    if (position == lastPos) {
+                    if ( position != 0 && position == lastPos) {
                         return;
                     }
 
