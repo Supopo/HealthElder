@@ -52,15 +52,20 @@ import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.MyGoodsListActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.LiveMenuAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveZbViewModel;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
@@ -173,6 +178,10 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     showLJPop();
                     break;
                 case "商品":
+//                    UniService.startService(getActivity(), mLiveInitInfo.appId, 0x10112, mLiveInitInfo.jumpUrl);
+//                    startActivity(MyGoodsListActivity.class);
+                    ZBGoodsListPop zbGoodsListPop = new ZBGoodsListPop(getActivity());
+                    zbGoodsListPop.showPopupWindow();
                     break;
                 case "私密":
                 case "公开":
@@ -256,8 +265,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     });
 
 
-
-
         });
     }
 
@@ -280,6 +287,18 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     district = locationBean.district;
                     poiName = locationBean.desName;
                     binding.tvLoc.setText(cityName + poiName);
+                }
+            }
+        });
+
+        disposable = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 0x10112) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
                 }
             }
         });
@@ -682,4 +701,14 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         mLiveRoom.startLocalPreview(true, binding.videoView);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (disposable != null) {
+            disposable.dispose();
+        }
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
+    }
 }

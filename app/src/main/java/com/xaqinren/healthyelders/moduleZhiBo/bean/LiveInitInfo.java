@@ -25,6 +25,10 @@ public class LiveInitInfo implements Serializable {
     public String shields;//屏蔽词, - 多个逗号隔开
     public Boolean hasLocation;//是否开启定位
 
+    public String appId;//小程序跳转的appId
+    public String jumpUrl;//小程序跳转地址
+
+
 
     //------用户进入直播间返回字段-----
     public Object liveRoomMicUsers;    // 连麦中的用户
