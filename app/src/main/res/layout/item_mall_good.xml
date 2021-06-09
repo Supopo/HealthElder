@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.getMinSalesPrice()}"
-                    android:textColor="@color/gray_999"
+                    android:textColor="#FFFFF193"
                     android:textSize="@dimen/sp_10" />
             </LinearLayout>
         </LinearLayout>

@@ -35,6 +35,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniBean;
 
@@ -534,7 +535,7 @@ public interface ApiServer {
     Observable<MBaseResponse<AppConfigBean>> getAppConfig();
     //直播间带货列表
     @GET("live/findCommodityByLiveRoomId")
-    Observable<MBaseResponse<List<GoodsBean>>> getZbGoodsList(@Header("Authorization") String authorization, @Query("liveRoomId") String liveRoomId);
+    Observable<MBaseResponse<List<ZBGoodsBean>>> getZbGoodsList(@Header("Authorization") String authorization, @Query("liveRoomId") String liveRoomId);
 
     //直播中商品设置/取消讲解
     @POST("live/liveCommodityExplain")

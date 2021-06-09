@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,6 +53,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivi
 import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
@@ -109,6 +111,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     public static final int STATE_STOP = 3;//停止
     public int state;
 
+    private boolean isHP;
+
     @SuppressLint("ObjectAnimatorBinding")
     @Override
     public void initData() {
@@ -132,6 +136,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         //视频封面
         if (!TextUtils.isEmpty(videoInfo.coverUrl)) {
             Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
+            try {
+                String w = UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "w");
+                String h = UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "h");
+                if (Integer.parseInt(w) > Integer.parseInt(h)) {
+                    isHP = true;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
 
         if (videoInfo.resourceType.equals("VIDEO")) {
@@ -234,7 +247,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer = new TXVodPlayer(getActivity());
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
         //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
-        vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+        vodPlayer.setRenderMode(isHP?TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION:TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
         //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
         //RENDER_ROTATION_LANDSCAPE 画面顺时针旋转 270 度（Home 键在画面正左方）
         vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
@@ -266,7 +279,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-//                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
+                //                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
@@ -401,6 +414,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
 
                 openType = 0;
+            }
+        });
+
+        binding.rlClick.setOnClickListener(lis -> {
+            //判断是直播间
+            if (videoInfo.getVideoType() == 2) {
+                dismissLoading();
+
+                //进入直播间
+                viewModel.joinLive(videoInfo.liveRoomId);
             }
         });
         binding.llZhiBoTip.setOnClickListener(lis -> {
@@ -642,7 +665,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //判断之前是不暂停状态
             if (isPlaying) {
                 vodPlayer.resume();
-                LogUtils.v(Constant.TAG_LIVE,position+"resume");
+                LogUtils.v(Constant.TAG_LIVE, position + "resume");
 
             } else {
                 vodPlayer.pause();
@@ -677,7 +700,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
 
     }
-
 
 
     @Override

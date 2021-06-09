@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
@@ -24,13 +25,16 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.GoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBGoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 import razerdp.basepopup.BasePopupWindow;
 
 /**
@@ -43,9 +47,11 @@ public class ZBGoodsListPop extends BasePopupWindow {
     private SwipeRefreshLayout srl;
     private RecyclerView rvList;
     private TextView tvTitle;
+    private TextView tvGl;
     private String liveRoomId;
     private View emptyView;
     private int type;
+    private LoadingDialog loadingDialog;
 
     public ZBGoodsListPop(Context context, String liveRoomId, int type) {
         super(context);
@@ -55,18 +61,24 @@ public class ZBGoodsListPop extends BasePopupWindow {
         setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
         this.liveRoomId = liveRoomId;
         this.type = type;
-
         initView();
     }
 
 
     private void initView() {
+        loadingDialog = new LoadingDialog(getContext());
+
         srl = findViewById(R.id.srl);
+        tvGl = findViewById(R.id.tv_gl);
         tvTitle = findViewById(R.id.tv_title);
         rvList = findViewById(R.id.rv_list);
         mAdapter = new ZBGoodsListAdapter(R.layout.item_zb_goods);
         rvList.setLayoutManager(new LinearLayoutManager(getContext()));
         rvList.setAdapter(mAdapter);
+
+        if (type == 2) {
+            tvGl.setVisibility(View.INVISIBLE);
+        }
 
         emptyView = View.inflate(getContext(), R.layout.empty_zb_goods, null);
         TextView tvAdd = emptyView.findViewById(R.id.tv_add);
@@ -90,38 +102,49 @@ public class ZBGoodsListPop extends BasePopupWindow {
                 nowPos = position;
                 if (type == 1) {
                     //设置讲解商品
-                    setGoodsShow(mAdapter.getData().get(position).id);
+                    setGoodsShow(String.valueOf(mAdapter.getData().get(position).id));
                 }
-
             }
         });
     }
 
     private int nowPos;
+
     private void getGoodsList() {
         LiveRepository.getInstance().getZbGoodsLis(goodsList, liveRoomId);
     }
 
     private void setGoodsShow(String commodityId) {
-        LiveRepository.getInstance().setZBGoodsShow(dismissDialog, setSuccess, liveRoomId, commodityId, true);
+        loadingDialog.show();
+        LiveRepository.getInstance().setZBGoodsShow(dismissDialog, setSuccess, liveRoomId, commodityId, !mAdapter.getData().get(nowPos).getCanExplain());
     }
 
     private MutableLiveData<Boolean> setSuccess = new MutableLiveData<>();
     private MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
-    private MutableLiveData<List<GoodsBean>> goodsList = new MutableLiveData<>();
+    private MutableLiveData<List<ZBGoodsBean>> goodsList = new MutableLiveData<>();
 
     private void initEvent() {
-        setSuccess.observe((LifecycleOwner) getContext(), setSuccess ->{
+        setSuccess.observe((LifecycleOwner) getContext(), setSuccess -> {
             if (setSuccess != null) {
-                //刷新列表
-                if (mAdapter.getData().get(nowPos).canExplain) {
+                mAdapter.getData().get(nowPos).setCanExplain(!mAdapter.getData().get(nowPos).getCanExplain());
+                String jsonString = JSON.toJSONString(mAdapter.getData().get(nowPos));
+                LogUtils.v("--", jsonString);
+                if (mAdapter.getData().get(nowPos).getCanExplain()) {
                     //主播群发消息通知大家获取直播中带货信息
-                    RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS,0));
-                }else {
+                    RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS, jsonString));
+                } else {
                     //主播群发消息通知大家取消带货信息
-                    RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS_CANCEL,0));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS_CANCEL, jsonString));
                 }
+                getGoodsList();
 
+            }
+        });
+        dismissDialog.observe((LifecycleOwner) getContext(), dismissDialog ->{
+            if (dismissDialog != null) {
+                if (dismissDialog) {
+                    loadingDialog.dismiss();
+                }
             }
         });
 
@@ -130,11 +153,15 @@ public class ZBGoodsListPop extends BasePopupWindow {
                 if (goodsBeans.size() == 0) {
                     mAdapter.setEmptyView(emptyView);
                 } else {
-                    for (GoodsBean goodsBean : goodsBeans) {
+                    for (ZBGoodsBean goodsBean : goodsBeans) {
                         goodsBean.type = type;
                     }
-
-                    mAdapter.setNewInstance(goodsBeans);
+                    tvTitle.setText("直播商品(" + goodsBeans.size() + ")");
+                    if (mAdapter.getData().size() > 0) {
+                        mAdapter.setList(goodsBeans);
+                    } else {
+                        mAdapter.setNewInstance(goodsBeans);
+                    }
                 }
             }
         });

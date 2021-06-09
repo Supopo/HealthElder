@@ -113,7 +113,7 @@
                     android:layout_height="@dimen/dp_32"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:src="@mipmap/login_logo"
+                    android:src="@mipmap/default_avatar"
                     app:qmui_border_color="@color/transparent"
                     app:qmui_is_circle="true" />
 

@@ -57,6 +57,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.SendGiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCUserInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
@@ -64,11 +65,14 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -130,6 +134,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private ZBGiftListPop zbGiftListPop;
     private int screenWidth;
     private int screenHeight;
+    private ZBGoodsListPop zbGoodsListPop;
 
 
     @Override
@@ -1307,6 +1312,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_SHOW_GOODS://带货消息
                 binding.rlShowGood.setVisibility(View.VISIBLE);
                 //调接口获取当前带货信息
+                String json = (String) message;
+                ZBGoodsBean goodBean = JSON.parseObject(json, ZBGoodsBean.class);
+                GlideUtil.intoImageView(this, UrlUtils.resetImgUrl(goodBean.imageUrl, 400, 400), binding.rivGood);
+                binding.tvGoodName.setText(goodBean.title);
+                binding.tvGoodPrice.setText("" + goodBean.maxSalesPrice);
+
                 break;
             case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://取消带货消息
                 binding.rlShowGood.setVisibility(View.GONE);
@@ -1492,6 +1503,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.btnLianmai.setOnClickListener(this);
         binding.btnJtfz.setOnClickListener(this);
         binding.btnGift.setOnClickListener(this);
+        binding.btnGoods.setOnClickListener(this);
     }
 
     @Override
@@ -1579,6 +1591,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 }
                 zbGiftListPop.showPopupWindow();
                 break;
+            case R.id.btn_goods:
+                zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.liveRoomId, 2);
+                zbGoodsListPop.showPopupWindow();
             default:
                 break;
         }

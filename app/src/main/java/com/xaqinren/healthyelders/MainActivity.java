@@ -189,13 +189,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         initDrawer();
         disableDrawer();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                viewModel.checkVersion();
-            }
-        },500);
+
         viewModel.getAppConfig();
+        viewModel.checkVersion();
+
     }
 
     @Override

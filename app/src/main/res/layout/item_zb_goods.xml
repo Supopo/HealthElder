@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean" />
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean" />
 
         <import type="android.view.View" />
     </data>
@@ -39,7 +39,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/view_line"
                 android:src="@color/color_F3F3F3"
-                app:url="@{viewModel.imageUrls}"
+                app:url="@{viewModel.imageUrl}"
                 app:qmui_border_color="@color/transparent"
                 app:qmui_corner_radius="@dimen/dp_2" />
 
@@ -108,7 +108,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toRightOf="@+id/tv_price_unit"
                 android:layout_weight="1"
-                android:text="@{viewModel.minSalesPrice}"
+                android:text="@{String.valueOf(viewModel.maxSalesPrice)}"
                 android:textColor="@color/color_DC3530"
                 android:textSize="@dimen/sp_18" />
 

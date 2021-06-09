@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
@@ -879,7 +880,7 @@ public class LiveRepository {
                 });
     }
 
-    public void getZbGoodsLis(MutableLiveData<List<GoodsBean>> goodsList, String liveRoomId) {
+    public void getZbGoodsLis(MutableLiveData<List<ZBGoodsBean>> goodsList, String liveRoomId) {
         userApi.getZbGoodsList(UserInfoMgr.getInstance().getHttpToken(), liveRoomId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -888,28 +889,28 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<List<GoodsBean>>>() {
+                .subscribe(new CustomObserver<MBaseResponse<List<ZBGoodsBean>>>() {
                     @Override
                     protected void dismissDialog() {
 
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<List<GoodsBean>> data) {
+                    protected void onSuccess(MBaseResponse<List<ZBGoodsBean>> data) {
                         goodsList.postValue(data.getData());
                     }
 
                 });
     }
 
-    public void setZBGoodsShow(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> setSuccess, String commodityId, String liveRoomId, boolean canExplain) {
+    public void setZBGoodsShow(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> setSuccess, String liveRoomId, String commodityId, boolean canExplain) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("liveRoomId", liveRoomId);
         hashMap.put("commodityId", commodityId);
         hashMap.put("canExplain", canExplain);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.receiptOrder(UserInfoMgr.getInstance().getHttpToken(), body)
+        userApi.setZBGoodsShow(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {

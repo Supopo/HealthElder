@@ -433,7 +433,7 @@
             android:layout_marginBottom="@dimen/dp_15"
             android:background="@drawable/bg_place_w_r5"
             android:padding="@dimen/dp_2"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <com.qmuiteam.qmui.widget.QMUIRadiusImageView
@@ -472,7 +472,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/iv_close"
+                android:id="@+id/iv_closeGood"
                 android:layout_width="@dimen/dp_13"
                 android:layout_height="@dimen/dp_13"
                 android:layout_alignParentRight="true"
@@ -481,6 +481,7 @@
                 android:background="@mipmap/icon_close" />
 
             <TextView
+                android:id="@+id/tv_goodName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/riv_good"
@@ -506,10 +507,10 @@
                     android:textSize="@dimen/sp_12" />
 
                 <TextView
+                    android:id="@+id/tv_goodPrice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="99.9"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_14" />
 

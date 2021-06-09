@@ -53,7 +53,16 @@ public class GoodsBean {
 
     public String appId;//": 99
     public String jumpUrl;//": 99
-    public boolean canExplain;//是否在讲解
+
+    public Boolean getCanExplain() {
+        return canExplain == null ? false : canExplain;
+    }
+
+    public void setCanExplain(Boolean canExplain) {
+        this.canExplain = canExplain;
+    }
+
+    public Boolean canExplain;//是否在讲解
 
 
     public String getMaxSalesPrice() {

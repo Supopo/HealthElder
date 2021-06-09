@@ -1405,7 +1405,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 zbMorePop.showPopupWindow();
                 break;
             case R.id.btn_goods:
-                zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.id,1);
+                zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.liveRoomId,1);
                 zbGoodsListPop.showPopupWindow();
                 break;
         }
@@ -1601,10 +1601,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     binding.view.setLayoutParams(params1);
                     break;
                 case LiveConstants.IMCMD_SHOW_GOODS://群发带货消息
-                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS),0,null);
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS),eventBean.content,null);
                     break;
                 case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://群发取消带货消息
-                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS_CANCEL),0,null);
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS_CANCEL),"",null);
                     break;
                 default:
                     break;

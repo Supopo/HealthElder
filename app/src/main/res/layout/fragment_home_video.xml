@@ -398,6 +398,8 @@
 
             </RelativeLayout>
 
+
+
             <LinearLayout
                 android:id="@+id/llZhiBoTip"
                 android:layout_width="match_parent"
@@ -469,8 +471,14 @@
                 android:layout_centerInParent="true"
                 android:background="@mipmap/ic_video_play"
                 android:visibility="gone" />
-
         </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}"
+            android:id="@+id/rl_click"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
     </RelativeLayout>
 </layout>
