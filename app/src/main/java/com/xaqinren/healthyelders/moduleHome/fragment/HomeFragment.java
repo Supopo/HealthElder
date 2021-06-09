@@ -76,6 +76,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private MenuAdapter menu2Adapter;
     private Disposable uniSubscribe;
     private int clickIndex;
+    private int oldWidth;
 
 
     @Override
@@ -112,11 +113,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //隐藏TabLayout
                         binding.rlTabMenu.setVisibility(View.GONE);
 
+                        //推荐viewPager2 变窄
+                        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+                        setCardWidth(screenWidth - dimension);
+                        binding.cardView.setRadius(getResources().getDimension(R.dimen.dp_14));
+
                         if (AppApplication.get().getLayoutPos() == 0) {
-                            //推荐viewPager2 变窄
-                            int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-                            tjFragment.setCardWidth(screenWidth - dimension);
-                            tjFragment.tjCardView.setRadius(getResources().getDimension(R.dimen.dp_14));
+
                             tjFragment.tjViewPager2.setUserInputEnabled(false);
                         } else if (AppApplication.get().getLayoutPos() == 1) {
                             gzFragment.setVP2Enabled(false);
@@ -175,6 +178,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     }
 
+    public void setCardWidth(int width) {
+        ViewGroup.LayoutParams params = binding.cardView.getLayoutParams();
+        params.width = width;
+        binding.cardView.setLayoutParams(params);
+    }
+
     public void resetVVPHeight() {
         ViewGroup.LayoutParams layoutParams = binding.viewPager2.getLayoutParams();
         layoutParams.height = MScreenUtil.getScreenHeight(getActivity());
@@ -203,6 +212,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         vp2 = binding.viewPager2;
         binding.viewPager2.setUserInputEnabled(false);
 
+
+        //变窄viewPager2
+        ViewGroup.LayoutParams params = binding.cardView.getLayoutParams();
+        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+        oldWidth = screenWidth - dimension;
+        params.height = MScreenUtil.getScreenHeight(getActivity());
+        params.width = screenWidth - dimension;
+        binding.cardView.setLayoutParams(params);
 
         binding.viewPager2.setAdapter(vp2Adapter);
         binding.viewPager2.setOffscreenPageLimit(2);
@@ -252,11 +269,11 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     binding.viewPager2.setUserInputEnabled(true);
                     binding.rlTop.setVisibility(View.GONE);
 
+                    //ViewPager2变宽
+                    setCardWidth(screenWidth);
+                    binding.cardView.setRadius(0);
                     if (AppApplication.get().getLayoutPos() == 0) {
                         tjFragment.tjViewPager2.setUserInputEnabled(true);
-                        //推荐ViewPager2变宽
-                        tjFragment.setCardWidth(screenWidth);
-                        tjFragment.tjCardView.setRadius(0);
                         //判断第一次
                         //设置开始播放第一条
                         if (AppApplication.get().getTjPlayPosition() < 0) {
@@ -289,18 +306,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         return;
                     }
 
-                    if (AppApplication.get().getLayoutPos() == 0) {
-                        //h滑动237 w加宽20
-                        //推荐ViewPager2逐渐变宽
+                    //h滑动237 w加宽20
+                    //ViewPager2逐渐变宽
 
-                        float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
-                        ViewGroup.LayoutParams params = tjFragment.tjCardView.getLayoutParams();
-                        params.width = tjFragment.oldWidth + (int) ((float) (scrollY) * bb);
+                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
+                    ViewGroup.LayoutParams params = binding.cardView.getLayoutParams();
+                    params.width = oldWidth + (int) ((float) (scrollY) * bb);
+                    binding.cardView.setLayoutParams(params);
 
-                        tjFragment.tjCardView.setLayoutParams(params);
-                    } else if (AppApplication.get().getLayoutPos() == 2) {
-
-                    }
 
                     //主页底部菜单背景颜色从白变透明
                     float colorBb = 10 / getResources().getDimension(R.dimen.dp_247);

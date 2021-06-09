@@ -145,12 +145,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         screenWidth = MScreenUtil.getScreenWidth(getActivity());
 
         //变窄viewPager2
-        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
-        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-        params.height = MScreenUtil.getScreenHeight(getActivity());
-        params.width = screenWidth - dimension;
-        oldWidth = screenWidth - dimension;
-        tjCardView.setLayoutParams(params);
+//        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
+//        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+//        params.height = MScreenUtil.getScreenHeight(getActivity());
+//        params.width = screenWidth - dimension;
+//        oldWidth = screenWidth - dimension;
+//        tjCardView.setLayoutParams(params);
         initVideoViews();
     }
 

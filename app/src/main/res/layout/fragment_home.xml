@@ -11,9 +11,9 @@
 
     <com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView
         android:id="@+id/nsv"
-        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <RelativeLayout
             android:id="@+id/rl_all"
@@ -21,10 +21,10 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
-                android:layout_marginBottom="@dimen/dp_10"
                 android:id="@+id/rl_top"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_237">
+                android:layout_height="@dimen/dp_237"
+                android:layout_marginBottom="@dimen/dp_10">
 
                 <RelativeLayout
                     android:id="@+id/rl_menu1"
@@ -71,12 +71,23 @@
 
             </RelativeLayout>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager2"
+            <androidx.cardview.widget.CardView
+                android:layout_below="@id/rl_top"
+                android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/rl_top"
-                android:overScrollMode="never" />
+                android:layout_centerHorizontal="true"
+                app:cardCornerRadius="@dimen/dp_14"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never" />
+            </androidx.cardview.widget.CardView>
 
             <!--        推荐 关注 附近-->
             <RelativeLayout
