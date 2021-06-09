@@ -15,6 +15,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
@@ -854,6 +855,7 @@ public class LiveRepository {
 
                 });
     }
+
     public void getJinYanList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<BaseListRes<List<ZBUserListBean>>> userList, int page, String liveRoomRecordId) {
         userApi.getJinYanList(UserInfoMgr.getInstance().getHttpToken(), page, 10, liveRoomRecordId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
@@ -874,6 +876,52 @@ public class LiveRepository {
                         userList.postValue(data.getData());
                     }
 
+                });
+    }
+
+    public void getZbGoodsLis(MutableLiveData<List<GoodsBean>> goodsList, String liveRoomId) {
+        userApi.getZbGoodsList(UserInfoMgr.getInstance().getHttpToken(), liveRoomId)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<List<GoodsBean>>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<List<GoodsBean>> data) {
+                        goodsList.postValue(data.getData());
+                    }
+
+                });
+    }
+
+    public void setZBGoodsShow(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> setSuccess, String commodityId, String liveRoomId, boolean canExplain) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("liveRoomId", liveRoomId);
+        hashMap.put("commodityId", commodityId);
+        hashMap.put("canExplain", canExplain);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.receiptOrder(UserInfoMgr.getInstance().getHttpToken(), body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        setSuccess.postValue(true);
+                    }
                 });
     }
 }

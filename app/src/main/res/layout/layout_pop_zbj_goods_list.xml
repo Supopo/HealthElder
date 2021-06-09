@@ -13,10 +13,10 @@
             android:id="@+id/rl_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_452"
-            android:paddingBottom="@dimen/dp_16"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bg_pop_bottom"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_16">
 
             <RelativeLayout
                 android:id="@+id/rl_title"
@@ -63,11 +63,18 @@
                 android:layout_below="@id/rl_title"
                 android:background="@color/color_F3F3F3" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_list"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/srl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/line" />
+                android:layout_below="@id/line">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </RelativeLayout>
     </RelativeLayout>

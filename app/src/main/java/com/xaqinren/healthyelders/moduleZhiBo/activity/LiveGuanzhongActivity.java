@@ -1129,7 +1129,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_TEXT_MSG:
-                toRecvTextMsg(userInfo, (String)message, LiveConstants.IMCMD_TEXT_MSG);
+                toRecvTextMsg(userInfo, (String) message, LiveConstants.IMCMD_TEXT_MSG);
                 break;
             case LiveConstants.IMCMD_ENTER_LIVE:
                 //用户进入房间消息
@@ -1303,6 +1303,13 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     binding.btnGift.setVisibility(View.GONE);
                     mLiveInitInfo.setCanGift(false);
                 }
+                break;
+            case LiveConstants.IMCMD_SHOW_GOODS://带货消息
+                binding.rlShowGood.setVisibility(View.VISIBLE);
+                //调接口获取当前带货信息
+                break;
+            case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://取消带货消息
+                binding.rlShowGood.setVisibility(View.GONE);
                 break;
             default:
                 break;

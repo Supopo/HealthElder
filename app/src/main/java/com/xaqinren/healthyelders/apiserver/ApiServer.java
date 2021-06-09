@@ -532,5 +532,12 @@ public interface ApiServer {
     //查看APP配置
     @GET("jkzl/open/findAppConfigInfo")
     Observable<MBaseResponse<AppConfigBean>> getAppConfig();
+    //直播间带货列表
+    @GET("live/findCommodityByLiveRoomId")
+    Observable<MBaseResponse<List<GoodsBean>>> getZbGoodsList(@Header("Authorization") String authorization, @Query("liveRoomId") String liveRoomId);
+
+    //直播中商品设置/取消讲解
+    @POST("live/liveCommodityExplain")
+    Observable<MBaseResponse<Object>> setZBGoodsShow(@Header("Authorization") String authorization, @Body RequestBody requestBody);
 }
 

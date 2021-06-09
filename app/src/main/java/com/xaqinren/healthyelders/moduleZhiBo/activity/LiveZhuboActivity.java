@@ -67,6 +67,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBLinkUsersPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMorePop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
@@ -154,6 +155,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private int screenHeight;
     private ZBMorePop zbMorePop;
     private ZBUserInfoPop userInfoPop;
+    private ZBGoodsListPop zbGoodsListPop;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -1367,6 +1369,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.btnBack.setOnClickListener(this);
         binding.tvMsg.setOnClickListener(this);
         binding.btnLianmai.setOnClickListener(this);
+        binding.btnGoods.setOnClickListener(this);
         binding.tvMembersNum.setOnClickListener(this);
     }
 
@@ -1400,6 +1403,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case R.id.btn_more:
                 zbMorePop = new ZBMorePop(this, mLiveRoom, mLiveInitInfo);
                 zbMorePop.showPopupWindow();
+                break;
+            case R.id.btn_goods:
+                zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.id,1);
+                zbGoodsListPop.showPopupWindow();
                 break;
         }
     }
@@ -1592,6 +1599,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     ViewGroup.LayoutParams params1 = binding.view.getLayoutParams();
                     params1.height = 0;
                     binding.view.setLayoutParams(params1);
+                    break;
+                case LiveConstants.IMCMD_SHOW_GOODS://群发带货消息
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS),0,null);
+                    break;
+                case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://群发取消带货消息
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS_CANCEL),0,null);
+                    break;
+                default:
                     break;
             }
         });

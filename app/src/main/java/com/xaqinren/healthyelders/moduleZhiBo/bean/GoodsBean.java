@@ -15,6 +15,7 @@ public class GoodsBean {
     public String cover;//
     public String name;//
     public boolean isSelect;//
+    public int type;//0-开启直播 1-主播页面 2-观众页面
 
     public int getPlaceholderRes() {
         return ColorsUtils.randomColor();
@@ -31,6 +32,7 @@ public class GoodsBean {
     public String commodityTypeId;//": "1395619916844900352",
     public String commodityCategory;//": "女装,妈妈装",
     public String commodityTags;//": "",
+    public String imageUrls;//": "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0D/rBBcQmCsxRKAQGb1AAK35_yfleU118.jpg",
     public String imageUrl;//": "http://oss.hjyiyuanjiankang.com/qnx0/M00/00/0D/rBBcQmCsxRKAQGb1AAK35_yfleU118.jpg",
     public String commodityCode;//": "C00000163",
     public String spellCode;//": "zhong lao nian jia fei da ma nv zhuang xia ji xin kuan shi shang tao zhuang ma ma zhuang kuan song shang yi kuo tui ku liang jian tao",
@@ -48,8 +50,11 @@ public class GoodsBean {
     public int totalSoldCount;//": 0,
     public double minSalesPrice;//": 89.1,
     public double maxSalesPrice;//": 99
+
     public String appId;//": 99
     public String jumpUrl;//": 99
+    public boolean canExplain;//是否在讲解
+
 
     public String getMaxSalesPrice() {
         BigDecimal maxPrice = new BigDecimal(maxSalesPrice).setScale(2, 1);

@@ -113,6 +113,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private LiveZhuboViewModel liveZbViewModel;
     private List<MenuBean> menus;
     private Disposable disposable;
+    private ZBGoodsListPop zbGoodsListPop;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -178,9 +179,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     showLJPop();
                     break;
                 case "商品":
-//                    UniService.startService(getActivity(), mLiveInitInfo.appId, 0x10112, mLiveInitInfo.jumpUrl);
-//                    startActivity(MyGoodsListActivity.class);
-                    ZBGoodsListPop zbGoodsListPop = new ZBGoodsListPop(getActivity());
+                    //                    UniService.startService(getActivity(), mLiveInitInfo.appId, 0x10112, mLiveInitInfo.jumpUrl);
+                    zbGoodsListPop = new ZBGoodsListPop(getActivity(), mLiveInitInfo.id,0);
                     zbGoodsListPop.showPopupWindow();
                     break;
                 case "私密":
@@ -692,9 +692,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     }
 
     public void onActivityStop() {
-        mLiveRoom.stopBGM();
-        mLiveRoom.stopLocalPreview();
-        mLiveRoom.stopScreenCapture();
+        try {
+            mLiveRoom.stopBGM();
+            mLiveRoom.stopLocalPreview();
+            mLiveRoom.stopScreenCapture();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onActivityRestart() {

@@ -170,6 +170,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         if (check)
             LocationService.startService(this);
+
         UniService.startService(this);
 
 
@@ -232,7 +233,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
             //获取UserSig
             viewModel.getUserSig(accessToken);
-            viewModel.getGiftList();
+//            viewModel.getGiftList();
         }
 
     }
