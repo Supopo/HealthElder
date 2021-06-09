@@ -41,7 +41,7 @@ public class LiveInitInfo implements Serializable {
     public String avatarUrl;//":主播头像
     public String pullStreamUrl;// 拉流地址
     public double accountBalance;//0, // 账户余额
-    public Object commodityInfoDto;//null, // 讲解中商品
+    public ZBGoodsBean commodityInfoDto;//null, // 讲解中商品
     public Boolean hasIntroduce;//":true, 是否开启介绍
     public Boolean canSale;//false, // 是否允许卖货，0：否；1：是
     public Boolean canMic;//true,//  是否允许连麦  0: 否; 1:是
@@ -60,7 +60,6 @@ public class LiveInitInfo implements Serializable {
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
     public LiveLevelInfo liveRoomLevel = new LiveLevelInfo();//直播间等级信息
     public ShareBean share;
-
 
     public Boolean getAdminCanMuteAuth() {
         return adminCanMuteAuth == null ? false : adminCanMuteAuth;

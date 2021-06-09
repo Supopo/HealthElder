@@ -2142,13 +2142,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         customMessage.userName = mSelfAccountInfo.userName;
         customMessage.userAvatar = mSelfAccountInfo.userAvatar;
         customMessage.userLevel = mSelfAccountInfo.userLevel;
-        if (cmd.equals(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS))) {
-            customMessage.cmd = "CustomProductMsg";
-            customMessage.commodityInformation = new Gson().fromJson(message, GoodsBean.class);
-        } else {
-            customMessage.cmd = "CustomCmdMsg";
-            cm.msg = message;
-        }
+        customMessage.cmd = "CustomCmdMsg";
+        cm.msg = message;
         final String content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
         }.getType());
 

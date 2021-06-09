@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,6 +53,7 @@ public class ZBGoodsListPop extends BasePopupWindow {
     private View emptyView;
     private int type;
     private LoadingDialog loadingDialog;
+    private ImageView ivBack;
 
     public ZBGoodsListPop(Context context, String liveRoomId, int type) {
         super(context);
@@ -69,6 +71,7 @@ public class ZBGoodsListPop extends BasePopupWindow {
         loadingDialog = new LoadingDialog(getContext());
 
         srl = findViewById(R.id.srl);
+        ivBack = findViewById(R.id.iv_back);
         tvGl = findViewById(R.id.tv_gl);
         tvTitle = findViewById(R.id.tv_title);
         rvList = findViewById(R.id.rv_list);
@@ -96,6 +99,9 @@ public class ZBGoodsListPop extends BasePopupWindow {
             }
         });
 
+        ivBack.setOnClickListener(lis -> {
+            dismiss();
+        });
         mAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -125,7 +131,7 @@ public class ZBGoodsListPop extends BasePopupWindow {
 
     private void initEvent() {
         setSuccess.observe((LifecycleOwner) getContext(), setSuccess -> {
-            if (setSuccess != null) {
+            if (setSuccess != null && setSuccess) {
                 mAdapter.getData().get(nowPos).setCanExplain(!mAdapter.getData().get(nowPos).getCanExplain());
                 String jsonString = JSON.toJSONString(mAdapter.getData().get(nowPos));
                 LogUtils.v("--", jsonString);
@@ -134,13 +140,13 @@ public class ZBGoodsListPop extends BasePopupWindow {
                     RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS, jsonString));
                 } else {
                     //主播群发消息通知大家取消带货信息
-                    RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS_CANCEL, jsonString));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS_CANCEL, ""));
                 }
                 getGoodsList();
 
             }
         });
-        dismissDialog.observe((LifecycleOwner) getContext(), dismissDialog ->{
+        dismissDialog.observe((LifecycleOwner) getContext(), dismissDialog -> {
             if (dismissDialog != null) {
                 if (dismissDialog) {
                     loadingDialog.dismiss();

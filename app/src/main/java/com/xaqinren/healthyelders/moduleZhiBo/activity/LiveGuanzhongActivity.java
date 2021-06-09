@@ -202,6 +202,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         //直播间禁止带货
         if (!mLiveInitInfo.getCanSale()) {
             binding.btnGoods.setVisibility(View.GONE);
+        } else {
+            if (mLiveInitInfo.commodityInfoDto != null) {
+                initZBGoodsBean(mLiveInitInfo.commodityInfoDto);
+            }
         }
         //直播间禁止连麦
         if (!mLiveInitInfo.getCanMic()) {
@@ -1310,13 +1314,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 }
                 break;
             case LiveConstants.IMCMD_SHOW_GOODS://带货消息
-                binding.rlShowGood.setVisibility(View.VISIBLE);
                 //调接口获取当前带货信息
                 String json = (String) message;
+                LogUtils.v("-------------","json"+json);
                 ZBGoodsBean goodBean = JSON.parseObject(json, ZBGoodsBean.class);
-                GlideUtil.intoImageView(this, UrlUtils.resetImgUrl(goodBean.imageUrl, 400, 400), binding.rivGood);
-                binding.tvGoodName.setText(goodBean.title);
-                binding.tvGoodPrice.setText("" + goodBean.maxSalesPrice);
+                initZBGoodsBean(goodBean);
 
                 break;
             case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://取消带货消息
@@ -1325,6 +1327,13 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             default:
                 break;
         }
+    }
+
+    private void initZBGoodsBean(ZBGoodsBean goodBean) {
+        binding.rlShowGood.setVisibility(View.VISIBLE);
+        GlideUtil.intoImageView(this, UrlUtils.resetImgUrl(goodBean.imageUrl, 400, 400), binding.rivGood);
+        binding.tvGoodName.setText(goodBean.title);
+        binding.tvGoodPrice.setText("" + goodBean.maxSalesPrice);
     }
 
     private void startMoreLinkAnim() {
@@ -1504,6 +1513,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.btnJtfz.setOnClickListener(this);
         binding.btnGift.setOnClickListener(this);
         binding.btnGoods.setOnClickListener(this);
+        binding.ivCloseGood.setOnClickListener(this);
     }
 
     @Override
@@ -1594,6 +1604,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case R.id.btn_goods:
                 zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.liveRoomId, 2);
                 zbGoodsListPop.showPopupWindow();
+            case R.id.iv_closeGood:
+                binding.rlShowGood.setVisibility(View.GONE);
+                break;
             default:
                 break;
         }
