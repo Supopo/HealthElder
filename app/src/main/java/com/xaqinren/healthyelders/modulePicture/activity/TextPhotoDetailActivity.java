@@ -333,7 +333,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
         viewModel.follow.observe(this, follow -> {
             if (follow) {
-                diaryInfoBean.hasFavorite = !diaryInfoBean.hasFavorite;
+                diaryInfoBean.hasAttention = !diaryInfoBean.hasAttention;
                 follow();
             }
         });
@@ -570,7 +570,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     }
 
     private void follow() {
-        binding.guanzhu.setText(diaryInfoBean.hasFavorite ? "已关注" : "关注");
+        binding.guanzhu.setText(diaryInfoBean.hasAttention ? "已关注" : "关注");
     }
 
 

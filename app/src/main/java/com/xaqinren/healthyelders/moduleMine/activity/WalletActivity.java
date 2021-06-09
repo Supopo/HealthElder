@@ -79,7 +79,7 @@ public class WalletActivity extends BaseActivity<ActivityWalletBinding, WalletVi
                 startActivity(SelectLoginActivity.class);
                 return;
             }
-            UniService.startService(this, Constant.JKZL_MINI_APP_ID, 0x10009, "pages_user/wallet/bankCardList");
+            UniService.startService(this, Constant.JKZL_MINI_APP_ID, 0x10009, Constant.MINI_BANK_CARD_LIST);
         });
 
         binding.createLive.setOnClickListener(v -> {

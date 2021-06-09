@@ -75,7 +75,7 @@ public class OrderListAdapter extends BaseQuickAdapter<OrderListBean, BaseViewHo
             }
             UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, uniSubKey, orderListBean.getJumpUrl());
         });
-        GlideUtil.intoImageView(getContext(),orderListBean.getStoreLogo(),binding.storeLogo);
+        GlideUtil.intoImageView(getContext(),orderListBean.getStoreLogo(),binding.storeLogo, (int) getContext().getResources().getDimension(R.dimen.dp_2));
         String status = orderListBean.getQueryStatus();
         int childCount = binding.orderStatusLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -103,7 +103,7 @@ public class OrderListAdapter extends BaseQuickAdapter<OrderListBean, BaseViewHo
             //交易成功,待评价
             binding.orderStatusLayout.setVisibility(View.VISIBLE);
             binding.scdd.setVisibility(View.VISIBLE);
-            binding.sqsh.setVisibility(View.VISIBLE);
+            binding.sqsh.setVisibility(View.GONE);
             binding.pj.setVisibility(View.VISIBLE);
         } else if (status.equals("CANCELED")) {
             //交易关闭

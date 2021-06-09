@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.airbnb.lottie.L;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -33,12 +29,13 @@ import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
+import org.json.JSONObject;
+
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import retrofit2.http.POST;
 
 /**
  * 订单列表
@@ -57,6 +54,7 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
     private boolean visibleToUser;
     private boolean isCanInitData;
     private int balance;
+    private int clickItem;
 
     public OrderListFragment(int type) {
         this.type = type ;
@@ -131,6 +129,7 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> a, @NonNull View view, int position) {
                 //跳转详情
+                clickItem = position;
                 LogUtils.e(TAG, "onItemChildClick ->" + position);
                 switch (view.getId()) {
                     case R.id.store_name:
@@ -138,6 +137,7 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
                         break;
                     case R.id.xgdz:
                         //修改地址
+                        UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, 0x10032, adapter.getData().get(position).getAddressUrl());
                         break;
                     case R.id.qxdd:
                         //取消订单
@@ -148,6 +148,7 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
                         break;
                     case R.id.ckwl:
                         //查看物流
+                        UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, uniSubKey, adapter.getData().get(position).getJumpUrl());
                         break;
                     case R.id.scdd:
                         showDelOrder(adapter.getData().get(position));
@@ -256,6 +257,9 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
             if (event != null) {
                 if (event.msgId == CodeTable.UNI_RELEASE) {
                     if (event.taskId == uniSubKey) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    } else if (event.taskId == 0x10032) {
+                        if (adapter==null)return;
                         UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
                     }
                 } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {

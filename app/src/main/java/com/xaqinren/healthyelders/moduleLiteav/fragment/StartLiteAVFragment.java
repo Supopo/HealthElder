@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.Constant;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.SelectorMediaActivity;
+import com.xaqinren.healthyelders.modulePicture.activity.TackPictureActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
@@ -73,6 +75,7 @@ import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.RecordButton;
 import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,16 +147,17 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                     VideoRecordSDK.getInstance().getRecorder().stopBGM();
                     VideoRecordSDK.getInstance().stopCameraPreview();
                 }  else {
+                    VideoRecordSDK.getInstance().initSDK();
                     if (integer.intValue() == 2) {
                         //变为拍照模式
                         currentMode = RecordButton.PHOTO_MODE;
                         changePhotoMode();
                     }else{
                         currentMode = RecordButton.VIDEO_MODE;
+                        VideoRecordSDK.getInstance().getRecorder().resumeBGM();
                         changeVideoMode();
                     }
                     //重新加载
-                    VideoRecordSDK.getInstance().getRecorder().resumeBGM();
                     VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
                 }
             }
@@ -269,8 +273,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 //调用SDK拍照
                 PhotoSoundPlayer.playPhotoSound();
                 VideoRecordSDK.getInstance().takePhoto(bitmap -> {
-                    LogUtils.e(TAG, getContext().getFilesDir().getAbsolutePath());
-                    photoPath = FileUtil.saveBitmap(getContext().getFilesDir().getAbsolutePath(), bitmap);
+                    File directory_pictures = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                    photoPath = FileUtil.saveBitmap(directory_pictures.getAbsolutePath(), bitmap);
                     binding.photoPreview.rlContainer.setVisibility(View.VISIBLE);
                     binding.photoPreview.photoPreviewIv.setImageBitmap(bitmap);
                     holderScreen = true;
@@ -284,6 +288,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         binding.recodeBtn.setRecodeProgressBarWidth((int) getResources().getDimension(R.dimen.dp_6));
         binding.recordSpeedLayout.setOnRecordSpeedListener(speed -> liteAvRecode.setRecodeSpeed(speed));
         binding.photoPreview.cancel.setOnClickListener(view -> {
+            File file = new File(photoPath);
+            file.deleteOnExit();
             photoPath = "";
             holderScreen = false;
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
@@ -296,10 +302,15 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             ArrayList<String> paths = new ArrayList<>();
             paths.add(photoPath);
             intent.putExtra(Constant.PHOTO_PATH, paths);
-            startActivity(intent);
             if (onFragmentStatusListener!=null)
                 onFragmentStatusListener.isRecode(false);
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
+            if (getActivity() instanceof TackPictureActivity) {
+                getActivity().setResult(Activity.RESULT_OK,intent);
+                getActivity().finish();
+            }else{
+                startActivity(intent);
+            }
         });
     }
 
@@ -697,7 +708,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             binding.recordSpeedLayout.setVisibility(View.GONE);
             binding.recodeTime.setVisibility(View.INVISIBLE);
             binding.galleryLayout.setVisibility(View.VISIBLE);
-            binding.selMusic.setVisibility(View.VISIBLE);
+            if (currentMode == RecordButton.VIDEO_MODE)
+                binding.selMusic.setVisibility(View.VISIBLE);
             binding.recodeBtn.setVisibility(View.VISIBLE);
             binding.rightPanel.setVisibility(View.VISIBLE);
     }
@@ -793,6 +805,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     public void onActivityRestart(){
         liteAvRecode.restart();
+        VideoRecordSDK instance = VideoRecordSDK.getInstance();
+        instance.initSDK();
         VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
         RecordMusicManager.getInstance().deleteMusic();
         if (MusicRecode.getInstance().getUseMusicItem() != null) {

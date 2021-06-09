@@ -8,6 +8,15 @@ public class FriendBean extends MessageDetailBean{
     private String avatarUrl;
     private String userId;
     private String mobileNumber;
+    private ShareDTO share;
+
+    public ShareDTO getShare() {
+        return share;
+    }
+
+    public void setShare(ShareDTO share) {
+        this.share = share;
+    }
 
     public String getMobileNumber() {
         return mobileNumber;
@@ -68,5 +77,53 @@ public class FriendBean extends MessageDetailBean{
     @Override
     public int getItemType() {
         return TYPE_FRIEND;
+    }
+
+    public static class ShareDTO {
+        private String recommendedCode;
+        private String smsTemplate;
+        private String title;
+        private String url;
+        private String introduce;
+
+        public String getRecommendedCode() {
+            return recommendedCode;
+        }
+
+        public void setRecommendedCode(String recommendedCode) {
+            this.recommendedCode = recommendedCode;
+        }
+
+        public String getSmsTemplate() {
+            return smsTemplate;
+        }
+
+        public void setSmsTemplate(String smsTemplate) {
+            this.smsTemplate = smsTemplate;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getIntroduce() {
+            return introduce;
+        }
+
+        public void setIntroduce(String introduce) {
+            this.introduce = introduce;
+        }
     }
 }

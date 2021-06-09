@@ -433,11 +433,11 @@ public interface ApiServer {
     Observable<MBaseResponse<Object>> postUserContact(@Header("Authorization") String authorization, @Body RequestBody body);
 
     //通讯录好友
-    @GET("user/findRecommendContactFriends")
+    @GET("jkzl/findRecommendContactFriends")
     Observable<MBaseResponse<List<FriendBean>>> getRecommendContactF(@Header("Authorization") String authorization);
 
     //推荐好友
-    @GET("user/findRecommendUserFriends")
+    @GET("jkzl/findRecommendUserFriends")
     Observable<MBaseResponse<List<FriendBean>>> getRecommendF(@Header("Authorization") String authorization);
 
     //发送礼物

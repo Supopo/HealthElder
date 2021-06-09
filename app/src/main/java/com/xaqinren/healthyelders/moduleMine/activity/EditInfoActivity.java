@@ -30,6 +30,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -64,6 +65,7 @@ import java.util.List;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.Utils;
+import razerdp.basepopup.BasePopupWindow;
 
 public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, EditInfoViewModel> {
     private List<EditMenuBean> editMenuBeans = new ArrayList<>();
@@ -301,6 +303,13 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
             listBottomPopup.dismiss();
         });
         listBottomPopup.showPopupWindow();
+        ScreenUtils.setWindowAlpha(getContext(), 1.0f, 0.6f, 400);
+        listBottomPopup.setOnDismissListener(new BasePopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                ScreenUtils.setWindowAlpha(getContext(), 0.6f, 1.0f, 200);
+            }
+        });
 
     }
     private void toCamera() {

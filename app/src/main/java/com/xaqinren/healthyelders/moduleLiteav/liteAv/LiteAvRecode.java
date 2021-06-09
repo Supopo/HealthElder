@@ -99,6 +99,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         VideoRecordSDK.getInstance().setVideoRecordListener(this);
         VideoRecordSDK.getInstance().setConfig(config);
         VideoRecordSDK.getInstance().updateBeautyParam(config.mBeautyParams);
+        cameraSwitch = true;
     }
 
     public UGCKitRecordConfig getRecodeConfig(){
@@ -121,6 +122,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
     }
 
     public void switchCamera() {
+
         cameraSwitch = !cameraSwitch;
         LogUtils.i(StartLiteAVFragment.class.getSimpleName(), "cameraSwitch="+cameraSwitch);
         recodeLiteListener.isCameraFront(cameraSwitch);

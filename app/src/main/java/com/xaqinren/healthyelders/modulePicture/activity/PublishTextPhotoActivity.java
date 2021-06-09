@@ -120,11 +120,12 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent!=null) {
+        /*if (intent!=null) {
             ArrayList<String> path = getIntent().getStringArrayListExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
             removeLast();
             addLast(path.get(0));
-        }
+
+        }*/
     }
 
     @Override
@@ -644,8 +645,10 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             }
             else if (requestCode == REQUEST_CAMERA) {
                 removeLast();
-                List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                String path = result.get(0).getPath();
+                /*List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
+                String path = result.get(0).getPath();*/
+                ArrayList<String> stringArrayListExtra = data.getStringArrayListExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
+                String path = stringArrayListExtra.get(0);
                 addLast(path);
             }
             else if (requestCode == AT_CODE) {
@@ -761,6 +764,16 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
         startActivity(MainActivity.class);
         finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 
     private List<String> getUploadFiles() {

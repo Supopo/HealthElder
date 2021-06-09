@@ -22,6 +22,18 @@ public class OrderListBean {
     private String jumpUrl;
     private String storeLogo;
 
+    private String addressUrl;
+
+
+
+    public String getAddressUrl() {
+        return addressUrl;
+    }
+
+    public void setAddressUrl(String addressUrl) {
+        this.addressUrl = addressUrl;
+    }
+
     public String getStoreLogo() {
         return storeLogo;
     }

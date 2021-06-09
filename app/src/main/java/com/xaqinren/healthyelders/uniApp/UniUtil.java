@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders.uniApp;
 
 import android.content.Context;
-import android.nfc.Tag;
 
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
@@ -9,26 +8,19 @@ import com.xaqinren.healthyelders.uniApp.widget.LoadingView;
 import com.xaqinren.healthyelders.uniApp.widget.SplashView;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
-import io.dcloud.feature.sdk.MenuActionSheetItem;
-import io.dcloud.feature.uniapp.UniSDKEngine;
-import io.dcloud.feature.uniapp.common.UniException;
-import io.dcloud.js.map.amap.IFMapDispose;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class UniUtil {
 
-    public static void openUniApp(Context context,String appId,String page , JSONObject data,boolean isSelf) {
+    public static void openUniApp(Context context, String appId, String page , JSONObject data, boolean isSelf) {
         JSONObject jsonObject = data;
         if (jsonObject == null) {
             jsonObject = new JSONObject();

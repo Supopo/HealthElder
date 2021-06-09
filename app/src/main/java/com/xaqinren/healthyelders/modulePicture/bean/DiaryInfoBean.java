@@ -35,6 +35,7 @@ public class DiaryInfoBean {
     public Boolean canRecommendFriends;
     public Boolean del;
     public Boolean hasFavorite;
+    public Boolean hasAttention;
     public Object contentViewAuth;
     public Object refuseUserIds;
     public ShareBean share;

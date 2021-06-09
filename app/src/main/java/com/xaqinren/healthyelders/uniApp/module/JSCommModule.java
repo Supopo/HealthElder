@@ -172,20 +172,6 @@ public class JSCommModule extends UniModule {
     }
 
     private void toPhoto(Activity activity) {
-        /*PictureSelector.create(activity)
-                .openGallery(PictureMimeType.ofImage())
-                .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-                .maxSelectNum(1)// 最大图片选择数量
-                .isCamera(true)// 是否显示拍照按钮
-                .isPreviewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                .isPreviewImage(true)// 是否可预览图片
-                .isEnableCrop(true)// 是否裁剪 true or false
-                .freeStyleCropEnabled(true)
-                .isCompress(true)// 是否压缩图片 使用的是Luban压缩
-                .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
-                .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
-                .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
-                .forResult(REQUEST_GALLERY);//结果回调onActivityResult code*/
         Intent intent = new Intent(activity, PhotoActivity.class);
         activity.startActivityForResult(intent, 789);
     }

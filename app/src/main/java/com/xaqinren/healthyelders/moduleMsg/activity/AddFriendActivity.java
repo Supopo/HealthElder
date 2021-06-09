@@ -129,14 +129,13 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0) {
                     //短信
-                    IntentUtils.sendSMS(AddFriendActivity.this, friendBean.getMobileNumber(), "分享内容");
+                    IntentUtils.sendSMS(AddFriendActivity.this, friendBean.getMobileNumber(), friendBean.getShare().getSmsTemplate());
                 } else if (position == 1) {
                     //wx分享
                     ShareBean shareBean = new ShareBean();
-                    shareBean.url = "http://www.baidu.com";
-                    shareBean.title = "百度一下";
-                    shareBean.subTitle = "你就知道";
-                    shareBean.coverUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2F1812.img.pp.sohu.com.cn%2Fimages%2Fblog%2F2009%2F11%2F18%2F18%2F8%2F125b6560a6ag214.jpg&refer=http%3A%2F%2F1812.img.pp.sohu.com.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1625794767&t=3327ef081592b0c20f1708221953fc00";
+                    shareBean.url = friendBean.getShare().getUrl();
+                    shareBean.title = friendBean.getShare().getTitle();
+                    shareBean.subTitle = friendBean.getShare().getIntroduce();
                     shareWebPage(shareBean);
                 }
                 listBottomPopup.dismiss();
@@ -162,7 +161,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;
 
-        Glide.with(getContext()).asBitmap().load(UrlUtils.resetImgUrl(shareBean.coverUrl,100,100)).into(new SimpleTarget<Bitmap>(100,100) {
+        Glide.with(getContext()).asBitmap().load(R.mipmap.icon_app).into(new SimpleTarget<Bitmap>(100,100) {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 msg.setThumbImage(resource);

@@ -13,7 +13,7 @@ public class Constant {
 
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
     public static String SERVICE_PHONE = "";//客服电话
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
 
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
     public static String debugUrl = "http://192.168.1.113:18080/";
@@ -103,6 +103,16 @@ public class Constant {
      * UNI小程序 事件
      */
     public static final String UNI_LOGIN = "login";
+    //修改地址
+    public static final String MINI_CHANGE_ADDRESS = "pages_commodity/order/changeAddress";
+    //银行卡列表
+    public static final String MINI_BANK_CARD_LIST = "pages_user/wallet/bankCardList";
+    //用户协议
+    public static final String MINI_AGREEMENT = "pages/agreement/userService";
+    //隐私协议
+    public static final String MINI_PRIVACY = "pages/agreement/userPrivacy";
+    //关于我们
+    public static final String MINI_ABOUT_US = "pages/agreement/aboutUs";
 
 
     //腾讯云小视频加防盗链

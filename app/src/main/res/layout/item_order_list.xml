@@ -120,17 +120,6 @@
             android:gravity="right">
 
             <TextView
-                android:id="@+id/xgdz"
-                android:layout_width="@dimen/dp_84"
-                android:layout_height="@dimen/dp_32"
-                android:background="@drawable/bg_order_list_gray"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:textColor="@color/gray_666"
-                android:gravity="center"
-                android:textSize="@dimen/sp_14"
-                android:visibility="gone"
-                android:text="修改地址"/>
-            <TextView
                 android:id="@+id/qxdd"
                 android:layout_width="@dimen/dp_84"
                 android:layout_height="@dimen/dp_32"
@@ -141,6 +130,18 @@
                 android:textSize="@dimen/sp_14"
                 android:visibility="gone"
                 android:text="取消订单"/>
+            <TextView
+                android:id="@+id/xgdz"
+                android:layout_width="@dimen/dp_84"
+                android:layout_height="@dimen/dp_32"
+                android:background="@drawable/bg_order_list_gray"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:textColor="@color/gray_666"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:visibility="gone"
+                android:text="修改地址"/>
+
             <TextView
                 android:id="@+id/ycsh"
                 android:layout_width="@dimen/dp_84"
