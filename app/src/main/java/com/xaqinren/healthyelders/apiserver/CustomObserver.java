@@ -5,6 +5,7 @@ import android.net.ParseException;
 import android.util.Log;
 
 import com.google.gson.JsonParseException;
+import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -42,7 +43,16 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
         if (t.isOk()) {
             onSuccess(t);
         } else {
-            ToastUtils.showShort(t.getMessage());
+            String code = t.getCode();
+            boolean showToast = false;
+            if (!code.startsWith("0") && !code.startsWith("1")) {
+                //debug模式弹出
+                showToast = true;
+            }else if (Constant.DEBUG) {
+                showToast = true;
+            }
+            if (showToast)
+                ToastUtils.showShort(t.getMessage());
             //判断token过期
             if (t.getCode().equals(CodeTable.TOKEN_ERR_CODE) ||t.getCode().equals(CodeTable.TOKEN_NO_CODE)) {
                 onTokenErr();
@@ -54,6 +64,8 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
             onFail(t.getCode(), t);
         }
     }
+
+
 
     //在当前方法中操作关闭dialog等可以同步到网络请求完各个状态方法中
     protected abstract void dismissDialog();

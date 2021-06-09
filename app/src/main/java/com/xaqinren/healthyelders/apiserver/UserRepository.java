@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
@@ -186,7 +187,15 @@ public class UserRepository {
 //                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
                         } else {
-                            ToastUtil.toastShortMessage(response.getMessage());
+                            boolean showToast = false;
+                            if (!code.startsWith("0") && !code.startsWith("1")) {
+                                //debug模式弹出
+                                showToast = true;
+                            }else if (Constant.DEBUG) {
+                                showToast = true;
+                            }
+                            if (showToast)
+                                ToastUtil.toastShortMessage(response.getMessage());
                             loginSuccess.postValue(false);
                         }
                     }

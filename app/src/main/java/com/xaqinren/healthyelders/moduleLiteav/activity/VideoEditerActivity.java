@@ -731,6 +731,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     }
 
     private void resetMusicBGM(String name , String path) {
+        LogUtils.e(TAG, "resetMusicBGM -> " + name + "\t" + path);
         VideoEditerSDK.getInstance().getEditer().setBGM(path);
         VideoEditerSDK.getInstance().getEditer().setBGMStartTime(0, 10 * 60 * 1000);
         ConfigureLoader.getInstance().setMusicPath(name, path, 1);
