@@ -42,7 +42,6 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
             int newHeight = itemWidth * oldHeight / oldWidth;
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rlItem.getLayoutParams();
-            params.width = itemWidth;
             params.height = newHeight;
             binding.rlItem.setLayoutParams(params);
 
