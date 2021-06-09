@@ -87,7 +87,11 @@ public class CoinDetailActivity extends BaseActivity<ActivityCoinDetailBinding, 
             }else{
                 coinDetailAdapter.getLoadMoreModule().loadMoreEnd(false);
             }
-
+            if (!coinDetailAdapter.getData().isEmpty()) {
+                binding.emptyLayout.setVisibility(View.GONE);
+            }else{
+                binding.emptyLayout.setVisibility(View.VISIBLE);
+            }
         });
     }
 

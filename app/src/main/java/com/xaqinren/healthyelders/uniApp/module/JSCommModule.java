@@ -1,36 +1,73 @@
 package com.xaqinren.healthyelders.uniApp.module;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.hardware.camera2.params.OisSample;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.ocr.sdk.OCR;
+import com.baidu.ocr.sdk.OnResultListener;
+import com.baidu.ocr.sdk.exception.OCRError;
+import com.baidu.ocr.sdk.model.AccessToken;
+import com.baidu.ocr.sdk.model.BankCardResult;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.executor.GlideExecutor;
+import com.facebook.common.util.UriUtil;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
+import com.xaqinren.healthyelders.uniApp.activity.PhotoActivity;
 import com.xaqinren.healthyelders.uniApp.module.nativeDialog.NativeDialog;
+import com.xaqinren.healthyelders.utils.GetFilesUtils;
+import com.xaqinren.healthyelders.utils.GlideEngine;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.utils.OCRUtils;
+import com.xaqinren.healthyelders.utils.QRCodeUtils;
+import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
+import org.apache.commons.httpclient.util.URIUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.dcloud.feature.uniapp.UniSDKInstance;
 import io.dcloud.feature.uniapp.annotation.UniJSMethod;
 import io.dcloud.feature.uniapp.bridge.UniJSCallback;
 import io.dcloud.feature.uniapp.common.UniModule;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+import razerdp.basepopup.BasePopupWindow;
 
 public class JSCommModule extends UniModule {
     private String TAG = "JSCommModule";
     private Disposable subscribe;
+    private String maskType;
 
     public JSCommModule() {
         super();
     }
     private UniJSCallback callback;
     private UniJSCallback callbackSuccess,callbackFail;
+    private int REQUEST_GALLERY = 666;
 
     @UniJSMethod(uiThread = true)
     public void openPay(JSONObject options, UniJSCallback callbackSuccess, UniJSCallback callbackFail) {
@@ -79,26 +116,89 @@ public class JSCommModule extends UniModule {
             context.startActivityForResult(action, 123);
         }
     }
-
-    @Override
-    public void onActivityCreate() {
-        super.onActivityCreate();
-
+    //银行卡识别
+    @UniJSMethod(uiThread = true)
+    public void openCameraRecognize(JSONObject options, UniJSCallback callback) {
+        this.callback = callback;
+        maskType = options.getString("maskType");
+        initAccessToken();
+        showSelPop();
     }
 
-    @Override
-    public void onActivityDestroy() {
-        super.onActivityDestroy();
+    /**
+     * 以license文件方式初始化
+     */
+    private void initAccessToken() {
+        AccessToken accessToken = OCR.getInstance(mUniSDKInstance.getContext()).getAccessToken();
+        if (accessToken == null || accessToken.hasExpired()) {
+            OCR.getInstance(mUniSDKInstance.getContext()).initAccessToken(new OnResultListener<AccessToken>() {
+                @Override
+                public void onResult(AccessToken accessToken) {
+                    String token = accessToken.getAccessToken();
+                    LogUtils.v(Constant.TAG_LIVE, "licence方式获取token成功 ");
+                }
+
+                @Override
+                public void onError(OCRError error) {
+                    error.printStackTrace();
+                    LogUtils.v(Constant.TAG_LIVE, "licence方式获取token失败" + error.getMessage());
+                }
+            }, mUniSDKInstance.getContext());
+        }
     }
 
-    @Override
-    public void onActivityResume() {
-        super.onActivityResume();
+    private void showSelPop() {
+        List<ListPopMenuBean> menus = new ArrayList<>();
+        menus.add(new ListPopMenuBean("拍摄"));
+        menus.add(new ListPopMenuBean("从相册中选取"));
+        ListBottomPopup listBottomPopup = new ListBottomPopup(mUniSDKInstance.getContext(), menus);
+        listBottomPopup.setOnItemClickListener((adapter, view, position) -> {
+            //掉接口
+            if (position == 0) {
+                toCamera((Activity) mUniSDKInstance.getContext());
+            } else if (position == 1) {
+                toPhoto((Activity) mUniSDKInstance.getContext());
+            }
+            listBottomPopup.dismiss();
+        });
+        listBottomPopup.showPopupWindow();
+        ScreenUtils.setWindowAlpha(mUniSDKInstance.getContext(), 1.0f, 0.6f, 400);
+        listBottomPopup.setOnDismissListener(new BasePopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                ScreenUtils.setWindowAlpha(mUniSDKInstance.getContext(), 0.6f, 1.0f, 200);
+            }
+        });
     }
 
-    @Override
-    public void onActivityStop() {
-        super.onActivityStop();
+    private void toPhoto(Activity activity) {
+        /*PictureSelector.create(activity)
+                .openGallery(PictureMimeType.ofImage())
+                .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+                .maxSelectNum(1)// 最大图片选择数量
+                .isCamera(true)// 是否显示拍照按钮
+                .isPreviewEggs(true)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .isPreviewImage(true)// 是否可预览图片
+                .isEnableCrop(true)// 是否裁剪 true or false
+                .freeStyleCropEnabled(true)
+                .isCompress(true)// 是否压缩图片 使用的是Luban压缩
+                .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
+                .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
+                .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
+                .forResult(REQUEST_GALLERY);//结果回调onActivityResult code*/
+        Intent intent = new Intent(activity, PhotoActivity.class);
+        activity.startActivityForResult(intent, 789);
+    }
+
+    private void toCamera(Activity activity) {
+        PictureSelector.create(activity)
+                .openCamera(PictureMimeType.ofImage())
+                .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+                .maxSelectNum(1)// 最大图片选择数量
+                .isEnableCrop(false)
+                .isCompress(true)
+                .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
+                .forResult(REQUEST_GALLERY);//结果回调onActivityResult code
     }
 
     @Override
@@ -113,20 +213,78 @@ public class JSCommModule extends UniModule {
                 jsonObject.put("region", bean.province+bean.city+bean.district);
                 jsonObject.put("addreName", bean.addressInfo);
                 jsonObject.put("addreInfo", bean.address);
-                LogUtils.e(TAG, jsonObject.toJSONString());
                 callback.invoke(jsonObject);
             } else if (requestCode == 456) {
                 //支付回调
                 boolean status = data.getBooleanExtra("status", false);
-                LogUtils.e(TAG, "支付回调" + status);
                 if (status) {
                     callbackSuccess.invoke(true);
                 }else{
                     String msg = data.getStringExtra("msg");
                     callbackFail.invoke(msg);
                 }
+            } else if (requestCode == REQUEST_GALLERY) {
+                List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
+                String path = result.get(0).getPath();
+                //开始识别
+                if (!StringUtils.isEmpty(path)) {
+                    if (maskType.equals("BankCard")){
+                        startRecognize(path);
+
+                    }
+                    else if (maskType.equals("IdCard")) {
+
+                    }
+                }
+            } else if (requestCode == 789) {
+                String realPathFromUri = data.getStringExtra("path");
+                if (!StringUtils.isEmpty(realPathFromUri)) {
+                    if (maskType.equals("BankCard")){
+                        startRecognize(realPathFromUri);
+                    }
+                    else if (maskType.equals("IdCard")) {
+
+                    }
+                }
             }
         }
+    }
+
+
+
+    private void startRecognize(String path) {
+        OCRUtils.ocrBankCard(mUniSDKInstance.getContext(), path, new OnResultListener<BankCardResult>() {
+            @Override
+            public void onResult(BankCardResult bankCardResult) {
+                if (callback != null) {
+                    String bankName = bankCardResult.getBankName();
+                    String bankCardNumber = bankCardResult.getBankCardNumber();
+                    BankCardResult.BankCardType type = bankCardResult.getBankCardType();
+                    int bankCardType = 0;
+                    if (type == BankCardResult.BankCardType.Debit) {
+                        bankCardType = 1;
+                    } else if (type == BankCardResult.BankCardType.Credit) {
+                        bankCardType = 2;
+                    }
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("bankName", bankName);
+                    jsonObject.put("bankCardNumber", bankCardNumber);
+                    jsonObject.put("bankCardType", bankCardType);
+                    jsonObject.put("status", true);
+                    callback.invoke(jsonObject);
+                }
+            }
+
+            @Override
+            public void onError(OCRError ocrError) {
+                if (callback != null) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("status", false);
+                    jsonObject.put("code", ocrError.getErrorCode());
+                    callback.invoke(jsonObject);
+                }
+            }
+        });
     }
 
     NativeDialog nativeDialog;

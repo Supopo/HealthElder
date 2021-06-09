@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
 import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
+import com.xaqinren.healthyelders.bean.AppConfigBean;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -846,6 +847,22 @@ public class UserRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
                         datas.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void getAppConfig(MutableLiveData<AppConfigBean> datas) {
+        userApi.getAppConfig()
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<AppConfigBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<AppConfigBean> data) {
+                        datas.postValue(data.getData());
                     }
                 });
     }

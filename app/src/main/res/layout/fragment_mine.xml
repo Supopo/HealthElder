@@ -123,8 +123,9 @@
                                     android:gravity="center"
                                     android:text="@{viewModel.userInfo.getJKCode()}"
                                     android:textColor="@color/gray_999"
-                                    android:textSize="@dimen/sp_13" />
-
+                                    android:textSize="@dimen/sp_13"
+                                    android:drawablePadding="@dimen/dp_4"
+                                    android:drawableRight="@mipmap/ger_erwm"/>
                                 <LinearLayout
                                     android:id="@+id/ll_info"
                                     android:layout_width="match_parent"
@@ -223,19 +224,12 @@
                                         android:background="@drawable/bg_tag"
                                         android:orientation="horizontal"
                                         android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_6"
+                                        android:paddingTop="@dimen/dp_7"
                                         android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_6"
+                                        android:paddingBottom="@dimen/dp_7"
                                         android:gravity="center_vertical">
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:textSize="@dimen/sp_12"
-                                            android:text="@{viewModel.userInfo.isMan()?`男`:`女`}"
-                                            android:includeFontPadding="false"
-                                            android:layout_marginRight="@dimen/dp_4"
-                                            android:textColor="@color/color_252525"/>
+
                                         <ImageView
                                             android:id="@+id/iv_sex"
                                             android:layout_width="@dimen/dp_12"
@@ -243,41 +237,36 @@
                                             android:layout_marginRight="@dimen/dp_4"
                                             android:background="@mipmap/zy_female"
                                             android:visibility="@{viewModel.userInfo.isMan()?View.GONE:View.VISIBLE}" />
-
                                         <ImageView
                                             android:layout_width="@dimen/dp_12"
                                             android:layout_height="@dimen/dp_12"
                                             android:layout_marginRight="@dimen/dp_4"
                                             android:background="@mipmap/zy_male"
                                             android:visibility="@{viewModel.userInfo.isMan()?View.VISIBLE:View.GONE}" />
-
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:textSize="@dimen/sp_12"
+                                            android:text="@{viewModel.userInfo.isHasMan()}"
+                                            android:visibility="@{viewModel.userInfo.isHasMan() == null ? View.GONE : View.VISIBLE}"
+                                            android:includeFontPadding="false"
+                                            android:layout_marginRight="@dimen/dp_4"
+                                            android:textColor="@color/color_252525"/>
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:gravity="center_vertical"
-                                            android:textSize="@dimen/sp_11" />
+                                            android:textSize="@dimen/sp_11"
+                                            android:visibility="gone"/>
                                     </LinearLayout>
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/dp_4"
-                                        android:layout_marginRight="@dimen/dp_4"
-                                        android:background="@drawable/bg_tag"
-                                        android:gravity="center_vertical"
-                                        android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_6"
-                                        android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_6"
-                                        android:text="@{viewModel.userInfo.cityAddress}"
-                                        android:visibility="@{viewModel.userInfo.cityAddress==null?View.GONE:View.VISIBLE}"
-                                        android:textSize="@dimen/sp_11"
-                                        android:textColor="@color/color_252525"/>
+
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:background="@drawable/bg_tag"
+                                        android:layout_marginLeft="@dimen/dp_4"
                                         android:gravity="center_vertical"
                                         android:maxLines="1"
                                         android:paddingLeft="@dimen/dp_5"
@@ -289,7 +278,20 @@
                                         android:visibility="@{viewModel.userInfo.age==null?View.GONE:View.VISIBLE}"
                                         android:textColor="@color/color_252525"
                                        />
-
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/dp_4"
+                                        android:background="@drawable/bg_tag"
+                                        android:gravity="center_vertical"
+                                        android:paddingLeft="@dimen/dp_5"
+                                        android:paddingTop="@dimen/dp_6"
+                                        android:paddingRight="@dimen/dp_5"
+                                        android:paddingBottom="@dimen/dp_6"
+                                        android:text="@{viewModel.userInfo.cityAddress}"
+                                        android:visibility="@{viewModel.userInfo.cityAddress==null?View.GONE:View.VISIBLE}"
+                                        android:textSize="@dimen/sp_11"
+                                        android:textColor="@color/color_252525"/>
                                 </LinearLayout>
 
                                 <View

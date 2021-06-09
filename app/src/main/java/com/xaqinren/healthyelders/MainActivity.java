@@ -73,7 +73,10 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
+import com.xaqinren.healthyelders.utils.GetFilesUtils;
+import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -191,6 +194,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 viewModel.checkVersion();
             }
         },500);
+        viewModel.getAppConfig();
     }
 
     @Override
@@ -456,7 +460,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-
+        viewModel.appConfig.observe(this, o -> {
+            Constant.SERVICE_PHONE = o.getTelephone();
+        });
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.TOKEN_ERR) {
                 SPUtils.getInstance().put(Constant.SP_KEY_LOGIN_USER, "");
@@ -741,11 +747,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
         });
 
-        binding.myCommCode.setOnClickListener(v -> {
+        /*binding.myCommCode.setOnClickListener(v -> {
             //推广码
             closeDelay();
             startActivity(MyRecommendCodeActivity.class);
-        });
+        });*/
         binding.myWallet.setOnClickListener(v ->
         {
             closeDelay();
@@ -758,6 +764,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         binding.mySetting.setOnClickListener(v -> {
             closeDelay();
             startActivity(SettingActivity.class);
+        });
+        binding.myKefu.setOnClickListener(v -> {
+            closeDelay();
+            IntentUtils.sendPhone(getContext(),Constant.SERVICE_PHONE);
+        });
+        binding.agreeLayout.setOnClickListener(v -> {
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, "pages/agreement/userService", null, true);
+        });
+        binding.privacyLayout.setOnClickListener(v -> {
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, "pages/agreement/userPrivacy", null, true);
+        });
+        binding.aboutLayout.setOnClickListener(v -> {
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, "pages/agreement/aboutUs", null, true);
         });
     }
 

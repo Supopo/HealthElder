@@ -1,6 +1,13 @@
 package com.xaqinren.healthyelders.utils;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+
+import com.xaqinren.healthyelders.uniApp.bean.FileBean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,7 +152,6 @@ public class GetFilesUtils {
     /**
      * 获取文件path文件或文件夹的兄弟节点文件列表
      *
-     * @param path 手机上的文件夹
      * @return path文件夹下的文件列表的信息，信息存储在Map中，Map的key的列表如下：<br />
      * FILE_INFO_NAME : String 文件名称 <br />
      * FILE_INFO_ISFOLDER: boolean 是否为文件夹  <br />
@@ -163,7 +169,6 @@ public class GetFilesUtils {
     /**
      * 获取文件或文件夹的父路径
      *
-     * @param File path文件或者文件夹
      * @return String path的父路径
      **/
     public String getParentPath(File path) {
@@ -176,8 +181,6 @@ public class GetFilesUtils {
 
     /**
      * 获取文件或文件的父路径
-     *
-     * @param String pathStr文件或者文件夹路径
      * @return String pathStr的父路径
      **/
     public String getParentPath(String pathStr) {
@@ -332,4 +335,34 @@ public class GetFilesUtils {
         return order;
     }
 
+    public List<FileBean>  showAllPicture(Context context) {
+        String TAG = "GetFileUtils";
+        List<FileBean> fileBeans = new ArrayList<>();
+        Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.SIZE, MediaStore.Images.ImageColumns.DATE_ADDED
+        };
+        Cursor cursor = contentResolver.query(imageUri, projection, null, null,
+                MediaStore.Images.Media.DATE_ADDED + " desc",null);
+        if (cursor == null) {
+            return fileBeans;
+        }
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                String _id = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
+                String fileName =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                String size = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                String date = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+                FileBean bean = new FileBean(path,fileName);
+                fileBeans.add(bean);
+            }
+        }
+        cursor.close();
+        return fileBeans;
+    }
 }

@@ -11,6 +11,9 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.List;
 
+import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.Utils;
+
 public class UserInfoBean implements Serializable {
 
     private String avatarUrl;
@@ -170,6 +173,15 @@ public class UserInfoBean implements Serializable {
         this.hasAttention = hasAttention;
     }
 
+    public String isHasMan() {
+        String age = getAge();
+        String cityAddress = getCityAddress();
+        if (StringUtils.isEmpty(age) && StringUtils.isEmpty(cityAddress)) {
+            boolean man = isMan();
+            return man ? "男" : "女";
+        }
+        return null;
+    }
 
     public boolean isMan() {
         if (sex.equals("MALE")) {

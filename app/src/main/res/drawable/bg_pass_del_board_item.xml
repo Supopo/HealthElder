@@ -7,10 +7,10 @@
                     <solid android:color="@color/transparent" />
                 </shape>
             </item>
-            <item android:drawable="@mipmap/icon_backspace_solid"
+            <item android:drawable="@mipmap/num_delete"
                 android:gravity="center"
                 android:width="@dimen/dp_40"
-                android:height="@dimen/dp_40"/>
+                android:height="@dimen/dp_30"/>
         </layer-list>
     </item>
     <item>
@@ -21,10 +21,10 @@
                 </shape>
             </item>
             <item
-                android:drawable="@mipmap/icon_backspace_solid"
+                android:drawable="@mipmap/num_delete"
                 android:gravity="center"
                 android:width="@dimen/dp_40"
-                android:height="@dimen/dp_40"/>
+                android:height="@dimen/dp_30"/>
         </layer-list>
     </item>
 </selector>

@@ -1,6 +1,7 @@
 package me.goldze.mvvmhabit.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import android.content.pm.ActivityInfo;
@@ -40,6 +41,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -71,7 +73,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public TextView tvTitle, tvRight;
     public ImageView ivLeft, ivRight;
     public RxPermissions permissions;
-
+    protected Activity activity;
+    protected Context context;
+    protected SoftReference<Activity> softActivity;
+    protected SoftReference<Context> softContext;
 
     //解决 8.0系统 设置竖屏和透明状态栏 冲突问题
     private boolean isTranslucentOrFloating() {
@@ -122,7 +127,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             boolean result = fixOrientation();
         }
         super.onCreate(savedInstanceState);
-
+        this.activity = this;
+        this.context = this;
+        softActivity = new SoftReference<>(activity);
+        softContext = new SoftReference<>(context);
         permissions = new RxPermissions(this);
         //页面接受的参数方法
         initParam();
@@ -154,6 +162,12 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "onDestroy()");
+        }
+        if (softActivity != null) {
+            softActivity.clear();
+        }
+        if (softContext != null) {
+            softContext.clear();
         }
     }
 
@@ -605,5 +619,13 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         if (BuildConfig.DEBUG) {
             Log.e(TAG, "onRestart()");
         }
+    }
+
+    public Activity getActivity() {
+        return softActivity.get();
+    }
+
+    public Context getContext() {
+        return softContext.get();
     }
 }

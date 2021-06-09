@@ -225,10 +225,11 @@ public class UniService extends Service implements LifecycleOwner {
         }
     }
 
-    //检查版本号
+    /**
+     * 检查版本号
+     */
     private void checkVersion() {
         boolean debug = BuildConfig.DEBUG;
-        debug = false;
         for (SaveBean saveBean : saveBeans) {
             if (debug || (saveBean.isNeedDown() && saveBean.isAutoUpdateApplet())) {
                 down(saveBean);
@@ -251,6 +252,8 @@ public class UniService extends Service implements LifecycleOwner {
         for (SaveBean saveBean : saveBeans) {
             if (saveBean.getId().equals(uniBean.getId())) {
                 find = true;
+                LogUtils.e(TAG, "version = " + uniBean.getNewAppVersion().getVersionNumber());
+                LogUtils.e(TAG, "version = " + saveBean.getCurrentVersion());
                 if (uniBean.getNewAppVersion().getVersionNumber() != saveBean.getCurrentVersion()) {
                     saveBean.setId(uniBean.getId());
                     saveBean.setAutoUpdateApplet(uniBean.getAutoUpdateApplet());

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.apiserver;
 
 
 import android.net.ParseException;
+import android.util.Log;
 
 import com.google.gson.JsonParseException;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -76,6 +77,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
     @Override
     public void onError(Throwable e) {
         dismissDialog();
+        Log.e("CustomObserver", e.getMessage());
         if (e instanceof HttpException) {     //   HTTP错误
             onException(ExceptionReason.BAD_NETWORK);
         } else if (e instanceof ConnectException

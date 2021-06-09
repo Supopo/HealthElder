@@ -90,7 +90,8 @@ ext {
             //文件选择
             "lfilepicker"                          : "com.leon:lfilepickerlibrary:1.8.0",
             //图片选择
-            "PictureSelector"                      : "com.github.LuckSiege.PictureSelector:picture_library:v2.5.8",
+//            "PictureSelector"                      : "com.github.LuckSiege.PictureSelector:picture_library:v2.5.8",
+            "PictureSelector"                      : "io.github.lucksiege:pictureselector:v2.7.3-rc02",
             //BasePopupWindow
             "BasePopup"                            : "com.github.razerdp:BasePopup:2.1.9",
             //下拉刷新控件

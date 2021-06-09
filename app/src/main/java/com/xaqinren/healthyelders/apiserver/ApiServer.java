@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.apiserver;
 
 import com.xaqinren.healthyelders.BuildConfig;
+import com.xaqinren.healthyelders.bean.AppConfigBean;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
@@ -528,6 +529,8 @@ public interface ApiServer {
     @GET("jkzl/findUserProfile")
     Observable<MBaseResponse<UserInfoBean>> getOtherUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId);
 
-
+    //查看APP配置
+    @GET("jkzl/open/findAppConfigInfo")
+    Observable<MBaseResponse<AppConfigBean>> getAppConfig();
 }
 

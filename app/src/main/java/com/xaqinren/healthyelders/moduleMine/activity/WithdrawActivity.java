@@ -146,7 +146,15 @@ public class WithdrawActivity extends BaseActivity<ActivityWithdrawBinding, Wall
             bankListAdapter.setList(walletBean.getUserBankCardList());
             bankList.setLayoutManager(new LinearLayoutManager(this));
             bankList.setAdapter(bankListAdapter);
+
+            if (walletBean.getUserBankCardList() == null || walletBean.getUserBankCardList().isEmpty()) {
+                confirm.setEnabled(false);
+            }
+
             confirm.setOnClickListener(v -> {
+                if (currentIndex < 0) {
+                    return;
+                }
                 bankCardBean = bankListAdapter.getData().get(currentIndex);
                 bottomDialog.dismiss();
                 bindCardInfo();

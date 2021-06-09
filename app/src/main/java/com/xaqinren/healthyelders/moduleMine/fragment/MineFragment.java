@@ -25,6 +25,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
@@ -299,6 +300,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.tvName.setOnClickListener(lis -> {
         });
         binding.tvUserId.setOnClickListener(lis -> {
+            startActivity(MyRecommendCodeActivity.class);
         });
         binding.tvSbj.setOnClickListener(lis -> {
         });

@@ -192,8 +192,8 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == CodeTable.WX_PAY_CODE) {
-                    binding.loadingView.cancelAnimation();
-                    binding.loadingView.setVisibility(View.GONE);
+//                    binding.loadingView.cancelAnimation();
+//                    binding.loadingView.setVisibility(View.GONE);
                     if (event.msgType == 1) {
                         Intent intent = new Intent();
                         intent.putExtra("status", true);
@@ -236,8 +236,8 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
             return;
         }
 
-        binding.loadingView.setVisibility(View.VISIBLE);
-        binding.loadingView.playAnimation();
+//        binding.loadingView.setVisibility(View.VISIBLE);
+//        binding.loadingView.playAnimation();
 
         PayReq payReq = new PayReq();
         payReq.appId = payRes.appId;

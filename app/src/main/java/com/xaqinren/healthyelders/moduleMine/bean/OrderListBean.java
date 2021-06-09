@@ -14,7 +14,7 @@ public class OrderListBean {
     private Integer vipDiscountAmount;
     private Double receivableAmount;
     private Double payableAmount;
-    private Integer receiptsAmount;
+    private Double receiptsAmount;
     private String queryStatus;
     private String queryStatusName;
     private String distributionChannelName;
@@ -126,11 +126,11 @@ public class OrderListBean {
         this.payableAmount = payableAmount;
     }
 
-    public Integer getReceiptsAmount() {
+    public Double getReceiptsAmount() {
         return receiptsAmount;
     }
 
-    public void setReceiptsAmount(Integer receiptsAmount) {
+    public void setReceiptsAmount(Double receiptsAmount) {
         this.receiptsAmount = receiptsAmount;
     }
 
