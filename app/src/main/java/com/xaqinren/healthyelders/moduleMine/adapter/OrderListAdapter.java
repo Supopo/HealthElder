@@ -75,7 +75,7 @@ public class OrderListAdapter extends BaseQuickAdapter<OrderListBean, BaseViewHo
             }
             UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, uniSubKey, orderListBean.getJumpUrl());
         });
-        GlideUtil.intoImageView(getContext(),orderListBean.getStoreLogo(),binding.storeLogo, (int) getContext().getResources().getDimension(R.dimen.dp_2));
+        GlideUtil.intoCirImageView(getContext(),orderListBean.getStoreLogo(),binding.storeLogo, (int) getContext().getResources().getDimension(R.dimen.dp_2));
         String status = orderListBean.getQueryStatus();
         int childCount = binding.orderStatusLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
