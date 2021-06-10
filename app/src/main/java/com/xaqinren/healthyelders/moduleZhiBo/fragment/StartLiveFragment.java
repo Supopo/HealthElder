@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
@@ -114,6 +116,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private List<MenuBean> menus;
     private Disposable disposable;
     private ZBGoodsListPop zbGoodsListPop;
+    private Disposable uniSubscribe;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -180,7 +183,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     break;
                 case "商品":
                     //                    UniService.startService(getActivity(), mLiveInitInfo.appId, 0x10112, mLiveInitInfo.jumpUrl);
-                    zbGoodsListPop = new ZBGoodsListPop(getActivity(), mLiveInitInfo.id,0);
+                    zbGoodsListPop = new ZBGoodsListPop(getActivity(), mLiveInitInfo.id, 0);
                     zbGoodsListPop.showPopupWindow();
                     break;
                 case "私密":
@@ -547,6 +550,19 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 return false;
             }
         });
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 99) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+        RxSubscriptions.add(uniSubscribe);
     }
 
     //设置一段文字多种点击事件
@@ -556,7 +572,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         spannableString.setSpan(new NoLineColorSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-
+                //使用条款
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveClause");
             }
         }, text1.length(), (text1 + text2).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -568,6 +585,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         spannableString.setSpan(new NoLineColorSpan() {
             @Override
             public void onClick(@NonNull View widget) {
+                //行为规范
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveStandard");
             }
         }, (text1 + text2 + text3).length(), all.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

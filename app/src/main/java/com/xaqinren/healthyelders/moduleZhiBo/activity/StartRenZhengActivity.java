@@ -36,7 +36,11 @@ import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzhengBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -45,8 +49,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
 
 /**
  * Created by Lee. on 2021/4/24.
@@ -61,6 +68,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     private boolean isAgree = true;
     private Bundle bundle = new Bundle();
     private Handler handler;
+    private Disposable uniSubscribe;
 
 
     @Override
@@ -113,6 +121,19 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
 
 
         });
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 99) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+        RxSubscriptions.add(uniSubscribe);
     }
 
     /**
@@ -140,6 +161,9 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         spannableString.setSpan(new NoLineColorSpan() {
             @Override
             public void onClick(@NonNull View widget) {
+                //跳使用条款小程序
+                //使用条款
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveClause");
             }
         }, text1.length(), (text1 + text2).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -151,6 +175,9 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         spannableString.setSpan(new NoLineColorSpan() {
             @Override
             public void onClick(@NonNull View widget) {
+                //跳行为规范小程序
+                //行为规范
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveStandard");
             }
         }, (text1 + text2 + text3).length(), all.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
