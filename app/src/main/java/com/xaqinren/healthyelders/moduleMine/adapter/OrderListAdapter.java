@@ -103,8 +103,8 @@ public class OrderListAdapter extends BaseQuickAdapter<OrderListBean, BaseViewHo
             //交易成功,待评价
             binding.orderStatusLayout.setVisibility(View.VISIBLE);
             binding.scdd.setVisibility(View.VISIBLE);
-            binding.sqsh.setVisibility(View.GONE);
-            binding.pj.setVisibility(View.VISIBLE);
+//            binding.sqsh.setVisibility(View.GONE);
+//            binding.pj.setVisibility(View.GONE);
         } else if (status.equals("CANCELED")) {
             //交易关闭
             //交易成功,待评价

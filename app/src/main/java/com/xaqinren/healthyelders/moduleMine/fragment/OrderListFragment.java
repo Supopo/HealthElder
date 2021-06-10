@@ -151,8 +151,8 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
                         UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, uniSubKey, adapter.getData().get(position).getJumpUrl());
                         break;
                     case R.id.scdd:
-                        showDelOrder(adapter.getData().get(position));
                         //删除订单
+                        showDelOrder(adapter.getData().get(position));
                         break;
                     case R.id.sqsh:
                         //申请售后
@@ -167,6 +167,7 @@ public class OrderListFragment extends BaseFragment <FragmentOrderListBinding, O
                         break;
                     case R.id.pj:
                         //评价
+//                        UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, uniSubKey, adapter.getData().get(position).getJumpUrl());
                         break;
                 }
             }
