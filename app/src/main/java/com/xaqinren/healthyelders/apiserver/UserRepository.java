@@ -184,14 +184,14 @@ public class UserRepository {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-//                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
+                            //                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
                         } else {
                             boolean showToast = false;
                             if (!code.startsWith("0") && !code.startsWith("1")) {
                                 //debug模式弹出
                                 showToast = true;
-                            }else if (Constant.DEBUG) {
+                            } else if (Constant.DEBUG) {
                                 showToast = true;
                             }
                             if (showToast)
@@ -406,8 +406,8 @@ public class UserRepository {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-        LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录"+loginInfo.userSig);
-        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
+        LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录" + loginInfo.userSig);
+        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(true, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
@@ -541,7 +541,7 @@ public class UserRepository {
 
     }
 
-    public void toPay(MutableLiveData<String> payJson, String accountOrderType, String payMethod, String payType, double paymentAmount,String orderNo) {
+    public void toPay(MutableLiveData<String> payJson, String accountOrderType, String payMethod, String payType, double paymentAmount, String orderNo) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("accountOrderType", accountOrderType);
         hashMap.put("paymentMethod", payMethod);
@@ -624,8 +624,8 @@ public class UserRepository {
 
     }
 
-    public void getOrderList(MutableLiveData<Boolean> request , MutableLiveData<List<OrderListBean>>datas,int type,int page) {
-        userApi.getOrderList(UserInfoMgr.getInstance().getHttpToken(),type,page)
+    public void getOrderList(MutableLiveData<Boolean> request, MutableLiveData<List<OrderListBean>> datas, int type, int page) {
+        userApi.getOrderList(UserInfoMgr.getInstance().getHttpToken(), type, page)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<OrderListBean>>>>() {
@@ -667,7 +667,7 @@ public class UserRepository {
 
 
     public void getBillInfoDetail(MutableLiveData<Boolean> request, MutableLiveData<BillDetailBean> datas, String key) {
-        userApi.getBillInfoDetail(UserInfoMgr.getInstance().getHttpToken(),key)
+        userApi.getBillInfoDetail(UserInfoMgr.getInstance().getHttpToken(), key)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BillDetailBean>>() {
@@ -680,7 +680,8 @@ public class UserRepository {
                     protected void onSuccess(MBaseResponse<BillDetailBean> data) {
                         if (data.isOk())
                             datas.postValue(data.getData());
-                        else datas.postValue(null);
+                        else
+                            datas.postValue(null);
                     }
                 });
 
@@ -772,13 +773,13 @@ public class UserRepository {
         hashMap.put("id", key);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.cancelOrder(UserInfoMgr.getInstance().getHttpToken(),body)
+        userApi.cancelOrder(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
                     @Override
                     protected void dismissDialog() {
-//                        request.postValue(true);
+                        //                        request.postValue(true);
                     }
 
                     @Override
@@ -793,13 +794,13 @@ public class UserRepository {
         hashMap.put("id", key);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.delOrder(UserInfoMgr.getInstance().getHttpToken(),body)
+        userApi.delOrder(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
                     @Override
                     protected void dismissDialog() {
-//                        request.postValue(true);
+                        //                        request.postValue(true);
                     }
 
                     @Override
@@ -814,13 +815,13 @@ public class UserRepository {
         hashMap.put("id", key);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.receiptOrder(UserInfoMgr.getInstance().getHttpToken(),body)
+        userApi.receiptOrder(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
                     @Override
                     protected void dismissDialog() {
-//                        request.postValue(true);
+                        //                        request.postValue(true);
                     }
 
                     @Override
@@ -844,7 +845,7 @@ public class UserRepository {
         hashMap.put("cardType", cardType);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.withdrawal(UserInfoMgr.getInstance().getHttpToken(),body)
+        userApi.withdrawal(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {

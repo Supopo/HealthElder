@@ -182,14 +182,16 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @see {@link IMLVBLiveRoomListener.LoginCallback}
      */
     @Override
-    public void login(final LoginInfo loginInfo, final IMLVBLiveRoomListener.LoginCallback callback) {
+    public void login(boolean isFirst, final LoginInfo loginInfo, final IMLVBLiveRoomListener.LoginCallback callback) {
         mSelfAccountInfo = loginInfo;
 
-        if (mIMMessageMgr != null) {
-            if (mIMMessageMgr.getLoginStatus() == 1) {
-                mIMMessageMgr.setLoginSuccess(mSelfAccountInfo);
-                callbackOnThread(callback, "onSuccess");
-                return;
+        if (!isFirst) {
+            if (mIMMessageMgr != null) {
+                if (mIMMessageMgr.getLoginStatus() == 1) {
+                    mIMMessageMgr.setLoginSuccess(mSelfAccountInfo);
+                    callbackOnThread(callback, "onSuccess");
+                    return;
+                }
             }
         }
 

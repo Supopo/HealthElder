@@ -54,7 +54,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         //4545
         //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
-        mLiveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
+        mLiveRoom.login(false,loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);

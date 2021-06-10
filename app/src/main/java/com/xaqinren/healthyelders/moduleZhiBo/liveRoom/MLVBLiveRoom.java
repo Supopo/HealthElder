@@ -89,7 +89,7 @@ public abstract class MLVBLiveRoom {
      * @param callback  登录结果回调
      * @see {@link IMLVBLiveRoomListener.LoginCallback}
      */
-    public abstract void login(final LoginInfo loginInfo, final IMLVBLiveRoomListener.LoginCallback callback);
+    public abstract void login(final boolean isFirst,final LoginInfo loginInfo, final IMLVBLiveRoomListener.LoginCallback callback);
 
     /**
      * 退出登录

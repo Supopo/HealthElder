@@ -1,22 +1,17 @@
 package com.xaqinren.healthyelders.moduleMall.adapter;
 
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMallHotBinding;
-import com.xaqinren.healthyelders.databinding.ItemMineZpVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 
 import java.util.List;
-
-import cc.ibooker.zcountdownviewlib.CountDownView;
 
 
 public class MallHotMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> implements LoadMoreModule {
@@ -38,39 +33,39 @@ public class MallHotMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolde
         helper.setBackgroundColor(R.id.rl_item, android.graphics.Color.parseColor(item.backgroundColor));
 
 
-        // 基本属性设置
-        binding.countdownView.setCountTime(60 * 60 * 2) // 设置倒计时时间戳
-                .setHourTvBackgroundRes(R.drawable.bg_hot_mall_timer)
-                .setHourTvTextColorHex("#FFFFFF")
-                .setHourTvTextSize(11)
-
-                .setHourColonTvSize(16, 0)
-                .setHourColonTvTextColorHex("#F81E4D")
-                .setHourColonTvTextSize(11)
-
-                .setMinuteTvBackgroundRes(R.drawable.bg_hot_mall_timer)
-                .setMinuteTvTextColorHex("#FFFFFF")
-                .setMinuteTvTextSize(11)
-
-                .setMinuteColonTvSize(16, 0)
-                .setMinuteColonTvTextColorHex("#F81E4D")
-                .setMinuteColonTvTextSize(11)
-
-                .setSecondTvBackgroundRes(R.drawable.bg_hot_mall_timer)
-                .setSecondTvTextColorHex("#FFFFFF")
-                .setSecondTvTextSize(11)
-
-
-                // 开启倒计时
-                .startCountDown()
-
-                // 设置倒计时结束监听
-                .setCountDownEndListener(new CountDownView.CountDownEndListener() {
-                    @Override
-                    public void onCountDownEnd() {
-                        Toast.makeText(getContext(), "倒计时结束", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//        // 基本属性设置
+//        binding.countdownView.setCountTime(60 * 60 * 2) // 设置倒计时时间戳
+//                .setHourTvBackgroundRes(R.drawable.bg_hot_mall_timer)
+//                .setHourTvTextColorHex("#FFFFFF")
+//                .setHourTvTextSize(11)
+//
+//                .setHourColonTvSize(16, 0)
+//                .setHourColonTvTextColorHex("#F81E4D")
+//                .setHourColonTvTextSize(11)
+//
+//                .setMinuteTvBackgroundRes(R.drawable.bg_hot_mall_timer)
+//                .setMinuteTvTextColorHex("#FFFFFF")
+//                .setMinuteTvTextSize(11)
+//
+//                .setMinuteColonTvSize(16, 0)
+//                .setMinuteColonTvTextColorHex("#F81E4D")
+//                .setMinuteColonTvTextSize(11)
+//
+//                .setSecondTvBackgroundRes(R.drawable.bg_hot_mall_timer)
+//                .setSecondTvTextColorHex("#FFFFFF")
+//                .setSecondTvTextSize(11)
+//
+//
+//                // 开启倒计时
+//                .startCountDown()
+//
+//                // 设置倒计时结束监听
+//                .setCountDownEndListener(new CountDownView.CountDownEndListener() {
+//                    @Override
+//                    public void onCountDownEnd() {
+//                        Toast.makeText(getContext(), "倒计时结束", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
     }
 

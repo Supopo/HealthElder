@@ -3,34 +3,24 @@ package com.xaqinren.healthyelders.uniApp;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.BundleCompat;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.alibaba.fastjson.JSON;
-import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.xaqinren.healthyelders.BuildConfig;
-import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
 import com.xaqinren.healthyelders.apiserver.UniRepository;
-import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.uniApp.bean.SaveBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.utils.LogUtils;
-import com.xaqinren.healthyelders.widget.pickerView.cityPicker.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +28,6 @@ import java.util.List;
 
 import io.dcloud.common.DHInterface.ICallBack;
 import io.dcloud.feature.sdk.DCUniMPSDK;
-import io.reactivex.subjects.BehaviorSubject;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;

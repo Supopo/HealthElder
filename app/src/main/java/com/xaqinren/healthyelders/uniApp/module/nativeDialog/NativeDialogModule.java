@@ -1,7 +1,5 @@
 package com.xaqinren.healthyelders.uniApp.module.nativeDialog;
 
-import android.view.View;
-
 import com.alibaba.fastjson.JSONObject;
 
 import io.dcloud.feature.uniapp.annotation.UniJSMethod;

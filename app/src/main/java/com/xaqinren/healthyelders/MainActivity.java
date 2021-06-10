@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,13 +16,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,18 +31,12 @@ import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 
-import com.dcloud.zxing2.maxicode.MaxiCodeReader;
 import com.dmcbig.mediapicker.utils.ScreenUtils;
-import com.igexin.sdk.PushManager;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
-import com.tencent.bugly.proguard.D;
-import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
-import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
@@ -55,14 +46,10 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
-import com.xaqinren.healthyelders.moduleHome.fragment.XxxFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
-import com.xaqinren.healthyelders.moduleMine.activity.AnchorActivity;
-import com.xaqinren.healthyelders.moduleMine.activity.MiniActivity;
-import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.SettingActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
@@ -75,7 +62,6 @@ import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
-import com.xaqinren.healthyelders.utils.GetFilesUtils;
 import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
@@ -97,11 +83,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.operators.parallel.ParallelRunOn;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.http.download.DownLoadStateBean;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -119,7 +103,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Disposable eventDisposable;
     private String accessToken;
     private UserInfoBean userInfoBean;
-    private Disposable subscribe;
     private HomeFragment homeFragment;
     private Drawable dawable2;
     private Drawable dawable;
@@ -230,7 +213,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
             //获取UserSig
             viewModel.getUserSig(accessToken);
-//            viewModel.getGiftList();
         }
 
     }
@@ -415,46 +397,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         return super.dispatchTouchEvent(event);
     }
 
-    public boolean isMainThread() {
-        return Looper.getMainLooper() == Looper.myLooper();
-    }
-
-    //下载svga动画
-    private void loadCache(List<GiftBean> gifts) {
-
-        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "http");
-        try {
-            HttpResponseCache.install(cacheDir, 1024 * 1024 * 200);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try { // new URL needs try catch.
-            SVGAParser svgaParser = new SVGAParser(this);
-            svgaParser.setFrameSize(100, 100);
-            for (GiftBean gift : gifts) {
-
-                if (!TextUtils.isEmpty(gift.giftUrl)) {
-                    svgaParser.decodeFromURL(new URL(gift.giftUrl), new SVGAParser.ParseCompletion() {
-                        @Override
-                        public void onComplete(@NotNull SVGAVideoEntity videoItem) {
-
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
-                }
-            }
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -528,18 +470,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
             onUnReadWatch(ImManager.getInstance().getUnreadCount());
             ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
-        });
-
-        viewModel.giftList.observe(this, giftBeans -> {
-            if (giftBeans != null) {
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadCache(giftBeans);
-                    }
-                }).start();
-            }
         });
 
 
