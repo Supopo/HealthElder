@@ -6,6 +6,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.databinding.ItemBankCardSelBinding;
 import com.xaqinren.healthyelders.moduleMine.bean.BankCardBean;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,5 @@ public class BankListAdapter extends BaseQuickAdapter<BankCardBean, BaseViewHold
     protected void convert(@NotNull BaseViewHolder baseViewHolder, BankCardBean bankCardBean) {
         ItemBankCardSelBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setData(bankCardBean);
-
     }
 }
