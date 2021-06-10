@@ -135,7 +135,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         //视频封面
         if (!TextUtils.isEmpty(videoInfo.coverUrl)) {
-            Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
             try {
                 String w = UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "w");
                 String h = UrlUtils.getUrlQueryByTag(videoInfo.coverUrl, "h");
@@ -145,6 +144,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
+            //判单横竖屏设置不同模式封面图片加载
+            if (isHP) {
+                binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }else {
+                binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+            Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
         }
 
         if (videoInfo.resourceType.equals("VIDEO")) {

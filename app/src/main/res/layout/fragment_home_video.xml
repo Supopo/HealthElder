@@ -14,7 +14,7 @@
     <RelativeLayout
         android:id="@+id/mainRelativeLayout"
         style="@style/Layout.Main"
-        android:background="@mipmap/zbj_bg">
+        android:background="@mipmap/bg_video">
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
@@ -24,7 +24,7 @@
             android:visibility="gone"
             android:id="@+id/coverImageView"
             style="@style/Layout.Main"
-            android:scaleType="centerCrop" />
+            />
 
         <RelativeLayout
             android:id="@+id/rlView"
