@@ -23,15 +23,15 @@
             <RelativeLayout
                 android:id="@+id/rl_top"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_237"
+                android:layout_height="@dimen/dp_224"
                 android:layout_marginBottom="@dimen/dp_10">
 
                 <RelativeLayout
                     android:id="@+id/rl_menu1"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_95"
+                    android:layout_height="@dimen/dp_81"
                     android:background="@mipmap/home_topbg"
-                    android:paddingTop="@dimen/dp_44">
+                    android:paddingTop="@dimen/dp_30">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_menu1"
@@ -94,7 +94,7 @@
                 android:id="@+id/rl_tabMenu"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_48"
-                android:layout_marginTop="@dimen/dp_44"
+                android:layout_marginTop="@dimen/dp_30"
                 android:visibility="gone">
 
                 <ImageView

@@ -33,7 +33,7 @@ public class MallHotMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolde
         helper.setBackgroundColor(R.id.rl_item, android.graphics.Color.parseColor(item.backgroundColor));
 
 
-//        // 基本属性设置
+//        // 基本属性设置 暂时隐藏倒计时
 //        binding.countdownView.setCountTime(60 * 60 * 2) // 设置倒计时时间戳
 //                .setHourTvBackgroundRes(R.drawable.bg_hot_mall_timer)
 //                .setHourTvTextColorHex("#FFFFFF")

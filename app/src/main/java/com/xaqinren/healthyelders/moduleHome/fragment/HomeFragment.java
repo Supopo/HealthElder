@@ -260,7 +260,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_247)) {
+                if (scrollY >= (int) getResources().getDimension(R.dimen.dp_234)) {
                     AppApplication.get().setShowTopMenu(false);
 
                     isShowTop = false;
@@ -309,14 +309,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     //h滑动237 w加宽20
                     //ViewPager2逐渐变宽
 
-                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_247);
+                    float bb = getResources().getDimension(R.dimen.dp_20) / getResources().getDimension(R.dimen.dp_234);
                     ViewGroup.LayoutParams params = binding.cardView.getLayoutParams();
                     params.width = oldWidth + (int) ((float) (scrollY) * bb);
                     binding.cardView.setLayoutParams(params);
 
 
                     //主页底部菜单背景颜色从白变透明
-                    float colorBb = 10 / getResources().getDimension(R.dimen.dp_247);
+                    float colorBb = 10 / getResources().getDimension(R.dimen.dp_234);
                     //从白-透明 100-0
                     int colorA = 10 - (int) (scrollY * colorBb);
 
