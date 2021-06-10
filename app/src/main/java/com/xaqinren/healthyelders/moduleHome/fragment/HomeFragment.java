@@ -109,9 +109,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //刷新首页菜单数据
                         viewModel.getHomeInfo();
                         //回到推荐页面
-                        binding.tabLayout.setCurrentTab(0,false);
+                        binding.tabLayout.setCurrentTab(0, false);
                         //刷新推荐
-                        tjFragment.refreshData();
+                        //TODO 暂时去掉会引发点击菜单失败
+//                        tjFragment.refreshData();
 
                         //隐藏视频播放视图层
                         RxBus.getDefault().post(new VideoEvent(10010, 0));

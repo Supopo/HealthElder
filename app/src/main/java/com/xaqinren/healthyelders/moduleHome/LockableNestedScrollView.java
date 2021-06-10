@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
+import com.xaqinren.healthyelders.R;
+
 /**
  * Created by Lee. on 2021/5/11.
  */
@@ -27,6 +29,7 @@ public class LockableNestedScrollView extends NestedScrollView {
         super(context, attrs, defStyleAttr);
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return scrollable && super.onTouchEvent(ev);
@@ -34,11 +37,7 @@ public class LockableNestedScrollView extends NestedScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        //拦截之后不再下发事件
-        if (scrollable) {
-            return true;
-        }
-        return super.onInterceptTouchEvent(ev);
+        return scrollable && super.onInterceptTouchEvent(ev);
     }
 
     public void setScrollingEnabled(boolean enabled) {
