@@ -112,7 +112,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         binding.btnNext.setOnClickListener(lis -> {
             if (isSuccess1 && isSuccess2) {
                 int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
-                bundle.putInt(Constant.REN_ZHENG_TYPE,key);
+                bundle.putInt(Constant.REN_ZHENG_TYPE, key);
                 startActivity(StartRenZheng2Activity.class, bundle);
                 finish();
             } else {
@@ -163,7 +163,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             public void onClick(@NonNull View widget) {
                 //跳使用条款小程序
                 //使用条款
-                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveClause");
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, Constant.ZB_SYTK);
             }
         }, text1.length(), (text1 + text2).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -177,7 +177,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             public void onClick(@NonNull View widget) {
                 //跳行为规范小程序
                 //行为规范
-                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveStandard");
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, Constant.ZB_XWGF);
             }
         }, (text1 + text2 + text3).length(), all.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

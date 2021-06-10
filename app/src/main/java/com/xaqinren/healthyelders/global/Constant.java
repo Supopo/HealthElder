@@ -13,7 +13,7 @@ public class Constant {
 
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
     public static String SERVICE_PHONE = "";//客服电话
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
 
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
     public static String debugUrl = "http://192.168.1.113:18080/";
@@ -115,6 +115,10 @@ public class Constant {
     public static final String MINI_ABOUT_US = "pages/agreement/aboutUs";
     //提现 服务条款
     public static final String MINI_WITHDRAW_SERVICE = "pages/agreement/withdrawService";
+    //直播功能使用条款
+    public static final String ZB_SYTK = "/pages/agreement/liveClause";
+    //直播功能行为规范
+    public static final String ZB_XWGF = "/pages/agreement/liveStandard";
 
 
 

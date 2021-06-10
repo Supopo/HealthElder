@@ -274,7 +274,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == CodeTable.LOCATION_SUCCESS) {
@@ -550,19 +549,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 return false;
             }
         });
-
-        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
-            if (event != null) {
-                if (event.msgId == CodeTable.UNI_RELEASE) {
-                    if (event.taskId == 99) {
-                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
-                    }
-                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
-                    //ToastUtils.showShort("打开小程序失败");
-                }
-            }
-        });
-        RxSubscriptions.add(uniSubscribe);
     }
 
     //设置一段文字多种点击事件
@@ -573,7 +559,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             @Override
             public void onClick(@NonNull View widget) {
                 //使用条款
-                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveClause");
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 0x10112, Constant.ZB_SYTK);
             }
         }, text1.length(), (text1 + text2).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -586,7 +572,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             @Override
             public void onClick(@NonNull View widget) {
                 //行为规范
-                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, "/pages/agreement/liveStandard");
+                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 0x10112, Constant.ZB_XWGF);
             }
         }, (text1 + text2 + text3).length(), all.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
