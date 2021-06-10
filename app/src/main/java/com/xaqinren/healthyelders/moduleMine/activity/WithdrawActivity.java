@@ -16,11 +16,13 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityWebBindingImpl;
 import com.xaqinren.healthyelders.databinding.ActivityWithdrawBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.impl.TextWatcherImpl;
 import com.xaqinren.healthyelders.moduleMine.adapter.BankListAdapter;
 import com.xaqinren.healthyelders.moduleMine.bean.BankCardBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMine.viewModel.WalletViewModel;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 
 import java.util.regex.Matcher;
@@ -94,7 +96,7 @@ public class WithdrawActivity extends BaseActivity<ActivityWithdrawBinding, Wall
         });
         binding.serviceClause.setOnClickListener(v -> {
             //服务条款
-
+            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_WITHDRAW_SERVICE, null, true);
         });
         viewModel.getWalletInfo();
     }

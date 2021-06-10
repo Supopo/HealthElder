@@ -113,6 +113,9 @@ public class Constant {
     public static final String MINI_PRIVACY = "pages/agreement/userPrivacy";
     //关于我们
     public static final String MINI_ABOUT_US = "pages/agreement/aboutUs";
+    //提现 服务条款
+    public static final String MINI_WITHDRAW_SERVICE = "pages/agreement/withdrawService";
+
 
 
     //腾讯云小视频加防盗链
