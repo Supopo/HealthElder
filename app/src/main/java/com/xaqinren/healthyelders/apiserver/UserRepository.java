@@ -190,7 +190,7 @@ public class UserRepository {
                             loginSuccess.postValue(true);
                         } else {
                             boolean showToast = false;
-                            if (!code.startsWith("0") && !code.startsWith("1")) {
+                            if (!response.getCode().startsWith("0") && !response.getCode().startsWith("1")) {
                                 //debug模式弹出
                                 showToast = true;
                             } else if (Constant.DEBUG) {

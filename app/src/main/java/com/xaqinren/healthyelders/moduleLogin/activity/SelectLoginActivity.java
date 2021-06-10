@@ -71,7 +71,7 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
 
     private boolean checkAgree() {
         if (!isAgree) {
-            Toast.makeText(this, "请先同意用户协议", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "请先同意用户协议", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

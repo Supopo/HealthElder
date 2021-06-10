@@ -136,11 +136,11 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         String phone = binding.etPhone.getText().toString().trim();
         String code = binding.etPhone.getText().toString().trim();
         if (StringUtils.isEmpty(phone)) {
-            Toast.makeText(this, "请填写手机号", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "请填写手机号", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (StringUtils.isEmpty(code)) {
-            Toast.makeText(this, "请填写验证码", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "请填写验证码", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

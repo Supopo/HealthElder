@@ -29,6 +29,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
@@ -77,6 +78,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private Disposable uniSubscribe;
     private int clickIndex;
     private int oldWidth;
+    public LockableNestedScrollView nsv;
 
 
     @Override
@@ -217,6 +219,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         fragments.add(fjFragment);
         HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
         vp2 = binding.viewPager2;
+        nsv = binding.nsv;
         binding.viewPager2.setUserInputEnabled(false);
 
 
