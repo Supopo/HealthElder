@@ -703,6 +703,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
     public void onActivityRestart() {
         mLiveRoom.startLocalPreview(true, binding.videoView);
+
+        if (zbGoodsListPop != null && zbGoodsListPop.isShowing()) {
+            if (zbGoodsListPop.toUniApp) {
+                zbGoodsListPop.refreshData();
+            }
+        }
     }
 
     @Override
@@ -715,4 +721,5 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             subscribe.dispose();
         }
     }
+
 }

@@ -625,7 +625,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             }
             moreLinkSettingDialog.dismiss();
         });
-        tvInfo.setOnClickListener(lis ->{
+        tvInfo.setOnClickListener(lis -> {
             //查看资料
             userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, moreLinkAdapter.getData().get(postion));
             userInfoPop.showPopupWindow();
@@ -1405,7 +1405,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 zbMorePop.showPopupWindow();
                 break;
             case R.id.btn_goods:
-                zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.liveRoomId,1);
+                zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.liveRoomId, 1);
                 zbGoodsListPop.showPopupWindow();
                 break;
         }
@@ -1601,10 +1601,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     binding.view.setLayoutParams(params1);
                     break;
                 case LiveConstants.IMCMD_SHOW_GOODS://群发带货消息
-                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS),eventBean.content,null);
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS), eventBean.content, null);
                     break;
                 case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://群发取消带货消息
-                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS_CANCEL),"",null);
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS_CANCEL), "", null);
                     break;
                 default:
                     break;
@@ -2036,5 +2036,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             num = String.valueOf(linksShowAdapter.getData().size());
         }
         binding.tvLinkNum.setText(num);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (zbGoodsListPop != null && zbGoodsListPop.isShowing()) {
+            if (zbGoodsListPop.toUniApp) {
+                zbGoodsListPop.refreshData();
+            }
+        }
     }
 }

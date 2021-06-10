@@ -16,11 +16,14 @@ public class ZBGoodsBean implements Serializable {
     public int type;
     public Boolean canExplain;//": false,
     public String imageUrl;//":
+    public String jumpUrl;//":
+    public String appId;//":
 
 
     public Boolean getCanExplain() {
         return canExplain;
     }
+
     public void setCanExplain(Boolean canExplain) {
         this.canExplain = canExplain;
     }

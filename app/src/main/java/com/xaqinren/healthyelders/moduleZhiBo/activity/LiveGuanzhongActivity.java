@@ -68,6 +68,9 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -135,6 +138,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private int screenWidth;
     private int screenHeight;
     private ZBGoodsListPop zbGoodsListPop;
+    private Disposable uniSubscribe;
 
 
     @Override
@@ -1316,7 +1320,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_SHOW_GOODS://带货消息
                 //调接口获取当前带货信息
                 String json = (String) message;
-                LogUtils.v("-------------","json"+json);
                 ZBGoodsBean goodBean = JSON.parseObject(json, ZBGoodsBean.class);
                 initZBGoodsBean(goodBean);
 
@@ -1329,7 +1332,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         }
     }
 
+    private ZBGoodsBean nowGoodsBean;
+
     private void initZBGoodsBean(ZBGoodsBean goodBean) {
+        nowGoodsBean = goodBean;
+
         binding.rlShowGood.setVisibility(View.VISIBLE);
         GlideUtil.intoImageView(this, UrlUtils.resetImgUrl(goodBean.imageUrl, 400, 400), binding.rivGood);
         binding.tvGoodName.setText(goodBean.title);
@@ -1463,10 +1470,15 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
         if (isPlaying) {
             viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
             stopPlay();
+        }
+        if (uniSubscribe != null) {
+            uniSubscribe.dispose();
         }
     }
 
@@ -1514,6 +1526,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.btnGift.setOnClickListener(this);
         binding.btnGoods.setOnClickListener(this);
         binding.ivCloseGood.setOnClickListener(this);
+        binding.llPay.setOnClickListener(this);
     }
 
     @Override
@@ -1606,6 +1619,14 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 zbGoodsListPop.showPopupWindow();
             case R.id.iv_closeGood:
                 binding.rlShowGood.setVisibility(View.GONE);
+                break;
+            case R.id.ll_pay:
+                if (nowGoodsBean != null) {
+                    if (!TextUtils.isEmpty(nowGoodsBean.appId) && !TextUtils.isEmpty(nowGoodsBean.jumpUrl)) {
+                        UniService.startService(getContext(), nowGoodsBean.appId, 99, nowGoodsBean.jumpUrl);
+                    }
+                }
+
                 break;
             default:
                 break;
@@ -1769,6 +1790,17 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 zbGiftListPop.dismiss();
                 //调接口刷新金币数量
                 zbGiftListPop.rushGold();
+            }
+        });
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 99) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
+                }
             }
         });
     }

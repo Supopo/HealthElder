@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,18 +23,24 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.LayoutPopZbjGoodsListBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.GoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBGoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.widget.LoadingDialog;
 import razerdp.basepopup.BasePopupWindow;
@@ -54,6 +61,7 @@ public class ZBGoodsListPop extends BasePopupWindow {
     private int type;
     private LoadingDialog loadingDialog;
     private ImageView ivBack;
+    private Disposable uniSubscribe;
 
     public ZBGoodsListPop(Context context, String liveRoomId, int type) {
         super(context);
@@ -86,7 +94,9 @@ public class ZBGoodsListPop extends BasePopupWindow {
         emptyView = View.inflate(getContext(), R.layout.empty_zb_goods, null);
         TextView tvAdd = emptyView.findViewById(R.id.tv_add);
         tvAdd.setOnClickListener(lis -> {
-            ToastUtil.toastShortMessage("ADD");
+            if (!TextUtils.isEmpty(uniAPPId) && !TextUtils.isEmpty(uniUrl)) {
+                UniService.startService(getContext(), uniAPPId, 99, uniUrl);
+            }
         });
         getGoodsList();
         initEvent();
@@ -109,9 +119,27 @@ public class ZBGoodsListPop extends BasePopupWindow {
                 if (type == 1) {
                     //设置讲解商品
                     setGoodsShow(String.valueOf(mAdapter.getData().get(position).id));
+                } else if (type == 2) {
+                    if (!TextUtils.isEmpty(mAdapter.getData().get(position).appId) && !TextUtils.isEmpty(mAdapter.getData().get(position).jumpUrl)) {
+                        UniService.startService(getContext(), mAdapter.getData().get(position).appId, 99, mAdapter.getData().get(position).jumpUrl);
+                    }
                 }
             }
         });
+
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            if (!TextUtils.isEmpty(mAdapter.getData().get(position).appId) && !TextUtils.isEmpty(mAdapter.getData().get(position).jumpUrl)) {
+                UniService.startService(getContext(), mAdapter.getData().get(position).appId, 99, mAdapter.getData().get(position).jumpUrl);
+            }
+        }));
+
+        tvGl.setOnClickListener(lis -> {
+            if (!TextUtils.isEmpty(uniAPPId) && !TextUtils.isEmpty(uniUrl)) {
+                UniService.startService(getContext(), uniAPPId, 99, uniUrl);
+            }
+        });
+
+
     }
 
     private int nowPos;
@@ -127,14 +155,13 @@ public class ZBGoodsListPop extends BasePopupWindow {
 
     private MutableLiveData<Boolean> setSuccess = new MutableLiveData<>();
     private MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
-    private MutableLiveData<List<ZBGoodsBean>> goodsList = new MutableLiveData<>();
+    private MutableLiveData<ZBGoodsListRes> goodsList = new MutableLiveData<>();
 
     private void initEvent() {
         setSuccess.observe((LifecycleOwner) getContext(), setSuccess -> {
             if (setSuccess != null && setSuccess) {
                 mAdapter.getData().get(nowPos).setCanExplain(!mAdapter.getData().get(nowPos).getCanExplain());
                 String jsonString = JSON.toJSONString(mAdapter.getData().get(nowPos));
-                LogUtils.v("--", jsonString);
                 if (mAdapter.getData().get(nowPos).getCanExplain()) {
                     //主播群发消息通知大家获取直播中带货信息
                     RxBus.getDefault().post(new EventBean(LiveConstants.IMCMD_SHOW_GOODS, jsonString));
@@ -156,31 +183,62 @@ public class ZBGoodsListPop extends BasePopupWindow {
 
         goodsList.observe((LifecycleOwner) getContext(), goodsBeans -> {
             if (goodsBeans != null) {
-                if (goodsBeans.size() == 0) {
-                    mAdapter.setEmptyView(emptyView);
-                } else {
-                    for (ZBGoodsBean goodsBean : goodsBeans) {
-                        goodsBean.type = type;
-                    }
-                    tvTitle.setText("直播商品(" + goodsBeans.size() + ")");
-                    if (mAdapter.getData().size() > 0) {
-                        mAdapter.setList(goodsBeans);
+                uniUrl = goodsBeans.managementPageJumpUrl;
+                uniAPPId = goodsBeans.managementPageAppId;
+                if (goodsBeans.commodityList != null) {
+                    if (goodsBeans.commodityList.size() == 0) {
+                        mAdapter.setEmptyView(emptyView);
                     } else {
-                        mAdapter.setNewInstance(goodsBeans);
+                        for (ZBGoodsBean goodsBean : goodsBeans.commodityList) {
+                            goodsBean.type = type;
+                        }
+                        tvTitle.setText("直播商品(" + goodsBeans.commodityList.size() + ")");
+                        if (mAdapter.getData().size() > 0) {
+                            mAdapter.setList(goodsBeans.commodityList);
+                        } else {
+                            mAdapter.setNewInstance(goodsBeans.commodityList);
+                        }
                     }
+                }
+
+            }
+        });
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 99) {
+                        toUniApp = true;
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
                 }
             }
         });
     }
 
+    private String uniUrl;
+    private String uniAPPId;
+
+    public boolean toUniApp;
+
+    public void refreshData() {
+        toUniApp = false;
+        getGoodsList();
+    }
 
     @Override
     public View onCreateContentView() {
         return createPopupById(R.layout.layout_pop_zbj_goods_list);
     }
 
+
     @Override
     public void onDismiss() {
         super.onDismiss();
+        if (uniSubscribe != null) {
+            uniSubscribe.dispose();
+        }
     }
 }
