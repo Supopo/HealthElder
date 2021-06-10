@@ -140,7 +140,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         handler = new Handler();
         //开始时候有头布局所以禁止滑动
         tjViewPager2 = binding.viewPager2;
-        tjCardView = binding.cardView;
+//        tjCardView = binding.cardView;
         binding.viewPager2.setUserInputEnabled(false);
         screenWidth = MScreenUtil.getScreenWidth(getActivity());
 

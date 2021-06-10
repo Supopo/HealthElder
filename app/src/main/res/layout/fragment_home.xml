@@ -78,15 +78,17 @@
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 app:cardCornerRadius="@dimen/dp_14"
+                android:clipChildren="true"
                 app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="false"
+                app:cardPreventCornerOverlap="true"
                 app:cardUseCompatPadding="false">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    android:clipChildren="true"/>
             </androidx.cardview.widget.CardView>
 
             <!--        推荐 关注 附近-->
