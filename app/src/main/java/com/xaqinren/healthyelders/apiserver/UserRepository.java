@@ -132,7 +132,9 @@ public class UserRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<UserInfoBean> data) {
                         if (data.getData() != null) {
-                            userInfo.postValue(data.getData());
+                            if (userInfo != null) {
+                                userInfo.postValue(data.getData());
+                            }
 
                             InfoCache.getInstance().setLoginUser(data.getData());
                             UserInfoMgr.getInstance().setUserInfo(data.getData());
