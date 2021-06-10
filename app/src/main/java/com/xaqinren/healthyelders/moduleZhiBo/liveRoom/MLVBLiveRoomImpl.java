@@ -3249,6 +3249,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      */
     @Override
     public void onC2CCustomMessage(String sendID, String cmd, String message, String userName, String headPic) {
+        //TODO 检查
         if (cmd.equalsIgnoreCase("linkmic")) {
             onRecvLinkMicMessage(message);
         } else if (cmd.equalsIgnoreCase("pk")) {

@@ -42,7 +42,6 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
 public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJViewModel> {
     private static final String TAG = "home-tj";
     private List<VideoInfo> mVideoInfoList = new ArrayList<>();
-    private Disposable subscribe;
     private int page = 1;
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter homeAdapter;
@@ -71,12 +70,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
-            if (event != null) {
-
-            }
-        });
-        RxSubscriptions.add(subscribe);
 
         //接受数据
         viewModel.datas.observe(this, datas -> {
@@ -140,17 +133,17 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         handler = new Handler();
         //开始时候有头布局所以禁止滑动
         tjViewPager2 = binding.viewPager2;
-//        tjCardView = binding.cardView;
+        //        tjCardView = binding.cardView;
         binding.viewPager2.setUserInputEnabled(false);
         screenWidth = MScreenUtil.getScreenWidth(getActivity());
 
         //变窄viewPager2
-//        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
-//        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-//        params.height = MScreenUtil.getScreenHeight(getActivity());
-//        params.width = screenWidth - dimension;
-//        oldWidth = screenWidth - dimension;
-//        tjCardView.setLayoutParams(params);
+        //        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
+        //        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
+        //        params.height = MScreenUtil.getScreenHeight(getActivity());
+        //        params.width = screenWidth - dimension;
+        //        oldWidth = screenWidth - dimension;
+        //        tjCardView.setLayoutParams(params);
         initVideoViews();
     }
 
@@ -186,7 +179,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 //第一次加载所有Fragment完会触发
                 if (!firstInit) {
                     //防止加载新的VideoFragment时候会多走一次
-                    if ( position != 0 && position == lastPos) {
+                    if (position != 0 && position == lastPos) {
                         return;
                     }
 
@@ -213,12 +206,17 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page = 1;
-                showLoadView();
-                viewModel.getVideoData(page);
+                refreshData();
                 binding.srl.setRefreshing(false);
             }
         });
+    }
+
+
+    public void refreshData() {
+        page = 1;
+        showLoadView();
+        viewModel.getVideoData(page);
     }
 
     private void showLoadView() {
@@ -232,7 +230,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subscribe.dispose();
         handler.removeCallbacksAndMessages(null);
     }
 }

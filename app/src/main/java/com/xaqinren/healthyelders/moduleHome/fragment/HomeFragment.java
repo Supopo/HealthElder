@@ -108,6 +108,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         isShowTop = true;
                         //刷新首页菜单数据
                         viewModel.getHomeInfo();
+                        //回到推荐页面
+                        binding.tabLayout.setCurrentTab(0,false);
+                        //刷新推荐
+                        tjFragment.refreshData();
 
                         //隐藏视频播放视图层
                         RxBus.getDefault().post(new VideoEvent(10010, 0));

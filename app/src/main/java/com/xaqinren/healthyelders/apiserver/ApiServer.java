@@ -19,23 +19,21 @@ import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.bean.MallMenuRes;
-import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillDetailBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleMine.bean.OrderListBean;
 import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
-import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniBean;
@@ -53,7 +51,6 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 
 public interface ApiServer {
