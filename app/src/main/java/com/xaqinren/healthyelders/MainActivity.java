@@ -301,7 +301,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 return;
             }
 
-            disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+            disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
                     .subscribe(granted -> {
                         if (granted) {
                             startActivity(StartLiveActivity.class);
