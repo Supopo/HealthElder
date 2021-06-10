@@ -106,19 +106,19 @@ public class Constant {
     //修改地址
     public static final String MINI_CHANGE_ADDRESS = "pages_commodity/order/changeAddress";
     //银行卡列表
-    public static final String MINI_BANK_CARD_LIST = "pages_user/wallet/bankCardList";
+    public static final String MINI_BANK_CARD_LIST = "pages_user/wallet/bankCardList?action=redirect";
     //用户协议
-    public static final String MINI_AGREEMENT = "pages/agreement/userService";
+    public static final String MINI_AGREEMENT = "pages/agreement/userService?action=redirect";
     //隐私协议
-    public static final String MINI_PRIVACY = "pages/agreement/userPrivacy";
+    public static final String MINI_PRIVACY = "pages/agreement/userPrivacy?action=redirect";
     //关于我们
-    public static final String MINI_ABOUT_US = "pages/agreement/aboutUs";
+    public static final String MINI_ABOUT_US = "pages/agreement/aboutUs?action=redirect";
     //提现 服务条款
-    public static final String MINI_WITHDRAW_SERVICE = "pages/agreement/withdrawService";
+    public static final String MINI_WITHDRAW_SERVICE = "pages/agreement/withdrawService?action=redirect";
     //直播功能使用条款
-    public static final String ZB_SYTK = "/pages/agreement/liveClause";
+    public static final String ZB_SYTK = "/pages/agreement/liveClause?action=redirect";
     //直播功能行为规范
-    public static final String ZB_XWGF = "/pages/agreement/liveStandard";
+    public static final String ZB_XWGF = "/pages/agreement/liveStandard?action=redirect";
 
 
 
