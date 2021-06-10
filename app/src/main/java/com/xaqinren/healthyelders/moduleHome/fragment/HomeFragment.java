@@ -106,6 +106,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
                         AppApplication.get().setShowTopMenu(true);
                         isShowTop = true;
+                        //刷新首页菜单数据
+                        viewModel.getHomeInfo();
 
                         //隐藏视频播放视图层
                         RxBus.getDefault().post(new VideoEvent(10010, 0));

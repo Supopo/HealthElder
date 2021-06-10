@@ -53,6 +53,7 @@ public class UserInfoBean implements Serializable {
 
     private WalletBean accountInfo;
     private List<Object> userBankCardList;
+    private List<Object> storeList;
 
 
     private String introduce;
