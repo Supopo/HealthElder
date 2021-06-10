@@ -435,7 +435,7 @@ public interface ApiServer {
     Observable<MBaseResponse<List<FriendBean>>> getRecommendContactF(@Header("Authorization") String authorization);
 
     //推荐好友
-    @GET("jkzl/findRecommendUserFriends")
+    @GET("user/findRecommendUserFriends")
     Observable<MBaseResponse<List<FriendBean>>> getRecommendF(@Header("Authorization") String authorization);
 
     //发送礼物
@@ -539,5 +539,9 @@ public interface ApiServer {
     //直播中商品设置/取消讲解
     @POST("live/liveCommodityExplain")
     Observable<MBaseResponse<Object>> setZBGoodsShow(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
+    //登录发送短信
+    @GET("content/open/sendRegLoginMsg")
+    Observable<MBaseResponse<Object>> senLoginSMS(@Query("mobile") String liveRoomId);
 }
 

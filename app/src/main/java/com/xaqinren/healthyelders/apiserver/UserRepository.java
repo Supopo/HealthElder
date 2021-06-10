@@ -877,4 +877,24 @@ public class UserRepository {
                 });
     }
 
+    public void sendLoginSms(MutableLiveData<Boolean> datas,String mobile) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("mobile", mobile);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.senLoginSMS(mobile)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        datas.postValue(data.isOk());
+                    }
+                });
+    }
+
 }

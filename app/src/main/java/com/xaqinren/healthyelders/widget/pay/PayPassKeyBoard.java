@@ -29,16 +29,16 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
     private float itemTextSize;
     private int itemMargin;
 
-    private int itemSize = 11;
     private int lineCount = 3;
     private int height, width;
     private PayPassView payPassView;
     private String[] values = {
-            "1","2","3","4","5","6","7","8","9","0","del"
+            "1","2","3","4","5","6","7","8","9",".","0","del"
     };
+    private int itemSize = values.length;
     private String TAG = "PayPassKeyBoard";
     private OnKeyChange onKeyChange;
-
+    private boolean hasDot = false;
     public void setOnKeyChange(OnKeyChange onKeyChange) {
         this.onKeyChange = onKeyChange;
     }
@@ -96,6 +96,12 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
                 item.setText(null);
                 item.setBackgroundResource(itemDelRes);
             }
+            if (!hasDot) {
+                if (i == itemSize - 3) {
+                    //删除键
+                    item.setVisibility(INVISIBLE);
+                }
+            }
             addView(item);
         }
     }
@@ -138,9 +144,9 @@ public class PayPassKeyBoard extends FrameLayout implements View.OnClickListener
                 liftMargin = itemMargin * (i % lineCount);
             }
             params.topMargin = itemHeight * line  + line * itemMargin;
-            if (child.getTag().toString().equals("0") || child.getTag().toString().equals(values[values.length - 1])){
-                liftMargin += itemWidth + itemMargin;
-            }
+//            if (child.getTag().toString().equals("0") || child.getTag().toString().equals(values[values.length - 1])){
+//                liftMargin += itemWidth + itemMargin;
+//            }
             params.leftMargin = itemWidth * (i % lineCount) + liftMargin;
             child.setLayoutParams(params);
         }

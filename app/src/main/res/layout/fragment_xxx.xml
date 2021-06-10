@@ -189,6 +189,15 @@
                 android:gravity="center"
                 android:text="打开小程序Activity"
                 android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/tv_menu110"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_30"
+                android:background="@color/green"
+                android:gravity="center"
+                android:text="打开密码键盘页"
+                android:textColor="@color/white" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

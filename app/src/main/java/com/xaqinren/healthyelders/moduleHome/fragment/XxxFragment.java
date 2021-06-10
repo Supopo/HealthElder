@@ -45,6 +45,7 @@ import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
+import com.xaqinren.healthyelders.moduleMine.activity.SettingPayPassActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
@@ -220,6 +221,9 @@ public class XxxFragment extends BaseFragment<FragmentXxxBinding, XxxViewModel> 
                 e.printStackTrace();
             }
 
+        });
+        binding.tvMenu110.setOnClickListener(lis ->{
+            startActivity(SettingPayPassActivity.class);
         });
     }
 

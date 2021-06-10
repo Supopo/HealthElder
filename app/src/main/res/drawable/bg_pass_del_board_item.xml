@@ -9,8 +9,8 @@
             </item>
             <item android:drawable="@mipmap/num_delete"
                 android:gravity="center"
-                android:width="@dimen/dp_40"
-                android:height="@dimen/dp_30"/>
+                android:width="@dimen/dp_32"
+                android:height="@dimen/dp_24"/>
         </layer-list>
     </item>
     <item>
@@ -23,8 +23,8 @@
             <item
                 android:drawable="@mipmap/num_delete"
                 android:gravity="center"
-                android:width="@dimen/dp_40"
-                android:height="@dimen/dp_30"/>
+                android:width="@dimen/dp_32"
+                android:height="@dimen/dp_24"/>
         </layer-list>
     </item>
 </selector>

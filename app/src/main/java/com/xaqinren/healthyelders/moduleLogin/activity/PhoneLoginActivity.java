@@ -22,8 +22,10 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.RegexUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, PhoneLoginViewModel> {
     private String openId;
@@ -50,6 +52,17 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     private void initEvent() {
         binding.getVCode.setOnClickListener(view -> {
             //获取验证码
+            String trim = binding.etPhone.getText().toString().trim();
+            if (StringUtils.isEmpty(trim)) {
+                ToastUtils.showShort("请输入手机号");
+                return;
+            }
+            if (!RegexUtils.isMobileSimple(trim)) {
+                ToastUtils.showShort("手机号不合法");
+                return;
+            }
+            ToastUtils.showShort("短信发送成功");
+            viewModel.sendSms(trim);
             view.setEnabled(false);
             observable = Observable.interval(0, 1, TimeUnit.SECONDS)
                     .subscribeOn(Schedulers.io())
