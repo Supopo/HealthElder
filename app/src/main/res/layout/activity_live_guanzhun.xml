@@ -17,7 +17,7 @@
             android:id="@+id/iv_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/zbj_bg"
+            android:src="@mipmap/bg_video"
             android:scaleType="centerCrop" />
 
         <!--            开启多人连麦时候背景会跟随最高View的位置变化-->

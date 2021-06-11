@@ -274,6 +274,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         llSQYYLM.setOnClickListener(lis -> {
             //判断是否需要主播同意
             if (!mLiveInitInfo.chatRoomUserApplyMic) {
+                linkStatus = 2;
                 mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_MORE_LINK_NUM), isBottomOpen ? "-1" : String.valueOf(mLinkPos), null);
             } else {
                 toSendLinkMsg(isBottomOpen ? -1 : mLinkPos);
@@ -639,6 +640,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private Timer selectLinkTimer;
     private TimerTask selectLinkTask;
 
+    //接受收拒绝连麦弹窗
     private void selectLinkDialog() {
         if (selectLinkDialog != null && selectLinkDialog.isShowing()) {
             return;
@@ -850,6 +852,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 if (showLinkTip != null && showLinkTip.isShowing()) {
                     showLinkTip.dismiss();
                 }
+
+                dismissSelectLinkDialog();
+
                 linkStatus = 3;
                 //如果本来禁止连麦 主播发起连麦 需要设置状态带改
                 binding.btnLianmai.setVisibility(View.VISIBLE);
@@ -1444,14 +1449,19 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_MORE_LINK_YQ://主播邀请多人连麦
                 //主播邀请来上多人语音连麦
                 //储存自己的座位号
-                mLinkPos = Integer.parseInt(message);
-                if (selectLinkDialog == null || !selectLinkDialog.isShowing()) {
-                    selectLinkDialog();
+
+                if (linkStatus == 1) {
+                    mLinkPos = Integer.parseInt(message);
+                    if (selectLinkDialog == null || !selectLinkDialog.isShowing()) {
+                        selectLinkDialog();
+                    }
                 }
+
                 break;
             case LiveConstants.IMCMD_MORE_LINK_JS://收到主播消息判断得知有无位置
                 //收到主播消息判断得知有无位置
                 if (message.equals("-1")) {
+                    linkStatus = 1;
                     ToastUtil.toastShortMessage("暂无合适位置");
                 } else {
                     //记录主播告诉自己的座位号
@@ -1753,7 +1763,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     moreLinkList.remove(bean.position);
                     moreLinkList.add(bean.position, bean);
                 }
-                moreLinkAdapter.setNewInstance(moreLinkList);
+                moreLinkAdapter.setList(moreLinkList);
 
                 if (needToLink) {
                     //去重连 走主动上麦的路线

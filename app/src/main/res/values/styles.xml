@@ -21,7 +21,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:background">@mipmap/zbj_bg</item>
+        <item name="android:background">@mipmap/bg_video</item>
     </style>
 
     <style name="ActivityBottomEnterAnim" parent="android:style/Animation.Activity">
