@@ -54,6 +54,7 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
     private void initView() {
         TextView tvSetting = findViewById(R.id.tv_setting);
         LinearLayout llMenu4 = findViewById(R.id.ll_menu4);
+        LinearLayout llMenu3 = findViewById(R.id.ll_menu3);
         //仅接受粉丝的的连线申请
         sbMenu1 = findViewById(R.id.sb_menu1);
         //观众连线需要通过申请
@@ -71,8 +72,9 @@ public class ZB2LinkSettingPop extends BasePopupWindow {
         if (liveInitInfo.linkType == 0) {
             tvSetting.setText("双人聊设置");
             chatStatusManageDto.onlyFansMic = liveInitInfo.getOnlyFansMic();
-            chatStatusManageDto.userApplyMic = liveInitInfo.getUserApplyMic();
+//            chatStatusManageDto.userApplyMic = liveInitInfo.getUserApplyMic();
             chatStatusManageDto.onlyInviteMic = liveInitInfo.getOnlyInviteMic();
+            llMenu3.setVisibility(View.GONE);
         } else if (liveInitInfo.linkType == 1) {
             tvSetting.setText("聊天室设置");
             chatStatusManageDto.onlyFansMic = liveInitInfo.getChatRoomOnlyFansMic();
