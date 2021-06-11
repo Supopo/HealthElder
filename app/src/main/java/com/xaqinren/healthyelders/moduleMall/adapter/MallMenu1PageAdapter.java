@@ -49,7 +49,7 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
                     return;
                 }
                 MenuBean menuBean1 = mallMenu1Adapter.getData().get(position);
-                String appId = menuBean1.appId;
+                String appId = menuBean1.event;
                 String jumpUrl = menuBean1.jumpUrl;
                 UniService.startService(getContext(), appId, 0x10001, jumpUrl);
             }

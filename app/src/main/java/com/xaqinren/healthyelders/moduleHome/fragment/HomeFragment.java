@@ -389,7 +389,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 startActivity(SelectLoginActivity.class);
                 return;
             }
-            UniService.startService(getContext(), menuBean.appId, 0x10111, menuBean.jumpUrl);
+            UniService.startService(getContext(), menuBean.event, 0x10111, menuBean.jumpUrl);
         });
     }
 

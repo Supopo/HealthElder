@@ -104,7 +104,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 return;
             }
             MenuBean menuBean = mallHotMenuAdapter.getData().get(position);
-            UniService.startService(getContext(), menuBean.appId, 0x10001, menuBean.jumpUrl);
+            UniService.startService(getContext(), menuBean.event, 0x10001, menuBean.jumpUrl);
         });
         binding.rvMenu2.setAdapter(mallHotMenuAdapter);
 
@@ -261,7 +261,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                     startActivity(SelectLoginActivity.class);
                     return;
                 }
-                UniService.startService(getContext(), data.appId, 0x10001, data.jumpUrl);
+                UniService.startService(getContext(), data.event, 0x10001, data.jumpUrl);
             }
         });
     }
