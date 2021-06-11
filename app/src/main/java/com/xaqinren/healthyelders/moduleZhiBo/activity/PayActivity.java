@@ -42,6 +42,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 import static android.view.WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
@@ -85,7 +86,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
             yeNum = getIntent().getExtras().getInt("yeNum", 0);//余额，我的零钱
             beiLv = getIntent().getExtras().getInt("beiLv", 0);//倍率
             orderNo = getIntent().getExtras().getString("orderNo", "");//订单编号
-            orderType = getIntent().getExtras().getString("orderType", "POINT_RECHARGE");//订单类型
+            orderType = getIntent().getExtras().getString("orderType", "");//订单类型
             payWay = getIntent().getExtras().getString("payWay", "app");//订单类型
         }
     }
@@ -165,7 +166,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding, BaseViewModel>
 
         binding.rlPay.setOnClickListener(lis -> {
             String payType = "";
-
+            if (StringUtils.isEmpty(orderType)) {
+                ToastUtils.showShort("订单异常，请重新下单");
+                return;
+            }
             if (selectPos == 0) {
                 payType = "WE_CHAT_PAY";
             } else if (selectPos == 1) {

@@ -77,7 +77,6 @@ public class JSCommModule extends UniModule {
         LogUtils.e(TAG, context.toString());
         StringBuffer buffer = new StringBuffer();
 
-        //TODO 小程序调用支付页面
         buffer.append("jkzl://app_open/pay_activity");
         Intent action = new Intent(Intent.ACTION_VIEW);
         StringBuilder builder = new StringBuilder();

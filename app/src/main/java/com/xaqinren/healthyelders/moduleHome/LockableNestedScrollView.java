@@ -37,23 +37,34 @@ public class LockableNestedScrollView extends NestedScrollView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        super.onTouchEvent(ev);
-        return false;
+        return super.onTouchEvent(ev);
     }
 
-    long l = 0;
+    long downTime = 0;
+    long upTime = 0;
+    float downX, downY;
+    float moveX, moveY;
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
         if (action == MotionEvent.ACTION_DOWN) {
-            l = System.currentTimeMillis();
+            downTime = System.currentTimeMillis();
+            downX = ev.getX();
+            downY = ev.getY();
         }
         if (action == MotionEvent.ACTION_MOVE) {
+            moveX = ev.getX();
+            moveY = ev.getY();
             if (scrollable) {
                 long l1 = System.currentTimeMillis();
-                if (l1 - l < 50) {
-                    ev.setAction(MotionEvent.ACTION_DOWN);
-                    return super.onInterceptTouchEvent(ev);
+                if (l1 - downTime < 100) {
+                    float offsetX = Math.abs(moveX - downX);
+                    float offsetY = Math.abs(moveY - downY);
+                    float offset = Math.max(offsetX, offsetY);
+                    LogUtils.e(TAG, "onInterceptTouchEvent  判断拦截 offset = " + offset);
+                    if (offset < 10) {
+                        return super.onInterceptTouchEvent(ev);
+                    }
                 }
                 LogUtils.e(TAG, "onInterceptTouchEvent  拦截 move = " + ev.getAction());
                 return true;

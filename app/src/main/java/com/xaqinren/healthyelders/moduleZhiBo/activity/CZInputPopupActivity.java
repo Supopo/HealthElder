@@ -143,6 +143,7 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
 
                 //充值
                 extras.putDouble("czNum", Double.parseDouble(binding.etContent.getText().toString()));
+                extras.putString("orderType", "POINT_RECHARGE");
                 startActivity(PayActivity.class, extras);
             } else {
                 if (etTextList.size() == 1 && etTextList.get(0).equals("0")) {

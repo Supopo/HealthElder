@@ -22,17 +22,12 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
-import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.CZInputPopupActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.CZSelectPopupActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.PayActivity;
-import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.util.ArrayList;
 import java.util.List;

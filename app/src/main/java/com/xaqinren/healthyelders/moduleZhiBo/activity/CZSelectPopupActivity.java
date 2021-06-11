@@ -113,6 +113,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
             bundle.putInt("jbyeNum", jbyeNum);
             bundle.putInt("yeNum", yeNum);
             bundle.putInt("beiLv", beiLv);
+            bundle.putString("orderType", "POINT_RECHARGE");
             if (czNum == 0) {
                 startActivity(CZInputPopupActivity.class, bundle);
             } else {

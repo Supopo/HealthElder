@@ -184,6 +184,19 @@ public class UserInfoBean implements Serializable {
         return null;
     }
 
+    public String getSexRightText() {
+        String age = getAge();
+        String cityAddress = getCityAddress();
+        if (!StringUtils.isEmpty(age)) {
+            return age;
+        }
+        if (StringUtils.isEmpty(cityAddress)) {
+            boolean man = isMan();
+            return man ? "男" : "女";
+        }
+        return null;
+    }
+
     public boolean isMan() {
         if (sex.equals("MALE")) {
             return true;
