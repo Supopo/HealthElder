@@ -88,9 +88,10 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         mFragments = new ArrayList<>();
         mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
-        commitAllowingStateLoss(0);
-        liveUiViewModel.getCurrentPage().setValue(0);
+        commitAllowingStateLoss(1);
+        liveUiViewModel.getCurrentPage().setValue(1);
         //默认选中第一个
+        binding.llMenu.selectTab(binding.llMenu.getTabAt(1));
         binding.llMenu.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -124,6 +125,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
 
             }
         });
+
     }
 
 
