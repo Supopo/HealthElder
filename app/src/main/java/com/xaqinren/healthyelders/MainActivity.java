@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -31,18 +32,27 @@ import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.alibaba.fastjson.JSON;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.dmcbig.mediapicker.utils.ScreenUtils;
+import com.google.gson.Gson;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
+import com.xaqinren.healthyelders.bean.SlideParamBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMainBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.GlobalData;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
@@ -61,20 +71,31 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.dcloud.feature.sdk.DCUniMPJSCallback;
@@ -84,11 +105,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.jvm.internal.FunctionBase;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
+import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -119,6 +142,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private int currentIndex;
     private ActionBarDrawerToggle toggle;
     private QMUIDialog mInstallDialog;
+    private SlideBarAdapter slideBarAdapter;
+    private SlideBarBean slideBarBean;
+    private Disposable uniSubscribe;
 
     @Override
 
@@ -171,10 +197,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
             }
         });
+        slideBarBean = GlobalData.getInstance().getSlideBar();
         initDrawer();
         disableDrawer();
-
-        viewModel.getAppConfig();
+//        viewModel.getAppConfig();
         viewModel.checkVersion();
 
     }
@@ -217,7 +243,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
 
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -488,6 +513,24 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         //将订阅者加入管理站
         RxSubscriptions.add(mSubscription);
 
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 0x10056) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+        RxSubscriptions.add(uniSubscribe);
+
+        viewModel.slideBarLiveData.observe(this, s -> {
+            slideBarBean = s;
+            GlobalData.getInstance().saveSlideBar(slideBarBean);
+            slideBarAdapter.setList(slideBarBean.getMenuInfoList());
+        });
     }
 
     private String[] textColors = {
@@ -622,6 +665,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
         handler.removeCallbacksAndMessages(null);
         RxSubscriptions.remove(mSubscription);
+        RxSubscriptions.remove(uniSubscribe);
     }
 
     @Override
@@ -678,41 +722,96 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
             }
         });
+        slideBarAdapter = new SlideBarAdapter();
+        binding.slideBarList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.slideBarList.setAdapter(slideBarAdapter);
+        if (slideBarBean == null) {
+            //splash未请求到数据
+            viewModel.getSlideBar();
+        }else{
+            slideBarAdapter.setList(slideBarBean.getMenuInfoList());
+        }
+        slideBarAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                SlideBarBean.MenuInfoListDTO menuInfoListDTO = slideBarAdapter.getData().get(position);
+                closeDelay();
+                if (menuInfoListDTO.getEventType().equals("ORIGIN")) {
+                    //原生
+                    String event = menuInfoListDTO.getEvent();
+                    String jumpUrl = menuInfoListDTO.getJumpUrl();
+                    if (event.equals("page")) {
+                        //跳转页面
+                        if (jumpUrl.equals("userWallet")) {
+                            startActivity(WalletActivity.class);
+                        } else if (jumpUrl.equals("userSetting")) {
+                            startActivity(SettingActivity.class);
+                        }
+                    } else if (event.equals("method")) {
+                        //打开方法
+                        SlideParamBean slideParamBean = JSON.parseObject(jumpUrl, SlideParamBean.class);
+                        String function = slideParamBean.getFunction();
+                        try {
+                            Method fun = MainActivity.class.getDeclaredMethod(function, Map.class);
+                            fun.setAccessible(true);
+                            fun.invoke(MainActivity.this, slideParamBean.getParam());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (menuInfoListDTO.getEventType().equals("APPLET")) {
+                    //小程序
+                    String appid = menuInfoListDTO.getEvent();
+                    String page = menuInfoListDTO.getJumpUrl();
+                    UniService.startService(getContext(), appid, 0x10056, page);
+                }
+            }
+        });
+    }
 
-        /*binding.myCommCode.setOnClickListener(v -> {
-            //推广码
-            closeDelay();
-            startActivity(MyRecommendCodeActivity.class);
-        });*/
-        binding.myWallet.setOnClickListener(v ->
-        {
-            closeDelay();
-            startActivity(WalletActivity.class);
-        });
-        /*binding.myZhubo.setOnClickListener(v -> {
-            closeDelay();
-            startActivity(AnchorActivity.class);
-        });*/
-        binding.mySetting.setOnClickListener(v -> {
-            closeDelay();
-            startActivity(SettingActivity.class);
-        });
-        binding.myKefu.setOnClickListener(v -> {
-            closeDelay();
-            IntentUtils.sendPhone(getContext(),Constant.SERVICE_PHONE);
-        });
-        binding.agreeLayout.setOnClickListener(v -> {
-            closeDelay();
-            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_AGREEMENT, null, true);
-        });
-        binding.privacyLayout.setOnClickListener(v -> {
-            closeDelay();
-            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_PRIVACY, null, true);
-        });
-        binding.aboutLayout.setOnClickListener(v -> {
-            closeDelay();
-            UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_ABOUT_US, null, true);
-        });
+    public void makeCall(Map<String,String> param) {
+        IntentUtils.sendPhone(getContext(),param.get("phone"));
+    }
+
+    public void makeActivity(Map<String,Object> param) {
+        String name = (String) param.get("activityName");
+        param.remove("activityName");
+        String code = (String) param.get("code");
+        param.remove("code");
+        Bundle bundle = new Bundle();
+        Set<String> strings = param.keySet();
+        Iterator<String> iterator = strings.iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = param.get(key);
+            if (value instanceof String) {
+                bundle.putString(key, (String) value);
+            } else if (value instanceof Integer) {
+                bundle.putInt(key, ((Integer) value));
+            } else if (value instanceof Boolean) {
+                bundle.putBoolean(key, (Boolean) value);
+            } else if (value instanceof Float) {
+                bundle.putFloat(key, (Float) value);
+            } else if (value instanceof Double) {
+                bundle.putDouble(key, (Double) value);
+            } else if (value instanceof Long) {
+                bundle.putLong(key, (Long) value);
+            }
+        }
+        try {
+            Class cls = Class.forName(name);
+            Intent intent = new Intent(getActivity(),cls);
+            intent.putExtras(bundle);
+            if (!StringUtils.isEmpty(code)) {
+                int code1 = Integer.parseInt(code);
+                startActivityForResult(intent, code1);
+            }else{
+                startActivity(intent);
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void openDrawer() {

@@ -160,39 +160,23 @@
             android:id="@+id/menu_layout"
             android:layout_width="@dimen/dp_259"
             android:layout_height="match_parent"
-            android:background="@color/color_EAEA"
+            android:background="@color/white"
             android:orientation="vertical"
             android:layout_gravity="right"
+            android:paddingTop="@dimen/dp_28"
             >
-            <!--<LinearLayout
-                android:id="@+id/my_comm_code"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_53"
-                android:paddingLeft="@dimen/dp_27">
 
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_jiankm"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="我的推荐码"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>-->
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/slide_bar_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <!--<LinearLayout
                 android:id="@+id/my_wallet"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_35"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_53"
+                android:layout_marginTop="@dimen/dp_25"
                 android:paddingLeft="@dimen/dp_27">
 
                 <ImageView
@@ -208,72 +192,6 @@
                     android:includeFontPadding="false"
                     android:layout_marginLeft="@dimen/dp_13"/>
             </LinearLayout>
-            <!--<LinearLayout
-                android:id="@+id/my_zhubo"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_zhub_center"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="主播中心"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>-->
-      <!--      <LinearLayout
-                android:id="@+id/my_little"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_xiaocx"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="小程序"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>-->
-            <!--<LinearLayout
-                android:id="@+id/my_car"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_cart"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="购物助手"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>-->
             <LinearLayout
                 android:id="@+id/my_kefu"
                 android:layout_width="match_parent"
@@ -398,7 +316,7 @@
                     android:textColor="@color/color_252525"
                     android:includeFontPadding="false"
                     android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>
+            </LinearLayout>-->
         </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

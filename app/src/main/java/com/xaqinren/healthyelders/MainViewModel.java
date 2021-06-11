@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.AppConfigBean;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
@@ -32,6 +33,7 @@ public class MainViewModel extends BaseViewModel {
     public MutableLiveData<VersionBean> versionBean = new MutableLiveData<>();
 
     public MutableLiveData<AppConfigBean> appConfig = new MutableLiveData<>();
+    public MutableLiveData<SlideBarBean> slideBarLiveData = new MutableLiveData<>();
 
 
     public void getUserInfo(String token) {
@@ -56,5 +58,9 @@ public class MainViewModel extends BaseViewModel {
 
     public void getAppConfig() {
         UserRepository.getInstance().getAppConfig(appConfig);
+    }
+
+    public void getSlideBar() {
+        UserRepository.getInstance().getAppSideBar(slideBarLiveData);
     }
 }

@@ -11,6 +11,7 @@ import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.bean.AppConfigBean;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -895,6 +896,23 @@ public class UserRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
                         datas.postValue(data.isOk());
+                    }
+                });
+    }
+
+    public void getAppSideBar(MutableLiveData<SlideBarBean> datas) {
+        userApi.getSlideBar()
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<SlideBarBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<SlideBarBean> data) {
+                        datas.postValue(data.getData());
                     }
                 });
     }

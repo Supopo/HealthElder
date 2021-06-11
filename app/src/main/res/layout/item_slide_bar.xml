@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="data"
+            type="com.xaqinren.healthyelders.bean.SlideBarBean.MenuInfoListDTO" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_25">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_35"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_27">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:src="@mipmap/icon_menu_set" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{data.menuName}"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_252525"
+                android:includeFontPadding="false"
+                android:layout_marginLeft="@dimen/dp_13" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

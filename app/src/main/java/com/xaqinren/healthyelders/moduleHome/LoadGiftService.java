@@ -18,6 +18,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
+import com.xaqinren.healthyelders.global.GlobalData;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +34,7 @@ import java.util.List;
 public class LoadGiftService extends Service implements LifecycleOwner {
     private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     private MutableLiveData<List<GiftBean>> mutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<SlideBarBean> slideBarLiveData = new MutableLiveData<>();
     private String TAG = LoadGiftService.class.getSimpleName();
 
     public static void startService(Context context) {
@@ -45,7 +49,10 @@ public class LoadGiftService extends Service implements LifecycleOwner {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
         initObservable();
         getGiftList();
+        getSlideBar();
     }
+
+
 
     @Override
     public void onStart(Intent intent, int startId) {
@@ -84,6 +91,7 @@ public class LoadGiftService extends Service implements LifecycleOwner {
                 }).start();
             }
         });
+        slideBarLiveData.observe(this,data-> GlobalData.getInstance().saveSlideBar(data));
     }
 
     //下载svga动画
@@ -129,6 +137,10 @@ public class LoadGiftService extends Service implements LifecycleOwner {
     //获取礼物列表
     private void getGiftList() {
         LiveRepository.getInstance().getGiftList(mutableLiveData);
+    }
+
+    private void getSlideBar() {
+        UserRepository.getInstance().getAppSideBar(slideBarLiveData);
     }
 
 

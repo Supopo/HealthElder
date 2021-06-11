@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.apiserver;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.bean.AppConfigBean;
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
@@ -543,5 +544,9 @@ public interface ApiServer {
     //登录发送短信
     @GET("content/open/sendRegLoginMsg")
     Observable<MBaseResponse<Object>> senLoginSMS(@Query("mobile") String liveRoomId);
+
+    //查询用户中心侧边栏
+    @GET("jkzl/open/findUserSidebar")
+    Observable<MBaseResponse<SlideBarBean>> getSlideBar();
 }
 
