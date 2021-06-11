@@ -29,7 +29,7 @@
             android:layout_toRightOf="@id/avatar"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/color_252525"
-            android:text="@{viewModel.nickname}"/>
+            android:text="@{viewModel.showName}"/>
 
         <TextView
             android:id="@+id/source"

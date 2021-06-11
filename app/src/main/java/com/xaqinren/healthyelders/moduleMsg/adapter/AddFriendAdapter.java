@@ -4,6 +4,7 @@ package com.xaqinren.healthyelders.moduleMsg.adapter;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.bugly.proguard.T;
 import com.xaqinren.healthyelders.R;
@@ -13,7 +14,9 @@ import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-public class AddFriendAdapter extends BaseQuickAdapter<FriendBean,BaseViewHolder> {
+import me.goldze.mvvmhabit.utils.StringUtils;
+
+public class AddFriendAdapter extends BaseQuickAdapter<FriendBean,BaseViewHolder> implements LoadMoreModule {
 
     public static String FRIEND = "FRIEND";//朋友
     public static String FANS = "FANS";//粉丝
@@ -30,7 +33,10 @@ public class AddFriendAdapter extends BaseQuickAdapter<FriendBean,BaseViewHolder
     protected void convert(@NotNull BaseViewHolder baseViewHolder, FriendBean friendBean) {
         ItemMsgAddFriendBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(friendBean);
-        binding.source.setText("通讯录好友" + friendBean.getName());
+        if (!StringUtils.isEmpty(friendBean.getName()))
+            binding.source.setText("通讯录好友" + friendBean.getName());
+        else
+            binding.source.setText(null);
         GlideUtil.intoImageView(getContext(),friendBean.getAvatarUrl(),binding.avatar,R.mipmap.default_avatar);
         if (friendBean.getIdentity() == null){
             //陌生人

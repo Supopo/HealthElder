@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -42,9 +43,11 @@ import java.util.List;
 import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import razerdp.basepopup.BasePopupWindow;
 
 public class SettingActivity extends BaseActivity<ActivitySettingBinding, SettingViewModel> {
     private UserInfoBean userInfoBean;
@@ -123,6 +126,13 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
             }
         });
         listBottomPopup.showPopupWindow();
+        ScreenUtils.setWindowAlpha(getContext(), 1.0f, 0.6f, 400);
+        listBottomPopup.setOnDismissListener(new BasePopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                ScreenUtils.setWindowAlpha(getContext(), 0.6f, 1f, 200);
+            }
+        });
     }
 
     private void showVersion() {
@@ -142,6 +152,8 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                         downUrl = versionBean.newAppVersion.upgradeUrl;
                         mustUpdate = versionBean.autoUpdateApplet;
                         updateDialog();
+                    }else{
+                        ToastUtils.showShort("已是最新版本");
                     }
                 }
             }
@@ -170,6 +182,13 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
             }
         });
         listBottomPopup.showPopupWindow();
+        ScreenUtils.setWindowAlpha(getContext(), 1.0f, 0.6f, 400);
+        listBottomPopup.setOnDismissListener(new BasePopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                ScreenUtils.setWindowAlpha(getContext(), 0.6f, 1f, 200);
+            }
+        });
     }
 
     @Override

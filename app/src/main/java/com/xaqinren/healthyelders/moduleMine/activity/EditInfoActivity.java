@@ -157,7 +157,6 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         List<ListPopMenuBean> menus = new ArrayList<>();
         menus.add(new ListPopMenuBean("男"));
         menus.add(new ListPopMenuBean("女"));
-        menus.add(new ListPopMenuBean("不展示"));
         ListBottomPopup listBottomPopup = new ListBottomPopup(this, menus);
         listBottomPopup.setOnItemClickListener((adapter, view, position) -> {
             //掉接口
@@ -167,13 +166,17 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
             } else if (position == 1) {
                 viewModel.updateSex("FEMALE");
                 updateValue = "FEMALE";
-            } else if (position == 2) {
-                viewModel.updateSex("");
-                updateValue = "";
             }
             listBottomPopup.dismiss();
         });
         listBottomPopup.showPopupWindow();
+        ScreenUtils.setWindowAlpha(getContext(), 1.0f, 0.6f, 400);
+        listBottomPopup.setOnDismissListener(new BasePopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                ScreenUtils.setWindowAlpha(getContext(), 0.6f, 1.0f, 200);
+            }
+        });
     }
 
     private String birthday;

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.tencent.bugly.proguard.O;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
@@ -37,7 +40,9 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityAddFriendBinding;
 import com.xaqinren.healthyelders.databinding.HeaderAddFriendBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.impl.TextWatcherImpl;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
@@ -64,9 +69,14 @@ import razerdp.basepopup.BasePopupWindow;
 public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, AddFriendViewModel> {
     private AddFriendAdapter addFriendAdapter;
     private List<FriendBean> friendBeans;
+    private List<FriendBean> searchFriendBeans;
     private String TAG = getClass().getSimpleName();
     private int currentScroll;
     private int opIndex;
+
+    private int sPage = 1;
+    private int sPageSize = 10;
+    private int showType = 1;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -83,11 +93,13 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         super.initData();
         setTitle("添加朋友");
         friendBeans = new ArrayList<>();
+        searchFriendBeans = new ArrayList<>();
         addFriendAdapter = new AddFriendAdapter(R.layout.item_msg_add_friend);
         addFriendAdapter.setList(friendBeans);
         addFriendAdapter.addHeaderView(View.inflate(this, R.layout.header_empty_148dp, null));
         binding.content.setLayoutManager(new LinearLayoutManager(this));
         binding.content.setAdapter(addFriendAdapter);
+        showDialog();
         viewModel.getRecommendFriend();
         initHeader();
         binding.content.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -97,6 +109,23 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 currentScroll -= dy;
                 LogUtils.e(TAG, "滑动距离 -> "+dy);
                 binding.includeHeader.rlHeaderLayout.setTranslationY(currentScroll);
+            }
+        });
+        binding.includeHeader.searchEt.addTextChangedListener(new TextWatcherImpl(){
+            @Override
+            public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                if (editable.length() == 0) {
+                    //展示默认
+                    showType = 1;
+                    addFriendAdapter.setList(friendBeans);
+                    addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
+                } else {
+                    //搜索
+                    sPage = 1;
+                    showType = 2;
+                    viewModel.searchUserList(sPage,sPageSize,editable.toString());
+                }
             }
         });
         addFriendAdapter.setOnItemChildClickListener((adapter, view, position) -> {
@@ -121,6 +150,13 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 viewModel.recommendFriend(friendBean.getId());
             } else if (view.getId() == R.id.close) {
                 adapter.removeAt(position);
+            }
+        });
+        addFriendAdapter.getLoadMoreModule().setEnableLoadMore(true);
+        addFriendAdapter.getLoadMoreModule().setAutoLoadMore(true);
+        addFriendAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
+            if (showType == 2) {
+                viewModel.searchUserList(sPage,sPageSize,binding.includeHeader.searchEt.toString());
             }
         });
     }
@@ -193,6 +229,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         viewModel.friendLiveData.observe(this,list->{
             friendBeans.addAll(list);
             addFriendAdapter.setList(friendBeans);
+            addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
         });
         viewModel.flow.observe(this,bool->{
             FriendBean friendBean = addFriendAdapter.getData().get(opIndex);
@@ -213,6 +250,32 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 friendBean.setIdentity(AddFriendAdapter.STRANGER);
             }
             addFriendAdapter.notifyItemChanged(opIndex + 1);
+        });
+        viewModel.liteAvUserList.observe(this, liteAvUserBeans -> {
+            if (sPage == 1) {
+                addFriendAdapter.getData().clear();
+                addFriendAdapter.getLoadMoreModule().setEnableLoadMore(true);
+            }
+            if (liteAvUserBeans.isEmpty()) {
+                addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
+            } else if (liteAvUserBeans.size() < sPageSize) {
+                addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
+            } else {
+                addFriendAdapter.getLoadMoreModule().loadMoreComplete();
+                sPage++;
+            }
+            List<FriendBean> list = new ArrayList<>();
+            for (LiteAvUserBean bean : liteAvUserBeans) {
+                FriendBean friendBean = new FriendBean();
+                friendBean.setIdentity(bean.getIdentity());
+                friendBean.setId(bean.getId());
+                friendBean.setAvatarUrl(bean.getAvatar());
+                friendBean.setNickname(bean.getName());
+                friendBean.setName(null);
+                friendBean.setUserId(bean.getId());
+                list.add(friendBean);
+            }
+            addFriendAdapter.addData(list);
         });
     }
 

@@ -62,6 +62,10 @@ public class FriendBean extends MessageDetailBean{
         return nickname;
     }
 
+    public String getShowName() {
+        return nickname == null ? name : nickname;
+    }
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }

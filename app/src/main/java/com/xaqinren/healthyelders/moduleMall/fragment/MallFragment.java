@@ -26,6 +26,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMallBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
@@ -33,6 +34,7 @@ import com.xaqinren.healthyelders.moduleMall.adapter.MallHotMenuAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu3Adapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.MallViewModel;
+import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
@@ -135,7 +137,13 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
             }
         });
-
+        binding.orderLayout.setOnClickListener(v -> {
+            if (InfoCache.getInstance().checkLogin()) {
+                startActivity(OrderListActivity.class);
+            }else{
+                startActivity(SelectLoginActivity.class);
+            }
+        });
 
         viewModel.getMenuInfo();
         viewModel.getMenuType();

@@ -699,12 +699,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             IntentUtils.sendPhone(getContext(),Constant.SERVICE_PHONE);
         });
         binding.agreeLayout.setOnClickListener(v -> {
+            closeDelay();
             UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_AGREEMENT, null, true);
         });
         binding.privacyLayout.setOnClickListener(v -> {
+            closeDelay();
             UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_PRIVACY, null, true);
         });
         binding.aboutLayout.setOnClickListener(v -> {
+            closeDelay();
             UniUtil.openUniApp(this, Constant.JKZL_MINI_APP_ID, Constant.MINI_ABOUT_US, null, true);
         });
     }
