@@ -300,6 +300,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         startListVideo();
                     }
 
+                } else if (bean.msgId == 2) {
+                    //暂停播放
+                    pauseMsg();
+                } else if (bean.msgId == 3) {
+                    //继续播放
+                    resumeMsg();
                 } else if (bean.msgId == 101) {//左右切换
                     stopPlay(true);
                     if ((bean.position == 0 && type.equals("home-tj"))) {
@@ -708,13 +714,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onPause() {
         super.onPause();
+        pauseMsg();
+    }
 
+    public void pauseMsg() {
         if (hasPlaying) {
             pausePlay();
         }
-
     }
-
 
     public void resumeMsg() {
         if (hasPlaying) {

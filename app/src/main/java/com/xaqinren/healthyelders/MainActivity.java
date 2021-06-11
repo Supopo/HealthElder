@@ -260,19 +260,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //发送停止播放消息
                 RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             }else {
-                RxBus.getDefault().post(new VideoEvent(1, AppApplication.get().getTag()));
+                RxBus.getDefault().post(new VideoEvent(3, "继续播放"));
             }
-
-
-
-
-
             initBottomTab();
             oldView = binding.tvMenu1;
         });
         binding.rlMenu2.setOnClickListener(lis -> {
             //发送停止播放消息
-            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+            RxBus.getDefault().post(new VideoEvent(2, "暂停播放"));
             selectView = binding.tvMenu2;
             initBottomTab();
             oldView = binding.tvMenu2;
@@ -284,7 +279,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 return;
             }
             //发送停止播放消息
-            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+            RxBus.getDefault().post(new VideoEvent(2, "暂停播放"));
             selectView = binding.tvMenu3;
             initBottomTab();
             oldView = binding.tvMenu3;
@@ -298,7 +293,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
 
             //发送停止播放消息
-            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+            RxBus.getDefault().post(new VideoEvent(2, "暂停播放"));
             selectView = binding.tvMenu4;
             initBottomTab();
             oldView = binding.tvMenu4;
