@@ -853,6 +853,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     showLinkTip.dismiss();
                 }
 
+                //给主播发消息取消连麦消息
+                mLiveRoom.sendC2CCustomMsg(mLiveInitInfo.userId, String.valueOf(LiveConstants.IMCMD_CANCEL_LINK), "取消连麦", null);
+
                 dismissSelectLinkDialog();
 
                 linkStatus = 3;
@@ -910,7 +913,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             binding.llVideo.setLayoutParams(lp);
             binding.btnJtfz.setVisibility(View.GONE);
         } else {
-            updateLinkerPos(mLinkPos, null, "请求上麦", null);
+            //关闭多人连麦时候不需要自己移除 等会会刷新列表接口
+            //            updateLinkerPos(mLinkPos, null, "请求上麦", null);
         }
 
     }
@@ -1449,13 +1453,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_MORE_LINK_YQ://主播邀请多人连麦
                 //主播邀请来上多人语音连麦
                 //储存自己的座位号
-
-                if (linkStatus == 1) {
-                    mLinkPos = Integer.parseInt(message);
-                    if (selectLinkDialog == null || !selectLinkDialog.isShowing()) {
-                        selectLinkDialog();
-                    }
+                mLinkPos = Integer.parseInt(message);
+                if (selectLinkDialog == null || !selectLinkDialog.isShowing()) {
+                    selectLinkDialog();
                 }
+
 
                 break;
             case LiveConstants.IMCMD_MORE_LINK_JS://收到主播消息判断得知有无位置

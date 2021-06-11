@@ -1155,14 +1155,17 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case LiveConstants.IMCMD_CANCEL_LINK://观众取消连麦申请
                 disWaitTip();
                 //adapter中移除
-                int temp = 0;
+                int temp = -1;
                 for (int i = 0; i < linksShowAdapter.getData().size(); i++) {
                     if (linksShowAdapter.getData().get(i).userId.equals(senderId)) {
                         temp = i;
                     }
                 }
-                linksShowAdapter.removeAt(temp);
-                updateLinkNum();
+                if (temp >= 0) {
+                    linksShowAdapter.removeAt(temp);
+                    updateLinkNum();
+                }
+
                 break;
             case LiveConstants.IMCMD_MORE_LINK_NUM://用户申请多人语音连麦的请求
                 //收到用户申请多人语音连麦的请求
