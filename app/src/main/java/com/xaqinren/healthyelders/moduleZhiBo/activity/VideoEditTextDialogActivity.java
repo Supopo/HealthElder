@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Gravity;
@@ -22,6 +23,7 @@ import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +40,8 @@ public class VideoEditTextDialogActivity extends Activity {
     private String type;
     private int pos;
     private EditText etView;
+    private String TAG = getClass().getSimpleName();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

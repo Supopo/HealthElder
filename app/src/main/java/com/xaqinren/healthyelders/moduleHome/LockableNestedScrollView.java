@@ -52,6 +52,7 @@ public class LockableNestedScrollView extends NestedScrollView {
             if (scrollable) {
                 long l1 = System.currentTimeMillis();
                 if (l1 - l < 50) {
+                    ev.setAction(MotionEvent.ACTION_DOWN);
                     return super.onInterceptTouchEvent(ev);
                 }
                 LogUtils.e(TAG, "onInterceptTouchEvent  拦截 move = " + ev.getAction());

@@ -85,6 +85,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private String commentId;//评论时候的ID 有内容id或者评论id区别
     private CommentListBean mCommentListBean;//当前评论对象
+    private String TAG = getClass().getSimpleName();
+    private Disposable commentDisposable;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -319,7 +321,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
 
 
-        RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
+        commentDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
             if (bean != null) {
                 if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT && bean.pos == position && bean.type.equals(type)) {
                     String content = bean.content;
@@ -470,6 +472,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         });
     }
+
+
 
     private void dismissLoading() {
         binding.loadingView.cancelAnimation();
@@ -753,6 +757,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (musicRotateAnim != null) {
             musicRotateAnim.cancel();
             musicRotateAnim = null;
+        }
+        if (commentDisposable != null) {
+            commentDisposable.dispose();
         }
 
         binding.mainVideoView.onDestroy();
