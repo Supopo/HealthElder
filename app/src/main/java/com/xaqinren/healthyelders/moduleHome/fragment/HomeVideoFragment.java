@@ -371,6 +371,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         });
         binding.rlLike.setOnClickListener(lis -> {
+
+            if (AppApplication.isToLogin()) {
+                return;
+            }
+
             long secondTime = System.currentTimeMillis();
             if (secondTime - firstLikeTime < 500) {
                 return;

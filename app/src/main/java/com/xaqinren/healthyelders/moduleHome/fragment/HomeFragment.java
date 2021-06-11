@@ -238,7 +238,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+
                 AppApplication.get().setLayoutPos(position);
+                if (position == 1) {
+                    if (AppApplication.isToLogin()) {
+                        return;
+                    }
+                }
                 //第一次加载完所有Fragment会触发
                 if (!isFirst) {
 

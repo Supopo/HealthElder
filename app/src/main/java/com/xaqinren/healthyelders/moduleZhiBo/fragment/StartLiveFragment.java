@@ -251,16 +251,23 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                                 return;
                             }
                             mLiveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
+
+                            if (!TextUtils.isEmpty(photoPath)) {
+                                showDialog("正在上传照片...");
+                                viewModel.updatePhoto(photoPath);
+                                return;
+                            }
+
+
                             if (TextUtils.isEmpty(mLiveInitInfo.liveRoomCover)) {
                                 if (TextUtils.isEmpty(photoPath)) {
                                     ToastUtil.toastShortMessage("请先选择照片");
                                     return;
                                 }
-                                showDialog("正在上传照片...");
-                                viewModel.updatePhoto(photoPath);
                             } else {
                                 startLiveZhuboActivity();
                             }
+
                         } else {
                             ToastUtils.showShort("请先打开摄像头与麦克风权限");
                         }
