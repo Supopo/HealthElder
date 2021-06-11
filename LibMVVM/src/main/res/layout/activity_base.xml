@@ -16,11 +16,11 @@
 
             <ImageView
                 android:id="@+id/iv_left"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:background="@mipmap/icon_back_g"
+                android:background="@mipmap/main_back"
                 android:onClick="toLeft" />
 
             <TextView

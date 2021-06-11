@@ -1019,7 +1019,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.rlGift.setVisibility(View.VISIBLE);
         Glide.with(this).load(sendGiftBean.sendUserPhoto).into(binding.ivUserHeadPic);
         Glide.with(this).load(sendGiftBean.giftsIcon).into(binding.ivGift);
-        binding.tvGiftName.setText(sendGiftBean.sendUserName);
+        binding.tvAudienceName.setText(sendGiftBean.sendUserName);
         binding.tvGiftName.setText("送" + sendGiftBean.giftsName);
 
 

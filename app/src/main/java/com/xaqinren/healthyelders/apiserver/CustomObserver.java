@@ -45,7 +45,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
         } else {
             String code = t.getCode();
             boolean showToast = false;
-            if (!code.startsWith("0") && !code.startsWith("1")) {
+            if (!code.startsWith("000") && !code.startsWith("100")) {
                 showToast = true;
             } else if (Constant.DEBUG) {
                 showToast = true;

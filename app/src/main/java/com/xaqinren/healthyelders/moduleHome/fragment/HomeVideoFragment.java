@@ -149,7 +149,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //判单横竖屏设置不同模式封面图片加载
             if (isHP) {
                 binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            }else {
+            } else {
                 binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
             Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
@@ -255,7 +255,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer = new TXVodPlayer(getActivity());
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
         //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
-        vodPlayer.setRenderMode(isHP?TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION:TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+        vodPlayer.setRenderMode(isHP ? TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION : TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
         //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
         //RENDER_ROTATION_LANDSCAPE 画面顺时针旋转 270 度（Home 键在画面正左方）
         vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
@@ -477,7 +477,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         });
     }
-
 
 
     private void dismissLoading() {
@@ -717,10 +716,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
+    public void resumeMsg() {
         if (hasPlaying) {
             if (type.equals("home-tj")) {
                 if (AppApplication.get().getTjPlayPosition() == position) {
@@ -746,6 +742,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumeMsg();
     }
 
     @Override

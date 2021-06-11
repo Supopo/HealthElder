@@ -259,6 +259,18 @@ public class AppApplication extends BaseApplication {
     private int layoutPos = 0;
     //小视频列表标记位置
     private int playPosition = 0;
+    //视频标记
+    private String tag = "home-tj";
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+
 
     public int getPlayPosition() {
         return playPosition;

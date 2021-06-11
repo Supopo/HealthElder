@@ -23,6 +23,6 @@
         android:textColor="@color/gray_999"
         android:layout_marginTop="@dimen/dp_22"
         android:gravity="center"
-        android:text=""
+        android:text="暂无数据"
         android:textSize="@dimen/sp_13" />
 </RelativeLayout>

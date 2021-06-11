@@ -97,6 +97,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 if (page == 1 && binding.srl.isRefreshing()) {
                     binding.srl.setRefreshing(false);
                     AppApplication.get().setTjPlayPosition(0);
+                    AppApplication.get().setTag(TAG);
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                 }
 

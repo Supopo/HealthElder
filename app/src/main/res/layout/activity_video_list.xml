@@ -11,9 +11,9 @@
 
 
     <RelativeLayout
-        android:background="@color/color_252525"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/color_252525">
 
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -31,11 +31,10 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:background="@mipmap/main_back_white"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_57"
             android:layout_width="@dimen/dp_22"
             android:layout_height="@dimen/dp_22"
-            />
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_30"
+            android:background="@mipmap/main_back_white" />
     </RelativeLayout>
 </layout>

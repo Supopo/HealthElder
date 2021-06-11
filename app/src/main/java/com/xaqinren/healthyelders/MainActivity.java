@@ -252,12 +252,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         binding.rlMenu1.setOnClickListener(lis -> {
             selectView = binding.tvMenu1;
 
-            //发送HomeFragment回顶消息
-            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
-            //发送停止播放消息
-            RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
-            //底部菜单变白色
-            setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+            if (oldView.getId() == selectView.getId()) {
+                //发送HomeFragment回顶消息
+                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
+                //底部菜单变白色
+                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+                //发送停止播放消息
+                RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+            }else {
+                RxBus.getDefault().post(new VideoEvent(1, AppApplication.get().getTag()));
+            }
+
+
+
+
 
             initBottomTab();
             oldView = binding.tvMenu1;
