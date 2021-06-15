@@ -39,8 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.fromUsername}"
-                android:textColor="@color/color_252525"
-                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_ff888"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
             <TextView
@@ -69,8 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.toUsername}"
-                android:textColor="@color/color_252525"
-                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_ff888"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 android:visibility="@{viewModel.getShowToName()?View.VISIBLE:View.GONE}" />
         </LinearLayout>
@@ -86,8 +86,8 @@
             android:layout_toRightOf="@id/avatar"
             android:lineSpacingExtra="3dp"
             android:text="@{viewModel.content}"
-            android:textColor="@color/color_535353"
-            android:textSize="@dimen/sp_14" />
+            android:textColor="@color/color_252525"
+            />
 
         <TextView
             android:id="@+id/time"

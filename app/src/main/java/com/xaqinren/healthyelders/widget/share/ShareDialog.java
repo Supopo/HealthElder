@@ -39,9 +39,14 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.DownloadUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
@@ -49,6 +54,9 @@ import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
 import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.List;
+
+import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 public class ShareDialog {
     private PopupWindow popupWindow;
@@ -65,6 +73,7 @@ public class ShareDialog {
     private DownLoadProgressDialog downloadProgress;
     private OnClickListener onClickListener;
     private ShareBean shareBean;
+    private Disposable uniSubscribe;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -77,7 +86,7 @@ public class ShareDialog {
         showType();
     }
 
-    public ShareDialog(Context context,int showType) {
+    public ShareDialog(Context context, int showType) {
         this.context = new SoftReference<>(context);
         this.showType = showType;
         mContext = context;
@@ -85,7 +94,7 @@ public class ShareDialog {
         showType();
     }
 
-    public ShareDialog(Context context, ShareBean shareInfo,int showType) {
+    public ShareDialog(Context context, ShareBean shareInfo, int showType) {
         this.context = new SoftReference<>(context);
         this.showType = showType;
         mContext = context;
@@ -93,6 +102,7 @@ public class ShareDialog {
         init();
         showType();
     }
+
     public ShareDialog(Context context, ShareBean shareInfo) {
         this.context = new SoftReference<>(context);
         mContext = context;
@@ -151,6 +161,8 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.shareReport.setOnClickListener(view -> {
             //举报
+            UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, uniUrl);
+
         });
         binding.shareOperationLayout.sharePost.setOnClickListener(view -> {
             //生成海报
@@ -165,7 +177,22 @@ public class ShareDialog {
                 shareFriendAdapter.setNewInstance(datas);
             }
         });
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 99) {
+                        UniUtil.openUniApp(mContext, Constant.JKZL_MINI_APP_ID, uniUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
     }
+
+    //todo 举报小程序地址
+    private String uniUrl;
 
     private ClipboardManager cm;
     private ClipData mClipData;
@@ -190,7 +217,7 @@ public class ShareDialog {
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;
 
-        Glide.with(mContext).asBitmap().load(UrlUtils.resetImgUrl(shareBean.coverUrl,100,100)).into(new SimpleTarget<Bitmap>() {
+        Glide.with(mContext).asBitmap().load(UrlUtils.resetImgUrl(shareBean.coverUrl, 100, 100)).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 msg.setThumbImage(resource);
@@ -218,7 +245,7 @@ public class ShareDialog {
             binding.shareOperationLayout.shareColl.setVisibility(View.GONE);
             binding.shareOperationLayout.shareReport.setVisibility(View.GONE);
             binding.shareOperationLayout.sharePost.setVisibility(View.VISIBLE);
-        }else if (showType == LIVE_TYPE) {
+        } else if (showType == LIVE_TYPE) {
             binding.shareOperationLayout.shareSaveNative.setVisibility(View.GONE);
             binding.shareOperationLayout.shareColl.setVisibility(View.GONE);
             binding.shareOperationLayout.sharePost.setVisibility(View.GONE);

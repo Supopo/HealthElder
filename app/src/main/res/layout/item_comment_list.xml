@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.nickname}"
-                    android:textColor="@color/color_252525"
+                    android:textColor="@color/color_ff888"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="bold" />
 
@@ -75,7 +75,7 @@
                 android:layout_toRightOf="@id/avatar"
                 android:lineSpacingExtra="3dp"
                 android:text="@{viewModel.content}"
-                android:textColor="@color/color_535353" />
+                android:textColor="@color/color_252525" />
 
             <LinearLayout
                 android:id="@+id/ll_like"

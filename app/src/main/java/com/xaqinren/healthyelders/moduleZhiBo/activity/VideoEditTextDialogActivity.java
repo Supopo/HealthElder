@@ -41,6 +41,7 @@ public class VideoEditTextDialogActivity extends Activity {
     private int pos;
     private EditText etView;
     private String TAG = getClass().getSimpleName();
+    private RelativeLayout rlView;
 
 
     @Override
@@ -50,6 +51,7 @@ public class VideoEditTextDialogActivity extends Activity {
         hint = extras.getString("hint");
         type = extras.getString("type");
         pos = extras.getInt("pos");
+
         setContentView(R.layout.activity_input_video);
         setWindow();
         initView();
@@ -71,6 +73,7 @@ public class VideoEditTextDialogActivity extends Activity {
     private void initView() {
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
+        rlView = findViewById(R.id.rl_view);
         etView = findViewById(R.id.et_input_message);
         moreGroups = findViewById(R.id.more_groups);
         etView.setHint(hint);
@@ -95,6 +98,11 @@ public class VideoEditTextDialogActivity extends Activity {
                     }
                 }
             }
+        });
+        rlView.setOnClickListener(lis ->{
+            etView.setFocusable(false);
+            etView.setFocusableInTouchMode(false);
+            finish();
         });
     }
 
