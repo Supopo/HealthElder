@@ -450,13 +450,27 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     else
                         currentPlayCoIndex = temp.indexOf(bean);
                     collIv.setImageResource(bean.hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
-                    return;
+                    if (showPage == 0) {
+                        return;
+                    }
                 }
             }
-            MusicRecode.getInstance().getUseMusicItem().cloneThis();
-            musicItemBeans.add(1, MusicRecode.getInstance().getUseMusicItem().cloneThis());
-            currentPlayReIndex = 1;
-            collIv.setImageResource(MusicRecode.getInstance().getUseMusicItem().hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
+            MMusicItemBean useMusicItem = MusicRecode.getInstance().getUseMusicItem();
+            boolean flag = false;
+            for (MMusicItemBean itemBean : musicItemBeans) {
+                if (itemBean.getId()==null) continue;
+                if (itemBean.getId().equals(useMusicItem.getId())) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag){
+                musicItemBeans.add(1, useMusicItem.cloneThis());
+                currentPlayReIndex = 1;
+                collIv.setImageResource(MusicRecode.getInstance().getUseMusicItem().hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
+                musicSelAdapter.setList(musicItemBeans);
+                musicSelAdapter.notifyDataSetChanged();
+            }
         }
     }
 
