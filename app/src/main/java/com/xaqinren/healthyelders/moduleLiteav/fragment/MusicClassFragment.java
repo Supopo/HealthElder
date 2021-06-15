@@ -155,29 +155,33 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
         });
         adapter.setOnItemClickListener((adapter, view, position) -> {
             MMusicItemBean bean = mMusicItemBeans.get(position);
-            if (bean.myMusicStatus == 0) {
-                if (operationIndex != -1) {
-                    mMusicItemBeans.get(operationIndex).myMusicStatus = 0;
-                    mMusicItemBeans.get(operationIndex).setOperation(false);
-                    adapter.notifyItemChanged(operationIndex);
-                }
-                bean.myMusicStatus = 1;
-                operationIndex = position;
-                record.setBGMNofify(bgmNotify);
-                bean.setOperation(true);
-                loadTrialMusic(bean);
-                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,bean.getId()));
-                MusicRecode.getInstance().setUseMusicItem(bean);
-            }else {
-                bean.myMusicStatus = 0;
-                bean.setOperation(false);
-                operationIndex = -1;
-                record.setBGMNofify(null);
-                stopPlayMusic();
-            }
+            operation(bean,position);
             adapter.notifyItemChanged(position);
         });
+    }
 
+    private void operation(MMusicItemBean bean,int position) {
+        if (bean.myMusicStatus == 0) {
+            if (operationIndex != -1) {
+                mMusicItemBeans.get(operationIndex).myMusicStatus = 0;
+                mMusicItemBeans.get(operationIndex).setOperation(false);
+                adapter.notifyItemChanged(operationIndex);
+            }
+            bean.myMusicStatus = 1;
+            operationIndex = position;
+            record.setBGMNofify(bgmNotify);
+            bean.setOperation(true);
+            loadTrialMusic(bean);
+            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,bean.getId()));
+//                MusicRecode.getInstance().setUseMusicItem(bean);
+        }else {
+            bean.myMusicStatus = 0;
+            bean.setOperation(false);
+            operationIndex = -1;
+            record.setBGMNofify(null);
+            stopPlayMusic();
+            MusicRecode.getInstance().setUseMusicItem(null);
+        }
     }
 
     private TXRecordCommon.ITXBGMNotify bgmNotify = new TXRecordCommon.ITXBGMNotify() {
@@ -256,6 +260,8 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
                 for (int i = 0; i < mMusicItemBeans.size(); i++) {
                     if (mMusicItemBeans.get(i).getId().equals(bean.getId())) {
                         mMusicItemBeans.get(i).setOperation(true);
+                        operation(mMusicItemBeans.get(i),i);
+                        break;
                     }
                 }
             }

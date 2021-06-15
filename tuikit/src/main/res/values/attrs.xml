@@ -55,6 +55,11 @@
         <attr name="wheelview_lineSpacingMultiplier" format="float" />
     </declare-styleable>
 
+    <declare-styleable name="NoSpaceTextView" >
+        <attr name="needNoSpace" format="boolean"/>
+        <attr name="textWeight" format="float"/>
+    </declare-styleable>
+
 
     <declare-styleable name="ShadeImageView">
         <attr name="shadeRadio" format="dimension" />

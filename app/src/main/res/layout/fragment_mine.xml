@@ -192,7 +192,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/dp_1"
                                     android:layout_below="@id/ll_info"
-                                    android:background="@color/color_EAEAEA" />
+                                    android:background="@color/color_EAEAEA"
+                                    android:layout_marginLeft="@dimen/dp_16"
+                                    android:layout_marginRight="@dimen/dp_16"/>
 
                                 <TextView
                                     android:id="@+id/tv_sbj"
@@ -299,7 +301,7 @@
                                     android:layout_height="@dimen/dp_10"
                                     android:layout_below="@id/ll_tag"
                                     android:layout_marginTop="@dimen/dp_12"
-                                    android:background="@color/color_F3F3F3" />
+                                    android:background="@color/color_FFF8F8F8" />
 
                                 <TextView
                                     android:id="@+id/tv_order"
@@ -353,7 +355,7 @@
                                 android:layout_marginLeft="@dimen/dp_15"
                                 android:visibility="invisible"
                                 app:qmui_border_color="@color/white"
-                                app:qmui_border_width="@dimen/dp_1"
+                                app:qmui_border_width="@dimen/dp_3"
                                 app:qmui_is_circle="true" />
                         </RelativeLayout>
 
@@ -446,7 +448,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="-50dp"
                 app:qmui_border_color="@color/white"
-                app:qmui_border_width="@dimen/dp_1"
+                app:qmui_border_width="@dimen/dp_3"
                 app:qmui_is_circle="true"
                 app:url="@{viewModel.userInfo.avatarUrl}" />
         </RelativeLayout>

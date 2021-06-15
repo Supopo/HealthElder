@@ -1,6 +1,7 @@
 package com.tencent.qcloud.tim.uikit.modules.conversation;
 
 
+import com.tencent.qcloud.tim.uikit.config.GeneralConfig;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.tencent.qcloud.tim.uikit.modules.conversation.interfaces.IConversationAdapter;
 import com.tencent.qcloud.tim.uikit.modules.conversation.interfaces.IConversationProvider;
@@ -200,8 +201,15 @@ public class ConversationProvider implements IConversationProvider {
         if (mAdapter != null) {
             for (int i = 0; i < mAdapter.getItemCount(); i++) {
                 ConversationInfo item = mAdapter.getItem(i);
-                if (item.getConversationId().length() > 6) {
-                    mAdapter.removeItemById(i);
+                if (GeneralConfig.enableChat) {
+                    //TODO 聊天 激活单聊
+                    if (item.isGroup()) {
+                        mAdapter.removeItemById(i);
+                    }
+                }else {
+                    if (item.getConversationId().length() > 6) {
+                        mAdapter.removeItemById(i);
+                    }
                 }
             }
         }

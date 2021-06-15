@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.dcloud.zxing2.WriterException;
 import com.tencent.qcloud.tim.uikit.utils.FileUtil;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -41,6 +44,16 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
     @Override
     public void initData() {
         super.initData();
+        setStatusBarTransparent();
+        setStatusBarColorWhite();
+
+        int statusBarHeight = ScreenUtil.getStatusBarHeight();
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) binding.titleLayout.getLayoutParams();
+        layoutParams.topMargin = statusBarHeight;
+        binding.titleLayout.setLayoutParams(layoutParams);
+
+        binding.title.getPaint().setFakeBoldText(true);
+
         rlTitle.setVisibility(View.GONE);
         userInfoBean = UserInfoMgr.getInstance().getUserInfo();
         GlideUtil.intoImageView(this,userInfoBean.getAvatarUrl(),binding.avatar);

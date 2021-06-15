@@ -21,7 +21,9 @@ import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityChooseMusicBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicClassAdapter;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -64,6 +67,10 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
     public void initData() {
         super.initData();
         setTitle("选择音乐");
+        ivLeft.setOnClickListener(v -> {
+            MusicRecode.getInstance().setUseMusicItem(null);
+            finish();
+        });
         musicAdapter = new MusicAdapter(R.layout.item_music_block);
         mMusicBeans = new ArrayList<>();
         classBeans = new ArrayList<>();
@@ -98,6 +105,13 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
     }
 
     private void toMusicList(String id, String name , String search) {
+        MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
+        if (bean == null) {
+            //没有选择的音乐,停止播放
+            RecordMusicManager.getInstance().stopPreviewMusic();
+            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,"-1"));
+        }
+
         Intent intent = new Intent(ChooseMusicActivity.this, MusicListActivity.class);
         intent.putExtra(Constant.MUSIC_CLASS_ID, id);
         intent.putExtra(Constant.MUSIC_CLASS_NAME, name);

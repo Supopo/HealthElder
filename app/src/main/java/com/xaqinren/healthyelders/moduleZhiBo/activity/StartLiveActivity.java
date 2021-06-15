@@ -88,6 +88,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         mFragments = new ArrayList<>();
         mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
+        currentFragmentPosition = 1;
         commitAllowingStateLoss(1);
         liveUiViewModel.getCurrentPage().setValue(1);
         //默认选中第一个

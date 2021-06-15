@@ -202,7 +202,7 @@ public class UserInfoBean implements Serializable {
     }
 
     public String getJKCode() {
-        return "健康号:" + recommendedCode;
+        return "健康号：" + recommendedCode;
     }
 
     public String getAvatarUrl() {

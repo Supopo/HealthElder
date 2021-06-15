@@ -37,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.value}"
+                android:layout_marginRight="@dimen/dp_6"
                 android:maxLength="15"
                 android:singleLine="true"
                 android:ellipsize="end"
@@ -44,9 +45,9 @@
                 android:textColor="@color/gray_999"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow_right"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:src="@mipmap/icon_advance"
                 android:visibility="@{viewModel.hasMore ? View.VISIBLE : View.INVISIBLE}"/>
         </LinearLayout>
 

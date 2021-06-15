@@ -85,6 +85,10 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         if (!file.exists()) {
             file.mkdir();
         }
+        ivLeft.setOnClickListener(v -> {
+            MusicRecode.getInstance().setUseMusicItem(null);
+            finish();
+        });
         downloadMusic = DownloadMusic.getInstance();
         downloadMusic.init(file.getAbsolutePath());
         mMusicItemBeans = new ArrayList<>();
@@ -128,35 +132,35 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         });
         adapter.setOnItemClickListener((adapter, view, position) -> {
             MMusicItemBean bean = mMusicItemBeans.get(position);
-            if (bean.myMusicStatus == 0) {
-                if (operationIndex != -1) {
-                    mMusicItemBeans.get(operationIndex).myMusicStatus = 0;
-                    mMusicItemBeans.get(operationIndex).setOperation(false);
-                    adapter.notifyItemChanged(operationIndex);
-                }
-                bean.myMusicStatus = 1;
-                operationIndex = position;
-                record.setBGMNofify(bgmNotify);
-                bean.setOperation(true);
-                loadTrialMusic(bean);
-                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,bean.getId()));
-            }else {
-                bean.myMusicStatus = 0;
-                bean.setOperation(false);
-                operationIndex = -1;
-                record.setBGMNofify(null);
-                stopPlayMusic();
-            }
+            operation(bean, position);
             adapter.notifyItemChanged(position);
         });
         adapter.getLoadMoreModule().setEnableLoadMore(true);
         adapter.getLoadMoreModule().setAutoLoadMore(true);
-        adapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                viewModel.getMusicList(classId, searchName, page, pageSize);
+        adapter.getLoadMoreModule().setOnLoadMoreListener(() -> viewModel.getMusicList(classId, searchName, page, pageSize));
+    }
+
+    private void operation(MMusicItemBean bean ,int position) {
+        if (bean.myMusicStatus == 0) {
+            if (operationIndex != -1) {
+                mMusicItemBeans.get(operationIndex).myMusicStatus = 0;
+                mMusicItemBeans.get(operationIndex).setOperation(false);
+                adapter.notifyItemChanged(operationIndex);
             }
-        });
+            bean.myMusicStatus = 1;
+            operationIndex = position;
+            record.setBGMNofify(bgmNotify);
+            bean.setOperation(true);
+            loadTrialMusic(bean);
+            RxBus.getDefault().post(new EventBean(CodeTable.EVENT_MUSIC_OP,bean.getId()));
+        }else {
+            bean.myMusicStatus = 0;
+            bean.setOperation(false);
+            operationIndex = -1;
+            record.setBGMNofify(null);
+            stopPlayMusic();
+            MusicRecode.getInstance().setUseMusicItem(null);
+        }
     }
 
     private TXRecordCommon.ITXBGMNotify bgmNotify = new TXRecordCommon.ITXBGMNotify() {
@@ -188,6 +192,18 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         viewModel.requestSuccess.observe(this, aBoolean -> dismissDialog());
         viewModel.musicListData.observe(this, data ->{
             mMusicItemBeans.addAll(data);
+            MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
+
+            if (bean != null) {
+                for (int i = 0; i < mMusicItemBeans.size(); i++) {
+                    if (mMusicItemBeans.get(i).getId().equals(bean.getId())) {
+                        mMusicItemBeans.get(i).setOperation(true);
+                        operation(mMusicItemBeans.get(i),i);
+                        break;
+                    }
+                }
+            }
+
             adapter.setList(mMusicItemBeans);
             if (!data.isEmpty()){
                 page++;

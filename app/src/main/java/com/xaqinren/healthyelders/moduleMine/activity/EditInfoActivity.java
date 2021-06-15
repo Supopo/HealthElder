@@ -97,6 +97,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         binding.menuList.setLayoutManager(new LinearLayoutManager(this));
         binding.menuList.setNestedScrollingEnabled(false);
         binding.menuList.setAdapter(editInfoAdapter);
+        binding.tv1.getPaint().setFakeBoldText(true);
         binding.selAvatar.setOnClickListener(view -> {
             //选择头像
             updateType = 0;

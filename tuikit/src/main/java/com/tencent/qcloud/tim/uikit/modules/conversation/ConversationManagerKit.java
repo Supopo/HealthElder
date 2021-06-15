@@ -15,6 +15,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tim.uikit.R;
 import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
+import com.tencent.qcloud.tim.uikit.config.GeneralConfig;
 import com.tencent.qcloud.tim.uikit.config.TUIKitConfigs;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
@@ -96,7 +97,9 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     if (conversationInfo != null) {
                         mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
-//                        infos.add(conversationInfo);
+                        if (GeneralConfig.enableChat) {
+                            infos.add(conversationInfo);
+                        }
                     }
                 }
                 //插入自己的数据

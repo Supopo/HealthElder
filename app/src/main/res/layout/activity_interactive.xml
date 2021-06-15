@@ -24,7 +24,8 @@
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:background="@mipmap/icon_back_g"
+                    android:src="@mipmap/main_back"
+                    android:padding="@dimen/dp_3"
                     android:onClick="toLeft" />
 
                 <TextView

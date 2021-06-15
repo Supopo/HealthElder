@@ -36,6 +36,7 @@ import com.tencent.qcloud.tim.uikit.utils.FileUtil;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +66,8 @@ public class TUIKitImpl {
         }
         sConfigs.getGeneralConfig().setSDKAppId(sdkAppID);
         String dir = sConfigs.getGeneralConfig().getAppCacheDir();
+        boolean isEnableChat = getEnableChat();
+        sConfigs.getGeneralConfig().setEnableChat(isEnableChat);
         if (TextUtils.isEmpty(dir)) {
             TUIKitLog.e(TAG, "appCacheDir is empty, use default dir");
             sConfigs.getGeneralConfig().setAppCacheDir(context.getFilesDir().getPath());
@@ -371,5 +374,21 @@ public class TUIKitImpl {
         } else {
             sIMEventListeners.remove(listener);
         }
+    }
+
+    public static boolean getEnableChat() {
+        try {
+            Class cls = Class.forName("com.xaqinren.healthyelders.global.Constant");
+            Field enable_chat = cls.getDeclaredField("ENABLE_CHAT");
+            boolean aBoolean = enable_chat.getBoolean(cls);
+            return aBoolean;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
