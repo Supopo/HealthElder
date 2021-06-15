@@ -190,11 +190,8 @@ public class UserInfoBean implements Serializable {
         if (!StringUtils.isEmpty(age)) {
             return age;
         }
-        if (StringUtils.isEmpty(cityAddress)) {
-            boolean man = isMan();
-            return man ? "男" : "女";
-        }
-        return null;
+        boolean man = isMan();
+        return man ? "男" : "女";
     }
 
     public boolean isMan() {
@@ -328,8 +325,8 @@ public class UserInfoBean implements Serializable {
     }
 
     public boolean isMe() {
-        if (UserInfoMgr.getInstance().getUserInfo() != null ) {
-            if (getId().equals(UserInfoMgr.getInstance().getUserInfo().getId()) ) {
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            if (getId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
                 return true;
             }
         }

@@ -30,7 +30,7 @@
 
                 <ImageView
                     android:id="@+id/iv_back"
-                    android:layout_marginTop="@dimen/dp_55"
+                    android:layout_marginTop="@dimen/dp_41"
                     android:layout_marginLeft="@dimen/dp_10"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
@@ -321,7 +321,7 @@
                                     android:layout_below="@id/iv_bg"
                                     android:layout_marginTop="@dimen/dp_7"
                                     android:layout_marginRight="@dimen/dp_4"
-                                    android:layout_toLeftOf="@id/iv_down"
+                                    android:layout_alignParentRight="true"
                                     android:visibility="@{viewModel.userInfo.isMe()?View.INVISIBLE:View.VISIBLE}">
 
                                     <LinearLayout
@@ -378,7 +378,7 @@
 
 
                                 <ImageView
-                                    android:visibility="invisible"
+                                    android:visibility="gone"
                                     android:id="@+id/iv_down"
                                     android:layout_width="@dimen/dp_38"
                                     android:layout_height="@dimen/dp_38"
