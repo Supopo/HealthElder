@@ -290,10 +290,10 @@
                 android:id="@+id/liveTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/llMusicName"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_60"
                 android:layout_toStartOf="@+id/rlMusic"
                 android:maxLines="3"
                 android:text="@{viewModel.videoInfo.getLiveRoomName()}"
@@ -301,11 +301,23 @@
                 android:textSize="@dimen/sp_15"
                 android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/authorTextView2"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}"
+                style="@style/TextView.Normal"
+                android:layout_above="@+id/liveTitle"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="@{'@'+viewModel.videoInfo.nickname}"
+                android:textColor="@color/text"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvZhiBoing"
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_20"
-                android:layout_above="@id/authorTextView"
+                android:layout_above="@id/authorTextView2"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_7"
                 android:background="@drawable/bg_zb_ing"
@@ -315,6 +327,7 @@
                 android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:visibility="@{viewModel.videoInfo.getVideoType() != 2?View.VISIBLE:View.INVISIBLE}"
                 android:id="@+id/authorTextView"
                 style="@style/TextView.Normal"
                 android:layout_above="@+id/descTextView"
