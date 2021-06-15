@@ -68,7 +68,6 @@
             android:layout_below="@id/nickname"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/gray_666"
-            android:text="@{data.content.body}"
             android:layout_toLeftOf="@id/cover"
             android:layout_marginRight="@dimen/dp_6"
             android:maxLines="2"

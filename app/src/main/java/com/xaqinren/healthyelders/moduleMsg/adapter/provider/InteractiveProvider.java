@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.provider.BaseItemProvider;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.igexin.sdk.PushManager;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemProviderInteractiveBinding;
 import com.xaqinren.healthyelders.moduleMsg.Constant;
@@ -62,6 +63,8 @@ public class InteractiveProvider<T extends MessageDetailBean> extends BaseItemPr
 //        adapter.addData(new Object());
         binding.userList.setVisibility(View.GONE);
 
+
+
         GlideUtil.intoImageView(getContext(), bean.getSendUser().getAvatarUrl(), binding.avatar);
         GlideUtil.intoCirImageView(getContext(),
                 UrlUtils.resetImgUrl(bean.getContent().getLogoUrl(), (int) dp66, (int) dp66),
@@ -102,7 +105,8 @@ public class InteractiveProvider<T extends MessageDetailBean> extends BaseItemPr
             binding.friendTag.setText("关注");
         }
 
-
+        //设置处理加载聊天表情文字
+        FaceManager.handlerEmojiText(binding.describe, bean.getContent().getBody(), false);
     }
 
     public String getInteractiveMessageBody(InteractiveBean url){
