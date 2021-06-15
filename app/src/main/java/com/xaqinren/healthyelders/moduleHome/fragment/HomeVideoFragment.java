@@ -126,14 +126,29 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         commentId = videoInfo.resourceId;
         if (type.equals("home-list")) {
-            ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
-            layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_10);
+            if (videoInfo.getVideoType() != 2) {
+                binding.bottom.setVisibility(View.VISIBLE);//影响视频view是否整页
+                binding.commentLayout.setVisibility(View.VISIBLE);//列表页面需要展示评论
+                binding.viewMenu.setVisibility(View.GONE);//首页列表需要撑起标题等
+            } else {
+                binding.bottom.setVisibility(View.GONE);
+                binding.commentLayout.setVisibility(View.GONE);
+                binding.viewMenu.setVisibility(View.GONE);
+            }
+
         } else {
-            ViewGroup.LayoutParams layoutParams = binding.viewBottom.getLayoutParams();
-            layoutParams.height = (int) getActivity().getResources().getDimension(R.dimen.dp_50);
+            binding.bottom.setVisibility(View.GONE);
+            binding.commentLayout.setVisibility(View.GONE);
+            binding.viewMenu.setVisibility(View.VISIBLE);
         }
 
         viewModel.videoInfo.setValue(videoInfo);
+
+        binding.commentLayout.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+
+            startActivity(VideoEditTextDialogActivity.class, bundle);
+        });
 
         //视频封面
         if (!TextUtils.isEmpty(videoInfo.coverUrl)) {

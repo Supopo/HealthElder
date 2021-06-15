@@ -23,7 +23,14 @@
 
         <com.tencent.rtmp.ui.TXCloudVideoView
             android:id="@+id/mainVideoView"
-            style="@style/Layout.Main" />
+            style="@style/Layout.Main"
+            android:layout_above="@id/bottom" />
+
+        <View
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_59"
+            android:layout_alignParentBottom="true" />
 
         <ImageView
             android:id="@+id/coverImageView"
@@ -290,10 +297,10 @@
                 android:id="@+id/liveTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_60"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_above="@id/view_bottom"
                 android:layout_toStartOf="@+id/rlMusic"
                 android:maxLines="3"
                 android:text="@{viewModel.videoInfo.getLiveRoomName()}"
@@ -303,7 +310,6 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/authorTextView2"
-                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}"
                 style="@style/TextView.Normal"
                 android:layout_above="@+id/liveTitle"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -311,7 +317,8 @@
                 android:text="@{'@'+viewModel.videoInfo.nickname}"
                 android:textColor="@color/text"
                 android:textSize="@dimen/sp_16"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}" />
 
             <TextView
                 android:id="@+id/tvZhiBoing"
@@ -327,7 +334,6 @@
                 android:visibility="@{viewModel.videoInfo.getVideoType() == 2?View.VISIBLE:View.INVISIBLE}" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:visibility="@{viewModel.videoInfo.getVideoType() != 2?View.VISIBLE:View.INVISIBLE}"
                 android:id="@+id/authorTextView"
                 style="@style/TextView.Normal"
                 android:layout_above="@+id/descTextView"
@@ -336,7 +342,8 @@
                 android:text="@{'@'+viewModel.videoInfo.nickname}"
                 android:textColor="@color/text"
                 android:textSize="@dimen/sp_16"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="@{viewModel.videoInfo.getVideoType() != 2?View.VISIBLE:View.INVISIBLE}" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/timeTextView"
@@ -466,19 +473,63 @@
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
                 android:id="@+id/view_bottom"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_50"
-                android:layout_alignParentBottom="true" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+
+                <View
+                    android:id="@+id/view_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_49" />
+
+                <LinearLayout
+                    android:id="@+id/comment_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_59"
+                    android:background="@color/color_252525">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_38"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:text="留下你的精彩评论吧"
+                        android:textColor="@color/color_AFAFAF"
+                        android:textSize="@dimen/sp_14" />
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_28"
+                        android:layout_height="@dimen/dp_28"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:background="@mipmap/pl_at" />
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_28"
+                        android:layout_height="@dimen/dp_28"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:background="@mipmap/icon_pl_biaoq" />
+                </LinearLayout>
+
+
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginBottom="@dimen/dp_49"
+                android:layout_above="@id/view_bottom"
                 android:progressDrawable="@drawable/video_progress_bar"
                 android:visibility="gone" />
 

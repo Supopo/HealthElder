@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;
@@ -34,16 +35,22 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         //瀑布流图片的宽度
         int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_3)) / 2;
 
+        binding.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
         //图片真是宽高
         try {
-            int oldWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "w"));
-            int oldHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "h"));
+            int picWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "w"));
+            int picHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "h"));
             //计算新高度
-            int newHeight = itemWidth * oldHeight / oldWidth;
+            int newHeight = itemWidth * 280 / 186;
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rlItem.getLayoutParams();
             params.height = newHeight;
             binding.rlItem.setLayoutParams(params);
+
+            if (picWidth > picHeight) {
+                binding.ivCover.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
