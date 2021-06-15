@@ -460,7 +460,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
                     selectView.setCompoundDrawables(null, null, null, dawable);
                     selectView.setTextColor(getResources().getColor(R.color.color_252525));
-                    binding.lineBottom.setVisibility(View.INVISIBLE);
+                    binding.lineBottom.setVisibility(View.VISIBLE);
                 } else if (o.msgType == CodeTable.SET_MENU_COLOR) {
 
                     if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {
@@ -560,7 +560,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             selectView.setTextColor(getResources().getColor(R.color.white));
         } else {
             binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
-            binding.lineBottom.setVisibility(View.INVISIBLE);
+            binding.lineBottom.setVisibility(View.VISIBLE);
             selectView.setCompoundDrawables(null, null, null, dawable);
             selectView.setTextColor(getResources().getColor(R.color.color_252525));
             selectView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_18)));

@@ -301,9 +301,9 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
 
                     userInfoBean.hasFollow = !userInfoBean.hasFollow;
                     if (userInfoBean.hasFollow) {
-                        userInfoBean.setIntroduce("FOLLOW");
+                        userInfoBean.setIdentity("FOLLOW");
                     } else {
-                        userInfoBean.setIntroduce("STRANGER");
+                        userInfoBean.setIdentity("STRANGER");
                     }
                     viewModel.userInfo.setValue(userInfoBean);
                 }

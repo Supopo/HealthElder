@@ -27,10 +27,16 @@
             android:layout_height="@dimen/dp_327">
 
             <ImageView
+                android:scaleType="centerCrop"
+                android:src="@mipmap/bg_video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
                 android:id="@+id/iv_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
                 app:url="@{viewModel.coverUrl}" />
 
             <LinearLayout
@@ -91,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_5"
-                android:paddingBottom="@dimen/dp_3"
+                android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_10"
                 android:text="@{viewModel.title}"
                 android:textStyle="bold"
@@ -102,7 +108,7 @@
             <RelativeLayout
                 android:id="@+id/rl_bottom"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_36"
+                android:layout_height="@dimen/dp_31"
                 android:visibility="@{viewModel.showLocInfo()?View.VISIBLE:View.GONE}">
 
                 <ImageView
@@ -110,14 +116,14 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_10"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:layout_marginRight="@dimen/dp_4"
                     android:background="@mipmap/fujin_icon_dw_g" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_3"
                     android:layout_marginRight="@dimen/dp_10"
                     android:layout_toRightOf="@id/iv_loc"
                     android:singleLine="true"

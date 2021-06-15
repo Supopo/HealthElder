@@ -213,7 +213,7 @@
                                     android:layout_marginRight="@dimen/dp_16"
                                     android:gravity="center"
                                     android:singleLine="true"
-                                    android:text="@{viewModel.userInfo.introduce}"
+                                    android:text="@{viewModel.userInfo.getIntroduce}"
                                     android:textColor="@color/gray_666" />
 
                                 <LinearLayout
