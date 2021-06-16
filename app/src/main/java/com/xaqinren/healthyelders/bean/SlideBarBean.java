@@ -1,8 +1,9 @@
 package com.xaqinren.healthyelders.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class SlideBarBean {
+public class SlideBarBean implements Serializable {
 
     private String groupName;
     private String groupCode;
@@ -41,7 +42,7 @@ public class SlideBarBean {
         this.menuInfoList = menuInfoList;
     }
 
-    public static class MenuInfoListDTO {
+    public static class MenuInfoListDTO implements Serializable{
         private String menuName;
         private String subMenuName;
         private String subFontColor;

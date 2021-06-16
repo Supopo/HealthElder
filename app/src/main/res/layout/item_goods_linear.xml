@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/cover"
+            android:layout_width="@dimen/dp_134"
+            android:layout_height="@dimen/dp_134"
+            app:url="@{viewModel.imageUrl}"
+            android:layout_marginLeft="@dimen/dp_16"
+            />
+        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:needNoSpace="true"
+            android:textSize="@dimen/sp_15"
+            android:textColor="@color/color_252525"
+            android:maxLines="2"
+            android:minLines="2"
+            android:lineSpacingExtra="5dp"
+            android:text="@{viewModel.title}"
+            android:layout_toRightOf="@id/cover"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_marginRight="@dimen/dp_14"
+            />
+        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¥"
+            android:textColor="@color/color_FF2051"
+            android:layout_toRightOf="@id/cover"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_alignBottom="@id/cover"
+            android:layout_marginBottom="@dimen/dp_34"
+            app:needNoSpace="true"
+            android:textSize="@dimen/sp_13"/>
+        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.maxSalesPrice}"
+            android:textColor="@color/color_FF2051"
+            android:layout_alignBottom="@id/cover"
+            android:layout_marginBottom="@dimen/dp_34"
+            app:needNoSpace="true"
+            android:layout_toRightOf="@id/tv1"
+            android:textSize="@dimen/sp_16"/>
+
+        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+            android:id="@+id/huiyuanjia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:needNoSpace="true"
+            android:textColor="#fff193"
+            android:textSize="@dimen/sp_10"
+            android:layout_toRightOf="@id/price"
+            android:text="@{`会员价¥`+viewModel.minSalesPrice}"
+            android:layout_alignBottom="@id/cover"
+            android:layout_marginBottom="@dimen/dp_33"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_3"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:background="@drawable/bg_huiyuanjia"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:gravity="center"/>
+
+        <com.tencent.qcloud.tim.uikit.component.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_alignBottom="@id/cover"
+            android:layout_marginLeft="@dimen/dp_11"
+            app:url="@{viewModel.storeLogo}"
+            android:layout_toRightOf="@id/cover"
+            android:layout_marginBottom="@dimen/dp_4"
+            />
+
+        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/avatar"
+            app:needNoSpace="true"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/gray_999"
+            android:layout_toRightOf="@id/avatar"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@{viewModel.storeName}"/>
+    </RelativeLayout>
+</layout>

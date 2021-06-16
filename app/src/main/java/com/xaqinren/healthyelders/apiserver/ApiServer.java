@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.moduleMine.bean.OrderListBean;
 import com.xaqinren.healthyelders.moduleMine.bean.VersionBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
+import com.xaqinren.healthyelders.moduleMsg.bean.GroupIconBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
@@ -401,10 +402,21 @@ public interface ApiServer {
     @GET("jkzl/open/queryCommodityPage")
     Observable<MBaseResponse<BaseListRes<List<GoodsBean>>>> getMallGoodsList(@Query("page") int page, @Query("pageSize") int pageSize, @Query("category") String category);
 
-    //获取热门搜索关键词
-    @GET("jkzl/open/queryHotSearch")
-    Observable<MBaseResponse<List<SearchBean>>> getHotWords();
+    //商品列表
+    @GET("jkzl/open/queryCommodityPage")
+    Observable<MBaseResponse<BaseListRes<List<GoodsBean>>>> getMallGoodsList(@Query("page") int page,
+                                                                             @Query("pageSize") int pageSize,
+                                                                             @Query("title") String title,
+                                                                             @Query("sortBy") String sortBy ,
+                                                                             @Query("orderBy") String orderBy );
 
+    //获取首页热门搜索关键词
+    @GET("jkzl/open/queryHomeHotSearch")
+    Observable<MBaseResponse<SlideBarBean>> getHotWords();
+
+    //商城 - 热词搜索
+    @GET("jkzl/open/queryCommodityHotSearch")
+    Observable<MBaseResponse<SlideBarBean>> getGoodsHotWords();
 
     //消息查询
     @GET("content/queryMessagePage")
@@ -438,6 +450,10 @@ public interface ApiServer {
     //推荐好友
     @GET("user/findRecommendUserFriends")
     Observable<MBaseResponse<List<FriendBean>>> getRecommendF(@Header("Authorization") String authorization);
+
+    //消息 - 分类图标
+    @GET("content/open/queryGroupIcon")
+    Observable<MBaseResponse<GroupIconBean>> getGroupIcon();
 
     //发送礼物
     @Headers({"content-type:application/json"})

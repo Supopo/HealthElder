@@ -33,6 +33,7 @@ public class Constant {
     public static int MAX_DIAN_ZAN = 2;//点赞限制器 1s 2次
     public static String DraftId = "DRAFT_ID";//草稿箱id
     public static String SearchId = "SEARCH_ID";//搜索id
+    public static String SearchGId = "SEARCH_GOODS_ID";//商品搜索id
     public static int loadVideoSize = 2;
 
     public static String REQ_TAG_ZB = "LIVE";//直播

@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16">
+        android:layout_marginLeft="@dimen/dp_16"
+        >
 
         <FrameLayout
             android:id="@+id/cover_layout"
@@ -49,7 +50,7 @@
 
         <TextView
             android:id="@+id/music_name"
-            android:layout_width="@dimen/dp_84"
+            android:layout_width="@dimen/dp_172"
             android:layout_height="wrap_content"
             android:text="@{viewModel.name}"
             android:textColor="@color/color_252525"
@@ -86,10 +87,12 @@
             android:layout_alignBottom="@id/cover_layout" />
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_66"
             android:orientation="horizontal"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:background="@color/white"
             android:layout_marginRight="@dimen/dp_41">
             <ImageView
                 android:id="@+id/jianji"
@@ -97,7 +100,7 @@
                 android:layout_height="@dimen/dp_24"
                 android:src="@mipmap/icon_music_jianji"
                 android:layout_marginRight="@dimen/dp_18"
-                android:visibility="gone"
+                android:visibility="visible"
 
                 />
             <ImageView
@@ -115,7 +118,7 @@
                 android:textColor="@color/white"
                 android:background="@drawable/bg_btn_comfrim_cir_shape"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginLeft="@dimen/dp_18"
                 />
 

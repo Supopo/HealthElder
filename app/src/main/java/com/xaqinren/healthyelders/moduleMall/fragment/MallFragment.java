@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMallBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
@@ -144,7 +145,9 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 startActivity(SelectLoginActivity.class);
             }
         });
-
+        binding.etSearch.setOnClickListener(v -> {
+            SearchActivity.startActivity(getContext(),1);
+        });
         viewModel.getMenuInfo();
         viewModel.getMenuType();
     }

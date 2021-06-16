@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.xaqinren.healthyelders.moduleHome.bean.SearchBean" />
+            type="com.xaqinren.healthyelders.bean.SlideBarBean.MenuInfoListDTO" />
     </data>
 
     <!--    随机背景颜色-->
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@{viewModel.hotWord}"
+                android:text="@{viewModel.menuName}"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14" />
 

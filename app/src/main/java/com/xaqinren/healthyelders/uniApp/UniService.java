@@ -152,7 +152,7 @@ public class UniService extends Service implements LifecycleOwner {
         DownLoadManager.getInstance().load(uniBean.getDownUrl(), new ProgressCallBack(fileDir, uniBean.getAppId()+".wgt") {
             @Override
             public void onSuccess(Object o) {
-                LogUtils.e(TAG, uniBean.getAppId() + " >>>>>>> 下载完成");
+                LogUtils.d(TAG, uniBean.getAppId() + " >>>>>>> 下载完成");
                 //保存参数到本地
                 uniBean.setNeedDown(false);
                 uniBean.setDownComplete(true);
@@ -162,12 +162,12 @@ public class UniService extends Service implements LifecycleOwner {
 
             @Override
             public void progress(long progress, long total) {
-//                LogUtils.e(TAG, uniBean.getAppId() + " >>>>>>> 下载进度 \t " + progress);
+                LogUtils.d(TAG, uniBean.getAppId() + " >>>>>>> 下载进度 \t " + progress);
             }
 
             @Override
             public void onError(Throwable e) {
-                LogUtils.e(TAG, uniBean.getAppId() + " >>>>>>> 下载失败");
+                LogUtils.d(TAG, uniBean.getAppId() + " >>>>>>> 下载失败");
             }
         });
     }

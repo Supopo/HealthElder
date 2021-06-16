@@ -400,6 +400,7 @@
         <activity android:name=".moduleMine.activity.OrderListActivity" />
         <activity android:name=".moduleMine.activity.WithdrawApplySuccess" />
         <activity android:name=".uniApp.activity.PhotoActivity" />
+        <activity android:name=".moduleMall.activity.GoodsSearchActivity" />
 
         <service
             android:name=".push.IPushService"

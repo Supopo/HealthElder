@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,15 +15,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.databinding.ActivitySearchBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HistoryTagAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.HotTagAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchViewModel;
+import com.xaqinren.healthyelders.moduleMall.activity.GoodsSearchActivity;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -34,8 +39,16 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
     private HotTagAdapter hotTagAdapter;
     private HistoryTagAdapter historyTagAdapter;
-    private SearchBean searchListCache;
+    private SlideBarBean searchListCache;
     private String tags;
+    private int searchType;
+    private final int TYPE_HOME = 0, TYPE_GOODS = 1;
+
+    public static void startActivity(Context context , int searchType /*0首页搜索，1商品搜索 */) {
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtra("type", searchType);
+        context.startActivity(intent);
+    }
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -49,6 +62,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
     @Override
     public void initData() {
+        searchType = getIntent().getIntExtra("type", 0);
         super.initData();
         setStatusBarTransparentBlack();
 
@@ -61,15 +75,44 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         binding.rvHot.setAdapter(hotTagAdapter);
 
         //获取缓存数据
-        searchListCache = (SearchBean) ACache.get(this).getAsObject(Constant.SearchId);
-        if (searchListCache == null) {
-            searchListCache = new SearchBean();
-        } else if (searchListCache.searchBeans != null && searchListCache.searchBeans.size() > 0) {
-            binding.rlSearchHistory.setVisibility(View.VISIBLE);
-            historyTagAdapter.setNewInstance(searchListCache.searchBeans);
+        Object asObject = null;
+        if (searchType == TYPE_HOME) {
+            asObject = ACache.get(this).getAsObject(Constant.SearchId);
+        } else if (searchType == TYPE_GOODS) {
+            asObject = ACache.get(this).getAsObject(Constant.SearchGId);
         }
 
-        viewModel.getHotList();
+        if (asObject instanceof SearchBean) {
+            //以前搜索过的，现在需要转换
+            SearchBean searchBean = (SearchBean) asObject;
+            SlideBarBean slideBarBean = new SlideBarBean();
+            slideBarBean.setMenuInfoList(new ArrayList<>());
+            for (SearchBean bean : searchBean.searchBeans) {
+                SlideBarBean.MenuInfoListDTO dto = new SlideBarBean.MenuInfoListDTO();
+                dto.setMenuName(bean.hotWord);
+                slideBarBean.getMenuInfoList().add(dto);
+            }
+            if (searchType == TYPE_HOME) {
+                ACache.get(this).put(Constant.SearchId,slideBarBean);
+            }else if (searchType == TYPE_GOODS) {
+                ACache.get(this).put(Constant.SearchGId,slideBarBean);
+            }
+        }
+        if (searchType == TYPE_HOME) {
+            searchListCache = (SlideBarBean) ACache.get(this).getAsObject(Constant.SearchId);
+        }else if (searchType == TYPE_GOODS) {
+            searchListCache = (SlideBarBean) ACache.get(this).getAsObject(Constant.SearchGId);
+        }
+        if (searchListCache == null) {
+            searchListCache = new SlideBarBean();
+        } else if (searchListCache.getMenuInfoList() != null && searchListCache.getMenuInfoList().size() > 0) {
+            binding.rlSearchHistory.setVisibility(View.VISIBLE);
+            historyTagAdapter.setNewInstance(searchListCache.getMenuInfoList());
+        }
+        if (searchType == TYPE_HOME)
+            viewModel.getHotList();
+        else if (searchType == TYPE_GOODS)
+            viewModel.getGoodsHotList();
 
         binding.tvCancel.setOnClickListener(lis -> {
             if (isSearch) {
@@ -80,9 +123,13 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         });
         binding.tvClean.setOnClickListener(lis -> {
             //清除搜索历史
-            SearchBean searchBean = new SearchBean();
-            ACache.get(this).put(Constant.SearchId, searchBean);
-            resetHistoryTagAdapter(searchBean.searchBeans);
+            SlideBarBean searchBean = new SlideBarBean();
+            searchBean.setMenuInfoList(new ArrayList<>());
+            if (searchType == TYPE_HOME)
+                ACache.get(this).put(Constant.SearchId, searchBean);
+            else if (searchType == TYPE_GOODS)
+                ACache.get(this).put(Constant.SearchGId, searchBean);
+            resetHistoryTagAdapter(searchBean.getMenuInfoList());
         });
 
         binding.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -118,12 +165,12 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         });
 
         historyTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            tags = historyTagAdapter.getData().get(position).hotWord;
+            tags = historyTagAdapter.getData().get(position).getMenuName();
             toJump();
         }));
 
         hotTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            tags = hotTagAdapter.getData().get(position).hotWord;
+            tags = hotTagAdapter.getData().get(position).getMenuName();
             toJump();
         }));
     }
@@ -134,26 +181,35 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             toJump();
             return;
         }
+        for (SlideBarBean.MenuInfoListDTO dto : searchListCache.getMenuInfoList()) {
+            if (dto.getMenuName().equals(tags)) {
+                toJump();
+                return;
+            }
+        }
 
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
         }
 
         //往下面的搜索插入
-        SearchBean searchBean = new SearchBean();
-        searchBean.hotWord = binding.etSearch.getText().toString().trim();
+        SlideBarBean.MenuInfoListDTO searchBean = new SlideBarBean.MenuInfoListDTO();
+        searchBean.setMenuName(binding.etSearch.getText().toString().trim());
 
         //判断超过十条的话移除一条
         historyTagAdapter.addData(searchBean);
-        List<SearchBean> searchBeans = historyTagAdapter.getData();
+        List<SlideBarBean.MenuInfoListDTO> searchBeans = historyTagAdapter.getData();
         if (historyTagAdapter.getData().size() > 10) {
             searchBeans.remove(0);
             //重新加载绘制 目前只能重new Adapter
             resetHistoryTagAdapter(searchBeans);
         }
         //更新本地缓存
-        searchListCache.searchBeans = searchBeans;
-        ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
+        searchListCache.setMenuInfoList(searchBeans);
+        if (searchType == TYPE_HOME)
+            ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
+        else if (searchType == TYPE_GOODS)
+            ACache.get(SearchActivity.this).put(Constant.SearchGId, searchListCache);
         //跳页
         toJump();
     }
@@ -161,13 +217,17 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private void toJump() {
         Bundle bundle = new Bundle();
         bundle.putString("tags", tags);
-        startActivity(SearchAllActivity.class,bundle);
+        if (searchType == TYPE_HOME){
+            startActivity(SearchAllActivity.class,bundle);
+        } else if (searchType == TYPE_GOODS) {
+            startActivity(GoodsSearchActivity.class,bundle);
+        }
     }
 
     private boolean isSearch;
 
     //重新加载绘制 目前只能重new Adapter
-    private void resetHistoryTagAdapter(List<SearchBean> searchBeans) {
+    private void resetHistoryTagAdapter(List<SlideBarBean.MenuInfoListDTO> searchBeans) {
         historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
         binding.rvHistory.setAdapter(historyTagAdapter);
         historyTagAdapter.setNewInstance(searchBeans);
@@ -179,12 +239,12 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         super.initViewObservable();
         viewModel.searchHistoryList.observe(this, datas -> {
             if (datas != null) {
-                historyTagAdapter.setNewInstance(datas);
+                historyTagAdapter.setNewInstance(datas.getMenuInfoList());
             }
         });
         viewModel.searchHotList.observe(this, datas -> {
             if (datas != null) {
-                hotTagAdapter.setNewInstance(datas);
+                hotTagAdapter.setNewInstance(datas.getMenuInfoList());
             }
         });
     }

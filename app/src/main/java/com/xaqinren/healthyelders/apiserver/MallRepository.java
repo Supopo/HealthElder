@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.apiserver;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
@@ -105,7 +106,29 @@ public class MallRepository {
                 });
     }
 
-    public void getHotWords(MutableLiveData<List<SearchBean>> hotWords) {
+    public void getGoodsList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<GoodsBean>> goods, int page, int pageSize,String title,String sort,String orderBy) {
+        userApi.getMallGoodsList(page, pageSize, title, sort, orderBy)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<GoodsBean>>>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<GoodsBean>>> data) {
+                        goods.postValue(data.getData().content);
+                    }
+                });
+    }
+
+    public void getHotWords(MutableLiveData<SlideBarBean> hotWords) {
         userApi.getHotWords()
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -114,14 +137,36 @@ public class MallRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<List<SearchBean>>>() {
+                .subscribe(new CustomObserver<MBaseResponse<SlideBarBean>>() {
                     @Override
                     protected void dismissDialog() {
 
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<List<SearchBean>> data) {
+                    protected void onSuccess(MBaseResponse<SlideBarBean> data) {
+                        hotWords.postValue(data.getData());
+                    }
+
+                });
+    }
+    public void getGoodsHotWords(MutableLiveData<SlideBarBean> hotWords) {
+        userApi.getGoodsHotWords()
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<SlideBarBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<SlideBarBean> data) {
                         hotWords.postValue(data.getData());
                     }
 
