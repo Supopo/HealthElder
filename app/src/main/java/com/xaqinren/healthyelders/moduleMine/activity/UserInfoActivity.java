@@ -17,6 +17,7 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityUserInfoBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserXHFragment;
@@ -56,7 +57,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
     private String userId;
     private UserInfoBean userInfoBean;
 
-    public static void startActivity(Context context , String uid) {
+    public static void startActivity(Context context, String uid) {
         Bundle bundle = new Bundle();
         bundle.putString("userId", uid);
         Intent intent = new Intent(context, UserInfoActivity.class);
@@ -255,7 +256,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             bundle.putInt("page", 0);
             bundle.putString("name", userInfoBean.getNickname());
             bundle.putString("uid", userInfoBean.getId());
-            startActivity(LookAttentionActivity.class,bundle);
+            startActivity(LookAttentionActivity.class, bundle);
         });
         binding.tvFs.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
@@ -276,6 +277,12 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         });
 
         binding.rlFollow.setOnClickListener(lis -> {
+            //储存关注状态列表
+            if (binding.llFollow.getVisibility() == View.VISIBLE) {
+                AppApplication.get().followList.put(userId, true);
+            }else {
+                AppApplication.get().followList.put(userId, false);
+            }
             viewModel.toFollow(userId);
             showDialog();
         });

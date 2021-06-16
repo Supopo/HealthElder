@@ -308,6 +308,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 //上下切换
                 //                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
+                    showFollow();
+
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
@@ -432,6 +434,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             avatarAddAnim = (AnimationDrawable) binding.followImageView.getBackground();
             avatarAddAnim.start();
+            //缓存关注列表 用户视频列表中判断
+            AppApplication.get().followList.put(videoInfo.userId, true);
             viewModel.toFollow(videoInfo.userId);
             videoInfo.hasAttention = !videoInfo.hasAttention;
         });
@@ -503,6 +507,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }
         });
+    }
+
+    private void showFollow() {
+
+
+        Boolean aBoolean = AppApplication.get().followList.get(videoInfo.userId);
+        if (aBoolean != null) {
+            videoInfo.hasAttention = aBoolean;
+        }
+
+        if (videoInfo.hasAttention) {
+            binding.followImageView.setVisibility(View.GONE);
+        } else {
+            binding.followImageView.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -777,6 +796,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     public void onResume() {
         super.onResume();
         resumeMsg();
+        showFollow();
     }
 
     @Override

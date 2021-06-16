@@ -200,7 +200,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         slideBarBean = GlobalData.getInstance().getSlideBar();
         initDrawer();
         disableDrawer();
-//        viewModel.getAppConfig();
+        //        viewModel.getAppConfig();
         viewModel.checkVersion();
 
     }
@@ -284,7 +284,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 setBottomColors(R.color.white, dawable, R.color.color_252525, false);
                 //发送停止播放消息
                 RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
-            }else {
+            } else {
                 RxBus.getDefault().post(new VideoEvent(3, "继续播放"));
             }
             initBottomTab();
@@ -527,9 +527,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         RxSubscriptions.add(uniSubscribe);
 
         viewModel.slideBarLiveData.observe(this, s -> {
-            slideBarBean = s;
-            GlobalData.getInstance().saveSlideBar(slideBarBean);
-            slideBarAdapter.setList(slideBarBean.getMenuInfoList());
+            if (s != null) {
+                slideBarBean = s;
+                GlobalData.getInstance().saveSlideBar(slideBarBean);
+                if (slideBarBean.getMenuInfoList() != null) {
+                    slideBarAdapter.setList(slideBarBean.getMenuInfoList());
+                }
+            }
+
         });
     }
 
@@ -728,7 +733,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (slideBarBean == null) {
             //splash未请求到数据
             viewModel.getSlideBar();
-        }else{
+        } else {
             slideBarAdapter.setList(slideBarBean.getMenuInfoList());
         }
         slideBarAdapter.setOnItemClickListener(new OnItemClickListener() {
@@ -769,11 +774,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
     }
 
-    public void makeCall(Map<String,String> param) {
-        IntentUtils.sendPhone(getContext(),param.get("phone"));
+    public void makeCall(Map<String, String> param) {
+        IntentUtils.sendPhone(getContext(), param.get("phone"));
     }
 
-    public void makeActivity(Map<String,Object> param) {
+    public void makeActivity(Map<String, Object> param) {
         String name = (String) param.get("activityName");
         param.remove("activityName");
         String code = (String) param.get("code");
@@ -800,12 +805,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
         try {
             Class cls = Class.forName(name);
-            Intent intent = new Intent(getActivity(),cls);
+            Intent intent = new Intent(getActivity(), cls);
             intent.putExtras(bundle);
             if (!StringUtils.isEmpty(code)) {
                 int code1 = Integer.parseInt(code);
                 startActivityForResult(intent, code1);
-            }else{
+            } else {
                 startActivity(intent);
             }
 

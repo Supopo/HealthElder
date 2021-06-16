@@ -141,7 +141,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
             return false;
         }
 
-        return true;
+        return false;
     }
 
     public boolean showSeachFollow() {

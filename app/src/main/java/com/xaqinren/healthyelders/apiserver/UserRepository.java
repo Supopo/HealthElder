@@ -320,6 +320,15 @@ public class UserRepository {
                         if (followSuccess != null) {
                             followSuccess.postValue(true);
                         }
+                        Boolean aBoolean = AppApplication.get().followList.get(userId);
+                        if (!(Boolean) data.getData()) {
+                            if (aBoolean != null) {
+                                AppApplication.get().followList.put(userId, !aBoolean);
+                            } else {
+                                AppApplication.get().followList.put(userId, aBoolean);
+
+                            }
+                        }
                     }
                 });
     }
@@ -880,7 +889,7 @@ public class UserRepository {
                 });
     }
 
-    public void sendLoginSms(MutableLiveData<Boolean> datas,String mobile) {
+    public void sendLoginSms(MutableLiveData<Boolean> datas, String mobile) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("mobile", mobile);
         String json = JSON.toJSONString(hashMap);

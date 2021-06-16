@@ -41,7 +41,9 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.dcloud.common.adapter.util.Logger;
 import io.dcloud.common.util.RuningAcitvityUtil;
@@ -96,14 +98,14 @@ public class AppApplication extends BaseApplication {
         mContext = getApplicationContext();
         //是否开启打印日志
         KLog.init(BuildConfig.DEBUG);
-//        //初始化全局异常崩溃
-//        initCrash();
-//        //内存泄漏检测
-//        if (BuildConfig.DEBUG) {
-//            if (!LeakCanary.isInAnalyzerProcess(this)) {
-//                LeakCanary.install(this);
-//            }
-//        }
+        //        //初始化全局异常崩溃
+        //        initCrash();
+        //        //内存泄漏检测
+        //        if (BuildConfig.DEBUG) {
+        //            if (!LeakCanary.isInAnalyzerProcess(this)) {
+        //                LeakCanary.install(this);
+        //            }
+        //        }
         //初始化Uni小程序
         initUni(null);
         //注册微信
@@ -123,11 +125,11 @@ public class AppApplication extends BaseApplication {
         int pid = android.os.Process.myPid();
         LogUtils.e(TAG, "进程 id -> " + pid);
         // 非小程序进程
-        if(RuningAcitvityUtil.getAppName(getBaseContext()).contains("io.dcloud.unimp")) {
+        if (RuningAcitvityUtil.getAppName(getBaseContext()).contains("io.dcloud.unimp")) {
             LogUtils.e(TAG, "小程序进程");
         }
 
-//        registerLife();
+        //        registerLife();
     }
 
 
@@ -152,7 +154,7 @@ public class AppApplication extends BaseApplication {
                 .setMenuDefFontSize("16px")
                 .setMenuDefFontColor("#ff00ff")
                 .setMenuDefFontWeight("normal")
-//                .setMenuActionSheetItems(sheetItems)
+                //                .setMenuActionSheetItems(sheetItems)
                 .setEnableBackground(true)
                 .build();
 
@@ -162,10 +164,10 @@ public class AppApplication extends BaseApplication {
             e.printStackTrace();
         }
         DCUniMPSDK.getInstance().initialize(this, config, isSuccess -> {
-            if (callBack!=null)
+            if (callBack != null)
                 callBack.initSuccess();
         });
-        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s ->{
+        DCUniMPSDK.getInstance().setUniMPOnCloseCallBack(s -> {
             LogUtils.e(TAG, "小程序关闭\t" + s);
         });
         DCUniMPSDK.getInstance().setDefMenuButtonClickCallBack(new DCUniMPSDK.IMenuButtonClickCallBack() {
@@ -175,7 +177,7 @@ public class AppApplication extends BaseApplication {
                 LogUtils.e(TAG, "小程序点击 \t" + s + " \t s1 -> " + s1);
             }
         });
-        LogUtils.e(TAG, "小程序初始化完成\t" );
+        LogUtils.e(TAG, "小程序初始化完成\t");
     }
 
     private void initCrash() {
@@ -248,6 +250,10 @@ public class AppApplication extends BaseApplication {
 
     private boolean hasNavBar;//是否开启了虚拟按键
 
+
+    //本次关注列表
+    public HashMap<String, Boolean> followList = new HashMap<>();
+
     //顶部菜单是否展示
     private boolean showTopMenu = true;
 
@@ -269,7 +275,6 @@ public class AppApplication extends BaseApplication {
     public void setTag(String tag) {
         this.tag = tag;
     }
-
 
 
     public int getPlayPosition() {
@@ -336,7 +341,7 @@ public class AppApplication extends BaseApplication {
         return false;
     }
 
-    public interface OnUniIntCallBack{
+    public interface OnUniIntCallBack {
         void initSuccess();
     }
 }
