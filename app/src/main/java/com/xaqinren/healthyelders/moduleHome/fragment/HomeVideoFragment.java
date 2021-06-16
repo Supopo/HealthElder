@@ -50,6 +50,7 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverGZActivity;
 import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -481,9 +482,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
-                startActivity(LiveGuanzhongActivity.class, bundle);
+
+                if (liveInfo.liveRoomStatus.equals("LIVE_OVER")) {
+                    //直播结束 直接跳转结束页面
+                    //跳转结算页面
+                    Bundle bundle = new Bundle();
+                    bundle.putString("liveRoomRecordId", liveInfo.liveRoomRecordId);
+                    bundle.putString("liveRoomId", videoInfo.liveRoomId);
+                    startActivity(ZhiboOverGZActivity.class, bundle);
+                } else {
+                    //进入直播间
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                    startActivity(LiveGuanzhongActivity.class, bundle);
+                }
+
             }
         });
         viewModel.dismissDialog.observe(this, dismiss -> {
@@ -727,8 +740,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 //判断之前是不暂停状态
                 if (isPlaying) {
                     vodPlayer.resume();
-                    LogUtils.v(Constant.TAG_LIVE, position + "resume");
-
                 } else {
                     vodPlayer.pause();
                 }
@@ -759,7 +770,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onPause() {
         super.onPause();
-        Log.e("--", "onPause");
         pauseMsg();
     }
 
@@ -800,7 +810,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("--", "onResume");
         resumeMsg();
         showFollow();
     }
