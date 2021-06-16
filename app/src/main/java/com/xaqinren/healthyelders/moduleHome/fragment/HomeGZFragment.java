@@ -243,7 +243,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
                     binding.rlTop.setVisibility(View.GONE);
-                    binding.llShowTop.setVisibility(View.VISIBLE);
+                    //暂时不用再展示
+//                    binding.llShowTop.setVisibility(View.VISIBLE);
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
                 }
@@ -270,15 +271,16 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
 
         binding.llShowTop.setOnClickListener(lis -> {
-            binding.rlTop.setVisibility(View.VISIBLE);
-            binding.llShowTop.setVisibility(View.GONE);
-            binding.nsv.setScrollingEnabled(true);
-            binding.viewPager2.setUserInputEnabled(false);
+                binding.rlTop.setVisibility(View.VISIBLE);
+                binding.llShowTop.setVisibility(View.GONE);
+                binding.nsv.setScrollingEnabled(true);
+                binding.viewPager2.setUserInputEnabled(false);
         });
 
         isInit = true;
     }
 
+    private boolean topClick;
     private void showLoadView() {
         binding.loadView.setVisibility(View.VISIBLE);
         binding.loadView.playAnimation();
