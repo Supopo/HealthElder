@@ -368,7 +368,27 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         }
     }
     private void recode() {
-        new AsyncTask() {
+        int result = VideoRecordSDK.getInstance().startRecord();
+        if (result != TXRecordCommon.START_RECORD_OK) {
+            if (result == -4) {
+                //画面还没出来
+            } else if (result == -3) {//版本太低
+
+            }
+            else if (result == -5) {// licence 验证失败] }
+            } else {
+                // 启动成功}
+                // 结束录
+                //VideoRecordSDK.getInstance().stopRecord();
+                // 录制完成回调
+            }
+            currentStatus = STATUS_IDLE;
+            recodeLiteListener.onRecodeSuccess(false);
+        }else{
+            recodeLiteListener.onRecodeSuccess(true);
+            currentStatus = STATUS_RECODE;
+        }
+        /*new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
                 int result = VideoRecordSDK.getInstance().startRecord();
@@ -378,28 +398,9 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                int result = (int) o;
-                if (result != TXRecordCommon.START_RECORD_OK) {
-                    if (result == -4) {
-                        //画面还没出来
-                    } else if (result == -3) {//版本太低
 
-                    }
-                    else if (result == -5) {// licence 验证失败] }
-                    } else {
-                        // 启动成功}
-                        // 结束录
-                        //VideoRecordSDK.getInstance().stopRecord();
-                        // 录制完成回调
-                    }
-                    currentStatus = STATUS_IDLE;
-                    recodeLiteListener.onRecodeSuccess(false);
-                }else{
-                    recodeLiteListener.onRecodeSuccess(true);
-                    currentStatus = STATUS_RECODE;
-                }
             }
-        }.execute(1);
+        }.execute(1);*/
     }
 
     /**
