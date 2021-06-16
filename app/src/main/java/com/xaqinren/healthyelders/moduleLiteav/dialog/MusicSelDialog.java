@@ -365,7 +365,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
             if (initColl)
                 addCurrentPlayIntoList();
-
+            if (initColl && initComment)
             if (currentPlayReIndex != -1 || currentPlayCoIndex != -1) {
                 //继续播放
                 if (currentPlayReIndex != -1) {
@@ -400,6 +400,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             }
             if (initComment)
                 addCurrentPlayIntoList();
+            if (initColl && initComment)
             if (currentPlayReIndex != -1 || currentPlayCoIndex != -1) {
                 //继续播放
                 if (currentPlayReIndex != -1) {

@@ -67,10 +67,13 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
     public void initData() {
         super.initData();
         setTitle("选择音乐");
-        ivLeft.setOnClickListener(v -> {
+        /*ivLeft.setOnClickListener(v -> {
+            if (MusicRecode.getInstance().getUseMusicItem() == null) {
+                MusicRecode.getInstance().setUseMusicItem(null);
+            }
             MusicRecode.getInstance().setUseMusicItem(null);
             finish();
-        });
+        });*/
         musicAdapter = new MusicAdapter(R.layout.item_music_block);
         mMusicBeans = new ArrayList<>();
         classBeans = new ArrayList<>();

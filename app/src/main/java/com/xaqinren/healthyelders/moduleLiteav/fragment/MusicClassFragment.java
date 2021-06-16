@@ -359,7 +359,7 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
                 RecordMusicManager.getInstance().setRecordMusicInfo(musicInfo);
                 // 音乐试听
                 RecordMusicManager.getInstance().startMusic();
-                setVolum(0, 100);
+                setVolum(0, 1f);
                 return "";
             }
 

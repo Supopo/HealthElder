@@ -85,10 +85,10 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         if (!file.exists()) {
             file.mkdir();
         }
-        ivLeft.setOnClickListener(v -> {
+        /*ivLeft.setOnClickListener(v -> {
             MusicRecode.getInstance().setUseMusicItem(null);
             finish();
-        });
+        });*/
         downloadMusic = DownloadMusic.getInstance();
         downloadMusic.init(file.getAbsolutePath());
         mMusicItemBeans = new ArrayList<>();
@@ -280,7 +280,7 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
                 RecordMusicManager.getInstance().setRecordMusicInfo(musicInfo);
                 // 音乐试听
                 RecordMusicManager.getInstance().startMusic();
-                setVolum(0, 100);
+                setVolum(0, 1f);
                 return "";
             }
 
