@@ -60,8 +60,8 @@ public class UniUtil {
                     DCUniMPSDK.getInstance().closeCurrentApp();
                 }
             }
-            LogUtils.e("UniUtil", "" + System.currentTimeMillis());
             JSONObject finalJsonObject = jsonObject;
+
             Observable.timer(isDelay, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

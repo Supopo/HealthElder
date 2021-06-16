@@ -27,6 +27,7 @@ import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.tencent.qcloud.xiaoshipin.config.TCConfigManager;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLog;
+import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.ugc.TXUGCBase;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.MainActivity;
@@ -52,6 +53,7 @@ import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.sdk.MenuActionSheetItem;
 import io.dcloud.feature.uniapp.UniSDKEngine;
 import io.dcloud.feature.uniapp.common.UniException;
+import io.dcloud.feature.x5.X5WebView;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.crash.CaocConfig;
@@ -146,15 +148,12 @@ public class AppApplication extends BaseApplication {
     }
 
     public void initUni(OnUniIntCallBack callBack) {
-        MenuActionSheetItem item = new MenuActionSheetItem("关于", "gy");
-        List<MenuActionSheetItem> sheetItems = new ArrayList<>();
-        sheetItems.add(item);
+
         DCSDKInitConfig config = new DCSDKInitConfig.Builder()
                 .setCapsule(true)
                 .setMenuDefFontSize("16px")
                 .setMenuDefFontColor("#ff00ff")
                 .setMenuDefFontWeight("normal")
-                //                .setMenuActionSheetItems(sheetItems)
                 .setEnableBackground(true)
                 .build();
 

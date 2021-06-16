@@ -2,12 +2,15 @@ package com.xaqinren.healthyelders.modulePicture.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,6 +67,7 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ImageUtils;
+import me.goldze.mvvmhabit.utils.KeyBoardUtils;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -207,6 +211,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             public void inputTopic(String str) {
                 LogUtils.e(TAG, "inputTopic 提出话题弹窗 -> " + str);
                 showTopicView(str);
+                if (str.length() == 1) {
+                    hideSoftInput();
+                }
             }
 
             @Override
@@ -222,6 +229,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 binding.contentInput.setEnablePost(false);
                 Intent intent = new Intent(PublishTextPhotoActivity.this, PublishAtActivity.class);
                 startActivityForResult(intent, AT_CODE);
+                if (str.length() == 1) {
+                    hideSoftInput();
+                }
             }
 
             @Override
@@ -248,8 +258,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             equalsLocation(bean);
         });
 
-        binding.addTopic.setOnClickListener(view -> binding.contentInput.append("#"));
-        binding.addFriend.setOnClickListener(view -> binding.contentInput.append("@"));
+        binding.addTopic.setOnClickListener(view -> {
+            binding.contentInput.append("#");
+        });
+        binding.addFriend.setOnClickListener(view -> {
+            binding.contentInput.append("@");
+
+        });
 
         addPhoto(path);
 
@@ -260,6 +275,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         pictureAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                hideSoftInput();
                 if (localPhotoBeans.get(position).type == 0) {
                     //查看
 
@@ -270,6 +286,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
 
         pictureAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            hideSoftInput();
             localPhotoBeans.remove(position);
             if (localPhotoBeans.isEmpty()) {
                 addAddPhoto();
@@ -304,6 +321,23 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             }
         };
         binding.rlContainer.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+        binding.rlContainer.setOnClickListener(v -> hideSoftInput());
+        binding.photoList.setOnClickListener(v -> hideSoftInput());
+        binding.photoList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hideSoftInput();
+                }
+                return false;
+            }
+        });
+    }
+    public void hideSoftInput() {
+        View currentFocus = getCurrentFocus();
+        if (currentFocus==null)return;
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
     private boolean checkParams() {
         if (getUploadFiles().isEmpty()) {

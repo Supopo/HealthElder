@@ -61,7 +61,7 @@
 
                 </LinearLayout>
 
-                <EditText
+                <TextView
                     android:id="@+id/et_search"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/dp_30"
@@ -70,8 +70,9 @@
                     android:drawableLeft="@mipmap/search_icon"
                     android:drawablePadding="@dimen/dp_9"
                     android:enabled="true"
-                    android:editable="false"
+                    android:clickable="true"
                     android:hint="请输入需要搜索的内容"
+                    android:gravity="center_vertical"
                     android:paddingLeft="@dimen/dp_9"
                     android:paddingRight="@dimen/dp_9"
                     android:singleLine="true"

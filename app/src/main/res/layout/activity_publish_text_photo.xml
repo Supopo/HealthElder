@@ -17,10 +17,12 @@
             android:id="@+id/photo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_11"
-            android:layout_marginRight="@dimen/dp_10"/>
+            android:layout_marginRight="@dimen/dp_10"
+            />
 
         <EditText
             android:id="@+id/des_text"
@@ -33,7 +35,6 @@
             android:hint="填写标题会有更多赞哦～"
             android:textColor="@color/color_252525"
             android:textColorHint="@color/gray_999"
-            android:textStyle="bold"
             android:maxLength="55"
             android:maxLines="2"
             android:background="@null"
