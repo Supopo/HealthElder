@@ -235,6 +235,7 @@ public class CommentDialog {
                 }
                 commentAdapter.addData(dataList);
             }
+            binding.commentCountTv.setText(commentAdapter.getData().size() + "条评论");
         });
 
         commentReplyList.observe((LifecycleOwner) mContext, replyDatas -> {

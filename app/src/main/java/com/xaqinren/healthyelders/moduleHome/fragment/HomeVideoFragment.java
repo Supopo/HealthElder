@@ -87,6 +87,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private CommentListBean mCommentListBean;//当前评论对象
     private String TAG = getClass().getSimpleName();
     private Disposable commentDisposable;
+    private boolean editTextOpen;//判断是否打开了EditTextActivity
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -146,7 +147,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         binding.commentLayout.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
-
+            bundle.putInt("pos", position);
+            bundle.putString("type", type);
+            openType = 0;
+            editTextOpen = true;
             startActivity(VideoEditTextDialogActivity.class, bundle);
         });
 
@@ -356,6 +360,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         //回复回复
                         viewModel.toCommentReply(mCommentListBean, content, 1);
                     }
+                } else if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER && bean.pos == position && bean.type.equals(type)) {
+                    editTextOpen = false;
                 }
             }
         });
@@ -573,6 +579,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         bundle.putString("hint", nickName);
         bundle.putInt("pos", position);
         bundle.putString("type", type);
+        editTextOpen = true;
         startActivity(VideoEditTextDialogActivity.class, bundle);
     }
 
@@ -733,7 +740,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     public void pauseMsg() {
-        if (hasPlaying) {
+        if (hasPlaying && !editTextOpen) {
             pausePlay();
         }
     }

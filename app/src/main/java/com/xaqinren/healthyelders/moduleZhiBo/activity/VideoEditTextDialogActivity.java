@@ -6,6 +6,7 @@ import android.content.Context;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -66,17 +67,16 @@ public class VideoEditTextDialogActivity extends Activity {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;//设置对话框置顶显示
-//        lp.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         win.setAttributes(lp);
     }
 
     private void initView() {
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-
         rlView = findViewById(R.id.rl_view);
         etView = findViewById(R.id.et_input_message);
         moreGroups = findViewById(R.id.more_groups);
-        etView.setHint(hint);
+        if (!TextUtils.isEmpty(hint)) {
+            etView.setHint(hint);
+        }
         ImageView ivPublish = findViewById(R.id.iv_send);
         ImageView ivFace = findViewById(R.id.iv_face);
         //弹出键盘
@@ -99,16 +99,23 @@ public class VideoEditTextDialogActivity extends Activity {
                 }
             }
         });
-        rlView.setOnClickListener(lis ->{
+        rlView.setOnClickListener(lis -> {
             etView.setFocusable(false);
             etView.setFocusableInTouchMode(false);
             finish();
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT_OVER, "", type, pos));
+    }
+
     private FragmentManager mFragmentManager;
     private FaceFragment mFaceFragment;
     private RelativeLayout moreGroups;
+
     public void hideSoftInput() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(etView.getWindowToken(), 0);
