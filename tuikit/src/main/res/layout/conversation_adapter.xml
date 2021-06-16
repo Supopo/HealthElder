@@ -42,10 +42,10 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/black_font_color"
-                android:includeFontPadding="false"
                 android:layout_marginTop="5dp"
                 app:needNoSpace="true"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                />
 
             <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
                 android:id="@+id/conversation_time"
@@ -69,7 +69,6 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="#999999"
-                android:includeFontPadding="false"
                 app:needNoSpace="true"
                 android:textSize="13sp"
                />

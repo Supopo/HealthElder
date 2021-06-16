@@ -98,7 +98,8 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                         mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
                         if (GeneralConfig.enableChat) {
-                            infos.add(conversationInfo);
+                            if (!conversationInfo.isGroup())
+                                infos.add(conversationInfo);
                         }
                     }
                 }

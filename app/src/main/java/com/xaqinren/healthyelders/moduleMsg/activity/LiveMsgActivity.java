@@ -161,7 +161,7 @@ public class LiveMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
         });
 
         viewModel.friendListData.observe(this, friendBeans -> {
-            if (friendCount == 0 && !friendBeans.isEmpty()) {
+            if (friendCount == 0 /*&& !friendBeans.isEmpty()*/) {
                 interactiveAdapter.addData(new MessageDetailBean() {
                     @Override
                     public int getItemType() {

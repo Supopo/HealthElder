@@ -92,7 +92,8 @@ public class NoSpaceTextView extends androidx.appcompat.widget.AppCompatTextView
         String[]  linesText  = getLinesText();
         TextPaint paint      = getPaint();
         Rect rect       = new Rect();
-        String    text       = linesText[0];
+//        String    text       = linesText[0];
+        String    text       = "\uD83D\uDE00";
         paint.getTextBounds(text, 0, text.length(), rect);
 
         Paint.FontMetricsInt fontMetricsInt = new Paint.FontMetricsInt();

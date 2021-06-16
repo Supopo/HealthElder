@@ -253,13 +253,21 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
                 viewModel.getRecommendFriend();
         });
         viewModel.friendListData.observe(this, friendBeans -> {
-            if (friendCount == 0 && !friendBeans.isEmpty()) {
+            if (friendCount == 0) {
                 interactiveAdapter.addData(new MessageDetailBean() {
                     @Override
                     public int getItemType() {
                         return MessageDetailBean.TYPE_TEXT;
                     }
                 });
+                /*if (friendBeans.isEmpty()) {
+                    interactiveAdapter.addData(new MessageDetailBean() {
+                        @Override
+                        public int getItemType() {
+                            return MessageDetailBean.TYPE_EMPTY;
+                        }
+                    });
+                }*/
             }
             friendCount += friendBeans.size();
             interactiveAdapter.addData(friendBeans);

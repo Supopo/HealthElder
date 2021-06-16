@@ -67,7 +67,7 @@ public class UniUtil {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aLong -> {
                         LogUtils.e("UniUtil", "" + System.currentTimeMillis());
-                        DCUniMPSDK.getInstance().startApp(context, appId, viewCls, page, finalJsonObject);
+                        DCUniMPSDK.getInstance().startApp(context, appId, null, page, finalJsonObject);
                     });
         } catch (Exception e) {
             e.printStackTrace();

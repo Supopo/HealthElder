@@ -163,7 +163,7 @@ public class WalletMsgActivity extends BaseActivity<ActivityInteractiveBinding, 
         });
 
         viewModel.friendListData.observe(this, friendBeans -> {
-            if (friendCount == 0 && !friendBeans.isEmpty()) {
+            if (friendCount == 0 /*&& !friendBeans.isEmpty()*/) {
                 interactiveAdapter.addData(new MessageDetailBean() {
                     @Override
                     public int getItemType() {
