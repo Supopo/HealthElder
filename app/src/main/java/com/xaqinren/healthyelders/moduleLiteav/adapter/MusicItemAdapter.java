@@ -36,13 +36,19 @@ public class MusicItemAdapter extends BaseQuickAdapter<MMusicItemBean, BaseViewH
         ItemMusicItemBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(mMusicItemBean);
         GlideUtil.intoCirImageView(getContext(),mMusicItemBean.coverUrl,binding.cover,4);
-
-        if (mMusicItemBean.myMusicStatus == 1) {
+        if (mMusicItemBean.myMusicStatus == 0){
+            //隐藏加载动画图标
+            binding.progress.setVisibility(View.GONE);
+            binding.playBtn.setImageResource(R.mipmap.icon_ship_yiny_bof);
+        }
+        else if (mMusicItemBean.myMusicStatus == 1) {
             //展示加载动画图标
             binding.progress.setVisibility(View.VISIBLE);
+            binding.playBtn.setImageResource(R.mipmap.icon_ship_yiny_bof);
         }else{
             //隐藏加载动画图标
             binding.progress.setVisibility(View.GONE);
+            binding.playBtn.setImageResource(R.mipmap.icon_ship_yiny_zt);
         }
 
         binding.shoucang.setImageResource(mMusicItemBean.hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
