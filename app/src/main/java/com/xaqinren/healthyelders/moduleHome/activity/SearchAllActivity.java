@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -37,6 +39,12 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
     private String[] titles = {"综合", "视频", "用户", "商品", "直播", "图文"};
     private String tags;
     private int fragmentPos = 0;
+    private SearchAllFragment allFragment;
+    private SearchVideoFragment videoFragment;
+    private SearchUserFragment userFragment;
+    private SearchGoodsFragment goodsFragment;
+    private SearchZhiboFragment zbFragment;
+    private SearchTuwenFragment twFragment;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -64,12 +72,12 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
         showDialog();
         List<Fragment> fragments = new ArrayList<>();
 
-        SearchAllFragment allFragment = new SearchAllFragment();
-        SearchVideoFragment videoFragment = new SearchVideoFragment();
-        SearchUserFragment userFragment = new SearchUserFragment();
-        SearchGoodsFragment goodsFragment = new SearchGoodsFragment();
-        SearchZhiboFragment zbFragment = new SearchZhiboFragment();
-        SearchTuwenFragment twFragment = new SearchTuwenFragment();
+        allFragment = new SearchAllFragment();
+        videoFragment = new SearchVideoFragment();
+        userFragment = new SearchUserFragment();
+        goodsFragment = new SearchGoodsFragment();
+        zbFragment = new SearchZhiboFragment();
+        twFragment = new SearchTuwenFragment();
         fragments.add(allFragment);
         fragments.add(videoFragment);
         fragments.add(userFragment);
@@ -91,7 +99,16 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                 if (fragmentPos == 0) {
                     viewModel.searchUsers(1, 3);
                 }
+
+                allFragment.page = 1;
+                videoFragment.page = 1;
+                userFragment.page = 1;
+                goodsFragment.page = 1;
+                zbFragment.page = 1;
+                twFragment.page = 1;
+
                 viewModel.searchDatas(1, fragmentPos);
+
                 RxBus.getDefault().post(new EventBean(CodeTable.SEARCH_TAG, 1));
             }
         });
@@ -101,9 +118,21 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     tags = binding.etSearch.getText().toString().trim();
-                    viewModel.tags = tags;
-                    viewModel.searchUsers(1, 3);
-                    viewModel.searchDatas(1, fragmentPos);
+
+                    if (!TextUtils.isEmpty(tags)) {
+                        viewModel.tags = tags;
+                        allFragment.page = 1;
+                        videoFragment.page = 1;
+                        userFragment.page = 1;
+                        goodsFragment.page = 1;
+                        zbFragment.page = 1;
+                        twFragment.page = 1;
+                        viewModel.searchUsers(1, 3);
+                        viewModel.searchDatas(1, fragmentPos);
+                    } else {
+                        ToastUtil.toastShortMessage("搜索内容不能为空！");
+                    }
+
                 }
                 return false;
             }

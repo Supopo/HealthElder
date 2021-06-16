@@ -32,7 +32,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, SearchAllViewModel> {
 
     private SearchZhiboAdapter mAdapter;
-    private int page = 1;
+    public int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;
@@ -67,7 +67,7 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-
+                searchAllViewModel.searchDatas(page, 4);
             }
         });
 
@@ -107,7 +107,7 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
                 }
                 if (page == 1) {
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
-                    mAdapter.setList(dataList);
+                    mAdapter.setNewInstance(dataList);
                     if (dataList.size() == 0) {
                         //创建适配器.空布局，没有数据时候默认展示的
                         mAdapter.setEmptyView(R.layout.list_empty);

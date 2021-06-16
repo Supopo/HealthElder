@@ -36,7 +36,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, SearchUserViewModel> {
 
     private SearchUserAdapter mAdapter;
-    private int page = 1;
+    public int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;

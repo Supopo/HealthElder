@@ -28,6 +28,7 @@ import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -44,7 +45,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private int searchType;
     private final int TYPE_HOME = 0, TYPE_GOODS = 1;
 
-    public static void startActivity(Context context , int searchType /*0首页搜索，1商品搜索 */) {
+    public static void startActivity(Context context, int searchType /*0首页搜索，1商品搜索 */) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtra("type", searchType);
         context.startActivity(intent);
@@ -93,14 +94,14 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
                 slideBarBean.getMenuInfoList().add(dto);
             }
             if (searchType == TYPE_HOME) {
-                ACache.get(this).put(Constant.SearchId,slideBarBean);
-            }else if (searchType == TYPE_GOODS) {
-                ACache.get(this).put(Constant.SearchGId,slideBarBean);
+                ACache.get(this).put(Constant.SearchId, slideBarBean);
+            } else if (searchType == TYPE_GOODS) {
+                ACache.get(this).put(Constant.SearchGId, slideBarBean);
             }
         }
         if (searchType == TYPE_HOME) {
             searchListCache = (SlideBarBean) ACache.get(this).getAsObject(Constant.SearchId);
-        }else if (searchType == TYPE_GOODS) {
+        } else if (searchType == TYPE_GOODS) {
             searchListCache = (SlideBarBean) ACache.get(this).getAsObject(Constant.SearchGId);
         }
         if (searchListCache == null) {
@@ -136,6 +137,9 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
+                        tags = binding.etSearch.getText().toString();
+                    }
                     toSearch();
                 }
                 return false;
@@ -176,17 +180,23 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     }
 
     private void toSearch() {
-        tags = binding.etSearch.getText().toString().trim();
-        if (TextUtils.isEmpty(tags)) {
+        //如果没有输入不存进历史
+        if (TextUtils.isEmpty(binding.etSearch.getText().toString())) {
             toJump();
             return;
         }
-        for (SlideBarBean.MenuInfoListDTO dto : searchListCache.getMenuInfoList()) {
-            if (dto.getMenuName().equals(tags)) {
-                toJump();
-                return;
+
+
+        //搜索历史去重
+        if (searchListCache != null && searchListCache.getMenuInfoList() != null) {
+            for (SlideBarBean.MenuInfoListDTO dto : searchListCache.getMenuInfoList()) {
+                if (dto.getMenuName().equals(tags)) {
+                    toJump();
+                    return;
+                }
             }
         }
+
 
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
@@ -217,10 +227,10 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private void toJump() {
         Bundle bundle = new Bundle();
         bundle.putString("tags", tags);
-        if (searchType == TYPE_HOME){
-            startActivity(SearchAllActivity.class,bundle);
+        if (searchType == TYPE_HOME) {
+            startActivity(SearchAllActivity.class, bundle);
         } else if (searchType == TYPE_GOODS) {
-            startActivity(GoodsSearchActivity.class,bundle);
+            startActivity(GoodsSearchActivity.class, bundle);
         }
     }
 
@@ -233,6 +243,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         historyTagAdapter.setNewInstance(searchBeans);
     }
 
+    private Random random = new Random();
 
     @Override
     public void initViewObservable() {
@@ -244,6 +255,11 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         });
         viewModel.searchHotList.observe(this, datas -> {
             if (datas != null) {
+                if (datas.getMenuInfoList().size() > 0) {
+                    int temp = random.nextInt(datas.getMenuInfoList().size());
+                    tags = datas.getMenuInfoList().get(temp).getMenuName();
+                    binding.etSearch.setHint(tags);
+                }
                 hotTagAdapter.setNewInstance(datas.getMenuInfoList());
             }
         });

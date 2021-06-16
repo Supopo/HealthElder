@@ -12,6 +12,7 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         binding.executePendingBindings();
 
 
-        int screenWidth = ScreenUtil.getScreenWidth(getContext());
+        int screenWidth = MScreenUtil.getScreenWidth(getContext());
         //瀑布流图片的宽度
         int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_3)) / 2;
 

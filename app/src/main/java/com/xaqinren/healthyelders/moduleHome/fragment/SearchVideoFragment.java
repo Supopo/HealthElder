@@ -39,7 +39,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding, SearchAllViewModel> {
 
     private SearchVideoAdapter mAdapter;
-    private int page = 1;
+    public int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;

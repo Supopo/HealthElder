@@ -56,7 +56,7 @@
 
         <com.qmuiteam.qmui.widget.QMUIRadiusImageView
             android:id="@+id/riv_cover"
-            app:url="@{viewModel.coverUrl}"
+            android:src="@color/color_FFF8F8F8"
             app:qmui_border_color="@color/transparent"
             app:qmui_corner_radius="@dimen/dp_4"
             android:layout_width="match_parent"

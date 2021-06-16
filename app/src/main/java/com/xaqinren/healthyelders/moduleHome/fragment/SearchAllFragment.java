@@ -46,7 +46,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
     private AllSearchAdapter mAdapter;
     private BaseLoadMoreModule mLoadMore;
-    private int page = 1;
+    public int page = 1;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;
     private SearchUserAdapter userAdapter;
