@@ -434,12 +434,12 @@ public class UserRepository {
         });
     }
 
-    public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type) {
+    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type) {
         //PRIVETE
-        getMyVideoList(datas, page, pagesize, type, "");
+        getMyVideoList(dismissDialog, datas, page, pagesize, type, "");
     }
 
-    public void getMyVideoList(MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type, String tagerId) {
+    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type, String tagerId) {
         //PRIVETE
         userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, type, tagerId)
                 .compose(RxUtils.schedulersTransformer())
@@ -448,7 +448,7 @@ public class UserRepository {
 
                     @Override
                     protected void dismissDialog() {
-
+                        dismissDialog.postValue(true);
                     }
 
                     @Override

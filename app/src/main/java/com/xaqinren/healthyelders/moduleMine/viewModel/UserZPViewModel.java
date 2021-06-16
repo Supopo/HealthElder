@@ -15,6 +15,7 @@ import java.util.List;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 
 public class UserZPViewModel extends BaseViewModel {
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> mVideoList = new MutableLiveData<>();
     private UserRepository userRepository = UserRepository.getInstance();
@@ -25,7 +26,7 @@ public class UserZPViewModel extends BaseViewModel {
 
 
     public void getMyVideoList(int page, int pageSize, String tagerId) {
-        userRepository.getMyVideoList(mVideoList, page, pageSize, "", tagerId);
+        userRepository.getMyVideoList(dismissDialog,mVideoList, page, pageSize, "", tagerId);
     }
 
 

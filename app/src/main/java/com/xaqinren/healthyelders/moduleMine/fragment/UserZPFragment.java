@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
@@ -20,9 +21,11 @@ import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
+import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
+import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserZPViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
@@ -70,7 +73,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             @Override
             public void onLoadMore() {
                 page++;
-                viewModel.getMyVideoList(page, pageSize,userId);
+                viewModel.getMyVideoList(page, pageSize, userId);
             }
         });
 
@@ -111,19 +114,26 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
 
     public void toRefresh() {
         page = 1;
-        viewModel.getMyVideoList(page, pageSize,userId);
+        viewModel.getMyVideoList(page, pageSize, userId);
     }
 
     public void getVideoList() {
         if (videoAdapter.getData().size() == 0) {
             page = 1;
-            viewModel.getMyVideoList(page, pageSize,userId);
+            viewModel.getMyVideoList(page, pageSize, userId);
         }
     }
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        viewModel.dismissDialog.observe(this, dis -> {
+            if (dis != null) {
+                UserInfoViewModel userInfoViewModel = ViewModelProviders.of(getActivity()).get(UserInfoViewModel.class);
+                userInfoViewModel.dismissDialog.postValue(true);
+            }
+        });
+
         viewModel.mVideoList.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {
@@ -135,7 +145,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
                         videoAdapter.setEmptyView(R.layout.item_empty);
                     }
 
-                        //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     videoAdapter.setList(dataList);
                 } else {
                     if (dataList.size() == 0) {

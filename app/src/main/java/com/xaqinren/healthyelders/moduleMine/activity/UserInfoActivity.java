@@ -91,6 +91,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         fragmentList.add(userZPFragment);
         fragmentList.add(userXHFragment);
 
+        showDialog();
         pagerAdapter = new FragmentPagerAdapter(this, fragmentList);
         binding.vpContent.setOffscreenPageLimit(2);
         binding.vpContent.setAdapter(pagerAdapter);
@@ -292,7 +293,6 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
     public void initViewObservable() {
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
-            dismissDialog();
             userInfoBean = userInfo;
         });
         viewModel.dismissDialog.observe(this, isDis -> {

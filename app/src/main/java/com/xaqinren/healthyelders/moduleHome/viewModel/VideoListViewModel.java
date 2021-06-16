@@ -22,6 +22,7 @@ public class VideoListViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
     public MutableLiveData<List<DZVideoInfo>> dzDatas = new MutableLiveData<>();
     public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
@@ -39,9 +40,9 @@ public class VideoListViewModel extends BaseViewModel {
             resourceType = "LIVE,VIDEO,USER_DIARY";
             LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, 0, datas, resourceType, tags);
         } else if (type == 3) {
-            UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "");
+            UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "");
         } else if (type == 4) {
-            UserRepository.getInstance().getMyVideoList(datas, page, Constant.loadVideoSize, "PRIVATE");
+            UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "PRIVATE");
         } else if (type == 5) {
             UserRepository.getInstance().getMyLikeVideoList(dzDatas, page, Constant.loadVideoSize);
         }

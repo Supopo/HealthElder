@@ -120,6 +120,13 @@ public class UserInfoBean implements Serializable {
         return cityAddress;
     }
 
+    public boolean showCity() {
+        if (TextUtils.isEmpty(cityAddress)) {
+            return false;
+        }
+        return true;
+    }
+
     public void setCityAddress(String cityAddress) {
         this.cityAddress = cityAddress;
     }

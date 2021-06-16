@@ -18,13 +18,14 @@ public class MineSMViewModel extends BaseViewModel {
     public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     public MutableLiveData<List<VideoInfo>> mVideoList = new MutableLiveData<>();
     private UserRepository userRepository = UserRepository.getInstance();
+    public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
 
     public MineSMViewModel(@NonNull Application application) {
         super(application);
     }
 
     public void getMyVideoList(int page, int pageSize) {
-        userRepository.getMyVideoList(mVideoList, page, pageSize,"PRIVATE");
+        userRepository.getMyVideoList(dismissDialog,mVideoList, page, pageSize,"PRIVATE");
     }
 
 
