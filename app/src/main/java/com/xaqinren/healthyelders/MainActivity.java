@@ -275,6 +275,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void initEvent() {
         binding.rlMenu1.setOnClickListener(lis -> {
+            AppApplication.get().bottomMenu = 0;
             selectView = binding.tvMenu1;
 
             if (oldView.getId() == selectView.getId()) {
@@ -291,6 +292,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu1;
         });
         binding.rlMenu2.setOnClickListener(lis -> {
+            AppApplication.get().bottomMenu = 1;
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(2, "暂停播放"));
             selectView = binding.tvMenu2;
@@ -298,6 +300,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu2;
         });
         binding.rlMenu3.setOnClickListener(lis -> {
+            AppApplication.get().bottomMenu = 2;
+
             if (!InfoCache.getInstance().checkLogin()) {
                 //跳转登录页面
                 startActivity(SelectLoginActivity.class);
@@ -310,6 +314,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu3;
         });
         binding.rlMenu4.setOnClickListener(lis -> {
+            AppApplication.get().bottomMenu = 3;
+
             //判断是否登录
             if (!InfoCache.getInstance().checkLogin()) {
                 //跳转登录页面

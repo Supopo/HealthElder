@@ -721,17 +721,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void resumePlay() {
-        binding.mainVideoView.onResume();
-        if (vodPlayer != null) {
-            //判断之前是不暂停状态
-            if (isPlaying) {
-                vodPlayer.resume();
-                LogUtils.v(Constant.TAG_LIVE, position + "resume");
+        if (AppApplication.get().bottomMenu == 0) {
+            binding.mainVideoView.onResume();
+            if (vodPlayer != null) {
+                //判断之前是不暂停状态
+                if (isPlaying) {
+                    vodPlayer.resume();
+                    LogUtils.v(Constant.TAG_LIVE, position + "resume");
 
-            } else {
-                vodPlayer.pause();
+                } else {
+                    vodPlayer.pause();
+                }
             }
         }
+
+
     }
 
     private void stopPlay(boolean clearLastFrame) {
@@ -755,6 +759,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onPause() {
         super.onPause();
+        Log.e("--", "onPause");
         pauseMsg();
     }
 
@@ -765,7 +770,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     public void resumeMsg() {
-        if (hasPlaying) {
+        if (hasPlaying && !editTextOpen) {
             if (type.equals("home-tj")) {
                 if (AppApplication.get().getTjPlayPosition() == position) {
                     resumePlay();
@@ -795,6 +800,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("--", "onResume");
         resumeMsg();
         showFollow();
     }

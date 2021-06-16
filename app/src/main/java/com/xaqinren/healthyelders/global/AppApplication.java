@@ -254,6 +254,8 @@ public class AppApplication extends BaseApplication {
     //本次关注列表
     public HashMap<String, Boolean> followList = new HashMap<>();
 
+    public int bottomMenu;
+
     //顶部菜单是否展示
     private boolean showTopMenu = true;
 
