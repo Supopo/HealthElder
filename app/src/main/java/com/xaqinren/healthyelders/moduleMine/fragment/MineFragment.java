@@ -80,6 +80,8 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         fragmentList.add(mineSMFragment);
         fragmentList.add(mineDZFragment);
 
+        binding.rivPhoto2.setBorderWidth((int) getResources().getDimension(R.dimen.dp_3));
+
         pagerAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
         binding.vpContent.setOffscreenPageLimit(3);
         binding.vpContent.setAdapter(pagerAdapter);
@@ -239,6 +241,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     //设置新的属性
                     layoutParams.setMargins(oldLeft, oldTop + verticalOffset, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
+                    binding.rivPhoto2.setBorderWidth(0);
 
                 } else if (verticalOffset == 0 && oldTop != 0) {
                     //下拉到开始位置让头像view的属性复原
@@ -246,6 +249,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
                     layoutParams.height = oldWidth;
                     layoutParams.setMargins(oldLeft, oldTop, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
+                    binding.rivPhoto2.setBorderWidth((int) getResources().getDimension(R.dimen.dp_3));
                 }
 
 

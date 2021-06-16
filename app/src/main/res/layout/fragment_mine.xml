@@ -448,7 +448,6 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="-50dp"
                 app:qmui_border_color="@color/white"
-                app:qmui_border_width="@dimen/dp_3"
                 app:qmui_is_circle="true"
                 app:url="@{viewModel.userInfo.avatarUrl}" />
         </RelativeLayout>

@@ -128,7 +128,7 @@
                     android:layout_toRightOf="@id/iv_loc"
                     android:singleLine="true"
                     android:text="@{viewModel.address}"
-                    android:textColor="@color/white"
+                    android:textColor="#939499"
                     android:textSize="@dimen/sp_13" />
 
             </RelativeLayout>

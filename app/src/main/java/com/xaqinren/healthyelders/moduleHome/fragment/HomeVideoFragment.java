@@ -328,7 +328,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 } else if (bean.msgId == 3) {
                     //继续播放
                     resumeMsg();
-                } else if (bean.msgId == 101) {//左右切换
+                }  else if (bean.msgId == 101) {//左右切换
                     stopPlay(true);
                     if ((bean.position == 0 && type.equals("home-tj"))) {
                         startTjVideo();
@@ -737,12 +737,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (AppApplication.get().bottomMenu == 0) {
             binding.mainVideoView.onResume();
             if (vodPlayer != null) {
-                //判断之前是不暂停状态
-                if (isPlaying) {
-                    vodPlayer.resume();
+                //是否开启播放状态
+                if (hasPlaying) {
+                    //判断之前是不暂停状态
+                    if (isPlaying) {
+                        vodPlayer.resume();
+                    } else {
+                        vodPlayer.pause();
+                    }
                 } else {
-                    vodPlayer.pause();
+                    startPlay(true);
                 }
+
+
             }
         }
 
@@ -780,7 +787,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     public void resumeMsg() {
-        if (hasPlaying && !editTextOpen) {
+        if (!editTextOpen) {
             if (type.equals("home-tj")) {
                 if (AppApplication.get().getTjPlayPosition() == position) {
                     resumePlay();
