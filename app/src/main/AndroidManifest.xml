@@ -274,7 +274,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".moduleHome.activity.VideoGridActivity" />
-        <activity android:name=".modulePicture.activity.PublishAtActivity" />
+        <activity android:name=".modulePicture.activity.PublishAtActivity"
+            android:theme="@style/AtPageAppTheme"/>
         <activity android:name=".moduleMsg.activity.ChatActivity" />
         <activity android:name=".moduleHome.activity.SearchActivity" />
         <activity android:name=".moduleMsg.activity.InteractiveActivity">

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -229,6 +231,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 binding.contentInput.setEnablePost(false);
                 Intent intent = new Intent(PublishTextPhotoActivity.this, PublishAtActivity.class);
                 startActivityForResult(intent, AT_CODE);
+                //overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_bottom_2enter);
+
                 if (str.length() == 1) {
                     hideSoftInput();
                 }

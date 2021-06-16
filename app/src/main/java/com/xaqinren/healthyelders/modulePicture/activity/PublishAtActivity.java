@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.text.Editable;
+import android.transition.Slide;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,13 @@ public class PublishAtActivity extends BaseActivity<ActivityPublishAtBinding , P
     private int atPageSize = 20;
     //@用户列表
     private List<LiteAvUserBean> liteAvUserBeans = new ArrayList<>();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setEnterTransition(new Slide().setDuration(2000));
+        getWindow().setExitTransition(new Slide().setDuration(2000));
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -85,15 +93,18 @@ public class PublishAtActivity extends BaseActivity<ActivityPublishAtBinding , P
             }
         });
         getFriendData();
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                Intent intent = new Intent();
-                intent.putExtra(Constant.PUBLISH_AT, liteAvUserBeans.get(position));
-                setResult(Activity.RESULT_OK , intent);
-                finish();
-            }
+        adapter.setOnItemClickListener((adapter, view, position) -> {
+            Intent intent = new Intent();
+            intent.putExtra(Constant.PUBLISH_AT, liteAvUserBeans.get(position));
+            setResult(Activity.RESULT_OK , intent);
+            finish();
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        //overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_bottom_2exit);
     }
 
     private void getFriendData() {

@@ -76,6 +76,8 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
     public void initData() {
         super.initData();
         setTitle("搜索");
+        rlTitle.setVisibility(View.GONE);
+        binding.backIv.setOnClickListener(v -> finish());
         itemBeans = new ArrayList<>();
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);

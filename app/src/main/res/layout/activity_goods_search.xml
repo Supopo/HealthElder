@@ -11,20 +11,31 @@
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_48">
+            android:layout_height="@dimen/dp_48"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/back_iv"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:src="@mipmap/main_back"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_9"
+                android:padding="@dimen/dp_7"/>
             <EditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_32"
                 android:background="@drawable/bg_search_cir"
                 android:drawableLeft="@mipmap/icon_search_weiz"
+                android:layout_toRightOf="@id/back_iv"
                 android:paddingLeft="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_54"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/color_252525"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:drawablePadding="@dimen/dp_8"
                 android:singleLine="true"
                 android:ellipsize="end"
@@ -56,6 +67,7 @@
             android:layout_height="@dimen/dp_48"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:background="@color/white"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16">
             <TextView
