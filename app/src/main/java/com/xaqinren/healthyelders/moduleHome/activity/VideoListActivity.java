@@ -71,7 +71,6 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             page = videos.page;
             mVideoInfoList.addAll(videos.videoInfos);
         }
-
     }
 
     @Override

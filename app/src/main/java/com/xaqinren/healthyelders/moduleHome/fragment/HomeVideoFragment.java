@@ -328,7 +328,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 } else if (bean.msgId == 3) {
                     //继续播放
                     resumeMsg();
-                }  else if (bean.msgId == 101) {//左右切换
+                } else if (bean.msgId == 101) {//左右切换
                     stopPlay(true);
                     if ((bean.position == 0 && type.equals("home-tj"))) {
                         startTjVideo();
@@ -746,7 +746,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         vodPlayer.pause();
                     }
                 } else {
-                    startPlay(true);
+                    if (!AppApplication.get().isShowTopMenu()) {
+                        startPlay(true);
+                    }
                 }
 
 

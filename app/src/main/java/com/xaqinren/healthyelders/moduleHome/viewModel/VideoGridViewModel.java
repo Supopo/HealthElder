@@ -21,13 +21,12 @@ public class VideoGridViewModel extends BaseViewModel {
 
 
     public MutableLiveData<List<VideoInfo>> datas = new MutableLiveData<>();
-    public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
     public MutableLiveData<ResBean> dzSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
 
 
     public void getVideoData(int page, String tags) {
-        LiveRepository.getInstance().getHomeVideoList(closeRsl, page, 6, 2, tags, datas);
+        LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 6, 2, tags, datas);
     }
 
     public void toLikeVideo(String videoId, boolean isLike, int position) {

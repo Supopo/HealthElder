@@ -91,7 +91,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
             public void onRefresh() {
                 mLoadMore.setEnableLoadMore(false);
                 page = 1;
-                showLoadView();
+                showDialog();
                 viewModel.getVideoData(page, tags);
                 binding.srlContent.setRefreshing(false);
             }
@@ -169,6 +169,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                 startActivity(intent);
             }
         }));
+        showDialog();
     }
 
     @Override
@@ -196,7 +197,6 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         });
 
         viewModel.datas.observe(this, dataList -> {
-            closeLoadView();
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成
@@ -218,16 +218,6 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                 }
             }
         });
-    }
-
-    private void showLoadView() {
-        binding.loadView.playAnimation();
-        binding.loadView.setVisibility(View.VISIBLE);
-    }
-
-    private void closeLoadView() {
-        binding.loadView.cancelAnimation();
-        binding.loadView.setVisibility(View.GONE);
     }
 
     @Override
