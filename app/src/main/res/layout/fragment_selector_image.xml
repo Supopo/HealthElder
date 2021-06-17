@@ -14,22 +14,20 @@
             android:id="@+id/image_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/bottom_layout"
             />
         <RelativeLayout
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_178"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_top_cir_10dp"
             android:layout_alignParentBottom="true">
             <LinearLayout
                 android:id="@+id/layout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_56"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingTop="@dimen/dp_18"
-                android:paddingBottom="@dimen/dp_14">
+                >
                 <TextView
                     android:id="@+id/tv_drag"
                     android:layout_width="wrap_content"
@@ -55,16 +53,10 @@
                 android:id="@+id/menu_list"
                 android:layout_below="@id/layout1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/dp_122"
+                android:visibility="gone"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"/>
         </RelativeLayout>
-
-        <!--<com.tencent.qcloud.ugckit.module.picker.view.PickedLayout
-            android:id="@+id/choose_pick_layout"
-            android:layout_width="match_parent"
-            android:layout_height="146dp"
-            android:background="@drawable/ugckit_ic_choose_bottom_bg_sel"
-            android:layout_alignParentBottom="true"/>-->
     </RelativeLayout>
 </layout>

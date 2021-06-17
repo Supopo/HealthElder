@@ -81,10 +81,15 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         selList = new ArrayList<>();
         loadPictureList();
         adapter = new SelPictureAdapter(R.layout.item_sel_picture);
+        View footer = View.inflate(getContext(), R.layout.header_empty_148dp, null);
+        View viewById = footer.findViewById(R.id.view);
+        ViewGroup.LayoutParams layoutParams = viewById.getLayoutParams();
+        layoutParams.height = (int) getResources().getDimension(R.dimen.dp_178);
+        viewById.setLayoutParams(layoutParams);
         binding.imageList.setLayoutManager(new GridLayoutManager(getContext(), 4));
         binding.imageList.addItemDecoration(new GridDividerItemDecoration(ConvertUtils.dp2px(2), getResources().getColor(R.color.transparent)));
         binding.imageList.setAdapter(adapter);
-
+        adapter.addFooterView(footer);
         adapter.setOnItemClickListener((adapter, view, position) -> {
             TCVideoFileInfo info = list.get(position);
             info.setSelected(!info.isSelected());
@@ -92,6 +97,7 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
                 //更改序列号
                 info.setCurrentPosition(selList.size() + 1);
                 menuAdapter.addItem(info);
+                setMenuVisible();
             }else{
                 int index = selList.indexOf(info);
                 for (int i = index + 1; i < selList.size(); i++) {
@@ -99,6 +105,7 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
                     selList.get(i).setCurrentPosition(currentPosition - 1);
                 }
                 menuAdapter.removeIndex(index);
+                setMenuVisible();
             }
             adapter.notifyDataSetChanged();
             if (selList.size() >= mMinSelectedItemCount) {
@@ -118,6 +125,14 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
                 startPictureJoinActivity(selList);
             }
         });
+    }
+
+    private void setMenuVisible() {
+        if (menuAdapter.getAll().isEmpty()) {
+            binding.menuList.setVisibility(View.GONE);
+        }else{
+            binding.menuList.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -188,6 +203,7 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         if (menuAdapter.getItemCount() < mMinSelectedItemCount) {
             binding.btnNext.setEnabled(false);
         }
+        setMenuVisible();
     }
 
     @Override
