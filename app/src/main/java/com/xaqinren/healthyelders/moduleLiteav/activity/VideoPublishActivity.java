@@ -519,7 +519,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
                 MusicRecode.getInstance().setUseMusicItem(null);
                 clearDrafts();
-                startActivity(MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
+                startActivity(MainActivity.class, bundle);
             }else{
                 //发布失败
                 LogUtils.e(TAG,"发布视频失败");
@@ -838,7 +840,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
         ToastUtils.showShort("保存成功");
-        startActivity(MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
+        startActivity(MainActivity.class, bundle);
         finish();
     }
 

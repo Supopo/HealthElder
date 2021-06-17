@@ -157,7 +157,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         return com.xaqinren.healthyelders.BR.viewModel;
     }
 
-
     @Override
     public void initData() {
         SPUtils.getInstance().put(Constant.PAY_WAY, "uni");
@@ -247,6 +246,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        boolean booleanExtra = intent.getBooleanExtra(Constant.PUBLISH_SUCCESS, false);
+        if (booleanExtra) {
+            binding.rlMenu4.performClick();
+        }
         getCacheUserInfo();
     }
 

@@ -478,7 +478,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         viewModel.publishLiveData.observe(this,s -> {
             ToastUtils.showShort(s);
             if (s.equals("发布成功")) {
-                startActivity(MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
+                startActivity(MainActivity.class, bundle);
                 finish();
             }
         });
@@ -798,7 +800,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         viewModel.saveDraftsById(this, fileName, saveDraftBean);
 
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
-        startActivity(MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
+        startActivity(MainActivity.class, bundle);
         finish();
     }
 
