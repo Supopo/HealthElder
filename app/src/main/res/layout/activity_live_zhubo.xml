@@ -247,7 +247,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/lv_msg"
-                android:layout_marginBottom="@dimen/dp_70"
+                android:layout_marginBottom="@dimen/dp_21"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -314,6 +314,92 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tv_gift_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_23"
+                            android:textStyle="italic|bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_gift2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/lv_msg"
+                android:layout_marginBottom="@dimen/dp_75"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/ll_send_gift2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_46"
+                    android:layout_marginLeft="@dimen/dp_15"
+                    android:background="@drawable/bg_gift_msg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                        android:id="@+id/iv_user_head_pic2"
+                        android:layout_width="@dimen/dp_32"
+                        android:layout_height="@dimen/dp_32"
+                        android:layout_marginLeft="@dimen/dp_7"
+                        android:src="@color/pageColor"
+                        app:qmui_is_circle="true" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_audience_name2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:maxLength="5"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_14" />
+
+                        <TextView
+                            android:id="@+id/tv_gift_name2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/color_E6"
+                            android:textSize="@dimen/sp_10" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_gift2"
+                        android:layout_width="@dimen/dp_38"
+                        android:layout_height="@dimen/dp_38"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:scaleType="centerInside" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_13"
+                        android:layout_marginRight="@dimen/dp_20"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="x"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_19"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:paddingRight="@dimen/dp_3"
+                            android:id="@+id/tv_gift_num2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1"

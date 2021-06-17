@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tencent.rtmp.ui.TXCloudVideoView
+            android:id="@+id/mainVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/btn_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="加载" />
+        <Button
+            android:id="@+id/btn_play2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="加载2" />
+
+
+    </RelativeLayout>
+</layout>

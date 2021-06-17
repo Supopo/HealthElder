@@ -74,6 +74,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
@@ -147,8 +148,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private Integer linkerPos;//当前上麦者所在位置
     private Dialog moreLinkSettingDialog;
     private ZBSettingBean zbSettingBean;
-    private Timer giftContentTimer;
-    private TimerTask giftContentTask;
     private SVGAImageView svgaImageView;
     private SVGAParser svgaParser;
     private int screenWidth;
@@ -990,9 +989,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
                 sendGiftBean.sendUserName = userName;
                 sendGiftBean.sendUserPhoto = userAvatar;
-                //存礼物消息
-                sendGiftBeans.add(sendGiftBean);
-                loadSvga();
+
+                loadGiftAnimBanner(sendGiftBean);
 
                 break;
             default:
@@ -1000,66 +998,255 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
     }
 
-    private boolean isLoading;//是否在加载动画
-    private List<SendGiftBean> sendGiftBeans = new ArrayList<>();
 
-    private void loadSvga() {
-        if (isLoading) {
-            return;
-        }
-
-
-        SendGiftBean sendGiftBean;
-        if (sendGiftBeans.size() > 0) {
-            sendGiftBean = sendGiftBeans.get(0);
+    private void loadGiftAnimBanner(SendGiftBean sendGiftBean) {
+        //存礼物消息
+        if (!isAnimLoading) {
+            giftsAnimList.add(0, sendGiftBean);
+            loadSvga();
         } else {
+            giftsAnimList.add(1, sendGiftBean);
+        }
+
+        //判断展示的banner里面有没有，若有则叠加
+        if (isBanner1Showing && sendGiftBean1 != null) {
+            if (sendGiftBean1.id.equals(sendGiftBean.id)) {
+                sendGiftBean1.num = sendGiftBean1.num + 1;
+                showBanner1();
+                return;
+            }
+        } else if (isBanner2Showing && sendGiftBean2 != null) {
+            if (sendGiftBean2.id.equals(sendGiftBean.id)) {
+                sendGiftBean2.num = sendGiftBean2.num + 1;
+                showBanner2();
+                return;
+            }
+        }
+
+
+        if (isBanner1Showing && isBanner2Showing) {
+            giftsBannersList.add(1, sendGiftBean);
+        } else if (!isBanner1Showing) {
+            giftsBannersList.add(0, sendGiftBean);
+            loadBanner();
+        } else if (!isBanner2Showing) {
+            giftsBannersList2.add(0, sendGiftBean);
+            loadBanner();
+        }
+    }
+
+    //礼物相关操作
+    private boolean isBanner1Showing;//是否在横幅
+    private boolean isBanner2Showing;//是否在横幅
+    private boolean isAnimLoading;//是否在加载动画
+    private List<SendGiftBean> giftsAnimList = new ArrayList<>();
+    private List<SendGiftBean> giftsBannersList = new ArrayList<>();
+    private List<SendGiftBean> giftsBannersList2 = new ArrayList<>();
+    private SendGiftBean sendGiftBean1;
+    private SendGiftBean sendGiftBean2;
+    private Animation goneAnim1;
+    private Animation showAnim1;
+    private Animation goneAnim2;
+    private Animation showAnim2;
+    private TimerTask giftContentTask;
+    private TimerTask giftContentTask2;
+    private Timer giftContentTimer;
+    private Timer giftContentTimer2;
+    //加载横幅
+    private void loadBanner() {
+        if ((isBanner1Showing && isBanner2Showing)) {
             return;
         }
 
-        binding.rlGift.setVisibility(View.VISIBLE);
-        Glide.with(this).load(sendGiftBean.sendUserPhoto).into(binding.ivUserHeadPic);
-        Glide.with(this).load(sendGiftBean.giftsIcon).into(binding.ivGift);
-        binding.tvAudienceName.setText(sendGiftBean.sendUserName);
-        binding.tvGiftName.setText("送" + sendGiftBean.giftsName);
 
+        if (!isBanner1Showing) {
+            if (giftsBannersList.size() == 0) {
+                return;
+            }
+
+            sendGiftBean1 = giftsBannersList.get(0);
+            showBanner1();
+        } else {
+            if (giftsBannersList2.size() == 0) {
+                return;
+            }
+            sendGiftBean2 = giftsBannersList2.get(0);
+
+            showBanner2();
+        }
+
+
+    }
+
+    private void showBanner2() {
+        if (binding.rlGift2.getVisibility() == View.GONE) {
+            showAnim2 = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.anim_slice_in_left);
+            binding.rlGift2.setVisibility(View.VISIBLE);
+            Glide.with(LiveZhuboActivity.this).load(sendGiftBean2.sendUserPhoto).into(binding.ivUserHeadPic2);
+            Glide.with(LiveZhuboActivity.this).load(sendGiftBean2.giftsIcon).into(binding.ivGift2);
+            binding.tvAudienceName2.setText(sendGiftBean2.sendUserName);
+            binding.tvGiftName2.setText("送" + sendGiftBean2.giftsName);
+            binding.rlGift2.clearAnimation();
+            binding.rlGift2.setAnimation(showAnim2);
+            binding.tvGiftNum2.setText("" + sendGiftBean2.num);
+        } else {
+            Animation bigAnim = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.zbj_gift_num);
+            binding.tvGiftNum2.clearAnimation();
+            binding.tvGiftNum2.setAnimation(bigAnim);
+        }
+
+        binding.tvGiftNum2.setText("" + sendGiftBean2.num);
+
+        //礼物消息横幅3S结束
+        if (giftContentTimer2 != null) {
+            giftContentTimer2.cancel();
+            giftContentTimer2.purge();
+        }
+        giftContentTimer2 = new Timer();
+
+        if (giftContentTask2 != null) {
+            giftContentTask2.cancel();
+        }
+
+
+        giftContentTask2 = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        goneAnim2 = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.anim_slice_out_left);
+                        binding.rlGift2.clearAnimation();
+                        binding.rlGift2.setAnimation(goneAnim2);
+                        goneAnim2.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                binding.rlGift2.setVisibility(View.GONE);
+                                if (giftsBannersList2.size() > 0) {
+                                    giftsBannersList2.remove(0);
+                                }
+                                isBanner2Showing = false;
+                                sendGiftBean2 = null;
+                                giftContentTask2.cancel();
+                                giftContentTimer2.cancel();
+                                giftContentTimer2.purge();
+                                giftContentTimer2 = null;
+
+
+                                loadBanner();
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+                    }
+                });
+
+            }
+        };
+        isBanner2Showing = true;
+        giftContentTimer2.schedule(giftContentTask2, 4000);//3秒后关闭
+    }
+
+    private void showBanner1() {
+        //送礼横幅
+        if (binding.rlGift.getVisibility() == View.GONE) {
+            showAnim1 = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.anim_slice_in_left);
+            binding.rlGift.setVisibility(View.VISIBLE);
+            Glide.with(LiveZhuboActivity.this).load(sendGiftBean1.sendUserPhoto).into(binding.ivUserHeadPic);
+            Glide.with(LiveZhuboActivity.this).load(sendGiftBean1.giftsIcon).into(binding.ivGift);
+            binding.tvAudienceName.setText(sendGiftBean1.sendUserName);
+            binding.tvGiftName.setText("送" + sendGiftBean1.giftsName);
+
+            binding.rlGift.clearAnimation();
+            binding.rlGift.setAnimation(showAnim1);
+        } else {
+            Animation bigAnim = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.zbj_gift_num);
+            binding.tvGiftNum.clearAnimation();
+            binding.tvGiftNum.setAnimation(bigAnim);
+        }
+        binding.tvGiftNum.setText("" + sendGiftBean1.num);
+
+
+        //礼物消息横幅3S结束
+        if (giftContentTimer != null) {
+            giftContentTimer.cancel();
+            giftContentTimer.purge();
+        }
+        giftContentTimer = new Timer();
+
+        if (giftContentTask != null) {
+            giftContentTask.cancel();
+        }
+
+        giftContentTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        goneAnim1 = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.anim_slice_out_left);
+                        binding.rlGift.clearAnimation();
+                        binding.rlGift.setAnimation(goneAnim1);
+                        goneAnim1.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                binding.rlGift.setVisibility(View.GONE);
+                                if (giftsBannersList.size() > 0) {
+                                    giftsBannersList.remove(0);
+                                }
+                                isBanner1Showing = false;
+                                sendGiftBean1 = null;
+                                giftContentTask.cancel();
+                                giftContentTimer.cancel();
+                                giftContentTimer.purge();
+                                giftContentTimer = null;
+
+                                loadBanner();
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+
+                    }
+                });
+
+            }
+        };
+        isBanner1Showing = true;
+        giftContentTimer.schedule(giftContentTask, 4000);//3秒后关闭
+    }
+
+    //加载动画
+    private void loadSvga() {
+        if (isAnimLoading || giftsAnimList.size() == 0) {
+            return;
+        }
+
+        SendGiftBean sendGiftBean = giftsAnimList.get(0);
 
         if (sendGiftBean.hasAnimation.equals("1")) {
             //没有播放的时候去播放
             showGiftAnim(sendGiftBean.svgaUrl);
-        } else {
-            isLoading = true;
-            //礼物消息横幅3S结束
-            if (giftContentTimer == null) {
-                giftContentTimer = new Timer();
-            }
-
-            //初始化之前，一定要先将task取消，再重新创建
-            if (giftContentTask != null) {
-                giftContentTask.cancel();
-            }
-
-            giftContentTask = new TimerTask() {
-                @Override
-                public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            isLoading = false;
-                            binding.rlGift.setVisibility(View.GONE);
-                            if (sendGiftBeans.size() > 0) {
-                                sendGiftBeans.remove(0);
-                            }
-                            giftContentTask.cancel();
-                            giftContentTimer.cancel();
-                            giftContentTimer = null;
-                            loadSvga();
-                        }
-                    });
-
-                }
-            };
-
-            giftContentTimer.schedule(giftContentTask, 4000);//3秒后关闭
         }
 
     }
@@ -1095,7 +1282,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
                     svgaImageView.setVideoItem(videoItem);
                     svgaImageView.startAnimation();
-                    isLoading = true;
+                    isAnimLoading = true;
                 }
 
                 @Override
@@ -1116,12 +1303,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             @Override
             public void onFinished() {
-                isLoading = false;
+                isAnimLoading = false;
                 //动画结束
-                binding.rlGift.setVisibility(View.GONE);
-                //将展示完的动画清除
-                if (sendGiftBeans.size() > 0) {
-                    sendGiftBeans.remove(0);
+                if (giftsAnimList.size() > 0) {
+                    giftsAnimList.remove(0);
                 }
                 loadSvga();
             }

@@ -45,9 +45,10 @@
                 android:textColor="@color/gray_999"/>
 
             <ImageView
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
-                android:src="@mipmap/icon_advance"
+                android:layout_marginTop="@dimen/dp_1"
+                android:layout_width="@dimen/dp_13"
+                android:layout_height="@dimen/dp_13"
+                android:background="@mipmap/icon_advance"
                 android:visibility="@{viewModel.hasMore ? View.VISIBLE : View.INVISIBLE}"/>
         </LinearLayout>
 

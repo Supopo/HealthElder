@@ -1,11 +1,13 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
 public class SendGiftBean {
+    public String userId;
     public String giftsIcon;
     public String giftsName;
     public String svgaUrl;
     public String id;
     public String hasAnimation;
+    public int num = 1;
 
 
     public String sendUserName;
