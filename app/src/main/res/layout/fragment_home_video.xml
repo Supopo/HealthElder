@@ -85,7 +85,6 @@
 
                     <com.qmuiteam.qmui.widget.QMUIRadiusImageView
                         android:id="@+id/avatarImageView"
-                        style="@style/ImageView.Wrap"
                         android:layout_width="@dimen/dp_50"
                         android:layout_height="@dimen/dp_50"
                         app:qmui_border_color="@color/white"
