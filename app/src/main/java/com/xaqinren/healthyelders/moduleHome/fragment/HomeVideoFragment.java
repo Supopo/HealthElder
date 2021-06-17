@@ -277,7 +277,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
         if (videoInfo.getVideoType() == 1) {
             vodPlayer.setRenderMode(isHP ? TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION : TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
-        }else {
+        } else {
             vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
         }
         //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
@@ -526,15 +526,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
     }
 
+    //判断自己账号隐藏关注
     private void showFollow() {
-
 
         Boolean aBoolean = AppApplication.get().followList.get(videoInfo.userId);
         if (aBoolean != null) {
             videoInfo.hasAttention = aBoolean;
         }
 
-        if (videoInfo.hasAttention) {
+        if (!videoInfo.showFollow()) {
             binding.followImageView.setVisibility(View.GONE);
         } else {
             binding.followImageView.setVisibility(View.VISIBLE);
@@ -725,9 +725,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (binding.rlView.getVisibility() == View.GONE) {
             binding.rlView.setVisibility(View.VISIBLE);
         }
-
+        if (videoInfo.getVideoType() == 2) {
+            zbingAnim.start();
+        }
         vodPlayer.setAutoPlay(b);
         vodPlayer.startPlay(videoInfo.resourceUrl);
+        LogUtils.v(Constant.TAG_LIVE, "---------------------startPlay" + position);
     }
 
     private void pausePlay() {
@@ -735,6 +738,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.pause();
         }
+        LogUtils.v(Constant.TAG_LIVE, "---------------------pausePlay" + position);
     }
 
     private void resumePlay() {
@@ -759,6 +763,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         }
 
+        LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay" + position);
 
     }
 
@@ -777,6 +782,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (vodPlayer != null) {
             vodPlayer.stopPlay(clearLastFrame);
         }
+
+        LogUtils.v(Constant.TAG_LIVE, "---------------------stopPlay" + position);
 
     }
 
@@ -859,15 +866,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //param.getInt(TXLiveConstants.EVT_PARAM1); //视频宽度
             //param.getInt(TXLiveConstants.EVT_PARAM2); //视频高度
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 收到首帧数据，越快收到此消息说明链路质量越好
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RCV_FIRST_I_FRAME");
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
+            showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
         } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RTMP_STREAM_BEGIN");
-            showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
-            showStartLayout();
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
+            showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_PROGRESS) {//视频播放进度，会通知当前进度和总体进度，仅在点播时有效
             //第一次播放时候先会出现进度不会先走PLAY_EVT_PLAY_BEGIN
             //EVT_PLAY_DURATION 总时间  EVT_PLAY_PROGRESS 当前进度
@@ -882,6 +890,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
             resumePlay();
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_ERR_NET_DISCONNECT");
         }
     }
 
