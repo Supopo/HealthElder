@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,6 +125,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         }));
 
         initHead();
+        showDialog();
     }
 
     private boolean hasHead;
@@ -189,7 +191,12 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         searchAllViewModel.dismissDialog.observe(this, disDialog -> {
             if (disDialog != null && disDialog) {
-                dismissDialog();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissDialog();
+                    }
+                }, 3000);
             }
         });
 
@@ -213,6 +220,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         searchAllViewModel.allDatas.observe(this, dataList -> {
             if (dataList != null) {
+                dismissDialog();
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();

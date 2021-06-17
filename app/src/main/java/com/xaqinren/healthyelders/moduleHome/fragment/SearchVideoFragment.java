@@ -25,6 +25,8 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,8 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         super.initData();
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
-        mAdapter = new SearchVideoAdapter(R.layout.item_search_video);
+        initAdapter();
+
         //瀑布流
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         //防止Item切换
@@ -69,22 +72,6 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
-
-        binding.rvContent.setAdapter(mAdapter);
-
-        mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
-        mLoadMore.setEnableLoadMore(true);//打开上拉加载
-        mLoadMore.setAutoLoadMore(true);//自动加载
-        mLoadMore.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
-        mLoadMore.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
-        mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
-            @Override
-            public void onLoadMore() {
-                binding.srlContent.setRefreshing(false);
-                page++;
-                searchAllViewModel.searchDatas(page, 1);
-            }
-        });
 
         binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -109,6 +96,26 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
                 searchAllViewModel.toLike(1, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
             }
         }));
+    }
+
+    private void initAdapter() {
+        mAdapter = new SearchVideoAdapter(R.layout.item_search_video);
+        binding.rvContent.setAdapter(mAdapter);
+
+        mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
+        mLoadMore.setEnableLoadMore(true);//打开上拉加载
+        mLoadMore.setAutoLoadMore(true);//自动加载
+        mLoadMore.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
+        mLoadMore.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
+        mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
+            @Override
+            public void onLoadMore() {
+                binding.srlContent.setRefreshing(false);
+                page++;
+                searchAllViewModel.searchDatas(page, 1);
+            }
+        });
+
     }
 
     private void toVideoList(List<VideoInfo> tempList) {
@@ -144,7 +151,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
                 } else {
                     mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() - 1);
                 }
-                mAdapter.notifyItemChanged(dzSuccess.position , 99);
+                mAdapter.notifyItemChanged(dzSuccess.position, 99);
             }
         });
 
@@ -155,6 +162,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
+                    initAdapter();
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
                     mAdapter.setList(dataList);
                     if (dataList.size() == 0) {
