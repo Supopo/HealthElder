@@ -31,7 +31,6 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
-import com.xaqinren.healthyelders.moduleHome.activity.TestActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
