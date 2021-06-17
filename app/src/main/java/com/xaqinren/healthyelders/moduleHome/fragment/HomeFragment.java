@@ -31,6 +31,7 @@ import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
+import com.xaqinren.healthyelders.moduleHome.activity.TestActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.HomeVP2Adapter;
@@ -113,7 +114,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //回到推荐页面
                         binding.tabLayout.setCurrentTab(0, false);
                         //刷新推荐
-                        //TODO 暂时去掉会引发点击菜单失败
                         tjFragment.refreshData();
 
                         //隐藏视频播放视图层

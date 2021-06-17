@@ -45,7 +45,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     @Override
     public void initData() {
         super.initData();
-        tvTitle.setText("手机号登陆");
+        tvTitle.setText("");
         initEvent();
     }
 

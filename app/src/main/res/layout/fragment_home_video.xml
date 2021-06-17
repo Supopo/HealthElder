@@ -33,11 +33,12 @@
             android:layout_alignParentBottom="true" />
 
         <ImageView
+            android:visibility="gone"
             android:background="@mipmap/bg_video"
             android:id="@+id/coverImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            />
 
         <RelativeLayout
             android:id="@+id/rlView"

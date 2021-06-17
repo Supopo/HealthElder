@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,8 +28,11 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
+import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
+import com.tencent.rtmp.TXLivePlayConfig;
+import com.tencent.rtmp.TXLivePlayer;
 import com.tencent.rtmp.TXVodPlayConfig;
 import com.tencent.rtmp.TXVodPlayer;
 import com.xaqinren.healthyelders.BR;
@@ -69,7 +71,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  * Created by Lee. on 2021/5/13.
  * 视频播放Fragment
  */
-public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, HomeVideoModel> implements ITXVodPlayListener, TelephonyUtil.OnTelephoneListener {
+public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, HomeVideoModel> implements TelephonyUtil.OnTelephoneListener, ITXLivePlayListener, ITXVodPlayListener {
     private VideoInfo videoInfo;
     private int position;
     private String type;//区分是从哪里进来的
@@ -79,7 +81,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private Animation avatarAnim;//头像放大缩小动画
     private AnimationDrawable avatarBgAnim;//头像背景圈动画
     private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
-    private boolean isPlaying;//判断播放状态
+    private boolean noPlayPause;//判断播放状态
     private boolean hasPlaying;//是否已经开始了 因为视频播放第一次播放只走进度，滑动后播放先走开始回调
     private AnimationDrawable avatarAddAnim;
     private AnimationDrawable zbingAnim;
@@ -89,6 +91,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private String TAG = getClass().getSimpleName();
     private Disposable commentDisposable;
     private boolean editTextOpen;//判断是否打开了EditTextActivity
+    private TXLivePlayConfig mPlayerConfig;
+    private TXLivePlayer mLivePlayer;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
@@ -173,6 +177,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
             Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
+            binding.coverImageView.setVisibility(View.VISIBLE);
         }
 
         if (videoInfo.resourceType.equals("VIDEO")) {
@@ -218,13 +223,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 binding.rlAvatar.startAnimation(avatarAnim);
             }
 
+            initVideo();
         } else if (videoInfo.resourceType.equals("LIVE")) {
             zbingAnim = (AnimationDrawable) binding.ivZBing.getBackground();
+            initLive();
         }
 
-        initVideo();
     }
-
 
     private void createObjAnim() {
         state = STATE_STOP;
@@ -275,11 +280,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer = new TXVodPlayer(getActivity());
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
         //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
-        if (videoInfo.getVideoType() == 1) {
-            vodPlayer.setRenderMode(isHP ? TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION : TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
-        } else {
-            vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
-        }
+        vodPlayer.setRenderMode(isHP ? TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION : TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+
         //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
         //RENDER_ROTATION_LANDSCAPE 画面顺时针旋转 270 度（Home 键在画面正左方）
         vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
@@ -294,6 +296,35 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer.setConfig(config);
         vodPlayer.setPlayerView(binding.mainVideoView);
         startPlay(false);
+    }
+
+    public static final float CACHE_TIME_FAST = 1.0f;
+    public static final float CACHE_TIME_SMOOTH = 5.0f;
+
+    private void initLive() {
+        binding.mainVideoView.showLog(false);
+        mPlayerConfig = new TXLivePlayConfig();
+        mLivePlayer = new TXLivePlayer(getActivity());
+        mPlayerConfig.setAutoAdjustCacheTime(true);
+        mPlayerConfig.setMinAutoAdjustCacheTime(CACHE_TIME_FAST);
+        mPlayerConfig.setMaxAutoAdjustCacheTime(CACHE_TIME_FAST);
+        //        //缓存设置
+        //        File sdcardDir = getActivity().getExternalFilesDir(null);
+        //        if (sdcardDir != null) {
+        //            mPlayerConfig.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/JKZLcache");
+        //        }
+        //        mPlayerConfig.setMaxCacheItems(4);
+
+        mLivePlayer.setConfig(mPlayerConfig);
+
+
+        mLivePlayer.setPlayerView(binding.mainVideoView);
+        mLivePlayer.setPlayListener(this);
+
+        mLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+        mLivePlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
+        mPlayerConfig.setEnableMessage(true);
+        mLivePlayer.setConfig(mPlayerConfig);
     }
 
     private void showLoading() {
@@ -543,8 +574,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
 
     private void dismissLoading() {
-        binding.loadingView.cancelAnimation();
-        binding.loadingView.setVisibility(View.GONE);
+        if (binding.loadingView.isAnimating() || binding.loadingView.getVisibility() == View.VISIBLE) {
+            binding.loadingView.cancelAnimation();
+            binding.loadingView.setVisibility(View.GONE);
+        }
     }
 
 
@@ -635,24 +668,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     };
 
-    private void clickPauseVideo() {
-        //单击暂停
-        if (videoInfo.getVideoType() == 1) {
-            if (hasPlaying) {
-                isPlaying = !isPlaying;
-                if (isPlaying) {
-                    vodPlayer.resume();
-                    binding.playImageView.setVisibility(View.GONE);
-                } else {
-                    vodPlayer.pause();
-                    binding.playImageView.setVisibility(View.VISIBLE);
-                }
-                playMusicAnim();
-            }
-        }
-
-    }
-
     //双击点赞
     private double before_press_Y;
     private double before_press_X;
@@ -727,39 +742,75 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
         if (videoInfo.getVideoType() == 2) {
             zbingAnim.start();
+            if (mLivePlayer != null) {
+                mLivePlayer.startPlay(videoInfo.resourceUrl, TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
+            }
+        } else {
+            if (vodPlayer != null) {
+                vodPlayer.setAutoPlay(b);
+                vodPlayer.startPlay(videoInfo.resourceUrl);
+            }
+
         }
-        vodPlayer.setAutoPlay(b);
-        vodPlayer.startPlay(videoInfo.resourceUrl);
+
         LogUtils.v(Constant.TAG_LIVE, "---------------------startPlay" + position);
+    }
+
+    private void clickPauseVideo() {
+        //单击暂停
+        if (videoInfo.getVideoType() == 1) {
+            if (hasPlaying) {
+                noPlayPause = !noPlayPause;
+                if (noPlayPause) {
+                    vodPlayer.resume();
+                    binding.playImageView.setVisibility(View.GONE);
+                } else {
+                    vodPlayer.pause();
+                    binding.playImageView.setVisibility(View.VISIBLE);
+                }
+                playMusicAnim();
+            }
+        }
+
     }
 
     private void pausePlay() {
         binding.mainVideoView.onPause();
-        if (vodPlayer != null) {
-            vodPlayer.pause();
-        }
+
+            if (videoInfo.getVideoType() == 2) {
+                if (mLivePlayer != null) {
+                    mLivePlayer.pause();
+                }
+            } else {
+                if (vodPlayer != null) {
+                    vodPlayer.pause();
+                }
+            }
         LogUtils.v(Constant.TAG_LIVE, "---------------------pausePlay" + position);
     }
 
     private void resumePlay() {
         if (AppApplication.get().bottomMenu == 0) {
             binding.mainVideoView.onResume();
-            if (vodPlayer != null) {
-                //是否开启播放状态
-                if (hasPlaying) {
-                    //判断之前是不暂停状态
-                    if (isPlaying) {
-                        vodPlayer.resume();
+
+            //是否开启播放状态
+            if (hasPlaying) {
+                //判断之前不是暂停状态
+                if (noPlayPause) {
+                    if (videoInfo.getVideoType() == 2) {
+                        if (mLivePlayer != null) {
+                            mLivePlayer.resume();
+                        }
                     } else {
-                        vodPlayer.pause();
-                    }
-                } else {
-                    if (!AppApplication.get().isShowTopMenu()) {
-                        startPlay(true);
+                        if (vodPlayer != null) {
+                            vodPlayer.resume();
+                        }
                     }
                 }
-
-
+            } else {
+                if (!AppApplication.get().isShowTopMenu()) {
+                    startPlay(true);
+                }
             }
         }
 
@@ -768,20 +819,27 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void stopPlay(boolean clearLastFrame) {
-        if (videoInfo.getVideoType() == 1) {
-            stopMusicAnim();
-        } else {
+        if (videoInfo.getVideoType() == 2) {
             if (zbingAnim != null) {
                 zbingAnim.stop();
             }
+            if (mLivePlayer != null) {
+                mLivePlayer.stopPlay(false);
+            }
+        } else {
+            stopMusicAnim();
+            binding.playImageView.setVisibility(View.GONE);
+
+            if (vodPlayer != null) {
+                vodPlayer.stopPlay(clearLastFrame);
+            }
         }
+
+
         binding.coverImageView.setVisibility(View.VISIBLE);//--展示
         hasPlaying = false;
-        isPlaying = false;
-        binding.playImageView.setVisibility(View.GONE);
-        if (vodPlayer != null) {
-            vodPlayer.stopPlay(clearLastFrame);
-        }
+        noPlayPause = false;
+
 
         LogUtils.v(Constant.TAG_LIVE, "---------------------stopPlay" + position);
 
@@ -860,6 +918,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         handler.removeCallbacksAndMessages(null);
     }
 
+    //视频播放器
     @Override
     public void onPlayEvent(TXVodPlayer txVodPlayer, int event, Bundle param) {
         if (event == TXLiveConstants.PLAY_EVT_CHANGE_RESOLUTION) {
@@ -869,10 +928,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RCV_FIRST_I_FRAME");
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
-            showStartLayout();
+            dismissLoading();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
-        } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RTMP_STREAM_BEGIN");
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
             showStartLayout();
@@ -892,6 +949,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_ERR_NET_DISCONNECT");
         }
+
     }
 
     private void showStartLayout() {
@@ -903,8 +961,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         binding.coverImageView.setVisibility(View.GONE);
 
         dismissLoading();
-
-
         if (videoInfo.getVideoType() == 1) {
             //开启音乐Icon动画
             if (musicRotateAnim != null) {
@@ -914,7 +970,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             zbingAnim.start();
         }
         hasPlaying = true;
-        isPlaying = true;
+        noPlayPause = true;
     }
 
     @Override
@@ -924,22 +980,71 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     @Override
     public void onRinging() {
-        if (vodPlayer != null) {
-            vodPlayer.setMute(true);
+        if (videoInfo.getVideoType() == 2) {
+            if (mLivePlayer != null) {
+                mLivePlayer.setMute(true);
+            }
+        } else {
+            if (vodPlayer != null) {
+                vodPlayer.setMute(true);
+            }
         }
+
+
     }
 
     @Override
     public void onOffhook() {
-        if (vodPlayer != null) {
-            vodPlayer.setMute(true);
+        if (videoInfo.getVideoType() == 2) {
+            if (mLivePlayer != null) {
+                mLivePlayer.setMute(true);
+            }
+        } else {
+            if (vodPlayer != null) {
+                vodPlayer.setMute(true);
+            }
         }
     }
 
     @Override
     public void onIdle() {
-        if (vodPlayer != null) {
-            vodPlayer.setMute(false);
+        if (videoInfo.getVideoType() == 2) {
+            if (mLivePlayer != null) {
+                mLivePlayer.setMute(false);
+            }
+        } else {
+            if (vodPlayer != null) {
+                vodPlayer.setMute(false);
+            }
         }
+    }
+
+    //直播播放器
+    @Override
+    public void onPlayEvent(int event, Bundle param) {
+        if (event == TXLiveConstants.PLAY_EVT_CHANGE_RESOLUTION) {
+            //param.getInt(TXLiveConstants.EVT_PARAM1); //视频宽度
+            //param.getInt(TXLiveConstants.EVT_PARAM2); //视频高度
+        } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 收到首帧数据，越快收到此消息说明链路质量越好
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RCV_FIRST_I_FRAME");
+        } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
+            showStartLayout();
+        } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RTMP_STREAM_BEGIN");
+            showStartLayout();
+        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
+            showStartLayout();
+        } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
+            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_ERR_NET_DISCONNECT");
+        }
+        LogUtils.v(Constant.TAG_LIVE, type + position + "XXXXXXXXXXXXXXXX" + event);
+
+    }
+
+    @Override
+    public void onNetStatus(Bundle bundle) {
+
     }
 }
