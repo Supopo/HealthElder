@@ -56,6 +56,7 @@ import com.tencent.ugc.TXUGCRecord;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseMusicActivity;
 import com.xaqinren.healthyelders.moduleLiteav.activity.VideoEditerActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
@@ -109,7 +110,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
      * 拍照完成后,停留界面,点击返回键要重回拍照效果
      */
     private boolean holderScreen = false;
-
+    private boolean isStartMusicActivity;
 
 
     public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
@@ -516,8 +517,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             @Override
             public void onMoreClick() {
                 mMusicPop.dismiss();
+                isStartMusicActivity = true;
                 MusicRecode.CURRENT_BOURN = com.xaqinren.healthyelders.moduleLiteav.Constant.BOURN_RECODE;
-                startActivity(ChooseMusicActivity.class);
+                Intent intent = new Intent(getActivity(),ChooseMusicActivity.class);
+                getActivity().startActivityForResult(intent, CodeTable.MUSIC_BACK);
+                getActivity().overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
             }
 
             @Override
@@ -800,10 +804,16 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     public void onActivityStop(){
+        if (isStartMusicActivity) {
+            return;
+        }
         liteAvRecode.pauseRecode();
     }
-
+    public void onMusicSelActivityBack() {
+        showMusic();
+    }
     public void onActivityRestart(){
+        isStartMusicActivity = false;
         liteAvRecode.restart();
         VideoRecordSDK instance = VideoRecordSDK.getInstance();
         instance.initSDK();

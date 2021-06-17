@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleLiteav.fragment;
 
+import android.app.Activity;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -144,10 +145,16 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
                     }else{
                         item.isUse = true;
                         MusicRecode.getInstance().setUseMusicItem(item);
-                        if (MusicRecode.CURRENT_BOURN == Constant.BOURN_RECODE)
-                            startActivity(StartLiveActivity.class);
-                        else
-                            startActivity(VideoEditerActivity.class);
+                        /*if (MusicRecode.CURRENT_BOURN == Constant.BOURN_RECODE) {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("music", true);
+                            startActivity(StartLiveActivity.class,bundle);
+                        }else {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("music", true);
+                            startActivity(VideoEditerActivity.class,bundle);
+                        }*/
+                        getActivity().finish();
                     }
                     break;
             }
@@ -189,6 +196,7 @@ public class MusicClassFragment extends BaseFragment<FragmentMusicClassBinding, 
         @Override
         public void onBGMStart() {
             handler.post(() -> {
+                if (operationIndex==-1)return;
                 mMusicItemBeans.get(operationIndex).myMusicStatus = 2;
                 mMusicItemBeans.get(operationIndex).setOperation(true);
                 adapter.notifyItemChanged(operationIndex);

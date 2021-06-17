@@ -222,13 +222,11 @@
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="@dimen/dp_22"
                                         android:background="@drawable/bg_tag"
                                         android:orientation="horizontal"
                                         android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_7"
                                         android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_7"
                                         android:gravity="center_vertical">
 
 
@@ -245,15 +243,16 @@
                                             android:layout_marginRight="@dimen/dp_4"
                                             android:background="@mipmap/zy_male"
                                             android:visibility="@{viewModel.userInfo.isMan()?View.VISIBLE:View.GONE}" />
-                                        <TextView
+                                        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            app:needNoSpace="true"
                                             android:textSize="@dimen/sp_12"
                                             android:text="@{viewModel.userInfo.sexRightText}"
                                             android:visibility="@{viewModel.userInfo.sexRightText == null ? View.GONE : View.VISIBLE}"
-                                            android:includeFontPadding="false"
                                             android:layout_marginRight="@dimen/dp_4"
                                             android:textColor="@color/color_252525"/>
+<!--                                        android:text="@{viewModel.userInfo.sexRightText}"-->
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -261,39 +260,20 @@
                                             android:textSize="@dimen/sp_11"
                                             android:visibility="gone"/>
                                     </LinearLayout>
-
-
-
-                                   <!-- <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:background="@drawable/bg_tag"
-                                        android:layout_marginLeft="@dimen/dp_4"
-                                        android:gravity="center_vertical"
-                                        android:maxLines="1"
-                                        android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_6"
-                                        android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_6"
-                                        android:textSize="@dimen/sp_11"
-                                        android:text="@{viewModel.userInfo.age}"
-                                        android:visibility="@{viewModel.userInfo.age==null?View.GONE:View.VISIBLE}"
-                                        android:textColor="@color/color_252525"
-                                       />-->
                                     <TextView
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="@dimen/dp_22"
                                         android:layout_marginLeft="@dimen/dp_4"
                                         android:background="@drawable/bg_tag"
-                                        android:gravity="center_vertical"
+                                        android:gravity="center"
+                                        app:needNoSpace="true"
                                         android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_6"
                                         android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_6"
                                         android:text="@{viewModel.userInfo.cityAddress}"
                                         android:visibility="@{viewModel.userInfo.cityAddress==null?View.GONE:View.VISIBLE}"
-                                        android:textSize="@dimen/sp_11"
+                                        android:textSize="@dimen/sp_12"
                                         android:textColor="@color/color_252525"/>
+<!--                                    android:text="@{viewModel.userInfo.cityAddress}"-->
                                 </LinearLayout>
 
                                 <View

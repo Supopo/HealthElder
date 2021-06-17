@@ -22,6 +22,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -73,6 +74,7 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoEditerBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.MusicSelDialog;
@@ -84,6 +86,7 @@ import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.List;
 
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.Utils;
 
@@ -143,6 +146,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         }
 
     };
+    private boolean isStartMusicActivity;
 
 
     @Override
@@ -217,6 +221,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CodeTable.MUSIC_BACK) {
+            onMusicSelActivityBack();
+            return;
+        }
         if (requestCode == publish_code) {
             startOnRestart();
         }else
@@ -228,23 +236,26 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         super.onResume();
         mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
         mUGCKitVideoEdit.start();
-
-
     }
 
     @Override
     protected void onPause() {
         mUGCKitVideoEdit.stop();
         mUGCKitVideoEdit.setOnVideoEditListener(null);
+        RecordMusicManager.getInstance().stopPreviewMusic();
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+        //非顶层activity，不处理
+        Activity peek = AppManager.getActivityStack().peek();
+        if (peek.getClass() != this.getClass()) {
+            return;
+        }
         //重回该页，停止预览音乐
         RecordMusicManager.getInstance().stopPreviewMusic();
-
         //重新被打开，由其他页面过来的
         if (MusicRecode.getInstance().getUseMusicItem() != null) {
             MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
@@ -258,8 +269,24 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        boolean music = intent.getBooleanExtra("music", false);
+        if (music) {
+            onMusicSelActivityBack();
+        }
+    }
+
+    private void onMusicSelActivityBack() {
+        if (!isInitEffect)
+            initEffect();
+        isInitEffect = true;
+        showMusicPanel();
     }
 
     private void startOnRestart() {
@@ -680,8 +707,11 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             @Override
             public void onMoreClick() {
                 mMusicPop.dismiss();
+                isStartMusicActivity = true;
                 MusicRecode.CURRENT_BOURN = com.xaqinren.healthyelders.moduleLiteav.Constant.BOURN_EDIT;
-                startActivity(ChooseMusicActivity.class);
+                Intent intent = new Intent(getActivity(),ChooseMusicActivity.class);
+                startActivityForResult(intent, CodeTable.MUSIC_BACK);
+                overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
             }
 
             @Override
@@ -769,5 +799,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
 
     /** 编辑部分 end */
+
+
 
 }

@@ -621,6 +621,14 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, "onPause()");
+        }
+    }
+
     public Activity getActivity() {
         return softActivity.get();
     }

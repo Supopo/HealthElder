@@ -580,6 +580,8 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
+
+
                 MusicInfo musicInfo = new MusicInfo();
                 musicInfo.path = bean.musicUrl;
                 musicInfo.name = bean.name;

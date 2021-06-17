@@ -1,10 +1,13 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -176,15 +179,29 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         }
     }
 
+    boolean isMusicRestart = false;
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        boolean music = intent.getBooleanExtra("music", false);
+        if (music) {
+            if (currentFragmentPosition == 1) {
+                isMusicRestart = true;
+            }
+        }
+    }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         if (currentFragmentPosition == 1) {
-            startLiteAVFragment.onActivityRestart();
+                startLiteAVFragment.onActivityRestart();
+            if (isMusicRestart)
+                startLiteAVFragment.onMusicSelActivityBack();
         } else if (currentFragmentPosition == 0) {
             startLiveFragment.onActivityRestart();
         }
+        isMusicRestart = false;
     }
 
     @Override
@@ -203,6 +220,19 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         } else {
             //显示
             binding.llMenu.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CodeTable.MUSIC_BACK) {
+                onRestart();
+                if (currentFragmentPosition == 1) {
+                    startLiteAVFragment.onMusicSelActivityBack();
+                }
+            }
         }
     }
 }

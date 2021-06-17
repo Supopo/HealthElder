@@ -1,10 +1,16 @@
 package com.xaqinren.healthyelders.moduleLiteav.activity;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.google.android.material.animation.AnimationUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
@@ -32,6 +40,8 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MusicClassBean;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.MusicRecode;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseMusicViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.widget.InterceptLinearLayout;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 
 import java.util.ArrayList;
@@ -42,7 +52,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
-public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding, ChooseMusicViewModel> {
+public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding, ChooseMusicViewModel>  {
 
     private final String TAG = "ChooseMusicActivity";
 
@@ -52,6 +62,8 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
     private List<MMusicBean> mMusicBeans;
     List<MusicClassBean> classBeans;
     private MusicClassAdapter musicClassAdapter;
+    private int currentScrollY;
+    private int statusBarHeight;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -64,16 +76,18 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
     }
 
     @Override
+    public void finish() {
+        setResult(Activity.RESULT_OK);
+        super.finish();
+        overridePendingTransition(R.anim.activity_push_none,R.anim.activity_bottom_2exit);
+    }
+
+    @Override
     public void initData() {
         super.initData();
         setTitle("选择音乐");
-        /*ivLeft.setOnClickListener(v -> {
-            if (MusicRecode.getInstance().getUseMusicItem() == null) {
-                MusicRecode.getInstance().setUseMusicItem(null);
-            }
-            MusicRecode.getInstance().setUseMusicItem(null);
-            finish();
-        });*/
+        setStatusBarTransparent();
+        rlTitle.setVisibility(View.GONE);
         musicAdapter = new MusicAdapter(R.layout.item_music_block);
         mMusicBeans = new ArrayList<>();
         classBeans = new ArrayList<>();
@@ -101,6 +115,63 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
                     }
                     toMusicList(null, null, search);
                     return true;
+                }
+                return false;
+            }
+        });
+        statusBarHeight = ScreenUtils.getStatusBarHeight(getContext());
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) binding.contentLayout.getLayoutParams();
+        layoutParams.topMargin = statusBarHeight;
+        binding.contentLayout.setLayoutParams(layoutParams);
+        binding.content.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                currentScrollY += dy;
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+        binding.rlContainer.setOnScrollListener(new InterceptLinearLayout.OnScrollListener() {
+            @Override
+            public void onMove(float y) {
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) binding.contentLayout.getLayoutParams();
+                layoutParams.topMargin = (int) y + statusBarHeight;
+                binding.contentLayout.setLayoutParams(layoutParams);
+            }
+
+            @Override
+            public void onUp(float y) {
+                if (y > 700) {
+                    //触发finish事件
+                    finish();
+                }else{
+                    //回到原位
+                    ValueAnimator valueAnimator = ObjectAnimator.ofInt((int)y, statusBarHeight)
+                            .setDuration(300);
+                    valueAnimator.addUpdateListener(animation -> {
+                        int value = (int) animation.getAnimatedValue();
+                        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) binding.contentLayout.getLayoutParams();
+                        layoutParams.topMargin = value;
+                        binding.contentLayout.setLayoutParams(layoutParams);
+                    });
+                    valueAnimator.start();
+                }
+            }
+
+            @Override
+            public void onLimitUp() {
+                finish();
+            }
+
+            @Override
+            public boolean isChildIntercept(float offsetY) {
+                if (currentScrollY == 0) {
+                    if (offsetY <= 0) {
+                        //向上滑动,子控件触发
+                        return false;
+                    }else{
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -160,6 +231,16 @@ public class ChooseMusicActivity extends BaseActivity<ActivityChooseMusicBinding
     @Override
     protected void onStop() {
         super.onStop();
-//        RecordMusicManager.getInstance().stopPreviewMusic();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        RecordMusicManager.getInstance().stopPreviewMusic();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 }

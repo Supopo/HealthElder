@@ -4,38 +4,67 @@
     <data>
 
     </data>
-
-    <LinearLayout
+    <com.xaqinren.healthyelders.moduleLiteav.widget.InterceptLinearLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/white">
-
-        <EditText
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_34"
-            android:background="@drawable/bg_search"
-            android:drawableLeft="@mipmap/search_icon"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:drawablePadding="@dimen/dp_7"
-            android:singleLine="true"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_252525"
-            android:textColorHint="@color/gray_999"
-            android:hint="搜索歌曲名称"
-            android:imeOptions="actionSearch"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/content"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:focusable="true">
+        <LinearLayout
+            android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_16"/>
+            android:orientation="vertical"
+            android:background="@drawable/bg_pop_bottom_20dp"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:src="@mipmap/icon_back_g"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_8"/>
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="选择音乐"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:textSize="@dimen/sp_18"
+                    android:textColor="@color/color_252525"/>
+            </RelativeLayout>
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_34"
+                android:background="@drawable/bg_search_cir"
+                android:drawableLeft="@mipmap/search_icon"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:drawablePadding="@dimen/dp_7"
+                android:singleLine="true"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_252525"
+                android:textColorHint="@color/gray_999"
+                android:hint="搜索歌曲名称"
+                android:visibility="gone"
+                android:imeOptions="actionSearch"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_16"/>
+
+        </LinearLayout>
+    </com.xaqinren.healthyelders.moduleLiteav.widget.InterceptLinearLayout>
+
 </layout>

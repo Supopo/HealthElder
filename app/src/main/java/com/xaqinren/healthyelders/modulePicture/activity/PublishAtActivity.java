@@ -37,8 +37,6 @@ public class PublishAtActivity extends BaseActivity<ActivityPublishAtBinding , P
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setEnterTransition(new Slide().setDuration(2000));
-        getWindow().setExitTransition(new Slide().setDuration(2000));
         super.onCreate(savedInstanceState);
     }
 
@@ -104,7 +102,6 @@ public class PublishAtActivity extends BaseActivity<ActivityPublishAtBinding , P
     @Override
     public void finish() {
         super.finish();
-        //overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_bottom_2exit);
     }
 
     private void getFriendData() {

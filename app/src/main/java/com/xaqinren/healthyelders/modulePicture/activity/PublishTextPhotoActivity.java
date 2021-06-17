@@ -231,8 +231,6 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 binding.contentInput.setEnablePost(false);
                 Intent intent = new Intent(PublishTextPhotoActivity.this, PublishAtActivity.class);
                 startActivityForResult(intent, AT_CODE);
-                //overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_bottom_2enter);
-
                 if (str.length() == 1) {
                     hideSoftInput();
                 }

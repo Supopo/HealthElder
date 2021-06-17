@@ -63,6 +63,7 @@
 
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
+            android:theme="@style/FullScreenAppTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -202,6 +203,7 @@
             android:theme="@style/EditDialogStyle" />
         <activity
             android:name=".moduleLiteav.activity.VideoEditerActivity"
+            android:theme="@style/AnimTheme"
             android:launchMode="singleTask" />
         <activity
             android:name=".moduleLiteav.activity.VideoPublishActivity"
@@ -241,6 +243,7 @@
         <activity
             android:name=".modulePicture.activity.PublishTextPhotoActivity"
             android:launchMode="singleInstance"
+            android:theme="@style/AnimTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".modulePicture.activity.TackPictureActivity"
@@ -250,7 +253,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
-        <activity android:name=".moduleLiteav.activity.ChooseMusicActivity" />
+        <activity android:name=".moduleLiteav.activity.ChooseMusicActivity"
+            android:theme="@style/TranslucentAppTheme"/>
         <activity android:name=".moduleHome.activity.VideoListActivity" />
         <activity
             android:name=".modulePicture.activity.TextPhotoDetailActivity"
@@ -274,8 +278,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".moduleHome.activity.VideoGridActivity" />
-        <activity android:name=".modulePicture.activity.PublishAtActivity"
-            android:theme="@style/AtPageAppTheme"/>
+        <activity android:name=".modulePicture.activity.PublishAtActivity" />
         <activity android:name=".moduleMsg.activity.ChatActivity" />
         <activity android:name=".moduleHome.activity.SearchActivity" />
         <activity android:name=".moduleMsg.activity.InteractiveActivity">

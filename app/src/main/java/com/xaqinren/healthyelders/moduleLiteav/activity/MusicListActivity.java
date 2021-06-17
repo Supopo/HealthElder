@@ -121,10 +121,15 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
                     }else{
                         item.isUse = true;
                         MusicRecode.getInstance().setUseMusicItem(item);
-                        if (MusicRecode.CURRENT_BOURN == Constant.BOURN_RECODE)
-                            startActivity(StartLiveActivity.class);
-                        else
-                            startActivity(VideoEditerActivity.class);
+                        if (MusicRecode.CURRENT_BOURN == Constant.BOURN_RECODE) {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("music", true);
+                            startActivity(StartLiveActivity.class,bundle);
+                        }else {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("music", true);
+                            startActivity(VideoEditerActivity.class,bundle);
+                        }
                     }
                     break;
             }
@@ -191,6 +196,9 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
         super.initViewObservable();
         viewModel.requestSuccess.observe(this, aBoolean -> dismissDialog());
         viewModel.musicListData.observe(this, data ->{
+            if (page == 1) {
+                stopPlayMusic();
+            }
             mMusicItemBeans.addAll(data);
             MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
 
@@ -318,6 +326,12 @@ public class MusicListActivity extends BaseActivity<ActivityMusicListBinding, Mu
     @Override
     protected void onStop() {
         super.onStop();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         stopPlayMusic();
     }
 }
