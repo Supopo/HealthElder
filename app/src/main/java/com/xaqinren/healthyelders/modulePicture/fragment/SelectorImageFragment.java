@@ -133,6 +133,9 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         }else{
             binding.menuList.setVisibility(View.VISIBLE);
         }
+        if (menuAdapter.getItemCount() < mMinSelectedItemCount) {
+            binding.btnNext.setEnabled(false);
+        }
     }
 
     /**
@@ -200,9 +203,6 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         }
         menuAdapter.removeIndex(position);
         adapter.notifyDataSetChanged();
-        if (menuAdapter.getItemCount() < mMinSelectedItemCount) {
-            binding.btnNext.setEnabled(false);
-        }
         setMenuVisible();
     }
 
