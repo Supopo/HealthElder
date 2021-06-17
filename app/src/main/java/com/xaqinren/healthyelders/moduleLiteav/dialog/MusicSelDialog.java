@@ -538,7 +538,8 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
      * 本地添加一个收藏
      */
     private void addCollLocal(MMusicItemBean bean) {
-        List<MMusicItemBean> list  = new ArrayList<>();
+        List<MMusicItemBean> list = new ArrayList<>();
+        list.addAll(musicCollItemBeans);
         try {
             list.add((MMusicItemBean) bean.cloneThis());
         } catch (Exception e) {
