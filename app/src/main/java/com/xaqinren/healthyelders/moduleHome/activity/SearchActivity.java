@@ -175,6 +175,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
         hotTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
             tags = hotTagAdapter.getData().get(position).getMenuName();
+            addCache(tags);
             toJump();
         }));
     }
@@ -201,10 +202,27 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
         }
+        addCache(binding.etSearch.getText().toString().trim());
+
+        //跳页
+        toJump();
+    }
+
+    private void addCache(String content) {
+        if (searchListCache != null && searchListCache.getMenuInfoList() != null) {
+
+            for (SlideBarBean.MenuInfoListDTO dto : searchListCache.getMenuInfoList()) {
+                if (dto.getMenuName().equals(tags)) {
+                    return;
+                }
+            }
+
+        }
+
 
         //往下面的搜索插入
         SlideBarBean.MenuInfoListDTO searchBean = new SlideBarBean.MenuInfoListDTO();
-        searchBean.setMenuName(binding.etSearch.getText().toString().trim());
+        searchBean.setMenuName(content);
 
         //判断超过十条的话移除一条
         historyTagAdapter.addData(searchBean);
@@ -216,12 +234,11 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         }
         //更新本地缓存
         searchListCache.setMenuInfoList(searchBeans);
+
         if (searchType == TYPE_HOME)
             ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
         else if (searchType == TYPE_GOODS)
             ACache.get(SearchActivity.this).put(Constant.SearchGId, searchListCache);
-        //跳页
-        toJump();
     }
 
     private void toJump() {
