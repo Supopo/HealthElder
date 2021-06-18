@@ -261,8 +261,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     public void stopMusicAnim() {
         if (objectAnimator != null) {
-            objectAnimator.end();//动画结束
-            state = STATE_STOP;
+            getActivity().runOnUiThread(()->{
+                objectAnimator.end();//动画结束
+                state = STATE_STOP;
+            });
         }
         binding.mainMusicalNoteLayout.start(false);
     }

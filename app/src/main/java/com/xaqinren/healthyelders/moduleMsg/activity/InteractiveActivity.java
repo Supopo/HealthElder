@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 import retrofit2.http.POST;
 
 /**
@@ -254,12 +255,15 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         });
         viewModel.friendListData.observe(this, friendBeans -> {
             if (friendCount == 0) {
-                interactiveAdapter.addData(new MessageDetailBean() {
-                    @Override
-                    public int getItemType() {
-                        return MessageDetailBean.TYPE_TEXT;
-                    }
-                });
+                MessageDetailBean o = (MessageDetailBean) interactiveAdapter.getData().get(interactiveAdapter.getData().size() - 1);
+                if (o.getItemType() != MessageDetailBean.TYPE_TEXT) {
+                    interactiveAdapter.addData(new MessageDetailBean() {
+                        @Override
+                        public int getItemType() {
+                            return MessageDetailBean.TYPE_TEXT;
+                        }
+                    });
+                }
                 /*if (friendBeans.isEmpty()) {
                     interactiveAdapter.addData(new MessageDetailBean() {
                         @Override
@@ -278,6 +282,10 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             }
         });
         viewModel.videoInfoLiveData.observe(this, videoInfo -> {
+            if (videoInfo == null) {
+                ToastUtils.showLong("该视频/文章已被删除");
+                return;
+            }
             videoInfo.resourceType = "VIDEO";
             ArrayList<VideoInfo> list = new ArrayList<>();
             list.add(videoInfo);

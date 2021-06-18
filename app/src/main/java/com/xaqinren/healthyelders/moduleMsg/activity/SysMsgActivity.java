@@ -164,12 +164,15 @@ public class SysMsgActivity extends BaseActivity<ActivityInteractiveBinding, Int
 
         viewModel.friendListData.observe(this, friendBeans -> {
             if (friendCount == 0 /*&& !friendBeans.isEmpty()*/) {
-                interactiveAdapter.addData(new MessageDetailBean() {
-                    @Override
-                    public int getItemType() {
-                        return MessageDetailBean.TYPE_TEXT;
-                    }
-                });
+                MessageDetailBean o = (MessageDetailBean) interactiveAdapter.getData().get(interactiveAdapter.getData().size() - 1);
+                if (o.getItemType() != MessageDetailBean.TYPE_TEXT) {
+                    interactiveAdapter.addData(new MessageDetailBean() {
+                        @Override
+                        public int getItemType() {
+                            return MessageDetailBean.TYPE_TEXT;
+                        }
+                    });
+                }
             }
             friendCount += friendBeans.size();
             interactiveAdapter.addData(friendBeans);
