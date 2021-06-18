@@ -212,14 +212,6 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         });
         searchAllViewModel.dismissDialog.observe(this, disDialog -> {
             dismissDialog();
-//            if (disDialog != null && disDialog) {
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        dismissDialog();
-//                    }
-//                }, 3000);
-//            }
         });
 
         searchAllViewModel.followSuccess.observe(this, dismissDialog -> {

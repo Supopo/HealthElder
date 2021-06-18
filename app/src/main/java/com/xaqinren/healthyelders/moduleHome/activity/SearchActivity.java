@@ -188,16 +188,6 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         }
 
 
-        //搜索历史去重
-        if (searchListCache != null && searchListCache.getMenuInfoList() != null) {
-            for (SlideBarBean.MenuInfoListDTO dto : searchListCache.getMenuInfoList()) {
-                if (dto.getMenuName().equals(tags)) {
-                    toJump();
-                    return;
-                }
-            }
-        }
-
 
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
@@ -211,12 +201,20 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private void addCache(String content) {
         if (searchListCache != null && searchListCache.getMenuInfoList() != null) {
 
-            for (SlideBarBean.MenuInfoListDTO dto : searchListCache.getMenuInfoList()) {
-                if (dto.getMenuName().equals(tags)) {
-                    return;
+
+            //去重重插入
+            int temp = -1;
+            for (int i = 0; i < searchListCache.getMenuInfoList().size(); i++) {
+                if (searchListCache.getMenuInfoList().get(i).getMenuName().equals(content)) {
+                    temp = i;
                 }
             }
 
+            if (temp > 0) {
+                searchListCache.getMenuInfoList().remove(temp);
+                //重新加载绘制 目前只能重new Adapter
+                resetHistoryTagAdapter(searchListCache.getMenuInfoList());
+            }
         }
 
 
