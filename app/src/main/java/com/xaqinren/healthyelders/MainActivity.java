@@ -621,8 +621,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (currentFragment != null) {
             transaction.show(currentFragment);
         } else {
+            getSupportFragmentManager().executePendingTransactions();
             currentFragment = mFragments.get(position);
-            transaction.add(R.id.frameLayout, currentFragment, position + "");
+            if (!currentFragment.isAdded())
+                transaction.add(R.id.frameLayout, currentFragment, position + "");
         }
         transaction.commitAllowingStateLoss();
     }
