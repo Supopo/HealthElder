@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.SMVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineSMViewModel;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -74,6 +76,12 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
 
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
 
+            if (videoAdapter.getData().get(position).isArticle()) {
+                Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).resourceId);
+                startActivity(intent);
+                return;
+            }
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 

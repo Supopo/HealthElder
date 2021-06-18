@@ -1163,6 +1163,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             case LiveConstants.IMCMD_ENTER_LIVE:
                 //用户进入房间消息
                 toRecvTextMsg(userInfo, LiveConstants.SHOW_ENTER_LIVE, type);
+                //调用刷新接口
+                toRushLiveInfo();
                 break;
             case LiveConstants.IMCMD_EXIT_LIVE:
                 //用户退出房间消息

@@ -116,7 +116,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
                 InteractiveBean interactiveBean = (InteractiveBean) bean;
                 if (interactiveBean.getExtra().getCreationType().equals(Constant.SHORT_VIDEO)) {
                     viewModel.getVideoInfo(interactiveBean.getExtra().getId());
-                }else{
+                } else {
                     Intent intent = new Intent(this, TextPhotoDetailActivity.class);
                     intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, interactiveBean.getExtra().getId());
                     startActivity(intent);
@@ -127,31 +127,35 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         interactiveAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             MessageDetailBean bean = (MessageDetailBean) adapter.getData().get(position);
             opIndex = position;
-            switch (view.getId()){
-                case R.id.avatar:{
+            switch (view.getId()) {
+                case R.id.avatar: {
                     //用户详情
                     if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
                         InteractiveBean bean1 = (InteractiveBean) bean;
-                        UserInfoActivity.startActivity(this,bean1.getSendUser().getUserId()+"");
+                        UserInfoActivity.startActivity(this, bean1.getSendUser().getUserId() + "");
                     } else if (bean.getItemType() == MessageDetailBean.TYPE_FRIEND) {
                         FriendBean friendBean = (FriendBean) bean;
                         InteractiveBean bean1 = (InteractiveBean) bean;
-                        UserInfoActivity.startActivity(this,friendBean.getUserId());
+                        UserInfoActivity.startActivity(this, friendBean.getUserId());
                     }
-                }break;
+                }
+                break;
                 case R.id.attention_btn: {
                     //粉丝消息,关注
-                }break;
+                }
+                break;
                 case R.id.favorite: {
                     //推荐列表,关注
                     showDialog();
                     FriendBean friendBean = (FriendBean) bean;
                     viewModel.recommendFriend(friendBean.getUserId());
-                }break;
+                }
+                break;
                 case R.id.close: {
                     //推荐列表,删除
                     adapter.removeAt(position);
-                }break;
+                }
+                break;
             }
         });
 
@@ -159,7 +163,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             interactiveAdapter.getLoadMoreModule().setEnableLoadMore(true);
             interactiveAdapter.getLoadMoreModule().setAutoLoadMore(false);
             interactiveAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
-                if (friendCount>0)
+                if (friendCount > 0)
                     viewModel.getRecommendFriend();
             });
         }
@@ -219,6 +223,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         page = 1;
         viewModel.getMessage(page, pageSize, messageGroup, messageType);
     }
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -235,7 +240,8 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             interactiveAdapter.addData(messageCount, interactiveBeans);
             messageCount += interactiveBeans.size();
             if (interactiveBeans.size() >= pageSize) {
-                if (isSelShow)return;
+                if (isSelShow)
+                    return;
                 isSelShow = true;
                 interactiveAdapter.addData(messageCount, new MessageDetailBean() {
                     @Override
@@ -243,27 +249,31 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
                         return MessageDetailBean.TYPE_LOAD_MORE;
                     }
                 });
-            }else{
+            } else {
                 //加载完成，隐藏loadmore
                 if (isSelShow) {
                     interactiveAdapter.removeAt(messageCount);
                 }
             }
-            if (!enableFriend)return;
-            if (friendCount==0)
+            if (!enableFriend)
+                return;
+            if (friendCount == 0)
                 viewModel.getRecommendFriend();
         });
         viewModel.friendListData.observe(this, friendBeans -> {
             if (friendCount == 0) {
-                MessageDetailBean o = (MessageDetailBean) interactiveAdapter.getData().get(interactiveAdapter.getData().size() - 1);
-                if (o.getItemType() != MessageDetailBean.TYPE_TEXT) {
-                    interactiveAdapter.addData(new MessageDetailBean() {
-                        @Override
-                        public int getItemType() {
-                            return MessageDetailBean.TYPE_TEXT;
-                        }
-                    });
+                if (interactiveAdapter.getData().size() > 0) {
+                    MessageDetailBean o = (MessageDetailBean) interactiveAdapter.getData().get(interactiveAdapter.getData().size() - 1);
+                    if (o.getItemType() != MessageDetailBean.TYPE_TEXT) {
+                        interactiveAdapter.addData(new MessageDetailBean() {
+                            @Override
+                            public int getItemType() {
+                                return MessageDetailBean.TYPE_TEXT;
+                            }
+                        });
+                    }
                 }
+
                 /*if (friendBeans.isEmpty()) {
                     interactiveAdapter.addData(new MessageDetailBean() {
                         @Override
@@ -277,7 +287,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             interactiveAdapter.addData(friendBeans);
             if (friendBeans.size() >= friendPageSize) {
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
-            }else{
+            } else {
                 interactiveAdapter.getLoadMoreModule().loadMoreEnd(false);
             }
         });
@@ -306,7 +316,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
             } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
                 //朋友
                 friendBean.setIdentity(AddFriendAdapter.FANS);
-            }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
                 //关注的人
                 friendBean.setIdentity(AddFriendAdapter.STRANGER);
             }
@@ -318,10 +328,11 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         changeTitleDrwa();
         if (isSelShow) {
             hideSelectWindow();
-        }else{
+        } else {
             showSelectWindow();
         }
     }
+
     private void changeTitleDrwa() {
         Drawable drawable = getResources().getDrawable(isSelShow ? R.mipmap.icon_xiaox_xial_down : R.mipmap.icon_xiaox_xial_up);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
@@ -351,6 +362,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         binding.selLayout.setAnimation(showAnim);
         showAnim.start();
     }
+
     private void hideSelectWindow() {
         Animation showAnim = AnimationUtils.loadAnimation(this, R.anim.anim_alpha_out);
         showAnim.setAnimationListener(new Animation.AnimationListener() {

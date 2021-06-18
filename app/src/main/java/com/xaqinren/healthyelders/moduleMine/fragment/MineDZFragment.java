@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.DZVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineDZViewModel;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -78,6 +80,14 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
+
+
+            if (videoAdapter.getData().get(position).homeComprehensiveHall.isArticle()) {
+                Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).homeComprehensiveHall.resourceId);
+                startActivity(intent);
+                return;
+            }
 
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();

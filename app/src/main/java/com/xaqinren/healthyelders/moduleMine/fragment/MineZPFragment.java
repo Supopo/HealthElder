@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
+import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
@@ -97,6 +99,12 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                 }
             }
 
+            if (videoAdapter.getData().get(position).isArticle()) {
+                Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).resourceId);
+                startActivity(intent);
+                return;
+            }
 
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
