@@ -111,7 +111,7 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/avatar_gz_zb_anim"
                     android:scaleType="center"
-                    android:visibility="@{viewModel.videoInfo.showFollow()?View.VISIBLE:View.INVISIBLE}" />
+                     />
             </RelativeLayout>
 
 

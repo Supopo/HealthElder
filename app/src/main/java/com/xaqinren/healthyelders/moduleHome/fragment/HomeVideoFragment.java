@@ -350,7 +350,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-                //                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
+                                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     showFollow();
 
@@ -566,14 +566,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     //判断自己账号隐藏关注
     private void showFollow() {
-
         Boolean aBoolean = AppApplication.get().followList.get(videoInfo.userId);
         if (aBoolean != null) {
             videoInfo.hasAttention = aBoolean;
         }
 
         if (!videoInfo.showFollow()) {
-            binding.followImageView.setVisibility(View.GONE);
+            binding.followImageView.setVisibility(View.INVISIBLE);
         } else {
             binding.followImageView.setVisibility(View.VISIBLE);
         }

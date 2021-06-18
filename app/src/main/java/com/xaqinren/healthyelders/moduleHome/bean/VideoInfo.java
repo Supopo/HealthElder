@@ -139,11 +139,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
         if (userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
             return false;
         }
-        if (hasAttention) {
-            return false;
-        }
-
-        return false;
+        return !hasAttention;
     }
 
     public boolean showSeachFollow() {

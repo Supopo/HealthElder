@@ -13,7 +13,7 @@ public class Constant {
 
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
     public static String SERVICE_PHONE = "";//客服电话
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static boolean ENABLE_CHAT = false;//打开单聊功能
 
     public static String baseUrl = "http://test.hjyiyuanjiankang.com/";
