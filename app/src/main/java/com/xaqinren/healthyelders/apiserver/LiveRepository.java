@@ -592,7 +592,7 @@ public class LiveRepository {
                 });
     }
 
-    public void toComment(String id, String content, MutableLiveData<CommentListBean> commentSuccess) {
+    public void toComment(String id, String content, MutableLiveData<CommentListBean> commentSuccess, MutableLiveData<Boolean> dismissDialog) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("id", id);
         hashMap.put("content", content);
@@ -609,7 +609,7 @@ public class LiveRepository {
                 .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
                     @Override
                     protected void dismissDialog() {
-
+                        dismissDialog.postValue(true);
                     }
 
                     @Override
@@ -644,7 +644,7 @@ public class LiveRepository {
                 });
     }
 
-    public void toCommentReply(CommentListBean mCommentListBean, String content, int type, MutableLiveData<CommentListBean> commentSuccess) {
+    public void toCommentReply(CommentListBean mCommentListBean, String content, int type, MutableLiveData<CommentListBean> commentSuccess, MutableLiveData<Boolean> dismissDialog) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("replyType", type == 0 ? "REPLY_COMMENT" : "REPLY_REPLY");
         hashMap.put("id", mCommentListBean.id);
@@ -662,7 +662,7 @@ public class LiveRepository {
                 .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
                     @Override
                     protected void dismissDialog() {
-
+                        dismissDialog.postValue(true);
                     }
 
                     @Override

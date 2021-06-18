@@ -485,7 +485,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null && commentDialog != null) {
-
                 //本地刷新
                 if (openType == 0) {
                     //往评论列表查插数据

@@ -275,8 +275,12 @@ public class CommentDialog {
         mCommentCount++;
         binding.commentCountTv.setText(mCommentCount + "条评论");
         commentAdapter.addData(0, commentListBean);
-        commentAdapter.notifyItemChanged(0);
+        //只刷新当前得会导致别的item的parentPos还是旧的。
+//        commentAdapter.notifyItemChanged(0);
+        commentAdapter.notifyDataSetChanged();
         binding.commentList.scrollToPosition(0);
+
+
 
     }
 

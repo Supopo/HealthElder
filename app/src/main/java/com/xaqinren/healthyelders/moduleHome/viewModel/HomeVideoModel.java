@@ -37,11 +37,11 @@ public class HomeVideoModel extends BaseViewModel {
     }
 
     public void toComment(String id, String content) {
-        LiveRepository.getInstance().toComment(id, content, commentSuccess);
+        LiveRepository.getInstance().toComment(id, content, commentSuccess, dismissDialog);
     }
 
     public void toCommentReply(CommentListBean mCommentListBean, String content, int type) {
-        LiveRepository.getInstance().toCommentReply(mCommentListBean, content, type, commentSuccess);
+        LiveRepository.getInstance().toCommentReply(mCommentListBean, content, type, commentSuccess, dismissDialog);
     }
 
     public void joinLive(String liveRoomId) {
