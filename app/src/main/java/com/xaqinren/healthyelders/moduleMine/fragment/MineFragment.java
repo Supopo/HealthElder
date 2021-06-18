@@ -138,6 +138,16 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
 
     private boolean isFirst = true;
 
+    public void refreshData() {
+        if (menuPosition == 0) {
+            mineZPFragment.toRefresh();
+        } else if (menuPosition == 1) {
+            mineSMFragment.toRefresh();
+        } else {
+            mineDZFragment.toRefresh();
+        }
+    }
+
     private void initEvent() {
         binding.srlTop.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

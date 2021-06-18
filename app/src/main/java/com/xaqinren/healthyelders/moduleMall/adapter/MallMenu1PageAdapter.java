@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.tencent.qcloud.tim.uikit.component.video.listener.ClickListener;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ItemMallRvBinding;
@@ -23,9 +24,10 @@ import org.jetbrains.annotations.NotNull;
  * Created by Lee. on 2021/5/25.
  */
 public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
-
-    public MallMenu1PageAdapter(int layoutResId) {
+    OnItemClickListener clickListener;
+    public MallMenu1PageAdapter(int layoutResId,OnItemClickListener clickListener) {
         super(layoutResId);
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -39,8 +41,8 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
         binding.rvContent.setLayoutManager(new GridLayoutManager(getContext(), 5));
         binding.rvContent.setAdapter(mallMenu1Adapter);
         mallMenu1Adapter.setList(menuBean.menuBeans);
-
-        mallMenu1Adapter.setOnItemClickListener(new OnItemClickListener() {
+        mallMenu1Adapter.setOnItemClickListener(clickListener);
+        /*mallMenu1Adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (UserInfoMgr.getInstance().getAccessToken() == null) {
@@ -52,7 +54,8 @@ public class MallMenu1PageAdapter extends BaseQuickAdapter<MenuBean, BaseViewHol
                 String appId = menuBean1.event;
                 String jumpUrl = menuBean1.jumpUrl;
                 UniService.startService(getContext(), appId, 0x10001, jumpUrl);
+
             }
-        });
+        });*/
     }
 }

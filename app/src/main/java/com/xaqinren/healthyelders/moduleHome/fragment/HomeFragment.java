@@ -22,8 +22,10 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
@@ -376,12 +378,15 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         menu1Adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                Bundle bundle = new Bundle();
+                MenuBean menuBean = menu1Adapter.getData().get(position);
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean));
+                /*Bundle bundle = new Bundle();
                 bundle.putString("title", menu1Adapter.getData().get(position).menuName);
                 //获取tags
                 String tags = UrlUtils.getUrlQueryByTag(menu1Adapter.getData().get(position).jumpUrl, "tags");
                 bundle.putString("tags", tags);
-                startActivity(VideoGridActivity.class, bundle);
+                startActivity(VideoGridActivity.class, bundle);*/
             }
         });
 
@@ -398,9 +403,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 startActivity(SelectLoginActivity.class);
                 return;
             }
-            UniService.startService(getContext(), menuBean.event, 0x10111, menuBean.jumpUrl);
+//            UniService.startService(getContext(), menuBean.event, 0x10111, menuBean.jumpUrl);
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean));
         });
     }
+
 
 
     @Override

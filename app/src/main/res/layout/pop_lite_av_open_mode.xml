@@ -51,7 +51,7 @@
                 android:layout_marginLeft="@dimen/dp_12"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/color_252525"
-                android:text="公开 . 所有人可见"/>
+                android:text="公开·所有人可见"/>
 
             <ImageView
                 android:id="@+id/open_iv"

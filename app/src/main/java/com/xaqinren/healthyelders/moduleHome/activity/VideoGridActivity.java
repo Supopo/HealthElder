@@ -60,8 +60,10 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     public void initParam() {
         super.initParam();
         Bundle extras = getIntent().getExtras();
+        if (extras.containsKey("title"))
         title = extras.getString("title");
-        tags = extras.getString("tags");
+        if (extras.containsKey("tags"))
+         tags = extras.getString("tags");
     }
 
     @Override

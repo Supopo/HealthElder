@@ -54,6 +54,7 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.GlobalData;
 import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
@@ -249,6 +250,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         boolean booleanExtra = intent.getBooleanExtra(Constant.PUBLISH_SUCCESS, false);
         if (booleanExtra) {
             binding.rlMenu4.performClick();
+            runOnUiThread(()->{
+                mineFragment.refreshData();
+            });
         }
         getCacheUserInfo();
     }
@@ -772,8 +776,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 HashMap<String, Object> param = slideParamBean.getParam();
                 Bundle bundle = mackBundleByMap(param);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.putExtras(bundle);
                 intent.setData(Uri.parse("jkzl://app_open/" + slideParamBean.getPage()));
-                getActivity().startActivity(intent,bundle);
+                getActivity().startActivity(intent);
             } else if (event.equals("method")) {
                 //打开方法
                 SlideParamBean slideParamBean = JSON.parseObject(jumpUrl, SlideParamBean.class);
@@ -792,6 +797,23 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             String page = menuInfoListDTO.getJumpUrl();
             UniService.startService(getContext(), appid, 0x10056, page);
         }
+    }
+
+    public SlideBarBean.MenuInfoListDTO convertToSlideBarMenu( MenuBean menuBean) {
+        SlideBarBean.MenuInfoListDTO menuInfoListDTO = new SlideBarBean.MenuInfoListDTO();
+        menuInfoListDTO.setMenuName(menuBean.menuName);
+        menuInfoListDTO.setSubMenuName(menuBean.subMenuName);
+        menuInfoListDTO.setSubFontColor(menuBean.subFontColor);
+        menuInfoListDTO.setBackgroundColor(menuBean.backgroundColor);
+        menuInfoListDTO.setFontColor(menuBean.fontColor);
+        menuInfoListDTO.setIcon(menuBean.icon);
+        menuInfoListDTO.setJumpUrl(menuBean.jumpUrl);
+        menuInfoListDTO.setEventType(menuBean.eventType);
+        menuInfoListDTO.setEvent(menuBean.event);
+        menuInfoListDTO.setOnlyShowImage(menuBean.onlyShowImage);
+        menuInfoListDTO.setImageUrl(menuBean.imageUrl);
+        menuInfoListDTO.setSortOrder(menuBean.sortOrder);
+        return menuInfoListDTO;
     }
 
     public void makeCall(Map<String, Object> param) {

@@ -106,8 +106,8 @@ public class MallRepository {
                 });
     }
 
-    public void getGoodsList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<GoodsBean>> goods, int page, int pageSize,String title,String sort,String orderBy) {
-        userApi.getMallGoodsList(page, pageSize, title, sort, orderBy)
+    public void getGoodsList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<GoodsBean>> goods, int page, int pageSize,String title,String sort,String orderBy,String category) {
+        userApi.getMallGoodsList(page, pageSize, title, sort, orderBy,category)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

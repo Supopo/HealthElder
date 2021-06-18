@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMall.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -89,7 +91,19 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         srl = binding.srlTop;
         binding.srlTop.setEnabled(false);
-        pageAdapter = new MallMenu1PageAdapter(R.layout.item_mall_rv);
+        pageAdapter = new MallMenu1PageAdapter(R.layout.item_mall_rv, new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (UserInfoMgr.getInstance().getAccessToken() == null) {
+                    Intent intent = new Intent(getContext(),SelectLoginActivity.class);
+                    getContext().startActivity(intent);
+                    return;
+                }
+                MenuBean menuBean1 = (MenuBean) adapter.getData().get(position);
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean1));
+            }
+        });
         binding.vpMenu1.setAdapter(pageAdapter);
 
         binding.banner.addBannerLifecycleObserver(this);
@@ -105,7 +119,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 return;
             }
             MenuBean menuBean = mallHotMenuAdapter.getData().get(position);
-            UniService.startService(getContext(), menuBean.event, 0x10001, menuBean.jumpUrl);
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean));
         });
         binding.rvMenu2.setAdapter(mallHotMenuAdapter);
 
@@ -264,7 +279,11 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                     startActivity(SelectLoginActivity.class);
                     return;
                 }
-                UniService.startService(getContext(), data.event, 0x10001, data.jumpUrl);
+//                UniService.startService(getContext(), data.event, 0x10001, data.jumpUrl);
+
+                MenuBean menuBean = data;
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean));
             }
         });
     }

@@ -20,7 +20,7 @@ public class GoodsSearchViewModel extends BaseViewModel {
         super(application);
     }
 
-    public void getGoods(String key,int page ,int pageSize ,String sortBy ,String orderBy ){
-        MallRepository.getInstance().getGoodsList(dismissDialog, goodsLiveData, page, pageSize, key, sortBy, orderBy);
+    public void getGoods(String key,int page ,int pageSize ,String sortBy ,String orderBy ,String category){
+        MallRepository.getInstance().getGoodsList(dismissDialog, goodsLiveData, page, pageSize, key, sortBy, orderBy, category);
     }
 }

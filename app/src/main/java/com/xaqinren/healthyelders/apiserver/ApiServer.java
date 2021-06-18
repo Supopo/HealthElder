@@ -408,7 +408,8 @@ public interface ApiServer {
                                                                              @Query("pageSize") int pageSize,
                                                                              @Query("title") String title,
                                                                              @Query("sortBy") String sortBy ,
-                                                                             @Query("orderBy") String orderBy );
+                                                                             @Query("orderBy") String orderBy ,
+                                                                             @Query("category") String category  );
 
     //获取首页热门搜索关键词
     @GET("jkzl/open/queryHomeHotSearch")

@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMall.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,6 +57,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
     private String sortBy = "";
     private String orderBy = "DESC";//DESC ASC
     private Disposable subscribe;
+    private String category;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -70,7 +72,11 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
     @Override
     public void initParam() {
         super.initParam();
-        tags = (String) getIntent().getExtras().get("tags");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle.containsKey("tags"))
+        tags = bundle.getString("tags");
+        if (bundle.containsKey("category"))
+        category = bundle.getString("category");
     }
 
     @Override
@@ -102,7 +108,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
         goodsStaggeredAdapter.getLoadMoreModule().setPreLoadNumber(1);
         goodsStaggeredAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
             page++;
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
 
         linearLayout = new LinearLayoutManager(this);
@@ -113,12 +119,12 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
         goodsLinearAdapter.getLoadMoreModule().setPreLoadNumber(1);
         goodsLinearAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
             page++;
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
 
         binding.swipeContent.setOnRefreshListener(()->{
             page = 1;
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
         changeStaggeredLayout();
 
@@ -140,7 +146,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
         });
 
         showDialog();
-        viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+        viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         binding.close.setOnClickListener(v -> binding.search.setText(null));
         binding.search.addTextChangedListener(new TextWatcherImpl(){
             @Override
@@ -156,7 +162,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
                     tags = binding.search.getText().toString().trim();
                     page = 1;
                     showDialog();
-                    viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+                    viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
                     return true;
                 }
                 return false;
@@ -174,7 +180,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
             tags = binding.search.getText().toString().trim();
             page = 1;
             showDialog();
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
         binding.order1.setOnClickListener(v -> {
             sortBy = "";
@@ -184,7 +190,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
             binding.order2.setSelected(false);
             binding.order.setImageResource(R.mipmap.jiag_drop_nor);
             showDialog();
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
         binding.order2.setOnClickListener(v -> {
             orderBy = "DESC";
@@ -194,7 +200,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
             binding.order2.setSelected(true);
             binding.order.setImageResource(R.mipmap.jiag_drop_nor);
             showDialog();
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
         binding.order4.setOnClickListener(v -> {
             if (sortBy.equals("minSalesPrice")) {
@@ -213,7 +219,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
             binding.order4.setSelected(true);
             binding.order2.setSelected(false);
             showDialog();
-            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy);
+            viewModel.getGoods(tags, page, pageSize, sortBy, orderBy,category);
         });
     }
     private void changeStaggeredLayout() {

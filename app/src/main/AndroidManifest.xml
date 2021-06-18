@@ -84,7 +84,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity
@@ -227,7 +227,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
@@ -273,11 +273,22 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
-        <activity android:name=".moduleHome.activity.VideoGridActivity" />
+        <activity android:name=".moduleHome.activity.VideoGridActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/homeContentSearchResult"
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+
+            </intent-filter>
+        </activity>
         <activity android:name=".modulePicture.activity.PublishAtActivity" />
         <activity android:name=".moduleMsg.activity.ChatActivity" />
         <activity android:name=".moduleHome.activity.SearchActivity" />
@@ -289,7 +300,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
@@ -306,7 +317,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.SysMsgActivity">
@@ -317,7 +328,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.LiveMsgActivity">
@@ -328,7 +339,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.ServiceMsgActivity">
@@ -339,7 +350,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.WalletMsgActivity">
@@ -350,7 +361,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
@@ -376,7 +387,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMine.activity.LookAttentionActivity" />
@@ -391,7 +402,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMine.activity.SettingPayPassActivity" />
@@ -412,7 +423,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMine.activity.LookAuthActivity" />
@@ -424,7 +435,17 @@
         <activity android:name=".moduleMine.activity.OrderListActivity" />
         <activity android:name=".moduleMine.activity.WithdrawApplySuccess" />
         <activity android:name=".uniApp.activity.PhotoActivity" />
-        <activity android:name=".moduleMall.activity.GoodsSearchActivity" />
+        <activity android:name=".moduleMall.activity.GoodsSearchActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/mallSearchResult"
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+            </intent-filter>
+        </activity>
         <activity android:name=".moduleHome.activity.TestActivity" />
 
         <service
