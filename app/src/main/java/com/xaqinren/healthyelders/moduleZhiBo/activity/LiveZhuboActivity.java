@@ -88,6 +88,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -982,6 +983,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
                 break;
             case LiveConstants.IMCMD_GIFT://礼物消息
+                toRushLiveInfo();
+
                 SendGiftBean sendGiftBean = (SendGiftBean) message;
                 userInfo.giftIcon = sendGiftBean.giftsIcon;
                 userInfo.giftName = sendGiftBean.giftsName;
@@ -1102,17 +1105,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.tvGiftNum2.setText("" + sendGiftBean2.num + " ");
 
         //礼物消息横幅3S结束
-        if (giftContentTimer2 != null) {
-            giftContentTimer2.cancel();
-            giftContentTimer2.purge();
-        }
+        freedTimerTask2();
+
         giftContentTimer2 = new Timer();
-
-        if (giftContentTask2 != null) {
-            giftContentTask2.cancel();
-        }
-
-
         giftContentTask2 = new TimerTask() {
             @Override
             public void run() {
@@ -1173,20 +1168,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             binding.tvGiftNum.clearAnimation();
             binding.tvGiftNum.setAnimation(bigAnim);
         }
-        binding.tvGiftNum.setText("" + sendGiftBean1.num+" ");
+        binding.tvGiftNum.setText("" + sendGiftBean1.num + " ");
 
 
         //礼物消息横幅3S结束
-        if (giftContentTimer != null) {
-            giftContentTimer.cancel();
-            giftContentTimer.purge();
-        }
+        freedTimerTask1();
+
         giftContentTimer = new Timer();
-
-        if (giftContentTask != null) {
-            giftContentTask.cancel();
-        }
-
         giftContentTask = new TimerTask() {
             @Override
             public void run() {
@@ -1914,6 +1902,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
                 //更新榜单头像
                 if (liveHeaderInfo.liveRoomUsers != null) {
+                    Collections.reverse(liveHeaderInfo.liveRoomUsers);
                     topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);
                 }
                 //更新总人数

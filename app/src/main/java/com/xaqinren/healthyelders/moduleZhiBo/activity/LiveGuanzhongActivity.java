@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;
@@ -86,6 +87,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -218,9 +220,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
 
         if (mLiveInitInfo.getHasFollow()) {
-            binding.tvFollow.setText("已关注");
+            binding.tvFollow.setText("");
+            binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00061));
         } else {
             binding.tvFollow.setText("关注");
+            binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00034));
         }
 
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
@@ -1281,6 +1285,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 viewModel.getLiveStatus(mLiveInitInfo.liveRoomId);
                 break;
             case LiveConstants.IMCMD_GIFT://礼物消息
+                toRushLiveInfo();
 
                 SendGiftBean sendGiftBean = (SendGiftBean) message;
                 userInfo.giftIcon = sendGiftBean.giftsIcon;
@@ -1692,6 +1697,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 binding.tvZanNum.setText(liveHeaderInfo.totalZanNum);
                 //更新榜单头像
                 if (liveHeaderInfo.liveRoomUsers != null) {
+                    Collections.reverse(liveHeaderInfo.liveRoomUsers);
                     topHeadAdapter.setNewInstance(liveHeaderInfo.liveRoomUsers);
                 }
                 //更新总人数
@@ -1717,12 +1723,18 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 if (isFollow) {
                     mLiveInitInfo.setHasFollow(!mLiveInitInfo.getHasFollow());
                     if (mLiveInitInfo.getHasFollow()) {
-                        binding.tvFollow.setText("已关注");
+                        AnimationDrawable animationDrawable = (AnimationDrawable) getResources().getDrawable(
+                                R.drawable.avatar_zbj_gz_anim);
+                        binding.tvFollow.setBackground(animationDrawable);
+                        binding.tvFollow.setText("");
+                        animationDrawable.start();
+
                         //群发关注消息
                         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_FOLLOW), "", null);
                         addMsg2List(UserInfoMgr.getInstance().getUserInfo().getNickname(), LiveConstants.SHOW_FOLLOW, LiveConstants.IMCMD_FOLLOW);
                     } else {
                         binding.tvFollow.setText("关注");
+                        binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00034));
                     }
                     viewModel.addFansCount(mLiveInitInfo.liveRoomRecordId);
                 }
@@ -1965,17 +1977,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.tvGiftNum2.setText("" + sendGiftBean2.num + " ");
 
         //礼物消息横幅3S结束
-        if (giftContentTimer2 != null) {
-            giftContentTimer2.cancel();
-            giftContentTimer2.purge();
-        }
+
+        freedTimerTask2();
         giftContentTimer2 = new Timer();
-
-        if (giftContentTask2 != null) {
-            giftContentTask2.cancel();
-        }
-
-
         giftContentTask2 = new TimerTask() {
             @Override
             public void run() {
@@ -2021,6 +2025,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
     private void showBanner1() {
+        Log.e("----------------", "showBanner1()");
 
         //送礼横幅
         if (binding.rlGift.getVisibility() == View.GONE) {
@@ -2038,26 +2043,19 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             binding.tvGiftNum.clearAnimation();
             binding.tvGiftNum.setAnimation(bigAnim);
         }
-        binding.tvGiftNum.setText("" + sendGiftBean1.num+" ");
+        binding.tvGiftNum.setText("" + sendGiftBean1.num + " ");
 
 
         //礼物消息横幅3S结束
-        if (giftContentTimer != null) {
-            giftContentTimer.cancel();
-            giftContentTimer2.purge();
-        }
+        freedTimerTask1();
         giftContentTimer = new Timer();
-
-        if (giftContentTask != null) {
-            giftContentTask.cancel();
-        }
-
         giftContentTask = new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.e("----------------", "run()" + giftContentTask.toString());
                         goneAnim1 = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_out_left);
                         binding.rlGift.clearAnimation();
                         binding.rlGift.setAnimation(goneAnim1);
@@ -2069,7 +2067,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
-
+                                Log.e("----------------", "GONE()");
                                 binding.rlGift.setVisibility(View.GONE);
                                 if (giftsBannersList.size() > 0) {
                                     giftsBannersList.remove(0);
