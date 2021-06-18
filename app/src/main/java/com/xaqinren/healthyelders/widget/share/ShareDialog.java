@@ -161,8 +161,13 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.shareReport.setOnClickListener(view -> {
             //举报
-            UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, uniUrl);
-
+            if (showType == VIDEO_TYPE) {
+                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.VIDEO_REPORT+shareBean.id);
+            } else if (showType == TP_TYPE) {
+//                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.VIDEO_REPORT+"");
+            } else if (showType == LIVE_TYPE) {
+                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.LIVE_REPORT+shareBean.id);
+            }
         });
         binding.shareOperationLayout.sharePost.setOnClickListener(view -> {
             //生成海报
@@ -182,7 +187,8 @@ public class ShareDialog {
             if (event != null) {
                 if (event.msgId == CodeTable.UNI_RELEASE) {
                     if (event.taskId == 99) {
-                        UniUtil.openUniApp(mContext, Constant.JKZL_MINI_APP_ID, uniUrl, null, event.isSelfUni);
+                        UniUtil.openUniApp(mContext, Constant.JKZL_MINI_APP_ID, event.jumpUrl, null, event.isSelfUni);
+                        hide();
                     }
                 } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
                     //ToastUtils.showShort("打开小程序失败");
@@ -192,7 +198,6 @@ public class ShareDialog {
     }
 
     //todo 举报小程序地址
-    private String uniUrl;
 
     private ClipboardManager cm;
     private ClipData mClipData;
@@ -201,7 +206,7 @@ public class ShareDialog {
         //获取剪贴板管理器：
         cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         // 创建普通字符型ClipData
-        mClipData = ClipData.newPlainText("Label", "复制内容");
+        mClipData = ClipData.newPlainText("Label", shareBean.url);
         // 将ClipData内容放到系统剪贴板里。
         cm.setPrimaryClip(mClipData);
         ToastUtil.toastShortMessage("复制成功");

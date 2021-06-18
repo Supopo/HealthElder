@@ -383,7 +383,17 @@
         <activity android:name=".moduleMine.activity.MyRecommendCodeActivity" />
         <activity android:name=".moduleMine.activity.WalletActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AnimTheme" />
+            android:theme="@style/AnimTheme" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/userWallet"
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
         <activity android:name=".moduleMine.activity.SettingPayPassActivity" />
         <activity android:name=".moduleMine.activity.ConfirmPassActivity" />
         <activity android:name=".moduleMine.activity.CoinActivity" />
@@ -394,7 +404,17 @@
         <activity android:name=".moduleMine.activity.UserInfoActivity"
             android:theme="@style/AnimTheme"
             />
-        <activity android:name=".moduleMine.activity.SettingActivity" />
+        <activity android:name=".moduleMine.activity.SettingActivity" >
+            <intent-filter>
+                <data
+                    android:host="app_open"
+                    android:path="/userSetting"
+                    android:scheme="jkzl" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
         <activity android:name=".moduleMine.activity.LookAuthActivity" />
         <activity android:name=".moduleMine.activity.CoinDetailActivity" />
         <activity android:name=".moduleMine.activity.ChangePhoneActivity" />

@@ -793,6 +793,10 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             saveDraftBean.setCity(locationBean.city);
             saveDraftBean.setDistrict(locationBean.district);
         }
+        List<String> files = getUploadFiles();
+        if (!files.isEmpty()) {
+            saveDraftBean.setCoverPath(files.get(0));
+        }
         saveDraftBean.setComment(false);
         saveDraftBean.setType(1);
         saveDraftBean.setSaveTime(System.currentTimeMillis());

@@ -752,41 +752,50 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 SlideBarBean.MenuInfoListDTO menuInfoListDTO = slideBarAdapter.getData().get(position);
                 closeDelay();
-                if (menuInfoListDTO.getEventType().equals("ORIGIN")) {
-                    //原生
-                    String event = menuInfoListDTO.getEvent();
-                    String jumpUrl = menuInfoListDTO.getJumpUrl();
-                    if (event.equals("page")) {
-                        //跳转页面
-                        if (jumpUrl.equals("userWallet")) {
-                            startActivity(WalletActivity.class);
-                        } else if (jumpUrl.equals("userSetting")) {
-                            startActivity(SettingActivity.class);
-                        }
-                    } else if (event.equals("method")) {
-                        //打开方法
-                        SlideParamBean slideParamBean = JSON.parseObject(jumpUrl, SlideParamBean.class);
-                        String function = slideParamBean.getFunction();
-                        try {
-                            Method fun = MainActivity.class.getDeclaredMethod(function, Map.class);
-                            fun.setAccessible(true);
-                            fun.invoke(MainActivity.this, slideParamBean.getParam());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (menuInfoListDTO.getEventType().equals("APPLET")) {
-                    //小程序
-                    String appid = menuInfoListDTO.getEvent();
-                    String page = menuInfoListDTO.getJumpUrl();
-                    UniService.startService(getContext(), appid, 0x10056, page);
-                }
+                jumpMenu(menuInfoListDTO);
             }
         });
     }
 
-    public void makeCall(Map<String, String> param) {
-        IntentUtils.sendPhone(getContext(), param.get("phone"));
+    /**
+     *
+     * @param menuInfoListDTO
+     */
+    public void jumpMenu(SlideBarBean.MenuInfoListDTO menuInfoListDTO) {
+        if (menuInfoListDTO.getEventType().equals("ORIGIN")) {
+            //原生
+            String event = menuInfoListDTO.getEvent();
+            String jumpUrl = menuInfoListDTO.getJumpUrl();
+            if (event.equals("page")) {
+                //跳转页面
+                SlideParamBean slideParamBean = JSON.parseObject(jumpUrl, SlideParamBean.class);
+                HashMap<String, Object> param = slideParamBean.getParam();
+                Bundle bundle = mackBundleByMap(param);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("jkzl://app_open/" + slideParamBean.getPage()));
+                getActivity().startActivity(intent,bundle);
+            } else if (event.equals("method")) {
+                //打开方法
+                SlideParamBean slideParamBean = JSON.parseObject(jumpUrl, SlideParamBean.class);
+                String function = slideParamBean.getFunction();
+                try {
+                    Method fun = MainActivity.class.getDeclaredMethod(function, Map.class);
+                    fun.setAccessible(true);
+                    fun.invoke(MainActivity.this, slideParamBean.getParam());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (menuInfoListDTO.getEventType().equals("APPLET")) {
+            //小程序
+            String appid = menuInfoListDTO.getEvent();
+            String page = menuInfoListDTO.getJumpUrl();
+            UniService.startService(getContext(), appid, 0x10056, page);
+        }
+    }
+
+    public void makeCall(Map<String, Object> param) {
+        IntentUtils.sendPhone(getContext(), (String) param.get("phone"));
     }
 
     public void makeActivity(Map<String, Object> param) {
@@ -794,9 +803,27 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         param.remove("activityName");
         String code = (String) param.get("code");
         param.remove("code");
-        Bundle bundle = new Bundle();
+        Bundle bundle = mackBundleByMap(param);
+        try {
+            Class cls = Class.forName(name);
+            Intent intent = new Intent(getActivity(), cls);
+            intent.putExtras(bundle);
+            if (!StringUtils.isEmpty(code)) {
+                int code1 = Integer.parseInt(code);
+                startActivityForResult(intent, code1);
+            } else {
+                startActivity(intent);
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Bundle mackBundleByMap(Map<String, Object> param){
         Set<String> strings = param.keySet();
         Iterator<String> iterator = strings.iterator();
+        Bundle bundle = new Bundle();
         while (iterator.hasNext()) {
             String key = iterator.next();
             Object value = param.get(key);
@@ -814,20 +841,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 bundle.putLong(key, (Long) value);
             }
         }
-        try {
-            Class cls = Class.forName(name);
-            Intent intent = new Intent(getActivity(), cls);
-            intent.putExtras(bundle);
-            if (!StringUtils.isEmpty(code)) {
-                int code1 = Integer.parseInt(code);
-                startActivityForResult(intent, code1);
-            } else {
-                startActivity(intent);
-            }
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        return bundle;
     }
 
     public void openDrawer() {

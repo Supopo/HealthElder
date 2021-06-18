@@ -23,8 +23,12 @@ public class DraftAdapter extends BaseQuickAdapter<SaveDraftBean , BaseViewHolde
         ItemDraftBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         if (saveDraftBean.getType() == 0)
         GlideUtil.intoImageView(getContext(),saveDraftBean.getCoverPath(),binding.itemIv);
-        else
-            GlideUtil.intoImageView(getContext(),saveDraftBean.getFilePaths().get(0),binding.itemIv);
+        else {
+            if (!saveDraftBean.getFilePaths().isEmpty())
+                GlideUtil.intoImageView(getContext(), saveDraftBean.getFilePaths().get(0), binding.itemIv);
+            else
+                binding.itemIv.setImageResource(R.color.color_70000000);
+        }
         binding.selIv.setVisibility(saveDraftBean.isEdit() ? View.VISIBLE : View.GONE);
         binding.selIv.setImageResource(saveDraftBean.isSel() ? R.mipmap.rad_py_sel : R.mipmap.rad_py_nor);
 

@@ -21,7 +21,7 @@
                 android:src="@mipmap/main_back"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_9"
-                android:padding="@dimen/dp_7"/>
+                android:padding="@dimen/dp_4"/>
             <EditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"

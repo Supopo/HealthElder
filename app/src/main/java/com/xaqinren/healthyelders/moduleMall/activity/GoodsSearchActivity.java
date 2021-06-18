@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -80,11 +81,21 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
         binding.backIv.setOnClickListener(v -> finish());
         binding.search.setText(tags);
         itemBeans = new ArrayList<>();
+        binding.recyclerView.setPadding(0, 0, 0, 0);
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         goodsStaggeredAdapter = new GoodsStaggeredAdapter(R.layout.item_goods_staggered);
         goodsStaggeredAdapter.setEmptyView(R.layout.list_empty);
         binding.recyclerView.setItemAnimator(null);
+
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                staggeredGridLayoutManager.invalidateSpanAssignments(); //防止第一行到顶部有空白区域
+            }
+        });
+        binding.recyclerView.setHasFixedSize(true);
 
         goodsStaggeredAdapter.getLoadMoreModule().setEnableLoadMore(true);
         goodsStaggeredAdapter.getLoadMoreModule().setAutoLoadMore(true);
@@ -236,8 +247,13 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
             }
             binding.swipeContent.setRefreshing(false);
             itemBeans.addAll(goodsItemBeans);
-            goodsStaggeredAdapter.addData(goodsItemBeans);
-            goodsLinearAdapter.addData(goodsItemBeans);
+            if (page == 1) {
+                goodsStaggeredAdapter.setList(goodsItemBeans);
+                goodsLinearAdapter.setList(goodsItemBeans);
+            }else {
+                goodsStaggeredAdapter.addData(goodsItemBeans);
+                goodsLinearAdapter.addData(goodsItemBeans);
+            }
             if (layoutType == 0) {
                 goodsStaggeredAdapter.setEmptyView(R.layout.list_empty);
                 if (goodsItemBeans.isEmpty() || goodsItemBeans.size() < pageSize) {
