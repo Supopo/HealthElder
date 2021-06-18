@@ -46,7 +46,7 @@
             android:layout_below="@id/tv_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="@{viewModel.getUserCount()}"
+            android:text="@{`本次直播观看人数`+viewModel.getUserCount()}"
             android:textColor="#ffe5e5e5"
             android:textSize="@dimen/sp_14" />
 

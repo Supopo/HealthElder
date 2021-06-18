@@ -176,7 +176,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                     //关注的人
                     friendBean.setIdentity(AddFriendAdapter.STRANGER);
                 }
-            adapter.notifyItemChanged(opIndex + 1);
+            adapter.notifyItemChanged(opIndex,99);
         });
         viewModel.del.observe(this, aBoolean -> {
             if (aBoolean) {
