@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -1487,6 +1489,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         if (uniSubscribe != null) {
             uniSubscribe.dispose();
         }
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     private double firstClickLMTime;
@@ -1498,18 +1506,15 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        System.out.println("---------------按下了-------------------");
                         before_press_Y = event.getY();
                         before_press_X = event.getX();
                         break;
                     case MotionEvent.ACTION_UP:
-                        System.out.println("--------------抬起了------------------");
                         long secondTime = System.currentTimeMillis();
                         if (secondTime - firstClickTime < 500) {
                             double now_press_Y = event.getY();
                             double now_press_X = event.getX();
                             if (now_press_Y - before_press_Y <= 50 && now_press_X - before_press_X <= 50) {
-                                System.out.println("-------------------处理双击事件----------------------");
                                 //双击点赞
                                 double2DianZan((int) now_press_Y + binding.mTxVideoView.getTop(), (int) now_press_X);
                             }
@@ -1885,14 +1890,16 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         }
 
         //判断展示的banner里面有没有，若有则叠加
+
         if (isBanner1Showing && sendGiftBean1 != null) {
-            if (sendGiftBean1.id.equals(sendGiftBean.id)) {
+            if (sendGiftBean1.id.equals(sendGiftBean.id) && sendGiftBean1.userId.equals(sendGiftBean.userId)) {
                 sendGiftBean1.num = sendGiftBean1.num + 1;
                 showBanner1();
                 return;
             }
-        } else if (isBanner2Showing && sendGiftBean2 != null) {
-            if (sendGiftBean2.id.equals(sendGiftBean.id)) {
+        }
+        if (isBanner2Showing && sendGiftBean2 != null) {
+            if (sendGiftBean2.id.equals(sendGiftBean.id) && sendGiftBean2.userId.equals(sendGiftBean.userId)) {
                 sendGiftBean2.num = sendGiftBean2.num + 1;
                 showBanner2();
                 return;
@@ -1920,6 +1927,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         if (!isBanner1Showing) {
             if (giftsBannersList.size() == 0) {
+                freedTimerTask1();
                 return;
             }
 
@@ -1927,10 +1935,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             showBanner1();
         } else {
             if (giftsBannersList2.size() == 0) {
+                freedTimerTask2();
                 return;
             }
-            sendGiftBean2 = giftsBannersList2.get(0);
 
+            sendGiftBean2 = giftsBannersList2.get(0);
             showBanner2();
         }
 
@@ -1992,14 +2001,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                                 }
                                 isBanner2Showing = false;
                                 sendGiftBean2 = null;
-                                giftContentTask2.cancel();
-                                giftContentTimer2.cancel();
-                                giftContentTimer2.purge();
-                                giftContentTimer2 = null;
 
-                                Log.e("--", "-------2222over");
-
-                                loadBanner();
+                                freedTimerTask2();
+                                handler.sendEmptyMessage(99);
                             }
 
                             @Override
@@ -2018,6 +2022,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
     private void showBanner1() {
+
         //送礼横幅
         if (binding.rlGift.getVisibility() == View.GONE) {
             showAnim1 = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_in_left);
@@ -2040,7 +2045,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         //礼物消息横幅3S结束
         if (giftContentTimer != null) {
             giftContentTimer.cancel();
-            giftContentTimer.purge();
+            giftContentTimer2.purge();
         }
         giftContentTimer = new Timer();
 
@@ -2054,7 +2059,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         goneAnim1 = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_out_left);
                         binding.rlGift.clearAnimation();
                         binding.rlGift.setAnimation(goneAnim1);
@@ -2066,19 +2070,17 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
+
                                 binding.rlGift.setVisibility(View.GONE);
                                 if (giftsBannersList.size() > 0) {
                                     giftsBannersList.remove(0);
                                 }
                                 isBanner1Showing = false;
                                 sendGiftBean1 = null;
-                                giftContentTask.cancel();
-                                giftContentTimer.cancel();
-                                giftContentTimer.purge();
-                                giftContentTimer = null;
-                                Log.e("--", "-------1111over");
 
-                                loadBanner();
+                                freedTimerTask1();
+                                handler.sendEmptyMessage(99);
+
                             }
 
                             @Override
@@ -2095,6 +2097,41 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         };
         isBanner1Showing = true;
         giftContentTimer.schedule(giftContentTask, 4000);//3秒后关闭
+    }
+
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 99:
+                    loadBanner();
+                    break;
+            }
+        }
+    };
+    private void freedTimerTask2() {
+        if (giftContentTask2 != null) {
+            giftContentTask2.cancel();
+            giftContentTask2 = null;
+        }
+        if (giftContentTimer2 != null) {
+            giftContentTimer2.cancel();
+            giftContentTimer2.purge();
+            giftContentTimer2 = null;
+        }
+    }
+    private void freedTimerTask1() {
+        if (giftContentTask != null) {
+            giftContentTask.cancel();
+            giftContentTask = null;
+        }
+        if (giftContentTimer != null) {
+            giftContentTimer.cancel();
+            giftContentTimer.purge();
+            giftContentTimer = null;
+        }
+
     }
 
     //加载动画

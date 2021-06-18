@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -1010,13 +1011,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         //判断展示的banner里面有没有，若有则叠加
         if (isBanner1Showing && sendGiftBean1 != null) {
-            if (sendGiftBean1.id.equals(sendGiftBean.id)) {
+            if (sendGiftBean1.id.equals(sendGiftBean.id) && sendGiftBean1.userId.equals(sendGiftBean.userId)) {
                 sendGiftBean1.num = sendGiftBean1.num + 1;
                 showBanner1();
                 return;
             }
-        } else if (isBanner2Showing && sendGiftBean2 != null) {
-            if (sendGiftBean2.id.equals(sendGiftBean.id)) {
+        }
+        if (isBanner2Showing && sendGiftBean2 != null) {
+            if (sendGiftBean2.id.equals(sendGiftBean.id) && sendGiftBean2.userId.equals(sendGiftBean.userId)) {
                 sendGiftBean2.num = sendGiftBean2.num + 1;
                 showBanner2();
                 return;
@@ -1052,6 +1054,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private TimerTask giftContentTask2;
     private Timer giftContentTimer;
     private Timer giftContentTimer2;
+
     //加载横幅
     private void loadBanner() {
         if ((isBanner1Showing && isBanner2Showing)) {
@@ -1061,6 +1064,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         if (!isBanner1Showing) {
             if (giftsBannersList.size() == 0) {
+                freedTimerTask1();
                 return;
             }
 
@@ -1068,6 +1072,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             showBanner1();
         } else {
             if (giftsBannersList2.size() == 0) {
+                freedTimerTask2();
                 return;
             }
             sendGiftBean2 = giftsBannersList2.get(0);
@@ -1133,13 +1138,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                                 }
                                 isBanner2Showing = false;
                                 sendGiftBean2 = null;
-                                giftContentTask2.cancel();
-                                giftContentTimer2.cancel();
-                                giftContentTimer2.purge();
-                                giftContentTimer2 = null;
-
-
-                                loadBanner();
+                                freedTimerTask2();
+                                handler.sendEmptyMessage(99);
                             }
 
                             @Override
@@ -1212,12 +1212,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                                 }
                                 isBanner1Showing = false;
                                 sendGiftBean1 = null;
-                                giftContentTask.cancel();
-                                giftContentTimer.cancel();
-                                giftContentTimer.purge();
-                                giftContentTimer = null;
 
-                                loadBanner();
+                                freedTimerTask1();
+                                handler.sendEmptyMessage(99);
                             }
 
                             @Override
@@ -1234,6 +1231,43 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         };
         isBanner1Showing = true;
         giftContentTimer.schedule(giftContentTask, 4000);//3秒后关闭
+    }
+
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 99:
+                    loadBanner();
+                    break;
+            }
+        }
+    };
+
+    private void freedTimerTask2() {
+        if (giftContentTask2 != null) {
+            giftContentTask2.cancel();
+            giftContentTask2 = null;
+        }
+        if (giftContentTimer2 != null) {
+            giftContentTimer2.cancel();
+            giftContentTimer2.purge();
+            giftContentTimer2 = null;
+        }
+    }
+
+    private void freedTimerTask1() {
+        if (giftContentTask != null) {
+            giftContentTask.cancel();
+            giftContentTask = null;
+        }
+        if (giftContentTimer != null) {
+            giftContentTimer.cancel();
+            giftContentTimer.purge();
+            giftContentTimer = null;
+        }
+
     }
 
     //加载动画
@@ -1515,10 +1549,18 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
         if (isPlaying) {
             viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
             stopPublish();
+        }
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
         }
     }
 
@@ -1529,18 +1571,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        System.out.println("---------------按下了-------------------");
                         before_press_Y = event.getY();
                         before_press_X = event.getX();
                         break;
                     case MotionEvent.ACTION_UP:
-                        System.out.println("--------------抬起了------------------");
                         long secondTime = System.currentTimeMillis();
                         if (secondTime - firstClickTime < 500) {
                             double now_press_Y = event.getY();
                             double now_press_X = event.getX();
                             if (now_press_Y - before_press_Y <= 50 && now_press_X - before_press_X <= 50) {
-                                System.out.println("-------------------处理双击事件----------------------");
                                 //双击点赞
                                 double2DianZan((int) now_press_Y + binding.mTxVideoView.getTop(), (int) now_press_X);
                             }
