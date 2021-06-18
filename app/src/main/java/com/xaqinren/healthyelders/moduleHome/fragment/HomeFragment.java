@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +107,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //展示TabLayout
                         binding.rlTabMenu.setVisibility(View.VISIBLE);
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
+                        showDialog();
+
                         AppApplication.get().setShowTopMenu(true);
                         isShowTop = true;
                         //刷新首页菜单数据
@@ -143,6 +146,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
                         binding.nsv.fling(0);
                         binding.nsv.smoothScrollTo(0, 0);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismissDialog();
+                            }
+                        },500);
                     }
                 }
             }
