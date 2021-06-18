@@ -124,6 +124,13 @@ public class Constant {
     //直播功能行为规范
     public static final String ZB_XWGF = "/pages/agreement/liveStandard?action=redirect";
 
+    //视频举报
+    public static final String VIDEO_REPORT = "/pages/feedback/reportType?title=视频举报&type=video&id=";
+    //用户举报
+    public static final String USER_REPORT = "/pages/feedback/reportType?title=用户举报&type=user&id=";
+    //直播举报
+    public static final String LIVE_REPORT = "/pages/feedback/reportType?title=直播举报&type=video&id=";
+
 
 
     //腾讯云小视频加防盗链
