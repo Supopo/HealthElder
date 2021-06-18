@@ -170,10 +170,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            //判单横竖屏设置不同模式封面图片加载
-            if (isHP) {
-                binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            } else {
+            //判单横竖屏设置不同模式封面图片加载 横屏不用设置CenterInside
+            if (!isHP) {
                 binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
             Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
@@ -304,6 +302,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     public static final float CACHE_TIME_SMOOTH = 5.0f;
 
     private void initLive() {
+        //判断是推荐第一条开始未滑动时候不显示加载进度
+        if ((AppApplication.get().getTjPlayPosition() == -1 && position == 0 && type.equals("home-tj"))) {
+            dismissLoading();
+        } else {
+            showLoading();
+        }
+
+
         binding.mainVideoView.showLog(false);
         mPlayerConfig = new TXLivePlayConfig();
         mLivePlayer = new TXLivePlayer(getActivity());
@@ -930,6 +936,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
             dismissLoading();
+            binding.coverImageView.setVisibility(View.GONE);
+
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
@@ -1040,7 +1048,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_ERR_NET_DISCONNECT");
         }
-        LogUtils.v(Constant.TAG_LIVE, type + position + "XXXXXXXXXXXXXXXX" + event);
 
     }
 

@@ -21,8 +21,8 @@ ext {
             applicationId      : "com.xaqinren.healthyelders",
             minSdkVersion      : 21,
             targetSdkVersion   : 28,
-            versionCode        : 14,
-            versionName        : "2.0.2",
+            versionCode        : 15,
+            versionName        : "2.0.3",
             sourceCompatibility: 1.8,
             targetCompatibility: 1.8,
     ]
