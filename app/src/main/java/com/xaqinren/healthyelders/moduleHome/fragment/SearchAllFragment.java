@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -30,15 +31,21 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/5/27.
@@ -52,6 +59,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     private Disposable subscribe;
     private SearchUserAdapter userAdapter;
     private HeaderAllSearchBinding headBinding;
+    private Disposable uniSubscribe;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,7 +81,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         binding.rvContent.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvContent.setAdapter(mAdapter);
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 1, 3, 0));
-
+        showDialog();
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
         mLoadMore.setAutoLoadMore(true);//自动加载
@@ -84,7 +92,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                searchAllViewModel.searchDatas(page, 0);
+                searchAllViewModel.searchDatas(page, 0 );
             }
         });
 
@@ -92,7 +100,6 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             @Override
             public void onRefresh() {
                 mLoadMore.setEnableLoadMore(false);
-                binding.srlContent.setRefreshing(false);
                 page = 1;
                 searchAllViewModel.searchUsers(page, 3);
                 searchAllViewModel.searchDatas(page, 0);
@@ -114,6 +121,10 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             } else if (mAdapter.getData().get(position).getItemType() == 3) {
                 //进入直播
                 searchAllViewModel.joinLive(mAdapter.getData().get(position).liveRoomId);
+            }  else if (mAdapter.getData().get(position).getItemType() == 2) {
+                //进入商品
+                VideoInfo info = mAdapter.getData().get(position);
+                UniService.startService(getContext(), info.appId, 0x20056, info.jumpUrl);
             }
         }));
 
@@ -125,7 +136,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         }));
 
         initHead();
-        showDialog();
+        ((BaseActivity)getActivity()).showDialog();
     }
 
     private boolean hasHead;
@@ -188,18 +199,28 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             }
 
         });
-
-        searchAllViewModel.dismissDialog.observe(this, disDialog -> {
-            if (disDialog != null && disDialog) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dismissDialog();
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 0x20056) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
                     }
-                }, 3000);
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    ToastUtils.showShort("打开小程序失败");
+                }
             }
         });
-
+        searchAllViewModel.dismissDialog.observe(this, disDialog -> {
+            dismissDialog();
+//            if (disDialog != null && disDialog) {
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        dismissDialog();
+//                    }
+//                }, 3000);
+//            }
+        });
 
         searchAllViewModel.followSuccess.observe(this, dismissDialog -> {
             userAdapter.notifyItemChanged(followPosition, 99);
@@ -214,11 +235,11 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 } else {
                     headBinding.llHead.setVisibility(View.GONE);
                 }
-
             }
         });
 
         searchAllViewModel.allDatas.observe(this, dataList -> {
+            binding.srlContent.setRefreshing(false);
             if (dataList != null) {
                 dismissDialog();
                 if (dataList.size() > 0) {
@@ -249,6 +270,9 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         super.onDestroyView();
         if (subscribe != null) {
             subscribe.dispose();
+        }
+        if (uniSubscribe != null) {
+            uniSubscribe.dispose();
         }
     }
 }

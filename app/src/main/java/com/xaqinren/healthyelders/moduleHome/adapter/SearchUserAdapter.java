@@ -17,7 +17,7 @@ import java.util.List;
 public class SearchUserAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> implements LoadMoreModule {
     public SearchUserAdapter(int layoutResId) {
         super(layoutResId);
-        addChildClickViewIds(R.id.tv_follow);
+        addChildClickViewIds(R.id.tv_follow,R.id.rl_avatar);
     }
 
     @Override

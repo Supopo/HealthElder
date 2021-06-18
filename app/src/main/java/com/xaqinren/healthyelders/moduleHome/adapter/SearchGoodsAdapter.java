@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 public class SearchGoodsAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> implements LoadMoreModule {
     public SearchGoodsAdapter(int layoutResId) {
         super(layoutResId);
+        addChildClickViewIds(R.id.ll_item);
     }
 
     @Override

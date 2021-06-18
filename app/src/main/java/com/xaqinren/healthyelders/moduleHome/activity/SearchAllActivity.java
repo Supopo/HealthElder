@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -67,7 +68,8 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
         super.initData();
         viewModel.tags = tags;
         binding.etSearch.setText(tags);
-        setStatusBarTransparentBlack();
+        rlTitle.setVisibility(View.GONE);
+//        setStatusBarTransparentBlack();
 
         showDialog();
         List<Fragment> fragments = new ArrayList<>();
@@ -127,6 +129,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                         goodsFragment.page = 1;
                         zbFragment.page = 1;
                         twFragment.page = 1;
+                        ((BaseActivity)getActivity()).showDialog();
                         viewModel.searchUsers(1, 3);
                         viewModel.searchDatas(1, fragmentPos);
                     } else {

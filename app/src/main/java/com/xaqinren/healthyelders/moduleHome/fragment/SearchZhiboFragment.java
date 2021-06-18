@@ -22,6 +22,7 @@ import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 
@@ -52,6 +53,7 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
     public void initData() {
         super.initData();
         //获取别的ViewModel
+        ((BaseActivity)getActivity()).showDialog();
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
         mAdapter = new SearchZhiboAdapter(R.layout.item_search_zb);
         binding.rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -75,7 +77,6 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
             @Override
             public void onRefresh() {
                 mLoadMore.setEnableLoadMore(false);
-                binding.srlContent.setRefreshing(false);
                 page = 1;
                 searchAllViewModel.searchDatas(page, 4);
             }
@@ -90,7 +91,11 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-
+        searchAllViewModel.dismissDialog.observe(this, dismissDialog -> {
+            if (dismissDialog != null) {
+                dismissDialog();
+            }
+        });
         searchAllViewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
                 Bundle bundle = new Bundle();
@@ -100,6 +105,7 @@ public class SearchZhiboFragment extends BaseFragment<FragmentSearchZbBinding, S
         });
 
         searchAllViewModel.zbDatas.observe(this, dataList -> {
+            binding.srlContent.setRefreshing(false);
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成

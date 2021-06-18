@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 
@@ -62,6 +63,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         super.initData();
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
+        ((BaseActivity)getActivity()).showDialog();
         initAdapter();
 
         //瀑布流
@@ -77,25 +79,12 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
             @Override
             public void onRefresh() {
                 mLoadMore.setEnableLoadMore(false);
-                binding.srlContent.setRefreshing(false);
                 page = 1;
                 searchAllViewModel.searchDatas(page, 1);
             }
         });
 
-        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            List<VideoInfo> tempList = new ArrayList<>();
-            VideoInfo videoInfo = mAdapter.getData().get(position);
-            tempList.add(videoInfo);
-            toVideoList(tempList);
-        }));
 
-        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
-            if (view.getId() == R.id.ll_like) {
-                //点赞
-                searchAllViewModel.toLike(1, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
-            }
-        }));
     }
 
     private void initAdapter() {
@@ -115,6 +104,20 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
                 searchAllViewModel.searchDatas(page, 1);
             }
         });
+
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            List<VideoInfo> tempList = new ArrayList<>();
+            VideoInfo videoInfo = mAdapter.getData().get(position);
+            tempList.add(videoInfo);
+            toVideoList(tempList);
+        }));
+
+        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            if (view.getId() == R.id.ll_like) {
+                //点赞
+                searchAllViewModel.toLike(1, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
+            }
+        }));
 
     }
 
@@ -156,6 +159,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         });
 
         searchAllViewModel.videoDatas.observe(this, dataList -> {
+            binding.srlContent.setRefreshing(false);
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成

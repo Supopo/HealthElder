@@ -72,13 +72,13 @@
 
     <Button
         android:id="@+id/btn_next"
-        android:layout_width="50dp"
-        android:layout_height="25dp"
+        android:layout_width="77dp"
+        android:layout_height="34dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="15dp"
-        android:background="?attr/nextIcon"
+        android:background="@drawable/next_btn_comfrim_cir_shape"
         android:text="@string/ugckit_next_step"
         android:textColor="@color/ugckit_white"
-        android:textSize="@dimen/ugckit_h5" />
+        android:textSize="@dimen/ugckit_h6" />
 </RelativeLayout>

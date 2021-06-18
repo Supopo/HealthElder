@@ -83,6 +83,8 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String district;//":
     public String city;//":
     public String province;//":
+    public String appId;//":
+    public String jumpUrl;//":
 
     public String recommendedCode;//":
     public int fansCount;

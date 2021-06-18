@@ -37,9 +37,9 @@ public class SearchAllViewModel extends BaseViewModel {
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
     public String tags;
-
-    public void searchDatas(int page, int searchType) {
-        showDialog();
+    public void searchDatas(int page, int searchType , boolean showDialog){
+        if (showDialog)
+            showDialog();
         switch (searchType) {
             case 0:
                 //全部搜索
@@ -68,6 +68,9 @@ public class SearchAllViewModel extends BaseViewModel {
                 break;
         }
     }
+    public void searchDatas(int page, int searchType) {
+        searchDatas(page, searchType, false);
+    }
 
     public void joinLive(String liveRoomId) {
         showDialog();
@@ -75,7 +78,6 @@ public class SearchAllViewModel extends BaseViewModel {
     }
 
     public void searchUsers(int page, int size) {
-        showDialog();
         if (size == 10) {
             UserRepository.getInstance().searchUser(dismissDialog, userDatas2, page, size, tags);
         } else {

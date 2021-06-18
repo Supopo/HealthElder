@@ -2,13 +2,18 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
@@ -19,25 +24,32 @@ import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchGoodsAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/5/28.
  * 搜索 - 商品列表
  */
-public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, BaseViewModel> {
+public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, BaseViewModel> implements OnItemClickListener {
 
     private SearchGoodsAdapter mAdapter;
     public int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
     private Disposable subscribe;
+    private Disposable uniSubscribe;
 
 
     @Override
@@ -56,7 +68,7 @@ public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, B
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
 
-
+        ((BaseActivity)getActivity()).showDialog();
         initAdapter();
 
         //瀑布流
@@ -69,26 +81,20 @@ public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, B
         binding.rvContent.setItemAnimator(null);
 
 
-
-
         binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mLoadMore.setEnableLoadMore(false);
-                binding.srlContent.setRefreshing(false);
                 page = 1;
                 searchAllViewModel.searchDatas(page,3);
             }
         });
-
-
-
     }
 
     private void initAdapter() {
         mAdapter = new SearchGoodsAdapter(R.layout.item_search_goods);
         binding.rvContent.setAdapter(mAdapter);
-
+        mAdapter.setOnItemClickListener(this);
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
         mLoadMore.setAutoLoadMore(true);//自动加载
@@ -107,8 +113,24 @@ public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, B
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-
+        searchAllViewModel.dismissDialog.observe(this, dismissDialog -> {
+            if (dismissDialog != null) {
+                dismissDialog();
+            }
+        });
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 0x30056) {
+                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
         searchAllViewModel.goodsDatas.observe(this, dataList -> {
+            binding.srlContent.setRefreshing(false);
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成
@@ -145,5 +167,15 @@ public class SearchGoodsFragment extends BaseFragment<FragmentSearchSpBinding, B
         if (subscribe != null) {
             subscribe.dispose();
         }
+        if (uniSubscribe != null) {
+            uniSubscribe.dispose();
+        }
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        //进入商品
+        VideoInfo info = mAdapter.getData().get(position);
+        UniService.startService(getContext(), info.appId, 0x20056, info.jumpUrl);
     }
 }

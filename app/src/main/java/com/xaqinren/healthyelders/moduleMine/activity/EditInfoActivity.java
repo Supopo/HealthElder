@@ -107,6 +107,8 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
             if (position == 0){
                 changeName();
             }else if (position == 1){
+                //健康号
+                startActivity(MyRecommendCodeActivity.class);
             }else if (position == 2){
                 changeInfo();
             }else if (position == 3){

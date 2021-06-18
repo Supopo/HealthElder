@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
+import com.tencent.bugly.proguard.P;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -23,8 +24,10 @@ import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchUserViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
@@ -57,8 +60,9 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
     public void initData() {
         super.initData();
         //获取别的ViewModel
-        searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
 
+        searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
+        ((BaseActivity)getActivity()).showDialog();
         mAdapter = new SearchUserAdapter(R.layout.item_search_user);
 
         binding.rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -72,7 +76,6 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
             @Override
             public void onLoadMore() {
-                binding.srlContent.setRefreshing(false);
                 page++;
                 searchAllViewModel.searchDatas(page, 2);
             }
@@ -90,12 +93,22 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
 
         mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
             //关注
-            if (!InfoCache.getInstance().checkLogin()) {
-                startActivity(SelectLoginActivity.class);
-                return;
+            switch (view.getId()) {
+                case R.id.tv_follow:
+                {
+                    if (!InfoCache.getInstance().checkLogin()) {
+                        startActivity(SelectLoginActivity.class);
+                        return;
+                    }
+                    mPosition = position;
+                    viewModel.toFollow(mAdapter.getData().get(position).id);
+                }
+                    break;
+                case R.id.rl_avatar:{
+                    UserInfoActivity.startActivity(getActivity(),mAdapter.getData().get(position).id);
+                } break;
             }
-            mPosition = position;
-            viewModel.toFollow(mAdapter.getData().get(position).id);
+
         }));
     }
 
@@ -117,6 +130,7 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
         });
 
         searchAllViewModel.userDatas2.observe(this, dataList -> {
+            binding.srlContent.setRefreshing(false);
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成

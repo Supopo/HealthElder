@@ -78,6 +78,7 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
         setTitle("搜索");
         rlTitle.setVisibility(View.GONE);
         binding.backIv.setOnClickListener(v -> finish());
+        binding.search.setText(tags);
         itemBeans = new ArrayList<>();
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
@@ -238,12 +239,14 @@ public class GoodsSearchActivity extends BaseActivity<ActivityGoodsSearchBinding
             goodsStaggeredAdapter.addData(goodsItemBeans);
             goodsLinearAdapter.addData(goodsItemBeans);
             if (layoutType == 0) {
+                goodsStaggeredAdapter.setEmptyView(R.layout.list_empty);
                 if (goodsItemBeans.isEmpty() || goodsItemBeans.size() < pageSize) {
                     goodsStaggeredAdapter.getLoadMoreModule().loadMoreEnd(false);
                 }else{
                     goodsStaggeredAdapter.getLoadMoreModule().loadMoreComplete();
                 }
             }else{
+                goodsLinearAdapter.setEmptyView(R.layout.list_empty);
                 if (goodsItemBeans.isEmpty() || goodsItemBeans.size() < pageSize) {
                     goodsLinearAdapter.getLoadMoreModule().loadMoreEnd(false);
                 }else{

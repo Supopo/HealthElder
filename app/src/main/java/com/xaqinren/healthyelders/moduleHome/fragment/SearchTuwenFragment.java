@@ -23,6 +23,7 @@ import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
@@ -55,7 +56,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         super.initData();
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
-
+        ((BaseActivity)getActivity()).showDialog();
         initAdapter();
 
 
@@ -69,7 +70,6 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         binding.rvContent.setItemAnimator(null);
 
 
-
         binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -79,20 +79,6 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
                 searchAllViewModel.searchDatas(page, 5);
             }
         });
-
-        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            //跳转图文详情
-            Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
-            intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, mAdapter.getData().get(position).resourceId);
-            startActivity(intent);
-        }));
-
-        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
-            if (view.getId() == R.id.ll_like) {
-                //点赞
-                searchAllViewModel.toLike(2, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
-            }
-        }));
 
     }
 
@@ -112,6 +98,19 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
                 searchAllViewModel.searchDatas(page, 5);
             }
         });
+        mAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            //跳转图文详情
+            Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+            intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, mAdapter.getData().get(position).resourceId);
+            startActivity(intent);
+        }));
+
+        mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            if (view.getId() == R.id.ll_like) {
+                //点赞
+                searchAllViewModel.toLike(2, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
+            }
+        }));
     }
 
     @Override
@@ -135,6 +134,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         });
 
         searchAllViewModel.twDatas.observe(this, dataList -> {
+            binding.srlContent.setRefreshing(false);
             if (dataList != null) {
                 if (dataList.size() > 0) {
                     //加载更多加载完成
