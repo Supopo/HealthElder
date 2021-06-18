@@ -1956,14 +1956,13 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             binding.tvGiftName2.setText("送" + sendGiftBean2.giftsName);
             binding.rlGift2.clearAnimation();
             binding.rlGift2.setAnimation(showAnim2);
-            binding.tvGiftNum2.setText("" + sendGiftBean2.num);
         } else {
             Animation bigAnim = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.zbj_gift_num);
             binding.tvGiftNum2.clearAnimation();
             binding.tvGiftNum2.setAnimation(bigAnim);
         }
 
-        binding.tvGiftNum2.setText("" + sendGiftBean2.num);
+        binding.tvGiftNum2.setText("" + sendGiftBean2.num + " ");
 
         //礼物消息横幅3S结束
         if (giftContentTimer2 != null) {
@@ -2039,7 +2038,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             binding.tvGiftNum.clearAnimation();
             binding.tvGiftNum.setAnimation(bigAnim);
         }
-        binding.tvGiftNum.setText("" + sendGiftBean1.num);
+        binding.tvGiftNum.setText("" + sendGiftBean1.num+" ");
 
 
         //礼物消息横幅3S结束
@@ -2110,6 +2109,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             }
         }
     };
+
     private void freedTimerTask2() {
         if (giftContentTask2 != null) {
             giftContentTask2.cancel();
@@ -2121,6 +2121,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             giftContentTimer2 = null;
         }
     }
+
     private void freedTimerTask1() {
         if (giftContentTask != null) {
             giftContentTask.cancel();
