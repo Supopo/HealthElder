@@ -24,6 +24,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.GiftListPageAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftSelectBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.zhpan.indicator.IndicatorView;
 
 import java.util.ArrayList;
@@ -51,11 +52,14 @@ public class ZBGiftListPop extends BasePopupWindow {
 
     public ZBGiftListPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
+        setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
         this.context = context;
         this.mLiveInitInfo = liveInitInfo;
         setBackPressEnable(true);
         setAlignBackground(true);
         initView();
+
     }
 
     public void rushGold() {

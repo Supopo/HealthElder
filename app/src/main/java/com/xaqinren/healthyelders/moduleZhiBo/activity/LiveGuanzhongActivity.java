@@ -260,6 +260,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         }));
 
+        if (zbGiftListPop == null) {
+            zbGiftListPop = new ZBGiftListPop(this, mLiveInitInfo);
+        }
     }
 
     //多人连麦-用户申请连麦
