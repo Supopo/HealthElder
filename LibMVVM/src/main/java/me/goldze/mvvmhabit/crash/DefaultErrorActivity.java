@@ -22,9 +22,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,12 +35,35 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.ViewCompat;
 
 import me.goldze.mvvmhabit.R;
 
 
 public final class DefaultErrorActivity extends AppCompatActivity {
+
+    public void setStatusBarTransparentBlack() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            View decorView = getWindow().getDecorView();
+            decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    WindowInsets defaultInsets = v.onApplyWindowInsets(insets);
+                    return defaultInsets.replaceSystemWindowInsets(
+                            defaultInsets.getSystemWindowInsetLeft(),
+                            0,
+                            defaultInsets.getSystemWindowInsetRight(),
+                            defaultInsets.getSystemWindowInsetBottom());
+                }
+            });
+            ViewCompat.requestApplyInsets(decorView);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+            //设置状态栏字体颜色黑色
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+    }
 
     @SuppressLint("PrivateResource")
     @Override
@@ -51,7 +77,7 @@ public final class DefaultErrorActivity extends AppCompatActivity {
             setTheme(R.style.Theme_AppCompat_Light_DarkActionBar);
         }
         a.recycle();
-
+        setStatusBarTransparentBlack();
         setContentView(R.layout.customactivityoncrash_default_error_activity);
 
         //Close/restart button logic:
@@ -102,6 +128,9 @@ public final class DefaultErrorActivity extends AppCompatActivity {
                             .show();
                     TextView textView = (TextView) dialog.findViewById(android.R.id.message);
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.customactivityoncrash_error_activity_error_details_text_size));
+
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
                 }
             });
         } else {

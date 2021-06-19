@@ -507,7 +507,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             });
             ViewCompat.requestApplyInsets(decorView);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
-            //设置状态栏字体颜色白色
+            //设置状态栏字体颜色黑色
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }
