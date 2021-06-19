@@ -259,7 +259,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     public void stopMusicAnim() {
         if (objectAnimator != null) {
-            getActivity().runOnUiThread(()->{
+            getActivity().runOnUiThread(() -> {
                 objectAnimator.end();//动画结束
                 state = STATE_STOP;
             });
@@ -350,7 +350,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         disposable = RxBus.getDefault().toObservable(VideoEvent.class).subscribe(bean -> {
             if (bean != null) {
                 //上下切换
-                                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
+                LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     showFollow();
 
@@ -783,15 +783,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void pausePlay() {
         binding.mainVideoView.onPause();
 
-            if (videoInfo.getVideoType() == 2) {
-                if (mLivePlayer != null) {
-                    mLivePlayer.pause();
-                }
-            } else {
-                if (vodPlayer != null) {
-                    vodPlayer.pause();
-                }
+        if (videoInfo.getVideoType() == 2) {
+            if (mLivePlayer != null) {
+                mLivePlayer.pause();
             }
+        } else {
+            if (vodPlayer != null) {
+                vodPlayer.pause();
+            }
+        }
         LogUtils.v(Constant.TAG_LIVE, "---------------------pausePlay" + position);
     }
 
@@ -866,7 +866,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     public void resumeMsg() {
         if (!editTextOpen) {
             if (type.equals("home-tj")) {
-                if (AppApplication.get().getTjPlayPosition() == position) {
+                if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().getTjPlayPosition() == position) {
                     resumePlay();
                 } else {
                     pausePlay();
@@ -874,7 +874,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
 
             if (type.equals("home-gz")) {
-                if (AppApplication.get().getGzPlayPosition() == position) {
+                if (AppApplication.get().getLayoutPos() == 1 && AppApplication.get().getGzPlayPosition() == position) {
                     resumePlay();
                 } else {
                     pausePlay();
