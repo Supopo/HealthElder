@@ -1849,8 +1849,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //开启直播-继续直播通知服务器回调
         viewModel.startLiveInfo.observe(this, liveInitInfo -> {
             if (liveInitInfo != null) {
-
-                RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "startLive"));
+                // 开启直播之后不能关闭前一页 否则销毁录制视频页面时候会释放音频焦点
+                // RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "startLive"));
                 if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomRecordId)) {
                     //主播继续直播消息 通知大家主播回来了，最好重新拉一下流
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ZB_COMEBACK), "", null);

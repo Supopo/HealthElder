@@ -398,9 +398,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
         isToZhibo = true;
         startActivity(LiveZhuboActivity.class, bundle);
-
-        liveZbViewModel = ViewModelProviders.of(getActivity()).get(LiveZhuboViewModel.class);
-
     }
 
 

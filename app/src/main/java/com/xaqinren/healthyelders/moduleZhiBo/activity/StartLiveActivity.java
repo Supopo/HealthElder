@@ -92,10 +92,10 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
         currentFragmentPosition = 1;
-        commitAllowingStateLoss(1);
-        liveUiViewModel.getCurrentPage().setValue(1);
+        commitAllowingStateLoss(currentFragmentPosition);
+        liveUiViewModel.getCurrentPage().setValue(currentFragmentPosition);
         //默认选中第一个
-        binding.llMenu.selectTab(binding.llMenu.getTabAt(1));
+        binding.llMenu.selectTab(binding.llMenu.getTabAt(currentFragmentPosition));
         binding.llMenu.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -172,6 +172,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     @Override
     protected void onPause() {
         super.onPause();
+
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityStop();
         } else if (currentFragmentPosition == 0) {
