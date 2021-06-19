@@ -171,15 +171,24 @@ public class FansMsgActivity extends BaseActivity<ActivityInteractiveBinding, In
                 viewModel.getRecommendFriend();
         });
         viewModel.friendListData.observe(this, friendBeans -> {
-            if (friendCount == 0 /*&& !friendBeans.isEmpty()*/) {
-                MessageDetailBean o = (MessageDetailBean) interactiveAdapter.getData().get(interactiveAdapter.getData().size() - 1);
-                if (o.getItemType() != MessageDetailBean.TYPE_TEXT) {
+            if (friendCount == 0 ) {
+                if (interactiveAdapter.getData().isEmpty()) {
                     interactiveAdapter.addData(new MessageDetailBean() {
                         @Override
                         public int getItemType() {
                             return MessageDetailBean.TYPE_TEXT;
                         }
                     });
+                }else{
+                    MessageDetailBean o = (MessageDetailBean) interactiveAdapter.getData().get(interactiveAdapter.getData().size() - 1);
+                    if (o.getItemType() != MessageDetailBean.TYPE_TEXT) {
+                        interactiveAdapter.addData(new MessageDetailBean() {
+                            @Override
+                            public int getItemType() {
+                                return MessageDetailBean.TYPE_TEXT;
+                            }
+                        });
+                    }
                 }
             }
             friendCount += friendBeans.size();

@@ -19,7 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class UniUtil {
-
+    private static String lastPage = "";
     public static void openUniApp(Context context, String appId, String page , JSONObject data, boolean isSelf) {
         JSONObject jsonObject = data;
         if (jsonObject == null) {
@@ -50,11 +50,14 @@ public class UniUtil {
                 //则有正打开的小程序
                 if (appId.equals(DCUniMPSDK.getInstance().getRuningAppid())) {
                     //表面打开的是正在运行的
-                    com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
-                    object.put("page", page);
-                    object.put("data", jsonObject);
-                    DCUniMPSDK.getInstance().sendUniMPEvent("navigateTo", object);
-                    isDelay = 200;
+                    if (!lastPage.equals(page)){
+                        com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
+                        object.put("page", page);
+                        object.put("data", jsonObject);
+                        DCUniMPSDK.getInstance().sendUniMPEvent("navigateTo", object);
+                        lastPage = page;
+                        isDelay = 200;
+                    }
                 } else {
                     //是其他小程序正在运行,需要销毁
                     DCUniMPSDK.getInstance().closeCurrentApp();

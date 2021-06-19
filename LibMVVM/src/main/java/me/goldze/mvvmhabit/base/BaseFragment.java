@@ -43,6 +43,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     private LoadingDialog dialog;
     public RxPermissions permissions;
     private Handler handler;
+    protected String TAG = getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

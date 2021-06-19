@@ -1,12 +1,16 @@
 package com.xaqinren.healthyelders.moduleMine.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Typeface;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -28,6 +32,7 @@ import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +63,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private MineDZFragment mineDZFragment;
     public boolean isTop = true;
     public SwipeRefreshLayout srl;
+
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -136,6 +142,13 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         }
     }
 
+    private boolean isAttach;
+    @Override
+    public void onAttach(@Nullable Context context) {
+        super.onAttach(context);
+        isAttach = true;
+    }
+
     private boolean isFirst = true;
 
     public void refreshData() {
@@ -143,6 +156,10 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             return;
         }
 
+        LogUtils.e(TAG, "isAttach -> " + isAttach);
+        if (!isAttach) {
+            return;
+        }
         if (menuPosition == 0) {
             mineZPFragment.toRefresh();
         } else if (menuPosition == 1) {
