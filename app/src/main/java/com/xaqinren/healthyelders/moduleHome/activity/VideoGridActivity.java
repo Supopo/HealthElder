@@ -107,7 +107,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         binding.rvVideo.setAdapter(mAdapter);
         //防止刷新跳动
         binding.rvVideo.setItemAnimator(null);
-        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(this, 3, true));
+        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(this, true,3, true));
 
         viewModel.getVideoData(page, tags);
 

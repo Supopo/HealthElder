@@ -15,6 +15,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.databinding.ItemGridVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
@@ -40,20 +41,26 @@ public class GridVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder
             Glide.with(getContext()).load(R.mipmap.wez_zan_nor).into((ImageView) helper.getView(R.id.iv_zan));
         }
 
-        int screenWidth = ScreenUtil.getScreenWidth(getContext());
+        int screenWidth = MScreenUtil.getScreenWidth(getContext());
         //瀑布流图片的宽度
         int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_3)) / 2;
 
+        binding.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
         //图片真是宽高
         try {
-            int oldWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "w"));
-            int oldHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "h"));
+            int picWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "w"));
+            int picHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "h"));
             //计算新高度
-            int newHeight = itemWidth * oldHeight / oldWidth;
+            int newHeight = itemWidth * 280 / 186;
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.rlItem.getLayoutParams();
             params.height = newHeight;
             binding.rlItem.setLayoutParams(params);
+
+            if (picWidth > picHeight) {
+                binding.ivCover.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }
 
         } catch (NumberFormatException e) {
             e.printStackTrace();

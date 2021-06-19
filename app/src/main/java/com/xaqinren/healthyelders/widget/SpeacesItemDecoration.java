@@ -41,6 +41,7 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
     private int mColumns = 2;//列数 默认2列
     private boolean isStaggeredGrid;
     private boolean hasHead;
+    private boolean onlyOne;//2列中间只有一条间距的情况
 
     public SpeacesItemDecoration(Context context, int bottom) {
         this.mBottom = dp2px(context, bottom);
@@ -50,6 +51,13 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
     public SpeacesItemDecoration(Context context, int bottom, boolean isStaggeredGrid) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
+        this.isStaggeredGrid = isStaggeredGrid;
+    }
+
+    public SpeacesItemDecoration(Context context, boolean onlyOne, int bottom, boolean isStaggeredGrid) {
+        this.mBottom = dp2px(context, bottom);
+        this.mRight = dp2px(context, bottom);
+        this.onlyOne = onlyOne;
         this.isStaggeredGrid = isStaggeredGrid;
     }
 
@@ -81,25 +89,53 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        //判断列数，如果是最后一列，则outRect.left = 0;
-        outRect.bottom = mBottom;
-        outRect.right = mRight;
+        //只有一条间隙的情况下左右要对分
+        if (onlyOne) {
+            outRect.bottom = mBottom;
+            outRect.left = mRight / 2;
+            outRect.right = mRight / 2;
 
-        int position;
-        if (isStaggeredGrid) {
-            StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-            //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
-            position = lp.getSpanIndex();
+
+            int position;
+            if (isStaggeredGrid) {
+                StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+                //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
+                position = lp.getSpanIndex();
+            } else {
+                position = parent.getChildLayoutPosition(view);
+            }
+
+            if (hasHead) {
+                position = position - 1;
+            }
+
+            if (((position + (1)) % mColumns) == 0) {
+                outRect.right = 0;
+            } else {
+                outRect.left = 0;
+            }
+
+
         } else {
-            position = parent.getChildLayoutPosition(view);
-        }
+            outRect.bottom = mBottom;
+            outRect.right = mRight;
 
-        if (hasHead) {
-            position = position - 1;
-        }
+            int position;
+            if (isStaggeredGrid) {
+                StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+                //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
+                position = lp.getSpanIndex();
+            } else {
+                position = parent.getChildLayoutPosition(view);
+            }
 
-        if (((position + (1)) % mColumns) == 0) {
-            outRect.right = 0;
+            if (hasHead) {
+                position = position - 1;
+            }
+
+            if (((position + (1)) % mColumns) == 0) {
+                outRect.right = 0;
+            }
         }
 
 
