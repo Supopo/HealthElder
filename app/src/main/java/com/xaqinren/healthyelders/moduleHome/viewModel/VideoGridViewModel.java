@@ -26,7 +26,7 @@ public class VideoGridViewModel extends BaseViewModel {
 
 
     public void getVideoData(int page, String tags) {
-        LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 6, null, tags, datas);
+        LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 6, null, datas, "LIVE,VIDEO,USER_DIARY", tags);
     }
 
     public void toLikeVideo(String videoId, boolean isLike, int position) {

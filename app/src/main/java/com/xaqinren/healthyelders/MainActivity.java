@@ -251,7 +251,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (booleanExtra) {
             binding.rlMenu4.performClick();
 
-            runOnUiThread(()->{
+            runOnUiThread(() -> {
                 mineFragment.refreshData();
             });
         }
@@ -344,7 +344,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 return;
             }
 
-            disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,Manifest.permission.MODIFY_AUDIO_SETTINGS)
+            disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS)
                     .subscribe(granted -> {
                         if (granted) {
                             startActivity(StartLiveActivity.class);
@@ -763,7 +763,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     /**
-     *
      * @param menuInfoListDTO
      */
     public void jumpMenu(SlideBarBean.MenuInfoListDTO menuInfoListDTO) {
@@ -800,7 +799,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
     }
 
-    public SlideBarBean.MenuInfoListDTO convertToSlideBarMenu( MenuBean menuBean) {
+    public SlideBarBean.MenuInfoListDTO convertToSlideBarMenu(MenuBean menuBean) {
         SlideBarBean.MenuInfoListDTO menuInfoListDTO = new SlideBarBean.MenuInfoListDTO();
         menuInfoListDTO.setMenuName(menuBean.menuName);
         menuInfoListDTO.setSubMenuName(menuBean.subMenuName);
@@ -843,7 +842,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
     }
 
-    public Bundle mackBundleByMap(Map<String, Object> param){
+    public Bundle mackBundleByMap(Map<String, Object> param) {
         Set<String> strings = param.keySet();
         Iterator<String> iterator = strings.iterator();
         Bundle bundle = new Bundle();
