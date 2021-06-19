@@ -466,7 +466,7 @@ public interface ApiServer {
     Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String id);
 
     //充值列表
-    @GET("user/getRechargeList")
+    @GET("user/findPointRechargeConfig")//user/getRechargeList
     Observable<MBaseResponse<ChongZhiListRes>> getChongZhiList(@Header("Authorization") String authorization);
 
     //支付接口
