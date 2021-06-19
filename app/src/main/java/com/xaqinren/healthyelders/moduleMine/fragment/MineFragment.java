@@ -139,6 +139,10 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private boolean isFirst = true;
 
     public void refreshData() {
+        if (mineZPFragment == null) {
+            return;
+        }
+
         if (menuPosition == 0) {
             mineZPFragment.toRefresh();
         } else if (menuPosition == 1) {
@@ -285,7 +289,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             Bundle bundle = new Bundle();
             bundle.putInt("page", 0);
             bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());
-            startActivity(LookAttentionActivity.class,bundle);
+            startActivity(LookAttentionActivity.class, bundle);
         });
         binding.tvFs.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();

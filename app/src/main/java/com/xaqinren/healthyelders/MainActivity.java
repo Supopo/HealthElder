@@ -250,6 +250,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         boolean booleanExtra = intent.getBooleanExtra(Constant.PUBLISH_SUCCESS, false);
         if (booleanExtra) {
             binding.rlMenu4.performClick();
+
             runOnUiThread(()->{
                 mineFragment.refreshData();
             });
