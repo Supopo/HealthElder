@@ -1,16 +1,10 @@
 package com.xaqinren.healthyelders.global;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.igexin.sdk.PushManager;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
@@ -27,7 +21,6 @@ import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.tencent.qcloud.xiaoshipin.config.TCConfigManager;
 import com.tencent.rtmp.TXLiveBase;
 import com.tencent.rtmp.TXLog;
-import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.ugc.TXUGCBase;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.MainActivity;
@@ -37,23 +30,15 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.uniApp.module.JSCommModule;
-import com.xaqinren.healthyelders.uniApp.module.nativeDialog.NativeDialogModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import io.dcloud.common.adapter.util.Logger;
 import io.dcloud.common.util.RuningAcitvityUtil;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
-import io.dcloud.feature.sdk.MenuActionSheetItem;
 import io.dcloud.feature.uniapp.UniSDKEngine;
 import io.dcloud.feature.uniapp.common.UniException;
-import io.dcloud.feature.x5.X5WebView;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.crash.CaocConfig;
@@ -100,8 +85,10 @@ public class AppApplication extends BaseApplication {
         mContext = getApplicationContext();
         //是否开启打印日志
         KLog.init(BuildConfig.DEBUG);
-        //        //初始化全局异常崩溃
-        //        initCrash();
+
+
+        //初始化全局异常崩溃
+        initCrash();
         //        //内存泄漏检测
         //        if (BuildConfig.DEBUG) {
         //            if (!LeakCanary.isInAnalyzerProcess(this)) {
@@ -186,8 +173,8 @@ public class AppApplication extends BaseApplication {
                 .showErrorDetails(true) //是否显示错误详细信息
                 .showRestartButton(true) //是否显示重启按钮
                 .trackActivities(true) //是否跟踪Activity
-                .minTimeBetweenCrashesMs(2000) //崩溃的间隔时间(毫秒)
-                .errorDrawable(R.mipmap.icon_app) //错误图标
+                .minTimeBetweenCrashesMs(500) //崩溃的间隔时间(毫秒)
+                .errorDrawable(R.mipmap.no_goods_data) //错误图标
                 .restartActivity(MainActivity.class) //重新启动后的activity
                 // .errorActivity(YourCustomErrorActivity.class) //崩溃后的错误activity
                 // .eventListener(new YourCustomEventListener()) //崩溃后的错误监听
@@ -253,6 +240,7 @@ public class AppApplication extends BaseApplication {
     //本次关注列表
     public HashMap<String, Boolean> followList = new HashMap<>();
 
+    //底部菜单位置
     public int bottomMenu;
 
     //顶部菜单是否展示

@@ -36,7 +36,7 @@ public class Constant {
     public static String DraftId = "DRAFT_ID";//草稿箱id
     public static String SearchId = "SEARCH_ID";//搜索id
     public static String SearchGId = "SEARCH_GOODS_ID";//商品搜索id
-    public static int loadVideoSize = 2;
+    public static int loadVideoSize = 3;
 
     public static String REQ_TAG_ZB = "LIVE";//直播
     public static String REQ_TAG_SP = "VIDEO";//视频

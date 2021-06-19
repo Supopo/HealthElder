@@ -498,13 +498,13 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList) {
+    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, Integer type, MutableLiveData<List<VideoInfo>> videoList) {
         //不传默认返回三种类型的列表
         String resourceType = type == 2 ? "LIVE,VIDEO,USER_DIARY" : "";
         getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType, "");
     }
 
-    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, int type, String tags, MutableLiveData<List<VideoInfo>> videoList) {
+    public void getHomeVideoList(MutableLiveData<Boolean> closeRsl, int page, int pageSize, Integer type, String tags, MutableLiveData<List<VideoInfo>> videoList) {
         //不传默认返回三种类型的列表
         String resourceType = type == 2 ? "LIVE,VIDEO,USER_DIARY" : "";
         getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType, tags);

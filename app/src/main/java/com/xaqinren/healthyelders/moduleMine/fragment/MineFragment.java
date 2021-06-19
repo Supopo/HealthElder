@@ -173,13 +173,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.srlTop.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (menuPosition == 0) {
-                    mineZPFragment.toRefresh();
-                } else if (menuPosition == 1) {
-                    mineSMFragment.toRefresh();
-                } else {
-                    mineDZFragment.toRefresh();
-                }
+                refreshUserInfo();
                 binding.srlTop.setRefreshing(false);
             }
         });
@@ -339,6 +333,17 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
         binding.tvEdit.setOnClickListener(lis -> {
             startActivity(EditInfoActivity.class);
         });
+    }
+
+    public void refreshUserInfo() {
+//        viewModel.getUserInfo(UserInfoMgr.getInstance().getHttpToken());
+        if (menuPosition == 0) {
+            mineZPFragment.toRefresh();
+        } else if (menuPosition == 1) {
+            mineSMFragment.toRefresh();
+        } else {
+            mineDZFragment.toRefresh();
+        }
     }
 
     @Override

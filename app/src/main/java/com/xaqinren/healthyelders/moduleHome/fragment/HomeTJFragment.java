@@ -48,8 +48,6 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
     public ViewPager2 tjViewPager2;
-    public CardView tjCardView;
-    private int screenWidth;
     private Handler handler;
 
 
@@ -125,33 +123,14 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.loadView.setVisibility(View.GONE);
     }
 
-
-    public int oldWidth;
-
     @Override
     public void initData() {
         super.initData();
         handler = new Handler();
         //开始时候有头布局所以禁止滑动
         tjViewPager2 = binding.viewPager2;
-        //        tjCardView = binding.cardView;
         binding.viewPager2.setUserInputEnabled(false);
-        screenWidth = MScreenUtil.getScreenWidth(getActivity());
-
-        //变窄viewPager2
-        //        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
-        //        int dimension = (int) getActivity().getResources().getDimension(R.dimen.dp_20);
-        //        params.height = MScreenUtil.getScreenHeight(getActivity());
-        //        params.width = screenWidth - dimension;
-        //        oldWidth = screenWidth - dimension;
-        //        tjCardView.setLayoutParams(params);
         initVideoViews();
-    }
-
-    public void setCardWidth(int width) {
-        ViewGroup.LayoutParams params = tjCardView.getLayoutParams();
-        params.width = width;
-        tjCardView.setLayoutParams(params);
     }
 
     private int lastPos = -1;
