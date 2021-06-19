@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -188,7 +189,6 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         }
 
 
-
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
         }
@@ -199,8 +199,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     }
 
     private void addCache(String content) {
-        if (searchListCache != null && searchListCache.getMenuInfoList() != null) {
-
+        if (searchListCache.getMenuInfoList().size() > 0) {
 
             //去重重插入
             int temp = -1;
@@ -212,26 +211,25 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
             if (temp > 0) {
                 searchListCache.getMenuInfoList().remove(temp);
-                //重新加载绘制 目前只能重new Adapter
-                resetHistoryTagAdapter(searchListCache.getMenuInfoList());
+            }
+
+            //超过十条去除一条
+            if (searchListCache.getMenuInfoList().size() > 9) {
+                searchListCache.getMenuInfoList().remove(searchListCache.getMenuInfoList().size() - 1);
             }
         }
-
 
         //往下面的搜索插入
         SlideBarBean.MenuInfoListDTO searchBean = new SlideBarBean.MenuInfoListDTO();
         searchBean.setMenuName(content);
 
-        //判断超过十条的话移除一条
-        historyTagAdapter.addData(searchBean);
-        List<SlideBarBean.MenuInfoListDTO> searchBeans = historyTagAdapter.getData();
-        if (historyTagAdapter.getData().size() > 10) {
-            searchBeans.remove(0);
-            //重新加载绘制 目前只能重new Adapter
-            resetHistoryTagAdapter(searchBeans);
-        }
-        //更新本地缓存
-        searchListCache.setMenuInfoList(searchBeans);
+        searchListCache.getMenuInfoList().add(searchBean);
+
+        Collections.reverse(searchListCache.getMenuInfoList());
+
+        searchListCache.setMenuInfoList(searchListCache.getMenuInfoList());
+
+        resetHistoryTagAdapter(searchListCache.getMenuInfoList());
 
         if (searchType == TYPE_HOME)
             ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
@@ -254,6 +252,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     //重新加载绘制 目前只能重new Adapter
     private void resetHistoryTagAdapter(List<SlideBarBean.MenuInfoListDTO> searchBeans) {
         historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
+        binding.rlSearchHistory.setVisibility(View.VISIBLE);
         binding.rvHistory.setAdapter(historyTagAdapter);
         historyTagAdapter.setNewInstance(searchBeans);
     }

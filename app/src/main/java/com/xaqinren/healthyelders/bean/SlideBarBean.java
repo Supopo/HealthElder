@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SlideBarBean implements Serializable {
@@ -35,14 +36,14 @@ public class SlideBarBean implements Serializable {
     }
 
     public List<MenuInfoListDTO> getMenuInfoList() {
-        return menuInfoList;
+        return menuInfoList == null ? new ArrayList<>() : menuInfoList;
     }
 
     public void setMenuInfoList(List<MenuInfoListDTO> menuInfoList) {
         this.menuInfoList = menuInfoList;
     }
 
-    public static class MenuInfoListDTO implements Serializable{
+    public static class MenuInfoListDTO implements Serializable {
         private String menuName;
         private String subMenuName;
         private String subFontColor;

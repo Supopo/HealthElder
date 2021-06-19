@@ -98,7 +98,6 @@
                 android:layout_alignParentRight="true" />
 
 
-
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
@@ -117,6 +116,7 @@
                 android:cacheColorHint="#00000000"
                 android:divider="@null"
                 android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="@dimen/dp_25"
                 android:scrollbarStyle="outsideOverlay"
                 android:scrollbars="none"
                 android:stackFromBottom="true"
@@ -383,6 +383,7 @@
 
         </LinearLayout>
 
+        <!--礼物展示-->
         <RelativeLayout
             android:id="@+id/rl_showGift"
             android:layout_width="match_parent"
