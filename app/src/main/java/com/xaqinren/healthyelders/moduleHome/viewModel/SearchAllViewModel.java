@@ -43,12 +43,12 @@ public class SearchAllViewModel extends BaseViewModel {
         switch (searchType) {
             case 0:
                 //全部搜索
-                String resType = Constant.REQ_TAG_ZB + "," + Constant.REQ_TAG_WZ + "," + Constant.REQ_TAG_SP + "," + Constant.REQ_TAG_GOODS + "," + Constant.REQ_TAG_YH;
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, allDatas, resType, tags);
+                String resType = "all";
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, allDatas, resType, tags);
                 break;
             case 1:
                 //视频
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, videoDatas, Constant.REQ_TAG_SP, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, videoDatas, Constant.REQ_TAG_SP, tags);
                 break;
             case 2:
                 //用户
@@ -56,15 +56,15 @@ public class SearchAllViewModel extends BaseViewModel {
                 break;
             case 3:
                 //商品
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, goodsDatas, Constant.REQ_TAG_GOODS, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, goodsDatas, Constant.REQ_TAG_GOODS, tags);
                 break;
             case 4:
                 //直播
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, zbDatas, Constant.REQ_TAG_ZB, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, zbDatas, Constant.REQ_TAG_ZB, tags);
                 break;
             case 5:
                 //图文
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, 0, twDatas, Constant.REQ_TAG_TW, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, twDatas, Constant.REQ_TAG_TW, tags);
                 break;
         }
     }

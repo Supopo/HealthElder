@@ -464,7 +464,7 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, int type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
+    public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, Integer type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
         String uid = "";
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
