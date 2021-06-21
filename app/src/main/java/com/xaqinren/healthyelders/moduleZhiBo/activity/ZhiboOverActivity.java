@@ -7,11 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityZhiboOverBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZhiboOverAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverViewModel;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * 直播结束页面
@@ -49,6 +52,7 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
         binding.ivClose.setOnClickListener(lis -> {
             finish();
         });
+        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive"));
     }
 
 

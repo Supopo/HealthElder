@@ -121,7 +121,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private TopUserHeadAdapter topHeadAdapter;
     private Timer ggTimer;
     private TimerTask ggAnimTask;
-    private Animation ggAnimation;
+    private Animation ggShowAnimation;
+    private Animation ggGoneAnimation;
     private int linkStatus = 1;//1未连麦 2申请中 3连麦中
     private int linkType;//0 双人连麦 1多人连麦
     private YesOrNoDialog closeLinkDialog;
@@ -1040,8 +1041,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.rlShowLike.removeAllViews();
         binding.rlShowLike.addView(iv);
 
+
         Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_double_zan_enter);
         Animation scaleAnimation2 = AnimationUtils.loadAnimation(this, R.anim.zbj_double_zan_exit);
+
         iv.startAnimation(scaleAnimation1);
 
         scaleAnimation1.setAnimationListener(new Animation.AnimationListener() {
@@ -1060,7 +1063,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
             }
         });
-
         scaleAnimation2.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -1205,75 +1207,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 //公告消息 顶部展示
                 String jsonMsg = (String) message;
                 JsonMsgBean jsonMsgBean = JSON.parseObject(jsonMsg, JsonMsgBean.class);
-                binding.tvGgtype.setText("用户");
-                binding.tvGgname.setText(jsonMsgBean.nickname);
-                binding.tvGgcontent.setText(jsonMsgBean.content);
 
-                binding.llGonggao.clearAnimation();
-                binding.llGonggao.setVisibility(View.VISIBLE);
-
-                if (ggAnimation == null) {
-                    ggAnimation = AnimUtils.getAnimation(this, R.anim.anim_zbj_gonggao);
+                //加入公告队列
+                ggList.add(jsonMsgBean);
+                if (binding.llGonggao.getVisibility() == View.GONE) {
+                    showGongGao();
                 }
-
-                //公告进入动画
-                binding.llGonggao.startAnimation(ggAnimation);
-                ggAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        binding.llGonggao.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-
-                //                if (ggTimer == null) {
-                //                    ggTimer = new Timer();
-                //                }
-                //                if (ggAnimTask != null) {
-                //                    ggAnimTask.cancel();
-                //                }
-                //                ggAnimTask = new TimerTask() {
-                //
-                //                    @Override
-                //                    public void run() {
-                //                        //公告退出动画
-                //                        Animation hideAnim = AnimUtils.getAnimation(LiveGuanzhongActivity.this, R.anim.anim_slice_out_left);
-                //                        binding.llGonggao.startAnimation(hideAnim);
-                //
-                //                        hideAnim.setAnimationListener(new Animation.AnimationListener() {
-                //                            @Override
-                //                            public void onAnimationStart(Animation animation) {
-                //
-                //                            }
-                //
-                //                            @Override
-                //                            public void onAnimationEnd(Animation animation) {
-                //                                binding.llGonggao.setVisibility(View.GONE);
-                //                                ggAnimTask.cancel();
-                //                                ggTimer.cancel();
-                //                                ggTimer.purge();
-                //                                ggAnimTask = null;
-                //                                ggTimer = null;
-                //                            }
-                //
-                //                            @Override
-                //                            public void onAnimationRepeat(Animation animation) {
-                //
-                //                            }
-                //                        });
-                //                    }
-                //                };
-                //                ggTimer.schedule(ggAnimTask, 3000);
 
                 break;
             case LiveConstants.IMCMD_OPEN_MORE_LINK://主播开启多人连麦
@@ -1360,7 +1299,96 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         }
     }
 
-    private ZBGoodsBean nowGoodsBean;
+    //展示公告
+    public void showGongGao() {
+        if (ggList.size() == 0) {
+            return;
+        }
+        JsonMsgBean jsonMsgBean = ggList.get(0);
+        ggList.remove(0);
+        binding.tvGgtype.setText("用户");
+        binding.tvGgname.setText(jsonMsgBean.nickname);
+        binding.tvGgcontent.setText(jsonMsgBean.content);
+
+
+        ggShowAnimation = AnimUtils.getAnimation(this, R.anim.anim_slice_in_left);
+        ggGoneAnimation = AnimUtils.getAnimation(this, R.anim.anim_slice_out_left);
+
+
+        //公告进入动画
+        binding.llGonggao.clearAnimation();
+        binding.llGonggao.startAnimation(ggShowAnimation);
+
+        ggShowAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                binding.llGonggao.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                freedGGTimerTask();
+                ggTimer = new Timer();
+                ggAnimTask = new TimerTask() {
+
+                    @Override
+                    public void run() {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.llGonggao.clearAnimation();
+                                binding.llGonggao.startAnimation(ggGoneAnimation);
+                                ggGoneAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                    @Override
+                                    public void onAnimationStart(Animation animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animation animation) {
+                                        binding.llGonggao.setVisibility(View.GONE);
+                                        freedGGTimerTask();
+                                        handler.sendEmptyMessage(98);
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animation animation) {
+
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                };
+                ggTimer.schedule(ggAnimTask, 3000);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private List<JsonMsgBean> ggList = new ArrayList<>();
+
+    public void freedGGTimerTask() {
+        if (ggAnimTask != null) {
+            ggAnimTask.cancel();
+            ggAnimTask = null;
+        }
+        if (ggTimer != null) {
+            ggTimer.cancel();
+            ggTimer.purge();
+            ggTimer = null;
+        }
+
+    }
+
+    private ZBGoodsBean nowGoodsBean;//当前带货
 
     private void initZBGoodsBean(ZBGoodsBean goodBean) {
         nowGoodsBean = goodBean;
@@ -1417,7 +1445,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.mTxVideoView.setAnimation(animation2);
         binding.rvMoreLink.setVisibility(View.INVISIBLE);
     }
-
 
     private void startMoreLinkLayout() {
         linkType = 1;
@@ -2125,6 +2152,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             switch (msg.what) {
                 case 99:
                     loadBanner();
+                    break;
+                case 98:
+                    showGongGao();
                     break;
             }
         }

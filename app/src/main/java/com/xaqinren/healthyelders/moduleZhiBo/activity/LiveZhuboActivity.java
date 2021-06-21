@@ -1680,6 +1680,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                             mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_CANCEL_FORBIDDER_TALK), LiveConstants.SHOW_QXJINYAN, null);
                         }
                     } else if (eventBean.msgType == LiveConstants.SETTING_LAHEI) {      //拉黑
+                        if (userInfoPop != null && userInfoPop.isShowing()) {
+                            userInfoPop.dismiss();
+                        }
                         mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_PUT_BLACK), LiveConstants.SHOW_LAHEI, new IMLVBLiveRoomListener.SendC2CCustomMsgCallback() {
 
                             @Override
@@ -1697,6 +1700,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                             }
                         });
                     } else if (eventBean.msgType == LiveConstants.SETTING_TICHU) {      //踢出
+                        if (userInfoPop != null && userInfoPop.isShowing()) {
+                            userInfoPop.dismiss();
+                        }
                         mLiveRoom.sendC2CCustomMsg(eventBean.content, String.valueOf(LiveConstants.IMCMD_PUT_BLACK), LiveConstants.SHOW_TICHU, new IMLVBLiveRoomListener.SendC2CCustomMsgCallback() {
 
                             @Override
@@ -1707,7 +1713,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                             @Override
                             public void onSuccess() {
                                 toRushLiveInfo();
-                                //群发公告消息-拉黑
+                                //群发公告消息-踢出
                                 String jsonMsg = JsonMsgBean.json("1", eventBean.nickname, LiveConstants.GONGGAO_TICHU);
                                 mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_GONGGAO_MSG), jsonMsg, null);
                             }
