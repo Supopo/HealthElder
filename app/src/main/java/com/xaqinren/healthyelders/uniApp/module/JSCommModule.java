@@ -302,7 +302,7 @@ public class JSCommModule extends UniModule {
 
         String bgColor = options.getString("bgColor");
         nativeDialog.setBackGround(bgColor);
-        boolean singer = options.getBoolean("singer");
+        boolean singer = options.getBoolean("showCancel");
         nativeDialog.setSingleConfirm(singer);
 
         nativeDialog.showDialog();
