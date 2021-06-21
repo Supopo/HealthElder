@@ -235,8 +235,6 @@ public class JSCommModule extends UniModule {
         }
     }
 
-
-
     private void startRecognize(String path) {
         OCRUtils.ocrBankCard(mUniSDKInstance.getContext(), path, new OnResultListener<BankCardResult>() {
             @Override
@@ -274,7 +272,7 @@ public class JSCommModule extends UniModule {
 
     NativeDialog nativeDialog;
     @UniJSMethod(uiThread = true)
-    public void show(JSONObject options, UniJSCallback jsCallback, UniJSCallback cancelCallback) {
+    public void showModal(JSONObject options, UniJSCallback jsCallback, UniJSCallback cancelCallback) {
 
         if (nativeDialog == null) {
             nativeDialog = new NativeDialog(mUniSDKInstance.getContext());
