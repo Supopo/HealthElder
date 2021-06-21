@@ -23,6 +23,7 @@ import com.facebook.common.util.UriUtil;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.tencent.bugly.proguard.P;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -277,33 +278,60 @@ public class JSCommModule extends UniModule {
         if (nativeDialog == null) {
             nativeDialog = new NativeDialog(mUniSDKInstance.getContext());
         }
-        String title = options.getString("title");
-        String titleColor = options.getString("titleColor");
-        nativeDialog.setTitleText(title);
-        nativeDialog.setColorTitle(titleColor);
+        if (options.containsKey("title")) {
+            String title = options.getString("title");
+            nativeDialog.setTitleText(title);
+        }
+        if (options.containsKey("titleColor")){
+            String titleColor = options.getString("titleColor");
+            nativeDialog.setColorTitle(titleColor);
+        }
 
-        String con = options.getString("con");
-        String conColor = options.getString("conColor");
-        nativeDialog.setMessageText(con);
-        nativeDialog.setColorMessage(conColor);
+        if (options.containsKey("con")){
+            String con = options.getString("con");
+            nativeDialog.setMessageText(con);
+        }
+        if (options.containsKey("conColor")){
+            String conColor = options.getString("conColor");
+            nativeDialog.setColorMessage(conColor);
+        }
 
-        String okTitle = options.getString("okTitle");
-        String okTextColor = options.getString("okTextColor");
-        nativeDialog.setRightBtnText(okTitle);
-        nativeDialog.setColorConfirm(okTextColor);
+        if (options.containsKey("okTitle")){
+            String okTitle = options.getString("okTitle");
+            nativeDialog.setRightBtnText(okTitle);
+        }
 
-        String cancleTitle = options.getString("cancleTitle");
-        String cancleTextColor = options.getString("cancleTextColor");
-        nativeDialog.setLeftBtnText(cancleTitle);
-        nativeDialog.setColorCancel(cancleTextColor);
+        if (options.containsKey("okTextColor")){
+            String okTextColor = options.getString("okTextColor");
+            nativeDialog.setColorConfirm(okTextColor);
+        }
 
-        String textAlign = options.getString("textAlign");
-        nativeDialog.setTextAlign(textAlign);
+        if (options.containsKey("okTextColor")){
+            String cancleTitle = options.getString("cancleTitle");
+            nativeDialog.setLeftBtnText(cancleTitle);
+        }
 
-        String bgColor = options.getString("bgColor");
-        nativeDialog.setBackGround(bgColor);
-        boolean singer = options.getBoolean("showCancel");
-        nativeDialog.setSingleConfirm(singer);
+        if (options.containsKey("cancleTextColor")){
+            String cancleTextColor = options.getString("cancleTextColor");
+            nativeDialog.setColorCancel(cancleTextColor);
+        }
+
+
+        if (options.containsKey("textAlign")){
+            String textAlign = options.getString("textAlign");
+            nativeDialog.setTextAlign(textAlign);
+        }
+
+        if (options.containsKey("bgColor")){
+            String bgColor = options.getString("bgColor");
+            nativeDialog.setBackGround(bgColor);
+        }
+
+
+        if (options.containsKey("showCancel")){
+            boolean singer = options.getBoolean("showCancel");
+            nativeDialog.setSingleConfirm(singer);
+        }
 
         nativeDialog.showDialog();
         nativeDialog.setLeftBtnClickListener(v -> {
