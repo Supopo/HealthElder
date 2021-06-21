@@ -48,7 +48,6 @@ public class ZBGiftListPop extends BasePopupWindow {
     private ViewPager2 vpContent;
     private IndicatorView indView;
     private Disposable subscribe;
-    private int nowPage;
 
     public ZBGiftListPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
@@ -69,6 +68,7 @@ public class ZBGiftListPop extends BasePopupWindow {
     private int lastPage;
     private int selectPage;
 
+
     private void initView() {
         indView = findViewById(R.id.indicator_view);
         vpContent = findViewById(R.id.vp_content);
@@ -82,7 +82,6 @@ public class ZBGiftListPop extends BasePopupWindow {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                nowPage = position;
             }
         });
 
@@ -97,6 +96,7 @@ public class ZBGiftListPop extends BasePopupWindow {
                 if (eventBean.msgId == CodeTable.ZHJ_SELECT_GIFT) {
                     GiftSelectBean selectBean = (GiftSelectBean) eventBean.data;
                     selectPage = selectBean.selectPage;
+
                     if (selectPage != lastPage) {
                         for (GiftBean giftBean : pageAdapter.getData().get(lastPage).giftBeans) {
                             giftBean.isSelect = false;
@@ -154,6 +154,7 @@ public class ZBGiftListPop extends BasePopupWindow {
                             List<GiftBean> pageList = new ArrayList<>();
                             for (int i = 0; i < pageCount; i++) {
                                 GiftBean giftBean = new GiftBean();
+                                giftBean.pageNum = i;
                                 if (i == pageCount - 1) {
                                     giftBean.giftBeans.addAll(datas.subList(i * pageSize, datas.size()));
                                 } else {

@@ -19,6 +19,7 @@ public class GiftBean {
     public String giftGroup;//": "GIFT_GROUP"
     public List<GiftBean> giftBeans = new ArrayList<>();
 
+    public int pageNum;
     public int lastPos;
     public int nowPos;
     public boolean isSelect;

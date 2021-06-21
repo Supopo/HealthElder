@@ -39,7 +39,9 @@ public class GiftListPageAdapter extends BaseQuickAdapter<GiftBean, BaseViewHold
         listAdapter.setList(item.giftBeans);
 
         listAdapter.setOnItemClickListener(((adapter, view, position) -> {
+
             if (listAdapter.getData().get(position).isSelect) {
+
                 //发送礼物
                 long secondTime = System.currentTimeMillis();
                 if (secondTime - lastSendTime < 500) {
@@ -54,13 +56,11 @@ public class GiftListPageAdapter extends BaseQuickAdapter<GiftBean, BaseViewHold
                 selectBean.selectPos = position;
 
                 item.nowPos = position;
-                listAdapter.getData().get(position).isSelect = true;
                 listAdapter.getData().get(item.lastPos).isSelect = false;
-                listAdapter.notifyItemChanged(position, 99);
                 listAdapter.notifyItemChanged(item.lastPos, 99);
+                listAdapter.getData().get(position).isSelect = true;
+                listAdapter.notifyItemChanged(position, 99);
                 item.lastPos = position;
-
-
 
                 RxBus.getDefault().post(new EventBean(CodeTable.ZHJ_SELECT_GIFT, selectBean));
             }
