@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import com.xaqinren.healthyelders.databinding.ItemAllSearchArticleBinding;
 import com.xaqinren.healthyelders.databinding.ItemAllSearchGoodsBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchUserBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchZbBinding;
-import com.xaqinren.healthyelders.moduleHome.bean.GirlsBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
@@ -47,7 +45,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
 
             if (videoInfo.hasFavorite) {
                 GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary, binding.ivZan);
-            }else {
+            } else {
                 GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary_0, binding.ivZan);
             }
 
@@ -137,7 +135,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
 
                     if (item.hasFavorite) {
                         GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary, helper.getView(R.id.iv_zan));
-                    }else {
+                    } else {
                         GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary_0, helper.getView(R.id.iv_zan));
                     }
                 }

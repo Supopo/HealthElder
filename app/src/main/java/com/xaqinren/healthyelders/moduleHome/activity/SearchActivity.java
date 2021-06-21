@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -15,8 +16,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.databinding.ActivitySearchBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.HistoryTagAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.HotTagAdapter;
@@ -31,7 +34,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/27.
@@ -45,6 +50,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private String tags;
     private int searchType;
     private final int TYPE_HOME = 0, TYPE_GOODS = 1;
+    private Disposable subscribe;
 
     public static void startActivity(Context context, int searchType /*0首页搜索，1商品搜索 */) {
         Intent intent = new Intent(context, SearchActivity.class);
@@ -116,6 +122,10 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         else if (searchType == TYPE_GOODS)
             viewModel.getGoodsHotList();
 
+        initEvent();
+    }
+
+    public void initEvent() {
         binding.tvCancel.setOnClickListener(lis -> {
             if (isSearch) {
                 toSearch();
@@ -131,7 +141,10 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
                 ACache.get(this).put(Constant.SearchId, searchBean);
             else if (searchType == TYPE_GOODS)
                 ACache.get(this).put(Constant.SearchGId, searchBean);
+
+
             resetHistoryTagAdapter(searchBean.getMenuInfoList());
+            searchListCache.getMenuInfoList().clear();
         });
 
         binding.etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -169,13 +182,19 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             }
         });
 
-        historyTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            tags = historyTagAdapter.getData().get(position).getMenuName();
-            toJump();
-        }));
 
         hotTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
             tags = hotTagAdapter.getData().get(position).getMenuName();
+            addCache(tags);
+            toJump();
+        }));
+
+        historyAdapterEvent();
+    }
+
+    public void historyAdapterEvent() {
+        historyTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            tags = historyTagAdapter.getData().get(position).getMenuName();
             addCache(tags);
             toJump();
         }));
@@ -184,7 +203,6 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     private void toSearch() {
         //如果没有输入不存进历史
         if (TextUtils.isEmpty(binding.etSearch.getText().toString())) {
-            toJump();
             return;
         }
 
@@ -199,7 +217,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     }
 
     private void addCache(String content) {
-        if (searchListCache.getMenuInfoList().size() > 0) {
+        if (searchListCache.getMenuInfoList() != null) {
 
             //去重重插入
             int temp = -1;
@@ -209,7 +227,7 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
                 }
             }
 
-            if (temp > 0) {
+            if (temp > -1) {
                 searchListCache.getMenuInfoList().remove(temp);
             }
 
@@ -254,6 +272,9 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
         binding.rlSearchHistory.setVisibility(View.VISIBLE);
         binding.rvHistory.setAdapter(historyTagAdapter);
+
+        historyAdapterEvent();
+
         historyTagAdapter.setNewInstance(searchBeans);
     }
 
@@ -262,6 +283,11 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean != null && eventBean.msgId == CodeTable.HOME_SEARCHER) {
+                addCache(eventBean.content);
+            }
+        });
         viewModel.searchHistoryList.observe(this, datas -> {
             if (datas != null) {
                 historyTagAdapter.setNewInstance(datas.getMenuInfoList());
@@ -277,5 +303,13 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
                 hotTagAdapter.setNewInstance(datas.getMenuInfoList());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }

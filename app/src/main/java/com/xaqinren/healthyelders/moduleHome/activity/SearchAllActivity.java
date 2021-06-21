@@ -129,9 +129,11 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                         goodsFragment.page = 1;
                         zbFragment.page = 1;
                         twFragment.page = 1;
-                        ((BaseActivity)getActivity()).showDialog();
+                        showDialog();
                         viewModel.searchUsers(1, 3);
                         viewModel.searchDatas(1, fragmentPos);
+                        //发送搜索内容到前一页
+                        RxBus.getDefault().post(new EventBean(CodeTable.HOME_SEARCHER,tags));
                     } else {
                         ToastUtil.toastShortMessage("搜索内容不能为空！");
                     }

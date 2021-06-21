@@ -92,7 +92,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             public void onLoadMore() {
                 binding.srlContent.setRefreshing(false);
                 page++;
-                searchAllViewModel.searchDatas(page, 0 );
+                searchAllViewModel.searchDatas(page, 0);
             }
         });
 
@@ -121,7 +121,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             } else if (mAdapter.getData().get(position).getItemType() == 3) {
                 //进入直播
                 searchAllViewModel.joinLive(mAdapter.getData().get(position).liveRoomId);
-            }  else if (mAdapter.getData().get(position).getItemType() == 2) {
+            } else if (mAdapter.getData().get(position).getItemType() == 2) {
                 //进入商品
                 VideoInfo info = mAdapter.getData().get(position);
                 UniService.startService(getContext(), info.appId, 0x20056, info.jumpUrl);
@@ -136,7 +136,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         }));
 
         initHead();
-        ((BaseActivity)getActivity()).showDialog();
+        ((BaseActivity) getActivity()).showDialog();
     }
 
     private boolean hasHead;
@@ -227,6 +227,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 } else {
                     headBinding.llHead.setVisibility(View.GONE);
                 }
+
             }
         });
 
@@ -243,6 +244,13 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                         mAdapter.addData(dataList);
                     }
                 } else {
+
+                    if (page == 1) {
+                        if (headBinding.llHead.getVisibility() == View.GONE) {
+                            mAdapter.setEmptyView(R.layout.item_empty);
+                        }
+                    }
+
                     mLoadMore.loadMoreEnd(true);
                     page--;
                 }
