@@ -142,7 +142,6 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             else if (searchType == TYPE_GOODS)
                 ACache.get(this).put(Constant.SearchGId, searchBean);
 
-
             resetHistoryTagAdapter(searchBean.getMenuInfoList());
             searchListCache.getMenuInfoList().clear();
         });
@@ -241,10 +240,8 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         SlideBarBean.MenuInfoListDTO searchBean = new SlideBarBean.MenuInfoListDTO();
         searchBean.setMenuName(content);
 
-        searchListCache.getMenuInfoList().add(searchBean);
-
-        Collections.reverse(searchListCache.getMenuInfoList());
-
+        //最新的放在前面
+        searchListCache.getMenuInfoList().add(0, searchBean);
         searchListCache.setMenuInfoList(searchListCache.getMenuInfoList());
 
         resetHistoryTagAdapter(searchListCache.getMenuInfoList());
