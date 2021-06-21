@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
-import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
@@ -20,10 +18,15 @@ import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBUserListAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,21 +49,23 @@ public class ZBUserListPop extends BasePopupWindow {
     private RecyclerView rvUsers;
     private ZBUserListAdapter usersAdapter;
     private int page = 1;
+    private LiveInitInfo mLiveInitInfo;
     private String liveRoomRecordId;
     private String liveRoomId;
     private int nowPosition;
     private BaseLoadMoreModule loadMore;
     private QMUIBottomSheet menuDialog;
     private LoadingDialog dialog;
+    private ZBUserInfoPop userInfoPop;
 
     public ZBUserListPop(Context context) {
         super(context);
     }
 
-    public ZBUserListPop(Context context, String liveRoomRecordId, String liveRoomId, String fansTeamName) {
+    public ZBUserListPop(Context context, LiveInitInfo mLiveInitInfo, String fansTeamName) {
         super(context);
-        this.liveRoomId = liveRoomId;
-        this.liveRoomRecordId = liveRoomRecordId;
+        this.liveRoomId = mLiveInitInfo.liveRoomId;
+        this.liveRoomRecordId = mLiveInitInfo.liveRoomRecordId;
         rvUsers = findViewById(R.id.rv_list);
         setBackPressEnable(false);
         setAlignBackground(true);
@@ -86,17 +91,34 @@ public class ZBUserListPop extends BasePopupWindow {
         linearLayout.setBackgroundColor(context.getResources().getColor(R.color.color_EEE));
 
         usersAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            nowPosition = position;
-            String userId = String.valueOf(usersAdapter.getData().get(position).userId);
-            showMenuDialog(position, userId, context);
+            //说明是主播点开
+            if (mLiveInitInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                nowPosition = position;
+                String userId = String.valueOf(usersAdapter.getData().get(position).userId);
+                showMenuDialog(position, userId, context);
+            } else {
+                if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(usersAdapter.getData().get(position).userId)) {
+                    userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position));
+                    userInfoPop.showPopupWindow();
+                }
+
+            }
+
         }));
         usersAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
             nowPosition = position;
             if (view.getId() == R.id.iv_follow) {
                 //关注
                 setUserFollow(String.valueOf(usersAdapter.getData().get(position).userId));
+            } else if (view.getId() == R.id.iv_avatar) {
+                //头像
+                if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(usersAdapter.getData().get(position).userId)) {
+                    userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position));
+                    userInfoPop.showPopupWindow();
+                }
             }
         }));
+
     }
 
     @Override
@@ -292,7 +314,7 @@ public class ZBUserListPop extends BasePopupWindow {
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
-                        usersAdapter.getData().get(nowPosition).identityName = "好友";
+                        usersAdapter.getData().get(nowPosition).identity = "FRIEND";
                         //刷新item
                         usersAdapter.notifyItemChanged(nowPosition, 99);
                     }

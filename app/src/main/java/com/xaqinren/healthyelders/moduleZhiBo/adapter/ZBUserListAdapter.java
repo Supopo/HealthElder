@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.adapter;
 
+import android.text.TextUtils;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
@@ -8,6 +10,7 @@ import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.qmuiteam.qmui.widget.QMUIRadiusImageView;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ItemZbListUserBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 
@@ -27,6 +30,7 @@ public class ZBUserListAdapter extends BaseQuickAdapter<ZBUserListBean, BaseView
         super(layoutResId);
         this.fansTeamName = fansTeamName;
         addChildClickViewIds(R.id.iv_follow);
+        addChildClickViewIds(R.id.iv_avatar);
     }
 
 
@@ -58,22 +62,29 @@ public class ZBUserListAdapter extends BaseQuickAdapter<ZBUserListBean, BaseView
             helper.setGone(R.id.iv_jy, true);
         }
 
-        if (!item.identityName.equals("好友")) {
-            helper.setGone(R.id.iv_follow, false);
-        } else {
+        if (!TextUtils.isEmpty(item.identity)) {
+            if ((item.identity.equals("FOLLOW"))|| item.identity.equals("FRIEND")) {
+                helper.setGone(R.id.iv_follow, true);
+            } else {
+                helper.setGone(R.id.iv_follow, false);
+            }
+        }
+
+
+        if(UserInfoMgr.getInstance().getUserInfo().getId().equals(item.userId)){
             helper.setGone(R.id.iv_follow, true);
         }
 
-//        if (item.levelCode == null) {
-//            helper.setGone(R.id.rl_lv, true);
-//        } else {
-//            helper.setGone(R.id.rl_lv, false);
-//        }
-//        if (item.hasFansTeam) {
-//            helper.setGone(R.id.rl_fansTeam, false);
-//        } else {
-//            helper.setGone(R.id.rl_fansTeam, true);
-//        }
+        //        if (item.levelCode == null) {
+        //            helper.setGone(R.id.rl_lv, true);
+        //        } else {
+        //            helper.setGone(R.id.rl_lv, false);
+        //        }
+        //        if (item.hasFansTeam) {
+        //            helper.setGone(R.id.rl_fansTeam, false);
+        //        } else {
+        //            helper.setGone(R.id.rl_fansTeam, true);
+        //        }
 
 
         helper.setText(R.id.tv_fansTeamName, fansTeamName);
@@ -96,10 +107,10 @@ public class ZBUserListAdapter extends BaseQuickAdapter<ZBUserListBean, BaseView
                     helper.setGone(R.id.iv_jy, true);
                 }
 
-                if (!item.identityName.equals("好友")) {
-                    helper.setGone(R.id.iv_follow, false);
-                } else {
+                if (!TextUtils.isEmpty(item.identity) && (item.identity.equals("FOLLOW"))|| item.identity.equals("FRIEND")) {
                     helper.setGone(R.id.iv_follow, true);
+                } else {
+                    helper.setGone(R.id.iv_follow, false);
                 }
 
             }

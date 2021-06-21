@@ -68,6 +68,7 @@ public class ShareDialog {
     public static int VIDEO_TYPE = 0;//短视频
     public static int TP_TYPE = 1;//图文
     public static int LIVE_TYPE = 2;//直播
+    public static int USER_TYPE = 3;//用户
     private int showType = VIDEO_TYPE;
     private Context mContext;
     private DownLoadProgressDialog downloadProgress;
@@ -161,12 +162,13 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.shareReport.setOnClickListener(view -> {
             //举报
+            //举报视频
             if (showType == VIDEO_TYPE) {
-                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.VIDEO_REPORT+shareBean.id);
-            } else if (showType == TP_TYPE) {
-//                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.VIDEO_REPORT+"");
-            } else if (showType == LIVE_TYPE) {
-                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.LIVE_REPORT+shareBean.id);
+                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.VIDEO_REPORT + shareBean.id);
+            } else if (showType == TP_TYPE) {//举报日记
+                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.USERDIARY_REPORT + shareBean.id);
+            } else if (showType == LIVE_TYPE) {//举报直播
+                UniService.startService(mContext, Constant.JKZL_MINI_APP_ID, 99, Constant.LIVE_REPORT + shareBean.id);
             }
         });
         binding.shareOperationLayout.sharePost.setOnClickListener(view -> {
@@ -197,7 +199,6 @@ public class ShareDialog {
         });
     }
 
-    //todo 举报小程序地址
 
     private ClipboardManager cm;
     private ClipData mClipData;
@@ -248,7 +249,6 @@ public class ShareDialog {
         } else if (showType == TP_TYPE) {
             binding.shareOperationLayout.shareSaveNative.setVisibility(View.GONE);
             binding.shareOperationLayout.shareColl.setVisibility(View.GONE);
-            binding.shareOperationLayout.shareReport.setVisibility(View.GONE);
             binding.shareOperationLayout.sharePost.setVisibility(View.VISIBLE);
         } else if (showType == LIVE_TYPE) {
             binding.shareOperationLayout.shareSaveNative.setVisibility(View.GONE);

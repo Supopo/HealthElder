@@ -49,7 +49,6 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
-import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
@@ -76,7 +75,6 @@ import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
-import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
@@ -994,7 +992,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 sendGiftBean.sendUserName = userName;
                 sendGiftBean.sendUserPhoto = userAvatar;
 
-                loadGiftAnimBanner(sendGiftBean,false);
+                loadGiftAnimBanner(sendGiftBean, false);
 
                 break;
             default:
@@ -1034,7 +1032,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 loadSvga();
             }
         }
-
 
 
         //判断展示的banner里面有没有，若有则叠加
@@ -1587,7 +1584,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         switch (v.getId()) {
             case R.id.tv_members_num:
                 if (zbUserListPop == null) {
-                    zbUserListPop = new ZBUserListPop(this, mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.liveRoomId, "守护团");
+                    zbUserListPop = new ZBUserListPop(this, mLiveInitInfo, "守护团");
                 }
                 zbUserListPop.showPopupWindow();
                 break;

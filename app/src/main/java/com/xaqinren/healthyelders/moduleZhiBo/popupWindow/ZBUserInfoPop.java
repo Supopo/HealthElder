@@ -24,6 +24,8 @@ import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
@@ -31,6 +33,9 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.ZBEditTextDialogActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
@@ -40,6 +45,7 @@ import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.widget.LoadingDialog;
 import okhttp3.MediaType;
@@ -59,12 +65,25 @@ public class ZBUserInfoPop extends BasePopupWindow {
     private LoadingDialog loadingDialog;
     private TextView tvGz;
     private ImageView ivGz;
+    private int type;
+    private Disposable uniSubscribe;
 
     public ZBUserInfoPop(Context context, LiveInitInfo mLiveInitInfo, ZBUserListBean zbUserListBean) {
         super(context);
         this.zbUserListBean = zbUserListBean;
         this.mLiveInitInfo = mLiveInitInfo;
         setBackground(R.color.transparent);
+        setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
+        initView();
+    }
+
+    public ZBUserInfoPop(Context context, int type, LiveInitInfo mLiveInitInfo, ZBUserListBean zbUserListBean) {
+        super(context);
+        this.zbUserListBean = zbUserListBean;
+        this.mLiveInitInfo = mLiveInitInfo;
+        this.type = type;
+
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
         initView();
@@ -84,6 +103,12 @@ public class ZBUserInfoPop extends BasePopupWindow {
         ImageView ivSex = findViewById(R.id.iv_sex);
         ImageView ivGly = findViewById(R.id.iv_gly);
         LinearLayout llGl = findViewById(R.id.ll_gl);
+        LinearLayout llJb = findViewById(R.id.ll_jb);
+
+        if (!mLiveInitInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+            llGl.setVisibility(View.INVISIBLE);
+        }
+
         LinearLayout llGz = findViewById(R.id.ll_gz);
         tvAt.setText("@TA");
         QMUIRadiusImageView rivPhoto = findViewById(R.id.riv_photo);
@@ -123,6 +148,11 @@ public class ZBUserInfoPop extends BasePopupWindow {
             setUserFollow();
         });
 
+        llJb.setOnClickListener(lis -> {
+            //举报用户
+            UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, 99, Constant.USER_REPORT + zbUserListBean.userId);
+        });
+
         tvAt.setOnClickListener(lis -> {
             //弹出输入dialog
             Bundle bundle = new Bundle();
@@ -133,13 +163,27 @@ public class ZBUserInfoPop extends BasePopupWindow {
             dismiss();
         });
 
-        tvHome.setOnClickListener(lis ->{
+        tvHome.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putString("userId", zbUserListBean.userId);
             Intent intent = new Intent(getContext(), UserInfoActivity.class);
             intent.putExtras(bundle);
             getContext().startActivity(intent);
             dismiss();
+        });
+
+
+        uniSubscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.UNI_RELEASE) {
+                    if (event.taskId == 99) {
+                        //举报用户
+                        UniUtil.openUniApp(getContext(), Constant.JKZL_MINI_APP_ID, event.jumpUrl, null, event.isSelfUni);
+                    }
+                } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
+                    //ToastUtils.showShort("打开小程序失败");
+                }
+            }
         });
     }
 

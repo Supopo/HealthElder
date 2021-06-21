@@ -68,6 +68,8 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.Anchor
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.uniApp.UniService;
@@ -141,6 +143,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private int screenHeight;
     private ZBGoodsListPop zbGoodsListPop;
     private Disposable uniSubscribe;
+    private ZBUserListPop zbUserListPop;
+    private ZBUserInfoPop userInfoPop;
 
 
     @Override
@@ -230,6 +234,14 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
+        topHeadAdapter.setOnItemClickListener(((adapter, view, position) -> {
+
+            if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(topHeadAdapter.getData().get(position).userId)) {
+                userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, topHeadAdapter.getData().get(position));
+                userInfoPop.showPopupWindow();
+            }
+
+        }));
 
         //初始化多人连麦座位表
         moreLinkAdapter = new MoreLinkAdapter(R.layout.item_more_link);
@@ -1554,6 +1566,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_members_num:
+                if (zbUserListPop == null) {
+                    zbUserListPop = new ZBUserListPop(this, mLiveInitInfo, "守护团");
+                }
+                zbUserListPop.showPopupWindow();
+                break;
             case R.id.btn_back:
                 showDialog("离开直播间...");
                 viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);

@@ -130,6 +130,8 @@ public class Constant {
     public static final String VIDEO_REPORT = "/pages/feedback/reportType?title=视频举报&type=video&id=";
     //用户举报
     public static final String USER_REPORT = "/pages/feedback/reportType?title=用户举报&type=user&id=";
+    //日记举报
+    public static final String USERDIARY_REPORT = "/pages/feedback/reportType?title=日记举报&type=UserDiary&id=";
     //直播举报
     public static final String LIVE_REPORT = "/pages/feedback/reportType?title=直播举报&type=video&id=";
 
