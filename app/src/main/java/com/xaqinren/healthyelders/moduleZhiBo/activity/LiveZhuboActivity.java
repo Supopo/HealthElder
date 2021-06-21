@@ -994,7 +994,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 sendGiftBean.sendUserName = userName;
                 sendGiftBean.sendUserPhoto = userAvatar;
 
-                loadGiftAnimBanner(sendGiftBean);
+                loadGiftAnimBanner(sendGiftBean,false);
 
                 break;
             default:
@@ -1002,15 +1002,40 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
     }
 
+    //礼物相关操作
+    private boolean isBanner1Showing;//是否在横幅
+    private boolean isBanner2Showing;//是否在横幅
+    private boolean isAnimLoading;//是否在加载动画
+    private List<SendGiftBean> giftsAnimList = new ArrayList<>();
+    private List<SendGiftBean> giftsBannersList = new ArrayList<>();
+    private SendGiftBean sendGiftBean1;
+    private SendGiftBean sendGiftBean2;
+    private Animation goneAnim1;
+    private Animation showAnim1;
+    private Animation goneAnim2;
+    private Animation showAnim2;
+    private TimerTask giftContentTask;
+    private TimerTask giftContentTask2;
+    private Timer giftContentTimer;
+    private Timer giftContentTimer2;
 
-    private void loadGiftAnimBanner(SendGiftBean sendGiftBean) {
+    private void loadGiftAnimBanner(SendGiftBean sendGiftBean, boolean isMe) {
         //存礼物消息
-        if (!isAnimLoading) {
-            giftsAnimList.add(0, sendGiftBean);
-            loadSvga();
-        } else {
-            giftsAnimList.add(1, sendGiftBean);
+
+        //判断当前礼物有没有动画
+        if (!TextUtils.isEmpty(sendGiftBean.hasAnimation) && sendGiftBean.hasAnimation.equals("1")) {
+            if (isMe) {
+                giftsAnimList.add(0, sendGiftBean);
+            } else {
+                giftsAnimList.add(sendGiftBean);
+            }
+
+            if (!isAnimLoading) {
+                loadSvga();
+            }
         }
+
+
 
         //判断展示的banner里面有没有，若有则叠加
         if (isBanner1Showing && sendGiftBean1 != null) {
@@ -1029,34 +1054,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
 
 
-        if (isBanner1Showing && isBanner2Showing) {
-            giftsBannersList.add(1, sendGiftBean);
-        } else if (!isBanner1Showing) {
+        if (isMe) {
             giftsBannersList.add(0, sendGiftBean);
-            loadBanner();
-        } else if (!isBanner2Showing) {
-            giftsBannersList2.add(0, sendGiftBean);
-            loadBanner();
+        } else {
+            giftsBannersList.add(sendGiftBean);
         }
+        loadBanner();
     }
-
-    //礼物相关操作
-    private boolean isBanner1Showing;//是否在横幅
-    private boolean isBanner2Showing;//是否在横幅
-    private boolean isAnimLoading;//是否在加载动画
-    private List<SendGiftBean> giftsAnimList = new ArrayList<>();
-    private List<SendGiftBean> giftsBannersList = new ArrayList<>();
-    private List<SendGiftBean> giftsBannersList2 = new ArrayList<>();
-    private SendGiftBean sendGiftBean1;
-    private SendGiftBean sendGiftBean2;
-    private Animation goneAnim1;
-    private Animation showAnim1;
-    private Animation goneAnim2;
-    private Animation showAnim2;
-    private TimerTask giftContentTask;
-    private TimerTask giftContentTask2;
-    private Timer giftContentTimer;
-    private Timer giftContentTimer2;
 
     //加载横幅
     private void loadBanner() {
@@ -1072,14 +1076,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             }
 
             sendGiftBean1 = giftsBannersList.get(0);
+            giftsBannersList.remove(0);
             showBanner1();
         } else {
-            if (giftsBannersList2.size() == 0) {
+            if (giftsBannersList.size() == 0) {
                 freedTimerTask2();
                 return;
             }
-            sendGiftBean2 = giftsBannersList2.get(0);
 
+            sendGiftBean2 = giftsBannersList.get(0);
+            giftsBannersList.remove(0);
             showBanner2();
         }
 
@@ -1105,8 +1111,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.tvGiftNum2.setText("" + sendGiftBean2.num + " ");
 
         //礼物消息横幅3S结束
-        freedTimerTask2();
 
+        freedTimerTask2();
         giftContentTimer2 = new Timer();
         giftContentTask2 = new TimerTask() {
             @Override
@@ -1127,11 +1133,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                             @Override
                             public void onAnimationEnd(Animation animation) {
                                 binding.rlGift2.setVisibility(View.GONE);
-                                if (giftsBannersList2.size() > 0) {
-                                    giftsBannersList2.remove(0);
-                                }
+
                                 isBanner2Showing = false;
                                 sendGiftBean2 = null;
+
                                 freedTimerTask2();
                                 handler.sendEmptyMessage(99);
                             }
@@ -1152,6 +1157,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private void showBanner1() {
+
         //送礼横幅
         if (binding.rlGift.getVisibility() == View.GONE) {
             showAnim1 = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.anim_slice_in_left);
@@ -1173,7 +1179,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         //礼物消息横幅3S结束
         freedTimerTask1();
-
         giftContentTimer = new Timer();
         giftContentTask = new TimerTask() {
             @Override
@@ -1181,7 +1186,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         goneAnim1 = AnimUtils.getAnimation(LiveZhuboActivity.this, R.anim.anim_slice_out_left);
                         binding.rlGift.clearAnimation();
                         binding.rlGift.setAnimation(goneAnim1);
@@ -1194,14 +1198,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                             @Override
                             public void onAnimationEnd(Animation animation) {
                                 binding.rlGift.setVisibility(View.GONE);
-                                if (giftsBannersList.size() > 0) {
-                                    giftsBannersList.remove(0);
-                                }
+
                                 isBanner1Showing = false;
                                 sendGiftBean1 = null;
 
                                 freedTimerTask1();
                                 handler.sendEmptyMessage(99);
+
                             }
 
                             @Override
@@ -1263,13 +1266,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             return;
         }
 
-        SendGiftBean sendGiftBean = giftsAnimList.get(0);
-
-        if (sendGiftBean.hasAnimation.equals("1")) {
-            //没有播放的时候去播放
-            showGiftAnim(sendGiftBean.svgaUrl);
-        }
-
+        showGiftAnim(giftsAnimList.get(0).svgaUrl);
+        giftsAnimList.remove(0);
     }
 
     private void showGiftAnim(String nowUrl) {
@@ -1324,11 +1322,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
             @Override
             public void onFinished() {
+                //播放结束
                 isAnimLoading = false;
-                //动画结束
-                if (giftsAnimList.size() > 0) {
-                    giftsAnimList.remove(0);
-                }
                 loadSvga();
             }
 

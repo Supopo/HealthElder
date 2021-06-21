@@ -20,6 +20,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  * Created by Lee. on 2021/5/25.
  */
 public class GiftListPageAdapter extends BaseQuickAdapter<GiftBean, BaseViewHolder> {
+    private long lastSendTime;
 
     public GiftListPageAdapter(int layoutResId) {
         super(layoutResId);
@@ -40,7 +41,13 @@ public class GiftListPageAdapter extends BaseQuickAdapter<GiftBean, BaseViewHold
         listAdapter.setOnItemClickListener(((adapter, view, position) -> {
             if (listAdapter.getData().get(position).isSelect) {
                 //发送礼物
+                long secondTime = System.currentTimeMillis();
+                if (secondTime - lastSendTime < 500) {
+                    return;
+                }
                 RxBus.getDefault().post(new EventBean(CodeTable.ZHJ_SEND_GIFT, listAdapter.getData().get(position)));
+                lastSendTime = secondTime;
+
             } else {
                 GiftSelectBean selectBean = new GiftSelectBean();
                 selectBean.selectPage = helper.getAdapterPosition();
