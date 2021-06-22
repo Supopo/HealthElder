@@ -1,10 +1,12 @@
 package com.xaqinren.healthyelders.moduleLogin.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -15,12 +17,15 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SplashViewModel;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashViewModel> {
 
@@ -45,6 +50,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
         }
     };
     private boolean isHasBar;
+    private Disposable disposable;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -89,9 +95,12 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(params);
         }
+        rlTitle.setVisibility(View.GONE);
 
-        LoadGiftService.startService(this);
+        initView();
+    }
 
+    public void initView() {
         isHasBar = false;
         int screenHeight = MScreenUtil.getScreenHeight(this);
         binding.container.post(new Runnable() {
@@ -107,24 +116,45 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             }
         });
 
+        disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) {
+                        hasParm = true;
+                        if (canNext) {
+                            toNext();
+                        }
+                    } else {
+                        finish();
+                        ToastUtils.showShort("访问权限已拒绝");
+                    }
 
-        rlTitle.setVisibility(View.GONE);
-        binding.tvJump.setText("跳过 " + recLen);
-        timer.schedule(task, 1000, 1000);//等待时间一秒，停顿时间一秒
+                });
+
+        LoadGiftService.startService(this);
+
+        //        binding.tvJump.setText("跳过 " + recLen);
+        //        timer.schedule(task, 1000, 1000);//等待时间一秒，停顿时间一秒
 
         handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(runnable = new Runnable() {
             @Override
             public void run() {
+                canNext = true;
                 toNext();
             }
         }, recLen * 1000);
     }
 
     private void toNext() {
-        startActivity(MainActivity.class);
-        finish();
+        if (hasParm) {
+            startActivity(MainActivity.class);
+            finish();
+        }
+
     }
+
+    private boolean hasParm;
+    private boolean canNext;
 
     //页面事件监听的方法，一般用于ViewModel层转到View层的事件注册
     @Override

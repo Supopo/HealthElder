@@ -40,20 +40,20 @@ public class DownloadUtil {
     }
 
     /**
-     * @param url 下载连接
+     * @param url      下载连接
      * @param saveFile 储存下载文件的SDCard目录
      * @param listener 下载监听
      */
     public void download(final String url, final File saveFile, final OnDownloadListener listener) {
-        if (url.isEmpty()||!url.contains("http")){
+        if (url.isEmpty() || !url.contains("http")) {
             listener.onDownloadFailed();
             return;
         }
         Request request = new Request.Builder().url(url).build();
-        realDownLoad(request,saveFile,listener);
+        realDownLoad(request, saveFile, listener);
     }
 
-    private void realDownLoad(final Request request, final File saveFile, final OnDownloadListener listener){
+    private void realDownLoad(final Request request, final File saveFile, final OnDownloadListener listener) {
         downloadCall = okHttpClient.newCall(request);
         downloadCall.enqueue(new Callback() {
             @Override
@@ -61,6 +61,7 @@ public class DownloadUtil {
                 // 下载失败
                 listener.onDownloadFailed();
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 InputStream is = null;
@@ -101,40 +102,38 @@ public class DownloadUtil {
     }
 
     /**
-     *
      * @param url
-     * @param requestBody
-     *        FormBody.Builder params=new FormBody.Builder();
-     * 	      params.add("data", "0");
-     * 	      requestBody = params.build();
+     * @param requestBody FormBody.Builder params=new FormBody.Builder();
+     *                    params.add("data", "0");
+     *                    requestBody = params.build();
      * @param saveFile
      * @param listener
      */
     public void postDownLoad(final String url, final RequestBody requestBody, final File saveFile, final OnDownloadListener listener, Map<String, String> map) {
-        if (url.isEmpty()||!url.contains("http")){
+        if (url.isEmpty() || !url.contains("http")) {
             listener.onDownloadFailed();
             return;
         }
-        Request request = createBuilder(url,requestBody,map).post(requestBody).build();
-        realDownLoad(request,saveFile,listener);
+        Request request = createBuilder(url, requestBody, map).post(requestBody).build();
+        realDownLoad(request, saveFile, listener);
     }
 
-   private Request.Builder createBuilder(String url, RequestBody requestBody, Map<String, String> map){
-       Request.Builder builder = new Request.Builder().url(url).post(requestBody);
-       if (map!=null){
-           for(Map.Entry<String, String> header:map.entrySet()){
-               String key = header.getKey();
-               String value = header.getValue();
-               builder.addHeader(key,value);
-           }
-       }
-       return  builder;
-   }
+    private Request.Builder createBuilder(String url, RequestBody requestBody, Map<String, String> map) {
+        Request.Builder builder = new Request.Builder().url(url).post(requestBody);
+        if (map != null) {
+            for (Map.Entry<String, String> header : map.entrySet()) {
+                String key = header.getKey();
+                String value = header.getValue();
+                builder.addHeader(key, value);
+            }
+        }
+        return builder;
+    }
+
     /**
      * @param saveDir
      * @return
-     * @throws IOException
-     * 判断下载目录是否存在
+     * @throws IOException 判断下载目录是否存在
      */
     private String isExistDir(String saveDir) throws IOException {
         // 下载位置
@@ -148,27 +147,26 @@ public class DownloadUtil {
 
     /**
      * @param url
-     * @return
-     * 从下载连接中解析出文件名
+     * @return 从下载连接中解析出文件名
      */
     @NonNull
     public String getNameFromUrl(String url) {
-        return url.substring(url.lastIndexOf("/") + 1);
+        return System.currentTimeMillis() + url.substring(url.lastIndexOf("/") + 1);
     }
 
     public File getSaveFileFromUrl(String url, Context context, String folder) {
         File appDir;
-        appDir = new File(Environment.getExternalStorageDirectory().getPath() + "/JKZL/Video/");
+        appDir = new File(Environment.getExternalStorageDirectory().getPath() + "/JKZL/");
 
         if (!appDir.exists()) {
             appDir.mkdirs();
         }
 
-        File downFolder = new File(appDir,folder);
+        File downFolder = new File(appDir, folder);
         if (!downFolder.exists()) {
             downFolder.mkdirs();
         }
-        File saveFile = new File(downFolder,getNameFromUrl(url));
+        File saveFile = new File(downFolder, getNameFromUrl(url));
         if (saveFile.exists())
             saveFile.delete();
         try {
@@ -180,7 +178,7 @@ public class DownloadUtil {
         return saveFile;
     }
 
-    public void cancelDownload(){
+    public void cancelDownload() {
         if (downloadCall != null)
             downloadCall.cancel();
     }
@@ -192,8 +190,7 @@ public class DownloadUtil {
         void onDownloadSuccess();
 
         /**
-         * @param progress
-         * 下载进度
+         * @param progress 下载进度
          */
         void onDownloading(int progress);
 

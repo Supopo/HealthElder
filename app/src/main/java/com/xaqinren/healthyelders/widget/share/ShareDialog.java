@@ -148,7 +148,7 @@ public class ShareDialog {
         });
         binding.shareOperationLayout.shareSaveNative.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(shareBean.downUrl)) {
-                //保存本地
+                //保存本地 当前下载url应该是解密之后的
                 saveVideo(shareBean.downUrl);
             }
 
@@ -282,16 +282,16 @@ public class ShareDialog {
     }
 
     private void saveVideo(String url) {
-        File downLoadUrl = DownloadUtil.get().getSaveFileFromUrl(url, mContext, "video");
+        File downLoadPath = DownloadUtil.get().getSaveFileFromUrl(shareBean.oldUrl, mContext, "Video");
         if (downloadProgress == null) {
             downloadProgress = new DownLoadProgressDialog(mContext);
             downloadProgress.setICancelDownLoad(() -> DownloadUtil.get().cancelDownload());
         }
         downloadProgress.show();
-        DownloadUtil.get().download(url, downLoadUrl, new DownloadUtil.OnDownloadListener() {
+        DownloadUtil.get().download(url, downLoadPath, new DownloadUtil.OnDownloadListener() {
             @Override
             public void onDownloadSuccess() {
-                ToastUtil.toastLongMessage("视频已下载至：" + downLoadUrl.getPath());
+                ToastUtil.toastLongMessage("视频已下载至：" + downLoadPath.getPath());
                 downloadProgress.dismiss();
             }
 

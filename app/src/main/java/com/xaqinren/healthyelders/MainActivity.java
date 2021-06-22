@@ -202,7 +202,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         disableDrawer();
         //        viewModel.getAppConfig();
         viewModel.checkVersion();
-
     }
 
     @Override

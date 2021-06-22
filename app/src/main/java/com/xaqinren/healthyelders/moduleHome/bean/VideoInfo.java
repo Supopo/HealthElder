@@ -33,6 +33,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String resourceId;//": "1392445266996514816",
     public String coverUrl;//":
     public String resourceUrl;//":
+    public String oldResourceUrl;//自用 保存旧地址
     public String title;//": "小视频",
     public String introduce;//":
     public String userId;//": "1385879201982189568",

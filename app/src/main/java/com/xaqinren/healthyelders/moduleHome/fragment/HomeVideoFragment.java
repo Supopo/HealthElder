@@ -99,6 +99,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         this.type = type;
         this.position = position;
         if (videoInfo.resourceType.equals("VIDEO")) {
+            videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
         }
     }
@@ -593,6 +594,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void showShareDialog(VideoInfo videoInfo) {
         if (shareDialog == null)
             videoInfo.share.downUrl = videoInfo.resourceUrl;
+            videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
         shareDialog.show(binding.mainRelativeLayout);
     }

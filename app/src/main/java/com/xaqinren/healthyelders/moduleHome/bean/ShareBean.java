@@ -13,6 +13,7 @@ public class ShareBean implements Serializable {
     public String introduce;
     public String logoUrl;
     public String url;
-    public String downUrl;
+    public String downUrl;//解密之后的地址
+    public String oldUrl;//解密之前地址
 
 }
