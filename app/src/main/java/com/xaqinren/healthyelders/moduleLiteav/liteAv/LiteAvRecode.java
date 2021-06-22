@@ -14,6 +14,7 @@ import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.liteav.audio.impl.Record.TXCAudioSysRecord;
 import com.tencent.liteav.demo.beauty.BeautyParams;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
@@ -99,6 +100,8 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         VideoRecordSDK.getInstance().setVideoRecordListener(this);
         VideoRecordSDK.getInstance().setConfig(config);
         VideoRecordSDK.getInstance().updateBeautyParam(config.mBeautyParams);
+        RecordMusicManager.getInstance().deleteMusic();
+        MusicRecode.getInstance().setUseMusicItem(null);
         cameraSwitch = true;
     }
 
@@ -280,6 +283,12 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
             }*/
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
+            TXCAudioSysRecord.getInstance().stop();
+
+
+
+
+
             currentStatus = STATUS_IDLE;
             recodeLiteListener.onRecodeComplete();
         } else {

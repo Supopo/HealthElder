@@ -388,7 +388,6 @@ public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
         }
         RecordMusicManager.getInstance().resumeMusic();
         AudioFocusManager.getInstance().requestAudioFocus();
-
         mCurrentState = STATE_RESUME;
     }
 
@@ -499,7 +498,10 @@ public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
         Log.d(TAG, "onRecordComplete");
         mCurrentState = STATE_STOP;
         if (result.retCode < 0) {
-            ToastUtil.toastShortMessage(UGCKit.getAppContext().getResources().getString(R.string.ugckit_video_record_activity_on_record_complete_fail_tip) + result.descMsg);
+//            ToastUtil.toastShortMessage(UGCKit.getAppContext().getResources().getString(R.string.ugckit_video_record_activity_on_record_complete_fail_tip) + result.descMsg);
+            if (mOnVideoRecordListener != null) {
+                mOnVideoRecordListener.onRecordComplete(result);
+            }
         } else {
             pauseRecord();
 

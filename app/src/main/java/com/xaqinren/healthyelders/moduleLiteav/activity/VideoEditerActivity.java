@@ -57,6 +57,7 @@ import com.tencent.qcloud.ugckit.module.effect.paster.TCPasterFragment;
 import com.tencent.qcloud.ugckit.module.effect.time.TCTimeFragment;
 import com.tencent.qcloud.ugckit.module.effect.utils.DraftEditer;
 import com.tencent.qcloud.ugckit.module.effect.utils.Edit;
+import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
@@ -189,6 +190,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
         UGCKitEditConfig config = new UGCKitEditConfig();
         config.isPublish = true;
+        config.isSaveToDCIM = false;
         mUGCKitVideoEdit.setConfig(config);
         mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
         if (!TextUtils.isEmpty(mVideoPath)) {
@@ -240,6 +242,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
     @Override
     protected void onPause() {
+        //停止mic
         mUGCKitVideoEdit.stop();
         mUGCKitVideoEdit.setOnVideoEditListener(null);
         RecordMusicManager.getInstance().stopPreviewMusic();
@@ -258,8 +261,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         RecordMusicManager.getInstance().stopPreviewMusic();
         //重新被打开，由其他页面过来的
         if (MusicRecode.getInstance().getUseMusicItem() != null) {
+            MusicInfo musicInfo = RecordMusicManager.getInstance().getMusicInfo();
             MMusicItemBean bean = MusicRecode.getInstance().getUseMusicItem();
             resetMusicBGM(bean.name, bean.localPath);
+            VideoEditerSDK.getInstance().getEditer().setVideoVolume(0);
             VideoEditerSDK.getInstance().getEditer().setBGMVolume(1);
             PlayerManagerKit.getInstance().restartPlay();
             binding.musicName.setText(bean.name);

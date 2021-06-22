@@ -42,6 +42,9 @@ public class ConfigureLoader {
      * 将草稿箱变更的配置保存
      */
     public void saveConfigFromDraft() {
+        if (mDraftEditer == null) {
+            return;
+        }
         mEffectEditer.setBgmName(mDraftEditer.getBgmName());
         mEffectEditer.setBgmPath(mDraftEditer.getBgmPath());
         mEffectEditer.setBgmPos(mDraftEditer.getBgmPos());
@@ -53,6 +56,9 @@ public class ConfigureLoader {
     }
 
     public void setMusicPath(String name , String path , float volume) {
+        if (mDraftEditer == null) {
+            return;
+        }
         mDraftEditer.setBgmName(name);
         mDraftEditer.setBgmPath(path);
         mDraftEditer.setBgmPos(-1);
