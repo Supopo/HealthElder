@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
@@ -846,8 +847,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             TXCloudVideoView txCloudVideoView = (TXCloudVideoView) moreLinkAdapter.getViewByPosition(mLinkPos, R.id.anchor_video_view);
             mLiveRoom.startLocalPreview(txCloudVideoView);//不传第一个参数 为纯音频
         }
-        //TODO  setCameraMuteImage
-
 
         if (showLinkTip == null) {
             showLinkTip = new QMUITipDialog.Builder(this)

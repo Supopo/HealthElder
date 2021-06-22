@@ -1,7 +1,9 @@
 
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.BitmapFactory;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;
@@ -101,6 +103,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.BlurTransformation;
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
@@ -469,6 +472,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         mLiveRoom.getBeautyManager().setWhitenessLevel(mLiveInitInfo.whitenessLevel);
         mLiveRoom.getBeautyManager().setRuddyLevel(mLiveInitInfo.ruddinessLevel);
 
+        //设置垫片
+        mLiveRoom.setCameraMuteImage( R.drawable.sp_leave_bg);
         //创建直播间
         mLiveRoom.createRoom(Constant.getRoomId(mLiveInitInfo.liveRoomCode), "", new IMLVBLiveRoomListener.CreateRoomCallback() {
             @Override
@@ -498,7 +503,27 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + e);
             }
         });
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isPlaying) {
+            Activity activity = AppManager.getAppManager().currentActivity();
+            //判断当前栈顶是否当前页面
+            if(activity.getLocalClassName().contains("LiveZhuboActivity")){
+                mLiveRoom.setPusher(true);
+            }
+
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isPlaying) {
+            mLiveRoom.setPusher(false);
+        }
     }
 
     private boolean isPlaying;//直播中

@@ -1896,6 +1896,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         if (mTXLivePusher != null) {
             TXLivePushConfig config = mTXLivePusher.getConfig();
             config.setPauseImg(bitmap);
+            config.setPauseImg(300,5);
             config.setPauseFlag(TXLiveConstants.PAUSE_FLAG_PAUSE_VIDEO | TXLiveConstants.PAUSE_FLAG_PAUSE_AUDIO);
             mTXLivePusher.setConfig(config);
         }
@@ -1914,10 +1915,26 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         if (mTXLivePusher != null) {
             TXLivePushConfig config = mTXLivePusher.getConfig();
             config.setPauseImg(bitmap);
+            config.setPauseImg(300,5);
             config.setPauseFlag(TXLiveConstants.PAUSE_FLAG_PAUSE_VIDEO | TXLiveConstants.PAUSE_FLAG_PAUSE_AUDIO);
             mTXLivePusher.setConfig(config);
         }
     }
+
+    @Override
+    public void setPusher(boolean pusher) {
+        if (mTXLivePusher != null) {
+            if (pusher) {
+                // 进入隐私模式
+                mTXLivePusher.pausePusher();
+            } else {
+                // 退出隐私模式
+                mTXLivePusher.resumePusher();
+            }
+        }
+
+    }
+
 
     @Override
     public TXBeautyManager getBeautyManager() {

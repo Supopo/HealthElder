@@ -89,7 +89,7 @@ public abstract class MLVBLiveRoom {
      * @param callback  登录结果回调
      * @see {@link IMLVBLiveRoomListener.LoginCallback}
      */
-    public abstract void login(final boolean isFirst,final LoginInfo loginInfo, final IMLVBLiveRoomListener.LoginCallback callback);
+    public abstract void login(final boolean isFirst, final LoginInfo loginInfo, final IMLVBLiveRoomListener.LoginCallback callback);
 
     /**
      * 退出登录
@@ -464,6 +464,13 @@ public abstract class MLVBLiveRoom {
      * @param id 设置默认显示图片的资源文件
      */
     public abstract void setCameraMuteImage(final int id);
+
+    /**
+     * 设置是否开启隐私模式
+     * @param pusher
+     */
+    public abstract void setPusher(final boolean pusher);
+
 
     /// @}
 
