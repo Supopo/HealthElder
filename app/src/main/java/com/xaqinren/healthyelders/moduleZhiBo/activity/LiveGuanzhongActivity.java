@@ -2,7 +2,6 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
@@ -11,7 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;

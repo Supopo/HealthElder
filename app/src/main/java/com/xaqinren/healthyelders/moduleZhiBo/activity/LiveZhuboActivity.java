@@ -3,7 +3,6 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.BitmapFactory;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;

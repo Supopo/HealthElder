@@ -1888,7 +1888,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * 主播屏蔽摄像头期间需要显示的等待图片
      * <p>
      * 当主播屏蔽摄像头，或者由于 App 切入后台无法使用摄像头的时候，我们需要使用一张等待图片来提示观众“主播暂时离开，请不要走开”。
-     *
+     * 注意需要在本地摄像头开启之后开启
      * @param bitmap 位图
      */
     @Override
@@ -1896,7 +1896,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         if (mTXLivePusher != null) {
             TXLivePushConfig config = mTXLivePusher.getConfig();
             config.setPauseImg(bitmap);
-            config.setPauseImg(300,5);
             config.setPauseFlag(TXLiveConstants.PAUSE_FLAG_PAUSE_VIDEO | TXLiveConstants.PAUSE_FLAG_PAUSE_AUDIO);
             mTXLivePusher.setConfig(config);
         }
@@ -1906,7 +1905,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * 主播屏蔽摄像头期间需要显示的等待图片
      * <p>
      * 当主播屏蔽摄像头，或者由于 App 切入后台无法使用摄像头的时候，我们需要使用一张等待图片来提示观众“主播暂时离开，请不要走开”。
-     *
+     * 注意需要在本地摄像头开启之后开启
      * @param id 设置默认显示图片的资源文件
      */
     @Override
@@ -1915,7 +1914,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         if (mTXLivePusher != null) {
             TXLivePushConfig config = mTXLivePusher.getConfig();
             config.setPauseImg(bitmap);
-            config.setPauseImg(300,5);
             config.setPauseFlag(TXLiveConstants.PAUSE_FLAG_PAUSE_VIDEO | TXLiveConstants.PAUSE_FLAG_PAUSE_AUDIO);
             mTXLivePusher.setConfig(config);
         }
