@@ -19,11 +19,13 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeTjBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeTJViewModel;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 
@@ -49,6 +51,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private FragmentActivity fragmentActivity;
     public ViewPager2 tjViewPager2;
     private Handler handler;
+    private Disposable subscribe;
 
 
     public HomeTJFragment(FragmentActivity fragmentActivity) {
@@ -68,7 +71,16 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
+                    //判断刷新
+                    if (AppApplication.get().getLayoutPos() == 0) {
+                        needRefreshData = true;
+                    }
+                }
+            }
+        });
         //接受数据
         viewModel.datas.observe(this, datas -> {
             closeLoadView();
@@ -186,16 +198,16 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                showLoadView();
                 refreshData();
-                binding.srl.setRefreshing(false);
             }
         });
     }
 
 
     public void refreshData() {
+        binding.srl.setRefreshing(false);
         page = 1;
-        showLoadView();
         viewModel.getVideoData(page);
     }
 
@@ -206,10 +218,23 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
     private boolean firstInit = true;
 
+    private boolean needRefreshData;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (needRefreshData) {
+            needRefreshData = false;
+            refreshData();
+        }
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         handler.removeCallbacksAndMessages(null);
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }

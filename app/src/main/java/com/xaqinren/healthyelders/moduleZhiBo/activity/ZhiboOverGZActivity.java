@@ -13,8 +13,10 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityZhiboOverGzBinding;
 import com.xaqinren.healthyelders.databinding.HeaderZhiboOverGzBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.SomeVideoListAdapter;
@@ -23,6 +25,7 @@ import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/4/30.
@@ -62,6 +65,8 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
         setStatusBarTransparent();
         viewModel.getLiveOverInfo(liveRoomRecordId);
         viewModel.getMoreLives(page, liveRoomId);
+
+        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive"));
 
         mAdapter = new SomeVideoListAdapter(R.layout.item_some_video);
         binding.rvContent.setLayoutManager(new GridLayoutManager(this, 2));

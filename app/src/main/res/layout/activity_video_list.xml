@@ -9,32 +9,62 @@
             type="com.xaqinren.healthyelders.moduleHome.viewModel.VideoListViewModel" />
     </data>
 
-
-    <RelativeLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_252525">
+        android:layout_height="match_parent">
 
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/srl"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/color_252525">
+
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_22"
-            android:layout_height="@dimen/dp_22"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_40"
-            android:background="@mipmap/main_back_white" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <ImageView
+                    android:id="@+id/ivEmpty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@mipmap/bg_no_data" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ivEmpty"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_22"
+                    android:gravity="center"
+                    android:text="暂无直播"
+                    android:textColor="@color/gray_999"
+                    android:textSize="@dimen/sp_13" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_40"
+                android:background="@mipmap/main_back_white" />
+
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </layout>

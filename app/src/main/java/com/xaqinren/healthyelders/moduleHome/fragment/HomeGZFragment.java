@@ -18,6 +18,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
@@ -89,6 +90,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                         //在切过来之后设置不然会导致HomeFragment里面的NSV滑动
                         resetVVPHeight();
                         initVideoViews();
+                    }
+                } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
+                    //判断刷新
+                    if (AppApplication.get().getLayoutPos() == 1) {
+                        needRefreshData = true;
                     }
                 }
             }
@@ -191,6 +197,16 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.viewPager2.setUserInputEnabled(false);
     }
 
+    private boolean needRefreshData;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (needRefreshData) {
+            needRefreshData = false;
+            refreshData();
+        }
+    }
 
     private boolean isInit;//设置懒加载，点到关注才开始加载
 
@@ -218,7 +234,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 //防止创建新Fragment时候多走一次
-                if ( position != 0 && position == lastPos) {
+                if (position != 0 && position == lastPos) {
                     return;
                 }
 
@@ -244,7 +260,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_218)) {
                     binding.rlTop.setVisibility(View.GONE);
                     //暂时不用再展示
-//                    binding.llShowTop.setVisibility(View.VISIBLE);
+                    //                    binding.llShowTop.setVisibility(View.VISIBLE);
                     binding.nsv.setScrollingEnabled(false);
                     binding.viewPager2.setUserInputEnabled(true);
                 }
@@ -254,33 +270,36 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                binding.srl.setRefreshing(false);
-                page = 1;
                 showLoadView();
-                viewModel.getVideoData(page);
-                //判断
-                if (binding.rlTop.getVisibility() == View.GONE) {
-                    binding.nsv.setScrollingEnabled(false);
-                    binding.viewPager2.setUserInputEnabled(true);
-                } else {
-                    binding.nsv.setScrollingEnabled(true);
-                    binding.viewPager2.setUserInputEnabled(false);
-                }
+                refreshData();
             }
         });
 
 
         binding.llShowTop.setOnClickListener(lis -> {
-                binding.rlTop.setVisibility(View.VISIBLE);
-                binding.llShowTop.setVisibility(View.GONE);
-                binding.nsv.setScrollingEnabled(true);
-                binding.viewPager2.setUserInputEnabled(false);
+            binding.rlTop.setVisibility(View.VISIBLE);
+            binding.llShowTop.setVisibility(View.GONE);
+            binding.nsv.setScrollingEnabled(true);
+            binding.viewPager2.setUserInputEnabled(false);
         });
 
         isInit = true;
     }
 
-    private boolean topClick;
+    public void refreshData() {
+        page = 1;
+        binding.srl.setRefreshing(false);
+        viewModel.getVideoData(page);
+        //判断
+        if (binding.rlTop.getVisibility() == View.GONE) {
+            binding.nsv.setScrollingEnabled(false);
+            binding.viewPager2.setUserInputEnabled(true);
+        } else {
+            binding.nsv.setScrollingEnabled(true);
+            binding.viewPager2.setUserInputEnabled(false);
+        }
+    }
+
     private void showLoadView() {
         binding.loadView.setVisibility(View.VISIBLE);
         binding.loadView.playAnimation();
@@ -289,6 +308,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subscribe.dispose();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -11,8 +12,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityVideoListBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
@@ -45,6 +48,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private VideoListBean videos;
     private Handler handler;
     private boolean isSingle;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -77,6 +81,9 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 
 
@@ -123,7 +130,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     return;
 
                 //防止创建新Fragment时候多走一次
-                if ( position != 0 && position == lastPos) {
+                if (position != 0 && position == lastPos) {
                     return;
                 }
                 AppApplication.get().setPlayPosition(position);
@@ -139,14 +146,11 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             }
         });
 
-        binding.srl.setEnabled(false);
+        binding.srl.setEnabled(true);
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page++;
-                //                showLoadView();
-                viewModel.getVideoData(page, videos);
-                binding.srl.setRefreshing(false);
+                refreshData();
             }
         });
 
@@ -154,17 +158,47 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             finish();
         });
 
+
     }
+
+    public void refreshData() {
+        page = 1;
+        binding.srl.setRefreshing(false);
+        viewModel.getVideoData(page, videos);
+    }
+
+    private boolean needRefreshData;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (needRefreshData) {
+            needRefreshData = false;
+            refreshData();
+        }
+    }
+
 
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
+                    //判断刷新
+                    needRefreshData = true;
+                }
+            }
+        });
 
         //接受数据
         viewModel.datas.observe(this, datas -> {
             //            closeLoadView();
 
             if (datas != null && datas.size() > 0) {
+                binding.rlEmpty.setVisibility(View.GONE);
+                binding.viewPager2.setVisibility(View.VISIBLE);
+
                 List<VideoInfo> tempList = new ArrayList<>();
 
                 if (videos.type == 2) {
@@ -200,6 +234,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             } else {
                 if (page > 1) {
                     page--;
+                }else {
+                    //展示空布局
+                    binding.rlEmpty.setVisibility(View.VISIBLE);
+                    binding.viewPager2.setVisibility(View.GONE);
                 }
             }
         });

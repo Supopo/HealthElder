@@ -89,11 +89,8 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mLoadMore.setEnableLoadMore(false);
-                page = 1;
                 showLoadView();
-                viewModel.getVideoData(page);
-                binding.srlContent.setRefreshing(false);
+                refreshData();
             }
         });
 
@@ -153,12 +150,19 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                     startActivity(VideoListActivity.class, bundle);
 
                 } else {
-                    Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                    Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
                     intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, adapterList.get(position).resourceId);
                     startActivity(intent);
                 }
             }
         });
+    }
+
+    public void refreshData() {
+        mLoadMore.setEnableLoadMore(false);
+        page = 1;
+        viewModel.getVideoData(page);
+        binding.srlContent.setRefreshing(false);
     }
 
     private boolean isFirst = true;
@@ -183,6 +187,11 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
                     lon = locationBean.lon;
                     AppApplication.get().setmLat(lat);
                     AppApplication.get().setmLon(lon);
+                } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
+                    //判断刷新
+                    if (AppApplication.get().getLayoutPos() == 2) {
+                        needRefreshData = true;
+                    }
                 }
             }
         });
@@ -221,9 +230,22 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         binding.loadView.setVisibility(View.GONE);
     }
 
+    private boolean needRefreshData;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (needRefreshData) {
+            needRefreshData = false;
+            refreshData();
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subscribe.dispose();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }
