@@ -99,6 +99,8 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                userRes = false;
+                contentRes = false;
                 mLoadMore.setEnableLoadMore(false);
                 page = 1;
                 searchAllViewModel.searchUsers(page, 3);
@@ -222,10 +224,12 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         searchAllViewModel.userDatas.observe(this, dataList -> {
             if (dataList != null) {
                 userAdapter.setNewInstance(dataList);
+                userRes = true;
                 if (dataList.size() > 0) {
                     headBinding.llHead.setVisibility(View.VISIBLE);
                 } else {
                     headBinding.llHead.setVisibility(View.GONE);
+                    showNodata();
                 }
 
             }
@@ -234,6 +238,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         searchAllViewModel.allDatas.observe(this, dataList -> {
             binding.srlContent.setRefreshing(false);
             if (dataList != null) {
+                contentRes = true;
                 dismissDialog();
                 if (dataList.size() > 0) {
                     //加载更多加载完成
@@ -246,9 +251,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 } else {
 
                     if (page == 1) {
-                        if (headBinding.llHead.getVisibility() == View.GONE) {
-                            mAdapter.setEmptyView(R.layout.item_empty);
-                        }
+                        showNodata();
                     }
 
                     mLoadMore.loadMoreEnd(true);
@@ -263,6 +266,17 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 page = 1;
             }
         });
+    }
+
+    public boolean userRes;
+    public boolean contentRes;
+
+    private void showNodata() {
+        if (userRes && contentRes) {
+            if (headBinding.llHead.getVisibility() == View.GONE) {
+                mAdapter.setEmptyView(R.layout.item_empty);
+            }
+        }
     }
 
     @Override

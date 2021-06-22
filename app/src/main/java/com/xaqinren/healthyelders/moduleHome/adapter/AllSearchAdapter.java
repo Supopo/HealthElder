@@ -115,7 +115,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
             params.height = newHeight;
             binding.rivCover.setLayoutParams(params);
 
-            GlideUtil.intoImageView(getContext(), videoInfo.coverUrl, binding.rivCover);
+            GlideUtil.intoImageView(getContext(), videoInfo.coverUrl, binding.rivCover, R.drawable.bg_edit_zb);
         }
 
     }

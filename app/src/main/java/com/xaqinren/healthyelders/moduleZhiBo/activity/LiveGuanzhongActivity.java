@@ -1045,6 +1045,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         Animation scaleAnimation1 = AnimationUtils.loadAnimation(this, R.anim.zbj_double_zan_enter);
         Animation scaleAnimation2 = AnimationUtils.loadAnimation(this, R.anim.zbj_double_zan_exit);
 
+        //这个位置开启动画之前不用clear否则别的点赞效果就没了
         iv.startAnimation(scaleAnimation1);
 
         scaleAnimation1.setAnimationListener(new Animation.AnimationListener() {

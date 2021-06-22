@@ -26,8 +26,14 @@ public class GlideUtil {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
     }
 
-    public static void intoImageView(Context context, Object res, ImageView view, int holder) {
-        Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(holder).into(view);
+    public static void intoImageView(Context context, Object res, ImageView view, int placeholder) {
+        RequestOptions options = new RequestOptions()
+                .placeholder(placeholder)//图片加载出来前，显示的图片
+                .fallback(placeholder) //url为空的时候,显示的图片
+                .error(placeholder);//图片加载失败后，显示的图片
+        Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .thumbnail(0.5f)
+                .apply(options).into(view);
     }
 
     public static void intoGaoSiImageView(Context context, Object res, ImageView view) {
