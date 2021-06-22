@@ -62,6 +62,9 @@ public class ConfigureLoader {
         mDraftEditer.setBgmVolume(volume);
     }
     public float getMusicVolume() {
+        if (mDraftEditer == null) {
+            return 1;
+        }
         return mDraftEditer.getBgmVolume();
     }
 

@@ -17,6 +17,7 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -600,12 +601,21 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             Matcher matcher = patternAt.matcher(text);
             //跟matcher找到的@数量一一对应
             int i = 0;
+            LogUtils.e(TAG, "执行匹配friend");
+            int textLength = text.length();
             while (matcher.find()) {
                 if (i > videoAtEditBeans.size() - 1)
                     break;
                 int s = matcher.start();
                 VideoPublishEditBean videoAtEditBean = videoAtEditBeans.get(i);
-                String cutStr = text.toString().substring(s, s + videoAtEditBean.getStrLength());
+                String cutStr;
+                if (s + videoAtEditBean.getStrLength() >= textLength) {
+                    cutStr = text.toString().substring(s, textLength - 1);
+                }else{
+                    cutStr = text.toString().substring(s, s + videoAtEditBean.getStrLength());
+                }
+
+                LogUtils.e(TAG, "content -> "+videoAtEditBean.getContent() +"\tcutStr -> "+cutStr);
                 if (!videoAtEditBean.getContent().trim().equals(cutStr.trim())) {
                     continue;
                 }
