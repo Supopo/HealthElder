@@ -32,7 +32,7 @@ public class WalletViewModel extends BaseViewModel {
     }
 
     public void getWalletInfo() {
-        UserRepository.getInstance().getWalletInfo(request,wallet);
+        UserRepository.getInstance().getWalletInfo(request, wallet);
     }
 
     public void getBillInfo(String key) {
@@ -44,13 +44,14 @@ public class WalletViewModel extends BaseViewModel {
     }
 
     public void refreshUserInfo() {
-        UserRepository.getInstance().getUserInfo(request,userInfo, UserInfoMgr.getInstance().getAccessToken());
+        UserRepository.getInstance().getUserInfo(request, userInfo, UserInfoMgr.getInstance().getAccessToken(), false);
     }
-    public void getWithdraw( double appealAmount,
-                             String accountBank,
-                             String accountName,
-                             String accountNo,
-                             String cardType) {
-        UserRepository.getInstance().getWithdraw(request,appeal,appealAmount,accountBank,accountName,accountNo,cardType);
+
+    public void getWithdraw(double appealAmount,
+                            String accountBank,
+                            String accountName,
+                            String accountNo,
+                            String cardType) {
+        UserRepository.getInstance().getWithdraw(request, appeal, appealAmount, accountBank, accountName, accountNo, cardType);
     }
 }

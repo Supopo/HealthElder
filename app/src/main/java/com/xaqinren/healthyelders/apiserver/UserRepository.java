@@ -114,7 +114,7 @@ public class UserRepository {
         return girlsList;
     }
 
-    public void getUserInfo(MutableLiveData<Boolean> loginSuccess, MutableLiveData<UserInfoBean> userInfo, String token) {
+    public void getUserInfo(MutableLiveData<Boolean> loginSuccess, MutableLiveData<UserInfoBean> userInfo, String token, boolean refreshSign) {
         userApi.getUserInfo(token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -139,9 +139,12 @@ public class UserRepository {
 
                             InfoCache.getInstance().setLoginUser(data.getData());
                             UserInfoMgr.getInstance().setUserInfo(data.getData());
-                            //绑定cid
-                            PushManager.getInstance().bindAlias(AppApplication.get(), data.getData().getId());
-                            getUserSig(token);
+                            if (refreshSign) {
+                                //绑定cid
+                                PushManager.getInstance().bindAlias(AppApplication.get(), data.getData().getId());
+                                getUserSig(token);
+                            }
+
                             if (loginSuccess != null) {
                                 loginSuccess.postValue(true);
                             }
@@ -157,7 +160,11 @@ public class UserRepository {
     }
 
     public void getUserInfo(MutableLiveData<UserInfoBean> userInfo, String token) {
-        getUserInfo(null, userInfo, token);
+        getUserInfo(null, userInfo, token, false);
+    }
+
+    public void getUserInfo(MutableLiveData<UserInfoBean> userInfo, String token, boolean refreshSign) {
+        getUserInfo(null, userInfo, token, refreshSign);
     }
 
     public void loginByPhone(MutableLiveData<Boolean> loginSuccess, String phone, String code, String openId) {
@@ -245,7 +252,7 @@ public class UserRepository {
                             InfoCache.getInstance().setTokenInfo(response.getData());
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
+                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             loginStatus.postValue(1);
                         } else {
                             //需要绑定手机号跳转绑定手机号页面

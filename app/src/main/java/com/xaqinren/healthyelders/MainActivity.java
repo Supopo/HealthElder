@@ -335,6 +335,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             selectView = binding.tvMenu4;
             initBottomTab();
             oldView = binding.tvMenu4;
+            mineFragment.getUserInfo();
         });
         binding.ivLive.setOnClickListener(lis -> {
             //先判断是否登录

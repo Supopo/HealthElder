@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +144,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     }
 
     private boolean isAttach;
+
     @Override
     public void onAttach(@Nullable Context context) {
         super.onAttach(context);
@@ -336,7 +338,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     }
 
     public void refreshUserInfo() {
-//        viewModel.getUserInfo(UserInfoMgr.getInstance().getHttpToken());
+        viewModel.getUserInfo(UserInfoMgr.getInstance().getAccessToken());
         if (menuPosition == 0) {
             mineZPFragment.toRefresh();
         } else if (menuPosition == 1) {
@@ -355,9 +357,16 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
 
     }
 
+    public void getUserInfo() {
+        //注意token需要未拼接的
+        if (!TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken()) && viewModel != null) {
+            viewModel.getUserInfo(UserInfoMgr.getInstance().getAccessToken());
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        viewModel.userInfo.postValue(UserInfoMgr.getInstance().getUserInfo());
+        getUserInfo();
     }
 }
