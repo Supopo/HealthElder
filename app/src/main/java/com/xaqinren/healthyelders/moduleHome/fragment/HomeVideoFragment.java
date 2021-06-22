@@ -592,6 +592,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private ShareDialog shareDialog;
 
     private void showShareDialog(VideoInfo videoInfo) {
+        if (!InfoCache.getInstance().checkLogin()) {
+            //跳转登录页面
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+
         if (shareDialog == null)
             videoInfo.share.downUrl = videoInfo.resourceUrl;
             videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
