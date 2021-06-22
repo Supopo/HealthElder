@@ -105,6 +105,9 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             closeLoadView();
 
             if (datas != null && datas.size() > 0) {
+                binding.viewPager2.setVisibility(View.VISIBLE);
+                binding.rlEmpty.setVisibility(View.GONE);
+
                 if (page == 1) {
                     viewModel.getLiveFiends();
 
@@ -130,7 +133,14 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                 }
             } else {
-                page--;
+                if (page > 1) {
+                    page--;
+                } else {
+                    videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    binding.viewPager2.setAdapter(videoAdapter);
+                    binding.viewPager2.setVisibility(View.GONE);
+                    binding.rlEmpty.setVisibility(View.VISIBLE);
+                }
             }
         });
         viewModel.firendDatas.observe(this, list -> {

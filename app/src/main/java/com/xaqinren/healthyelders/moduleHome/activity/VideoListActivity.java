@@ -238,6 +238,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     //展示空布局
                     binding.rlEmpty.setVisibility(View.VISIBLE);
                     binding.viewPager2.setVisibility(View.GONE);
+                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
+                    binding.viewPager2.setAdapter(homeAdapter);
                 }
             }
         });
