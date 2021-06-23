@@ -146,7 +146,7 @@
                         <androidx.viewpager2.widget.ViewPager2
                             android:id="@+id/vp_menu1"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_162"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_14"
                             android:nestedScrollingEnabled="false"
                             android:orientation="horizontal"
