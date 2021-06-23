@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.igexin.sdk.PushManager;
-import com.tencent.bugly.proguard.B;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.bean.AppConfigBean;
 import com.xaqinren.healthyelders.bean.BaseListRes;
@@ -23,7 +22,6 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
-import com.xaqinren.healthyelders.moduleMine.bean.BillBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillDetailBean;
 import com.xaqinren.healthyelders.moduleMine.bean.BillRecodeBean;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
@@ -44,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
@@ -53,7 +50,6 @@ import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
-import me.goldze.mvvmhabit.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -142,6 +138,7 @@ public class UserRepository {
                             if (refreshSign) {
                                 //绑定cid
                                 PushManager.getInstance().bindAlias(AppApplication.get(), data.getData().getId());
+                                LogUtils.v(Constant.TAG_LIVE, "User获取UserSig");
                                 getUserSig(token);
                             }
 
@@ -194,7 +191,7 @@ public class UserRepository {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                            //                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token);
+                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             loginSuccess.postValue(true);
                         } else {
                             boolean showToast = false;
@@ -249,10 +246,13 @@ public class UserRepository {
                     @Override
                     public void onNext(MBaseResponse<LoginTokenBean> response) {
                         if (response.isOk()) {
-                            InfoCache.getInstance().setTokenInfo(response.getData());
-                            UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
-                            UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
+                            //判断如果返回的数据不为null
+                            if (response.getData() != null) {
+                                InfoCache.getInstance().setTokenInfo(response.getData());
+                                UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
+                                UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
+                                getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
+                            }
                             loginStatus.postValue(1);
                         } else {
                             //需要绑定手机号跳转绑定手机号页面

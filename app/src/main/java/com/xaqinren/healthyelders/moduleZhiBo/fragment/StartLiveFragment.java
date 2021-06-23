@@ -42,6 +42,7 @@ import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -397,6 +398,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
         isToZhibo = true;
+
         startActivity(LiveZhuboActivity.class, bundle);
     }
 

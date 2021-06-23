@@ -109,8 +109,7 @@ public class Constant {
      * UNI小程序 事件
      */
     public static final String UNI_LOGIN = "login";
-    //修改地址
-    public static final String MINI_CHANGE_ADDRESS = "pages_commodity/order/changeAddress";
+
     //银行卡列表
     public static final String MINI_BANK_CARD_LIST = "pages_user/wallet/bankCardList?action=redirect";
     //用户协议
@@ -127,14 +126,13 @@ public class Constant {
     public static final String ZB_XWGF = "/pages/agreement/liveStandard?action=redirect";
 
     //视频举报
-    public static final String VIDEO_REPORT = "/pages/feedback/reportType?title=视频举报&type=video&id=";
+    public static final String VIDEO_REPORT = "/pages/feedback/reportType?action=redirect&title=视频举报&type=video&id=";
     //用户举报
-    public static final String USER_REPORT = "/pages/feedback/reportType?title=用户举报&type=user&id=";
+    public static final String USER_REPORT = "/pages/feedback/reportType?action=redirect&title=用户举报&type=user&id=";
     //日记举报
-    public static final String USERDIARY_REPORT = "/pages/feedback/reportType?title=日记举报&type=UserDiary&id=";
+    public static final String USERDIARY_REPORT = "/pages/feedback/reportType?action=redirect&title=日记举报&type=UserDiary&id=";
     //直播举报
-    public static final String LIVE_REPORT = "/pages/feedback/reportType?title=直播举报&type=video&id=";
-
+    public static final String LIVE_REPORT = "/pages/feedback/reportType?action=redirect&title=直播举报&type=video&id=";
 
 
     //腾讯云小视频加防盗链

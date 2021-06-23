@@ -52,7 +52,7 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
         binding.ivClose.setOnClickListener(lis -> {
             finish();
         });
-        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive"));
+        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
     }
 
 

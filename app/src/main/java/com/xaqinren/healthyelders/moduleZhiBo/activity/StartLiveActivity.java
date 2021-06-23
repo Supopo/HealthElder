@@ -34,8 +34,6 @@ import me.goldze.mvvmhabit.bus.RxBus;
  */
 public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, BaseViewModel> implements StartLiteAVFragment.OnFragmentStatusListener {
     private List<Fragment> mFragments;
-    private TextView oldView;
-    private TextView selectView;
     private StartLiveFragment startLiveFragment;
     private StartLiteAVFragment startLiteAVFragment;
     private StartLiveUiViewModel liveUiViewModel;
@@ -78,7 +76,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                         finish();
                     }
                 }, 500);
-            }else if (o.msgId == CodeTable.CODE_SUCCESS && o.content.equals("overLive")) {
+            } else if (o.msgId == CodeTable.CODE_SUCCESS && o.content.equals("overLive-zb")) {
                 finish();
             }
         });
@@ -181,6 +179,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     }
 
     boolean isMusicRestart = false;
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -196,7 +195,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     protected void onRestart() {
         super.onRestart();
         if (currentFragmentPosition == 1) {
-                startLiteAVFragment.onActivityRestart();
+            startLiteAVFragment.onActivityRestart();
             if (isMusicRestart)
                 startLiteAVFragment.onMusicSelActivityBack();
         } else if (currentFragmentPosition == 0) {

@@ -55,6 +55,7 @@ import com.tencent.ugc.TXRecordCommon;
 import com.tencent.ugc.TXUGCRecord;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentStartLiteAvBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseMusicActivity;
@@ -82,6 +83,7 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -644,6 +646,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         Intent intent = new Intent(getContext(), VideoEditerActivity.class);
         intent.putExtra(UGCKitConstants.VIDEO_PATH, VideoRecordSDK.getInstance().getRecordVideoPath());
         startActivity(intent);
+        //todo 录制完跳页前先关闭否则切到直播会没有声音
+        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
     }
 
     @Override

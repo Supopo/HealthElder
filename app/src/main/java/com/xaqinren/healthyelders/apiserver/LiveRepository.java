@@ -1,11 +1,9 @@
 package com.xaqinren.healthyelders.apiserver;
 
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
-import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
@@ -15,11 +13,9 @@ import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBGoodsListRes;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
@@ -179,15 +175,14 @@ public class LiveRepository {
                     public void accept(Disposable disposable) throws Exception {
                     }
                 })
-                .subscribe(new CustomObserver<MBaseResponse<LiveInitInfo>>() {
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
                     @Override
                     protected void dismissDialog() {
                         dismissDialog.postValue(true);
                     }
 
                     @Override
-                    protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
-                        ToastUtil.toastShortMessage("结束成功");
+                    protected void onSuccess(MBaseResponse<Object> data) {
                         exitSuccess.postValue(true);
                     }
 

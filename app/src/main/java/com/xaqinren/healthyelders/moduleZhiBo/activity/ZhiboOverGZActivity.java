@@ -2,10 +2,8 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -18,10 +16,8 @@ import com.xaqinren.healthyelders.databinding.ActivityZhiboOverGzBinding;
 import com.xaqinren.healthyelders.databinding.HeaderZhiboOverGzBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.SomeVideoListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverGZViewModel;
-import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import me.goldze.mvvmhabit.base.BaseActivity;

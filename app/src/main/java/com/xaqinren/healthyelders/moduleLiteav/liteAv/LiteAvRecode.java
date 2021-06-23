@@ -283,7 +283,8 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
 
             }*/
             VideoRecordSDK.getInstance().getRecorder().stopBGM();
-            TXCAudioSysRecord.getInstance().stop();
+            //需要注掉 否则开了直播间会没有声音
+//            TXCAudioSysRecord.getInstance().stop();
 
 
 

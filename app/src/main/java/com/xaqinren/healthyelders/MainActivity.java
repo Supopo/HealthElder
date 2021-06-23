@@ -237,6 +237,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
             }
 
+            LogUtils.v(Constant.TAG_LIVE, "主页去获取UserSig");
             //获取UserSig
             viewModel.getUserSig(accessToken);
         }
