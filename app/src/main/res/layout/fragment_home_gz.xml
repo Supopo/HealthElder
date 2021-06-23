@@ -63,35 +63,6 @@
                         android:layout_below="@id/rl_top"
                         android:orientation="vertical" />
 
-                    <RelativeLayout
-                        android:id="@+id/rl_empty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/dp_200"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-
-                        <ImageView
-                            android:id="@+id/ivEmpty"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:background="@mipmap/bg_no_data" />
-
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/ivEmpty"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="@dimen/dp_22"
-                            android:gravity="center"
-                            android:text="暂无数据"
-                            android:textColor="@color/gray_999"
-                            android:textSize="@dimen/sp_13" />
-                    </RelativeLayout>
 
                 </RelativeLayout>
             </com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView>
@@ -124,5 +95,34 @@
                 android:layout_marginLeft="@dimen/dp_7"
                 android:background="@mipmap/home_dropdown" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:id="@+id/ivEmpty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@mipmap/nodata_vedio" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ivEmpty"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_22"
+                android:gravity="center"
+                android:text="暂无视频"
+                android:textColor="#FF878787"
+                android:textSize="@dimen/sp_16" />
+        </RelativeLayout>
     </RelativeLayout>
 </layout>
