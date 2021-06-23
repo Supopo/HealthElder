@@ -223,7 +223,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
                     //设置新的属性
                     layoutParams.setMargins(oldLeft, oldTop + verticalOffset, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
-
+                    binding.rivPhoto2.setBorderWidth(0);
                     binding.ivBack.setVisibility(View.GONE);
 
                 } else if (verticalOffset == 0 && oldTop != 0) {
@@ -233,6 +233,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
                     layoutParams.height = oldWidth;
                     layoutParams.setMargins(oldLeft, oldTop, 0, 0);
                     binding.rivPhoto2.setLayoutParams(layoutParams);
+                    binding.rivPhoto2.setBorderWidth((int) getResources().getDimension(R.dimen.dp_3));
                 }
 
 

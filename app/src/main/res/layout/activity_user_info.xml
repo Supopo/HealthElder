@@ -397,7 +397,7 @@
                                 android:layout_marginLeft="@dimen/dp_15"
                                 android:visibility="invisible"
                                 app:qmui_border_color="@color/white"
-                                app:qmui_border_width="@dimen/dp_1"
+                                app:qmui_border_width="@dimen/dp_3"
                                 app:qmui_is_circle="true" />
                         </RelativeLayout>
 
