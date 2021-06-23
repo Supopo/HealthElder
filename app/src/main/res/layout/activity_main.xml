@@ -113,13 +113,14 @@
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
 
-                    <com.tencent.qcloud.tim.uikit.component.UnreadCountTextView
+                    <TextView
+                        android:background="@drawable/bg_num_red"
                         android:id="@+id/unread"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
                         android:gravity="center"
                         android:includeFontPadding="false"
-                        android:textColor="#000"
+                        android:textColor="@color/white"
                         android:textSize="10sp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="@dimen/dp_10"
@@ -169,153 +170,6 @@
                 android:id="@+id/slide_bar_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-            <!--<LinearLayout
-                android:id="@+id/my_wallet"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_25"
-                android:paddingLeft="@dimen/dp_27">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_qianb"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="钱包"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/my_kefu"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_wod_kef"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="我的客服"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/agree_layout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_yhxy"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:layout_marginLeft="@dimen/dp_13"
-                    android:text="用户协议"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/privacy_layout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_yinszc"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:layout_marginLeft="@dimen/dp_13"
-                    android:text="隐私政策"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/about_layout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_aboutus"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:layout_marginLeft="@dimen/dp_13"
-                    android:text="关于我们"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/my_setting"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_26"
-                android:paddingLeft="@dimen/dp_27">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@mipmap/icon_menu_set"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="设置"
-                    android:textSize="@dimen/sp_16"
-                    android:textColor="@color/color_252525"
-                    android:includeFontPadding="false"
-                    android:layout_marginLeft="@dimen/dp_13"/>
-            </LinearLayout>-->
         </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
