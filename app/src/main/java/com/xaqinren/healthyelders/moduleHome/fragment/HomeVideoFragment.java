@@ -600,7 +600,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         if (shareDialog == null)
             videoInfo.share.downUrl = videoInfo.resourceUrl;
-            videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
+        videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
         shareDialog.show(binding.mainRelativeLayout);
     }
@@ -828,7 +828,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         }
 
-        LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay" + position);
 
     }
 
@@ -879,17 +878,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 } else {
                     pausePlay();
                 }
-            }
-
-            if (type.equals("home-gz")) {
+            } else if (type.equals("home-gz")) {
                 if (AppApplication.get().getLayoutPos() == 1 && AppApplication.get().getGzPlayPosition() == position) {
                     resumePlay();
                 } else {
                     pausePlay();
                 }
-            }
-
-            if (type.equals("home-list")) {
+            } else if (type.equals("home-list")) {
                 if (AppApplication.get().getPlayPosition() == position) {
                     resumePlay();
                 } else {
