@@ -231,6 +231,7 @@ public class UserRepository {
         map.put("avatarUrl", infoBean.avatarUrl);
         map.put("sessionKey", infoBean.sessionKey);
         map.put("rCode", infoBean.rcode);
+        map.put("requestSource", "ANDROID_APP");
 
         String json = JSON.toJSONString(map);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
@@ -486,7 +487,6 @@ public class UserRepository {
                     }
                 });
     }
-
 
     public void bindAlias(MutableLiveData<Boolean> clientIdData, String clientId) {
         userApi.bindAlias(UserInfoMgr.getInstance().getHttpToken(), clientId)

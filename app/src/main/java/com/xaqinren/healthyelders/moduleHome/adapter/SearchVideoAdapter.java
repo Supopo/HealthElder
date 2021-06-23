@@ -67,6 +67,7 @@ public class SearchVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+        GlideUtil.intoImageView(getContext(), item.coverUrl, binding.ivCover);
 
     }
 

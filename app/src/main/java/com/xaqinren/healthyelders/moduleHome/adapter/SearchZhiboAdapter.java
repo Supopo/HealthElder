@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 import androidx.databinding.DataBindingUtil;

@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -12,6 +13,7 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 
@@ -57,6 +59,14 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
             e.printStackTrace();
         }
 
+
+        GlideUtil.intoImageView(getContext(), item.coverUrl, binding.ivCover);
+
+        if (TextUtils.isEmpty(item.title)) {
+            helper.setGone(R.id.tv_title, true);
+        }else {
+            helper.setGone(R.id.tv_title, false);
+        }
 
     }
 
