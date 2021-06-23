@@ -109,6 +109,9 @@ public class UserInfoBean implements Serializable {
 
 
     public String getIntroduce() {
+        if (TextUtils.isEmpty(introduce)) {
+            return "来一句地表最强的自我介绍吧！";
+        }
         return introduce;
     }
 

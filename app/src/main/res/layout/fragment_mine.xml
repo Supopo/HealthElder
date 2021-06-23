@@ -120,12 +120,13 @@
                                     android:layout_marginLeft="@dimen/dp_19"
                                     android:layout_marginTop="@dimen/dp_12"
                                     android:layout_marginBottom="@dimen/dp_16"
+                                    android:drawableRight="@mipmap/ger_erwm"
+                                    android:drawablePadding="@dimen/dp_4"
                                     android:gravity="center"
                                     android:text="@{viewModel.userInfo.getJKCode()}"
                                     android:textColor="@color/gray_999"
-                                    android:textSize="@dimen/sp_13"
-                                    android:drawablePadding="@dimen/dp_4"
-                                    android:drawableRight="@mipmap/ger_erwm"/>
+                                    android:textSize="@dimen/sp_13" />
+
                                 <LinearLayout
                                     android:id="@+id/ll_info"
                                     android:layout_width="match_parent"
@@ -192,9 +193,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/dp_1"
                                     android:layout_below="@id/ll_info"
-                                    android:background="@color/color_EAEAEA"
                                     android:layout_marginLeft="@dimen/dp_16"
-                                    android:layout_marginRight="@dimen/dp_16"/>
+                                    android:layout_marginRight="@dimen/dp_16"
+                                    android:background="@color/color_EAEAEA" />
 
                                 <TextView
                                     android:id="@+id/tv_sbj"
@@ -207,7 +208,8 @@
                                     android:gravity="center"
                                     android:singleLine="true"
                                     android:text="@{viewModel.userInfo.introduce}"
-                                    android:textColor="@color/gray_666" />
+                                    android:textColor="@color/gray_666"
+                                    android:textSize="@dimen/sp_14" />
 
                                 <LinearLayout
                                     android:id="@+id/ll_tag"
@@ -224,10 +226,10 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="@dimen/dp_22"
                                         android:background="@drawable/bg_tag"
+                                        android:gravity="center_vertical"
                                         android:orientation="horizontal"
                                         android:paddingLeft="@dimen/dp_5"
-                                        android:paddingRight="@dimen/dp_5"
-                                        android:gravity="center_vertical">
+                                        android:paddingRight="@dimen/dp_5">
 
 
                                         <ImageView
@@ -237,43 +239,46 @@
                                             android:layout_marginRight="@dimen/dp_4"
                                             android:background="@mipmap/zy_female"
                                             android:visibility="@{viewModel.userInfo.isMan()?View.GONE:View.VISIBLE}" />
+
                                         <ImageView
                                             android:layout_width="@dimen/dp_12"
                                             android:layout_height="@dimen/dp_12"
                                             android:layout_marginRight="@dimen/dp_4"
                                             android:background="@mipmap/zy_male"
                                             android:visibility="@{viewModel.userInfo.isMan()?View.VISIBLE:View.GONE}" />
+
                                         <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            app:needNoSpace="true"
-                                            android:textSize="@dimen/sp_12"
-                                            android:text="@{viewModel.userInfo.sexRightText}"
-                                            android:visibility="@{viewModel.userInfo.sexRightText == null ? View.GONE : View.VISIBLE}"
                                             android:layout_marginRight="@dimen/dp_4"
-                                            android:textColor="@color/color_252525"/>
-<!--                                        android:text="@{viewModel.userInfo.sexRightText}"-->
+                                            android:text="@{viewModel.userInfo.sexRightText}"
+                                            android:textColor="@color/color_252525"
+                                            android:textSize="@dimen/sp_12"
+                                            android:visibility="@{viewModel.userInfo.sexRightText == null ? View.GONE : View.VISIBLE}"
+                                            app:needNoSpace="true" />
+                                        <!--                                        android:text="@{viewModel.userInfo.sexRightText}"-->
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:gravity="center_vertical"
                                             android:textSize="@dimen/sp_11"
-                                            android:visibility="gone"/>
+                                            android:visibility="gone" />
                                     </LinearLayout>
+
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="@dimen/dp_22"
                                         android:layout_marginLeft="@dimen/dp_4"
                                         android:background="@drawable/bg_tag"
                                         android:gravity="center"
-                                        app:needNoSpace="true"
                                         android:paddingLeft="@dimen/dp_5"
                                         android:paddingRight="@dimen/dp_5"
                                         android:text="@{viewModel.userInfo.cityAddress}"
+                                        android:textColor="@color/color_252525"
+                                        android:textSize="@dimen/sp_11"
                                         android:visibility="@{viewModel.userInfo.cityAddress==null?View.GONE:View.VISIBLE}"
-                                        android:textSize="@dimen/sp_12"
-                                        android:textColor="@color/color_252525"/>
-<!--                                    android:text="@{viewModel.userInfo.cityAddress}"-->
+                                        app:needNoSpace="true" />
+                                    <!--                                    android:text="@{viewModel.userInfo.cityAddress}"-->
                                 </LinearLayout>
 
                                 <View

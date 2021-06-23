@@ -213,6 +213,7 @@
                                     android:layout_marginRight="@dimen/dp_16"
                                     android:gravity="center"
                                     android:singleLine="true"
+                                    android:textSize="@dimen/sp_14"
                                     android:text="@{viewModel.userInfo.getIntroduce}"
                                     android:textColor="@color/gray_666" />
 
@@ -229,13 +230,11 @@
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="@dimen/dp_22"
                                         android:background="@drawable/bg_tag"
                                         android:orientation="horizontal"
                                         android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_6"
                                         android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_6"
                                         android:gravity="center_vertical">
                                       <!--  <TextView
                                             android:layout_width="wrap_content"
@@ -278,15 +277,13 @@
                                     <TextView
                                         android:visibility="@{viewModel.userInfo.showCity() ?View.VISIBLE:View.GONE}"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="@dimen/dp_22"
                                         android:layout_marginLeft="@dimen/dp_4"
                                         android:layout_marginRight="@dimen/dp_4"
                                         android:background="@drawable/bg_tag"
                                         android:gravity="center_vertical"
                                         android:paddingLeft="@dimen/dp_5"
-                                        android:paddingTop="@dimen/dp_6"
                                         android:paddingRight="@dimen/dp_5"
-                                        android:paddingBottom="@dimen/dp_6"
                                         android:text="@{viewModel.userInfo.cityAddress}"
                                         android:textSize="@dimen/sp_11"
                                         android:textColor="@color/color_252525"/>
