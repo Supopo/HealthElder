@@ -647,7 +647,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         intent.putExtra(UGCKitConstants.VIDEO_PATH, VideoRecordSDK.getInstance().getRecordVideoPath());
         startActivity(intent);
         //todo 录制完跳页前先关闭否则切到直播会没有声音
-        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
+//        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
     }
 
     @Override

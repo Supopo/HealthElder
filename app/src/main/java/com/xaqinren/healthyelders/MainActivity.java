@@ -185,6 +185,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         UniService.startService(this);
 
 
+        //接受小程序下发消息
         DCUniMPSDK.getInstance().setOnUniMPEventCallBack((s, o, dcUniMPJSCallback) -> {
             callBack = dcUniMPJSCallback;
             //小程序下发的消息

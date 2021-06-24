@@ -43,6 +43,9 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.tencent.liteav.audio.TXCAudioEngine;
+import com.tencent.liteav.audio.TXCAudioUGCRecorder;
+import com.tencent.liteav.audio.impl.Record.TXCAudioSysRecord;
 import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -187,10 +190,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //设置全屏
         setStatusBarTransparent();
 
-        AudioFocusManager.getInstance().requestAudioFocus();
-
         screenWidth = MScreenUtil.getScreenWidth(this);
         screenHeight = MScreenUtil.getScreenHeight(this);
+
+        //***防止录制完视频切换到主播进来没有声音
+        TXCAudioSysRecord.getInstance().stop();
+        TXCAudioUGCRecorder.getInstance().stopRecord();
+        TXCAudioEngine.getInstance().stopLocalAudio();
 
         //获取LiveRoom实例
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
