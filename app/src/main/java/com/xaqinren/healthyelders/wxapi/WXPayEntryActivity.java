@@ -2,31 +2,19 @@
 
 package com.xaqinren.healthyelders.wxapi;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelpay.PayResp;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.dcloud.feature.payment.weixin.AbsWXPayCallbackActivity;
-import io.dcloud.feature.sdk.DCUniMPAloneTaskActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
 

@@ -2,30 +2,23 @@
 
 package com.xaqinren.healthyelders.wxapi;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
-import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
-import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
-import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
-import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 
-import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
 
 import io.dcloud.share.mm.AbsWXCallbackActivity;
 import io.reactivex.Observer;
@@ -35,14 +28,13 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 public class WXEntryActivity extends AbsWXCallbackActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppApplication.mWXapi.handleIntent(getIntent(), this);
+        //基础页面已经继承无需再配置
+//        AppApplication.mWXapi.handleIntent(getIntent(), this);
     }
 
     //微信请求相应
@@ -53,7 +45,7 @@ public class WXEntryActivity extends AbsWXCallbackActivity {
 
     //发送到微信请求的响应结果
     @Override
-    public void onResp(BaseResp resp) {
+    public void onResp(@NotNull BaseResp resp) {
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 Log.i("WXTest", "onResp OK");
