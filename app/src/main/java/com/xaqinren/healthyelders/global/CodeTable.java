@@ -60,7 +60,7 @@ public class CodeTable {
      */
     public static final String TOKEN_NO_CODE = "040005";
     public static final String NO_CARD_ID = "20025";
-    public static final String NO_PHONE = "20018";
+    public static final String TOKEN_INFO_EXPIRED = "20016";
 
 
     /* RxBus Event Code */

@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -177,8 +179,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     }
 
     private void closeLoadView() {
-        binding.loadView.cancelAnimation();
-        binding.loadView.setVisibility(View.GONE);
+        dismissDialog();
     }
 
     public void resetVVPHeight() {
@@ -213,8 +214,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     public void onStart() {
         super.onStart();
         if (needRefreshData) {
-            needRefreshData = false;
             refreshData();
+            needRefreshData = false;
         }
     }
 
@@ -232,10 +233,13 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition));
             fragmentPosition++;
         }
+        //判断有无登录
+        if (!TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
+            showLoadView();
+            //请求数据
+            viewModel.getVideoData(page);
+        }
 
-        showLoadView();
-        //请求数据
-        viewModel.getVideoData(page);
 
         binding.viewPager2.setAdapter(videoAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
@@ -280,7 +284,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showLoadView();
                 refreshData();
             }
         });
@@ -297,8 +300,16 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     }
 
     public void refreshData() {
-        page = 1;
         binding.srl.setRefreshing(false);
+        //判断有无登录
+        if (TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
+            return;
+        }
+
+        page = 1;
+        if (!needRefreshData) {
+            showLoadView();
+        }
         viewModel.getVideoData(page);
         //判断
         if (binding.rlTop.getVisibility() == View.GONE) {
@@ -311,8 +322,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     }
 
     private void showLoadView() {
-        binding.loadView.setVisibility(View.VISIBLE);
-        binding.loadView.playAnimation();
+        showDialog();
     }
 
     @Override

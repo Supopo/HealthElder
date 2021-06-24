@@ -59,7 +59,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
             } else if (t.getCode().equals(CodeTable.NO_CARD_ID)) {
                 RxBus.getDefault().post(new EventBean(CodeTable.NO_CARD, null));
                 return;
-            }else if (t.getCode().equals(CodeTable.NO_PHONE)) {
+            } else if (t.getCode().equals(CodeTable.NO_PHONE_CODE)) {
                 RxBus.getDefault().post(new EventBean(CodeTable.MSG_NO_PHONE, null));
                 return;
             }
