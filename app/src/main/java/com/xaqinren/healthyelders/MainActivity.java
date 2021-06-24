@@ -58,6 +58,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
@@ -284,6 +285,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private void initEvent() {
         binding.rlMenu1.setOnClickListener(lis -> {
             selectView = binding.tvMenu1;
+            AppApplication.get().bottomMenu = 0;
 
             if (oldView.getId() == selectView.getId()) {
                 //发送HomeFragment回顶消息
@@ -297,7 +299,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             }
             initBottomTab();
             oldView = binding.tvMenu1;
-            AppApplication.get().bottomMenu = 0;
         });
         binding.rlMenu2.setOnClickListener(lis -> {
             //发送停止播放消息
@@ -340,6 +341,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             //先判断是否登录
             if (!InfoCache.getInstance().checkLogin()) {
                 startActivity(SelectLoginActivity.class);
+                return;
+            }
+            //判断是否绑手机号
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
                 return;
             }
 
@@ -459,6 +465,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         startActivity(StartRenZhengActivity.class);
                     }
                 }, 500);
+            } else if (o.msgId == CodeTable.MSG_NO_PHONE) {
+                startActivity(PhoneLoginActivity.class);
             } else if (o.msgId == CodeTable.EVENT_HOME) {
                 if (o.msgType == CodeTable.SET_MENU_TOUMING) {
                     if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().getLayoutPos() == 2) {

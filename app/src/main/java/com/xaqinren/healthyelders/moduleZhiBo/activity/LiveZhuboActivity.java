@@ -43,6 +43,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -185,6 +186,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         super.initData();
         //设置全屏
         setStatusBarTransparent();
+
+        AudioFocusManager.getInstance().requestAudioFocus();
 
         screenWidth = MScreenUtil.getScreenWidth(this);
         screenHeight = MScreenUtil.getScreenHeight(this);

@@ -323,7 +323,6 @@ public class AppApplication extends BaseApplication {
     public static boolean isToLogin() {
         //判断有无登录
         if (TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
-            ToastUtil.toastShortMessage("请先登录！");
             RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
             return true;
         }

@@ -19,6 +19,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityUserInfoBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserXHFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserZPFragment;
@@ -279,6 +280,11 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         });
 
         binding.rlFollow.setOnClickListener(lis -> {
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
+                return;
+            }
+
             //储存关注状态列表
             if (binding.llFollow.getVisibility() == View.VISIBLE) {
                 AppApplication.get().followList.put(userId, true);

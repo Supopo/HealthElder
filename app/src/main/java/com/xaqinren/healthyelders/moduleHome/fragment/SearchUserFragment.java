@@ -15,6 +15,7 @@ import com.tencent.bugly.proguard.P;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentSearchYhBinding;
 import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -23,6 +24,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchUserViewModel;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 
@@ -100,6 +102,11 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
                         startActivity(SelectLoginActivity.class);
                         return;
                     }
+                    if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                        startActivity(PhoneLoginActivity.class);
+                        return;
+                    }
+
                     mPosition = position;
                     viewModel.toFollow(mAdapter.getData().get(position).id);
                 }

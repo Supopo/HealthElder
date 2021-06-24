@@ -27,6 +27,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
@@ -314,6 +315,10 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             startActivity(OrderListActivity.class);
         });
         binding.tvFriends.setOnClickListener(lis -> {
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
+                return;
+            }
             startActivity(AddFriendActivity.class);
         });
         binding.ivSetting.setOnClickListener(lis -> {

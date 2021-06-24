@@ -38,6 +38,7 @@ import com.tencent.rtmp.TXVodPlayer;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentHomeVideoBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -48,6 +49,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
@@ -446,7 +448,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
         binding.rlLike.setOnClickListener(lis -> {
 
-            if (AppApplication.isToLogin()) {
+            //先判断是否登录
+            if (!InfoCache.getInstance().checkLogin()) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }      //判断是否绑手机号
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
                 return;
             }
 
@@ -474,6 +482,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //先判断是否登录
             if (!InfoCache.getInstance().checkLogin()) {
                 startActivity(SelectLoginActivity.class);
+                return;
+            }      //判断是否绑手机号
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
                 return;
             }
 
@@ -596,6 +608,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //跳转登录页面
             startActivity(SelectLoginActivity.class);
             return;
+        }      //判断是否绑手机号
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            startActivity(PhoneLoginActivity.class);
+            return;
         }
 
         if (shareDialog == null)
@@ -655,8 +671,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
      * 发表评论
      */
     private void showPublishCommentDialog(String nickName) {
-        if (AppApplication.get().isToLogin())
+        //先判断是否登录
+        if (!InfoCache.getInstance().checkLogin()) {
+            startActivity(SelectLoginActivity.class);
             return;
+        }      //判断是否绑手机号
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            startActivity(PhoneLoginActivity.class);
+            return;
+        }
 
         Bundle bundle = new Bundle();
         bundle.putString("hint", nickName);

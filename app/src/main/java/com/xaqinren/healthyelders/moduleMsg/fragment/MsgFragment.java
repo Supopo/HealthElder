@@ -13,9 +13,11 @@ import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
@@ -57,6 +59,10 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     public void initData() {
         super.initData();
         binding.ivAdd.setOnClickListener(view -> {
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
+                return;
+            }
             //添加联系人
             startActivity(AddFriendActivity.class);
         });
@@ -77,7 +83,6 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     }
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -93,22 +98,28 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             switch (id) {
                 case Constant.CONVERSATION_SYS_ID: {
                     startActivity(SysMsgActivity.class);
-                }return;
+                }
+                return;
                 case Constant.CONVERSATION_INT_ID: {
                     startActivity(InteractiveActivity.class);
-                }return;
+                }
+                return;
                 case Constant.CONVERSATION_FANS_ID: {
                     startActivity(FansMsgActivity.class);
-                }return;
-                case Constant.CONVERSATION_LIVE_ID:{
+                }
+                return;
+                case Constant.CONVERSATION_LIVE_ID: {
                     startActivity(LiveMsgActivity.class);
-                }return;
+                }
+                return;
                 case Constant.CONVERSATION_SERVICE_ID: {
                     startActivity(ServiceMsgActivity.class);
-                }return;
+                }
+                return;
                 case Constant.CONVERSATION_WALLET_ID: {
                     startActivity(WalletMsgActivity.class);
-                }return;
+                }
+                return;
                 case Constant.CONVERSATION_CUSTOMER_SERVICE_ID:
                     ImManager.getInstance().clearUnreadById(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
                     return;

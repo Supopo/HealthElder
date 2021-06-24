@@ -5,13 +5,17 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.HomeMenuRes;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -26,6 +30,7 @@ import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -111,6 +116,18 @@ public class LiveRepository {
     }
 
     public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomRecordId) {
+        if (!InfoCache.getInstance().checkLogin()) {
+            dismissDialog.postValue(true);
+            RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
+            return;
+        }
+
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            dismissDialog.postValue(true);
+            RxBus.getDefault().post(new EventBean(CodeTable.MSG_NO_PHONE, null));
+            return;
+        }
+
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("liveRoomId", liveRoomRecordId);
         String json = JSON.toJSONString(hashMap);

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.widget.comment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,9 +38,12 @@ import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 
@@ -142,8 +146,15 @@ public class CommentDialog {
             @Override
             public void toLike(CommentListBean iCommentBean) {
                 onChildClick.toLike(iCommentBean);
-                if (AppApplication.get().isToLogin())
+                //先判断是否登录
+                if (!InfoCache.getInstance().checkLogin()) {
+                    mContext.startActivity(new Intent(mContext,SelectLoginActivity.class));
                     return;
+                }      //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    mContext.startActivity(new Intent(mContext,PhoneLoginActivity.class));
+                    return;
+                }
 
                 //点赞
                 setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
@@ -166,8 +177,15 @@ public class CommentDialog {
 
             @Override
             public void toLikeReply(CommentListBean iCommentBean) {
-                if (AppApplication.get().isToLogin())
+                //先判断是否登录
+                if (!InfoCache.getInstance().checkLogin()) {
+                    mContext.startActivity(new Intent(mContext,SelectLoginActivity.class));
                     return;
+                }      //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    mContext.startActivity(new Intent(mContext,PhoneLoginActivity.class));
+                    return;
+                }
 
                 //点赞
                 setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, true);

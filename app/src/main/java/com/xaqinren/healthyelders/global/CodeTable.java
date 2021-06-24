@@ -60,6 +60,7 @@ public class CodeTable {
      */
     public static final String TOKEN_NO_CODE = "040005";
     public static final String NO_CARD_ID = "20025";
+    public static final String NO_PHONE = "20018";
 
 
     /* RxBus Event Code */
@@ -95,4 +96,7 @@ public class CodeTable {
      */
     public static final int UNI_RELEASE = 0x100020;
     public static final int UNI_RELEASE_FAIL = 0x100021;
+
+    public static final int MSG_NO_PHONE = 0x100022;
+
 }

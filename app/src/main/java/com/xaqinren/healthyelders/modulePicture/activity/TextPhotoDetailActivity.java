@@ -21,10 +21,12 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityTextPhotoDetailBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleLiteav.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.CreatePostBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.modulePicture.dialog.PostPop;
@@ -139,8 +141,16 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
             @Override
             public void toLike(CommentListBean iCommentBean) {
-                if (AppApplication.get().isToLogin())
+                //先判断是否登录
+                if (!InfoCache.getInstance().checkLogin()) {
+                    startActivity(SelectLoginActivity.class);
                     return;
+                }      //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    startActivity(PhoneLoginActivity.class);
+                    return;
+                }
+
                 int position = iCommentBean.parentPos - 1;
                 //点赞评论
                 viewModel.setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
@@ -163,8 +173,15 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
             @Override
             public void toLikeReply(CommentListBean iCommentBean) {
-                if (AppApplication.get().isToLogin())
+                //先判断是否登录
+                if (!InfoCache.getInstance().checkLogin()) {
+                    startActivity(SelectLoginActivity.class);
                     return;
+                }      //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    startActivity(PhoneLoginActivity.class);
+                    return;
+                }
                 int position = iCommentBean.parentPos - 1;
                 //点赞回复评论
                 viewModel.setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, true);
@@ -250,8 +267,15 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
      * 发表评论
      */
     private void showPublishCommentDialog(String nickName) {
-        if (AppApplication.get().isToLogin())
+        //先判断是否登录
+        if (!InfoCache.getInstance().checkLogin()) {
+            startActivity(SelectLoginActivity.class);
             return;
+        }      //判断是否绑手机号
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            startActivity(PhoneLoginActivity.class);
+            return;
+        }
 
         Bundle bundle = new Bundle();
         bundle.putString("hint", nickName);

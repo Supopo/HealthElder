@@ -35,6 +35,13 @@ public class UserInfoBean implements Serializable {
     private int attentionCount;
     private MenuBean menu;
 
+    public boolean hasMobileNum() {
+        if (TextUtils.isEmpty(mobileNumber)) {
+            return false;
+        }
+        return true;
+    }
+
     public WalletBean getAccountInfo() {
         return accountInfo;
     }

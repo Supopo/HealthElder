@@ -32,6 +32,7 @@ import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallHotMenuAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallMenu1PageAdapter;
@@ -155,6 +156,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         });
         binding.orderLayout.setOnClickListener(v -> {
             if (InfoCache.getInstance().checkLogin()) {
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    startActivity(PhoneLoginActivity.class);
+                    return;
+                }
                 startActivity(OrderListActivity.class);
             }else{
                 startActivity(SelectLoginActivity.class);
