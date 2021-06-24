@@ -113,7 +113,8 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         }
         if (searchListCache == null) {
             searchListCache = new SlideBarBean();
-        } else if (searchListCache.getMenuInfoList() != null && searchListCache.getMenuInfoList().size() > 0) {
+        }
+        if (searchListCache.getMenuInfoList() != null && searchListCache.getMenuInfoList().size() > 0) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
             historyTagAdapter.setNewInstance(searchListCache.getMenuInfoList());
         }
@@ -241,10 +242,11 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         searchBean.setMenuName(content);
 
         //最新的放在前面
-        searchListCache.getMenuInfoList().add(0, searchBean);
-        searchListCache.setMenuInfoList(searchListCache.getMenuInfoList());
+        List<SlideBarBean.MenuInfoListDTO> menuInfoList = searchListCache.getMenuInfoList();
+        menuInfoList.add(0, searchBean);
+        searchListCache.setMenuInfoList(menuInfoList);
 
-        resetHistoryTagAdapter(searchListCache.getMenuInfoList());
+        resetHistoryTagAdapter(menuInfoList);
 
         if (searchType == TYPE_HOME)
             ACache.get(SearchActivity.this).put(Constant.SearchId, searchListCache);
@@ -269,10 +271,9 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
         historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
         binding.rlSearchHistory.setVisibility(View.VISIBLE);
         binding.rvHistory.setAdapter(historyTagAdapter);
-
+        historyTagAdapter.setNewInstance(searchBeans);
         historyAdapterEvent();
 
-        historyTagAdapter.setNewInstance(searchBeans);
     }
 
     private Random random = new Random();
