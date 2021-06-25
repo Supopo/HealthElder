@@ -31,6 +31,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     private String openId;
     private Disposable observable;
     private int maxTime = 20;
+    private int type;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
                 showDialog();
             viewModel.loginByPhone(binding.etPhone.getText().toString().trim(), binding.etVCode.getText().toString().trim(), openId);
         });
-        if (StringUtils.isEmpty(openId)) {
+        if (type == 1) {
             //登录/注册
             binding.tvBindPhone.setText("手机号快捷登录");
             binding.tvFriend.setText("未注册过的手机将自动创建账号");
@@ -122,6 +123,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     @Override
     public void initParam() {
         super.initParam();
+        type = getIntent().getExtras().getInt("type", 0);
         openId = getIntent().getStringExtra("openId");
         if (TextUtils.isEmpty(openId)) {
             String wxInfo = SPUtils.getInstance().getString(Constant.SP_KEY_WX_INFO);

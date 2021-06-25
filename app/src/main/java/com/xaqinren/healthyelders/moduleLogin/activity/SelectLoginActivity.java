@@ -63,7 +63,9 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
         binding.ivPhone.setOnClickListener(lis -> {
             //手机号登录
             if (checkAgree()) {
-                startActivity(PhoneLoginActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 1);
+                startActivity(PhoneLoginActivity.class,bundle);
             }
         });
 
