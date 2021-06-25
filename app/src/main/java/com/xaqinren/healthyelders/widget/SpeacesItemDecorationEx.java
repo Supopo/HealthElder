@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * 会压缩item的距离来腾出空隙
  * =====================================================
  */
-public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
+public class SpeacesItemDecorationEx extends RecyclerView.ItemDecoration {
     private int mBottom;
     private int mRight;
     private int mTop;
@@ -45,19 +45,19 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
     private boolean hasHead;
     private boolean onlyOne;//2列中间只有一条间距的情况
 
-    public SpeacesItemDecoration(Context context, int bottom) {
+    public SpeacesItemDecorationEx(Context context, int bottom) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
     }
 
-    public SpeacesItemDecoration(Context context, int top, int bottom, int left, int right) {
+    public SpeacesItemDecorationEx(Context context, int top, int bottom, int left, int right) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, right);
         this.mLeft = dp2px(context, left);
         this.mTop = dp2px(context, top);
     }
 
-    public SpeacesItemDecoration(Context context, float top, float bottom, float left, float right, boolean isStaggeredGrid) {
+    public SpeacesItemDecorationEx(Context context, float top, float bottom, float left, float right, boolean isStaggeredGrid) {
         this.mBottom = (int) bottom;
         this.mRight = (int) right;
         this.mLeft = (int) left;
@@ -65,39 +65,39 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
         this.isStaggeredGrid = isStaggeredGrid;
     }
 
-    public SpeacesItemDecoration(Context context, int bottom, boolean isStaggeredGrid) {
+    public SpeacesItemDecorationEx(Context context, int bottom, boolean isStaggeredGrid) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
         this.isStaggeredGrid = isStaggeredGrid;
     }
 
-    public SpeacesItemDecoration(Context context, boolean onlyOne, int bottom, boolean isStaggeredGrid) {
+    public SpeacesItemDecorationEx(Context context, boolean onlyOne, int bottom, boolean isStaggeredGrid) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
         this.onlyOne = onlyOne;
         this.isStaggeredGrid = isStaggeredGrid;
     }
 
-    public SpeacesItemDecoration(Context context, int bottom, boolean isStaggeredGrid, boolean hasHead) {
+    public SpeacesItemDecorationEx(Context context, int bottom, boolean isStaggeredGrid, boolean hasHead) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
         this.isStaggeredGrid = isStaggeredGrid;
         this.hasHead = hasHead;
     }
 
-    public SpeacesItemDecoration(Context context, int bottom, int columns) {
+    public SpeacesItemDecorationEx(Context context, int bottom, int columns) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
         this.mColumns = columns;
     }
 
-    public SpeacesItemDecoration(Context context, int columns, int bottom, int right) {
+    public SpeacesItemDecorationEx(Context context, int columns, int bottom, int right) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, right);
         this.mColumns = columns;
     }
 
-    public SpeacesItemDecoration(Context context, int bottom, int columns, boolean isStaggeredGrid) {
+    public SpeacesItemDecorationEx(Context context, int bottom, int columns, boolean isStaggeredGrid) {
         this.mBottom = dp2px(context, bottom);
         this.mRight = dp2px(context, bottom);
         this.mColumns = columns;
@@ -106,55 +106,26 @@ public class SpeacesItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        //只有一条间隙的情况下左右要对分
-        if (onlyOne) {
-            outRect.bottom = mBottom;
-            outRect.left = mRight / 2;
-            outRect.right = mRight / 2;
+        outRect.bottom = mBottom;
+        outRect.right = mRight;
+        outRect.left = mLeft;
+        outRect.top = mTop;
 
-
-            int position;
-            if (isStaggeredGrid) {
-                StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-                //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
-                position = lp.getSpanIndex();
-            } else {
-                position = parent.getChildLayoutPosition(view);
-            }
-
-            if (hasHead) {
-                position = position - 1;
-            }
-
-            if (((position + (1)) % mColumns) == 0) {
-                outRect.right = 0;
-            } else {
-                outRect.left = 0;
-            }
-
-
+        int position;
+        if (isStaggeredGrid) {
+            StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+            //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
+            position = lp.getSpanIndex();
         } else {
-            outRect.bottom = mBottom;
-            outRect.right = mRight;
-            outRect.left = mLeft;
-            outRect.top = mTop;
+            position = parent.getChildLayoutPosition(view);
+        }
 
-            int position;
-            if (isStaggeredGrid) {
-                StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-                //StaggeredGridLayoutManager中第一列是 lp.getSpanIndex() == 0；
-                position = lp.getSpanIndex();
-            } else {
-                position = parent.getChildLayoutPosition(view);
-            }
+        if (hasHead) {
+            position = position - 1;
+        }
 
-            if (hasHead) {
-                position = position - 1;
-            }
-
-            if (((position + (1)) % mColumns) == 0) {
-                outRect.right = 0;
-            }
+        if (((position + (1)) % mColumns) == 0) {
+//            outRect.right = 0;
         }
 
 

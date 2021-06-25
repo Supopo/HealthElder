@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -235,10 +237,26 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         setTvRight(name);
     }
 
+    public void setTitleStyle(float size) {
+        tvTitle.setTextSize(size);
+    }
+
+    public void setTitleStyle(float size, int type) {
+        tvTitle.setTextSize(size);
+        //1-加粗
+        tvTitle.setTypeface(Typeface.defaultFromStyle(type));
+    }
+
     public void setTvRight(String name) {
         tvRight.setText(name);
         tvRight.setVisibility(View.VISIBLE);
         ivRight.setVisibility(View.GONE);
+    }
+
+    public void setIvRight(Drawable resId) {
+        ivRight.setBackground(resId);
+        ivRight.setVisibility(View.VISIBLE);
+        tvRight.setVisibility(View.GONE);
     }
 
 

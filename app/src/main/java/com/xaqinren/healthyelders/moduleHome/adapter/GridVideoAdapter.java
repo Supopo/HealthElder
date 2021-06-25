@@ -52,7 +52,7 @@ public class GridVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder
             int picWidth = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "w"));
             int picHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "h"));
             //计算新高度
-            int newHeight = itemWidth * 280 / 186;
+            int newHeight = itemWidth * 220 / 176;
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.rlItem.getLayoutParams();
             params.height = newHeight;

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 
@@ -25,6 +26,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.VideoGridViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+import com.xaqinren.healthyelders.widget.SpeacesItemDecorationEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,15 +63,16 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         super.initParam();
         Bundle extras = getIntent().getExtras();
         if (extras.containsKey("title"))
-        title = extras.getString("title");
+            title = extras.getString("title");
         if (extras.containsKey("tags"))
-         tags = extras.getString("tags");
+            tags = extras.getString("tags");
     }
 
     @Override
     public void initData() {
         super.initData();
         setTitle(title);
+        setIvRight(getResources().getDrawable(R.mipmap.icon_bar_search));
 
         recyclerView = binding.rvVideo;
 
@@ -107,7 +110,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         binding.rvVideo.setAdapter(mAdapter);
         //防止刷新跳动
         binding.rvVideo.setItemAnimator(null);
-        binding.rvVideo.addItemDecoration(new SpeacesItemDecoration(this, true,3, true));
+        binding.rvVideo.addItemDecoration(new SpeacesItemDecorationEx(this, getResources().getDimension(R.dimen.dp_7), 0, 0, getResources().getDimension(R.dimen.dp_7), true));
 
         viewModel.getVideoData(page, tags);
 
@@ -117,7 +120,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                 return;
             }
             //点赞请求
-            viewModel.toLikeVideo(mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite,position);
+            viewModel.toLikeVideo(mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
             firstLikeTime = secondTime;
         }));
 

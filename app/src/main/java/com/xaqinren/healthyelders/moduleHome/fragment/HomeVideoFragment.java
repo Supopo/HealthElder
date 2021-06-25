@@ -96,6 +96,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private TXLivePlayConfig mPlayerConfig;
     private TXLivePlayer mLivePlayer;
 
+    public HomeVideoFragment() {
+    }
+
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
         this.videoInfo = videoInfo;
         this.type = type;

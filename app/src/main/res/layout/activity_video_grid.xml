@@ -21,20 +21,19 @@
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:paddingTop="@dimen/dp_3"
                 android:id="@+id/rv_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                />
+                android:paddingLeft="@dimen/dp_7" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.airbnb.lottie.LottieAnimationView
-            android:visibility="gone"
             android:id="@+id/loadView"
             android:layout_width="@dimen/dp_70"
             android:layout_height="@dimen/dp_70"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
             app:lottie_fileName="loading_anim.json"
-            app:lottie_loop="true"
-            android:layout_centerInParent="true"/>
+            app:lottie_loop="true" />
     </RelativeLayout>
 </layout>
