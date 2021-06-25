@@ -36,8 +36,8 @@ public class MainViewModel extends BaseViewModel {
     public MutableLiveData<SlideBarBean> slideBarLiveData = new MutableLiveData<>();
 
 
-    public void getUserInfo(String token) {
-        UserRepository.getInstance().getUserInfo(userInfo, Constant.API_HEADER + token, false);
+    public void getUserInfo(String token,boolean refreshSign) {
+        UserRepository.getInstance().getUserInfo(userInfo, Constant.API_HEADER + token, refreshSign);
     }
 
     public void getUserSig(String token) {

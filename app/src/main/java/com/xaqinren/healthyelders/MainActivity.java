@@ -222,11 +222,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         accessToken = InfoCache.getInstance().getAccessToken();
         userInfoBean = InfoCache.getInstance().getLoginUser();
 
+
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {
             if (userInfoBean == null || TextUtils.isEmpty(userInfoBean.getId())) {
                 //获取用户信息
-                viewModel.getUserInfo(accessToken);
+                viewModel.getUserInfo(accessToken, true);
             } else {
                 if (callBack != null) {
                     callBack.invoke(accessToken);
@@ -237,11 +238,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
                 onUnReadWatch(ImManager.getInstance().getUnreadCount());
                 ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
+                viewModel.getUserSig(accessToken);
             }
-
-            LogUtils.v(Constant.TAG_LIVE, "主页去获取UserSig");
-            //获取UserSig
-            viewModel.getUserSig(accessToken);
         }
 
     }

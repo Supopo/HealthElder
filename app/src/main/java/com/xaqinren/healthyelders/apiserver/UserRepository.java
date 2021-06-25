@@ -191,7 +191,7 @@ public class UserRepository {
                             SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
+//                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             loginSuccess.postValue(true);
                         } else {
                             boolean showToast = false;
@@ -252,7 +252,7 @@ public class UserRepository {
                                 InfoCache.getInstance().setTokenInfo(response.getData());
                                 UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                                getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
+//                                getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             }
                             loginStatus.postValue(1);
                         } else {
@@ -387,6 +387,7 @@ public class UserRepository {
                 });
     }
 
+    //请求前先判断是有没有用户信息 因为登录IM要传
     public void getUserSig(String token) {
         if (UserInfoMgr.getInstance().getUserInfo() == null)
             return;

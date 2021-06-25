@@ -35,11 +35,9 @@ public class InfoCache {
 
     public boolean checkLogin() {
         synchronized (lock) {
-            String userInfoStr = SPUtils.getInstance().getString(Constant.SP_KEY_LOGIN_USER);
-            if (StringUtils.isEmpty(userInfoStr))
-                return false;
-            UserInfoBean userInfoBean = JSON.parseObject(userInfoStr, UserInfoBean.class);
-            if (userInfoBean == null)
+            //判断token是否存在
+            String userToken = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
+            if (StringUtils.isEmpty(userToken))
                 return false;
             return true;
         }
