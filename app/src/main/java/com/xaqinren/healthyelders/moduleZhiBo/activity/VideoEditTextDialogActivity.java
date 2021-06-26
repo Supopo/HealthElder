@@ -43,15 +43,20 @@ public class VideoEditTextDialogActivity extends Activity {
     private EditText etView;
     private String TAG = getClass().getSimpleName();
     private RelativeLayout rlView;
+    private int openType;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
-        hint = extras.getString("hint");
-        type = extras.getString("type");
-        pos = extras.getInt("pos");
+        if (extras != null) {
+            hint = extras.getString("hint");
+            type = extras.getString("type");
+            pos = extras.getInt("pos");
+            openType = extras.getInt("openType", 0);
+        }
+
 
         setContentView(R.layout.activity_input_video);
         setWindow();
@@ -71,6 +76,7 @@ public class VideoEditTextDialogActivity extends Activity {
     }
 
     private void initView() {
+
         rlView = findViewById(R.id.rl_view);
         etView = findViewById(R.id.et_input_message);
         moreGroups = findViewById(R.id.more_groups);
@@ -79,8 +85,15 @@ public class VideoEditTextDialogActivity extends Activity {
         }
         ImageView ivPublish = findViewById(R.id.iv_send);
         ImageView ivFace = findViewById(R.id.iv_face);
-        //弹出键盘
-        showSoftInput(this, etView);
+
+        if (openType == 1) {
+            showFaceViewGroup();
+        } else {
+            //弹出键盘
+            showSoftInput(this, etView);
+        }
+
+
         ivPublish.setOnClickListener(lis -> {
             //发送消息通知发送
             RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, etView.getText().toString(), type, pos));

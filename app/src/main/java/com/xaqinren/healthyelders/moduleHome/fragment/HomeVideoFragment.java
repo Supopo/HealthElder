@@ -164,6 +164,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             editTextOpen = true;
             startActivity(VideoEditTextDialogActivity.class, bundle);
         });
+        binding.ivFace.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("pos", position);
+            bundle.putString("type", type);
+            bundle.putInt("openType", 1);
+            openType = 0;
+            editTextOpen = true;
+            startActivity(VideoEditTextDialogActivity.class, bundle);
+        });
 
         //视频封面
         if (!TextUtils.isEmpty(videoInfo.coverUrl)) {

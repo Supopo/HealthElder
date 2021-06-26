@@ -515,6 +515,7 @@
                         android:background="@mipmap/pl_at" />
 
                     <ImageView
+                        android:id="@+id/iv_face"
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
                         android:layout_gravity="center_vertical"
