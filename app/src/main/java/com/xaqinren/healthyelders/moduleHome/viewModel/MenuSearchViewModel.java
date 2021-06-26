@@ -29,8 +29,8 @@ public class MenuSearchViewModel extends BaseViewModel {
         MallRepository.getInstance().getMenuAllWords(searchHotList, type);
     }
 
-    public void getVideoData(int page, String tags) {
-        LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 6, null, datas, "LIVE,VIDEO,USER_DIARY", tags);
+    public void getVideoData(int page, String tags, String key) {
+        LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 6, null, datas, "LIVE,VIDEO,USER_DIARY", tags, key);
     }
 
 }

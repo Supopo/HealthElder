@@ -476,7 +476,8 @@ public class LiveRepository {
                 });
     }
 
-    public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, Integer type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
+
+    public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, Integer type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags, String key) {
         String uid = "";
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             if (UserInfoMgr.getInstance().getUserInfo().getId() != null) {
@@ -484,7 +485,7 @@ public class LiveRepository {
             }
         }
 
-        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, type, resourceType, tags)
+        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, type, resourceType, tags, key)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -519,6 +520,10 @@ public class LiveRepository {
             resourceType = "LIVE,VIDEO";
         }
         getHomeVideoList(closeRsl, page, pageSize, type, videoList, resourceType, "");
+    }
+
+    public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, Integer type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
+       getHomeVideoList(dismissDialog,page,pageSize,type,videoList,resourceType,tags,"");
     }
 
 

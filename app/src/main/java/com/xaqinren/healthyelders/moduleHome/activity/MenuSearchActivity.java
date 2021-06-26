@@ -52,7 +52,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     private MenuTagAdapter hotTagAdapter;
     private HistoryTagAdapter historyTagAdapter;
     private SlideBarBean searchListCache;
-    private String tags;
+    private String key;
     private String menuType;
     private Disposable subscribe;
     private GridVideoAdapter mAdapter;
@@ -130,7 +130,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
             @Override
             public void onLoadMore() {
                 page++;
-                viewModel.getVideoData(page, tags);
+                viewModel.getVideoData(page, menuType, key);
             }
         });
 
@@ -181,7 +181,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
                 listBean.videoInfos = tempList;
                 listBean.position = tempPos;
                 listBean.type = 2;
-                listBean.tags = tags;
+                listBean.tags = key;
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("key", listBean);
@@ -222,7 +222,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
-                        tags = binding.etSearch.getText().toString();
+                        key = binding.etSearch.getText().toString();
                     }
                     binding.rlSearch.setVisibility(View.GONE);
                     binding.rvContent.setVisibility(View.VISIBLE);
@@ -259,10 +259,10 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
 
     public void historyAdapterEvent() {
         historyTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            tags = historyTagAdapter.getData().get(position).getMenuName();
+            key = historyTagAdapter.getData().get(position).getMenuName();
             binding.rlSearch.setVisibility(View.GONE);
             binding.rvContent.setVisibility(View.VISIBLE);
-            addCache(tags);
+            addCache(key);
             toJump();
         }));
     }
@@ -319,7 +319,9 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     }
 
     private void toJump() {
-        viewModel.getVideoData(page, tags);
+        showDialog();
+        binding.etSearch.setHint(key);
+        viewModel.getVideoData(page, menuType, key);
     }
 
     private boolean isSearch;
@@ -353,8 +355,8 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
             if (datas != null) {
                 if (datas.getMenuInfoList().size() > 0) {
                     int temp = random.nextInt(datas.getMenuInfoList().size());
-                    tags = datas.getMenuInfoList().get(temp).getMenuName();
-                    binding.etSearch.setHint(tags);
+                    key = datas.getMenuInfoList().get(temp).getMenuName();
+                    binding.etSearch.setHint(key);
 
                     if (datas.getMenuInfoList().get(0).getOnlyShowImage()) {
                         initHotImgAdapter(datas);
@@ -397,10 +399,10 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         binding.rvHot.setAdapter(hotTextTagAdapter);
         hotTextTagAdapter.setNewInstance(datas.getMenuInfoList());
         hotTextTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            tags = hotTextTagAdapter.getData().get(position).getMenuName();
+            key = hotTextTagAdapter.getData().get(position).getMenuName();
             binding.rlSearch.setVisibility(View.GONE);
             binding.rvContent.setVisibility(View.VISIBLE);
-            addCache(tags);
+            addCache(key);
             toJump();
         }));
     }
@@ -411,10 +413,10 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         binding.rvHot.setAdapter(hotTagAdapter);
         hotTagAdapter.setNewInstance(datas.getMenuInfoList());
         hotTagAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            tags = hotTagAdapter.getData().get(position).getMenuName();
+            key = hotTagAdapter.getData().get(position).getMenuName();
             binding.rlSearch.setVisibility(View.GONE);
             binding.rvContent.setVisibility(View.VISIBLE);
-            addCache(tags);
+            addCache(key);
             toJump();
         }));
     }

@@ -255,6 +255,8 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     }
 
     private void toJump() {
+        binding.etSearch.setHint(tags);
+
         Bundle bundle = new Bundle();
         bundle.putString("tags", tags);
         if (searchType == TYPE_HOME) {

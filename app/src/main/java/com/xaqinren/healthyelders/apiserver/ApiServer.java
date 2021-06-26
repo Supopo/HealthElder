@@ -257,7 +257,7 @@ public interface ApiServer {
     //获取首页视频直播 type 0 - 推荐 1 关注 2 附近
     @GET("jkzl/open/queryComprehensivePage")
     Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getHomeVideoList(@Header("uid") String uid, @Header("Authorization") String authorization, @Header("mid") String mid, @Query("page") Integer page,
-                                                                             @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType, @Query("tags") String tags);
+                                                                             @Query("pageSize") Integer count, @Query("type") Integer type, @Query("resourceType") String resourceType, @Query("tags") String tags, @Query("key") String key);
 
     //获取首页菜单信息
     @GET("jkzl/open/findHomeData")
@@ -345,11 +345,11 @@ public interface ApiServer {
 
     //我的视频作品
     @GET("jkzl/queryUserCreationPage")
-    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("creationViewAuth") String creationViewAuth,@Query("targetId") String id);
+    Observable<MBaseResponse<BaseListRes<List<VideoInfo>>>> getMyVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("creationViewAuth") String creationViewAuth, @Query("targetId") String id);
 
     //我喜欢的视频作品
     @GET("jkzl/queryUserFavoriteCreationPage")
-    Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize,@Query("targetId") String id);
+    Observable<MBaseResponse<BaseListRes<List<DZVideoInfo>>>> getMyLikeVideoList(@Header("Authorization") String authorization, @Query("page") int page, @Query("pageSize") int pageSize, @Query("targetId") String id);
 
 
     //日志详情
@@ -407,9 +407,9 @@ public interface ApiServer {
     Observable<MBaseResponse<BaseListRes<List<GoodsBean>>>> getMallGoodsList(@Query("page") int page,
                                                                              @Query("pageSize") int pageSize,
                                                                              @Query("title") String title,
-                                                                             @Query("sortBy") String sortBy ,
-                                                                             @Query("orderBy") String orderBy ,
-                                                                             @Query("category") String category  );
+                                                                             @Query("sortBy") String sortBy,
+                                                                             @Query("orderBy") String orderBy,
+                                                                             @Query("category") String category);
 
     //获取首页热门搜索关键词
     @GET("jkzl/open/queryHomeHotSearch")
@@ -466,7 +466,8 @@ public interface ApiServer {
     Observable<MBaseResponse<Object>> delFans(@Header("Authorization") String authorization, @Query("targetId") String id);
 
     //充值列表
-    @GET("user/findPointRechargeConfig")//user/getRechargeList
+    @GET("user/findPointRechargeConfig")
+    //user/getRechargeList
     Observable<MBaseResponse<ChongZhiListRes>> getChongZhiList(@Header("Authorization") String authorization);
 
     //支付接口
@@ -492,7 +493,7 @@ public interface ApiServer {
     Observable<MBaseResponse<UserInfoBean>> getLiveUserInfo(@Header("Authorization") String authorization, @Query("targetId") String targetId, @Query("liveRoomRecordId") String liveRoomRecordId);
 
     //版本更新
-    @GET("merchant/open/findUpdateAppVersion?appId="+BuildConfig.APPLICATION_ID)
+    @GET("merchant/open/findUpdateAppVersion?appId=" + BuildConfig.APPLICATION_ID)
     Observable<MBaseResponse<VersionBean>> checkVersion();
 
     //查询账户余额
@@ -520,7 +521,7 @@ public interface ApiServer {
     //查询直播间禁言列表
     @GET("live/findLiveRoomMuteList")
     Observable<MBaseResponse<BaseListRes<List<ZBUserListBean>>>> getJinYanList(@Header("Authorization") String authorization, @Query("page") Integer page,
-                                                                              @Query("pageSize") Integer count, @Query("liveRoomRecordId") String liveRoomRecordId);
+                                                                               @Query("pageSize") Integer count, @Query("liveRoomRecordId") String liveRoomRecordId);
 
     //订单列表
     @GET("commodity/queryUserCommodityOrderPage")
