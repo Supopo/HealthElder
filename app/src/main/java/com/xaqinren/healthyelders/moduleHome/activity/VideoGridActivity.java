@@ -47,6 +47,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     private String title;
     private String tags;
     private long firstLikeTime;
+    private Bundle extras;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     @Override
     public void initParam() {
         super.initParam();
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         if (extras.containsKey("title"))
             title = extras.getString("title");
         if (extras.containsKey("tags"))
@@ -73,6 +74,9 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         super.initData();
         setTitle(title);
         setIvRight(getResources().getDrawable(R.mipmap.icon_bar_search));
+        ivRight.setOnClickListener(lis -> {
+            startActivity(MenuSearchActivity.class, extras);
+        });
 
         recyclerView = binding.rvVideo;
 
@@ -96,9 +100,8 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
             public void onRefresh() {
                 mLoadMore.setEnableLoadMore(false);
                 page = 1;
-                showDialog();
                 viewModel.getVideoData(page, tags);
-                binding.srlContent.setRefreshing(false);
+
             }
         });
 
@@ -182,6 +185,9 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         super.initViewObservable();
         viewModel.dismissDialog.observe(this, dis -> {
             dismissDialog();
+            if (binding.srlContent.isRefreshing()) {
+                binding.srlContent.setRefreshing(false);
+            }
         });
 
         viewModel.dzSuccess.observe(this, dzRes -> {

@@ -565,5 +565,9 @@ public interface ApiServer {
     //查询用户中心侧边栏
     @GET("jkzl/open/findUserSidebar")
     Observable<MBaseResponse<SlideBarBean>> getSlideBar();
+
+    //获取首页菜单-搜索关键词
+    @GET("jkzl/open/queryTypeByName")
+    Observable<MBaseResponse<SlideBarBean>> getMenuAllWords(@Query("type") String type);
 }
 

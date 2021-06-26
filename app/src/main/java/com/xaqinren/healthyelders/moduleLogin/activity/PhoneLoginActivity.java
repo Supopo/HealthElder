@@ -92,7 +92,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
         } else {
             //绑定
             binding.tvBindPhone.setText("绑定您的手机号");
-            binding.tvFriend.setText("可以是您更快的找到您的好友");
+            binding.tvFriend.setText("可以使您更快的找到您的好友");
         }
     }
 
@@ -123,7 +123,9 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
     @Override
     public void initParam() {
         super.initParam();
-        type = getIntent().getExtras().getInt("type", 0);
+        if (getIntent().getExtras() != null) {
+            type = getIntent().getExtras().getInt("type", 0);
+        }
         openId = getIntent().getStringExtra("openId");
         if (TextUtils.isEmpty(openId)) {
             String wxInfo = SPUtils.getInstance().getString(Constant.SP_KEY_WX_INFO);

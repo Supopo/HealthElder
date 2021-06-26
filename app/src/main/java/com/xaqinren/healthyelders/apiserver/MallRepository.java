@@ -172,5 +172,27 @@ public class MallRepository {
 
                 });
     }
+    public void getMenuAllWords(MutableLiveData<SlideBarBean> hotWords,String type) {
+        userApi.getMenuAllWords(type)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<SlideBarBean>>() {
+                    @Override
+                    protected void dismissDialog() {
+
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<SlideBarBean> data) {
+                        hotWords.postValue(data.getData());
+                    }
+
+                });
+    }
 
 }

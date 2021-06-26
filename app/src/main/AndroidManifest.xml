@@ -448,6 +448,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".moduleHome.activity.TestActivity" />
+        <activity android:name=".moduleHome.activity.MenuSearchActivity"
+            android:theme="@style/AnimTheme" />
 
         <service
             android:name=".push.IPushService"

@@ -7,18 +7,11 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityInteractiveBinding;
-import com.xaqinren.healthyelders.moduleHome.activity.VideoGridActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
@@ -27,10 +20,7 @@ import com.xaqinren.healthyelders.moduleMsg.Constant;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.InteractiveAdapter;
-import com.xaqinren.healthyelders.moduleMsg.adapter.provider.FriendProvider;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.InteractiveProvider;
-import com.xaqinren.healthyelders.moduleMsg.adapter.provider.LoadMoreProvider;
-import com.xaqinren.healthyelders.moduleMsg.adapter.provider.TextProvider;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.MessageDetailBean;
@@ -43,7 +33,6 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import retrofit2.http.POST;
 
 /**
  * 互动消息

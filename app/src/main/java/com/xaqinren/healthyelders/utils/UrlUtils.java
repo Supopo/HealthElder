@@ -77,6 +77,7 @@ public class UrlUtils {
         String query = uri.getQuery();
         return getMapByQuery(query);
     }
+
     public static HashMap<String, String> getMapByQuery(String query) {
         HashMap<String, String> value = new HashMap<>();
         if (StringUtils.isEmpty(query)) {
@@ -105,6 +106,10 @@ public class UrlUtils {
     }
 
     public static String resetImgUrl(String url, int width, int height) {
+        if (url.contains(".jpeg")) {
+            return url;
+        }
+
         if (url.contains("oss.qianniux.com") || url.contains("oss.hjyiyuanjiankang.com")) {
             int lastIndexOf = url.lastIndexOf(".");
             StringBuffer stringBuffer = new StringBuffer(url);
