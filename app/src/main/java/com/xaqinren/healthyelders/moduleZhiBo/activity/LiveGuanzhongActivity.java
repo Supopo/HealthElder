@@ -78,6 +78,7 @@ import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.utils.SensitiveWordsUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
@@ -89,8 +90,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -419,6 +422,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
+
+        pbWords.add("法轮功");
+        pbWords.add("中国");
+        SensitiveWordsUtils.init(pbWords);
     }
 
     private void startPlay() {
@@ -509,9 +516,16 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         closeLinkDialog.showDialog();
 
     }
+    Set<String> pbWords = new HashSet<>();
 
     //发送文字消息
     private void toSendTextMsg(String msg) {
+        //检查消息是否有屏蔽词
+        if (SensitiveWordsUtils.contains(msg)) {
+            msg = SensitiveWordsUtils.replaceSensitiveWord(msg,"**");
+        }
+
+
         addMsg2List("我 ", msg, LiveConstants.IMCMD_TEXT_MSG);
         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TEXT_MSG), msg, null);
     }

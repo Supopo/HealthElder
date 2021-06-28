@@ -46,7 +46,6 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.liteav.audio.TXCAudioEngine;
 import com.tencent.liteav.audio.TXCAudioUGCRecorder;
 import com.tencent.liteav.audio.impl.Record.TXCAudioSysRecord;
-import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -82,6 +81,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.widgetLike.TCFrequeControl;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.utils.SensitiveWordsUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -467,6 +467,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
+
+        pbWords.add("法轮功");
+        pbWords.add("中国");
+        SensitiveWordsUtils.init(pbWords);
     }
 
     private void startPublish() {
@@ -481,7 +485,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         mLiveRoom.getBeautyManager().setRuddyLevel(mLiveInitInfo.ruddinessLevel);
 
         //设置垫片
-        mLiveRoom.setCameraMuteImage( R.drawable.sp_leave_bg);
+        mLiveRoom.setCameraMuteImage(R.drawable.sp_leave_bg);
         //创建直播间
         mLiveRoom.createRoom(Constant.getRoomId(mLiveInitInfo.liveRoomCode), "", new IMLVBLiveRoomListener.CreateRoomCallback() {
             @Override
@@ -519,7 +523,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         if (isPlaying) {
             Activity activity = AppManager.getAppManager().currentActivity();
             //判断当前栈顶是否当前页面
-            if(activity.getLocalClassName().contains("LiveZhuboActivity")){
+            if (activity.getLocalClassName().contains("LiveZhuboActivity")) {
                 mLiveRoom.setPusher(true);
             }
 
@@ -683,8 +687,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     }
 
+    private Set<String> pbWords = new HashSet<>();
+
     //发送文字消息
     private void toSendTextMsg(String msg) {
+        //检查消息是否有屏蔽词
+        if (SensitiveWordsUtils.contains(msg)) {
+            msg = SensitiveWordsUtils.replaceSensitiveWord(msg, "**");
+        }
+
+
         TCChatEntity entity = new TCChatEntity();
         entity.setSenderName("我 ");
         entity.setContent(msg);

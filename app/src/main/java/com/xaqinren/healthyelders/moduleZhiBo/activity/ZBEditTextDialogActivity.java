@@ -57,10 +57,13 @@ public class ZBEditTextDialogActivity extends Activity {
     private FragmentManager mFragmentManager;
     private FaceFragment mFaceFragment;
     private RelativeLayout moreGroups;
+    private int type;//1-直播间 设置屏蔽词弹窗
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        type = getIntent().getIntExtra("type", 0);
+
         setContentView(R.layout.activity_input_text);
         setWindow();
         initView();
@@ -149,12 +152,18 @@ public class ZBEditTextDialogActivity extends Activity {
         llInput = findViewById(R.id.ll_input);
         moreGroups = findViewById(R.id.more_groups);
 
+
         if (getIntent().getExtras() != null) {
             String content = getIntent().getExtras().getString("content");
             if (!TextUtils.isEmpty(content)) {
                 etView.setText(content);
                 etView.setSelection(content.length());//将光标移至文字末尾
             }
+        }
+
+        if (type == 1) {
+            ivFace.setVisibility(View.GONE);
+            etView.setHint("请输入需要屏蔽的词语");
         }
 
         //弹出键盘
@@ -216,7 +225,9 @@ public class ZBEditTextDialogActivity extends Activity {
                     }
                     heightDifference = highs.get(0) - highs.get(1);
                     //键盘弹出去后通知页面调整消息列表位置
-                    RxBus.getDefault().post(new EventBean(LiveConstants.SHOW_ET, Math.abs(heightDifference) + llInput.getHeight()));
+                    if (type == 0) {
+                        RxBus.getDefault().post(new EventBean(LiveConstants.SHOW_ET, Math.abs(heightDifference) + llInput.getHeight()));
+                    }
                     highs.clear();
                     highss.clear();
                 }
@@ -231,11 +242,15 @@ public class ZBEditTextDialogActivity extends Activity {
             }
         });
         ivSend.setOnClickListener(lis -> {
+
             if (TextUtils.isEmpty(etView.getText().toString())) {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
-                RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString()));
-                LogUtils.v(Constant.TAG_LIVE, "发送消息");
+                if (type == 0) {
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString()));
+                } else if (type == 1) {
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_WORD, etView.getText().toString()));
+                }
                 finish();
             }
 
@@ -300,8 +315,10 @@ public class ZBEditTextDialogActivity extends Activity {
     @Override
     public void finish() {
         super.finish();
-        //通知前一页消息列表位置还原
-        RxBus.getDefault().post(new EventBean(LiveConstants.DISMISS_ET, 0));
+        if (type == 0) {
+            //通知前一页消息列表位置还原
+            RxBus.getDefault().post(new EventBean(LiveConstants.DISMISS_ET, 0));
+        }
         //关闭键盘
         closeKeybord(this);
         //更改关闭页面动画

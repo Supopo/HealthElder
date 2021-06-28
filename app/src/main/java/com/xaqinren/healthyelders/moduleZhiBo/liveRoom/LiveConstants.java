@@ -41,6 +41,7 @@ public class LiveConstants {
     public static final int DISMISS_ET = 1002;                  // 直播间发送弹窗关闭
     public static final int SHOW_ET = 1001;                     // 直播间发送弹窗展示
     public static final int SEND_MSG = 10011;                   // 直播间发送消息
+    public static final int SEND_WORD = 10012;                   // 直播间添加屏蔽词
     public static final int ZB_LINK_YQ = 2001;                  // 邀请连麦
     public static final int ZB_LINK_GB = 200101;                 // 关闭全部连麦按钮
     public static final int ZB_USER_SET = 2002;                 // 用禁言 拉黑设置
