@@ -53,7 +53,6 @@ import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.SwitchButton;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
-import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

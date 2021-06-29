@@ -945,4 +945,21 @@ public class LiveRepository {
                     }
                 });
     }
+
+    public void delVideo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> setSuccess, String liveRoomId) {
+        userApi.delLiteAvVideo(UserInfoMgr.getInstance().getHttpToken(), liveRoomId)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        setSuccess.postValue(data.isOk());
+                    }
+                });
+    }
 }

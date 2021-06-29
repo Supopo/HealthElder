@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -88,6 +89,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     private String diaryType = "diaryType";
     private Banner banner;
     private TextView banneCount;
+    private boolean isMine;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     public void initData() {
         super.initData();
         videoId = getIntent().getStringExtra(Constant.VIDEO_ID);
+        isMine = getIntent().getBooleanExtra(com.xaqinren.healthyelders.global.Constant.MINE_OPEN, false);
 
         rlTitle.setVisibility(View.GONE);
         View headerBanner = View.inflate(this, R.layout.header_text_photo_banner, null);
@@ -369,6 +372,12 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             binding.likeTv.setText(Num2TextUtil.num2Text(diaryInfoBean.favoriteCount));
         });
 
+        viewModel.delSuccess.observe(this,bls->{
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(com.xaqinren.healthyelders.global.Constant.PUBLISH_SUCCESS, true);
+            startActivity(MainActivity.class, bundle);
+            overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+        });
         //TODO 发表评论弹窗的接口
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
             if (bean != null) {
@@ -533,11 +542,21 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         if (shareDialog == null) {
             shareDialog = new ShareDialog(this, diaryInfoBean.share);
             shareDialog.setShowType(ShareDialog.TP_TYPE);
+            shareDialog.setUserId(diaryInfoBean.userId);
+            shareDialog.isMineOpen(isMine);
             shareDialog.setOnClickListener(new OnClickListenerImpl() {
                 @Override
                 public void onCreatePostClick() {
                     super.onCreatePostClick();
                     showPostDialog();
+                }
+            });
+            shareDialog.setOnDelClickListener(new ShareDialog.OnDelClickListener() {
+                @Override
+                public void onDelClick() {
+                    //TODO 日记删除
+                    showDialog();
+                    viewModel.delDiary(diaryInfoBean.id);
                 }
             });
         }

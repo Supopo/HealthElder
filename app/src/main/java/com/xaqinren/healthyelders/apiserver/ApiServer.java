@@ -570,5 +570,13 @@ public interface ApiServer {
     //获取首页菜单-搜索关键词
     @GET("jkzl/open/queryTypeByName")
     Observable<MBaseResponse<SlideBarBean>> getMenuAllWords(@Query("type") String type);
+
+    //短视频 - 删除
+    @GET("content/shortVideo/delete")
+    Observable<MBaseResponse<Object>> delLiteAvVideo(@Header("Authorization") String authorization, @Query("id") String id);
+
+    //日记 - 删除
+    @GET("content/userDiary/delete")
+    Observable<MBaseResponse<Object>> delDiary(@Header("Authorization") String authorization, @Query("id") String id);
 }
 

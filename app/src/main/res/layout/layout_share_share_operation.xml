@@ -121,5 +121,27 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="生成海报" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/share_del"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginRight="@dimen/dp_23"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:src="@mipmap/sc_zuop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_11"
+                android:textColor="@color/color_252525"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="删除" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

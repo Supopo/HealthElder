@@ -54,7 +54,8 @@ public class Constant {
     public static String PAY_WAY = "PAY_WAY";
     //发布成功标记
     public static String PUBLISH_SUCCESS = "publish";
-
+    //是否从个人中心打开视频/日记列表
+    public static String MINE_OPEN = "isMine";
 
     //生成roomId
     public static String getRoomId(String userId) {

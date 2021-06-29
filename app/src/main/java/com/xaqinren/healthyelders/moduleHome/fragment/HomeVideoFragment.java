@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.tencent.rtmp.TXLivePlayer;
 import com.tencent.rtmp.TXVodPlayConfig;
 import com.tencent.rtmp.TXVodPlayer;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -95,14 +97,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private boolean editTextOpen;//判断是否打开了EditTextActivity
     private TXLivePlayConfig mPlayerConfig;
     private TXLivePlayer mLivePlayer;
+    private boolean isMineOpen;
 
-    public HomeVideoFragment() {
-    }
-
-    public HomeVideoFragment(VideoInfo videoInfo, String type, int position) {
+    public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
         this.type = type;
         this.position = position;
+        this.isMineOpen = isMineOpen;
         if (videoInfo.resourceType.equals("VIDEO")) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
@@ -512,8 +513,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             showCommentDialog(videoInfo.resourceId);
         });
         binding.ivShare.setOnClickListener(lis -> {
+            //分享
             showShareDialog(videoInfo);
         });
+        //未审核或者私密 不显示分享
+        /*if (!videoInfo.isPassVideo() || videoInfo.isPrivate()) {
+            binding.ivShare.setVisibility(View.GONE);
+        }*/
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null && commentDialog != null) {
                 //本地刷新
@@ -587,6 +593,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }
         });
+
+        viewModel.delSuccess.observe(this,bls -> {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
+            startActivity(MainActivity.class, bundle);
+            getActivity().overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+        });
     }
 
     //判断自己账号隐藏关注
@@ -630,6 +643,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             videoInfo.share.downUrl = videoInfo.resourceUrl;
         videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
+        if (videoInfo.getVideoType() != 2) {
+            shareDialog.setUserId(videoInfo.userId);
+            shareDialog.isMineOpen(isMineOpen);
+            shareDialog.setOnDelClickListener(new ShareDialog.OnDelClickListener() {
+                @Override
+                public void onDelClick() {
+                    //TODO 视频删除
+                    showDialog();
+                    viewModel.delVideo(videoInfo.resourceId);
+                }
+            });
+        }
         shareDialog.show(binding.mainRelativeLayout);
     }
 

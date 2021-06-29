@@ -54,7 +54,6 @@ import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
-import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.util.ArrayList;
 import java.util.List;

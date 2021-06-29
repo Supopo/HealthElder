@@ -78,8 +78,8 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public ShareBean share;//":
     public String roomPassword;//":
     public String refuseUserIds;//":
-    public String approvalStatus;//":
-    public String creationViewAuth;//":
+    public String approvalStatus;//"://PENDING("审批中"), PASS("已发布"), REJECT("驳回"),DISABLED("已下架");
+    public String creationViewAuth;//":  PRIVATE 私密
     public String businessHub;//":
     public String district;//":
     public String city;//":
@@ -131,6 +131,28 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public List<String> topicList;
     public List<PublishAtBean> atList;
     public List<PublishFocusItemBean> publishFocusItemBeans;
+
+
+    public boolean isPassVideo() {
+        if (approvalStatus != null && approvalStatus.equals("PASS")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPrivate() {
+        if (creationViewAuth != null && creationViewAuth.equals("PRIVATE")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean showShare() {
+        if (isPassVideo() && !isPrivate()) {
+            return true;
+        }
+        return false;
+    }
 
     public boolean showFollow() {
         if (UserInfoMgr.getInstance().getUserInfo() == null || TextUtils.isEmpty(userId)) {

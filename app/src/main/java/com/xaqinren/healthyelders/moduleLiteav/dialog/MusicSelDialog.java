@@ -2,10 +2,7 @@ package com.xaqinren.healthyelders.moduleLiteav.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.media.Image;
-import android.nfc.Tag;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,36 +11,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.dcloud.android.downloader.DownloadService;
-import com.tencent.bugly.proguard.D;
-import com.tencent.liteav.audio.TXCUGCBGMPlayer;
-import com.tencent.qcloud.tim.uikit.utils.FileUtil;
-import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.module.effect.utils.DraftEditer;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
-import com.tencent.qcloud.ugckit.utils.DownloadUtil;
 import com.tencent.ugc.TXRecordCommon;
 import com.tencent.ugc.TXUGCRecord;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
-import com.xaqinren.healthyelders.apiserver.LiveRepository;
-import com.xaqinren.healthyelders.bean.EventBean;
-import com.xaqinren.healthyelders.global.CodeTable;
-import com.xaqinren.healthyelders.moduleLiteav.activity.LiveAVActivity;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicSelAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.adapter.MusicSelCollAdapter;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
@@ -57,14 +36,11 @@ import com.xaqinren.healthyelders.widget.BottomDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.http.DownLoadManager;
 
 public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBottomItemClickListener, DialogInterface.OnDismissListener {
 

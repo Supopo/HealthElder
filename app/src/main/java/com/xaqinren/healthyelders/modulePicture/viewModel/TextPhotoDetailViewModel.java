@@ -29,6 +29,8 @@ public class TextPhotoDetailViewModel extends BaseViewModel {
     public MutableLiveData<CommentListBean> commentSuccess = new MutableLiveData<>();
     public MutableLiveData<DiaryInfoBean> diaryInfo = new MutableLiveData<>();
 
+    public MutableLiveData<Boolean> delSuccess = new MutableLiveData<>();
+
 
     public MutableLiveData<List<CommentListBean>> commentList = new MutableLiveData<>();
     public MutableLiveData<CommentListBean> commentReplyList = new MutableLiveData<>();
@@ -70,4 +72,7 @@ public class TextPhotoDetailViewModel extends BaseViewModel {
         LiteAvRepository.getInstance().toFavorite(favorite, requestSuccess, id , isF);
     }
 
+    public void delDiary(String id) {
+        LiteAvRepository.getInstance().delDiary(requestSuccess, delSuccess, id);
+    }
 }

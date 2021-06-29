@@ -752,5 +752,20 @@ public class LiteAvRepository {
     }
 
 
+    public void delDiary(MutableLiveData<Boolean> requestSuccess, MutableLiveData<Boolean> delSuccess, String id) {
+        userApi.delDiary(UserInfoMgr.getInstance().getHttpToken(), id)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        requestSuccess.postValue(true);
+                    }
 
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        delSuccess.postValue(data.isOk());
+                    }
+                });
+    }
 }

@@ -176,6 +176,7 @@
                     android:layout_width="@dimen/dp_33"
                     android:layout_height="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_25"
+                    android:visibility="@{viewModel.videoInfo.showShare() ? View.VISIBLE : View.GONE}"
                     android:background="@mipmap/ic_home_forward" />
 
                 <TextView
@@ -184,6 +185,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:text="@{viewModel.videoInfo.getShareCountEx()}"
                     android:textColor="@color/white"
+                    android:visibility="@{viewModel.videoInfo.showShare() ? View.VISIBLE : View.GONE}"
                     android:textSize="@dimen/sp_12" />
 
             </LinearLayout>

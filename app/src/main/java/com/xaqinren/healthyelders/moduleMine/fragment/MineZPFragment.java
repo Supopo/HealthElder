@@ -102,6 +102,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             if (videoAdapter.getData().get(position).isArticle()) {
                 Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).resourceId);
+                intent.putExtra(Constant.MINE_OPEN, true);
                 startActivity(intent);
                 return;
             }
@@ -129,6 +130,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             listBean.type = 3;
 
             bundle.putSerializable("key", listBean);
+            bundle.putBoolean(Constant.MINE_OPEN, true);
             startActivity(VideoListActivity.class, bundle);
 
         }));

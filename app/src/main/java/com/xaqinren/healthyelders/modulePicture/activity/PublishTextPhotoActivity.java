@@ -482,6 +482,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
                 startActivity(MainActivity.class, bundle);
                 finish();
+                overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
             }
         });
     }
@@ -808,6 +809,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
         startActivity(MainActivity.class, bundle);
         finish();
+        overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
     }
 
     @Override

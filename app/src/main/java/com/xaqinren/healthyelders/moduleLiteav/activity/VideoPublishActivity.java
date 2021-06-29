@@ -522,6 +522,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
                 startActivity(MainActivity.class, bundle);
+                overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
             }else{
                 //发布失败
                 LogUtils.e(TAG,"发布视频失败");
@@ -843,7 +844,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
         startActivity(MainActivity.class, bundle);
-        finish();
+        overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
     }
 
 

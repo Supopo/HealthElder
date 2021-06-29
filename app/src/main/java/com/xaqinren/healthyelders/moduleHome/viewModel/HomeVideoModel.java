@@ -25,6 +25,7 @@ public class HomeVideoModel extends BaseViewModel {
     public MutableLiveData<VideoInfo> videoInfo = new MutableLiveData<>();
     public MutableLiveData<CommentListBean> commentSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
+    public MutableLiveData<Boolean> delSuccess = new MutableLiveData<>();
     public MutableLiveData<ResBean> dzSuccess = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
@@ -47,5 +48,9 @@ public class HomeVideoModel extends BaseViewModel {
     public void joinLive(String liveRoomId) {
         showDialog();
         LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
+    }
+
+    public void delVideo(String liveRoomId) {
+        LiveRepository.getInstance().delVideo(dismissDialog, delSuccess, liveRoomId);
     }
 }

@@ -37,12 +37,14 @@ import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
@@ -57,6 +59,7 @@ import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class ShareDialog {
     private PopupWindow popupWindow;
@@ -73,11 +76,21 @@ public class ShareDialog {
     private Context mContext;
     private DownLoadProgressDialog downloadProgress;
     private OnClickListener onClickListener;
+    private OnDelClickListener onDelClickListener;
     private ShareBean shareBean;
     private Disposable uniSubscribe;
+    //视频/日记发布者id
+    private String userId;
+    //当前登录用户Id
+    private String selfUseId;
+    private boolean isMine = false;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    public void setOnDelClickListener(OnDelClickListener onDelClickListener) {
+        this.onDelClickListener = onDelClickListener;
     }
 
     public ShareDialog(Context context) {
@@ -100,6 +113,7 @@ public class ShareDialog {
         this.showType = showType;
         mContext = context;
         shareBean = shareInfo;
+        selfUseId = UserInfoMgr.getInstance().getUserInfo().getId();
         init();
         showType();
     }
@@ -111,9 +125,30 @@ public class ShareDialog {
         init();
     }
 
+    public void isMineOpen(boolean isMine) {
+        this.isMine = isMine;
+        if (isMine){
+            binding.shareOperationLayout.shareDel.setVisibility(View.VISIBLE);
+            binding.shareOperationLayout.shareDel.setOnClickListener(v -> {
+                //删除
+                if (onDelClickListener != null) {
+                    popupWindow.dismiss();
+                    onDelClickListener.onDelClick();
+                }
+            });
+        }else{
+            binding.shareOperationLayout.shareDel.setVisibility(View.GONE);
+        }
+
+    }
+
     public void setShowType(int showType) {
         this.showType = showType;
         showType();
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     private void init() {
@@ -309,5 +344,8 @@ public class ShareDialog {
 
     public interface OnClickListener {
         void onCreatePostClick();
+    }
+    public interface OnDelClickListener {
+        void onDelClick();
     }
 }

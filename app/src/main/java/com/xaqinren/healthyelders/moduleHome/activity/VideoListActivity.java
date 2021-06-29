@@ -49,6 +49,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private Handler handler;
     private boolean isSingle;
     private Disposable subscribe;
+    private boolean isMineOpen;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         Bundle bundle = intent.getExtras();
         videos = (VideoListBean) bundle.getSerializable("key");
         isSingle = bundle.getBoolean("key1", false);
-
+        isMineOpen = bundle.getBoolean(Constant.MINE_OPEN, false);
         //从附近打开
         if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
             position = videos.position;
@@ -98,7 +99,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition));
+            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition,isMineOpen));
             fragmentPosition++;
         }
 
@@ -227,7 +228,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 //ViewPage添加
                 for (int i = 0; i < tempList.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition));
+                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition,isMineOpen));
                     fragmentPosition++;
                 }
 
@@ -268,7 +269,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 //ViewPage添加
                 for (int i = 0; i < tempList.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition));
+                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition,isMineOpen));
                     fragmentPosition++;
                 }
 

@@ -64,8 +64,8 @@
                         android:textSize="@dimen/sp_16"
                         android:textColor="@color/color_252525"
                         android:drawableLeft="@mipmap/sj_suod"
-                        android:drawableRight="@drawable/arrow_right"
                         android:drawablePadding="@dimen/dp_3"
+                        android:layout_marginRight="@dimen/dp_10"
                         android:text="@{data.mobileNumber}"/>
                 </LinearLayout>
                 <View style="@style/lineMarginDp16" />
