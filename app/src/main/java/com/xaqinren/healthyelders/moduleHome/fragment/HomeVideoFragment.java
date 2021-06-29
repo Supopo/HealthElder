@@ -638,13 +638,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             startActivity(PhoneLoginActivity.class);
             return;
         }
-
-        if (shareDialog == null)
+        if (videoInfo.share!=null) {
             videoInfo.share.downUrl = videoInfo.resourceUrl;
-        videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
+            videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
+        }
         shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
         if (videoInfo.getVideoType() != 2) {
-            shareDialog.setUserId(videoInfo.userId);
             shareDialog.isMineOpen(isMineOpen);
             shareDialog.setOnDelClickListener(new ShareDialog.OnDelClickListener() {
                 @Override

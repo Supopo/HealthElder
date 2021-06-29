@@ -531,8 +531,10 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
         String cutStr = currentStr.substring(0, selStart);
         int textLast = cutStr.lastIndexOf("#");
 
-        if (currentStr.length() + topicStr.length() > inputMax) {
+        if (textLast + 1 + topicStr.length() > inputMax) {
             //超过最大输入限制
+            if (onTextChangeListener != null)
+                onTextChangeListener.maxInput();
             return;
         }
 

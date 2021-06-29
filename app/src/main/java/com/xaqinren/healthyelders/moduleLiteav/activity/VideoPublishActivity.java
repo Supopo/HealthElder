@@ -538,6 +538,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             //热点话题
             this.listTopicBeans.clear();
             this.listTopicBeans.addAll(topicBeans);
+            if (this.listTopicBeans.isEmpty()) {
+                this.listTopicBeans.add(new TopicBean(currentTopicStr));
+            }
             chooseTopicAdapter.setList(this.listTopicBeans);
         });
         viewModel.fileUpload.observe(this, new Observer<String>() {
@@ -547,11 +550,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             }
         });
     }
-
+    private String currentTopicStr = "";
     /**
      * 搜索话题
      */
     private void showTopicView(String str) {
+        currentTopicStr = str.replace("#", "");
         viewModel.getSearchTopic(str.replace("#", ""));
         binding.includeListTopic.recyclerView.getAdapter().notifyDataSetChanged();
         binding.includeListTopic.layoutPublishAt.setVisibility(View.VISIBLE);

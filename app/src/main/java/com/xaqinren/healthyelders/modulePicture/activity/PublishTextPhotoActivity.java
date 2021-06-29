@@ -435,9 +435,10 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         addAddPhoto();
         pictureAdapter.setList(localPhotoBeans);
     }
-
+    private String currentTopicStr = "";
     private void showTopicView(String str) {
         //TODO 调用接口
+        currentTopicStr = str.replace("#", "");
         viewModel.getSearchTopic(str.replace("#", ""));
         binding.includeListTopic.recyclerView.getAdapter().notifyDataSetChanged();
         binding.includeListTopic.layoutPublishAt.setVisibility(View.VISIBLE);
@@ -468,6 +469,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             //热点话题
             this.listTopicBeans.clear();
             this.listTopicBeans.addAll(topicBeans);
+            if (this.listTopicBeans.isEmpty()) {
+                this.listTopicBeans.add(new TopicBean(currentTopicStr));
+            }
             chooseTopicAdapter.setList(this.listTopicBeans);
         });
         viewModel.uploadFile.observe(this,objects -> {

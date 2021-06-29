@@ -29,6 +29,7 @@ import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity
 import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -110,11 +111,13 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 
-            listBean.videoInfos = videoAdapter.getData();
+            listBean.videoInfos = new ArrayList<>();
+            listBean.videoInfos.addAll(videoAdapter.getData());
 
             if (hasDraft) {
                 listBean.videoInfos.remove(0);
             }
+
             if (hasDraft) {
                 listBean.position = position - 1;
             } else {

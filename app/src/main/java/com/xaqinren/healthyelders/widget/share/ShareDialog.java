@@ -60,6 +60,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class ShareDialog {
     private PopupWindow popupWindow;
@@ -84,6 +85,8 @@ public class ShareDialog {
     //当前登录用户Id
     private String selfUseId;
     private boolean isMine = false;
+
+    private float disEnable = 0.4f;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -168,19 +171,58 @@ public class ShareDialog {
         binding.atUserList.setLayoutManager(new LinearLayoutManager(context.get(), LinearLayoutManager.HORIZONTAL, false));
         binding.atUserList.setAdapter(shareFriendAdapter);
 
-        getFriends();
+        if (shareBean != null)
+            getFriends();
+
+
+        if (shareBean == null) {
+            binding.shareClsLayout.shareFriend.setEnabled(false);
+            binding.shareClsLayout.shareFriend.setAlpha(disEnable);
+
+            binding.shareClsLayout.shareWxFriend.setEnabled(false);
+            binding.shareClsLayout.shareWxFriend.setAlpha(disEnable);
+
+            binding.shareClsLayout.shareWxCircle.setEnabled(false);
+            binding.shareClsLayout.shareWxCircle.setAlpha(disEnable);
+
+            binding.shareOperationLayout.shareSaveNative.setEnabled(false);
+            binding.shareOperationLayout.shareSaveNative.setAlpha(disEnable);
+
+            binding.shareOperationLayout.shareSaveNative.setEnabled(false);
+            binding.shareOperationLayout.shareSaveNative.setAlpha(disEnable);
+
+            binding.shareOperationLayout.shareSaveUrl.setEnabled(false);
+            binding.shareOperationLayout.shareSaveUrl.setAlpha(disEnable);
+
+            binding.shareOperationLayout.shareColl.setEnabled(false);
+            binding.shareOperationLayout.shareColl.setAlpha(disEnable);
+
+            binding.shareOperationLayout.shareReport.setEnabled(false);
+            binding.shareOperationLayout.shareReport.setAlpha(disEnable);
+
+            binding.shareOperationLayout.sharePost.setEnabled(false);
+            binding.shareOperationLayout.sharePost.setAlpha(disEnable);
+
+            binding.shareOperationLayout.sharePost.setEnabled(false);
+            binding.shareOperationLayout.sharePost.setAlpha(disEnable);
+        }
 
         binding.shareClsLayout.shareFriend.setOnClickListener(view -> {
             //私信朋友
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友
+            if (shareBean == null) {
+                ToastUtils.showShort("内容未审核");
+                return;
+            }
             shareWebPage(1);
         });
         binding.shareClsLayout.shareWxCircle.setOnClickListener(view -> {
             //私信微信朋友圈
             shareWebPage(2);
         });
+
         binding.shareOperationLayout.shareSaveNative.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(shareBean.downUrl)) {
                 //保存本地 当前下载url应该是解密之后的
