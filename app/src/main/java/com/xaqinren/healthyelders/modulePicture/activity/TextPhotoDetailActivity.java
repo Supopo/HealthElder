@@ -376,6 +376,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             Bundle bundle = new Bundle();
             bundle.putBoolean(com.xaqinren.healthyelders.global.Constant.PUBLISH_SUCCESS, true);
             startActivity(MainActivity.class, bundle);
+            finish();
             overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
         });
         //TODO 发表评论弹窗的接口

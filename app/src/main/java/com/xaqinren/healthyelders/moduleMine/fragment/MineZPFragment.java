@@ -146,6 +146,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         if (UserInfoMgr.getInstance().getUserInfo() != null) {
             String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
             List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(getActivity(), fileName);
+            hasDraft = false;
             if (list != null && list.size() > 0) {
                 hasDraft = true;
                 draftCount = list.size();

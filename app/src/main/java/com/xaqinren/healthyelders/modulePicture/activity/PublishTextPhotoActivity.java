@@ -478,6 +478,11 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         viewModel.publishLiveData.observe(this,s -> {
             ToastUtils.showShort(s);
             if (s.equals("发布成功")) {
+                if (publishDraftId > 0) {
+                    //装在草稿箱内容
+                    String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
+                    viewModel.delDraftsById(getContext(),fileName,publishDraftId);
+                }
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
                 startActivity(MainActivity.class, bundle);
