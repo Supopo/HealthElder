@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.bean;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Lee. on 2021/4/25.
@@ -60,6 +61,7 @@ public class LiveInitInfo implements Serializable {
     public Boolean canShield;//null, // 管理员是否可以设置屏蔽词
     public LiveLevelInfo liveRoomLevel = new LiveLevelInfo();//直播间等级信息
     public ShareBean share;
+    public List<String> shieldList;//屏蔽词
 
     public Boolean getAdminCanMuteAuth() {
         return adminCanMuteAuth == null ? false : adminCanMuteAuth;

@@ -225,6 +225,17 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             binding.btnLianmai.setVisibility(View.GONE);
         }
 
+        //todo 添加系统屏蔽词
+
+        //添加直播间屏蔽词
+        if (mLiveInitInfo.shieldList != null && mLiveInitInfo.shieldList.size() > 0) {
+            for (String s : mLiveInitInfo.shieldList) {
+                pbWords.add(s);
+            }
+        }
+
+        SensitiveWordsUtils.init(pbWords);
+
 
         if (mLiveInitInfo.getHasFollow()) {
             binding.tvFollow.setText("");
@@ -423,9 +434,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
 
-        pbWords.add("法轮功");
-        pbWords.add("中国");
-        SensitiveWordsUtils.init(pbWords);
     }
 
     private void startPlay() {
@@ -516,13 +524,14 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         closeLinkDialog.showDialog();
 
     }
+
     Set<String> pbWords = new HashSet<>();
 
     //发送文字消息
     private void toSendTextMsg(String msg) {
         //检查消息是否有屏蔽词
         if (SensitiveWordsUtils.contains(msg)) {
-            msg = SensitiveWordsUtils.replaceSensitiveWord(msg,"**");
+            msg = SensitiveWordsUtils.replaceSensitiveWord(msg, "***");
         }
 
 
@@ -1305,6 +1314,14 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 break;
             case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://取消带货消息
                 binding.rlShowGood.setVisibility(View.GONE);
+                break;
+            case LiveConstants.IMCMD_BLOCK_WORD_ADD://添加屏蔽词
+                pbWords.add((String) message);
+                SensitiveWordsUtils.init(pbWords);
+                break;
+            case LiveConstants.IMCMD_BLOCK_WORD_DEL://删除屏蔽词
+                pbWords.remove((String)message);
+                SensitiveWordsUtils.init(pbWords);
                 break;
             default:
                 break;

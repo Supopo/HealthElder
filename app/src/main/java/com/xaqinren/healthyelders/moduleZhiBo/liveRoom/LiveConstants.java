@@ -90,8 +90,10 @@ public class LiveConstants {
     public static final int IMCMD_ZB_COMEBACK = 28;              // 主播断开重新回来了 通知大家重新拉一下流
     public static final int IMCMD_GONGGAO_MSG = 29;              // 公告消息 msg为json串 类型-名字-内容  msgType-nickname-content      msgType: 0-拉黑 1-踢出
     public static final int IMCMD_RESH_HOME_INFO = 30;           // 通知观众们刷新房间信息
-    public static final int IMCMD_SETTING_PL = 31;           // 设置-直播间评论状态 0 禁止 1允许
-    public static final int IMCMD_SETTING_LW = 32;           // 设置-直播间送礼状态 0 禁止 1允许
+    public static final int IMCMD_SETTING_PL = 31;               // 设置-直播间评论状态 0 禁止 1允许
+    public static final int IMCMD_SETTING_LW = 32;               // 设置-直播间送礼状态 0 禁止 1允许
+    public static final int IMCMD_BLOCK_WORD_ADD = 33;           // 设置-直播间屏蔽词添加 消息内容为屏蔽词
+    public static final int IMCMD_BLOCK_WORD_DEL = 34;           // 设置-直播间屏蔽词删除
 
 
 }

@@ -280,7 +280,7 @@ public class UserInfoBean implements Serializable {
     }
 
     public Boolean getHasRealName() {
-        return hasRealName;
+        return hasRealName == null ? false : hasRealName;
     }
 
     public void setHasRealName(Boolean hasRealName) {

@@ -349,7 +349,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 startActivity(PhoneLoginActivity.class);
                 return;
             }
-
+            //判断是否实名认证
+            if (!UserInfoMgr.getInstance().getUserInfo().getHasRealName()) {
+                startActivity(StartRenZhengActivity.class);
+                return;
+            }
             disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS)
                     .subscribe(granted -> {
                         if (granted) {

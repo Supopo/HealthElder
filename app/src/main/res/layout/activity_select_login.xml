@@ -85,7 +85,7 @@
             android:background="@mipmap/login_phone" />
 
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,12 +106,19 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_4"
-                android:layout_toRightOf="@id/iv_select"
-                android:text="已同意用户协议"
+                android:text="已同意"
                 android:textColor="@color/gray_999"
                 android:textSize="@dimen/sp_11" />
-
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/user_agree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="《用户协议》"
+                android:textColor="@color/colorSendName2"
+                android:textSize="@dimen/sp_11" />
+        </LinearLayout>
 
 
     </RelativeLayout>

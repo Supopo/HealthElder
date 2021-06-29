@@ -353,7 +353,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void showLoading() {
         //加载进度
-        binding.loadingView.setVisibility(View.VISIBLE);
+        binding.rlLoadingView.setVisibility(View.VISIBLE);
         binding.loadingView.playAnimation();
     }
 
@@ -618,9 +618,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
 
     private void dismissLoading() {
-        if (binding.loadingView.isAnimating() || binding.loadingView.getVisibility() == View.VISIBLE) {
+        if (binding.loadingView.isAnimating() || binding.rlLoadingView.getVisibility() == View.VISIBLE) {
             binding.loadingView.cancelAnimation();
-            binding.loadingView.setVisibility(View.GONE);
+            binding.rlLoadingView.setVisibility(View.GONE);
         }
     }
 
@@ -1092,22 +1092,24 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     //直播播放器
     @Override
     public void onPlayEvent(int event, Bundle param) {
+        LogUtils.v(Constant.TAG_LIVE, type + position + "ZB_PARAM" + event);
+
         if (event == TXLiveConstants.PLAY_EVT_CHANGE_RESOLUTION) {
             //param.getInt(TXLiveConstants.EVT_PARAM1); //视频宽度
             //param.getInt(TXLiveConstants.EVT_PARAM2); //视频高度
         } else if (event == TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME) {// 收到首帧数据，越快收到此消息说明链路质量越好
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RCV_FIRST_I_FRAME");
+            LogUtils.v(Constant.TAG_LIVE, type + position + "ZB_PLAY_EVT_RCV_FIRST_I_FRAME");
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
+            LogUtils.v(Constant.TAG_LIVE, type + position + "ZB_PLAY_EVT_VOD_PLAY_PREPARED");
             showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_RTMP_STREAM_BEGIN) {//已经连接服务器，开始拉流（仅播放 RTMP 地址时会抛送）
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_RTMP_STREAM_BEGIN");
+            LogUtils.v(Constant.TAG_LIVE, type + position + "ZB_PLAY_EVT_RTMP_STREAM_BEGIN");
             showStartLayout();
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
+            LogUtils.v(Constant.TAG_LIVE, type + position + "ZB_PLAY_EVT_PLAY_BEGIN");
             showStartLayout();
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
-            LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_ERR_NET_DISCONNECT");
+            LogUtils.v(Constant.TAG_LIVE, type + position + "ZB_PLAY_ERR_NET_DISCONNECT");
         }
 
     }

@@ -264,5 +264,8 @@ dependencies {
 
     //picker view
     implementation 'com.contrarywind:Android-PickerView:4.1.9'
+
+    //骨架图
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
 }
 

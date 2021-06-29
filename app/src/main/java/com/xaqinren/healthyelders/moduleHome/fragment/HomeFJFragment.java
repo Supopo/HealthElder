@@ -221,13 +221,11 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     }
 
     private void showLoadView() {
-        binding.loadView.playAnimation();
-        binding.loadView.setVisibility(View.VISIBLE);
+        showDialog();
     }
 
     private void closeLoadView() {
-        binding.loadView.cancelAnimation();
-        binding.loadView.setVisibility(View.GONE);
+        dismissDialog();
     }
 
     private boolean needRefreshData;

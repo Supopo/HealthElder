@@ -578,5 +578,11 @@ public interface ApiServer {
     //日记 - 删除
     @GET("content/userDiary/delete")
     Observable<MBaseResponse<Object>> delDiary(@Header("Authorization") String authorization, @Query("id") String id);
+
+    //直播间设置-屏蔽词
+    @Headers({"content-type:application/json"})
+    @POST("live/updateBlockWord")
+    Observable<MBaseResponse<Object>> setBlockWord(@Header("Authorization") String authorization,
+                                                    @Body RequestBody body);
 }
 

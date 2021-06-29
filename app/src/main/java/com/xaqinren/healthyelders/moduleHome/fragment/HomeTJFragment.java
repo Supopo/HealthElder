@@ -81,6 +81,9 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 }
             }
         });
+        viewModel.closeRsl.observe(this,dismissDialog ->{
+            closeLoadView();
+        });
         //接受数据
         viewModel.datas.observe(this, datas -> {
             closeLoadView();
@@ -131,8 +134,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private void closeLoadView() {
-        binding.loadView.cancelAnimation();
-        binding.loadView.setVisibility(View.GONE);
+       dismissDialog();
     }
 
     @Override
@@ -212,8 +214,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private void showLoadView() {
-        binding.loadView.setVisibility(View.VISIBLE);
-        binding.loadView.playAnimation();
+     showDialog();
     }
 
     private boolean firstInit = true;

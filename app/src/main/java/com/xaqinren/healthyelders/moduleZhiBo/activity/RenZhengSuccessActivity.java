@@ -1,13 +1,11 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityRenzhengSuccessBinding;
-import com.xaqinren.healthyelders.databinding.ActivityStartRenzheng2Binding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;

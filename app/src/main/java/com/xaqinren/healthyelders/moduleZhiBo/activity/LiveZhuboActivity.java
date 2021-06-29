@@ -53,6 +53,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
@@ -354,6 +355,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             binding.btnLianmai.setVisibility(View.GONE);
         }
 
+        //todo 添加系统屏蔽词
+
+        //添加直播间屏蔽词
+        if (mLiveInitInfo.shieldList != null && mLiveInitInfo.shieldList.size() > 0) {
+            for (String s : mLiveInitInfo.shieldList) {
+                pbWords.add(s);
+            }
+        }
+        //初始化屏蔽词
+        SensitiveWordsUtils.init(pbWords);
 
         topHeadAdapter = new TopUserHeadAdapter(R.layout.item_top_user_head);
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
@@ -409,6 +420,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 showMoreLinkSettingPop(position);
             }
         }));
+
     }
 
     //处理单人连麦消息
@@ -467,10 +479,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
-
-        pbWords.add("法轮功");
-        pbWords.add("中国");
-        SensitiveWordsUtils.init(pbWords);
     }
 
     private void startPublish() {
@@ -693,7 +701,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private void toSendTextMsg(String msg) {
         //检查消息是否有屏蔽词
         if (SensitiveWordsUtils.contains(msg)) {
-            msg = SensitiveWordsUtils.replaceSensitiveWord(msg, "**");
+            msg = SensitiveWordsUtils.replaceSensitiveWord(msg, "***");
         }
 
 
@@ -715,6 +723,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             entity.setSenderName(userInfo.nickname);
 
         }
+        text = SensitiveWordsUtils.replaceSensitiveWord(text, "***");
         entity.setContent(text);
         entity.setType(type);
 
@@ -1862,6 +1871,18 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     break;
                 case LiveConstants.IMCMD_SHOW_GOODS_CANCEL://群发取消带货消息
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS_CANCEL), "", null);
+                    break;
+                case LiveConstants.IMCMD_BLOCK_WORD_ADD:
+                    //向用户群发添加到屏蔽词库
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_BLOCK_WORD_ADD), eventBean.content, null);
+                    //本地添加
+                    pbWords.add(eventBean.content);
+                    SensitiveWordsUtils.init(pbWords);
+                    break;
+                case LiveConstants.IMCMD_BLOCK_WORD_DEL:
+                    mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_BLOCK_WORD_DEL), eventBean.content, null);
+                    pbWords.remove(eventBean.content);
+                    SensitiveWordsUtils.init(pbWords);
                     break;
                 default:
                     break;

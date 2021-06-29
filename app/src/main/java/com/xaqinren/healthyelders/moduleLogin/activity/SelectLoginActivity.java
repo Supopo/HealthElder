@@ -15,6 +15,7 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.bean.WeChatUserInfoBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SelectLoginViewModel;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -59,6 +60,9 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
             } else {
                 binding.ivSelect.setBackgroundResource(R.mipmap.login_rad_nor);
             }
+        });
+        binding.userAgree.setOnClickListener(lis->{
+            UniUtil.openUniApp(getContext(),Constant.JKZL_MINI_APP_ID,Constant.MINI_AGREEMENT,null,true);
         });
         binding.ivPhone.setOnClickListener(lis -> {
             //手机号登录

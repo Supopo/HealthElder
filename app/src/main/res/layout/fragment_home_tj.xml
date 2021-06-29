@@ -25,15 +25,6 @@
                 android:layout_height="match_parent">
 
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:visibility="gone"
-                    android:id="@+id/loadView"
-                    android:layout_width="@dimen/dp_70"
-                    android:layout_height="@dimen/dp_70"
-                    app:lottie_fileName="loading_anim.json"
-                    app:lottie_loop="true"
-                    android:layout_centerInParent="true"/>
-
                 <!--<androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
                     android:layout_width="match_parent"

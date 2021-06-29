@@ -4,13 +4,15 @@
 
 
         <RelativeLayout
+            android:padding="15dp"
+            android:background="@drawable/bg_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/loadView"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 app:lottie_fileName="loading_anim.json"
                 app:lottie_loop="true"
                 android:layout_centerInParent="true"/>
