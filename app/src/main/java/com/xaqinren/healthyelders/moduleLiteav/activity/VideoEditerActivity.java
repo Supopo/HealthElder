@@ -680,10 +680,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     public void setVideoInfo(@NonNull TXVideoEditConstants.TXVideoInfo videoInfo) {
 
         int durationS = (int) (videoInfo.duration / 1000);
-        int thumbCount = durationS / 3;
+//        int thumbCount = durationS / 3;
 
         TXCLog.i(TAG, "[UGCKit][VideoCut]init cut time, start:" + 0 + ", end:" + durationS * 1000);
-        VideoEditerSDK.getInstance().setCutterStartTime(0, durationS * 1000);
+        VideoEditerSDK.getInstance().setCutterStartTime(0, videoInfo.duration);
 
         binding.videoEditView.setMediaFileInfo(videoInfo);
     }
