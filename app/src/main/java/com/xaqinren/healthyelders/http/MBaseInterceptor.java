@@ -28,7 +28,7 @@ public class MBaseInterceptor implements Interceptor {
         }
 
         //开放接口需要传的参数
-        if (chain.request().url().toString().contains("/open/")) {
+        if (chain.request().url().toString().contains("/open/") ||chain.request().url().toString().contains("/oauth/") ) {
             builder.addHeader("Authorization", Constant.HEADER_DEF).build();
             builder.addHeader("mid", Constant.APP_MID).build();
             builder.addHeader("uid", uid).build();

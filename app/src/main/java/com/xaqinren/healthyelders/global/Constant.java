@@ -45,6 +45,7 @@ public class Constant {
     public static String REQ_TAG_YH = "USER";//用户
     public static String REQ_TAG_GOODS = "COMMODITY";//商品
     public static String REQ_TAG_WZ = "ARTICLE";//文章
+    public static String REQ_ZB_TYPE = "PSEUDO_LIVE";//虚拟直播
     //认证类型
     public static String REN_ZHENG_TYPE = "ren_zheng_type";
     //支付密码
@@ -88,6 +89,8 @@ public class Constant {
      * 登录token
      */
     public static final String SP_KEY_TOKEN_INFO = "tokenInfo";
+    //刷新token用的
+    public static final String SP_KEY_REFRESH_TOKEN = "refresh_token";
     /**
      * 登录用户
      */

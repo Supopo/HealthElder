@@ -47,6 +47,8 @@ import me.goldze.mvvmhabit.http.BaseResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -583,6 +585,11 @@ public interface ApiServer {
     @Headers({"content-type:application/json"})
     @POST("live/updateBlockWord")
     Observable<MBaseResponse<Object>> setBlockWord(@Header("Authorization") String authorization,
-                                                    @Body RequestBody body);
+                                                   @Body RequestBody body);
+
+    //刷新token
+    @FormUrlEncoded
+    @POST("merchant/oauth/token")
+    Observable<MBaseResponse<LoginTokenBean>> refreshToken( @Field("refresh_token") String refreshToken, @Field("grant_type") String grantType);
 }
 

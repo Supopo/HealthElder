@@ -104,21 +104,45 @@ public class InfoCache {
         }
     }
 
+    public long getTokenSaveTime() {
+        synchronized (lock) {
+            String tokenStr = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
+            LoginTokenBean tokenBean = JSON.parseObject(tokenStr, LoginTokenBean.class);
+            if (tokenBean == null)
+                return 0;
+            return tokenBean.saveTime;
+        }
+    }
+
+    public LoginTokenBean getLoginTokenBean() {
+        synchronized (lock) {
+            String tokenStr = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
+            LoginTokenBean tokenBean = JSON.parseObject(tokenStr, LoginTokenBean.class);
+            if (tokenBean == null)
+                return null;
+            return tokenBean;
+        }
+    }
+
     public void clearLogin() {
         SPUtils.getInstance().put(Constant.SP_KEY_LOGIN_USER, "");
         SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, "");
         SPUtils.getInstance().put(Constant.SP_KEY_SIG_USER, "");
         SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
-        //解绑推送
-        String uid = UserInfoMgr.getInstance().getUserInfo().getId();
-        PushManager.getInstance().unBindAlias(AppApplication.getContext(), uid, true);
 
-        UserInfoMgr.getInstance().clearLogin();
-        //清理消息
-        ImManager.getInstance().clear();
-        //退出IM
-        MLVBLiveRoom.sharedInstance(AppApplication.getContext()).logout();
-        RxBus.getDefault().post(new EventBean(CodeTable.LOGIN_OUT, null));
+        if (UserInfoMgr.getInstance().getUserInfo() != null) {
+            //解绑推送
+            String uid = UserInfoMgr.getInstance().getUserInfo().getId();
+            PushManager.getInstance().unBindAlias(AppApplication.getContext(), uid, true);
+
+            UserInfoMgr.getInstance().clearLogin();
+            //清理消息
+            ImManager.getInstance().clear();
+            //退出IM
+            MLVBLiveRoom.sharedInstance(AppApplication.getContext()).logout();
+            RxBus.getDefault().post(new EventBean(CodeTable.LOGIN_OUT, null));
+        }
+
     }
 
 }

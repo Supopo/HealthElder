@@ -5,8 +5,9 @@ public class LoginTokenBean {
     public String refresh_token;
     public String scope;
     public String token_type;
-    public String expires_in;
+    public long expires_in;
     public String jti;
+    public long saveTime;
 
     public String getAccess_token() {
         return access_token;
@@ -40,11 +41,11 @@ public class LoginTokenBean {
         this.token_type = token_type;
     }
 
-    public String getExpires_in() {
+    public long getExpires_in() {
         return expires_in;
     }
 
-    public void setExpires_in(String expires_in) {
+    public void setExpires_in(long expires_in) {
         this.expires_in = expires_in;
     }
 

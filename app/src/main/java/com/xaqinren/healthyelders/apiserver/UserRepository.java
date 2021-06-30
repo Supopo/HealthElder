@@ -42,13 +42,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.http.BaseResponse;
 import me.goldze.mvvmhabit.utils.RxUtils;
-import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -188,10 +188,11 @@ public class UserRepository {
                     @Override
                     public void onNext(MBaseResponse<LoginTokenBean> response) {
                         if (response.isOk()) {
-                            SPUtils.getInstance().put(Constant.SP_KEY_TOKEN_INFO, JSON.toJSONString(response.getData()));
+                            response.getData().saveTime = System.currentTimeMillis();
+                            InfoCache.getInstance().setTokenInfo(response.getData());
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-//                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
+                            //                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             loginSuccess.postValue(true);
                         } else {
                             boolean showToast = false;
@@ -249,10 +250,11 @@ public class UserRepository {
                         if (response.isOk()) {
                             //判断如果返回的数据不为null
                             if (response.getData() != null) {
+                                response.getData().saveTime = System.currentTimeMillis();
                                 InfoCache.getInstance().setTokenInfo(response.getData());
                                 UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-//                                getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
+                                //                                getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             }
                             loginStatus.postValue(1);
                         } else {
@@ -931,6 +933,40 @@ public class UserRepository {
                     protected void onSuccess(MBaseResponse<SlideBarBean> data) {
                         datas.postValue(data.getData());
                     }
+                });
+    }
+
+    public void refreshToken(String token) {
+        userApi.refreshToken( token, "refresh_token")
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new DisposableObserver<MBaseResponse<LoginTokenBean>>() {
+                    @Override
+                    public void onNext(@NonNull MBaseResponse<LoginTokenBean> response) {
+                        if (response.getCode().equals(CodeTable.SUCCESS_CODE)) {
+                            //缓存新的token
+                            if (response.getData() != null) {
+                                response.getData().saveTime = System.currentTimeMillis();
+                                InfoCache.getInstance().setTokenInfo(response.getData());
+                                UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
+                                UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
+                            }
+                        } else {
+                            //token过期 直接清除登陆信息
+                            InfoCache.getInstance().clearLogin();
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
                 });
     }
 

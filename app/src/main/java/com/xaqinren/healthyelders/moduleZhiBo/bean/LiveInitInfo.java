@@ -36,7 +36,7 @@ public class LiveInitInfo implements Serializable {
     public String liveRoomRecordId;//直播记录ID
     public String liveRoomStatus;// 房间状态 LIVE_ING：直播中 LIVE_OFF：直播断开 NO_LIVE：禁止直播 LIVE_OVER：直播结束 NOT_LIVE： 未直播
     public String liveRoomCode;// 直播间编码  同IM直播间ID --创建房间群号用这个
-    public String liveRoomType;//":"VIDEO_LIVE",
+    public String liveRoomType;//":VIDEO_LIVE("视频直播"),AUDIO_LIVE("语音直播"),PSEUDO_LIVE("伪直播"),PC_LIVE("PC直播"),RECORD_LIVE("录屏直播");
     public String userId;//":"1386137830790533120",// 主播ID
     public String nickname;//":"苏坡坡要吃婆婆酥。",
     public String avatarUrl;//":主播头像

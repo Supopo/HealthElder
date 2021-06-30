@@ -1,13 +1,17 @@
 package com.xaqinren.healthyelders.moduleHome.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -254,6 +258,17 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
             }
         });
 
+        binding.etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    binding.rlSearch.setVisibility(View.VISIBLE);
+                    binding.rvContent.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
         historyAdapterEvent();
     }
 
@@ -319,9 +334,26 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     }
 
     private void toJump() {
+        mAdapter.getData().clear();
+
         showDialog();
+        closeInputMethod();//收起键盘
         binding.etSearch.setHint(key);
+        //取消焦点
+        binding.rlSearch.setFocusable(true);
+        binding.rlSearch.setFocusableInTouchMode(true);
+        binding.rlSearch.requestFocus();
+        binding.rlSearch.requestFocusFromTouch();
+
+        page = 1;
         viewModel.getVideoData(page, menuType, key);
+    }
+
+    private void closeInputMethod() {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
     }
 
     private boolean isSearch;
@@ -371,16 +403,17 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         });
         viewModel.datas.observe(this, dataList -> {
             if (dataList != null) {
+                binding.rvContent.setVisibility(View.VISIBLE);
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();
                 }
                 if (page == 1) {
-                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
-                    mAdapter.setList(dataList);
                     if (dataList.size() == 0) {
                         //创建适配器.空布局，没有数据时候默认展示的
                         mAdapter.setEmptyView(R.layout.list_empty);
+                    } else {
+                        mAdapter.setNewInstance(dataList);
                     }
                 } else {
                     if (dataList.size() == 0) {

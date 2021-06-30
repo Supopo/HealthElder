@@ -50,7 +50,7 @@
                 android:id="@+id/rl_loadingView"
                 android:layout_centerInParent="true"
                 android:padding="15dp"
-                android:background="@drawable/bg_dialog"
+                android:background="@drawable/bg_tip_dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 

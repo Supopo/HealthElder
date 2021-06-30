@@ -70,6 +70,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String externalId;//": "5285890818169432613"
     public String liveRoomId;//":
     public String liveRoomCode;//":
+    public String liveRoomType;//":VIDEO_LIVE("视频直播"),AUDIO_LIVE("语音直播"),PSEUDO_LIVE("伪直播"),PC_LIVE("PC直播"),RECORD_LIVE("录屏直播");
     public String hasIntroduce;//":
     public String musicId;//":
     public String musicIcon;//":
@@ -186,6 +187,9 @@ public class VideoInfo implements Serializable, MultiItemEntity {
         }
 
         if (resourceType.equals("LIVE")) {
+            if (liveRoomType.equals("PSEUDO_LIVE")) {
+                return 4;
+            }
             return 2;
         } else if (resourceType.equals("VIDEO")) {
             return 1;
