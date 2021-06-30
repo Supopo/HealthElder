@@ -98,12 +98,25 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private TXLivePlayConfig mPlayerConfig;
     private TXLivePlayer mLivePlayer;
     private boolean isMineOpen;
+    private int videoOpenType;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
         this.type = type;
         this.position = position;
         this.isMineOpen = isMineOpen;
+        if (videoInfo.resourceType.equals("VIDEO")) {
+            videoInfo.oldResourceUrl = videoInfo.resourceUrl;
+            videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
+        }
+    }
+
+    public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen, int openType) {
+        this.videoInfo = videoInfo;
+        this.type = type;
+        this.position = position;
+        this.isMineOpen = isMineOpen;
+        this.videoOpenType = openType;
         if (videoInfo.resourceType.equals("VIDEO")) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
@@ -486,6 +499,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return;
             }
 
+            if (videoOpenType == 1) {
+                //通知前一页关闭
+                RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "video-list"));
+                return;
+            }
+
             Bundle bundle = new Bundle();
             bundle.putString("userId", videoInfo.userId);
             startActivity(UserInfoActivity.class, bundle);
@@ -594,11 +613,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         });
 
-        viewModel.delSuccess.observe(this,bls -> {
+        viewModel.delSuccess.observe(this, bls -> {
             Bundle bundle = new Bundle();
             bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
             startActivity(MainActivity.class, bundle);
-            getActivity().overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+            getActivity().overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
         });
     }
 
@@ -638,7 +657,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             startActivity(PhoneLoginActivity.class);
             return;
         }
-        if (videoInfo.share!=null) {
+        if (videoInfo.share != null) {
             videoInfo.share.downUrl = videoInfo.resourceUrl;
             videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         }

@@ -27,6 +27,7 @@ public class CodeTable {
     public static int ZHJ_SELECT_GIFT = 77772;//直播间礼物点击事件
     public static int MUSIC_BACK = 90001;//直播间礼物点击事件
     public static int ZBJ_SETTING_BLOCK = 90002;//直播间设置屏蔽词
+    public static int FINISH_ACT = 88;//
 
     /**
      * 成功

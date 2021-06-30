@@ -118,6 +118,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             listBean.type = 3;
 
             bundle.putSerializable("key", listBean);
+            bundle.putSerializable("openType", 1);
             startActivity(VideoListActivity.class, bundle);
 
         }));

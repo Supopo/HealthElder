@@ -50,6 +50,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private boolean isSingle;
     private Disposable subscribe;
     private boolean isMineOpen;
+    private int openType;//打开方式 1 从某个用户作品列表打开
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         videos = (VideoListBean) bundle.getSerializable("key");
         isSingle = bundle.getBoolean("key1", false);
         isMineOpen = bundle.getBoolean(Constant.MINE_OPEN, false);
+        openType = bundle.getInt("openType", 0);
+
         //从附近打开
         if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
             position = videos.position;
@@ -99,8 +102,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition,isMineOpen));
-            fragmentPosition++;
+            addFragment(mVideoInfoList, i);
         }
 
 
@@ -188,6 +190,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
                     //判断刷新
                     needRefreshData = true;
+                }else if(event.msgId == CodeTable.FINISH_ACT && event.content.equals("video-list")){
+                    finish();
                 }
             }
         });
@@ -228,14 +232,13 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 //ViewPage添加
                 for (int i = 0; i < tempList.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition,isMineOpen));
-                    fragmentPosition++;
+                    addFragment(tempList, i);
                 }
 
             } else {
                 if (page > 1) {
                     page--;
-                }else {
+                } else {
                     //展示空布局
                     binding.rlEmpty.setVisibility(View.VISIBLE);
                     binding.viewPager2.setVisibility(View.GONE);
@@ -269,8 +272,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 //ViewPage添加
                 for (int i = 0; i < tempList.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition,isMineOpen));
-                    fragmentPosition++;
+                    addFragment(tempList, i);
                 }
 
             } else {
@@ -279,5 +281,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 }
             }
         });
+    }
+
+    public void addFragment(List<VideoInfo> tempList, int i) {
+        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType));
+        fragmentPosition++;
     }
 }

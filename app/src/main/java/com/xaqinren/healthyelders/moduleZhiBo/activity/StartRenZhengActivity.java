@@ -16,6 +16,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -114,7 +115,6 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
                 int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
                 bundle.putInt(Constant.REN_ZHENG_TYPE, key);
                 startActivity(StartRenZheng2Activity.class, bundle);
-                finish();
             } else {
                 ToastUtil.toastShortMessage("请上传身份证");
             }
@@ -126,7 +126,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             if (event != null) {
                 if (event.msgId == CodeTable.UNI_RELEASE) {
                     if (event.taskId == 99) {
-                        UniUtil.openUniApp(getContext(), event.appId, event.jumpUrl, null, event.isSelfUni);
+                        UniUtil.openUniApp(this, event.appId, event.jumpUrl, null, event.isSelfUni);
                     }
                 } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
                     //ToastUtils.showShort("打开小程序失败");
@@ -163,7 +163,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             public void onClick(@NonNull View widget) {
                 //跳使用条款小程序
                 //使用条款
-                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, Constant.ZB_SYTK);
+                UniService.startService(StartRenZhengActivity.this, Constant.JKZL_MINI_APP_ID, 99, Constant.ZB_SYTK);
             }
         }, text1.length(), (text1 + text2).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -177,7 +177,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             public void onClick(@NonNull View widget) {
                 //跳行为规范小程序
                 //行为规范
-                UniService.startService(getActivity(), Constant.JKZL_MINI_APP_ID, 99, Constant.ZB_XWGF);
+                UniService.startService(StartRenZhengActivity.this, Constant.JKZL_MINI_APP_ID, 99, Constant.ZB_XWGF);
             }
         }, (text1 + text2 + text3).length(), all.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
