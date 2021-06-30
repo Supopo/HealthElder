@@ -51,6 +51,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private Disposable subscribe;
     private boolean isMineOpen;
     private int openType;//打开方式 1 从某个用户作品列表打开
+    private long timeTag;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -82,6 +83,11 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
@@ -98,6 +104,9 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         super.initData();
         handler = new Handler();
         setStatusBarTransparent();
+
+        timeTag = System.currentTimeMillis();
+        AppApplication.get().setTimeTag(timeTag);
 
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
 
@@ -190,7 +199,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
                     //判断刷新
                     needRefreshData = true;
-                }else if(event.msgId == CodeTable.FINISH_ACT && event.content.equals("video-list")){
+                } else if (event.msgId == CodeTable.FINISH_ACT && event.content.equals("video-list")) {
                     finish();
                 }
             }
@@ -284,7 +293,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     }
 
     public void addFragment(List<VideoInfo> tempList, int i) {
-        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType));
+        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType, timeTag));
         fragmentPosition++;
     }
 }

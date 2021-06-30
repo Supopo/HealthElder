@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -99,6 +100,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private TXLivePlayer mLivePlayer;
     private boolean isMineOpen;
     private int videoOpenType;
+    private long timeTag;//因为list-video会在多处地方调用，放了防止后一页列表播放时候影响到前一页列表，多加一个判断
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
@@ -111,12 +113,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     }
 
-    public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen, int openType) {
+    public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen, int openType, long timeTag) {
         this.videoInfo = videoInfo;
         this.type = type;
         this.position = position;
         this.isMineOpen = isMineOpen;
         this.videoOpenType = openType;
+        this.timeTag = timeTag;
         if (videoInfo.resourceType.equals("VIDEO")) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
@@ -822,7 +825,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startListVideo() {
-        if (AppApplication.get().getPlayPosition() == position) {
+        if (AppApplication.get().getPlayPosition() == position && AppApplication.get().getTimeTag() == timeTag) {
             startPlay(true);
         }
     }

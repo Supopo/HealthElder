@@ -257,6 +257,17 @@ public class AppApplication extends BaseApplication {
     //视频标记
     private String tag = "home-tj";
 
+    public long getTimeTag() {
+        return timeTag;
+    }
+
+    public void setTimeTag(long timeTag) {
+        this.timeTag = timeTag;
+    }
+
+    //时间标记 区分list-video
+    private long timeTag;
+
     public String getTag() {
         return tag;
     }
