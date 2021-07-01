@@ -199,6 +199,14 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
                 startActivity(intent);
             }
         }));
+
+        binding.rlAll.setOnClickListener(lis -> {
+            if (mAdapter.getData().size() > 0) {
+                cancelFocus();
+                binding.rlSearch.setVisibility(View.GONE);
+                binding.rvContent.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private int page = 1;
@@ -339,16 +347,20 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         mAdapter.getData().clear();
 
         showDialog();
-        closeInputMethod();//收起键盘
         binding.etSearch.setHint(key);
+        cancelFocus();
+
+        page = 1;
+        viewModel.getVideoData(page, menuType, key);
+    }
+
+    private void cancelFocus() {
+        closeInputMethod();//收起键盘
         //取消焦点
         binding.rlSearch.setFocusable(true);
         binding.rlSearch.setFocusableInTouchMode(true);
         binding.rlSearch.requestFocus();
         binding.rlSearch.requestFocusFromTouch();
-
-        page = 1;
-        viewModel.getVideoData(page, menuType, key);
     }
 
     private void closeInputMethod() {

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,7 +15,10 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.databinding.ActivitySplashBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.viewModel.SplashViewModel;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
@@ -25,6 +29,7 @@ import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashViewModel> {
@@ -96,6 +101,27 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             getWindow().setAttributes(params);
         }
         rlTitle.setVisibility(View.GONE);
+
+
+        LoginTokenBean loginTokenBean = InfoCache.getInstance().getLoginTokenBean();
+        if (loginTokenBean != null) {
+            //            if (System.currentTimeMillis() >= ((loginTokenBean.expires_in * 1000) + loginTokenBean.saveTime)) {
+            //                //token过期 直接清除登陆信息
+            //                InfoCache.getInstance().clearLogin();
+            //            } else {
+            //                String refreshToken = loginTokenBean.refresh_token;
+            //                Log.e("--", "refreshToken: " + refreshToken);
+            //                if (!TextUtils.isEmpty(refreshToken)) {
+            //                    viewModel.refreshToken(refreshToken);
+            //                }
+            //            }
+            String refreshToken = loginTokenBean.refresh_token;
+            if (!TextUtils.isEmpty(refreshToken)) {
+                viewModel.refreshToken(refreshToken);
+            }
+
+        }
+
 
         initView();
     }

@@ -255,7 +255,8 @@
         <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity"
             android:theme="@style/TranslucentAppTheme"/>
-        <activity android:name=".moduleHome.activity.VideoListActivity" />
+        <activity android:name=".moduleHome.activity.VideoListActivity"
+            android:theme="@style/AnimTheme" />
         <activity
             android:name=".modulePicture.activity.TextPhotoDetailActivity"
             android:windowSoftInputMode="adjustNothing" />
@@ -291,7 +292,8 @@
         </activity>
         <activity android:name=".modulePicture.activity.PublishAtActivity" />
         <activity android:name=".moduleMsg.activity.ChatActivity" />
-        <activity android:name=".moduleHome.activity.SearchActivity" />
+        <activity android:name=".moduleHome.activity.SearchActivity"
+            android:theme="@style/AnimTheme" />
         <activity android:name=".moduleMsg.activity.InteractiveActivity">
             <intent-filter>
                 <data
@@ -308,7 +310,8 @@
         <activity
             android:name=".moduleMsg.activity.AddFriendActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".moduleHome.activity.SearchAllActivity" />
+        <activity android:name=".moduleHome.activity.SearchAllActivity"
+            android:theme="@style/AnimTheme" />
         <activity android:name=".moduleMsg.activity.FansMsgActivity">
             <intent-filter>
                 <data
@@ -365,9 +368,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
-        <activity android:name=".moduleMine.activity.EditInfoActivity" />
-        <activity android:name=".moduleMine.activity.EditNameActivity" />
-        <activity android:name=".moduleMine.activity.EditBriefActivity" />
+        <activity android:name=".moduleMine.activity.EditInfoActivity"
+            android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleMine.activity.EditNameActivity"
+            android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleMine.activity.EditBriefActivity"
+            android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.CZSelectPopupActivity"
             android:theme="@style/EditDialogStyle"
