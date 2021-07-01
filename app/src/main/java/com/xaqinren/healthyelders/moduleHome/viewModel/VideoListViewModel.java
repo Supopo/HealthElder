@@ -30,7 +30,7 @@ public class VideoListViewModel extends BaseViewModel {
     //1 从首页直播列表 2 从附近打开 3我的作品 4我的私密 5我的点赞作品
     public void getVideoData(int page, VideoListBean videoListBean) {
 
-        int type = videoListBean.type;
+        int type = videoListBean.openType;
         String tags = videoListBean.tags;
         String resourceType = "";
         if (type == 1) {

@@ -2,12 +2,10 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -150,7 +148,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         binding.rvContent.setAdapter(mAdapter);
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
-        binding.rvContent.addItemDecoration(new SpeacesItemDecorationEx(this, getResources().getDimension(R.dimen.dp_7), 0, 0, getResources().getDimension(R.dimen.dp_7), true));
+        binding.rvContent.addItemDecoration(new SpeacesItemDecorationEx(this, 0, getResources().getDimension(R.dimen.dp_7), 0, getResources().getDimension(R.dimen.dp_7), true));
 
         mAdapter.setOnItemClickListener(((adapter, view, position) -> {
             //判断是不是文章类型
@@ -188,7 +186,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
 
                 listBean.videoInfos = tempList;
                 listBean.position = tempPos;
-                listBean.type = 2;
+                listBean.openType = 2;
                 listBean.tags = key;
 
                 Bundle bundle = new Bundle();

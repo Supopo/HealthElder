@@ -22,6 +22,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_video"
+                android:layout_marginBottom="@dimen/dp_15"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingLeft="@dimen/dp_7" />

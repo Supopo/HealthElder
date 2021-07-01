@@ -798,7 +798,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                             }
                         }
                     });
+                }else {
+                    callbackOnThread(callback, "onSuccess");
                 }
+
             }
         });
 

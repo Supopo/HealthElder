@@ -200,7 +200,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         listBean.page = 0;
         listBean.position = 0;
         listBean.videoInfos = tempList;
-        listBean.type = 2;
+        listBean.openType = 2;
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("key", listBean);

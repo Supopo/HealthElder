@@ -13,25 +13,15 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
-import com.xaqinren.healthyelders.databinding.FragmentMineZpBinding;
 import com.xaqinren.healthyelders.databinding.FragmentUserZpBinding;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
-import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
-import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
-import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
-import com.xaqinren.healthyelders.moduleMine.viewModel.MineZPViewModel;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserZPViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
-
-import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
@@ -115,7 +105,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             } else {
                 listBean.page = (listBean.videoInfos.size() / 2) + 1;
             }
-            listBean.type = 3;
+            listBean.openType = 3;
 
             bundle.putSerializable("key", listBean);
             bundle.putSerializable("openType", 1);

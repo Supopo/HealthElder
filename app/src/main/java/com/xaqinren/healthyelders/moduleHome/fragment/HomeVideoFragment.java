@@ -107,7 +107,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         this.type = type;
         this.position = position;
         this.isMineOpen = isMineOpen;
-        if (videoInfo.resourceType.equals("VIDEO")) {
+        if (videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
         }
@@ -120,7 +120,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         this.isMineOpen = isMineOpen;
         this.videoOpenType = openType;
         this.timeTag = timeTag;
-        if (videoInfo.resourceType.equals("VIDEO")) {
+        if (videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
         }
@@ -155,7 +155,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         commentId = videoInfo.resourceId;
         if (type.equals("home-list")) {
-            if (videoInfo.getVideoType() != 2) {
+            if (videoInfo.getVideoType() == 1) {
                 binding.bottom.setVisibility(View.VISIBLE);//影响视频view是否整页
                 binding.commentLayout.setVisibility(View.VISIBLE);//列表页面需要展示评论
                 binding.viewMenu.setVisibility(View.GONE);//首页列表需要撑起标题等
@@ -256,7 +256,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             initVideo();
         } else if (videoInfo.resourceType.equals("LIVE")) {
             zbingAnim = (AnimationDrawable) binding.ivZBing.getBackground();
-            initLive();
+
+            if (videoInfo.liveRoomType.equals("PSEUDO_LIVE")) {
+                initVideo();
+            } else {
+                initLive();
+            }
         }
 
     }
@@ -835,17 +840,22 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (binding.rlView.getVisibility() == View.GONE) {
             binding.rlView.setVisibility(View.VISIBLE);
         }
-        if (videoInfo.getVideoType() == 2) {
-            zbingAnim.start();
-            if (mLivePlayer != null) {
-                mLivePlayer.startPlay(videoInfo.resourceUrl, TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
+        if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
+            if (videoInfo.getVideoType() == 4) {
+                zbingAnim.start();
             }
-        } else {
+
             if (vodPlayer != null) {
                 vodPlayer.setAutoPlay(b);
                 vodPlayer.startPlay(videoInfo.resourceUrl);
             }
 
+
+        } else if (videoInfo.getVideoType() == 2) {
+            zbingAnim.start();
+            if (mLivePlayer != null) {
+                mLivePlayer.startPlay(videoInfo.resourceUrl, TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
+            }
         }
 
         LogUtils.v(Constant.TAG_LIVE, "---------------------startPlay" + position);
@@ -872,13 +882,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void pausePlay() {
         binding.mainVideoView.onPause();
 
-        if (videoInfo.getVideoType() == 2) {
-            if (mLivePlayer != null) {
-                mLivePlayer.pause();
-            }
-        } else {
+        if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
             if (vodPlayer != null) {
                 vodPlayer.pause();
+            }
+        } else if (videoInfo.getVideoType() == 2) {
+            if (mLivePlayer != null) {
+                mLivePlayer.pause();
             }
         }
         LogUtils.v(Constant.TAG_LIVE, "---------------------pausePlay" + position);
@@ -892,13 +902,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (hasPlaying) {
                 //判断之前不是暂停状态
                 if (noPlayPause) {
-                    if (videoInfo.getVideoType() == 2) {
-                        if (mLivePlayer != null) {
-                            mLivePlayer.resume();
-                        }
-                    } else {
+                    if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
                         if (vodPlayer != null) {
                             vodPlayer.resume();
+                        }
+                    } else if (videoInfo.getVideoType() == 2) {
+                        if (mLivePlayer != null) {
+                            mLivePlayer.resume();
                         }
                     }
                 }
@@ -920,9 +930,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (mLivePlayer != null) {
                 mLivePlayer.stopPlay(false);
             }
-        } else {
-            stopMusicAnim();
-            binding.playImageView.setVisibility(View.GONE);
+        } else if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
+            if (videoInfo.getVideoType() == 1) {
+                stopMusicAnim();
+                binding.playImageView.setVisibility(View.GONE);
+            } else if (videoInfo.getVideoType() == 4) {
+                if (zbingAnim != null) {
+                    zbingAnim.stop();
+                }
+            }
 
             if (vodPlayer != null) {
                 vodPlayer.stopPlay(clearLastFrame);

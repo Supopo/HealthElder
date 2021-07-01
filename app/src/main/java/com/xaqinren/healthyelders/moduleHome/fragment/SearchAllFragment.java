@@ -2,8 +2,6 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +9,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -44,7 +41,6 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
-import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
@@ -177,7 +173,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         listBean.page = 0;
         listBean.position = 0;
         listBean.videoInfos = tempList;
-        listBean.type = 2;
+        listBean.openType = 2;
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("key", listBean);

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
@@ -108,7 +107,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             } else {
                 listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
             }
-            listBean.type = 5;
+            listBean.openType = 5;
 
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);

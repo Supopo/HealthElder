@@ -41,6 +41,10 @@ import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.tencent.rtmp.ITXVodPlayListener;
+import com.tencent.rtmp.TXLiveConstants;
+import com.tencent.rtmp.TXVodPlayConfig;
+import com.tencent.rtmp.TXVodPlayer;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -109,7 +113,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * 直播间-观众页面
  */
 public class
-LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener {
+LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener, ITXVodPlayListener {
 
     private MLVBLiveRoom mLiveRoom;
     private LiveInitInfo mLiveInitInfo;
@@ -148,6 +152,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private Disposable uniSubscribe;
     private ZBUserListPop zbUserListPop;
     private ZBUserInfoPop userInfoPop;
+    private TXVodPlayer vodPlayer;
+    private int mRenderMode;
 
 
     @Override
@@ -224,8 +230,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         if (!mLiveInitInfo.getCanMic()) {
             binding.btnLianmai.setVisibility(View.GONE);
         }
-
-        //todo 添加系统屏蔽词
 
         //添加直播间屏蔽词
         if (mLiveInitInfo.shieldList != null && mLiveInitInfo.shieldList.size() > 0) {
@@ -442,8 +446,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         LogUtils.v(Constant.TAG_LIVE, "拉流地址：" + mLiveInitInfo.pullStreamUrl);
         LogUtils.v(Constant.TAG_LIVE, "房间号：" + Constant.getRoomId(mLiveInitInfo.liveRoomCode));
 
-        //加入直播间
-        mLiveRoom.enterRoom(mLiveInitInfo.pullStreamUrl, Constant.getRoomId(mLiveInitInfo.liveRoomCode), binding.mTxVideoView, new EnterRoomCallback() {
+        //虚拟直播传空链接进去
+        //加入直播间 mLiveInitInfo.pullStreamUrl
+        mLiveRoom.enterRoom(mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN) ? "" : mLiveInitInfo.pullStreamUrl, Constant.getRoomId(mLiveInitInfo.liveRoomCode), binding.mTxVideoView, new EnterRoomCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 dismissDialog();
@@ -457,19 +462,58 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间成功");
                 //群发进入直播间的消息
                 mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_ENTER_LIVE), "", null);
-                isPlaying = true;
 
-                if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomConnection)) {
-                    if (mLiveInitInfo.liveRoomConnection.equals(LiveConstants.LIVE_STATUS_CHAT_ROOM)) {
-                        //判断是否开启了多人聊天
-                        startMoreLinkLayout();
-                        viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
+                //判断虚拟直播开始加载播放
+                if (mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
+                    startVodPlayer();
+                } else {
+                    //正式直播
+                    isPlaying = true;
+                    if (!TextUtils.isEmpty(mLiveInitInfo.liveRoomConnection)) {
+                        if (mLiveInitInfo.liveRoomConnection.equals(LiveConstants.LIVE_STATUS_CHAT_ROOM)) {
+                            //判断是否开启了多人聊天
+                            startMoreLinkLayout();
+                            viewModel.findMicUsers(mLiveInitInfo.liveRoomRecordId);
+                        }
                     }
                 }
+
             }
         });
 
     }
+
+    //初始化虚拟直播
+    public void startVodPlayer() {
+        //视频播放
+        vodPlayer = new TXVodPlayer(getActivity());
+        //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
+        //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
+        vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+
+        //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
+        //RENDER_ROTATION_LANDSCAPE 画面顺时针旋转 270 度（Home 键在画面正左方）
+        vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
+        vodPlayer.setVodListener(LiveGuanzhongActivity.this);
+        TXVodPlayConfig config = new TXVodPlayConfig();
+        //缓存设置
+        File sdcardDir = getActivity().getExternalFilesDir(null);
+        if (sdcardDir != null) {
+            config.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/JKZLcache");
+        }
+        config.setMaxCacheItems(4);
+        vodPlayer.setConfig(config);
+        vodPlayer.setPlayerView(binding.mTxVideoView);
+        vodPlayer.setAutoPlay(true);
+        vodPlayer.startPlay(mLiveInitInfo.pullStreamUrl);
+    }
+
+    public void stopVodPlayer() {
+        if (vodPlayer != null) {
+            vodPlayer.stopPlay(true);
+        }
+    }
+
 
     private boolean isPlaying;
 
@@ -490,6 +534,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                     //群发退出直播间的消息
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_EXIT_LIVE), "", null);
                 }
+
+                if (mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
+                    stopVodPlayer();
+                }
+
                 mLiveRoom.setListener(null);
                 finish();
             }
@@ -1320,7 +1369,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 SensitiveWordsUtils.init(pbWords);
                 break;
             case LiveConstants.IMCMD_BLOCK_WORD_DEL://删除屏蔽词
-                pbWords.remove((String)message);
+                pbWords.remove((String) message);
                 SensitiveWordsUtils.init(pbWords);
                 break;
             default:
@@ -2294,4 +2343,30 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
 
+    @Override
+    public void onPlayEvent(TXVodPlayer txVodPlayer, int event, Bundle bundle) {
+        if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
+            if (vodPlayer != null) {
+                vodPlayer.resume();
+            }
+        }
+    }
+
+    @Override
+    public void onNetStatus(TXVodPlayer txVodPlayer, Bundle status) {
+        //判断横竖屏
+        if (status.getInt(TXLiveConstants.NET_STATUS_VIDEO_WIDTH) > status.getInt(TXLiveConstants.NET_STATUS_VIDEO_HEIGHT)) {
+            //横屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION;
+                txVodPlayer.setRenderMode(mRenderMode);
+            }
+        } else {
+            //竖屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN;
+                txVodPlayer.setRenderMode(mRenderMode);
+            }
+        }
+    }
 }

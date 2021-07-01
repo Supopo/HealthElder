@@ -12,7 +12,6 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.databinding.FragmentMineDzBinding;
 import com.xaqinren.healthyelders.databinding.FragmentUserXhBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
@@ -20,7 +19,6 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.DZVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
-import com.xaqinren.healthyelders.moduleMine.viewModel.MineDZViewModel;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserXHViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
@@ -110,7 +108,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             } else {
                 listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
             }
-            listBean.type = 5;
+            listBean.openType = 5;
 
             bundle.putSerializable("key", listBean);
             startActivity(VideoListActivity.class, bundle);

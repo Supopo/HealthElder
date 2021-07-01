@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -75,7 +74,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         openType = bundle.getInt("openType", 0);
 
         //从附近打开
-        if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
+        if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5) {
             position = videos.position;
             page = videos.page;
             mVideoInfoList.addAll(videos.videoInfos);
@@ -118,7 +117,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
 
-        if (videos.type == 2 || videos.type == 3 || videos.type == 4 || videos.type == 5) {
+        if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5) {
             //从附近打开-我的作品-我的私密作品
             binding.viewPager2.setCurrentItem(position, false);
             AppApplication.get().setPlayPosition(position);
@@ -129,7 +128,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                 }
             }, 500);
-        } else if (videos.type == 1) {
+        } else if (videos.openType == 1) {
             //请求数据  推荐打开 主播列表
             viewModel.getVideoData(page, videos);
         }
@@ -215,7 +214,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 List<VideoInfo> tempList = new ArrayList<>();
 
-                if (videos.type == 2) {
+                if (videos.openType == 2) {
 
                     //先判断是否包含文章有先移除
                     for (VideoInfo data : datas) {
@@ -224,7 +223,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                         }
                     }
 
-                } else if (videos.type == 1) {
+                } else if (videos.openType == 1) {
                     tempList.addAll(datas);
                 }
 

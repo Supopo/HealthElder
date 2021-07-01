@@ -2,36 +2,30 @@ package com.xaqinren.healthyelders.moduleHome.activity;
 
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen;
+import com.ethanhua.skeleton.Skeleton;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityVideoGridBinding;
 import com.xaqinren.healthyelders.global.Constant;
-import com.xaqinren.healthyelders.moduleHome.adapter.FJVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.VideoGridViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
-import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecorationEx;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 /**
@@ -79,7 +73,6 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
         });
 
         recyclerView = binding.rvVideo;
-
         mAdapter = new GridVideoAdapter(R.layout.item_grid_video);
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
@@ -164,7 +157,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
 
                 listBean.videoInfos = tempList;
                 listBean.position = tempPos;
-                listBean.type = 2;
+                listBean.openType = 2;
                 listBean.tags = tags;
 
                 Bundle bundle = new Bundle();
@@ -209,6 +202,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
 
         viewModel.datas.observe(this, dataList -> {
             if (dataList != null) {
+
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();

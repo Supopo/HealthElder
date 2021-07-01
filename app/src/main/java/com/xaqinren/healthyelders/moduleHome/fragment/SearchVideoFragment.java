@@ -15,17 +15,13 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchVideoBinding;
-import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchVideoAdapter;
-import com.xaqinren.healthyelders.moduleHome.adapter.SearchZhiboAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +124,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         listBean.page = 0;
         listBean.position = 0;
         listBean.videoInfos = tempList;
-        listBean.type = 2;
+        listBean.openType = 2;
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("key", listBean);

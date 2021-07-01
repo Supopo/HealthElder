@@ -443,7 +443,7 @@
                 android:layout_height="@dimen/dp_32"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@mipmap/zbj_icon_shouhu" />
+                android:background="@mipmap/guanzhu_1_00061" />
 
         </RelativeLayout>
 
