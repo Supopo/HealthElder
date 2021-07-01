@@ -3,7 +3,10 @@ package com.xaqinren.healthyelders.moduleLiteav.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,14 +24,18 @@ import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.tencent.qcloud.tim.uikit.utils.FileUtil;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
+import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
 import com.tencent.qcloud.ugckit.module.upload.TXUGCPublish;
 import com.tencent.qcloud.ugckit.module.upload.TXUGCPublishTypeDef;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.NetworkUtil;
 import com.tencent.qcloud.ugckit.utils.Signature;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
+import com.tencent.ugc.TXVideoEditConstants;
+import com.tencent.ugc.TXVideoEditer;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -56,18 +63,23 @@ import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.VideoPublishViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.RetrieverUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.VideoPublishEditTextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
@@ -277,12 +289,24 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.addTopic.setOnClickListener(view -> binding.desText.append("#"));
         binding.addFriend.setOnClickListener(view -> binding.desText.append("@"));
         binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
-        Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
+//        Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
         initListView();
         loginUser();
         //热门话题
         viewModel.getHotTopic();
+
+        RetrieverUtils.cropBitmap(mCoverPath, new RetrieverUtils.OnBitmapCall() {
+            @Override
+            public void onBack(String bitmap) {
+                mCoverPath = bitmap;
+                Glide.with(getActivity()).asBitmap().load(mCoverPath).into(binding.coverView);
+            }
+        });
+
     }
+
+
+
 
     /**
      * 视频发布 begin

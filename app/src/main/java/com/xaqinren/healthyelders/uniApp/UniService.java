@@ -194,7 +194,7 @@ public class UniService extends Service implements LifecycleOwner {
                     }
                 } else {//释放wgt失败
                     LogUtils.e(TAG, saveBean.getAppId() + " >>>>>>> 释放失败");
-                    RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE_FAIL, saveBean.getAppId(), tid));
+                    //RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE_FAIL, saveBean.getAppId(), tid));
                 }
                 return null;
             }
