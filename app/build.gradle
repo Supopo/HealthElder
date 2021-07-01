@@ -267,5 +267,8 @@ dependencies {
 
     //骨架图
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+
+    //汉字转拼音
+    implementation 'com.belerweb:pinyin4j:2.5.0'
 }
 

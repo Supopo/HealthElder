@@ -36,6 +36,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.MenuSearchViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.utils.ACache;
+import com.xaqinren.healthyelders.utils.Cn2Spell;
 import com.xaqinren.healthyelders.widget.AutoLineLayoutManager;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecorationEx;
 
@@ -62,6 +63,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     private GridVideoAdapter mAdapter;
     private BaseLoadMoreModule mLoadMore;
     private MenuTextTagAdapter hotTextTagAdapter;
+    private String pinYin;
 
 
     @Override
@@ -81,6 +83,8 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         if (getIntent().getExtras() != null) {
             menuType = getIntent().getExtras().getString("title");
         }
+        pinYin = Cn2Spell.getPinYin(menuType);
+
         setStatusBarTransparentBlack();
 
         historyTagAdapter = new HistoryTagAdapter(R.layout.item_search_history);
@@ -89,7 +93,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
 
 
         //获取缓存数据
-        Object asObject = ACache.get(this).getAsObject(Constant.SearchVId);
+        Object asObject = ACache.get(this).getAsObject(pinYin);
 
 
         if (asObject instanceof SearchBean) {
@@ -103,11 +107,11 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
                 slideBarBean.getMenuInfoList().add(dto);
             }
 
-            ACache.get(this).put(Constant.SearchVId, slideBarBean);
+            ACache.get(this).put(pinYin, slideBarBean);
 
         }
 
-        searchListCache = (SlideBarBean) ACache.get(this).getAsObject(Constant.SearchVId);
+        searchListCache = (SlideBarBean) ACache.get(this).getAsObject(pinYin);
 
         if (searchListCache == null) {
             searchListCache = new SlideBarBean();
@@ -215,7 +219,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
             SlideBarBean searchBean = new SlideBarBean();
             searchBean.setMenuInfoList(new ArrayList<>());
 
-            ACache.get(this).put(Constant.SearchVId, searchBean);
+            ACache.get(this).put(pinYin, searchBean);
 
             resetHistoryTagAdapter(searchBean.getMenuInfoList());
             searchListCache.getMenuInfoList().clear();
@@ -330,7 +334,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
 
         resetHistoryTagAdapter(menuInfoList);
 
-        ACache.get(MenuSearchActivity.this).put(Constant.SearchVId, searchListCache);
+        ACache.get(MenuSearchActivity.this).put(pinYin, searchListCache);
     }
 
     private void toJump() {
