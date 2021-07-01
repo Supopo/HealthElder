@@ -20,6 +20,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.ViewSkeletonScreen;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
@@ -28,6 +31,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMallBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
@@ -73,6 +77,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     private List<Fragment> fragments;
     private FragmentPagerAdapter goodsPagerAdapter;
     private Disposable subscribe;
+    private ViewSkeletonScreen skeletonScreen1, skeletonScreen3;
+    private RecyclerViewSkeletonScreen skeletonScreen2, skeletonScreen4;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,7 +102,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (UserInfoMgr.getInstance().getAccessToken() == null) {
-                    Intent intent = new Intent(getContext(),SelectLoginActivity.class);
+                    Intent intent = new Intent(getContext(), SelectLoginActivity.class);
                     getContext().startActivity(intent);
                     return;
                 }
@@ -124,6 +130,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
             mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean));
         });
         binding.rvMenu2.setAdapter(mallHotMenuAdapter);
+
 
         mallMenu3Adapter = new MallMenu3Adapter(R.layout.item_mall_menu3);
         binding.rvMenu3.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
@@ -161,16 +168,67 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                     return;
                 }
                 startActivity(OrderListActivity.class);
-            }else{
+            } else {
                 startActivity(SelectLoginActivity.class);
             }
         });
         binding.etSearch.setOnClickListener(v -> {
-            SearchActivity.startActivity(getContext(),1);
+            SearchActivity.startActivity(getContext(), 1);
         });
+        showSkeleton1();
+        showSkeleton3();
+        showSkeleton2();
+        showSkeleton4();
         viewModel.getMenuInfo();
         viewModel.getMenuType();
     }
+
+    public void showSkeleton1() {
+        skeletonScreen1 = Skeleton.bind(binding.banner)
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .load(R.layout.def_banner)//骨架屏UI
+                .show();
+    }
+
+    public void showSkeleton3() {
+        skeletonScreen3 = Skeleton.bind(binding.vpMenu1)
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .load(R.layout.def_mall_vp_menu)//骨架屏UI
+                .show();
+    }
+
+    public void showSkeleton2() {
+        skeletonScreen2 = Skeleton.bind(binding.rvMenu2)
+                .adapter(mallHotMenuAdapter)//设置实际adapter
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .frozen(true)//true则表示显示骨架屏时，RecyclerView不可滑动，否则可以滑动
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .count(2)//显示骨架屏时item的个数
+                .load(R.layout.item_mall_hot_def)//骨架屏UI
+                .show();
+    }
+
+    public void showSkeleton4() {
+        skeletonScreen4 = Skeleton.bind(binding.rvMenu3)
+                .adapter(mallMenu3Adapter)//设置实际adapter
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .frozen(true)//true则表示显示骨架屏时，RecyclerView不可滑动，否则可以滑动
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .count(2)//显示骨架屏时item的个数
+                .load(R.layout.item_mall_menu3_def)//骨架屏UI
+                .show();
+    }
+
 
     /**
      * 控制appbar的滑动
@@ -197,6 +255,15 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         viewModel.mallMenuRes.observe(this, mallMenuRes -> {
             if (mallMenuRes != null) {
+                binding.rvMenu2.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        skeletonScreen1.hide();
+                        skeletonScreen2.hide();
+                        skeletonScreen3.hide();
+                        skeletonScreen4.hide();
+                    }
+                }, 1000);
                 if (mallMenuRes.category != null) {
                     setMenu1Data(mallMenuRes.category.menuInfoList);
                 }
@@ -230,6 +297,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         binding.srlTop.setOnRefreshListener(() -> {
             binding.srlTop.setRefreshing(false);
+            showSkeleton1();
+            showSkeleton2();
+            showSkeleton3();
+            showSkeleton4();
             viewModel.getMenuInfo();
             viewModel.getMenuType();
             //通知对应页面刷新
@@ -258,7 +329,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         subscribe = RxBus.getDefault().toObservable(UniEventBean.class).subscribe(uniEventBean -> {
             if (uniEventBean.msgId == CodeTable.UNI_RELEASE) {
                 if (uniEventBean.taskId == 0x10001)
-                UniUtil.openUniApp(getContext(), uniEventBean.appId, uniEventBean.jumpUrl, null, uniEventBean.isSelfUni);
+                    UniUtil.openUniApp(getContext(), uniEventBean.appId, uniEventBean.jumpUrl, null, uniEventBean.isSelfUni);
             }
         });
         RxSubscriptions.add(subscribe);
@@ -284,7 +355,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                     startActivity(SelectLoginActivity.class);
                     return;
                 }
-//                UniService.startService(getContext(), data.event, 0x10001, data.jumpUrl);
+                //                UniService.startService(getContext(), data.event, 0x10001, data.jumpUrl);
 
                 MenuBean menuBean = data;
                 MainActivity mainActivity = (MainActivity) getActivity();

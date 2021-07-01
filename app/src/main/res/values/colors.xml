@@ -14,6 +14,7 @@
     <color name="textColorHint">#A0A0A0</color>
     <color name="textColorVice">#6C6C6C</color>
     <color name="viewLineColor">#F0F0F0</color>
+    <color name="flashColor">#FBFBFB</color>
 
     <color name="color_DC3530">#DC3530</color>
     <color name="color_FF525461">#FF525461</color>
@@ -45,6 +46,7 @@
     <color name="color_DDDBDB">#DDDBDB</color>
     <color name="color_FFD033">#FFD033</color>
     <color name="color_EAEA">#EAEAEA</color>
+    <color name="color_FBFB">#FBFBFB</color>
     <color name="color_DADA">#DADADA</color>
     <color name="color_E6">#66e6e6e6</color>
     <color name="color_34C">#34C759</color>

@@ -13,7 +13,7 @@ public class Constant {
 
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
     public static String SERVICE_PHONE = "";//客服电话
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static boolean TEST = true ;
     public static boolean ENABLE_CHAT = false;//打开单聊功能
 
@@ -38,6 +38,8 @@ public class Constant {
     public static String SearchGId = "SEARCH_GOODS_ID";//商品搜索id
     public static String SearchVId = "SEARCH_VIDEO_ID";//搜索视频id
     public static int loadVideoSize = 3;
+    public static int flashDuration = 800;//骨架图动画时间
+    public static int flashAngle = 5;//骨架图动画角度
 
     public static String REQ_TAG_ZB = "LIVE";//直播
     public static String REQ_TAG_SP = "VIDEO";//视频

@@ -13,30 +13,25 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentGoodsListBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMall.adapter.MallGoodsAdapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.GoodsListViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
-import com.xaqinren.healthyelders.uniApp.UniUtil;
-import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
-import org.json.JSONObject;
-
-import io.dcloud.feature.sdk.DCSDKInitConfig;
-import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
-import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/5/25.
@@ -48,6 +43,7 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
     private BaseLoadMoreModule mLoadMore;
     private int fPosition;
     private Disposable subscribe;
+    private SkeletonScreen skeletonScreen;
 
     public GoodsListFragment(int position, String category) {
         fPosition = position;
@@ -107,7 +103,24 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
             }
         });
         isFirst = false;
+
+        //default count is 10
+        showSkeleton();
     }
+
+    public void showSkeleton() {
+        skeletonScreen = Skeleton.bind(binding.rvContent)
+                .adapter(mallGoodsAdapter)//设置实际adapter
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .frozen(true)//true则表示显示骨架屏时，RecyclerView不可滑动，否则可以滑动
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .count(10)//显示骨架屏时item的个数
+                .load(R.layout.item_mall_good_def)//骨架屏UI
+                .show();
+    }
+
     private boolean isFirst = true;
 
     @Override
@@ -117,10 +130,10 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (fPosition == event.msgType) {
-                    if (event.msgId == CodeTable.RESH_MALL_LIST ) {
+                    if (event.msgId == CodeTable.RESH_MALL_LIST) {
                         page = 1;
                         viewModel.getGoodsList(page, category);
-                    }else if(event.msgId == CodeTable.ADD_MALL_LIST ){
+                    } else if (event.msgId == CodeTable.ADD_MALL_LIST) {
                         if (mallGoodsAdapter.getData().size() == 0) {
                             page = 1;
                             viewModel.getGoodsList(page, category);
@@ -138,6 +151,13 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
 
         viewModel.goodsList.observe(this, datas -> {
             if (datas != null) {
+                binding.rvContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        skeletonScreen.hide();
+                    }
+                }, 1000);
+
                 if (datas.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();
