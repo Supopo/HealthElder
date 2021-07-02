@@ -78,6 +78,7 @@ import com.xaqinren.healthyelders.utils.ColorsUtils;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.MyProgressDialog;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -344,16 +345,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 startActivity(SelectLoginActivity.class);
                 return;
             }
-            //判断是否绑手机号
-            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
-                startActivity(PhoneLoginActivity.class);
-                return;
+            if (UserInfoMgr.getInstance().getUserInfo() != null) {
+                //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    startActivity(PhoneLoginActivity.class);
+                    return;
+                }
+                //判断是否实名认证
+                if (!UserInfoMgr.getInstance().getUserInfo().getHasRealName()) {
+                    startActivity(StartRenZhengActivity.class);
+                    return;
+                }
             }
-            //判断是否实名认证
-            if (!UserInfoMgr.getInstance().getUserInfo().getHasRealName()) {
-                startActivity(StartRenZhengActivity.class);
-                return;
-            }
+
+
             disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS)
                     .subscribe(granted -> {
                         if (granted) {
@@ -1006,9 +1011,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
      */
     private void downloadApk() {
         //显示下载进度
-        ProgressDialog dialog = new ProgressDialog(this);
+        MyProgressDialog dialog = new MyProgressDialog(this);
         dialog.setTitle(versionName + "版本更新");
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.setProgressDrawable(getResources().getDrawable(R.drawable.load_update_progress));
         dialog.setMax(100);
         dialog.setCancelable(false);
         dialog.show();
@@ -1021,11 +1027,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
      * 访问网络下载apk
      */
     private class DownloadApk implements Runnable {
-        private ProgressDialog dialog;
+        private MyProgressDialog dialog;
         InputStream is;
         FileOutputStream fos;
 
-        public DownloadApk(ProgressDialog dialog) {
+        public DownloadApk(MyProgressDialog dialog) {
             this.dialog = dialog;
         }
 

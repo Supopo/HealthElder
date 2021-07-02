@@ -431,6 +431,17 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         });
     }
 
+    @Override
+    public void destroyGroup(String groupId,IMMessageMgr.Callback callback) {
+        if (mIMMessageMgr == null) {
+            mIMMessageMgr = new IMMessageMgr(mAppContext);
+            mIMMessageMgr.setIMMessageListener(this);
+        }
+
+        mIMMessageMgr.quitGroup(groupId, callback);
+    }
+
+
     public void loginIM() {
         // 初始化IM SDK，内部完成login
         IMMessageMgr imMessageMgr = mIMMessageMgr;

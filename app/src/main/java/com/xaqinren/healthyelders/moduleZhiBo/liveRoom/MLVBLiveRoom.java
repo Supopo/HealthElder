@@ -11,6 +11,7 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.MLVBCommonDef;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im.IMMessageMgr;
 
 /*
  * Module:   MLVBLiveRoom
@@ -176,6 +177,13 @@ public abstract class MLVBLiveRoom {
      * @param groupId
      */
     public abstract void exitGroup(final String groupId);
+
+    /**
+     * 解散直播
+     *
+     * @param groupId
+     */
+    public abstract void destroyGroup(final String groupId, IMMessageMgr.Callback callback);
 
     /**
      * 离开房间
@@ -467,6 +475,7 @@ public abstract class MLVBLiveRoom {
 
     /**
      * 设置是否开启隐私模式
+     *
      * @param pusher
      */
     public abstract void setPusher(final boolean pusher);

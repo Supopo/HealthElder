@@ -60,6 +60,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.LiveMenuAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im.IMMessageMgr;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBStartSettingPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveZhuboViewModel;
@@ -118,6 +119,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private Disposable disposable;
     private ZBGoodsListPop zbGoodsListPop;
     private Disposable uniSubscribe;
+    private boolean isCloseXN;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -244,39 +246,47 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
 
         binding.btnStart.setOnClickListener(lis -> {
-            disposable = permissions.request(Manifest.permission.RECORD_AUDIO)
-                    .subscribe(granted -> {
-                        if (granted) {
-                            if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
-                                ToastUtil.toastShortMessage("请输入直播间名称");
-                                return;
-                            }
-                            mLiveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
-
-                            if (!TextUtils.isEmpty(photoPath)) {
-                                showDialog("正在上传照片...");
-                                viewModel.updatePhoto(photoPath);
-                                return;
-                            }
-
-
-                            if (TextUtils.isEmpty(mLiveInitInfo.liveRoomCover)) {
-                                if (TextUtils.isEmpty(photoPath)) {
-                                    ToastUtil.toastShortMessage("请先选择照片");
-                                    return;
-                                }
-                            } else {
-                                startLiveZhuboActivity();
-                            }
-
-                        } else {
-                            ToastUtils.showShort("请先打开摄像头与麦克风权限");
-                        }
-
-                    });
-
+            //判断是不是存在虚拟直播
+            if (mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
+                isCloseXN = true;
+                //偷偷结束直播
+                viewModel.closeLastLive(mLiveInitInfo.liveRoomRecordId);
+            }
 
         });
+    }
+
+    private void toStartLive() {
+        disposable = permissions.request(Manifest.permission.RECORD_AUDIO)
+                .subscribe(granted -> {
+                    if (granted) {
+                        if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
+                            ToastUtil.toastShortMessage("请输入直播间名称");
+                            return;
+                        }
+                        mLiveInitInfo.liveRoomName = binding.etTitle.getText().toString().trim();
+
+                        if (!TextUtils.isEmpty(photoPath)) {
+                            showDialog("正在上传照片...");
+                            viewModel.updatePhoto(photoPath);
+                            return;
+                        }
+
+
+                        if (TextUtils.isEmpty(mLiveInitInfo.liveRoomCover)) {
+                            if (TextUtils.isEmpty(photoPath)) {
+                                ToastUtil.toastShortMessage("请先选择照片");
+                                return;
+                            }
+                        } else {
+                            startLiveZhuboActivity();
+                        }
+
+                    } else {
+                        ToastUtils.showShort("请先打开摄像头与麦克风权限");
+                    }
+
+                });
     }
 
     @Override
@@ -325,7 +335,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 binding.rvMenu.setAdapter(menuAdapter);
                 initRoomInfo();
                 //有上次记录，说明没有结束直播，弹选择框
-                if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId)) {
+                if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId) && !liveInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
                     showSelectDialog(liveInfo.liveRoomRecordId);
                 }
             }
@@ -335,6 +345,24 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 if (exitSuccess) {
                     //退出房间成功，清空上次房间的记录
                     mLiveInitInfo.liveRoomRecordId = "";
+                    //解散群
+//                    mLiveRoom.destroyGroup(Constant.getRoomId(mLiveInitInfo.liveRoomCode), new IMMessageMgr.Callback() {
+//                        @Override
+//                        public void onError(int code, String errInfo) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onSuccess(Object... args) {
+//                            Log.e("--", "退群成功！去直播");
+//
+//                        }
+//                    });
+
+                    if (isCloseXN) {
+                        isCloseXN = false;
+                        toStartLive();
+                    }
                 }
             }
         });
