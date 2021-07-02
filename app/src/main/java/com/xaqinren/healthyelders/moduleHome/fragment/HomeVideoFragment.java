@@ -592,7 +592,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
         binding.llZhiBoTip.setOnClickListener(lis -> {
             //判断是直播间
-            if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
+            if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
                 dismissLoading();
 
                 //进入直播间
@@ -917,7 +917,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void resumePlay() {
-        if (AppApplication.get().bottomMenu == 0) {
+        if (AppApplication.get().bottomMenu == 0 || AppApplication.get().bottomMenu == 3) {
             binding.mainVideoView.onResume();
 
             //是否开启播放状态
