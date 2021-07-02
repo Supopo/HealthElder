@@ -936,8 +936,12 @@ public class UserRepository {
                 });
     }
 
-    public void refreshToken(String token) {
-        userApi.refreshToken( token, "refresh_token")
+    public void refreshToken(String refreshToken) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("refreshToken", refreshToken);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.refreshToken( body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new DisposableObserver<MBaseResponse<LoginTokenBean>>() {

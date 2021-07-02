@@ -1,30 +1,18 @@
 package com.xaqinren.healthyelders.widget;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
-import android.media.Image;
-import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import razerdp.basepopup.BasePopup;
 import razerdp.basepopup.BasePopupWindow;
 
 /**

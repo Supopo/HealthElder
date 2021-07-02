@@ -53,7 +53,11 @@ import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
+import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
+import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
+import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
@@ -64,10 +68,13 @@ import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
+import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.List;
 import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
@@ -105,6 +112,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private long timeTag;//因为list-video会在多处地方调用，放了防止后一页列表播放时候影响到前一页列表，多加一个判断
     private ViewSkeletonScreen skeletonScreen1;
     private int mRenderMode;
+    private LiteAvOpenModePopupWindow openModePop;
+    private int publishMode;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
@@ -645,6 +654,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
             startActivity(MainActivity.class, bundle);
             getActivity().overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
+        });
+
+        binding.tvSetting.setOnClickListener(lis ->{
+            showOpenModeDialog();
         });
     }
 
@@ -1211,4 +1224,36 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
         AppApplication.get().isFirstLoad = false;
     }
+
+    //权限设置弹窗
+    private List<LiteAvUserBean> unLookUserList;//不给谁看列表
+    private void showOpenModeDialog() {
+        if (openModePop == null) {
+            openModePop = new LiteAvOpenModePopupWindow(getActivity());
+            openModePop.setMode(0);
+            openModePop.setOnItemSelListener(new LiteAvOpenModePopupWindow.OnItemSelListener() {
+                @Override
+                public void onItemSel(int mode) {
+                    publishMode = mode;
+                    switch (mode) {
+                        case LiteAvOpenModePopupWindow.HIDE_MODE: {
+                            Intent intent = new Intent(getActivity(), ChooseUnLookActivity.class);
+                            intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
+                            startActivityForResult(intent,999);
+                        }break;
+                    }
+
+                }
+
+                @Override
+                public void onSwitchChange(boolean comment) {
+
+                }
+            });
+
+        }
+        openModePop.setUnLookUserList(this.unLookUserList);
+        openModePop.showPopupWindow();
+    }
+
 }

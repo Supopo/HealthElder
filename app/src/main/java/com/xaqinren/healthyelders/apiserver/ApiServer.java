@@ -588,8 +588,8 @@ public interface ApiServer {
                                                    @Body RequestBody body);
 
     //刷新token
-    @FormUrlEncoded
-    @POST("merchant/oauth/token")
-    Observable<MBaseResponse<LoginTokenBean>> refreshToken( @Field("refresh_token") String refreshToken, @Field("grant_type") String grantType);
+    @Headers({"content-type:application/json"})
+    @POST("/merchant/oauth/refresh/token")
+    Observable<MBaseResponse<LoginTokenBean>> refreshToken( @Body RequestBody body);
 }
 

@@ -106,14 +106,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
         LoginTokenBean loginTokenBean = InfoCache.getInstance().getLoginTokenBean();
         if (loginTokenBean != null) {
             //            if (System.currentTimeMillis() >= ((loginTokenBean.expires_in * 1000) + loginTokenBean.saveTime)) {
-            //                //token过期 直接清除登陆信息
-            //                InfoCache.getInstance().clearLogin();
-            //            } else {
-            //                String refreshToken = loginTokenBean.refresh_token;
-            //                Log.e("--", "refreshToken: " + refreshToken);
-            //                if (!TextUtils.isEmpty(refreshToken)) {
-            //                    viewModel.refreshToken(refreshToken);
-            //                }
+            //                //token过期
             //            }
             String refreshToken = loginTokenBean.refresh_token;
             if (!TextUtils.isEmpty(refreshToken)) {
