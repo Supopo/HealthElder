@@ -66,7 +66,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
     @Override
     public void initData() {
         super.initData();
-        viewModel.tags = tags;
+        viewModel.keys = tags;
         binding.etSearch.setText(tags);
         rlTitle.setVisibility(View.GONE);
 //        setStatusBarTransparentBlack();
@@ -122,7 +122,7 @@ public class SearchAllActivity extends BaseActivity<ActivitySearchAllBinding, Se
                     tags = binding.etSearch.getText().toString().trim();
 
                     if (!TextUtils.isEmpty(tags)) {
-                        viewModel.tags = tags;
+                        viewModel.keys = tags;
                         allFragment.page = 1;
                         videoFragment.page = 1;
                         userFragment.page = 1;

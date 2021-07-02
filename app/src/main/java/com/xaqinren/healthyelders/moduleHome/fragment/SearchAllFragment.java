@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
 import com.xaqinren.healthyelders.databinding.HeaderAllSearchBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
@@ -160,6 +161,11 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         userAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
             followPosition = position;
+            //判断是否登录
+            if (AppApplication.isToLogin()) {
+                return;
+            }
+
             searchAllViewModel.toFollow(userAdapter.getData().get(position).id);
         }));
     }
@@ -219,6 +225,9 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         searchAllViewModel.userDatas.observe(this, dataList -> {
             if (dataList != null) {
+                if (userAdapter.getData().size() > 0) {
+                    userAdapter.getData().clear();
+                }
                 userAdapter.setNewInstance(dataList);
                 userRes = true;
                 if (dataList.size() > 0) {
@@ -234,6 +243,9 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         searchAllViewModel.allDatas.observe(this, dataList -> {
             binding.srlContent.setRefreshing(false);
             if (dataList != null) {
+                if (mAdapter.getData().size() > 0) {
+                    mAdapter.getData().clear();
+                }
                 contentRes = true;
                 dismissDialog();
                 if (dataList.size() > 0) {

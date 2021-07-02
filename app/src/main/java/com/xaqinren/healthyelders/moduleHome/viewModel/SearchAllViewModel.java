@@ -9,11 +9,9 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
-import com.xaqinren.healthyelders.moduleHome.bean.SearchBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -36,7 +34,7 @@ public class SearchAllViewModel extends BaseViewModel {
     public MutableLiveData<List<VideoInfo>> zbDatas = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> liveInfo = new MutableLiveData<>();
 
-    public String tags;
+    public String keys;
     public void searchDatas(int page, int searchType , boolean showDialog){
         if (showDialog)
             showDialog();
@@ -44,11 +42,11 @@ public class SearchAllViewModel extends BaseViewModel {
             case 0:
                 //全部搜索
                 String resType = "all";
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, allDatas, resType, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, allDatas, resType, "", keys);
                 break;
             case 1:
                 //视频
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, videoDatas, Constant.REQ_TAG_SP, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, videoDatas, Constant.REQ_TAG_SP,"", keys);
                 break;
             case 2:
                 //用户
@@ -56,15 +54,15 @@ public class SearchAllViewModel extends BaseViewModel {
                 break;
             case 3:
                 //商品
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, goodsDatas, Constant.REQ_TAG_GOODS, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, goodsDatas, Constant.REQ_TAG_GOODS, "", keys);
                 break;
             case 4:
                 //直播
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, zbDatas, Constant.REQ_TAG_ZB, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, zbDatas, Constant.REQ_TAG_ZB, "", keys);
                 break;
             case 5:
                 //图文
-                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, twDatas, Constant.REQ_TAG_TW, tags);
+                LiveRepository.getInstance().getHomeVideoList(dismissDialog, page, 10, null, twDatas, Constant.REQ_TAG_TW, "", keys);
                 break;
         }
     }
@@ -79,9 +77,9 @@ public class SearchAllViewModel extends BaseViewModel {
 
     public void searchUsers(int page, int size) {
         if (size == 10) {
-            UserRepository.getInstance().searchUser(dismissDialog, userDatas2, page, size, tags);
+            UserRepository.getInstance().searchUser(dismissDialog, userDatas2, page, size, keys);
         } else {
-            UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, tags);
+            UserRepository.getInstance().searchUser(dismissDialog, userDatas, page, size, keys);
         }
     }
 

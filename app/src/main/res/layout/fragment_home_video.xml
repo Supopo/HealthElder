@@ -149,7 +149,7 @@
                         android:id="@+id/ivLike"
                         android:layout_width="@dimen/dp_38"
                         android:layout_height="@dimen/dp_38"
-                        android:background="@mipmap/ic_home_liking"
+                        android:background="@mipmap/icon_zan_ing"
                         android:visibility="@{viewModel.videoInfo.hasFavorite?View.VISIBLE:View.GONE}" />
 
 
