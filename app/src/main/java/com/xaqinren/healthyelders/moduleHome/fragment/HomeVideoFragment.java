@@ -104,6 +104,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private int videoOpenType;
     private long timeTag;//因为list-video会在多处地方调用，放了防止后一页列表播放时候影响到前一页列表，多加一个判断
     private ViewSkeletonScreen skeletonScreen1;
+    private int mRenderMode;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
@@ -167,16 +168,24 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (type.equals("home-list")) {
             if (videoInfo.getVideoType() == 1) {
                 binding.bottom.setVisibility(View.VISIBLE);//影响视频view是否整页
-                binding.commentLayout.setVisibility(View.VISIBLE);//列表页面需要展示评论
+                if (isMineOpen) {
+                    binding.commentLayout.setVisibility(View.GONE);//列表页面需要展示评论
+                    binding.llSetting.setVisibility(View.VISIBLE);
+                } else {
+                    binding.commentLayout.setVisibility(View.VISIBLE);//列表页面需要展示评论
+                    binding.llSetting.setVisibility(View.GONE);
+                }
                 binding.viewMenu.setVisibility(View.GONE);//首页列表需要撑起标题等
             } else {
                 binding.bottom.setVisibility(View.GONE);
+                binding.llSetting.setVisibility(View.GONE);
                 binding.commentLayout.setVisibility(View.GONE);
                 binding.viewMenu.setVisibility(View.GONE);
             }
 
         } else {
             binding.bottom.setVisibility(View.GONE);
+            binding.llSetting.setVisibility(View.GONE);
             binding.commentLayout.setVisibility(View.GONE);
             binding.viewMenu.setVisibility(View.VISIBLE);
         }
@@ -574,7 +583,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         binding.rlClick.setOnClickListener(lis -> {
             //判断是直播间
-            if (videoInfo.getVideoType() == 2) {
+            if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
                 dismissLoading();
 
                 //进入直播间
@@ -583,7 +592,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
         binding.llZhiBoTip.setOnClickListener(lis -> {
             //判断是直播间
-            if (videoInfo.getVideoType() == 2) {
+            if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
                 dismissLoading();
 
                 //进入直播间
@@ -1095,8 +1104,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     @Override
-    public void onNetStatus(TXVodPlayer txVodPlayer, Bundle bundle) {
-
+    public void onNetStatus(TXVodPlayer txVodPlayer, Bundle status) {
+        //判断横竖屏
+        if (status.getInt(TXLiveConstants.NET_STATUS_VIDEO_WIDTH) > status.getInt(TXLiveConstants.NET_STATUS_VIDEO_HEIGHT)) {
+            //横屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION;
+                txVodPlayer.setRenderMode(mRenderMode);
+            }
+        } else {
+            //竖屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN;
+                txVodPlayer.setRenderMode(mRenderMode);
+            }
+        }
     }
 
     @Override

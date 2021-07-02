@@ -84,7 +84,6 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             if (videoAdapter.getData().get(position).homeComprehensiveHall.isArticle()) {
                 Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).homeComprehensiveHall.resourceId);
-                intent.putExtra(Constant.MINE_OPEN, true);
                 startActivity(intent);
                 return;
             }

@@ -416,8 +416,7 @@
                     style="@style/ImageView.Wrap"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginBottom="@dimen/dp_4"
-                    android:scaleType="fitXY"
-                    />
+                    android:scaleType="fitXY" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/jyTextView"
@@ -495,10 +494,53 @@
                     android:layout_height="@dimen/dp_49" />
 
                 <LinearLayout
+                    android:id="@+id/ll_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_59"
+                    android:background="@color/black"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/dp_14"
+                        android:layout_height="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_17" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="24浏览"
+                        android:textColor="#727272"
+                        android:textSize="@dimen/sp_14" />
+
+                    <TextView
+                        android:id="@+id/tv_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:background="@drawable/bg_btn_black_26"
+                        android:paddingLeft="@dimen/dp_18"
+                        android:paddingTop="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_18"
+                        android:paddingBottom="@dimen/dp_10"
+                        android:text="权限配置"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/comment_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_59"
-                    android:background="@color/color_252525">
+                    android:background="@color/color_252525"
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="0dp"
