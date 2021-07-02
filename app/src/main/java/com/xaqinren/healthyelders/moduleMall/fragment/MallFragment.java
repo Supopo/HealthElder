@@ -246,6 +246,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         }
     }
 
+    private boolean isFirst = true;
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -281,9 +283,10 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
                 fragments = new ArrayList<>();
                 for (int i = 0; i < datas.size(); i++) {
-                    GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).menuName);
+                    GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).menuName,isFirst);
                     fragments.add(goodsListFragment);
                 }
+                isFirst = false;
                 binding.vpContent.setOffscreenPageLimit(datas.size());
                 goodsPagerAdapter = new FragmentPagerAdapter(getActivity(), fragments);
                 binding.vpContent.setAdapter(goodsPagerAdapter);
@@ -297,10 +300,6 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
         binding.srlTop.setOnRefreshListener(() -> {
             binding.srlTop.setRefreshing(false);
-            showSkeleton1();
-            showSkeleton2();
-            showSkeleton3();
-            showSkeleton4();
             viewModel.getMenuInfo();
             viewModel.getMenuType();
             //通知对应页面刷新

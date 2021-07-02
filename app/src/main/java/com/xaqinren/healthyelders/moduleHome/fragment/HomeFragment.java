@@ -109,8 +109,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         AppApplication.get().setShowTopMenu(true);
                         isShowTop = true;
 
-                        showSkeleton1();
-
                         AppApplication.get().setTjPlayPosition(-1);
                         //刷新首页菜单数据
                         viewModel.getHomeInfo();

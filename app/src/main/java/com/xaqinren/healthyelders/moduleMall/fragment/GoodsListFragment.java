@@ -42,12 +42,14 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
     private String category;
     private BaseLoadMoreModule mLoadMore;
     private int fPosition;
+    private boolean isFirstNet;
     private Disposable subscribe;
     private SkeletonScreen skeletonScreen;
 
-    public GoodsListFragment(int position, String category) {
-        fPosition = position;
+    public GoodsListFragment(int position, String category, boolean isFirstNet) {
+        this.fPosition = position;
         this.category = category;
+        this.isFirstNet = isFirstNet;
     }
 
 
@@ -105,7 +107,9 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         isFirst = false;
 
         //default count is 10
-        showSkeleton();
+        if (isFirstNet) {
+            showSkeleton();
+        }
     }
 
     public void showSkeleton() {
@@ -151,12 +155,15 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
 
         viewModel.goodsList.observe(this, datas -> {
             if (datas != null) {
-                binding.rvContent.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        skeletonScreen.hide();
-                    }
-                }, 1000);
+                if (skeletonScreen != null) {
+                    binding.rvContent.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            skeletonScreen.hide();
+                        }
+                    }, 1000);
+                }
+
 
                 if (datas.size() > 0) {
                     //加载更多加载完成

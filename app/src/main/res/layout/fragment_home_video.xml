@@ -51,12 +51,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:background="@drawable/bg_tip_dialog"
-                android:padding="15dp">
+                android:padding="20dp">
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/loadingView"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     app:lottie_fileName="loading_anim.json"
                     app:lottie_loop="true" />
 
@@ -140,15 +140,15 @@
 
                     <ImageView
                         android:id="@+id/ivLiking"
-                        android:layout_width="@dimen/dp_34"
-                        android:layout_height="@dimen/dp_29"
-                        android:background="@mipmap/ic_home_like"
+                        android:layout_width="@dimen/dp_38"
+                        android:layout_height="@dimen/dp_38"
+                        android:background="@mipmap/icon_play_zan"
                         android:visibility="@{viewModel.videoInfo.hasFavorite?View.GONE:View.VISIBLE}" />
 
                     <ImageView
                         android:id="@+id/ivLike"
-                        android:layout_width="@dimen/dp_34"
-                        android:layout_height="@dimen/dp_29"
+                        android:layout_width="@dimen/dp_38"
+                        android:layout_height="@dimen/dp_38"
                         android:background="@mipmap/ic_home_liking"
                         android:visibility="@{viewModel.videoInfo.hasFavorite?View.VISIBLE:View.GONE}" />
 
@@ -165,10 +165,10 @@
 
                 <ImageView
                     android:id="@+id/ivComment"
-                    android:layout_width="@dimen/dp_34"
-                    android:layout_height="@dimen/dp_34"
+                    android:layout_width="@dimen/dp_38"
+                    android:layout_height="@dimen/dp_38"
                     android:layout_marginTop="@dimen/dp_25"
-                    android:background="@mipmap/ic_home_comment" />
+                    android:background="@mipmap/icon_play_pl" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -180,10 +180,10 @@
 
                 <ImageView
                     android:id="@+id/ivShare"
-                    android:layout_width="@dimen/dp_33"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_width="@dimen/dp_38"
+                    android:layout_height="@dimen/dp_38"
                     android:layout_marginTop="@dimen/dp_25"
-                    android:background="@mipmap/ic_home_forward" />
+                    android:background="@mipmap/icon_play_share" />
 
                 <TextView
                     android:layout_width="wrap_content"

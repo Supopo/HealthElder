@@ -1172,18 +1172,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
 
     public void showSkeleton1() {
-        skeletonScreen1 = Skeleton.bind(binding.coverImageView)
-                .shimmer(true)//是否开启动画
-                .color(R.color.flashColor)//shimmer的颜色
-                .angle(Constant.flashAngle)//shimmer的倾斜角度
-                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
-                .load(R.layout.def_vp)//骨架屏UI
-                .show();
-        binding.mainRelativeLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                skeletonScreen1.hide();
-            }
-        }, Constant.flashCloseDuration);
+        if (AppApplication.get().isFirstLoad) {
+            skeletonScreen1 = Skeleton.bind(binding.coverImageView)
+                    .shimmer(true)//是否开启动画
+                    .color(R.color.flashColor)//shimmer的颜色
+                    .angle(Constant.flashAngle)//shimmer的倾斜角度
+                    .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                    .load(R.layout.def_vp)//骨架屏UI
+                    .show();
+            binding.mainRelativeLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    skeletonScreen1.hide();
+                }
+            }, Constant.flashCloseDuration);
+        }
+        AppApplication.get().isFirstLoad = false;
     }
 }
