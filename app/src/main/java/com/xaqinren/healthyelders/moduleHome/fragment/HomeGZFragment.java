@@ -131,7 +131,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
                 if (page == 1 && binding.srl.isRefreshing()) {
                     binding.srl.setRefreshing(false);
-                    AppApplication.get().setTjPlayPosition(0);
+                    AppApplication.get().setGzPlayPosition(0);
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                 }
             } else {

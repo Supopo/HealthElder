@@ -39,6 +39,7 @@ public class Constant {
     public static String SearchVId = "SEARCH_VIDEO_ID";//搜索视频id
     public static int loadVideoSize = 3;
     public static int flashDuration = 800;//骨架图动画时间
+    public static int flashCloseDuration = 1000;//骨架图动画时间
     public static int flashAngle = 5;//骨架图动画角度
 
     public static String REQ_TAG_ZB = "LIVE";//直播

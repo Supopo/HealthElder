@@ -24,18 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
-                <!--<androidx.cardview.widget.CardView
-                    android:id="@+id/cardView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    app:cardPreventCornerOverlap="false"
-                    app:cardUseCompatPadding="false"
-                    app:cardElevation="0dp">
-
-
-                </androidx.cardview.widget.CardView>-->
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager2"
                     android:background="@color/color_252525"

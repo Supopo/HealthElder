@@ -29,6 +29,8 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.ViewSkeletonScreen;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
 import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.ITXVodPlayListener;
@@ -101,6 +103,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private boolean isMineOpen;
     private int videoOpenType;
     private long timeTag;//因为list-video会在多处地方调用，放了防止后一页列表播放时候影响到前一页列表，多加一个判断
+    private ViewSkeletonScreen skeletonScreen1;
 
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
@@ -152,6 +155,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         TelephonyUtil.getInstance().initPhoneListener();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+
+        if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().getTjPlayPosition() == -1) {
+            showSkeleton1();
+            binding.rlView.setVisibility(View.GONE);
+        } else {
+            binding.rlView.setVisibility(View.VISIBLE);
+        }
 
         commentId = videoInfo.resourceId;
         if (type.equals("home-list")) {
@@ -837,9 +847,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void startPlay(boolean b) {
 
-        if (binding.rlView.getVisibility() == View.GONE) {
-            binding.rlView.setVisibility(View.VISIBLE);
-        }
+
         if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
             if (videoInfo.getVideoType() == 4) {
                 zbingAnim.start();
@@ -848,6 +856,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (vodPlayer != null) {
                 vodPlayer.setAutoPlay(b);
                 vodPlayer.startPlay(videoInfo.resourceUrl);
+            }
+
+            //正式播放时候再展示处理
+            if (b && binding.rlView.getVisibility() == View.GONE) {
+                binding.rlView.setVisibility(View.VISIBLE);
             }
 
 
@@ -1155,5 +1168,22 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onNetStatus(Bundle bundle) {
 
+    }
+
+
+    public void showSkeleton1() {
+        skeletonScreen1 = Skeleton.bind(binding.coverImageView)
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .load(R.layout.def_vp)//骨架屏UI
+                .show();
+        binding.mainRelativeLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                skeletonScreen1.hide();
+            }
+        }, Constant.flashCloseDuration);
     }
 }

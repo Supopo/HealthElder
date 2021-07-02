@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.ViewSkeletonScreen;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -81,14 +84,13 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 }
             }
         });
-        viewModel.closeRsl.observe(this,dismissDialog ->{
+        viewModel.closeRsl.observe(this, dismissDialog -> {
             closeLoadView();
         });
         //接受数据
         viewModel.datas.observe(this, datas -> {
             closeLoadView();
             if (datas != null && datas.size() > 0) {
-
                 if (page == 1) {
                     mVideoInfoList.clear();
                     fragmentList.clear();
@@ -102,7 +104,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition,false));
+                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition, false));
                     fragmentPosition++;
                 }
                 homeAdapter.notifyDataSetChanged();
@@ -134,7 +136,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private void closeLoadView() {
-       dismissDialog();
+        dismissDialog();
     }
 
     @Override
@@ -150,14 +152,12 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private int lastPos = -1;
 
     private void initVideoViews() {
-
         homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition,false));
+            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));
             fragmentPosition++;
         }
-
         showLoadView();
         //请求数据
         viewModel.getVideoData(page);
@@ -177,11 +177,15 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                         return;
                     }
 
-                    if (position == 0) {
-                        binding.viewPager2.setUserInputEnabled(true);
+
+                    //点击首页刷新时候会再次走这个方法，故此判断
+                    if (!AppApplication.get().isShowTopMenu()) {
+                        AppApplication.get().setTjPlayPosition(position);
+                        if (position == 0) {
+                            binding.viewPager2.setUserInputEnabled(true);
+                        }
                     }
 
-                    AppApplication.get().setTjPlayPosition(position);
 
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                     //判断数据数量滑动到倒数第三个时候去进行加载
@@ -214,7 +218,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     }
 
     private void showLoadView() {
-     showDialog();
+        showDialog();
     }
 
     private boolean firstInit = true;

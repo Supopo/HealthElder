@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.ViewSkeletonScreen;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
@@ -27,6 +31,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentHomeBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.LockableNestedScrollView;
 import com.xaqinren.healthyelders.moduleHome.activity.SearchActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
@@ -71,6 +76,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private int clickIndex;
     private int oldWidth;
     public LockableNestedScrollView nsv;
+    private RecyclerViewSkeletonScreen skeletonScreen1;
+    private ViewSkeletonScreen skeletonScreen2;
 
 
     @Override
@@ -94,7 +101,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 if (event.msgId == CodeTable.EVENT_HOME) {
                     if (event.msgType == CodeTable.SHOW_TAB_LAYOUT) {
                         isShowTop = false;
-
                         //展示TabLayout
                         binding.rlTabMenu.setVisibility(View.VISIBLE);
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
@@ -102,6 +108,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
                         AppApplication.get().setShowTopMenu(true);
                         isShowTop = true;
+
+                        showSkeleton1();
+
+                        AppApplication.get().setTjPlayPosition(-1);
                         //刷新首页菜单数据
                         viewModel.getHomeInfo();
                         //回到推荐页面
@@ -175,6 +185,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
         viewModel.homeInfo.observe(this, homeRes -> {
             if (homeRes != null) {
+                binding.rvMenu2.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        skeletonScreen1.hide();
+                    }
+                }, 1000);
+
                 if (homeRes.commodityType != null) {
                     menu1Adapter.setNewInstance(homeRes.contentMenu);
                 }
@@ -208,6 +225,20 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         initTopMenu();
         LocationService.startService(getActivity());
     }
+
+    public void showSkeleton1() {
+        skeletonScreen1 = Skeleton.bind(binding.rvMenu2)
+                .adapter(menu2Adapter)//设置实际adapter
+                .shimmer(true)//是否开启动画
+                .color(R.color.flashColor)//shimmer的颜色
+                .angle(Constant.flashAngle)//shimmer的倾斜角度
+                .frozen(true)//true则表示显示骨架屏时，RecyclerView不可滑动，否则可以滑动
+                .duration(Constant.flashDuration)//动画时间，以毫秒为单位
+                .count(4)//显示骨架屏时item的个数
+                .load(R.layout.item_home_menu2_def)//骨架屏UI
+                .show();
+    }
+
 
     private void initFragment() {
         List<Fragment> fragments = new ArrayList<>();
@@ -380,6 +411,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.rvMenu2.setLayoutManager(linearLayoutManager2);
         menu2Adapter = new MenuAdapter(R.layout.item_home_menu2);
         binding.rvMenu2.setAdapter(menu2Adapter);
+        showSkeleton1();
+
         viewModel.getHomeInfo();
         menu2Adapter.setOnItemClickListener((adapter, view, position) -> {
             MenuBean menuBean = menu2Adapter.getData().get(position);
