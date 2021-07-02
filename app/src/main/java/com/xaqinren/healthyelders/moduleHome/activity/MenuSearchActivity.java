@@ -62,6 +62,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     private BaseLoadMoreModule mLoadMore;
     private MenuTextTagAdapter hotTextTagAdapter;
     private String pinYin;
+    private boolean hasSearch;
 
 
     @Override
@@ -201,7 +202,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         }));
 
         binding.rlAll.setOnClickListener(lis -> {
-            if (mAdapter.getData().size() > 0) {
+            if (hasSearch) {
                 cancelFocus();
                 binding.rlSearch.setVisibility(View.GONE);
                 binding.rvContent.setVisibility(View.VISIBLE);
@@ -417,6 +418,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
         });
         viewModel.datas.observe(this, dataList -> {
             if (dataList != null) {
+                hasSearch = true;
                 binding.rvContent.setVisibility(View.VISIBLE);
                 if (dataList.size() > 0) {
                     //加载更多加载完成

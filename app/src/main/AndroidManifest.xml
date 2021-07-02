@@ -239,6 +239,7 @@
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleLiteav.activity.LiteAvPlayActivity"
+            android:theme="@style/AnimTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".modulePicture.activity.PublishTextPhotoActivity"
@@ -251,8 +252,12 @@
         <activity
             android:name=".moduleLiteav.activity.LiteAvPlay2Activity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".modulePicture.activity.SelectorMediaActivity" />
-        <activity android:name=".moduleLiteav.activity.MusicDetailsActivity" />
+        <activity android:name=".modulePicture.activity.SelectorMediaActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleLiteav.activity.MusicDetailsActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleLiteav.activity.ChooseMusicActivity"
             android:theme="@style/TranslucentAppTheme"/>
         <activity android:name=".moduleHome.activity.VideoListActivity"
@@ -290,8 +295,12 @@
 
             </intent-filter>
         </activity>
-        <activity android:name=".modulePicture.activity.PublishAtActivity" />
-        <activity android:name=".moduleMsg.activity.ChatActivity" />
+        <activity android:name=".modulePicture.activity.PublishAtActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMsg.activity.ChatActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleHome.activity.SearchActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleMsg.activity.InteractiveActivity">
@@ -396,8 +405,12 @@
 <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMine.activity.LookAttentionActivity" />
-        <activity android:name=".moduleMine.activity.MyRecommendCodeActivity" />
+        <activity android:name=".moduleMine.activity.LookAttentionActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.MyRecommendCodeActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleMine.activity.WalletActivity"
             android:launchMode="singleTask"
             android:theme="@style/AnimTheme" >
@@ -411,13 +424,27 @@
 <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMine.activity.SettingPayPassActivity" />
-        <activity android:name=".moduleMine.activity.ConfirmPassActivity" />
-        <activity android:name=".moduleMine.activity.CoinActivity" />
-        <activity android:name=".moduleMine.activity.BandCardActivity" />
-        <activity android:name=".moduleMine.activity.AddBankCardActivity" />
-        <activity android:name=".moduleMine.activity.AnchorActivity" />
-        <activity android:name=".moduleMine.activity.MiniActivity" />
+        <activity android:name=".moduleMine.activity.SettingPayPassActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.ConfirmPassActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.CoinActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.BandCardActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.AddBankCardActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.AnchorActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.MiniActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleMine.activity.UserInfoActivity"
             android:theme="@style/AnimTheme"
             />
@@ -432,15 +459,28 @@
 <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMine.activity.LookAuthActivity" />
-        <activity android:name=".moduleMine.activity.CoinDetailActivity" />
-        <activity android:name=".moduleMine.activity.ChangePhoneActivity" />
+        <activity android:name=".moduleMine.activity.LookAuthActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.CoinDetailActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.ChangePhoneActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleMine.activity.WithdrawWXActivity" />
         <activity android:name=".moduleMine.activity.WithdrawActivity"
+            android:theme="@style/AnimTheme"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan"/>
-        <activity android:name=".moduleMine.activity.OrderListActivity" />
-        <activity android:name=".moduleMine.activity.WithdrawApplySuccess" />
-        <activity android:name=".uniApp.activity.PhotoActivity" />
+        <activity android:name=".moduleMine.activity.OrderListActivity"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".moduleMine.activity.WithdrawApplySuccess"
+            android:theme="@style/AnimTheme"
+            />
+        <activity android:name=".uniApp.activity.PhotoActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleMall.activity.GoodsSearchActivity" >
             <intent-filter>
                 <data
@@ -452,7 +492,9 @@
 <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleHome.activity.TestActivity" />
+        <activity android:name=".moduleHome.activity.TestActivity"
+            android:theme="@style/AnimTheme"
+            />
         <activity android:name=".moduleHome.activity.MenuSearchActivity"
             android:theme="@style/AnimTheme" />
 

@@ -4,8 +4,10 @@ import android.os.Bundle;
 
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityRenzhengSuccessBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -14,6 +16,7 @@ import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/4/24.
@@ -48,6 +51,7 @@ public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSucces
                 bundle.putBoolean("status", true);
                 startActivity(SettingActivity.class, bundle);
             }
+            RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "rz-success"));
             finish();
         });
         String name = getIntent().getExtras().getString("name");

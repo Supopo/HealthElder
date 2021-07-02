@@ -36,6 +36,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzhengBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
@@ -70,6 +71,7 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     private Bundle bundle = new Bundle();
     private Handler handler;
     private Disposable uniSubscribe;
+    private Disposable subscribe;
 
 
     @Override
@@ -134,6 +136,14 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             }
         });
         RxSubscriptions.add(uniSubscribe);
+
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean != null) {
+                if (eventBean.msgId == CodeTable.FINISH_ACT && eventBean.content.equals("rz-success")) {
+                    finish();
+                }
+            }
+        });
     }
 
     /**
@@ -288,6 +298,9 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 
     private boolean isSuccess1;
@@ -379,4 +392,6 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         }
         return null;
     }
+
+
 }
