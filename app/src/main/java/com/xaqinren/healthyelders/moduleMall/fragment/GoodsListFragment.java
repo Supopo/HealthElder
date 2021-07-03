@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentGoodsListBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
@@ -107,8 +108,9 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         isFirst = false;
 
         //default count is 10
-        if (isFirstNet) {
+        if (AppApplication.get().isFirstLoadGoodsList) {
             showSkeleton();
+            AppApplication.get().isFirstLoadGoodsList = false;
         }
     }
 

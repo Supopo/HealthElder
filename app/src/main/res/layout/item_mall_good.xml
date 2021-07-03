@@ -16,6 +16,7 @@
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
     <LinearLayout
+        android:id="@+id/ll_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
