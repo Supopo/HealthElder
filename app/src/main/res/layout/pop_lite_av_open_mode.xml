@@ -125,7 +125,7 @@
                />
         </LinearLayout>
         <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/private_layout"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/hide_layout"
             android:layout_width="match_parent"
@@ -135,7 +135,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_vertical"
-            android:visibility="visible">
+            android:visibility="gone">
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
