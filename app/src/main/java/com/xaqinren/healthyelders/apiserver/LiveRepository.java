@@ -485,7 +485,7 @@ public class LiveRepository {
             }
         }
 
-        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, pageSize, type, resourceType, tags, key)
+        userApi.getHomeVideoList(uid, Constant.HEADER_DEF, Constant.APP_MID, page, 10, type, resourceType, tags, key)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

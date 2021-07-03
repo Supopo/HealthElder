@@ -243,7 +243,8 @@ public class AppApplication extends BaseApplication {
     //底部菜单位置
     public int bottomMenu;
 
-    public boolean isFirstLoad = true;
+    public boolean isFirstLoadVideo = true;
+    public boolean isFirstLoadGoodsList = true;
 
     //顶部菜单是否展示
     private boolean showTopMenu = true;

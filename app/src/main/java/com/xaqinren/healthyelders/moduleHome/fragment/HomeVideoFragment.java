@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,7 +53,6 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
 import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
-import com.xaqinren.healthyelders.moduleLiteav.activity.VideoPublishActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
@@ -1055,7 +1053,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         binding.mainVideoView.onDestroy();
         stopPlay(true);
         TelephonyUtil.getInstance().uninitPhoneListener();
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
         handler.removeCallbacksAndMessages(null);
     }
 
@@ -1207,7 +1207,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
 
     public void showSkeleton1() {
-        if (AppApplication.get().isFirstLoad) {
+        if (AppApplication.get().isFirstLoadVideo) {
             skeletonScreen1 = Skeleton.bind(binding.coverImageView)
                     .shimmer(true)//是否开启动画
                     .color(R.color.flashColor)//shimmer的颜色
@@ -1222,7 +1222,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             }, Constant.flashCloseDuration);
         }
-        AppApplication.get().isFirstLoad = false;
+        AppApplication.get().isFirstLoadVideo = false;
     }
 
     //权限设置弹窗
