@@ -80,15 +80,26 @@ public class ImManager {
             public void onRefreshConversation(List<V2TIMConversation> conversations) {
                 super.onRefreshConversation(conversations);
                 LogUtils.e(TAG, "onRefreshConversation -> " + conversations.size());
+                if (Constant.ENABLE_CHAT) {
+                    int tempCount = 0;
+                    for (V2TIMConversation conversation : conversations) {
+                        int type = conversation.getType();
+                        if (type == V2TIMConversation.V2TIM_C2C) {
+                            tempCount += conversation.getUnreadCount();
+                        }
+                    }
+                    if (onUnReadWatch != null) {
+                        onUnReadWatch.onUnReadWatch(unReadCount + tempCount);
+                    }
+                }
             }
         });
         ConversationManagerKit.getInstance().setLoadSelfConversation(() -> localCon);
-//        ConversationManagerKit.getInstance().loadConversation(null);
         if (onUnReadWatch != null) {
             onUnReadWatch.onUnReadWatch(unReadCount);
         }
-
     }
+
     public void getFileName() {
         UserInfoBean bean = UserInfoMgr.getInstance().getUserInfo();
         if (bean != null) {
@@ -283,24 +294,26 @@ public class ImManager {
             ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, groupIconBean.getsERVICE());
         } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.WALLET)) {
             //钱包
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, groupIconBean.getwALLET());
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_WALLET_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, groupIconBean.getwALLET());
         } else if (url.messageGroup.equals(com.xaqinren.healthyelders.moduleMsg.Constant.CUSTOMER_SERVICE)) {
             //客服
-            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, groupIconBean.getcUSTOMER_SERVICE());
+            ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(url.messageGroup), url.sendUser.nickname + url.content.body, groupIconBean.getcUSTOMER_SERVICE());
         }
+    }
+
+    /**
+     * 自己发送消息给客服
+     */
+    public void sendCustomer() {
+
+    }
+
+    public void getCustomer() {
+
     }
 
     public interface OnUnReadWatch {
         void onUnReadWatch(int count);
-    }
-
-    public static void testAddConversation() {
-//        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SYS_ID, "系统消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
-//        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_INT_ID, "互动消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
-//
-//        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_SERVICE_ID, "服务消息", "明天下午毁灭", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
-//        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_WALLET_ID, "钱包消息", "XXX对您点赞", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
-//        ImManager.getInstance().saveConversationToLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID, "客服消息", "XXX关注了您", "https://img2.baidu.com/it/u=3355464299,584008140&fm=26&fmt=auto&gp=0.jpg");
     }
 
     private GroupIconBean groupIconBean;

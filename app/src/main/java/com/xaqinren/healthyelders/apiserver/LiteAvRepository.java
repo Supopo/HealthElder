@@ -178,6 +178,29 @@ public class LiteAvRepository {
                 });
     }
 
+    public void getUserList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, String identity,MutableLiveData<BaseListRes<List<LiteAvUserBean>>> listMutableLiveData ) {
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity,null)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<LiteAvUserBean>>> data) {
+                        listMutableLiveData.postValue(data.getData());
+                    }
+                });
+    }
+
 
     public List<SaveDraftBean>  getDraftsList(Context context , String fileName) {
         String json = ACache.get(context).getAsString(fileName);
@@ -226,6 +249,29 @@ public class LiteAvRepository {
         if (index==-1)return;
         saveDraftBeans.remove(index);
         ACache.get(context).put(fileName , JSON.toJSONString(saveDraftBeans));
+    }
+
+    public void getSearchUserList(MutableLiveData<Boolean> requestSuccess, int page, int pageSize, String key, MutableLiveData<BaseListRes<List<LiteAvUserBean>>> searchUserList) {
+        userApi.getSearchUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, key)
+                .compose(RxUtils.schedulersTransformer())  // 线程调度
+                .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<LiteAvUserBean>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        requestSuccess.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<LiteAvUserBean>>> data) {
+                        searchUserList.postValue(data.getData());
+                    }
+                });
     }
 
     public void getSearchUserList(MutableLiveData<Boolean> requestSuccess, MutableLiveData<List<LiteAvUserBean>> searchUserList, int page, int pageSize,String key) {

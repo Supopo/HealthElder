@@ -66,11 +66,15 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             //添加联系人
             startActivity(AddFriendActivity.class);
         });
-        binding.ivAdd2.setVisibility(View.GONE);
-        binding.ivAdd2.setOnClickListener(view -> {
-            ImManager.testAddConversation();
+        if (Constant.DEBUG) {
+            binding.ivAdd2.setVisibility(View.VISIBLE);
+            binding.ivAdd2.setOnClickListener(view -> {
+
+            });
+        }else{
             binding.ivAdd2.setVisibility(View.GONE);
-        });
+        }
+
         binding.srlContent.setEnabled(false);
         binding.conversationLayout.getTitleBar().setVisibility(View.GONE);
 

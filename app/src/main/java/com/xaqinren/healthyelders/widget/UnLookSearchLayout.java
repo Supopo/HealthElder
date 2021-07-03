@@ -107,6 +107,7 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         resize();
         recyclerView.scrollBy(Integer.MAX_VALUE, 0);
     }
+
     /**
      * 选中用户添加到表中
      * @param liteAvUserBean
@@ -133,13 +134,13 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         adapter.remove(bean);
         //需要通知edittext移除
         editText.removeUser();
-        onSearchChangeListener.onUserRemove(bean.getId());
+        onSearchChangeListener.onUserRemove(bean.getRealId());
         resize();
     }
     public void removeUser(String id) {
         if (liteAvUserBeans.isEmpty())return;
         for (LiteAvUserBean liteAvUserBean : liteAvUserBeans) {
-            if (liteAvUserBean.getId() .equals( id)) {
+            if (liteAvUserBean.getRealId() .equals( id)) {
                 adapter.remove(liteAvUserBean);
                 liteAvUserBeans.remove(liteAvUserBean);
                 editText.removeUser();
@@ -196,11 +197,9 @@ public class UnLookSearchLayout extends FrameLayout implements SearchEditText.On
         LiteAvUserBean bean = liteAvUserBeans.remove(position);
         adapter.removeAt(position);
         editText.removeUser();
-        onSearchChangeListener.onUserRemove(bean.getId());
+        onSearchChangeListener.onUserRemove(bean.getRealId());
         resize();
     }
-
-
 
     public interface OnSearchChangeListener{
         void onTextChange(String text);

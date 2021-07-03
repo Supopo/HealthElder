@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleLiteav.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.annotations.SerializedName;
+import com.xaqinren.healthyelders.widget.RingProgressBar;
 import com.xaqinren.healthyelders.widget.share.IShareUser;
 
 import java.io.Serializable;
@@ -22,10 +23,25 @@ public class LiteAvUserBean implements MultiItemEntity , Serializable , IShareUs
     public UserInfoBean attentionUserInfo;
     private String nickname;
     private String avatarUrl;
+    private String classTitle;
 
+    public String getClassTitle() {
+        return classTitle;
+    }
+
+    public void setClassTitle(String classTitle) {
+        this.classTitle = classTitle;
+    }
 
     public LiteAvUserBean() {
 
+    }
+
+    public String getRealId() {
+        if (attentionUserId != null) {
+            return attentionUserId;
+        }
+        return id;
     }
 
     public String getId() {

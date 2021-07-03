@@ -63,6 +63,34 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         isLoadSelfData = loadSelfData;
     }
 
+    //获取客服消息
+    public void loadCustomerConversation(final IUIKitCallBack callBack) {
+        TUIKitLog.i(TAG, "loadConversation callBack:" + callBack);
+        V2TIMManager.getConversationManager().getConversationList(0, 9999, new V2TIMValueCallback<V2TIMConversationResult>() {
+            @Override
+            public void onError(int code, String desc) {
+                TUIKitLog.v(TAG, "loadConversation getConversationList error, code = " + code + ", desc = " + desc);
+            }
+            @Override
+            public void onSuccess(V2TIMConversationResult v2TIMConversationResult) {
+                ArrayList<ConversationInfo> infos = new ArrayList<>();
+                List<V2TIMConversation> v2TIMConversationList = v2TIMConversationResult.getConversationList();
+                for (V2TIMConversation v2TIMConversation : v2TIMConversationList) {
+                    //将 imsdk v2TIMConversation 转换为 UIKit ConversationInfo
+                    ConversationInfo conversationInfo = TIMConversation2ConversationInfo(v2TIMConversation);
+                    if (conversationInfo != null) {
+                        conversationInfo.setType(ConversationInfo.TYPE_COMMON);
+                        if (isCustomService(conversationInfo)){//不加入客服消息类
+                            infos.add(conversationInfo);
+                        }
+                    }
+                }
+                if (callBack != null) {
+                    callBack.onSuccess(infos);
+                }
+            }
+        });
+    }
     /**
      * 加载会话信息
      *
@@ -97,9 +125,11 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     if (conversationInfo != null) {
                         mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
-                        if (GeneralConfig.enableChat) {
-                            if (!conversationInfo.isGroup())
-                                infos.add(conversationInfo);
+                        if (GeneralConfig.enableChat) {//显示单聊条目
+                            if (!conversationInfo.isGroup())//不加入群聊条目
+                                if (!isCustomService(conversationInfo)){//不加入客服消息类
+                                    infos.add(conversationInfo);
+                                }
                         }
                     }
                 }
@@ -108,7 +138,6 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     infos.addAll(loadSelfConversation.getConversation());
                     isLoadSelfData = true;
                 }
-
                 //排序，imsdk加载处理的已按时间排序，但应用层有置顶会话操作，所有需根据置顶标识再次排序（置顶可考虑做到imsdk同步到服务器？）
                 mProvider.setDataSource(sortConversations(infos));
                 SharedPreferenceUtils.putListData(mConversationPreferences, TOP_LIST, mTopLinkedList);
@@ -119,6 +148,19 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                 }
             }
         });
+    }
+
+    private boolean isCustomService(ConversationInfo conversationInfo) {
+        int msgType = conversationInfo.getLastMessage().getMsgType();
+        if (msgType == MessageInfo.MSG_TYPE_CUSTOM) {
+            String extra = (String) conversationInfo.getLastMessage().getExtra();//json 数据
+            if (extra.contains("customer")) {
+                //客服消息
+                return true;
+            }
+            //自定义
+        }
+        return false;
     }
 
     /**

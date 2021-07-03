@@ -17,7 +17,12 @@ import com.xaqinren.healthyelders.widget.CircleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 public class ChooseUserAdapter extends BaseMultiItemQuickAdapter<LiteAvUserBean,BaseViewHolder> implements LoadMoreModule {
+
+    private HashMap<String, String> idMap = new HashMap<>();
+
     public ChooseUserAdapter() {
         super();
         addItemType(1,R.layout.item_lite_av_user_class);
@@ -28,13 +33,27 @@ public class ChooseUserAdapter extends BaseMultiItemQuickAdapter<LiteAvUserBean,
     protected void convert(@NotNull BaseViewHolder baseViewHolder, LiteAvUserBean liteAvUserBean) {
 
         if (liteAvUserBean.getItemType() == 1) {
-
+            baseViewHolder.setText(R.id.class_name, liteAvUserBean.getName());
         }else{
             ItemLiteAvUserBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
+            if (idMap.containsKey(liteAvUserBean.getRealId())) {
+                liteAvUserBean.isSel = true;
+            }else{
+                liteAvUserBean.isSel = false;
+            }
             binding.setViewModel(liteAvUserBean);
             ImageView selIv = binding.selIv;
             selIv.setImageResource(liteAvUserBean.isSel ? R.mipmap.rad_py_sel : R.mipmap.rad_py_nor);
             Glide.with(getContext()).load(liteAvUserBean.getAvatar()).into(binding.avatar);
+        }
+    }
+
+    public void addId(String id) {
+        idMap.put(id, "");
+    }
+    public void removeId(String id) {
+        if (idMap.containsKey(id)) {
+            idMap.remove(id);
         }
     }
 }

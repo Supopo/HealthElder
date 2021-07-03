@@ -125,13 +125,14 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:layout_alignParentBottom="true"
-            android:background="@mipmap/btn_login"
+            android:background="@drawable/bg_btn_comfrim_has_enable"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_19"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_18"
+            android:enabled="false"
             android:text="完成"/>
     </RelativeLayout>
 </layout>

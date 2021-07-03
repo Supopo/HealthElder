@@ -20,6 +20,6 @@ public class ChooseUnLookAdapter extends BaseQuickAdapter<LiteAvUserBean,BaseVie
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, LiteAvUserBean unLookBean) {
         CircleImageView circleImageView = baseViewHolder.getView(R.id.avatar);
-        Glide.with(circleImageView).load(R.mipmap.icon_app).into(circleImageView);
+        Glide.with(circleImageView).load(unLookBean.getAvatar()).into(circleImageView);
     }
 }

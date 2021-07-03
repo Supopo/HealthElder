@@ -6,4 +6,5 @@ package com.xaqinren.healthyelders.bean;
 public class BaseListRes<T> {
     public T content;
     public int totalElements;
+    public boolean last;
 }

@@ -32,6 +32,7 @@ import com.tencent.bugly.proguard.O;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.tencent.weibo.sdk.android.api.adapter.FriendAdapter;
@@ -130,6 +131,8 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         addFriendAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             opIndex = position;
             FriendBean friendBean = addFriendAdapter.getData().get(position);
+
+
             if (friendBean.getIdentity() == null) {
                 //不是平台用户
                 ToastUtils.showShort("该用户还不是平台用户,快分享给他(她)吧!");

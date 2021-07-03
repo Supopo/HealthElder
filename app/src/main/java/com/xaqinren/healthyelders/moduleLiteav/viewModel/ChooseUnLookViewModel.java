@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
+import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class ChooseUnLookViewModel extends BaseViewModel {
 
     public MutableLiveData<Boolean> requestSuccess = new MutableLiveData<>();
 
-    public MutableLiveData<List<LiteAvUserBean>> userList = new MutableLiveData<>();
-    public MutableLiveData<List<LiteAvUserBean>> searchUserList = new MutableLiveData<>();
+    public MutableLiveData<BaseListRes<List<LiteAvUserBean>>> userList = new MutableLiveData<>();
+    public MutableLiveData<BaseListRes<List<LiteAvUserBean>>> searchUserList = new MutableLiveData<>();
 
     public ChooseUnLookViewModel(@NonNull Application application) {
         super(application);
@@ -25,11 +26,11 @@ public class ChooseUnLookViewModel extends BaseViewModel {
 
 
     public void getUserList(int page, int pageSize, String identity) {
-        LiteAvRepository.getInstance().getUserList(requestSuccess, userList, page, pageSize, identity);
+        LiteAvRepository.getInstance().getUserList(requestSuccess, page, pageSize, identity,userList);
     }
 
     public void searchUserList(int page, int pageSize, String identity) {
-        LiteAvRepository.getInstance().getSearchUserList(requestSuccess, searchUserList, page, pageSize, identity);
+        LiteAvRepository.getInstance().getSearchUserList(requestSuccess, page, pageSize, identity, searchUserList);
     }
 
 }

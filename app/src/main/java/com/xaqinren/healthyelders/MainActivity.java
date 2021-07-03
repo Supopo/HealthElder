@@ -234,11 +234,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     callBack.invoke(accessToken);
                     callBack = null;
                 }
+                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
                 UserInfoMgr.getInstance().setUserInfo(userInfoBean);
                 UserInfoMgr.getInstance().setAccessToken(accessToken);
                 UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
                 onUnReadWatch(ImManager.getInstance().getUnreadCount());
-                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
                 viewModel.getUserSig(accessToken);
             }
         }
