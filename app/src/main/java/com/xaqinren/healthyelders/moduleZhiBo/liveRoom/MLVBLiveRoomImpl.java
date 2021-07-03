@@ -432,13 +432,13 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
     }
 
     @Override
-    public void destroyGroup(String groupId,IMMessageMgr.Callback callback) {
+    public void destroyGroup(String groupId, IMMessageMgr.Callback callback) {
         if (mIMMessageMgr == null) {
             mIMMessageMgr = new IMMessageMgr(mAppContext);
             mIMMessageMgr.setIMMessageListener(this);
         }
 
-        mIMMessageMgr.quitGroup(groupId, callback);
+        mIMMessageMgr.destroyGroup(groupId, callback);
     }
 
 
@@ -809,7 +809,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                             }
                         }
                     });
-                }else {
+                } else {
                     callbackOnThread(callback, "onSuccess");
                 }
 
@@ -1903,6 +1903,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * <p>
      * 当主播屏蔽摄像头，或者由于 App 切入后台无法使用摄像头的时候，我们需要使用一张等待图片来提示观众“主播暂时离开，请不要走开”。
      * 注意需要在本地摄像头开启之后开启
+     *
      * @param bitmap 位图
      */
     @Override
@@ -1920,6 +1921,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * <p>
      * 当主播屏蔽摄像头，或者由于 App 切入后台无法使用摄像头的时候，我们需要使用一张等待图片来提示观众“主播暂时离开，请不要走开”。
      * 注意需要在本地摄像头开启之后开启
+     *
      * @param id 设置默认显示图片的资源文件
      */
     @Override

@@ -346,23 +346,21 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     //退出房间成功，清空上次房间的记录
                     mLiveInitInfo.liveRoomRecordId = "";
                     //解散群
-//                    mLiveRoom.destroyGroup(Constant.getRoomId(mLiveInitInfo.liveRoomCode), new IMMessageMgr.Callback() {
-//                        @Override
-//                        public void onError(int code, String errInfo) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onSuccess(Object... args) {
-//                            Log.e("--", "退群成功！去直播");
-//
-//                        }
-//                    });
+                    mLiveRoom.destroyGroup(Constant.getRoomId(mLiveInitInfo.liveRoomCode), new IMMessageMgr.Callback() {
+                        @Override
+                        public void onError(int code, String errInfo) {
+                        }
 
-                    if (isCloseXN) {
-                        isCloseXN = false;
-                        toStartLive();
-                    }
+                        @Override
+                        public void onSuccess(Object... args) {
+                            if (isCloseXN) {
+                                isCloseXN = false;
+                                toStartLive();
+                            }
+                        }
+                    });
+
+
                 }
             }
         });
