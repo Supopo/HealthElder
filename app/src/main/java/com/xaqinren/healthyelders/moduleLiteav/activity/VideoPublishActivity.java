@@ -302,10 +302,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 Glide.with(getActivity()).asBitmap().load(mCoverPath).into(binding.coverView);
             }
         });
-
     }
-
-
 
 
     /**
@@ -629,6 +626,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 this.unLookUserList.addAll(unLookUserList);
                 openModePop.refreshUnLook();
                 binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
+                if (openModePop != null && openModePop.isShowing()) {
+                    openModePop.dismiss();
+                }
             }
         }
     }
@@ -668,6 +668,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                             Intent intent = new Intent(VideoPublishActivity.this, ChooseUnLookActivity.class);
                             intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
                             startActivityForResult(intent,unlook_code);
+                            overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
                         }break;
                     }
                     binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
@@ -687,16 +688,16 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     public String publishModeGetName(int mode) {
         switch (mode) {
             case LiteAvOpenModePopupWindow.OPEN_MODE:
-                return "粉丝可见·已开启私密账号";
+                return "公开 · 所有人可见";
             case LiteAvOpenModePopupWindow.FRIEND_MODE:
-                return "朋友可见";
+                return "朋友: 互关朋友可见";
             case LiteAvOpenModePopupWindow.PRIVATE_MODE:
-                return "仅自己可见";
+                return "朋友: 仅自己可见";
             case LiteAvOpenModePopupWindow.HIDE_MODE:{
                 if (unLookUserList.isEmpty()) {
                     return null;
                 }
-                return "不给谁看:" + unLookUserList.get(0).getName() + (unLookUserList.size() > 1 ? "等" + unLookUserList.size() + "人" : "");
+                return "不给谁看: " + (unLookUserList.size() > 1 ? unLookUserList.get(0).getName()+"..等"+unLookUserList.size()+"人" : unLookUserList.get(0).getName());
             }
         }
         return null;
@@ -819,7 +820,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         locationBean.lon = lon;
         locationBean.lat = lat;
         binding.includePublish.myLocation.setText(bean.getAddress());
-
+        unLookUserList = bean.getUnLookUser();
         //权限
         publishMode = bean.getOpenMode();
         //推荐
@@ -866,6 +867,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         saveDraftBean.setSaveTime(System.currentTimeMillis());
 
         viewModel.saveDraftsById(this, fileName, saveDraftBean);
+        List<LiteAvUserBean> unLookUser = saveDraftBean.getUnLookUser();
+        if (unLookUser == null) {
+            unLookUser = new ArrayList<>();
+        }
+        unLookUser.addAll(this.unLookUserList);
+        saveDraftBean.setUnLookUser(unLookUser);
 
         LogUtils.e(TAG, "保存到草稿箱的ID -> " + saveDraftBean.getId());
         ToastUtils.showShort("保存成功");

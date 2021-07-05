@@ -18,6 +18,7 @@ public class ChooseUnLookViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> requestSuccess = new MutableLiveData<>();
 
     public MutableLiveData<BaseListRes<List<LiteAvUserBean>>> userList = new MutableLiveData<>();
+    public MutableLiveData<BaseListRes<List<LiteAvUserBean>>> filterList = new MutableLiveData<>();
     public MutableLiveData<BaseListRes<List<LiteAvUserBean>>> searchUserList = new MutableLiveData<>();
 
     public ChooseUnLookViewModel(@NonNull Application application) {
@@ -27,6 +28,10 @@ public class ChooseUnLookViewModel extends BaseViewModel {
 
     public void getUserList(int page, int pageSize, String identity) {
         LiteAvRepository.getInstance().getUserList(requestSuccess, page, pageSize, identity,userList);
+    }
+
+    public void filterUserList(int page, int pageSize, String identity) {
+        LiteAvRepository.getInstance().getUserList(requestSuccess, page, pageSize, identity,filterList);
     }
 
     public void searchUserList(int page, int pageSize, String identity) {

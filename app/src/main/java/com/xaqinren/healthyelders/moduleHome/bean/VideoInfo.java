@@ -78,7 +78,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
 
     public ShareBean share;//":
     public String roomPassword;//":
-    public String refuseUserIds;//":
+    public List<String> refuseUserIds;//":
     public String approvalStatus;//"://PENDING("审批中"), PASS("已发布"), REJECT("驳回"),DISABLED("已下架");
     public String creationViewAuth;//":  PRIVATE 私密
     public String businessHub;//":

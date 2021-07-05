@@ -1240,6 +1240,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                             Intent intent = new Intent(getActivity(), ChooseUnLookActivity.class);
                             intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
                             startActivityForResult(intent,999);
+                            getActivity().overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
                         }break;
                     }
 

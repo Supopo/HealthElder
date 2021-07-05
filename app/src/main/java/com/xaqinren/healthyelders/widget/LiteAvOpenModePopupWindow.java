@@ -139,9 +139,9 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
             String name = unLookUserList.get(0).getName();
             int size = unLookUserList.size();
             if (size > 1) {
-                unLookTv.setText(name+"等"+size+"人");
+                unLookTv.setText(": " +name+"..等"+size+"人");
             }else{
-                unLookTv.setText(name);
+                unLookTv.setText(": " +name);
             }
         }
     }

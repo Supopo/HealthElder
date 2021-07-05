@@ -43,6 +43,8 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     private List<LiteAvUserBean> liteSelAvUserBeans = new ArrayList<>();
     private List<LiteAvUserBean> liteAvUserBeans = new ArrayList<>();
     private List<LiteAvUserBean> searchUserBeans = new ArrayList<>();
+    private List<LiteAvUserBean> filterUserBeans = new ArrayList<>();
+
     private ChooseUserAdapter userAdapter;
     //全部里面请求的ID,用于比较从搜索中选择了用户当前列表是否存在该用户
     private HashMap<String, String> allIdMap = new HashMap<>();
@@ -55,21 +57,33 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     private String FANS = "FANS";//粉丝
     private String ATTENTION = "FOLLOW";//关注的人
     private String STRANGER = "STRANGER";//陌生人
+    private String All = "All";//陌生人
     private String currentRequestType = FRIEND;
     private int currentPage = 1;
     private int pageSize = 10;
     private boolean[] tagAdd = {false, false, false};
+    private int[] filterCount = {0, 0, 0};
     private boolean isSearch = false;
+    private boolean isFilter = false;
 
     LoadMoreStatus loadMoreStatus ;
+    /**
+     * 当前筛选
+     */
+    private String currentFilterPage = All;
 
     /**
      * 搜索用的
      */
-    private int searchCurrentPage;
+    private int searchCurrentPage = 1;
     private int searchPageSize = 10;
     private BaseLoadMoreModule loadMoreModule;
 
+    /**
+     * 筛选用的
+     */
+    private int filterCurrentPage = 1;
+    private int filterPageSize = 10;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -91,7 +105,6 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
             mergeList(temp);
         }
         viewModel.getUserList(currentPage, pageSize, currentRequestType);
-
     }
 
     @Override
@@ -105,7 +118,8 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                 if (this.liteAvUserBeans.isEmpty() && !liteAvUserBeans.content.isEmpty() && !tagAdd[0]) {
                     LiteAvUserBean bean = new LiteAvUserBean();
                     bean.viewType = 1;
-                    bean.setName("好友");
+                    bean.setName(liteAvUserBeans.totalElements+"个好友");
+                    filterCount[0] = liteAvUserBeans.totalElements;
                     this.liteAvUserBeans.add(bean);
                     tagAdd[0] = true;
                 }
@@ -113,18 +127,20 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                 if (!tagAdd[1] && (this.liteAvUserBeans.isEmpty() || this.liteAvUserBeans.get(this.liteAvUserBeans.size() - 1).viewType == 0) && !liteAvUserBeans.content.isEmpty()) {
                     LiteAvUserBean bean = new LiteAvUserBean();
                     bean.viewType = 1;
-                    bean.setName("粉丝");
+                    bean.setName(liteAvUserBeans.totalElements+"个粉丝");
                     this.liteAvUserBeans.add(bean);
                     tagAdd[1] = true;
+                    filterCount[2] = liteAvUserBeans.totalElements;
                 }
             } else {
                 if (!tagAdd[2] && (this.liteAvUserBeans.isEmpty()
                         || this.liteAvUserBeans.get(this.liteAvUserBeans.size() - 1).viewType == 0) && !liteAvUserBeans.content.isEmpty()) {
                     LiteAvUserBean bean = new LiteAvUserBean();
                     bean.viewType = 1;
-                    bean.setName("关注");
+                    bean.setName(liteAvUserBeans.totalElements+"个关注");
                     this.liteAvUserBeans.add(bean);
                     tagAdd[2] = true;
+                    filterCount[1] = liteAvUserBeans.totalElements;
                 }
             }
             boolean loadEnd = false;
@@ -172,6 +188,31 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
                 searchCurrentPage++;
             }
         });
+
+        viewModel.filterList.observe(this, liteAvUserBeans -> {
+            //筛选列表
+            if (filterCurrentPage == 1)
+                filterUserBeans.clear();
+            filterUserBeans.addAll(liteAvUserBeans.content);
+
+            userAdapter.setList(filterUserBeans);
+
+            if (liteAvUserBeans.last) {
+                loadMoreModule.loadMoreEnd(false);
+            } else {
+                loadMoreModule.loadMoreComplete();
+                filterCurrentPage++;
+            }
+
+            if (currentFilterPage.equals(FRIEND)) {
+                filterCount[0] = liteAvUserBeans.totalElements;
+            } else if (currentFilterPage.equals(ATTENTION)) {
+                filterCount[1] = liteAvUserBeans.totalElements;
+            } else if (currentFilterPage.equals(FANS)) {
+                filterCount[2] = liteAvUserBeans.totalElements;
+            }
+
+        });
     }
 
     private boolean next() {
@@ -198,7 +239,7 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         }
         binding.confirmButton.setEnabled(!liteSelAvUserBeans.isEmpty());
 
-        binding.searchBar.setOnSearchChangeListener(this);
+
         binding.searchBar.addData(liteSelAvUserBeans);
     }
 
@@ -228,6 +269,8 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         userAdapter.setOnItemClickListener(this);
         userAdapter.setAnimationEnable(false);
         userAdapter.setAnimationFirstOnly(true);
+        binding.searchBar.setOnSearchChangeListener(this);
+
         binding.confirmButton.setOnClickListener(view -> {
             Intent intent = new Intent();
             intent.putExtra("list", (Serializable) liteSelAvUserBeans);
@@ -240,15 +283,94 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         loadMoreModule.setOnLoadMoreListener(() ->
                 {
                     if (!isSearch) {
-                        viewModel.getUserList(currentPage, pageSize, currentRequestType);
+                        if (currentFilterPage.equals(All)) {
+                            viewModel.getUserList(currentPage, pageSize, currentRequestType);
+                        } else if (currentFilterPage.equals(FRIEND)) {
+                            viewModel.filterUserList(filterCurrentPage, filterPageSize, FRIEND);
+                        } else if (currentFilterPage.equals(ATTENTION)) {
+                            viewModel.filterUserList(filterCurrentPage, filterPageSize, ATTENTION);
+                        } else if (currentFilterPage.equals(FANS)) {
+                            viewModel.filterUserList(filterCurrentPage, filterPageSize, FANS);
+                        }
                     } else {
                         viewModel.searchUserList(searchCurrentPage, searchPageSize, currentSearch);
                     }
                 }
         );
+        binding.allUser.setSelected(true);
+        binding.allUser.setOnClickListener(v -> {
+            if (currentFilterPage.equals(All)) {
+                return;
+            }
+            unSelAllTag();
+            v.setSelected(true);
+            userAdapter.setList(liteAvUserBeans);
+            currentFilterPage = All;
+            isFilter = false;
+            if (loadMoreStatus == LoadMoreStatus.Complete) {
+                loadMoreModule.loadMoreComplete();
+            } else if (loadMoreStatus == LoadMoreStatus.End) {
+                loadMoreModule.loadMoreEnd(false);
+            }
+        });
+        binding.justFriend.setOnClickListener(v -> {
+            if (currentFilterPage.equals(FRIEND)) {
+                return;
+            }
+            unSelAllTag();
+            v.setSelected(true);
+            filterUserBeans.clear();
+            currentFilterPage = FRIEND;
+            filterCurrentPage = 1;
+            isFilter = true;
+            userAdapter.setList(filterUserBeans);
+            viewModel.filterUserList(filterCurrentPage, filterPageSize, FRIEND);
+
+        });
+        binding.justLook.setOnClickListener(v -> {
+            if (currentFilterPage.equals(ATTENTION)) {
+                return;
+            }
+            unSelAllTag();
+            v.setSelected(true);
+            filterUserBeans.clear();
+            currentFilterPage = ATTENTION;
+            filterCurrentPage = 1;
+            isFilter = true;
+            userAdapter.setList(filterUserBeans);
+            viewModel.filterUserList(filterCurrentPage, filterPageSize, ATTENTION);
+
+        });
+        binding.justFans.setOnClickListener(v -> {
+            if (currentFilterPage.equals(FANS)) {
+                return;
+            }
+            unSelAllTag();
+            v.setSelected(true);
+            filterUserBeans.clear();
+            currentFilterPage = FANS;
+            filterCurrentPage = 1;
+            isFilter = true;
+            userAdapter.setList(filterUserBeans);
+            viewModel.filterUserList(filterCurrentPage, filterPageSize, FANS);
+        });
+        binding.close.setOnClickListener(v -> finish());
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0,R.anim.activity_bottom_2exit);
     }
 
     private String currentSearch = "";
+
+    private void unSelAllTag() {
+        binding.allUser.setSelected(false);
+        binding.justFans.setSelected(false);
+        binding.justFriend.setSelected(false);
+        binding.justLook.setSelected(false);
+    }
 
     @Override
     public void onTextChange(String text) {
@@ -256,15 +378,50 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
         currentSearch = text;
         if (!StringUtils.isEmpty(text)) {
             isSearch = true;
+            searchUserBeans.clear();
+            userAdapter.setList(searchUserBeans);
+            binding.tagLayout.setVisibility(View.GONE);
             viewModel.searchUserList(searchCurrentPage, searchPageSize, text);
         } else {
+            binding.tagLayout.setVisibility(View.VISIBLE);
             isSearch = false;
-            userAdapter.setList(liteAvUserBeans);
-            if (loadMoreStatus == LoadMoreStatus.Complete) {
-                loadMoreModule.loadMoreComplete();
-            } else if (loadMoreStatus == LoadMoreStatus.End) {
-                loadMoreModule.loadMoreEnd(false);
+            if (isFilter) {
+                fillingFilter();
+            }else{
+                fillingUserBean();
             }
+        }
+    }
+
+    private void fillingUserBean() {
+        userAdapter.setList(liteAvUserBeans);
+        if (loadMoreStatus == LoadMoreStatus.Complete) {
+            loadMoreModule.loadMoreComplete();
+        } else if (loadMoreStatus == LoadMoreStatus.End) {
+            loadMoreModule.loadMoreEnd(false);
+        }
+    }
+
+    private void fillingFilter() {
+        userAdapter.setList(filterUserBeans);
+        boolean end = false;
+        if (currentFilterPage.equals(FRIEND)) {
+            if (filterUserBeans.size() == filterCount[0]){
+                end = true;
+            }
+        } else if (currentFilterPage.equals(ATTENTION)) {
+            if (filterUserBeans.size() == filterCount[1]){
+                end = true;
+            }
+        } else if (currentFilterPage.equals(FANS)) {
+            if (filterUserBeans.size() == filterCount[2]){
+                end = true;
+            }
+        }
+        if (end) {
+            loadMoreModule.loadMoreEnd(false);
+        }else{
+            loadMoreModule.loadMoreComplete();
         }
     }
 
@@ -287,56 +444,75 @@ public class ChooseUnLookActivity extends BaseActivity<ActivityLiteAvLookModeBin
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         LiteAvUserBean liteAvUserBean;
-        if (!isSearch) {
-            liteAvUserBean  = liteAvUserBeans.get(position);
-        }else{
+        if (isSearch) {
             liteAvUserBean  = searchUserBeans.get(position);
+        } else if(isFilter){
+            liteAvUserBean = filterUserBeans.get(position);
+        }else{
+            liteAvUserBean  = liteAvUserBeans.get(position);
         }
 
         if (isSearch) {
             //搜索列表点击
             if (!liteAvUserBean.isSel) {
                 isSearch = false;
-                if (!allIdMap.containsKey(liteAvUserBean.getRealId())) {
+                if (!allIdMap.containsKey(liteAvUserBean.getRealId())
+                && !liteAvUserBean.isRelated()) {
                     liteAvUserBeans.add(0, liteAvUserBean);
                 }
-                allIdMap.put(liteAvUserBean.getRealId(), "");
-                liteAvUserBean.isSel = true;
-                addId(liteAvUserBean.getRealId());
-                liteSelAvUserBeans.add(liteAvUserBean);
-                binding.searchBar.addData(liteAvUserBean);
+                addItem(liteAvUserBean);
                 //选择需要切换数据源
-                userAdapter.setList(liteAvUserBeans);
-                if (loadMoreStatus == LoadMoreStatus.Complete) {
-                    loadMoreModule.loadMoreComplete();
-                } else if (loadMoreStatus == LoadMoreStatus.End) {
-                    loadMoreModule.loadMoreEnd(false);
+                if (!isFilter) {
+                    fillingUserBean();
+                }else{
+                    fillingFilter();
                 }
                 searchUserBeans.clear();
             }else{
-                liteAvUserBean.isSel = false;
-                removeId(liteAvUserBean.getRealId());
-                liteSelAvUserBeans.remove(liteAvUserBean);
-                binding.searchBar.removeUser(liteAvUserBean.getRealId());
+                removeItem(liteAvUserBean);
+            }
+            selCurrentPage();
+        }else if (isFilter) {
+            if (!liteAvUserBean.isSel) {
+               addItem(liteAvUserBean);
+                //选择需要切换数据源
+            }else{
+                removeItem(liteAvUserBean);
             }
             selCurrentPage();
         }else {
             if (liteAvUserBean.viewType == 0) {
                 liteAvUserBean.isSel = !liteAvUserBean.isSel;
                 if (liteAvUserBean.isSel) {
-                    addId(liteAvUserBean.getRealId());
-                    liteSelAvUserBeans.add(liteAvUserBean);
-                    binding.searchBar.addData(liteAvUserBean);
+                    addItem(liteAvUserBean);
                 } else {
-                    removeId(liteAvUserBean.getRealId());
-                    liteSelAvUserBeans.remove(liteAvUserBean);
-                    binding.searchBar.removeUser(liteAvUserBean.getRealId());
+                    removeItem(liteAvUserBean);
                 }
                 selCurrentPage();
             }
             userAdapter.setData(position, liteAvUserBean);
         }
         binding.confirmButton.setEnabled(!liteSelAvUserBeans.isEmpty());
+    }
+
+    private void addItem(LiteAvUserBean liteAvUserBean) {
+        allIdMap.put(liteAvUserBean.getRealId(), "");
+        liteAvUserBean.isSel = true;
+        addId(liteAvUserBean.getRealId());
+        liteSelAvUserBeans.add(liteAvUserBean);
+        binding.searchBar.addData(liteAvUserBean);
+    }
+
+    private void removeItem(LiteAvUserBean liteAvUserBean){
+        liteAvUserBean.isSel = false;
+        removeId(liteAvUserBean.getRealId());
+        for (int i = 0; i < liteSelAvUserBeans.size(); i++) {
+            String realId = liteSelAvUserBeans.get(i).getRealId();
+            if (realId.equals(liteAvUserBean.getRealId())) {
+                liteSelAvUserBeans.remove(i);
+            }
+        }
+        binding.searchBar.removeUser(liteAvUserBean.getRealId());
     }
 
     public void selCurrentPage() {

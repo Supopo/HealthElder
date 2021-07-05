@@ -59,6 +59,19 @@ public class LiteAvUserBean implements MultiItemEntity , Serializable , IShareUs
         return identity;
     }
 
+    public boolean isRelated() {
+        if (identity != null) {
+            if (identity.equals("FOLLOW") ||
+                    identity.equals("FRIEND") ||
+                    identity.equals("FANS")
+
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setIdentity(String identity) {
         this.identity = identity;
     }
