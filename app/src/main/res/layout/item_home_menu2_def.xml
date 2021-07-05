@@ -27,8 +27,7 @@
             android:layout_height="@dimen/dp_114"
             android:orientation="vertical"
             android:paddingLeft="@dimen/dp_6"
-            android:paddingTop="@dimen/dp_7"
-            android:visibility="@{viewModel.onlyShowImage?View.GONE:View.VISIBLE}">
+            android:paddingTop="@dimen/dp_7">
 
             <TextView
                 android:id="@+id/tv_title"

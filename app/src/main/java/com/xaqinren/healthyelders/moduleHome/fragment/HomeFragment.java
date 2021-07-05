@@ -73,11 +73,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private BaseQuickAdapter<MenuBean, BaseViewHolder> menu1Adapter;
     private MenuAdapter menu2Adapter;
     private Disposable uniSubscribe;
-    private int clickIndex;
     private int oldWidth;
     public LockableNestedScrollView nsv;
     private RecyclerViewSkeletonScreen skeletonScreen1;
-    private ViewSkeletonScreen skeletonScreen2;
 
 
     @Override
@@ -151,7 +149,17 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                             public void run() {
                                 dismissDialog();
                             }
-                        },500);
+                        }, 500);
+                    }else if (event.msgType == CodeTable.SHOW_HOME1_TOP_HT) {
+                        //回弹到顶部
+                        binding.nsv.setScrollingEnabled(true);
+                        binding.viewPager2.setUserInputEnabled(false);
+                        binding.nsv.fling(0);
+                        binding.nsv.smoothScrollTo(0, 0);
+                    }else if (event.msgType == CodeTable.SHOW_HOME1_TOP_ZK) {
+                        //展开全部
+                        binding.nsv.fling((int) getResources().getDimension(R.dimen.dp_234));
+                        binding.nsv.smoothScrollTo(0, (int) getResources().getDimension(R.dimen.dp_234));
                     }
                 }
             }
@@ -237,7 +245,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 .show();
     }
 
-
     private void initFragment() {
         List<Fragment> fragments = new ArrayList<>();
         tjFragment = new HomeTJFragment(getActivity());
@@ -300,6 +307,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_234)) {
                     AppApplication.get().setShowTopMenu(false);
 
@@ -361,6 +369,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     int colorA = 10 - (int) (scrollY * colorBb);
 
                     RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_COLOR, "", colorA));
+
+
                 }
             }
         });
@@ -418,19 +428,17 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                 startActivity(SelectLoginActivity.class);
                 return;
             }
-//            UniService.startService(getContext(), menuBean.event, 0x10111, menuBean.jumpUrl);
+            //            UniService.startService(getContext(), menuBean.event, 0x10111, menuBean.jumpUrl);
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.jumpMenu(mainActivity.convertToSlideBarMenu(menuBean));
         });
     }
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subscribe.dispose();
-        RxSubscriptions.remove(uniSubscribe);
+        RxSubscriptions.clear();
     }
 
     @Override

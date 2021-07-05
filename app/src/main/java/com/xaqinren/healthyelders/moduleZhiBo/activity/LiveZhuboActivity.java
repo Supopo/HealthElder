@@ -182,6 +182,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //接受房间初始化信息
         Bundle bundle = getIntent().getExtras();
         mLiveInitInfo = (LiveInitInfo) bundle.getSerializable(Constant.LiveInitInfo);
+        mLiveInitInfo.liveRoomType = Constant.REQ_ZB_TYPE_SP;//视频直播
         mRoomID = Constant.getRoomId(mLiveInitInfo.liveRoomCode);
     }
 
@@ -556,9 +557,13 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 dismissDialog();
                 mLiveRoom.setListener(null);
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出成功");
-                Bundle bundle = new Bundle();
-                bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
-                startActivity(ZhiboOverActivity.class, bundle);
+
+                if (viewModel.exitSuccess.getValue().booleanValue()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                    startActivity(ZhiboOverActivity.class, bundle);
+                }
+
                 finish();
             }
 
@@ -882,9 +887,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     }
 
+    private boolean roomDestroy;//房间是否被解散，意味着是否要跳结束页面
+
     @Override
     public void onRoomDestroy(String roomID) {
-
+        if (!roomID.equals(mRoomID)) {
+            return;
+        }
+        roomDestroy = true;
+        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
+        finish();
     }
 
     //观众上麦
@@ -1947,11 +1959,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //关闭直播-通知服务器回调-跳转直播结算页面
         viewModel.exitSuccess.observe(this, exitSuccess -> {
             if (exitSuccess != null) {
-                if (exitSuccess) {
-                    //退出房间
-                    showDialog("退出房间...");
-                    stopPublish();
-                }
+                //退出房间
+                showDialog("退出房间...");
+                stopPublish();
             }
         });
 

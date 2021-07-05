@@ -10,6 +10,8 @@ public class CodeTable {
     public static int SET_MENU_WHITE = 97;//设置首页底部菜单栏变白
     public static int SET_MENU_COLOR = 9710;//设置首页底部菜单逐渐变白
     public static int SHOW_HOME1_TOP = 971;//展示推荐列表顶部
+    public static int SHOW_HOME1_TOP_HT = 9712;//回弹顶部
+    public static int SHOW_HOME1_TOP_ZK = 9713;//展开顶部
     public static int TJ_RESH_OVER = 972;//展示推荐列表刷新完毕
     public static int HOME_SEARCHER = 973;//首页搜索
     public static int SET_MENU_TOUMING = 98;//设置首页底部菜单栏透明

@@ -203,6 +203,13 @@ public class LiveRepository {
                         exitSuccess.postValue(true);
                     }
 
+                    @Override
+                    public void onNext(MBaseResponse<Object> response) {
+                        super.onNext(response);
+                        if (!response.getCode().equals(CodeTable.SUCCESS_CODE)) {
+                            exitSuccess.postValue(false);
+                        }
+                    }
                 });
     }
 

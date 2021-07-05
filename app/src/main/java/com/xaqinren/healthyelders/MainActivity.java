@@ -444,12 +444,40 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                double now_press_Y2 = event.getY();
+                double now_press_X2 = event.getX();
+                double scrollX2 = Math.abs(now_press_X2 - before_press_X);
+                double scrollY2 = Math.abs(now_press_Y2 - before_press_Y);
+                Log.e("-------", "滑动了" + scrollY2);
+
+
                 before_press_Y = 0;
                 before_press_X = 0;
                 //恢复滑动
                 if (homeFragment != null && homeFragment.vp2 != null) {
                     homeFragment.vp2.setUserInputEnabled(true);
                 }
+
+                if (selectView.getId() == R.id.tv_menu1 && AppApplication.get().isShowTopMenu()) {
+                    //判断滑动距离
+                    if (scrollY2 < ((int) getResources().getDimension(R.dimen.dp_234) / 2)) {
+                        //发送HomeFragment回顶消息
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_HT));
+                            }
+                        },100);
+                    } else {
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_ZK));
+                            }
+                        },100);
+                    }
+                }
+
                 break;
         }
         return super.dispatchTouchEvent(event);

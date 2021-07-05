@@ -247,10 +247,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         binding.btnStart.setOnClickListener(lis -> {
             //判断是不是存在虚拟直播
-            if (mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
+            if (mLiveInitInfo != null && mLiveInitInfo.liveRoomType != null && mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
                 isCloseXN = true;
                 //偷偷结束直播
                 viewModel.closeLastLive(mLiveInitInfo.liveRoomRecordId);
+            } else {
+                toStartLive();
             }
 
         });
@@ -335,6 +337,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 binding.rvMenu.setAdapter(menuAdapter);
                 initRoomInfo();
                 //有上次记录，说明没有结束直播，弹选择框
+                //todo 判断直播状态
                 if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId) && !liveInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
                     showSelectDialog(liveInfo.liveRoomRecordId);
                 }
@@ -405,6 +408,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
     private void startLiveZhuboActivity() {
         if (!hasCheckInfo) {
+            ToastUtil.toastShortMessage("开启直播间失败，请稍后尝试。");
             return;
         }
 
