@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.apiserver.UniRepository;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.uniApp.bean.SaveBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniBean;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
@@ -31,6 +32,7 @@ import io.dcloud.feature.sdk.DCUniMPSDK;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
+import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class UniService extends Service implements LifecycleOwner {
     private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
@@ -61,6 +63,9 @@ public class UniService extends Service implements LifecycleOwner {
     public static void startService(Context context, String appId, int taskId, String jumpUrl) {
         Intent intent = new Intent(context, UniService.class);
         intent.putExtra(KEY, KEY_OPEN);
+        if (StringUtils.isEmpty(appId)) {
+            appId = Constant.JKZL_MINI_APP_ID;
+        }
         intent.putExtra("id", appId);
         intent.putExtra("tid", taskId);
         intent.putExtra("url", jumpUrl);
