@@ -13,7 +13,7 @@ public class Constant {
 
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
     public static String SERVICE_PHONE = "";//客服电话
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static boolean TEST = false ;
     public static boolean ENABLE_CHAT = true;//打开单聊功能
 
@@ -142,6 +142,8 @@ public class Constant {
     public static final String USERDIARY_REPORT = "/pages/feedback/reportType?action=redirect&title=日记举报&type=UserDiary&id=";
     //直播举报
     public static final String LIVE_REPORT = "/pages/feedback/reportType?action=redirect&title=直播举报&type=video&id=";
+    //直播间添加商品小程序
+    public static final String LIVE_ADD_GOODS = "/pages_commodity/addLiveCommodity?action=redirect";
 
 
     //腾讯云小视频加防盗链

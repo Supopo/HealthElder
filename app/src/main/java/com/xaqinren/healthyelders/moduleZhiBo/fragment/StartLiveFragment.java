@@ -330,14 +330,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 hasCheckInfo = true;
                 //初始化房间信息
                 mLiveInitInfo = liveInfo;
-                if (mLiveInitInfo.liveRoomLevel != null && !mLiveInitInfo.liveRoomLevel.getCanSale()) {
+                if ((mLiveInitInfo.liveRoomLevel != null && !mLiveInitInfo.liveRoomLevel.getCanSale()) || !mLiveInitInfo.getCanSale()) {
                     menus.remove(4);
                 }
                 menuAdapter.setNewInstance(menus);
                 binding.rvMenu.setAdapter(menuAdapter);
                 initRoomInfo();
                 //有上次记录，说明没有结束直播，弹选择框
-                //todo 判断直播状态
                 if (!TextUtils.isEmpty(liveInfo.liveRoomRecordId) && !liveInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
                     showSelectDialog(liveInfo.liveRoomRecordId);
                 }

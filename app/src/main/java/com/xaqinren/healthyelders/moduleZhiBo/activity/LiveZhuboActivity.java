@@ -2249,16 +2249,16 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 long secondTime = System.currentTimeMillis();
                 if (secondTime - firstTime > 2000) {
                     //如果两次按键时间间隔大于2秒，则不退出
-                    Toast.makeText(this, "再按一次直播间~", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "再按一次结束~", Toast.LENGTH_SHORT).show();
                     firstTime = secondTime;//更新firstTime
-                    return true;
                 } else {
                     //弹窗提示
                     showDialog("结束直播...");
                     //去通知服务器退出了直播
                     viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
                 }
-                break;
+                //返回键返回判断
+                return true;
         }
         return super.onKeyUp(keyCode, event);
     }

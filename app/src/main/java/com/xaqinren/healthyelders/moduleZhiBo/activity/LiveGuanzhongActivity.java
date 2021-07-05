@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -2368,5 +2369,31 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 txVodPlayer.setRenderMode(mRenderMode);
             }
         }
+    }
+
+
+    /**
+     * 二次点击（返回键）退出
+     */
+    private double firstTime;
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                long secondTime = System.currentTimeMillis();
+                if (secondTime - firstTime > 2000) {
+                    //如果两次按键时间间隔大于2秒，则不退出
+                    Toast.makeText(this, "再按一次退出直播间~", Toast.LENGTH_SHORT).show();
+                    firstTime = secondTime;//更新firstTime
+                } else {
+                    //弹窗提示
+                    showDialog("离开直播间...");
+                    //去通知服务器退出了直播
+                    viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
+                }
+                //返回键返回判断
+                return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }

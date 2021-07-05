@@ -448,7 +448,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 double now_press_X2 = event.getX();
                 double scrollX2 = Math.abs(now_press_X2 - before_press_X);
                 double scrollY2 = Math.abs(now_press_Y2 - before_press_Y);
-                Log.e("-------", "滑动了" + scrollY2);
 
 
                 before_press_Y = 0;
@@ -467,14 +466,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                             public void run() {
                                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_HT));
                             }
-                        },100);
+                        }, 100);
                     } else {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_ZK));
                             }
-                        },100);
+                        }, 100);
                     }
                 }
 
@@ -516,6 +515,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     //变全屏
                     binding.line.setVisibility(View.GONE);
                 } else if (o.msgType == CodeTable.SET_MENU_WHITE) {
+
                     binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
                     selectView.setCompoundDrawables(null, null, null, dawable);
                     selectView.setTextColor(getResources().getColor(R.color.color_252525));
@@ -527,13 +527,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     }
 
                     if (o.status != 10) {
+
                         //背景色从白-透明 10-0
                         String alphaColor = ColorsUtils.getAlphaColor("ffffff", o.status);
                         binding.llMenu.setBackgroundColor(Color.parseColor(alphaColor));
                         //字体色从黑-白
                         selectView.setTextColor(Color.parseColor(textColors[o.status]));
 
-                        //菜单下标逐渐透明
                     }
 
                 }
@@ -731,7 +731,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
         handler.removeCallbacksAndMessages(null);
         RxSubscriptions.remove(mSubscription);
+        RxSubscriptions.remove(eventDisposable);
         RxSubscriptions.remove(uniSubscribe);
+        RxSubscriptions.clear();
     }
 
     @Override

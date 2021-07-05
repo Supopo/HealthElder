@@ -24,6 +24,7 @@ import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.LayoutPopZbjGoodsListBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.GoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBGoodsListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
@@ -62,6 +63,10 @@ public class ZBGoodsListPop extends BasePopupWindow {
     private LoadingDialog loadingDialog;
     private ImageView ivBack;
     private Disposable uniSubscribe;
+
+    //直播间添加商品小程序
+    private String uniUrl = Constant.LIVE_ADD_GOODS;
+    private String uniAPPId = Constant.JKZL_MINI_APP_ID;
 
     public ZBGoodsListPop(Context context, String liveRoomId, int type) {
         super(context);
@@ -183,8 +188,6 @@ public class ZBGoodsListPop extends BasePopupWindow {
 
         goodsList.observe((LifecycleOwner) getContext(), goodsBeans -> {
             if (goodsBeans != null) {
-                uniUrl = goodsBeans.managementPageJumpUrl;
-                uniAPPId = goodsBeans.managementPageAppId;
                 if (goodsBeans.commodityList != null) {
                     if (goodsBeans.commodityList.size() == 0) {
                         mAdapter.setEmptyView(emptyView);
@@ -217,9 +220,6 @@ public class ZBGoodsListPop extends BasePopupWindow {
             }
         });
     }
-
-    private String uniUrl;
-    private String uniAPPId;
 
     public boolean toUniApp;
 
