@@ -46,6 +46,7 @@ public class StartLiveZbViewModel extends BaseViewModel {
 
 
     public void checkLiveInfo() {
+        showDialog();
         LiveRepository.getInstance().checkLiveInfo(dismissDialog, liveInfo);
     }
 

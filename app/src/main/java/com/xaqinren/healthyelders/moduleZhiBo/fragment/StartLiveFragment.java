@@ -142,7 +142,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         mLiveRoom.startLocalPreview(true, binding.videoView);
         initLiveMenu();
         //检查直播权限
-        showDialog();
         viewModel.checkLiveInfo();
         initEvent();
         mLiveInitInfo.setHasLocation(true);
@@ -167,6 +166,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 case "翻转":
                     isBackCamera = !isBackCamera;
                     mLiveRoom.switchCamera();
+                    mLiveInitInfo.isBackCamera = isBackCamera;
                     break;
                 case "镜像":
                     //开启之后设置才有用，需要传参进去设置
@@ -246,14 +246,19 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
 
         binding.btnStart.setOnClickListener(lis -> {
-            //判断是不是存在虚拟直播
-            if (mLiveInitInfo != null && mLiveInitInfo.liveRoomType != null && mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
-                isCloseXN = true;
-                //偷偷结束直播
-                viewModel.closeLastLive(mLiveInitInfo.liveRoomRecordId);
-            } else {
-                toStartLive();
+            if (hasCheckInfo) {
+                //判断是不是存在虚拟直播
+                if (mLiveInitInfo != null && mLiveInitInfo.liveRoomType != null && mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
+                    isCloseXN = true;
+                    //偷偷结束直播
+                    viewModel.closeLastLive(mLiveInitInfo.liveRoomRecordId);
+                } else {
+                    toStartLive();
+                }
+            }else {
+                viewModel.checkLiveInfo();
             }
+
 
         });
     }
@@ -327,6 +332,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
+                binding.rvMenu.setVisibility(View.VISIBLE);
+                binding.rlTopInfo.setVisibility(View.VISIBLE);
+
                 hasCheckInfo = true;
                 //初始化房间信息
                 mLiveInitInfo = liveInfo;

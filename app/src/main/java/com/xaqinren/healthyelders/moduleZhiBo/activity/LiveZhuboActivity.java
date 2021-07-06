@@ -356,7 +356,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             binding.btnLianmai.setVisibility(View.GONE);
         }
 
-        //todo 添加系统屏蔽词
 
         //添加直播间屏蔽词
         if (mLiveInitInfo.shieldList != null && mLiveInitInfo.shieldList.size() > 0) {
@@ -485,7 +484,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private void startPublish() {
         mLiveRoom.setListener(this);
         //启动本地预览
-        mLiveRoom.startLocalPreview(true, binding.mTxVideoView);
+        mLiveRoom.startLocalPreview(!mLiveInitInfo.isBackCamera, binding.mTxVideoView);
 
         //美颜参数-开启本地预览之后再设置
         mLiveRoom.getBeautyManager().setBeautyStyle(mLiveInitInfo.beautyStyle);

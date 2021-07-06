@@ -48,6 +48,8 @@
                 android:background="@mipmap/icon_close_w" />
 
             <RelativeLayout
+                android:visibility="invisible"
+                android:id="@+id/rl_topInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@mipmap/kszb_et_bg"
@@ -133,6 +135,7 @@
                 android:layout_weight="1" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:visibility="invisible"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
                 android:id="@+id/rv_menu"

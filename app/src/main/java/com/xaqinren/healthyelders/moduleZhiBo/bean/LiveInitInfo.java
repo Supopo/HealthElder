@@ -137,6 +137,7 @@ public class LiveInitInfo implements Serializable {
     public String pushUrl;
 
     //开启直播间外面设置的一些参数
+    public boolean isBackCamera;//是否后置摄像头
     public boolean isMirror;//是否开启观众端镜像 需要推流成功后设置才有效果
     public int beautyStyle;//美颜类型
     public int beautyLevel;//美颜等级
