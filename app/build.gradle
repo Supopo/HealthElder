@@ -230,6 +230,8 @@ dependencies {
     api rootProject.ext.dependencies.PictureSelector
     //BasePopupWindow
     api rootProject.ext.dependencies.BasePopup
+    //zxin
+    api rootProject.ext.dependencies.zxin
 
     //高斯模糊
     implementation 'jp.wasabeef:glide-transformations:3.3.0'

@@ -131,14 +131,12 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         addFriendAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             opIndex = position;
             FriendBean friendBean = addFriendAdapter.getData().get(position);
-
-
-            if (friendBean.getIdentity() == null) {
-                //不是平台用户
-                ToastUtils.showShort("该用户还不是平台用户,快分享给他(她)吧!");
-                return;
-            }
             if (view.getId() == R.id.avatar) {
+                if (friendBean.getIdentity() == null) {
+                    //不是平台用户
+                    ToastUtils.showShort("该用户还不是平台用户,快分享给他(她)吧!");
+                    return;
+                }
                 UserInfoActivity.startActivity(this,friendBean.getUserId());
                 //用户详情
             } else if (view.getId() == R.id.favorite) {

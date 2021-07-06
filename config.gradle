@@ -94,7 +94,8 @@ ext {
             //BasePopupWindow
             "BasePopup"                            : "com.github.razerdp:BasePopup:2.1.9",
             //下拉刷新控件
-            "SmartRefreshLayout"                            : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-11",
+            "SmartRefreshLayout"                   : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-11",
+            "zxin"                                 : "com.github.jenly1314:zxing-lite:2.1.0"
 
     ]
 }

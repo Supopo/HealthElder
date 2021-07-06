@@ -251,10 +251,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         boolean booleanExtra = intent.getBooleanExtra(Constant.PUBLISH_SUCCESS, false);
         if (booleanExtra) {
             binding.rlMenu4.performClick();
-
-            runOnUiThread(() -> {
+            handler.postDelayed(() -> {
                 mineFragment.refreshData();
-            });
+            }, 500);
         }
         getCacheUserInfo();
     }

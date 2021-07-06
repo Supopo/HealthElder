@@ -497,6 +497,13 @@
             />
         <activity android:name=".moduleHome.activity.MenuSearchActivity"
             android:theme="@style/AnimTheme" />
+        <activity
+            android:name="com.king.zxing.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CaptureTheme"/>
+        <activity android:name=".qrcode.QRCodeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CaptureTheme"/>
 
         <service
             android:name=".push.IPushService"

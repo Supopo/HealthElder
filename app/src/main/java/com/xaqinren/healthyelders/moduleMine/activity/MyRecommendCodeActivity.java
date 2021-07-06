@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,7 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
+
 import com.dcloud.zxing2.WriterException;
+import com.king.zxing.CameraScan;
+import com.king.zxing.CaptureActivity;
 import com.tencent.qcloud.tim.uikit.utils.FileUtil;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.ugckit.utils.BitmapUtils;
@@ -17,7 +22,9 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMyRecommendBinding;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.qrcode.QRCodeActivity;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.QRCodeUtils;
@@ -31,6 +38,8 @@ import me.goldze.mvvmhabit.utils.Utils;
 
 public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBinding, BaseViewModel>{
     UserInfoBean userInfoBean;
+    private int requestCode = Constant.QR_CODE;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_my_recommend;
@@ -70,7 +79,8 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
             saveCanvas();
         });
         binding.scanLayout.setOnClickListener(v -> {
-            //TODO 扫码
+            //跳转的默认扫码界面
+            startActivityForResult(new Intent(context, QRCodeActivity.class),requestCode);
         });
     }
 
@@ -85,5 +95,16 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
         Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri);
         sendBroadcast(localIntent);
         ToastUtils.showShort("保存成功");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == this.requestCode) {
+                String result = CameraScan.parseScanResult(data);
+                LogUtils.e(TAG, "扫码结果 -> "+result);
+            }
+        }
     }
 }

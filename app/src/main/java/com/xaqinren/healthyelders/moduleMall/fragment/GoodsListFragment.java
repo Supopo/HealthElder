@@ -183,7 +183,7 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
                 } else {
                     if (datas.size() == 0) {
                         //加载更多加载结束
-                        mLoadMore.loadMoreEnd(true);
+                        mLoadMore.loadMoreEnd(false);
                         page--;
                     }
                     mallGoodsAdapter.addData(datas);
