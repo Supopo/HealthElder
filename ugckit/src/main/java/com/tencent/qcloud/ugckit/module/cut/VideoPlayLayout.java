@@ -50,7 +50,7 @@ public class VideoPlayLayout extends FrameLayout {
     public void initPlayerLayout() {
         TXVideoEditConstants.TXPreviewParam param = new TXVideoEditConstants.TXPreviewParam();
         param.videoView = mLayoutPlayer;
-        param.renderMode = TXVideoEditConstants.PREVIEW_RENDER_MODE_FILL_SCREEN;
+        param.renderMode = TXVideoEditConstants.PREVIEW_RENDER_MODE_FILL_EDGE ;
         TXVideoEditer videoEditer = VideoEditerSDK.getInstance().getEditer();
         if (videoEditer != null) {
             videoEditer.initWithPreview(param);

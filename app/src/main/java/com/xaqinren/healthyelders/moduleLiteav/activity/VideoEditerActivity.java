@@ -61,6 +61,7 @@ import com.tencent.qcloud.ugckit.module.effect.utils.Edit;
 import com.tencent.qcloud.ugckit.module.record.AudioFocusManager;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
+import com.tencent.qcloud.ugckit.module.record.UGCKitRecordConfig;
 import com.tencent.qcloud.ugckit.module.record.VideoRecordSDK;
 import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
 import com.tencent.qcloud.ugckit.utils.DialogUtil;
@@ -195,6 +196,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         UGCKitEditConfig config = new UGCKitEditConfig();
         config.isPublish = true;
         config.isSaveToDCIM = false;
+
         mUGCKitVideoEdit.setConfig(config);
         mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
         hasMusic = getIntent().getBooleanExtra(UGCKitConstants.VIDEO_HAS_MUSIC,false);
@@ -700,6 +702,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         VideoEditerSDK.getInstance().setCutterStartTime(0, videoInfo.duration);
 
         binding.videoEditView.setMediaFileInfo(videoInfo);
+
+
     }
 
     private MusicSelDialog mMusicPop;
