@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -40,6 +41,8 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityStartRenzhengBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartRenZheng2ViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartRenZhengViewModel;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
@@ -61,7 +64,7 @@ import me.goldze.mvvmhabit.bus.RxSubscriptions;
  * Created by Lee. on 2021/4/24.
  * 身份证认证页面1
  */
-public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBinding, BaseViewModel> {
+public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBinding, StartRenZhengViewModel> {
     private List<LocalMedia> selectList;
     private String photoPath;
     private String zmPath;
@@ -114,9 +117,12 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
         });
         binding.btnNext.setOnClickListener(lis -> {
             if (isSuccess1 && isSuccess2) {
-                int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
-                bundle.putInt(Constant.REN_ZHENG_TYPE, key);
-                startActivity(StartRenZheng2Activity.class, bundle);
+                showDialog();
+                viewModel.updatePhoto(zmPath, 1);
+            } else if (!isSuccess1) {
+                ToastUtil.toastShortMessage("请上传身份证正面");
+            } else if (!isSuccess2) {
+                ToastUtil.toastShortMessage("请上传身份证反面");
             } else {
                 ToastUtil.toastShortMessage("请上传身份证");
             }
@@ -141,6 +147,35 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             if (eventBean != null) {
                 if (eventBean.msgId == CodeTable.FINISH_ACT && eventBean.content.equals("rz-success")) {
                     finish();
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.fileUrl1.observe(this, url -> {
+            if (!TextUtils.isEmpty(url)) {
+                bundle.putString("idCardFrontImage", url);
+                showDialog();
+                viewModel.updatePhoto(fmPath, 2);
+            }
+        });
+        viewModel.fileUrl2.observe(this, url -> {
+            if (!TextUtils.isEmpty(url)) {
+                bundle.putString("idCardBackImage", url);
+                //去开启
+                int key = getIntent().getIntExtra(Constant.REN_ZHENG_TYPE, 0);
+                bundle.putInt(Constant.REN_ZHENG_TYPE, key);
+                startActivity(StartRenZheng2Activity.class, bundle);
+            }
+        });
+        viewModel.dismissDialog.observe(this, dis -> {
+            if (dis != null) {
+                if (dis) {
+                    dismissDialog();
                 }
             }
         });

@@ -106,6 +106,8 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
                     if (eventBean.msgId == CodeTable.WX_LOGIN_SUCCESS) {
                         String wxInfo = SPUtils.getInstance().getString(Constant.SP_KEY_WX_INFO);
                         viewModel.toWxChatRealLogin(JSON.parseObject(wxInfo, WeChatUserInfoBean.class));
+                    }else if (eventBean.msgId == CodeTable.FINISH_ACT && eventBean.content.equals("login-success")) {
+                        finish();
                     }
                 });
         RxSubscriptions.add(disposable);
@@ -126,7 +128,9 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
 }

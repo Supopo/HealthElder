@@ -51,9 +51,10 @@ public class RenZhengSuccessActivity extends BaseActivity<ActivityRenzhengSucces
                 bundle.putBoolean("status", true);
                 startActivity(SettingActivity.class, bundle);
             }
-            RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "rz-success"));
             finish();
         });
+        RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "rz-success"));
+
         String name = getIntent().getExtras().getString("name");
         binding.tvName.setText(name);
         String idNumber = getIntent().getExtras().getString("idNumber");

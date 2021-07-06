@@ -349,7 +349,7 @@ public class LiteAvRepository {
     }
 
     /**
-     * 上传图片
+     * 上传图片 多图
      * @param dismissDialog
      * @param fileUrl
      * @param filePath

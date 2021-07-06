@@ -54,6 +54,8 @@ public class StartRenZheng2Activity extends BaseActivity<ActivityStartRenzheng2B
         map.put("issueAuthority", extras.getString("issueAuthority"));
         map.put("signDate", extras.getString("signDate"));
         map.put("expiryDate", extras.getString("expiryDate"));
+        map.put("idCardFrontImage", extras.getString("idCardFrontImage"));
+        map.put("idCardBackImage", extras.getString("idCardBackImage"));
     }
 
     @Override

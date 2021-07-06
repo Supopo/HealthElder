@@ -199,6 +199,7 @@ public class UserRepository {
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
                             loginSuccess.postValue(true);
+                            RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "login-success"));
                         } else {
                             boolean showToast = false;
                             if (!response.getCode().startsWith("0") && !response.getCode().startsWith("1")) {
