@@ -74,8 +74,9 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     private TextView selVoice;
     private OnClickListener clickListener;
 
-    private float currentVolume = 0f;
-    private float currentBGMVolume = 100f;
+    private float currentVolume = 1f;
+    private float currentBGMVolume = 1f;
+    private float tempBGMVolume = 1f;
     private Context context;
     private TXUGCRecord record;
 
@@ -90,6 +91,19 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     private Disposable mSubscription;
     private String TAG = "MusicSelDialog";
     private String rootPath;
+
+    private boolean canEditVolume = true;
+    private boolean canEditOriginalVolume = true;
+
+    /**
+     * 在show之前调用
+     * @param editVolume
+     * @param editOriginal
+     */
+    public void setEnableVolumeEdit(boolean editVolume,boolean editOriginal){
+        canEditVolume = editVolume;
+        canEditOriginalVolume = editOriginal;
+    }
 
     public void setJustChooseNoPlay(boolean justChooseNoPlay) {
         this.justChooseNoPlay = justChooseNoPlay;
@@ -217,7 +231,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 }
                 adapter.notifyItemChanged(position);
         });
-
+        clearSeekBar();
         originalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -236,6 +250,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
             }
         });
+
         bmgSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -254,7 +269,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
             }
         });
-        clearSeekBar();
+
         setOnBottomItemClickListener(this);
         setOnDismissListener(this);
         initObservable();
@@ -307,6 +322,9 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             selMusic.setSelected(true);
             selVoice.setSelected(false);
             showTitleRight(false);
+        }
+        if (!canEditVolume) {
+            selVoice.setVisibility(View.GONE);
         }
         isFirstShow = true;
         //将订阅者加入管理站
@@ -523,7 +541,6 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         }
         collList.postValue(list);
     }
-
     /**
      * 移除一个本地收藏
      * @param bean
@@ -550,15 +567,12 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         downloadMusic.addWork(downMusicBean);
 
     }
-    
     //播放音乐
     private void playMusic(MMusicItemBean bean) {
         stopPlayMusic();
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-
-
                 MusicInfo musicInfo = new MusicInfo();
                 musicInfo.path = bean.musicUrl;
                 musicInfo.name = bean.name;
@@ -596,7 +610,6 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             }
         }.execute(new Object());
     }
-    
     //取消使用
     private void stopPlayMusic() {
         MusicRecode.getInstance().setUseMusicItem(null);
@@ -608,7 +621,6 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             clickListener.onStopPlay();
         }
     }
-
     //选择更多
     private void stopPlayMusicByMore() {
         stopPreviewMusic();
@@ -621,25 +633,57 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     }
 
     private void prepareSeekBar() {
-        currentVolume = 0;
-        currentBGMVolume = 100f;
-        originalSeekBar.setEnabled(true);
-        bmgSeekBar.setEnabled(true);
-        originalSeekBar.setProgress(0);
-        bmgSeekBar.setProgress(100);
-        originalTvValue.setText(0 + "%");
-        bgmTvValue.setText(100 + "%");
+//        currentVolume = 0;
+        if (tempBGMVolume == 0) {
+            //防止停止播放后,或者手动置为0时候，播放没有声音
+            tempBGMVolume = 1f;
+        }
+        currentBGMVolume = tempBGMVolume;
+        int temp  = (int) (currentVolume * 100);
+        int temp2 = (int) (currentBGMVolume * 100);
+        if (canEditVolume) {
+            if (canEditOriginalVolume)
+                originalSeekBar.setEnabled(true);
+            else {
+                temp = 0;
+                originalSeekBar.setEnabled(false);
+            }
+            bmgSeekBar.setEnabled(true);
+        }else{
+            originalSeekBar.setEnabled(false);
+            bmgSeekBar.setEnabled(false);
+        }
+        originalSeekBar.setProgress(temp);
+        bmgSeekBar.setProgress(temp2);
+        originalTvValue.setText(temp+ "%");
+        bgmTvValue.setText(temp2 + "%");
     }
 
     private void clearSeekBar() {
+//        currentVolume = 0;
+        tempBGMVolume = currentBGMVolume;
         currentBGMVolume = 0;
-        currentVolume = 0;
-        originalSeekBar.setProgress(0);
-        bmgSeekBar.setProgress(0);
-        originalSeekBar.setEnabled(false);
-        bmgSeekBar.setEnabled(false);
-        originalTvValue.setText(0 + "%");
-        bgmTvValue.setText(0 + "%");
+        int temp  = (int) (currentVolume * 100);
+        int temp2 = (int) (currentBGMVolume * 100);
+        originalSeekBar.setProgress(temp);
+        bmgSeekBar.setProgress(temp2);
+
+        if (canEditVolume) {
+            if (canEditOriginalVolume)
+                originalSeekBar.setEnabled(true);
+            else {
+                temp = 0;
+                originalSeekBar.setEnabled(false);
+            }
+            bmgSeekBar.setEnabled(true);
+        }else{
+            originalSeekBar.setEnabled(false);
+            bmgSeekBar.setEnabled(false);
+        }
+
+
+        originalTvValue.setText(temp+ "%");
+        bgmTvValue.setText(temp2 + "%");
     }
 
     private void clearPlayStatus() {

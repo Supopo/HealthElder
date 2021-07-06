@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.tencent.bugly.proguard.A;
+import com.tencent.liteav.audio.TXCUGCBGMPlayer;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.qcloud.tim.uikit.utils.PopWindowUtil;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
@@ -148,6 +149,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
 
     };
     private boolean isStartMusicActivity;
+    //是否使用了音乐
+    private boolean hasMusic;
 
 
     @Override
@@ -179,6 +182,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     }
 
     private void initView() {
+
         mUGCKitVideoEdit = binding.videoEdit;
         mTvBgm = binding.selMusic;
         mTvMotion = binding.actionLayout;
@@ -193,6 +197,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         config.isSaveToDCIM = false;
         mUGCKitVideoEdit.setConfig(config);
         mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
+        hasMusic = getIntent().getBooleanExtra(UGCKitConstants.VIDEO_HAS_MUSIC,false);
         if (!TextUtils.isEmpty(mVideoPath)) {
             mUGCKitVideoEdit.setVideoPath(mVideoPath);
         }
@@ -219,7 +224,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         info = TXVideoInfoReader.getInstance(UGCKit.getAppContext()).getVideoFileInfo(mVideoPath);
         loadVideoInfo(info);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -238,6 +242,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         super.onResume();
         mUGCKitVideoEdit.setOnVideoEditListener(mOnVideoEditListener);
         mUGCKitVideoEdit.start();
+        rePlay();
     }
 
     @Override
@@ -252,6 +257,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     @Override
     protected void onRestart() {
         super.onRestart();
+        rePlay();
+    }
+
+    private void rePlay() {
         //非顶层activity，不处理
         Activity peek = AppManager.getActivityStack().peek();
         if (peek.getClass() != this.getClass()) {
@@ -505,6 +514,11 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         // 加载草稿配置
         ConfigureLoader.getInstance().loadConfigToDraft();
 
+        ConfigureLoader.getInstance().setMusicVolume(1);
+        ConfigureLoader.getInstance().setVideoVolume(1);
+
+        ConfigureLoader.getInstance().saveConfigFromDraft();
+
         TelephonyUtil.getInstance().initPhoneListener();
 
         initTitlebar();
@@ -692,6 +706,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     private void showMusicPop() {
         if (mMusicPop == null) {
             mMusicPop = new MusicSelDialog(this);
+            mMusicPop.setEnableVolumeEdit(true,!hasMusic);
         }
         mMusicPop.show();
 
@@ -705,7 +720,8 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         mMusicPop.setOnClickListener(new MusicSelDialog.OnClickListener() {
             @Override
             public void onMusicPlay() {
-                muteVideo();
+                if (hasMusic)
+                    muteVideo();
                 PlayerManagerKit.getInstance().restartPlay();
             }
 
@@ -713,6 +729,11 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             public void onMoreClick() {
                 mMusicPop.dismiss();
                 isStartMusicActivity = true;
+                //停止播放
+                ConfigureLoader.getInstance().setMusicVolume(0f);
+                ConfigureLoader.getInstance().setVideoVolume(1f);
+                ConfigureLoader.getInstance().saveConfigFromDraft();
+
                 MusicRecode.CURRENT_BOURN = com.xaqinren.healthyelders.moduleLiteav.Constant.BOURN_EDIT;
                 Intent intent = new Intent(getActivity(),ChooseMusicActivity.class);
                 startActivityForResult(intent, CodeTable.MUSIC_BACK);
@@ -723,16 +744,30 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             public void onItemPlay(MMusicItemBean bean) {
                 binding.musicName.setText(bean.name);
                 resetMusicBGM(bean.name , bean.localPath);
-                muteVideo();
+                if (hasMusic)
+                    muteVideo();
                 PlayerManagerKit.getInstance().restartPlay();
             }
 
             @Override
             public void onVolumeChange(float oVolume, float bgmVolume) {
-                ConfigureLoader.getInstance().setMusicVolume(bgmVolume / 100);
+                ConfigureLoader.getInstance().setMusicVolume(bgmVolume);
+                if (hasMusic) {
+                    ConfigureLoader.getInstance().setVideoVolume(0);
+                }else{
+                    ConfigureLoader.getInstance().setVideoVolume(oVolume);
+                }
+
                 ConfigureLoader.getInstance().saveConfigFromDraft();
 
-                muteVideo();
+
+                VideoEditerSDK.getInstance().getEditer().setBGMVolume(0);
+                if (hasMusic) {
+                    VideoEditerSDK.getInstance().getEditer().setVideoVolume(0);
+                }else{
+                    VideoEditerSDK.getInstance().getEditer().setVideoVolume(oVolume);
+                }
+//                muteVideo();
             }
 
             @Override
@@ -748,7 +783,6 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             @Override
             public void onDismiss() {
                 hideMusicPanel();
-                //如果选择了新的音乐,则吧原音静音
                 videoVolume();
 
                 VideoEditerSDK.getInstance().getEditer().setBGMStartTime(0, 10 * 60 * 1000);
@@ -761,6 +795,10 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             @Override
             public void onStopPlay() {
                 binding.musicName.setText("选择音乐");
+                //停止播放
+                ConfigureLoader.getInstance().setMusicVolume(0f);
+                ConfigureLoader.getInstance().setVideoVolume(1f);
+                ConfigureLoader.getInstance().saveConfigFromDraft();
             }
         });
     }
@@ -787,19 +825,18 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     private void videoVolume() {
         if (VideoEditerSDK.getInstance() != null) {
             if (VideoEditerSDK.getInstance().getEditer() != null) {
+                //添加的音乐声音
                 float volume = ConfigureLoader.getInstance().getMusicVolume();
                 VideoEditerSDK.getInstance().getEditer().setBGMVolume(volume);
+                //视频本身声音
+                float vVolume = ConfigureLoader.getInstance().getVideoVolume();
+                VideoEditerSDK.getInstance().getEditer().setVideoVolume(vVolume);
+            }else{
+                //很明显未选择音乐
+                VideoEditerSDK.getInstance().getEditer().setBGMVolume(0);
+                VideoEditerSDK.getInstance().getEditer().setVideoVolume(1);
             }
         }
-    }
-
-    public void setVolum(float volume,float bgmVolume) {
-        TXUGCRecord record = VideoRecordSDK.getInstance().getRecorder();
-        if (record != null) {
-            record.setMicVolume(volume);
-            record.setBGMVolume(bgmVolume);
-        }
-
     }
 
 

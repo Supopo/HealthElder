@@ -11,6 +11,7 @@ import java.io.InputStream;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import okhttp3.ResponseBody;
@@ -81,6 +82,7 @@ public abstract class ProgressCallBack<T> {
      */
     public void subscribeLoadProgress() {
         mSubscription = RxBus.getDefault().toObservable(DownLoadStateBean.class)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //回调到主线程更新UI
                 .subscribe(new Consumer<DownLoadStateBean>() {
                     @Override

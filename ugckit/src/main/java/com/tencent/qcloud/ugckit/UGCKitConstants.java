@@ -28,6 +28,7 @@ public class UGCKitConstants {
     public static final String TCLIVE_INFO_POSITION = "txlive_info_position";
 
     public static final String VIDEO_PATH = "key_video_editer_path";
+    public static final String VIDEO_HAS_MUSIC = "key_video_has_music";
     public static final String VIDEO_COVERPATH = "coverpath";
     public static final String VIDEO_URI = "key_video_editer_uri_path";
 

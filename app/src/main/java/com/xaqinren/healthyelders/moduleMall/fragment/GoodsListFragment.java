@@ -28,6 +28,7 @@ import com.xaqinren.healthyelders.moduleMall.adapter.MallGoodsAdapter;
 import com.xaqinren.healthyelders.moduleMall.viewModel.GoodsListViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import io.reactivex.disposables.Disposable;

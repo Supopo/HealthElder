@@ -67,11 +67,19 @@ public class ConfigureLoader {
     public void setMusicVolume(float volume) {
         mDraftEditer.setBgmVolume(volume);
     }
+    public void setVideoVolume(float volume) {
+        mDraftEditer.setVideoVolume(volume);
+    }
     public float getMusicVolume() {
         if (mDraftEditer == null) {
             return 1;
         }
         return mDraftEditer.getBgmVolume();
     }
-
+    public float getVideoVolume() {
+        if (mDraftEditer == null) {
+            return 1;
+        }
+        return mDraftEditer.getVideoVolume();
+    }
 }

@@ -500,6 +500,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private void showMusicPop() {
         if (mMusicPop == null) {
             mMusicPop = new MusicSelDialog(getActivity());
+            mMusicPop.setEnableVolumeEdit(false, false);
         }
         mMusicPop.show();
 
@@ -643,8 +644,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void startEditActivity() {
+        MMusicItemBean useMusicItem = MusicRecode.getInstance().getUseMusicItem();
         Intent intent = new Intent(getContext(), VideoEditerActivity.class);
         intent.putExtra(UGCKitConstants.VIDEO_PATH, VideoRecordSDK.getInstance().getRecordVideoPath());
+        intent.putExtra(UGCKitConstants.VIDEO_HAS_MUSIC, useMusicItem != null);
         startActivity(intent);
         //todo 录制完跳页前先关闭否则切到直播会没有声音
 //        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));

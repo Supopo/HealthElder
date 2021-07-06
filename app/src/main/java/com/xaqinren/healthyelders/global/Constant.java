@@ -15,7 +15,7 @@ public class Constant {
     public static String SERVICE_PHONE = "";//客服电话
     public static boolean DEBUG = true;
     public static boolean TEST = true ;
-    public static boolean ENABLE_CHAT = true;//打开单聊功能
+    public static boolean ENABLE_CHAT = false;//打开单聊功能
 
     public static String baseUrl = "http://api.hjyiyuanjiankang.com/";
     public static String testUrl = "http://test.hjyiyuanjiankang.com/";
