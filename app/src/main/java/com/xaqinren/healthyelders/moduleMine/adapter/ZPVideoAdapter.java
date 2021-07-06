@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleMine.adapter;
 
+import android.view.View;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -26,8 +28,9 @@ public class ZPVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         binding.executePendingBindings();
 
         if (item.isDraft) {
+            binding.llCaoGao.setVisibility(View.VISIBLE);
             GlideUtil.intoGaoSiImageView(getContext(), item.coverUrl, binding
-                    .ivVideo, 3);
+                    .ivVideo, 2);
         } else {
             GlideUtil.intoImageView(getContext(), item.coverUrl, binding
                     .ivVideo);

@@ -929,7 +929,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void resumePlay() {
         //后面的判断是在我的列表里面观看时候的
-        if (AppApplication.get().bottomMenu == 0 || (AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
+        if ((AppApplication.get().bottomMenu == 0) || (AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
             binding.mainVideoView.onResume();
 
             //是否开启播放状态

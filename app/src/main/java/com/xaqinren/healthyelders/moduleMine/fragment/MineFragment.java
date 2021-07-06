@@ -34,6 +34,7 @@ import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineViewModel;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -349,6 +350,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     public void initViewObservable() {
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
+            GlideUtil.intoPhotoImageView(getActivity(),userInfo.getAvatarUrl(),binding.rivPhoto2);
             dismissDialog();
         });
 

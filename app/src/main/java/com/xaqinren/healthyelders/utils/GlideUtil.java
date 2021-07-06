@@ -36,6 +36,17 @@ public class GlideUtil {
                 .apply(options).into(view);
     }
 
+
+    public static void intoPhotoImageView(Context context, Object res, ImageView view) {
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.mipmap.icon_photo_def)//图片加载出来前，显示的图片
+                .fallback(R.mipmap.icon_photo_def) //url为空的时候,显示的图片
+                .error(R.mipmap.icon_photo_def);//图片加载失败后，显示的图片
+        Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .thumbnail(0.5f)
+                .apply(options).into(view);
+    }
+
     public static void intoGaoSiImageView(Context context, Object res, ImageView view) {
         Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 15)))

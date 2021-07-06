@@ -61,6 +61,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:includeFontPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -70,13 +71,14 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_marginLeft="@dimen/dp_2"
-                android:layout_marginBottom="@dimen/dp_2"
+                android:includeFontPadding="false"
+                android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@{viewModel.getMonth()}"
-                android:textColor="@color/color_F6F6"
+                android:layout_marginBottom="@dimen/dp_1"
+                android:textColor="@color/color_FF6E6E78"
                 android:textSize="10sp" />
 
         </LinearLayout>

@@ -124,7 +124,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public int draftCount;//草稿箱数量
 
     public String getDraftCount() {
-        return "草稿箱 +" + draftCount;
+        return "" + draftCount + "个作品";
     }
 
     //"resourceType": "VIDEO",需要
