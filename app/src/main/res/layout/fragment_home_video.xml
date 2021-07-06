@@ -502,10 +502,11 @@
                     android:visibility="gone">
 
                     <ImageView
-                        android:layout_gravity="center_vertical"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_17" />
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_17"
+                        android:background="@mipmap/icon_video_num" />
 
 
                     <TextView
@@ -514,7 +515,7 @@
                         android:layout_marginLeft="@dimen/dp_8"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:text="24浏览"
+                        android:text=""
                         android:textColor="#727272"
                         android:textSize="@dimen/sp_14" />
 

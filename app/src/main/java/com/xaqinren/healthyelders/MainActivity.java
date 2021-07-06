@@ -331,13 +331,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             if (currentIndex == 3) {
                 return;
             }
+            AppApplication.get().bottomMenu = 3;
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(2, "暂停播放"));
             selectView = binding.tvMenu4;
             initBottomTab();
             oldView = binding.tvMenu4;
             mineFragment.getUserInfo();
-            AppApplication.get().bottomMenu = 3;
         });
         binding.ivLive.setOnClickListener(lis -> {
             //先判断是否登录

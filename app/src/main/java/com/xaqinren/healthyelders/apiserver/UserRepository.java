@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.apiserver;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -188,11 +189,15 @@ public class UserRepository {
                     @Override
                     public void onNext(MBaseResponse<LoginTokenBean> response) {
                         if (response.isOk()) {
+                            if (InfoCache.getInstance().checkLogin()) {
+                                //说明是登陆之后绑定手机号
+                                getUserInfo(null, Constant.API_HEADER + response.getData().access_token, false);
+                            }
+
                             response.getData().saveTime = System.currentTimeMillis();
                             InfoCache.getInstance().setTokenInfo(response.getData());
                             UserInfoMgr.getInstance().setAccessToken(response.getData().access_token);
                             UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + response.getData().access_token);
-                            //                            getUserInfo(null, Constant.API_HEADER + response.getData().access_token,true);
                             loginSuccess.postValue(true);
                         } else {
                             boolean showToast = false;
@@ -941,7 +946,7 @@ public class UserRepository {
         hashMap.put("refreshToken", refreshToken);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.refreshToken( body)
+        userApi.refreshToken(body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new DisposableObserver<MBaseResponse<LoginTokenBean>>() {

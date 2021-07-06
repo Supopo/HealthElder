@@ -654,7 +654,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             getActivity().overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
         });
 
-        binding.tvSetting.setOnClickListener(lis ->{
+        binding.tvSetting.setOnClickListener(lis -> {
             showOpenModeDialog();
         });
     }
@@ -928,7 +928,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void resumePlay() {
-        if (AppApplication.get().bottomMenu == 0 || AppApplication.get().bottomMenu == 3) {
+        //后面的判断是在我的列表里面观看时候的
+        if (AppApplication.get().bottomMenu == 0 || (AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
             binding.mainVideoView.onResume();
 
             //是否开启播放状态
@@ -952,6 +953,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
         }
 
+        LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay" + position);
 
     }
 
@@ -1227,6 +1229,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     //权限设置弹窗
     private List<LiteAvUserBean> unLookUserList;//不给谁看列表
+
     private void showOpenModeDialog() {
         if (openModePop == null) {
             openModePop = new LiteAvOpenModePopupWindow(getActivity());
@@ -1239,9 +1242,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         case LiteAvOpenModePopupWindow.HIDE_MODE: {
                             Intent intent = new Intent(getActivity(), ChooseUnLookActivity.class);
                             intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
-                            startActivityForResult(intent,999);
-                            getActivity().overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
-                        }break;
+                            startActivityForResult(intent, 999);
+                            getActivity().overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_push_none);
+                        }
+                        break;
                     }
 
                 }

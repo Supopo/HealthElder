@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,13 +149,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                                 dismissDialog();
                             }
                         }, 500);
-                    }else if (event.msgType == CodeTable.SHOW_HOME1_TOP_HT) {
+                    } else if (event.msgType == CodeTable.SHOW_HOME1_TOP_HT) {
                         //回弹到顶部
                         binding.nsv.setScrollingEnabled(true);
                         binding.viewPager2.setUserInputEnabled(false);
                         binding.nsv.fling(0);
                         binding.nsv.smoothScrollTo(0, 0);
-                    }else if (event.msgType == CodeTable.SHOW_HOME1_TOP_ZK) {
+                    } else if (event.msgType == CodeTable.SHOW_HOME1_TOP_ZK) {
                         //展开全部
                         binding.nsv.fling((int) getResources().getDimension(R.dimen.dp_234));
                         binding.nsv.smoothScrollTo(0, (int) getResources().getDimension(R.dimen.dp_234));
