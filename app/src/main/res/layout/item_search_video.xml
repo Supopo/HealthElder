@@ -16,6 +16,7 @@
     <!--    android:background="@{viewModel.placeholderRes}"-->
 
     <LinearLayout
+        android:id="@+id/ll_item"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
 
             <ImageView
                 android:id="@+id/iv_cover"
+                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

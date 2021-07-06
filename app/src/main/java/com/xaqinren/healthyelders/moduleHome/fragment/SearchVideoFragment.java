@@ -17,11 +17,13 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchVideoBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
+import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+import com.xaqinren.healthyelders.widget.SpeacesItemDecorationEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  */
 public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding, SearchAllViewModel> {
 
-    private SearchVideoAdapter mAdapter;
+    private GridVideoAdapter mAdapter;
     public int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
@@ -67,7 +69,8 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         //防止Item切换
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         binding.rvContent.setLayoutManager(manager);
-        binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
+        binding.rvContent.addItemDecoration(new SpeacesItemDecorationEx(getActivity(), getResources().getDimension(R.dimen.dp_7), 0, 0, getResources().getDimension(R.dimen.dp_7), true));
+
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
 
@@ -84,7 +87,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
     }
 
     private void initAdapter() {
-        mAdapter = new SearchVideoAdapter(R.layout.item_search_video);
+        mAdapter = new GridVideoAdapter(R.layout.item_grid_video);
         binding.rvContent.setAdapter(mAdapter);
 
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载

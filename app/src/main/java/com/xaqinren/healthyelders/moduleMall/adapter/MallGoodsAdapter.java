@@ -49,6 +49,7 @@ public class MallGoodsAdapter extends BaseQuickAdapter<GoodsBean, BaseViewHolder
         params.height = itemWidth;
         binding.ivCover.setLayoutParams(params);
 
+        //判断前两个距离顶部
         if (helper.getLayoutPosition() == 0 || helper.getLayoutPosition() == 1) {
             //动态设置间距
             StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) binding.llItem.getLayoutParams();

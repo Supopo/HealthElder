@@ -243,13 +243,13 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         searchAllViewModel.allDatas.observe(this, dataList -> {
             binding.srlContent.setRefreshing(false);
             if (dataList != null) {
-                if (mAdapter.getData().size() > 0) {
+                if (page == 1 && mAdapter.getData().size() > 0) {
                     mAdapter.getData().clear();
                 }
                 contentRes = true;
                 dismissDialog();
+
                 if (dataList.size() > 0) {
-                    //加载更多加载完成
                     mLoadMore.loadMoreComplete();
                     if (page == 1) {
                         mAdapter.setNewInstance(dataList);
@@ -257,12 +257,10 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                         mAdapter.addData(dataList);
                     }
                 } else {
-
+                    mLoadMore.loadMoreEnd(true);
                     if (page == 1) {
                         showNodata();
                     }
-
-                    mLoadMore.loadMoreEnd(true);
                     page--;
                 }
 

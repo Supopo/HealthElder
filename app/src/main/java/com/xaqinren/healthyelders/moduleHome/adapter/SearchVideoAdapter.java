@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
@@ -69,6 +70,13 @@ public class SearchVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
         }
         GlideUtil.intoImageView(getContext(), item.coverUrl, binding.ivCover);
 
+        //判断前两个距离顶部
+        if (helper.getLayoutPosition() == 0 || helper.getLayoutPosition() == 1) {
+            //动态设置间距
+            StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) binding.llItem.getLayoutParams();
+            lp.setMargins(0, (int)getContext().getResources().getDimension(R.dimen.dp_4), 0, 0);
+            binding.llItem.setLayoutParams(lp);
+        }
     }
 
     //局部刷新用的

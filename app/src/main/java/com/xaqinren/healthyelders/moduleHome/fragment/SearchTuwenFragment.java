@@ -17,10 +17,12 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentSearchTwBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+import com.xaqinren.healthyelders.widget.SpeacesItemDecorationEx;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -34,7 +36,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  */
 public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, BaseViewModel> {
 
-    private SearchVideoAdapter mAdapter;
+    private GridVideoAdapter mAdapter;
     public int page = 1;
     private BaseLoadMoreModule mLoadMore;
     private SearchAllViewModel searchAllViewModel;
@@ -65,7 +67,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         //防止Item切换
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         binding.rvContent.setLayoutManager(manager);
-        binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
+        binding.rvContent.addItemDecoration(new SpeacesItemDecorationEx(getActivity(), getResources().getDimension(R.dimen.dp_7), 0, 0, getResources().getDimension(R.dimen.dp_7), true));
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
 
@@ -83,7 +85,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
     }
 
     private void initAdapter() {
-        mAdapter = new SearchVideoAdapter(R.layout.item_search_video);
+        mAdapter = new GridVideoAdapter(R.layout.item_grid_video);
         binding.rvContent.setAdapter(mAdapter);
         mLoadMore = mAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
