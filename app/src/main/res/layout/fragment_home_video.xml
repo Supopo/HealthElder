@@ -26,6 +26,11 @@
             style="@style/Layout.Main"
             android:layout_above="@id/bottom" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/quanp_zhez" />
+
         <View
             android:id="@+id/bottom"
             android:layout_width="match_parent"
@@ -41,8 +46,7 @@
 
         <RelativeLayout
             android:id="@+id/rlView"
-            style="@style/Layout.Main"
-            android:background="@mipmap/quanp_zhez">
+            style="@style/Layout.Main">
 
 
             <RelativeLayout

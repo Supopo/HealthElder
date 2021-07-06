@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_151"
             android:scaleType="center"
+            android:src="@mipmap/quanp_zhez"
             app:qmui_border_color="@color/transparent"
             app:qmui_corner_radius="@dimen/dp_4"
             app:url="@{viewModel.homeComprehensiveHall.coverUrl}" />
