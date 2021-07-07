@@ -226,8 +226,8 @@ public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
             mRecordSDK.snapshot(new TXRecordCommon.ITXSnapshotListener() {
                 @Override
                 public void onSnapshot(final Bitmap bitmap) {
-                    String fileName = System.currentTimeMillis() + ".jpg";
-                    MediaStore.Images.Media.insertImage(UGCKit.getAppContext().getContentResolver(), bitmap, fileName, null);
+                    /*String fileName = System.currentTimeMillis() + ".jpg";
+                    MediaStore.Images.Media.insertImage(UGCKit.getAppContext().getContentResolver(), bitmap, fileName, null);*/
 
                     BackgroundTasks.getInstance().runOnUiThread(new Runnable() {
                         @Override

@@ -374,6 +374,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                         if (localPhotoBean.type == 1)continue;
                         LocalMedia media = new LocalMedia();
                         media.setPath(localPhotoBean.getPath());
+                        media.setRealPath(localPhotoBean.getPath());
                         localMedia.add(media);
                     }
                     PictureSelector.create(PublishTextPhotoActivity.this)
