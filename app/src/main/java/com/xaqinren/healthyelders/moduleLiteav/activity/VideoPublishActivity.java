@@ -672,6 +672,17 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                         }break;
                     }
                     binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
+                    switch (publishMode) {
+                        case LiteAvOpenModePopupWindow.OPEN_MODE:
+                            binding.includePublish.ivOpen.setBackground(getResources().getDrawable(R.mipmap.icon_quanx_gk));
+                            break;
+                        case LiteAvOpenModePopupWindow.FRIEND_MODE:
+                            binding.includePublish.ivOpen.setBackground(getResources().getDrawable(R.mipmap.icon_quanx_peny));
+                            break;
+                        case LiteAvOpenModePopupWindow.PRIVATE_MODE:
+                            binding.includePublish.ivOpen.setBackground(getResources().getDrawable(R.mipmap.icon_quanx_sim));
+                            break;
+                    }
                 }
 
                 @Override
@@ -690,9 +701,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             case LiteAvOpenModePopupWindow.OPEN_MODE:
                 return "公开 · 所有人可见";
             case LiteAvOpenModePopupWindow.FRIEND_MODE:
-                return "朋友: 互关朋友可见";
+                return "朋友 · 互关朋友可见";
             case LiteAvOpenModePopupWindow.PRIVATE_MODE:
-                return "朋友: 仅自己可见";
+                return "私密 · 仅自己可见";
             case LiteAvOpenModePopupWindow.HIDE_MODE:{
                 if (unLookUserList.isEmpty()) {
                     return null;

@@ -65,11 +65,12 @@
             android:layout_below="@id/location_list">
 
             <ImageView
-                android:layout_width="@dimen/dp_16"
+                android:id="@+id/iv_open"
+                android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:src="@mipmap/icon_ship_fab_gk" />
+                android:background="@mipmap/icon_ship_fab_gk" />
 
             <TextView
                 android:id="@+id/open_mode_tv"

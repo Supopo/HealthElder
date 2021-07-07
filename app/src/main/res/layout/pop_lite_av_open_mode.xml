@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_weight="1"
-                android:text="朋友: 互相关注朋友可见"
+                android:text="朋友 · 互相关注朋友可见"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14" />
 
@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_weight="1"
-                android:text="私密: 仅自己可见"
+                android:text="私密 · 仅自己可见"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14" />
 

@@ -86,7 +86,7 @@
                         android:singleLine="true"
                         android:hint="6字以上的标题能提高人气"
                         android:textColor="@color/white"
-                        android:maxEms="15"
+                        android:maxLength="15"
                         android:textStyle="bold"
                         android:textColorHint="@color/color_FFDCDBDB"
                         android:textSize="@dimen/sp_14" />
