@@ -107,6 +107,10 @@ public class LiteAvUserBean implements MultiItemEntity , Serializable , IShareUs
         attentionUserInfo.nickname = name;
     }
 
+    public String getAttentionUserId() {
+        return attentionUserId;
+    }
+
     @Override
     public Object getKey() {
         return userId;

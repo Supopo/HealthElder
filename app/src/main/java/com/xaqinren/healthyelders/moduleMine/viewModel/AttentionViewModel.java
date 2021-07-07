@@ -19,6 +19,7 @@ public class AttentionViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> requestSuccess = new MutableLiveData<>();
     public MutableLiveData<List<LiteAvUserBean>> userList = new MutableLiveData<>();
     public MutableLiveData<List<LiteAvUserBean>> searchUserList = new MutableLiveData<>();
+    public MutableLiveData<List<LiteAvUserBean>> refreshUserList = new MutableLiveData<>();
     public MutableLiveData<Boolean> flow = new MutableLiveData<>();
     public MutableLiveData<Boolean> del = new MutableLiveData<>();
 
@@ -40,10 +41,15 @@ public class AttentionViewModel extends BaseViewModel {
     public void searchUserList(int page, int pageSize, String identity) {
         LiteAvRepository.getInstance().getSearchUserList(requestSuccess, searchUserList, page, pageSize, identity);
     }
+    public void refreshUserList(String identity) {
+        LiteAvRepository.getInstance().getSearchUserList(requestSuccess, refreshUserList, 1, Integer.MAX_VALUE, identity);
+    }
     public void recommendFriend(String id) {
         MsgRepository.getInstance().toFollow(requestSuccess, flow, id);
     }
     public void delFans(String id) {
         UserRepository.getInstance().delFans(requestSuccess, del, id);
     }
+
+
 }

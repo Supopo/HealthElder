@@ -123,26 +123,26 @@ public class Constant {
     //银行卡列表
     public static final String MINI_BANK_CARD_LIST = "pages_user/wallet/bankCardList?action=redirect";
     //用户协议
-    public static final String MINI_AGREEMENT = "pages/agreement/userService?action=redirect";
+    public static final String MINI_AGREEMENT = "pages_base/agreement/userService?action=redirect";
     //隐私协议
-    public static final String MINI_PRIVACY = "pages/agreement/userPrivacy?action=redirect";
+    public static final String MINI_PRIVACY = "pages_base/agreement/userPrivacy?action=redirect";
     //关于我们
-    public static final String MINI_ABOUT_US = "pages/agreement/aboutUs?action=redirect";
+    public static final String MINI_ABOUT_US = "pages_base/agreement/aboutUs?action=redirect";
     //提现 服务条款
-    public static final String MINI_WITHDRAW_SERVICE = "pages/agreement/withdrawService?action=redirect";
+    public static final String MINI_WITHDRAW_SERVICE = "pages_base/agreement/withdrawService?action=redirect";
     //直播功能使用条款
-    public static final String ZB_SYTK = "/pages/agreement/liveClause?action=redirect";
+    public static final String ZB_SYTK = "/pages_base/agreement/liveClause?action=redirect";
     //直播功能行为规范
-    public static final String ZB_XWGF = "/pages/agreement/liveStandard?action=redirect";
+    public static final String ZB_XWGF = "/pages_base/agreement/liveStandard?action=redirect";
 
     //视频举报
-    public static final String VIDEO_REPORT = "/pages/feedback/reportType?action=redirect&title=视频举报&type=video&id=";
+    public static final String VIDEO_REPORT = "/pages_base/feedback/reportType?action=redirect&title=视频举报&type=video&id=";
     //用户举报
-    public static final String USER_REPORT = "/pages/feedback/reportType?action=redirect&title=用户举报&type=user&id=";
+    public static final String USER_REPORT = "/pages_base/feedback/reportType?action=redirect&title=用户举报&type=user&id=";
     //日记举报
-    public static final String USERDIARY_REPORT = "/pages/feedback/reportType?action=redirect&title=日记举报&type=UserDiary&id=";
+    public static final String USERDIARY_REPORT = "/pages_base/feedback/reportType?action=redirect&title=日记举报&type=UserDiary&id=";
     //直播举报
-    public static final String LIVE_REPORT = "/pages/feedback/reportType?action=redirect&title=直播举报&type=video&id=";
+    public static final String LIVE_REPORT = "/pages_base/feedback/reportType?action=redirect&title=直播举报&type=video&id=";
     //直播间添加商品小程序
     public static final String LIVE_ADD_GOODS = "/pages_commodity/addLiveCommodity?action=redirect";
 

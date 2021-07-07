@@ -36,6 +36,8 @@ import com.xaqinren.healthyelders.moduleMsg.bean.MessageDetailBean;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.util.List;
+
 import me.goldze.mvvmhabit.base.BaseFragment;
 
 /**
@@ -52,6 +54,9 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     private int currentPage = 1;
     private int pageSize = 10;
     private String uid;
+
+    private LiteAvUserBean tempUserBean = null;
+    private int tempUserIndex = -1;
 
     public AttentionFragment(int i, String uid) {
         super();
@@ -98,6 +103,8 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
             opIndex = position;
             switch (view.getId()) {
                 case R.id.avatar: {
+                    tempUserBean = userBean;
+                    tempUserIndex = position;
                     Bundle bundle = new Bundle();
                     bundle.putString("userId", userBean.getId());
                     startActivity(UserInfoActivity.class,bundle);
@@ -142,9 +149,40 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (tempUserBean != null && tempUserIndex != -1) {
+            //重新请求单个用户信息
+            if (tempUserBean.attentionUserInfo != null) {
+                viewModel.refreshUserList(tempUserBean.attentionUserInfo.nickname);
+            }
+        }
+    }
+
+
+
+    @Override
     public void initViewObservable() {
         super.initViewObservable();
         dismissDialog();
+        viewModel.refreshUserList.observe(this, liteAvUserBeans -> {
+            if (!liteAvUserBeans.isEmpty()) {
+                if (tempUserBean != null && tempUserIndex != -1) {
+                    //重新请求单个用户信息
+                    if (tempUserBean.attentionUserInfo != null) {
+                        String id = tempUserBean.getAttentionUserId();
+                        for (LiteAvUserBean liteAvUserBean : liteAvUserBeans) {
+                            if (id.equals(liteAvUserBean.getId())) {
+                                tempUserBean.setIdentity(liteAvUserBean.identity);
+                                adapter.notifyItemChanged(tempUserIndex);
+                                tempUserIndex = -1;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
         viewModel.requestSuccess.observe(this,a -> dismissDialog());
         viewModel.userList.observe(this, liteAvUserBeans -> {
             if (currentPage==1) adapter.getData().clear();

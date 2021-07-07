@@ -48,4 +48,9 @@ public class LookAttentionActivity extends BaseActivity<ActivityLookAttentionBin
         binding.tablayout.getTabAt(1).setText("粉丝");
         binding.viewpager.setCurrentItem(page, false);
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+    }
 }
