@@ -679,7 +679,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 ArrayList<String> paths = new ArrayList<>();
                 for (LocalMedia media : result) {
-                    String path = media.getPath();
+                    String path = media.getRealPath();
                     paths.add(path);
                 }
                 //发布图文页面

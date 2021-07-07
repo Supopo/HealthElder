@@ -429,7 +429,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         localPhotoBeans.clear();
         for (LocalMedia media : localMedia) {
             LocalPhotoBean bean = new LocalPhotoBean();
-            bean.setPath(media.getPath());
+            bean.setPath(media.getRealPath());
             localPhotoBeans.add(bean);
         }
         addAddPhoto();
