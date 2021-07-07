@@ -33,6 +33,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
         addItemType(3, R.layout.item_search_zb);
         addItemType(4, R.layout.item_all_search_article);
         addChildClickViewIds(R.id.iv_zan);
+        addChildClickViewIds(R.id.iv_avatar);
     }
 
     @Override
@@ -44,9 +45,9 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
             binding.setViewModel(videoInfo);
 
             if (videoInfo.hasFavorite) {
-                GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary, binding.ivZan);
+                GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gray_1, binding.ivZan);
             } else {
-                GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary_0, binding.ivZan);
+                GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gray, binding.ivZan);
             }
 
             //计算View宽度
@@ -134,9 +135,9 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
                     tvFollow.setText(item.getFavoriteCountEx());
 
                     if (item.hasFavorite) {
-                        GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary, helper.getView(R.id.iv_zan));
+                        GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gray_1, helper.getView(R.id.iv_zan));
                     } else {
-                        GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gary_0, helper.getView(R.id.iv_zan));
+                        GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gray, helper.getView(R.id.iv_zan));
                     }
                 }
             }

@@ -198,7 +198,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void initView() {
-
+        binding.ivBack.setOnClickListener(lis -> {
+            getActivity().finish();
+        });
         //翻转
         binding.turnLayout.setOnClickListener(view -> {
             liteAvRecode.switchCamera();

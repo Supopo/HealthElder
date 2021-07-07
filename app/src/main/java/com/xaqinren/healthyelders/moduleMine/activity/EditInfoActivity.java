@@ -49,6 +49,7 @@ import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.utils.PictureSelectorUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.SwitchButton;
@@ -103,20 +104,20 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
             selAvatar();
         });
         editInfoAdapter.setOnItemClickListener((adapter, view, position) -> {
-            if (position == 0){
+            if (position == 0) {
                 changeName();
-            }else if (position == 1){
+            } else if (position == 1) {
                 //健康号
                 startActivity(MyRecommendCodeActivity.class);
-            }else if (position == 2){
+            } else if (position == 2) {
                 changeInfo();
-            }else if (position == 3){
+            } else if (position == 3) {
                 updateType = 1;
                 changeSex();
-            }else if (position == 4){
+            } else if (position == 4) {
                 updateType = 2;
                 changeBirth();
-            }else if (position == 5){
+            } else if (position == 5) {
                 updateType = 3;
                 changeCity();
             }
@@ -124,13 +125,14 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         int dp94 = (int) getResources().getDimension(R.dimen.dp_94);
         GlideUtil.intoImageView(this, UrlUtils.resetImgUrl(userInfoBean.getAvatarUrl(), dp94, dp94), binding.avatar);
     }
+
     private void createEditList() {
         editMenuBeans.add(new EditMenuBean("名字", userInfoBean.getNickname(), true, ""));
         editMenuBeans.add(new EditMenuBean("健康号", userInfoBean.getRecommendedCode(), false, ""));
-        editMenuBeans.add(new EditMenuBean("简介", getValue(userInfoBean.getIntroduce(),"点击设置") , true, ""));
-        editMenuBeans.add(new EditMenuBean("性别", getValue(getSex( userInfoBean.getSex()),"不展示"), true, ""));
-        editMenuBeans.add(new EditMenuBean("生日", getValue(userInfoBean.getBirthday(),"不展示"), true, ""));
-        editMenuBeans.add(new EditMenuBean("所在地", getValue(userInfoBean.getCityAddress(),"暂不设置"), true, ""));
+        editMenuBeans.add(new EditMenuBean("简介", getValue(userInfoBean.getIntroduce(), "点击设置"), true, ""));
+        editMenuBeans.add(new EditMenuBean("性别", getValue(getSex(userInfoBean.getSex()), "不展示"), true, ""));
+        editMenuBeans.add(new EditMenuBean("生日", getValue(userInfoBean.getBirthday(), "不展示"), true, ""));
+        editMenuBeans.add(new EditMenuBean("所在地", getValue(userInfoBean.getCityAddress(), "暂不设置"), true, ""));
     }
 
     private String getSex(String sex) {
@@ -140,7 +142,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         return sex.equals("MALE") ? "男" : "女";
     }
 
-    private String getValue(String value,String defaultValue) {
+    private String getValue(String value, String defaultValue) {
         if (StringUtils.isEmpty(value)) {
             return defaultValue;
         }
@@ -183,6 +185,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
 
     private String birthday;
     boolean hasBirth = false;
+
     private void changeBirth() {
         Calendar selData = Calendar.getInstance();
         selData.set(2000, 0, 1);
@@ -228,7 +231,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                             switchButton.setChecked(false);
                         }
                         TextView confirm = v.findViewById(R.id.confirm);
-                        confirm.setOnClickListener(view->{
+                        confirm.setOnClickListener(view -> {
                             updateValue = switchButton.isChecked() ? "" : birthday;
                             viewModel.updateBirthday(
                                     switchButton.isChecked() ? "" : birthday
@@ -265,7 +268,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         Intent intent = new Intent();
         intent.putExtra("show_area", 0);
         intent.setClass(this, CityPickerActivity.class);
-        startActivityForResult(intent,0x0030);
+        startActivityForResult(intent, 0x0030);
     }
 
     @Override
@@ -278,13 +281,16 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                     updateValue = cityName;
                     viewModel.updateCity(cityName);
                 }
-            }
-            else if (requestCode == REQUEST_GALLERY) {
+            } else if (requestCode == REQUEST_GALLERY) {
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                String path = result.get(0).getPath();
-                GlideUtil.intoImageView(this, path, binding.avatar);
-                showDialog();
-                updateAvatar(path);
+                if (result.size() > 0) {
+                    String path = PictureSelectorUtils.getFilePath(result.get(0));
+                    GlideUtil.intoImageView(this, path, binding.avatar);
+                    showDialog();
+                    updateAvatar(path);
+                }
+
+
             }
         }
     }
@@ -317,6 +323,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         });
 
     }
+
     private void toCamera() {
         int width = (int) MScreenUtil.dp2px(this, 150);
         PictureSelector.create(this)
@@ -326,12 +333,13 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                 .isEnableCrop(true)
                 .isCompress(true)
                 .freeStyleCropEnabled(true)
-                .cropImageWideHigh(width,width)
+                .cropImageWideHigh(width, width)
                 .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
                 .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
                 .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
                 .forResult(REQUEST_GALLERY);//结果回调onActivityResult code
     }
+
     private void toPhoto() {
         int width = (int) MScreenUtil.dp2px(this, 150);
         PictureSelector.create(this)
@@ -344,7 +352,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                 .isEnableCrop(true)// 是否裁剪 true or false
                 .freeStyleCropEnabled(true)
                 .isCompress(true)// 是否压缩图片 使用的是Luban压缩
-                .cropImageWideHigh(width,width)
+                .cropImageWideHigh(width, width)
                 .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
                 .showCropFrame(false)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
                 .showCropGrid(false)// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
@@ -364,7 +372,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.requestSuccess.observe(this,aBoolean->{
+        viewModel.requestSuccess.observe(this, aBoolean -> {
             dismissDialog();
         });
         viewModel.fileLiveData.observe(this, s -> {
@@ -393,7 +401,7 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                         editInfoAdapter.notifyItemChanged(5);
                     }
                     InfoCache.getInstance().setLoginUser(UserInfoMgr.getInstance().getUserInfo());
-                }else{
+                } else {
                     ToastUtil.toastShortMessage("修改失败");
                 }
             }

@@ -28,6 +28,7 @@ import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
@@ -124,6 +125,9 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 //进入商品
                 VideoInfo info = mAdapter.getData().get(position);
                 UniService.startService(getContext(), info.appId, 0x20056, info.jumpUrl);
+            }else if(mAdapter.getData().get(position).getItemType() == 1){
+                //进入用户信息
+                UserInfoActivity.startActivity(getActivity(),mAdapter.getData().get(position).id);
             }
         }));
 
@@ -131,6 +135,9 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             if (view.getId() == R.id.iv_zan) {
                 //视频点赞
                 searchAllViewModel.toLike(0, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
+            }else if(view.getId() == R.id.iv_avatar){
+                //进入用户信息
+                UserInfoActivity.startActivity(getActivity(),mAdapter.getData().get(position).id);
             }
         }));
 

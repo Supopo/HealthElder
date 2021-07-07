@@ -20,6 +20,14 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true" />
 
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_57"
+            android:layout_marginBottom="@dimen/dp_17"
+            android:background="@mipmap/icon_close_w" />
 
         <TextView
             android:id="@+id/recode_time"

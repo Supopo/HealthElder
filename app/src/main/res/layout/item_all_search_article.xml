@@ -141,8 +141,7 @@
             <ImageView
                 android:id="@+id/iv_zan"
                 android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_zan_gary_0" />
+                android:layout_height="@dimen/dp_18" />
 
 
             <TextView
@@ -159,7 +158,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_pl_gray_0" />
+                android:background="@mipmap/icon_pl_gray" />
 
 
             <TextView
@@ -175,7 +174,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                android:background="@mipmap/icon_share_gray_0" />
+                android:background="@mipmap/icon_share_gray" />
 
 
             <TextView
