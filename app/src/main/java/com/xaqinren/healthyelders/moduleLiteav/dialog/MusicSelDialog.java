@@ -535,7 +535,9 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         List<MMusicItemBean> list = new ArrayList<>();
         list.addAll(musicCollItemBeans);
         try {
-            list.add((MMusicItemBean) bean.cloneThis());
+            MMusicItemBean bean1 = bean.cloneThis();
+            bean1.myMusicStatus = 0;
+            list.add(bean1);
         } catch (Exception e) {
             e.printStackTrace();
         }
