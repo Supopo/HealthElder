@@ -842,6 +842,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
     List<String> lubanList = new ArrayList<>();
     private void uploadFile() {
+
         if (isUploadFile) return;
         isUploadFile = true;
         List<String> files = getUploadFiles();
@@ -864,6 +865,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
             @Override
             public void onComplete() {
+                if (lubanList != null) {
+                    LogUtils.e(TAG, "压缩图片->" + lubanList.size());
+                }
                 viewModel.uploadFile(lubanList);
             }
         });
