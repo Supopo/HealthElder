@@ -29,6 +29,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.CreatePostBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 import com.xaqinren.healthyelders.modulePicture.dialog.PostPop;
 import com.xaqinren.healthyelders.modulePicture.viewModel.TextPhotoDetailViewModel;
@@ -212,8 +213,8 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
             @Override
             public void toUser(CommentListBean iCommentBean) {
-                //                onChildClick.toUser(iCommentBean);
-                //TODO 打开用户主页
+                String id = iCommentBean.fromUserId == null ? iCommentBean.userId : iCommentBean.fromUserId;
+                UserInfoActivity.startActivity(getActivity(), id);
             }
         });
         commentAdapter.addHeaderView(headerBanner);

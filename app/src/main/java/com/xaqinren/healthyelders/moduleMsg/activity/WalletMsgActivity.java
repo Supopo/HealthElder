@@ -93,7 +93,6 @@ public class WalletMsgActivity extends BaseActivity<ActivityInteractiveBinding, 
                         UserInfoActivity.startActivity(this,bean1.getSendUser().getUserId()+"");
                     } else if (bean.getItemType() == MessageDetailBean.TYPE_FRIEND) {
                         FriendBean friendBean = (FriendBean) bean;
-                        InteractiveBean bean1 = (InteractiveBean) bean;
                         UserInfoActivity.startActivity(this,friendBean.getUserId());
                     }
                 }break;

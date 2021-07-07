@@ -135,7 +135,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                         break;
                     case R.id.avatar:
                     case R.id.nickname:
-                        operationItemClickListener.toUser(iCommentBean.allReply.get(position));
+                        operationItemClickListener.toUser(replyComment);
                         //用户
                         break;
                     case R.id.ll_like:

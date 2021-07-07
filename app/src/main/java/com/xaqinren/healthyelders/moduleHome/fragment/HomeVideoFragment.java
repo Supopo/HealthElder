@@ -795,6 +795,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             @Override
             public void toUser(CommentListBean iCommentBean) {
+                String id = iCommentBean.fromUserId == null ? iCommentBean.userId : iCommentBean.fromUserId;
+                UserInfoActivity.startActivity(getActivity(), id);
             }
         });
         commentDialog.show(binding.mainRelativeLayout, videoInfo.commentCount);
