@@ -19,44 +19,49 @@
             android:layout_alignParentBottom="true"
             android:focusable="true"
             android:clickable="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="分享至"
-                android:textColor="@color/color_252525"
-                android:textSize="@dimen/sp_13"
-                android:layout_marginTop="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_16" />
-
-            <ImageView
-                android:id="@+id/close"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:src="@mipmap/shipin_pl_close"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_15"
-                android:layout_marginRight="@dimen/dp_16" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
-                android:id="@+id/at_user_list"
+            <RelativeLayout
+                android:id="@+id/friend_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_80"
-                android:layout_below="@id/close"
-                android:layout_marginTop="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_16"
-                 />
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分享至"
+                    android:textColor="@color/color_252525"
+                    android:textSize="@dimen/sp_13"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginLeft="@dimen/dp_16" />
 
-            <View
-                android:id="@+id/line1"
-                style="@style/line"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_below="@id/at_user_list" />
+                <ImageView
+                    android:id="@+id/close"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:src="@mipmap/shipin_pl_close"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginRight="@dimen/dp_16" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/at_user_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_80"
+                    android:layout_below="@id/close"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    />
+
+                <View
+                    android:id="@+id/line1"
+                    style="@style/line"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_below="@id/at_user_list" />
+            </RelativeLayout>
+
 
             <include
                 android:id="@+id/share_cls_layout"
-                android:layout_below="@id/line1"
+                android:layout_below="@id/friend_layout"
                 layout="@layout/layout_share_share_class"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"

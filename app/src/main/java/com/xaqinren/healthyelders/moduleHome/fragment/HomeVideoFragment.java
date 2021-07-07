@@ -618,7 +618,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //判断是直播间
             if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
                 dismissLoading();
-
+                if (AppApplication.get().isShowTopMenu()) {
+                    return;
+                }
                 //进入直播间
                 viewModel.joinLive(videoInfo.liveRoomId);
             }

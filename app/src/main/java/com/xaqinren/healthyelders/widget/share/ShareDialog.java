@@ -260,6 +260,11 @@ public class ShareDialog {
             if (datas != null && datas.size() > 0) {
                 binding.atUserList.setVisibility(View.VISIBLE);
                 shareFriendAdapter.setNewInstance(datas);
+                if (datas.isEmpty()) {
+                    binding.friendLayout.setVisibility(View.GONE);
+                }
+            }else{
+                binding.friendLayout.setVisibility(View.GONE);
             }
         });
 
