@@ -129,6 +129,7 @@
                         android:textSize="@dimen/sp_13" />
 
                     <TextView
+                        android:visibility="invisible"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -137,6 +138,7 @@
                         android:textColor="@color/gray_999" />
 
                     <ImageView
+                        android:visibility="invisible"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_17"
                         android:background="@mipmap/icon_advance_hui" />
@@ -355,6 +357,7 @@
                         android:textSize="@dimen/sp_13" />
 
                     <TextView
+                        android:visibility="invisible"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -363,6 +366,7 @@
                         android:textColor="@color/gray_999" />
 
                     <ImageView
+                        android:visibility="invisible"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_17"
                         android:background="@mipmap/icon_advance_hui" />

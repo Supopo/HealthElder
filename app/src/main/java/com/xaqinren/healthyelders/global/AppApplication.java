@@ -39,6 +39,8 @@ import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
 import io.dcloud.feature.uniapp.UniSDKEngine;
 import io.dcloud.feature.uniapp.common.UniException;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import me.goldze.mvvmhabit.base.BaseApplication;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.crash.CaocConfig;
@@ -86,6 +88,13 @@ public class AppApplication extends BaseApplication {
         //是否开启打印日志
         KLog.init(BuildConfig.DEBUG);
 
+        //捕获rxjava异常
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();//这里处理所有的Rxjava异常
+            }
+        });
 
         //初始化全局异常崩溃
         initCrash();

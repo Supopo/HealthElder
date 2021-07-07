@@ -179,7 +179,9 @@ public class ShareDialog {
         if (shareBean == null) {
             binding.atUserList.setVisibility(View.GONE);
             binding.llShare.setVisibility(View.GONE);
-            binding.tvTitle.setText("作品审核中");
+            if (showType == 1 || showType == 0) {
+                binding.tvTitle.setText("作品审核中");
+            }
 
 
             binding.shareClsLayout.shareFriend.setEnabled(false);

@@ -93,7 +93,6 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 searchAllViewModel.searchDatas(page, 0);
             }
         });
-
         binding.srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -125,9 +124,6 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 //进入商品
                 VideoInfo info = mAdapter.getData().get(position);
                 UniService.startService(getContext(), info.appId, 0x20056, info.jumpUrl);
-            }else if(mAdapter.getData().get(position).getItemType() == 1){
-                //进入用户信息
-                UserInfoActivity.startActivity(getActivity(),mAdapter.getData().get(position).id);
             }
         }));
 
@@ -135,9 +131,9 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             if (view.getId() == R.id.iv_zan) {
                 //视频点赞
                 searchAllViewModel.toLike(0, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
-            }else if(view.getId() == R.id.iv_avatar){
+            } else if (view.getId() == R.id.iv_avatar) {
                 //进入用户信息
-                UserInfoActivity.startActivity(getActivity(),mAdapter.getData().get(position).id);
+                UserInfoActivity.startActivity(getActivity(), mAdapter.getData().get(position).userId);
             }
         }));
 
@@ -173,7 +169,11 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                 return;
             }
 
-            searchAllViewModel.toFollow(userAdapter.getData().get(position).id);
+            if (view.getId() == R.id.rl_avatar) {
+                UserInfoActivity.startActivity(getActivity(), userAdapter.getData().get(position).id);
+            } else if (view.getId() == R.id.tv_follow) {
+                searchAllViewModel.toFollow(userAdapter.getData().get(position).id);
+            }
         }));
     }
 
@@ -226,6 +226,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         });
 
         searchAllViewModel.followSuccess.observe(this, dismissDialog -> {
+            userAdapter.getData().get(followPosition).hasAttention = !userAdapter.getData().get(followPosition).hasAttention;
             userAdapter.notifyItemChanged(followPosition, 99);
         });
 
