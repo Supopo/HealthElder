@@ -49,7 +49,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private boolean isSingle;
     private Disposable subscribe;
     private boolean isMineOpen;
-    private int openType;//打开方式 1 从某个用户作品列表打开
+    private int openType;//打开方式 1 从某个用户作品列表打开 2私密作品 3赞过
     private long timeTag;
 
     @Override
@@ -292,7 +292,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     }
 
     public void addFragment(List<VideoInfo> tempList, int i) {
-        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType, timeTag));
+        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen,  openType, timeTag));
         fragmentPosition++;
     }
 }

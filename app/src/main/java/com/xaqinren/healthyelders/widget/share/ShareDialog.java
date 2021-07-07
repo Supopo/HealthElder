@@ -130,7 +130,7 @@ public class ShareDialog {
 
     public void isMineOpen(boolean isMine) {
         this.isMine = isMine;
-        if (isMine){
+        if (isMine) {
             binding.shareOperationLayout.shareDel.setVisibility(View.VISIBLE);
             binding.shareOperationLayout.shareDel.setOnClickListener(v -> {
                 //删除
@@ -139,7 +139,7 @@ public class ShareDialog {
                     onDelClickListener.onDelClick();
                 }
             });
-        }else{
+        } else {
             binding.shareOperationLayout.shareDel.setVisibility(View.GONE);
         }
 
@@ -257,7 +257,8 @@ public class ShareDialog {
         binding.rlContainer.setOnClickListener(view -> popupWindow.dismiss());
 
         datas.observe((LifecycleOwner) mContext, datas -> {
-            if (datas != null) {
+            if (datas != null && datas.size() > 0) {
+                binding.atUserList.setVisibility(View.VISIBLE);
                 shareFriendAdapter.setNewInstance(datas);
             }
         });
@@ -387,6 +388,7 @@ public class ShareDialog {
     public interface OnClickListener {
         void onCreatePostClick();
     }
+
     public interface OnDelClickListener {
         void onDelClick();
     }

@@ -80,7 +80,7 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
         });
         binding.scanLayout.setOnClickListener(v -> {
             //跳转的默认扫码界面
-            startActivityForResult(new Intent(context, QRCodeActivity.class),requestCode);
+//            startActivityForResult(new Intent(context, QRCodeActivity.class),requestCode);
         });
     }
 

@@ -212,7 +212,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
 
 
     public String getFavoriteCountEx() {
-        if (favoriteCount == null || favoriteCount.equals("0")) {
+        if (favoriteCount == null || favoriteCount.equals("0") || Integer.parseInt(favoriteCount) < 0) {
             return "点赞";
         }
         return Num2TextUtil.sNum2Text2(favoriteCount);

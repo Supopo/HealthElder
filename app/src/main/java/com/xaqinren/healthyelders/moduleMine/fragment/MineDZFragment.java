@@ -82,7 +82,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
 
             if (videoAdapter.getData().get(position).homeComprehensiveHall.isArticle()) {
-                Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).homeComprehensiveHall.resourceId);
                 startActivity(intent);
                 return;
@@ -110,9 +110,21 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
-            startActivity(VideoListActivity.class, bundle);
+            bundle.putInt("openType", 3);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            intent.setClass(getActivity(), VideoListActivity.class);
+            this.startActivityForResult(intent, 10086);
 
         }));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086) {
+            toRefresh();
+        }
     }
 
     public void toRefresh() {
@@ -121,9 +133,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
     }
 
     public void getVideoList() {
-        if (videoAdapter.getData().size() == 0) {
-            toRefresh();
-        }
+        toRefresh();
     }
 
     @Override

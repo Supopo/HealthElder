@@ -98,6 +98,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
 
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
+            bundle.putInt("openType", 2);
             startActivity(VideoListActivity.class, bundle);
 
         }));
@@ -109,9 +110,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
     }
 
     public void getVideoList() {
-        if (videoAdapter.getData().size() == 0) {
-            toRefresh();
-        }
+        toRefresh();
     }
 
     @Override

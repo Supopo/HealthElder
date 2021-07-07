@@ -1,199 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_pop_bottom">
+
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_18"
+            android:text="设置"
             android:textColor="@color/color_252525"
-            android:textStyle="bold"
             android:textSize="@dimen/sp_14"
-            android:text="权限设置"/>
+            android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/close_iv"
-            android:layout_width="@dimen/dp_22"
-            android:layout_height="@dimen/dp_22"
-            android:src="@mipmap/icon_close_dialog"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/tv_title"
             android:layout_marginRight="@dimen/dp_17"
-            android:layout_marginTop="@dimen/dp_13"
-            android:layout_alignParentRight="true"/>
+            android:src="@mipmap/icon_close_dialog_b" />
+
         <LinearLayout
             android:id="@+id/open_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:orientation="horizontal"
             android:layout_below="@id/close_iv"
-            android:layout_marginTop="@dimen/dp_7"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_7"
             android:layout_marginRight="@dimen/dp_16"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:src="@mipmap/icon_quanx_gk"/>
+                android:src="@mipmap/icon_quanx_gk" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:textSize="@dimen/sp_14"
+                android:layout_weight="1"
+                android:text="公开 · 所有人可见"
                 android:textColor="@color/color_252525"
-                android:text="公开 · 所有人可见"/>
+                android:textSize="@dimen/sp_14" />
 
             <ImageView
                 android:id="@+id/open_iv"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:src="@mipmap/icon_quanx_xuanz"
-                />
+                android:src="@mipmap/icon_quanx_xuanz" />
         </LinearLayout>
-        <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/open_layout"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/color_EAEA"
+            android:layout_alignBottom="@id/open_layout"
+            android:layout_marginLeft="@dimen/dp_54"
+            android:layout_marginRight="@dimen/dp_16"
+            />
+
         <LinearLayout
             android:id="@+id/friend_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:orientation="horizontal"
             android:layout_below="@id/open_layout"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:src="@mipmap/icon_quanx_peny"/>
+                android:src="@mipmap/icon_quanx_peny" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:textSize="@dimen/sp_14"
+                android:layout_weight="1"
+                android:text="朋友: 互相关注朋友可见"
                 android:textColor="@color/color_252525"
-                android:text="朋友: 互相关注朋友可见"/>
+                android:textSize="@dimen/sp_14" />
 
             <ImageView
                 android:id="@+id/friend_iv"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:src="@mipmap/icon_quanx_xuanz"
-                android:visibility="gone"
-               />
+                android:visibility="gone" />
         </LinearLayout>
-        <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/friend_layout"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/color_EAEA"
+            android:layout_alignBottom="@id/friend_layout"
+            android:layout_marginLeft="@dimen/dp_54"
+            android:layout_marginRight="@dimen/dp_16"
+            />
+
         <LinearLayout
             android:id="@+id/private_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:orientation="horizontal"
             android:layout_below="@id/friend_layout"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:src="@mipmap/icon_quanx_sim"/>
+                android:src="@mipmap/icon_quanx_sim" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:textSize="@dimen/sp_14"
+                android:layout_weight="1"
+                android:text="私密: 仅自己可见"
                 android:textColor="@color/color_252525"
-                android:text="私密: 仅自己可见"/>
+                android:textSize="@dimen/sp_14" />
 
             <ImageView
                 android:id="@+id/private_iv"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:src="@mipmap/icon_quanx_xuanz"
-                android:visibility="gone"
-               />
+                android:visibility="gone" />
         </LinearLayout>
-        <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/private_layout"
-            android:visibility="gone"/>
+
+        <View
+            style="@style/lineMarginDp16"
+            android:layout_alignBottom="@id/private_layout"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/hide_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:orientation="horizontal"
             android:layout_below="@id/private_layout"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:visibility="gone">
+
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:src="@mipmap/icon_quanx_bukan"/>
+                android:src="@mipmap/icon_quanx_bukan" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:textSize="@dimen/sp_14"
+                android:text="不给谁看 "
                 android:textColor="@color/color_252525"
-                android:text="不给谁看 "/>
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/unlook_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/hide_iv"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:src="@mipmap/icon_quanx_xuanz"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
         </LinearLayout>
-        <View style="@style/lineMarginDp16" android:layout_alignBottom="@id/hide_layout"
-            android:layout_marginLeft="0dp" android:layout_marginRight="0dp"
-            android:visibility="gone"/>
+
+        <View
+            style="@style/lineMarginDp16"
+            android:layout_alignBottom="@id/hide_layout"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_below="@id/hide_layout"
-            android:visibility="gone"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16">
+            android:layout_marginRight="@dimen/dp_16"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_252525"
+                android:layout_centerVertical="true"
                 android:text="推荐给可能认识的人"
-                android:layout_centerVertical="true"/>
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_14" />
+
             <com.xaqinren.healthyelders.widget.SwitchButton
                 android:id="@+id/recommend_btn"
                 android:layout_width="@dimen/dp_51"
                 android:layout_height="@dimen/dp_31"
-                app:sb_show_indicator="false"
-                app:sb_checked="false"
-                app:sb_shadow_color="@color/transparent"
-                app:sb_checked_color="@color/color_FF004E"
-                app:sb_background="@color/color_E9E9A"
-                app:sb_uncheck_color="@color/color_E9E9A"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"/>
+                app:sb_background="@color/color_E9E9A"
+                app:sb_checked="false"
+                app:sb_checked_color="@color/color_FF004E"
+                app:sb_shadow_color="@color/transparent"
+                app:sb_show_indicator="false"
+                app:sb_uncheck_color="@color/color_E9E9A" />
         </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/tv_del"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:layout_below="@id/hide_layout"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:background="@drawable/btn_mine_video_del"
+            android:gravity="center"
+            android:text="删除"
+            android:textColor="#F81E4D"
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone" />
+
+
     </RelativeLayout>
 
 </RelativeLayout>

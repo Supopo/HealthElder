@@ -19,24 +19,27 @@ import razerdp.basepopup.BasePopupWindow;
  * 选择公开,私有,朋友,不给谁看,弹窗
  */
 public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.OnClickListener {
-    LinearLayout openLayout ;
-    LinearLayout friendLayout ;
-    LinearLayout privateLayout ;
-    LinearLayout hideLayout ;
-    SwitchButton recommendBtn ;
+    LinearLayout openLayout;
+    LinearLayout friendLayout;
+    LinearLayout privateLayout;
+    LinearLayout hideLayout;
+    SwitchButton recommendBtn;
     TextView unLookTv;
-    ImageView openIv ;
+    ImageView openIv;
     ImageView friendIv;
-    ImageView privateIv ;
-    ImageView hideIv ;
+    ImageView privateIv;
+    ImageView hideIv;
     ImageView closeIv;
     RelativeLayout rlContain;
+    TextView tvDel;
+
 
     public static final int OPEN_MODE = 0;
     public static final int FRIEND_MODE = 1;
     public static final int PRIVATE_MODE = 2;
     public static final int HIDE_MODE = 3;
     public static final int SWITCH_MODE = 4;
+    public static final int DEL_MODE = 5;
     private OnItemSelListener onItemSelListener;
     private int currentMode = OPEN_MODE;
 
@@ -54,6 +57,14 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
 
     public LiteAvOpenModePopupWindow(Context context) {
         super(context);
+        initView();
+    }
+
+    private int type;//1从我的作品中打开
+
+    public LiteAvOpenModePopupWindow(Context context, int type) {
+        super(context);
+        this.type = type;
         initView();
     }
 
@@ -87,6 +98,10 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
         closeIv = findViewById(R.id.close_iv);
         hideIv = findViewById(R.id.hide_iv);
         unLookTv = findViewById(R.id.unlook_tv);
+        tvDel = findViewById(R.id.tv_del);
+        tvDel.setVisibility(type == 1 ? View.VISIBLE : View.GONE);
+
+        tvDel.setOnClickListener(this);
         openLayout.setOnClickListener(this);
         friendLayout.setOnClickListener(this);
         privateLayout.setOnClickListener(this);
@@ -102,6 +117,7 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
     public void setComment(boolean isComm) {
         recommendBtn.setChecked(isComm);
     }
+
     public void setMode(int mode) {
         this.currentMode = mode;
     }
@@ -127,7 +143,6 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
             case HIDE_MODE:
                 hideIv.setVisibility(View.VISIBLE);
                 break;
-
             case R.id.close_iv:
                 dismiss();
                 break;
@@ -139,9 +154,9 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
             String name = unLookUserList.get(0).getName();
             int size = unLookUserList.size();
             if (size > 1) {
-                unLookTv.setText(": " +name+"..等"+size+"人");
-            }else{
-                unLookTv.setText(": " +name);
+                unLookTv.setText(": " + name + "..等" + size + "人");
+            } else {
+                unLookTv.setText(": " + name);
             }
         }
     }
@@ -187,6 +202,10 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
                 onItemSelListener.onItemSel(HIDE_MODE);
                 currentMode = HIDE_MODE;
                 break;
+            case R.id.tv_del:
+                onItemSelListener.onItemSel(DEL_MODE);
+                currentMode = DEL_MODE;
+                break;
             case R.id.close_iv:
                 dismiss();
                 break;
@@ -194,8 +213,9 @@ public class LiteAvOpenModePopupWindow extends BasePopupWindow implements View.O
     }
 
 
-    public interface OnItemSelListener{
+    public interface OnItemSelListener {
         void onItemSel(int mode);
+
         void onSwitchChange(boolean isComment);
     }
 }

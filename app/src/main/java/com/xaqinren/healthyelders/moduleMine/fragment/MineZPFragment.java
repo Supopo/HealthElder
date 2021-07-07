@@ -131,6 +131,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
 
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
+            bundle.putInt("openType", 1);
             startActivity(VideoListActivity.class, bundle);
 
         }));
@@ -156,10 +157,8 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     }
 
     public void getVideoList() {
-        if (videoAdapter.getData().size() == 0) {
-            page = 1;
-            viewModel.getMyVideoList(page, pageSize);
-        }
+        page = 1;
+        viewModel.getMyVideoList(page, pageSize);
     }
 
     @Override

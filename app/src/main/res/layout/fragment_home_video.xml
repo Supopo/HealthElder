@@ -101,7 +101,7 @@
                         android:layout_width="@dimen/dp_50"
                         android:layout_height="@dimen/dp_50"
                         app:qmui_border_color="@color/white"
-                        app:qmui_border_width="2px"
+                        app:qmui_border_width="2dp"
                         app:qmui_is_circle="true" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -190,6 +190,7 @@
                     android:background="@mipmap/icon_play_share" />
 
                 <TextView
+                    android:id="@+id/tv_shareNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
@@ -534,7 +535,7 @@
                         android:paddingTop="@dimen/dp_10"
                         android:paddingRight="@dimen/dp_18"
                         android:paddingBottom="@dimen/dp_10"
-                        android:text="权限配置"
+                        android:text="权限设置"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_12" />
 

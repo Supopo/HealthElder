@@ -39,6 +39,7 @@
                 android:layout_marginRight="@dimen/dp_16" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
                 android:id="@+id/at_user_list"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_80"

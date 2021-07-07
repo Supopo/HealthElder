@@ -67,6 +67,7 @@ import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
@@ -106,7 +107,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private TXLivePlayConfig mPlayerConfig;
     private TXLivePlayer mLivePlayer;
     private boolean isMineOpen;
-    private int videoOpenType;
+    private int videoOpenType;//1-我的作品 2-我私密 3-我的点赞
     private long timeTag;//因为list-video会在多处地方调用，放了防止后一页列表播放时候影响到前一页列表，多加一个判断
     private ViewSkeletonScreen skeletonScreen1;
     private int mRenderMode;
@@ -124,12 +125,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     }
 
-    public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen, int openType, long timeTag) {
+    public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen, int videoOpenType, long timeTag) {
         this.videoInfo = videoInfo;
         this.type = type;
         this.position = position;
         this.isMineOpen = isMineOpen;
-        this.videoOpenType = openType;
+        this.videoOpenType = videoOpenType;
         this.timeTag = timeTag;
         if (videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
@@ -176,11 +177,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (videoInfo.getVideoType() == 1) {
                 binding.bottom.setVisibility(View.VISIBLE);//影响视频view是否整页
                 if (isMineOpen) {
-                    binding.commentLayout.setVisibility(View.GONE);//列表页面需要展示评论
-                    binding.llSetting.setVisibility(View.VISIBLE);
+                    if (videoOpenType == 3) {
+                        binding.commentLayout.setVisibility(View.VISIBLE);//列表页面需要展示评论
+                        binding.llSetting.setVisibility(View.GONE);
+                        binding.ivShare.setBackground(getActivity().getResources().getDrawable(R.mipmap.icon_play_share));
+                    } else {
+                        binding.commentLayout.setVisibility(View.GONE);//列表页面需要展示评论
+                        binding.llSetting.setVisibility(View.VISIBLE);
+                        binding.tvShareNum.setVisibility(View.INVISIBLE);
+                        binding.ivShare.setBackground(getActivity().getResources().getDrawable(R.mipmap.icon_video_more));
+                    }
+
                 } else {
                     binding.commentLayout.setVisibility(View.VISIBLE);//列表页面需要展示评论
                     binding.llSetting.setVisibility(View.GONE);
+                    binding.ivShare.setBackground(getActivity().getResources().getDrawable(R.mipmap.icon_play_share));
                 }
                 binding.viewMenu.setVisibility(View.GONE);//首页列表需要撑起标题等
             } else {
@@ -203,7 +214,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             Bundle bundle = new Bundle();
             bundle.putInt("pos", position);
             bundle.putString("type", type);
-            openType = 0;
+            commentType = 0;
             editTextOpen = true;
             startActivity(VideoEditTextDialogActivity.class, bundle);
         });
@@ -212,7 +223,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             bundle.putInt("pos", position);
             bundle.putString("type", type);
             bundle.putInt("openType", 1);
-            openType = 0;
+            commentType = 0;
             editTextOpen = true;
             startActivity(VideoEditTextDialogActivity.class, bundle);
         });
@@ -459,13 +470,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (bean != null) {
                 if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT && bean.pos == position && bean.type.equals(type)) {
                     String content = bean.content;
-                    if (openType == 0) {
+                    if (commentType == 0) {
                         //发表评论
                         viewModel.toComment(commentId, content);
-                    } else if (openType == 1) {
+                    } else if (commentType == 1) {
                         //回复评论
                         viewModel.toCommentReply(mCommentListBean, content, 0);
-                    } else if (openType == 2) {
+                    } else if (commentType == 2) {
                         //回复回复
                         viewModel.toCommentReply(mCommentListBean, content, 1);
                     }
@@ -533,7 +544,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return;
             }
 
-            if (videoOpenType == 1) {
+            //如果视频从我的页面列表打开，切该视频是自己发的 不用跳页
+            if (videoOpenType != 0 && videoInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
                 //通知前一页关闭
                 RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "video-list"));
                 return;
@@ -543,12 +555,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //判断如果开着直播去直播间
             if (videoInfo.hasLive) {
                 viewModel.joinLive(videoInfo.liveRoomId);
-            }else {
+            } else {
                 Bundle bundle = new Bundle();
                 bundle.putString("userId", videoInfo.userId);
                 startActivity(UserInfoActivity.class, bundle);
             }
-
 
 
         });
@@ -585,19 +596,25 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null && commentDialog != null) {
                 //本地刷新
-                if (openType == 0) {
+                if (commentType == 0) {
                     //往评论列表查插数据
                     commentDialog.addMCommentData(commentListBean);
-                } else if (openType == 1 || openType == 2) {
+                } else if (commentType == 1 || commentType == 2) {
                     //往回复列表查插数据
                     commentDialog.addMReplyData(commentListBean);
                 }
 
-                openType = 0;
+                commentType = 0;
             }
         });
 
         binding.rlClick.setOnClickListener(lis -> {
+            //判断是处于顶部菜单不让进入
+            if (AppApplication.get().isShowTopMenu()) {
+                return;
+            }
+
+
             //判断是直播间
             if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
                 dismissLoading();
@@ -710,13 +727,25 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
         shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
         if (videoInfo.getVideoType() != 2) {
-            shareDialog.isMineOpen(isMineOpen);
+            shareDialog.isMineOpen(videoOpenType == 3 ? false : isMineOpen);
             shareDialog.setOnDelClickListener(new ShareDialog.OnDelClickListener() {
+
+                private YesOrNoDialog yesOrNoDialog;
+
                 @Override
                 public void onDelClick() {
-                    //TODO 视频删除
-                    showDialog();
-                    viewModel.delVideo(videoInfo.resourceId);
+                    yesOrNoDialog = new YesOrNoDialog(getActivity());
+                    yesOrNoDialog.setMessageText("确定删除作品？");
+                    yesOrNoDialog.showDialog();
+                    yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showDialog();
+                            viewModel.delVideo(videoInfo.resourceId);
+                            yesOrNoDialog.dismissDialog();
+                        }
+                    });
+
                 }
             });
         }
@@ -726,7 +755,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     //评论弹窗
     private CommentDialog commentDialog;
 
-    private int openType;
+    private int commentType;//评论打开方式0-评论 1-回复 2-回复回复
 
     private void showCommentDialog(String videoId) {
         if (commentDialog == null)
@@ -735,7 +764,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             @Override
             public void toComment(CommentListBean iCommentBean) {
                 //回复评论
-                openType = 1;
+                commentType = 1;
                 commentId = iCommentBean.id;
                 mCommentListBean = iCommentBean;
                 showPublishCommentDialog("回复 @" + iCommentBean.nickname + " :");
@@ -744,7 +773,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             @Override
             public void toCommentReply(CommentListBean iCommentBean) {
                 //回复回复
-                openType = 2;
+                commentType = 2;
                 commentId = iCommentBean.id;
                 mCommentListBean = iCommentBean;
                 showPublishCommentDialog("回复 @" + iCommentBean.fromUsername + " :");
@@ -752,7 +781,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             @Override
             public void toCommentVideo(String videoId) {
-                openType = 0;
+                commentType = 0;
                 commentId = videoId;
                 //评论视频本体
                 showPublishCommentDialog("说点什么吧");
