@@ -189,7 +189,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                     //判断数据数量滑动到倒数第三个时候去进行加载
-                    if ((position + 1) == fragmentList.size()) {
+                    if ((position + 2) == fragmentList.size()) {
                         //加载更多数据
                         page++;
                         viewModel.getVideoData(page);

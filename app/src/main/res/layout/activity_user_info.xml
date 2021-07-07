@@ -261,11 +261,11 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:textSize="@dimen/sp_12"
                                             android:text="@{viewModel.userInfo.sexRightText}"
                                             android:visibility="@{viewModel.userInfo.sexRightText == null ? View.GONE : View.VISIBLE}"
                                             android:includeFontPadding="false"
                                             android:layout_marginRight="@dimen/dp_4"
+                                            android:textSize="@dimen/sp_12"
                                             android:textColor="@color/color_252525"/>
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -314,17 +314,18 @@
 
                                 <RelativeLayout
                                     android:id="@+id/rl_follow"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@id/iv_bg"
                                     android:layout_marginTop="@dimen/dp_7"
+                                    android:layout_marginLeft="@dimen/dp_120"
                                     android:layout_marginRight="@dimen/dp_4"
                                     android:layout_alignParentRight="true"
                                     android:visibility="@{viewModel.userInfo.isMe()?View.INVISIBLE:View.VISIBLE}">
 
                                     <LinearLayout
                                         android:id="@+id/ll_follow"
-                                        android:layout_width="@dimen/dp_186"
+                                        android:layout_width="match_parent"
                                         android:layout_height="@dimen/dp_38"
                                         android:layout_centerInParent="true"
                                         android:background="@drawable/bg_btn_comfrim"
@@ -357,7 +358,7 @@
                                     </LinearLayout>
 
                                     <RelativeLayout
-                                        android:layout_width="@dimen/dp_112"
+                                        android:layout_width="match_parent"
                                         android:layout_height="@dimen/dp_38"
                                         android:layout_alignParentRight="true"
                                         android:background="@drawable/bg_btn_comfrim_shape_g"

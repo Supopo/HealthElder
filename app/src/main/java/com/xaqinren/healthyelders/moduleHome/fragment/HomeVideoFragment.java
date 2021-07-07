@@ -539,9 +539,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 return;
             }
 
-            Bundle bundle = new Bundle();
-            bundle.putString("userId", videoInfo.userId);
-            startActivity(UserInfoActivity.class, bundle);
+
+            //判断如果开着直播去直播间
+            if (videoInfo.hasLive) {
+                viewModel.joinLive(videoInfo.liveRoomId);
+            }else {
+                Bundle bundle = new Bundle();
+                bundle.putString("userId", videoInfo.userId);
+                startActivity(UserInfoActivity.class, bundle);
+            }
+
+
+
         });
         //关注
         binding.followImageView.setOnClickListener(lis -> {
