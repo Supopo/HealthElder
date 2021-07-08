@@ -14,13 +14,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -30,13 +27,7 @@ import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.adapter.AttentionAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.AttentionViewModel;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
-import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
-import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
-import com.xaqinren.healthyelders.moduleMsg.bean.MessageDetailBean;
 import com.xaqinren.healthyelders.utils.GlideUtil;
-import com.xaqinren.healthyelders.utils.LogUtils;
-
-import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 

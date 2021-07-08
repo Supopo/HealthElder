@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -28,6 +29,7 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
@@ -198,9 +200,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 }
             });
         });
-        //TODO 发布
+
         binding.includePublish.publishBtn.setOnClickListener(view -> {
-//            publishVideo();
+            //判断内容
+            if (TextUtils.isEmpty(binding.desText.getText().toString())) {
+                ToastUtil.toastShortMessage("请输入标题");
+                return;
+            }
             if (!checkParams())return;
             showDialog();
             uploadFile();

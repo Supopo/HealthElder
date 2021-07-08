@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.tencent.qcloud.tim.uikit.utils.FileUtil;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.qcloud.ugckit.UGCKit;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.module.effect.VideoEditerSDK;
@@ -92,7 +94,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * 发布
  */
 public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBinding, VideoPublishViewModel> implements PoiSearch.OnPoiSearchListener,
-        TXUGCPublishTypeDef.ITXVideoPublishListener{
+        TXUGCPublishTypeDef.ITXVideoPublishListener {
 
     private LiteAvOpenModePopupWindow openModePop;
     //热点列表，横向
@@ -218,7 +220,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         binding.includePublish.videoOpenModeLayout.setOnClickListener(view -> {
             //隐藏键盘
-            KeyBoardUtils.hideKeyBoard(this,view.getWindowToken());
+            KeyBoardUtils.hideKeyBoard(this, view.getWindowToken());
             showOpenModeDialog();
         });
         //保存到草稿箱
@@ -236,7 +238,11 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
         });
         binding.includePublish.publishBtn.setOnClickListener(view -> {
-            //TODO 发布
+            //判断内容
+            if (TextUtils.isEmpty(binding.desText.getText().toString())) {
+                ToastUtil.toastShortMessage("请输入标题");
+                return;
+            }
             publishVideo();
         });
         binding.desText.setOnTextChangeListener(new VideoPublishEditTextView.OnTextChangeListener() {
@@ -248,7 +254,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
             @Override
             public void inputNoTopic() {
-                LogUtils.e(TAG, "inputNoTopic 隐藏话题弹窗 -> " );
+                LogUtils.e(TAG, "inputNoTopic 隐藏话题弹窗 -> ");
                 binding.includeListTopic.layoutPublishAt.setVisibility(View.GONE);
             }
 
@@ -260,14 +266,14 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
             @Override
             public void inputNoAt() {
-                LogUtils.e(TAG, "inputNoTopic 隐藏@弹窗 -> " );
+                LogUtils.e(TAG, "inputNoTopic 隐藏@弹窗 -> ");
                 binding.includeListAt.layoutPublishAt.setVisibility(View.GONE);
             }
 
             @Override
             public void maxInput() {
-                LogUtils.e(TAG, "inputNoTopic 已到最大输入值 -> " );
-                ToastUtils.showShort("最多输入"+binding.desText.getInputMax()+"个文字");
+                LogUtils.e(TAG, "inputNoTopic 已到最大输入值 -> ");
+                ToastUtils.showShort("最多输入" + binding.desText.getInputMax() + "个文字");
             }
         });
         publishTopicAdapter.setOnItemClickListener((adapter, view, position) -> {
@@ -275,7 +281,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             binding.desText.append("#" + topicBean.getName());
             binding.desText.addBlackKey();
         });
-        publishLocationAdapter.setOnItemClickListener((adapter,view,position)->{
+        publishLocationAdapter.setOnItemClickListener((adapter, view, position) -> {
             LocationBean bean = locationBeans.get(position);
             if (bean.isLookMore) {
                 Intent intent = new Intent(this, ChooseLocationActivity.class);
@@ -289,7 +295,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.addTopic.setOnClickListener(view -> binding.desText.append("#"));
         binding.addFriend.setOnClickListener(view -> binding.desText.append("@"));
         binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
-//        Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
+        //        Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
         initListView();
         loginUser();
         //热门话题
@@ -326,7 +332,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         if (mCosSignature != null) {
             LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, TCUserMgr.SUCCESS_CODE, "获取签名成功");
             startPublish();
-        }else{
+        } else {
             LogReport.getInstance().uploadLogs(LogReport.ELK_ACTION_VIDEO_SIGN, 0, "获取签名失败");
         }
     }
@@ -350,7 +356,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 int publishCode = mVideoPublish.publishVideo(param);
                 binding.publishProgressMark.setVisibility(View.VISIBLE);
                 if (publishCode != 0) {
-//                    mTVPublish.setText("发布失败，错误码：" + publishCode);
+                    //                    mTVPublish.setText("发布失败，错误码：" + publishCode);
                 }
                 NetworkUtil.getInstance(UGCKit.getAppContext()).setNetchangeListener(new NetworkUtil.NetchangeListener() {
                     @Override
@@ -400,7 +406,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     public void publish(String cover) {
 
         PublishBean bean = new PublishBean();
-        if (locationBean!=null) {
+        if (locationBean != null) {
             bean.address = locationBean.desName;
             bean.province = locationBean.province;
             bean.city = locationBean.city;
@@ -459,11 +465,11 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
     }
 
-    private void clearDrafts(){
+    private void clearDrafts() {
         if (publishDraftId != 0) {
             //删除对应的草稿箱
             String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-            viewModel.delDraftsById(this,fileName,publishDraftId);
+            viewModel.delDraftsById(this, fileName, publishDraftId);
         }
     }
 
@@ -480,13 +486,13 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         userAdapter.setList(liteAvUserBeans);
         userAdapter.setOnItemClickListener((adapter, view, position) -> {
             String name = liteAvUserBeans.get(position).getName();
-            binding.desText.setAtStr("@"+name,liteAvUserBeans.get(position).getId());
+            binding.desText.setAtStr("@" + name, liteAvUserBeans.get(position).getId());
         });
         chooseTopicAdapter = new ChooseTopicAdapter(R.layout.item_publish_topic_view_adapter);
         chooseTopicAdapter.setList(listTopicBeans);
         chooseTopicAdapter.setOnItemClickListener((adapter, view, position) -> {
             String title = listTopicBeans.get(position).getName();
-            binding.desText.setTopicStr("#"+title , 0 );//TODO 增加 topic ID
+            binding.desText.setTopicStr("#" + title, 0);//TODO 增加 topic ID
         });
         binding.includeListAt.recyclerView.setAdapter(userAdapter);
         binding.includeListTopic.recyclerView.setAdapter(chooseTopicAdapter);
@@ -500,7 +506,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 if (singleSearchAt) {
                     //搜索好友,加载更多
                     viewModel.getMyAtList(atPage, atPageSize);
-                }else{
+                } else {
                     //搜索用户,加载更多
                     viewModel.searchUserList(atPage, atPageSize, currentAt);
                 }
@@ -517,7 +523,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 avUserBean.readOnly = true;
                 if (!singleSearchAt) {
                     //查询用户,只有ID,没有USerID,手动设置
-                    avUserBean.setId(avUserBean.getId()); ;
+                    avUserBean.setId(avUserBean.getId());
+                    ;
                 }
             }
             atPage++;
@@ -525,7 +532,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             userAdapter.setList(this.liteAvUserBeans);
             if (liteAvUserBean.isEmpty() || liteAvUserBean.size() < atPageSize) {
                 userAdapter.getLoadMoreModule().loadMoreEnd(false);
-            }else{
+            } else {
                 userAdapter.getLoadMoreModule().loadMoreComplete();
             }
         });
@@ -534,7 +541,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         viewModel.publishSuccess.observe(this, aBoolean -> {
             if (aBoolean) {
-                LogUtils.e(TAG,"发布视频成功");
+                LogUtils.e(TAG, "发布视频成功");
                 ToastUtils.showLong("发布成功");
                 EventBus.getDefault().post(UGCKitConstants.EVENT_MSG_PUBLISH_DONE);
                 NetworkUtil.getInstance(UGCKit.getAppContext()).unregisterNetChangeReceiver();
@@ -543,10 +550,10 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
                 startActivity(MainActivity.class, bundle);
-                overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
-            }else{
+                overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
+            } else {
                 //发布失败
-                LogUtils.e(TAG,"发布视频失败");
+                LogUtils.e(TAG, "发布视频失败");
             }
         });
         viewModel.topicList.observe(this, topicBeans -> {
@@ -571,7 +578,9 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
             }
         });
     }
+
     private String currentTopicStr = "";
+
     /**
      * 搜索话题
      */
@@ -584,14 +593,14 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
     private boolean singleSearchAt = false;
     private String currentAt;
+
     private void showAtView(String str) {
         atPage = 1;
         this.liteAvUserBeans.clear();
         if (str.equals("@")) {
             singleSearchAt = true;
             viewModel.getMyAtList(atPage, atPageSize);
-        }
-        else{
+        } else {
             //搜索
             singleSearchAt = false;
             currentAt = str.replace("@", "");
@@ -610,7 +619,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK ) {
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode == album_code) {
                 String path = data.getStringExtra("path");
                 Glide.with(this).asBitmap().load(path).into(binding.coverView);
@@ -635,10 +644,12 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
     /**
      * 判断当前location地址有相同的地址
+     *
      * @param bean
      */
     private void equalsLocation(LocationBean bean) {
-        if (locationBeans.isEmpty())return;
+        if (locationBeans.isEmpty())
+            return;
         for (LocationBean locationBean : locationBeans) {
             if (locationBean.desName.equals(bean.desName)) {
                 //同一地址
@@ -667,9 +678,10 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                         case LiteAvOpenModePopupWindow.HIDE_MODE: {
                             Intent intent = new Intent(VideoPublishActivity.this, ChooseUnLookActivity.class);
                             intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
-                            startActivityForResult(intent,unlook_code);
-                            overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
-                        }break;
+                            startActivityForResult(intent, unlook_code);
+                            overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_push_none);
+                        }
+                        break;
                     }
                     binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
                     switch (publishMode) {
@@ -704,11 +716,11 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 return "朋友 · 互关朋友可见";
             case LiteAvOpenModePopupWindow.PRIVATE_MODE:
                 return "私密 · 仅自己可见";
-            case LiteAvOpenModePopupWindow.HIDE_MODE:{
+            case LiteAvOpenModePopupWindow.HIDE_MODE: {
                 if (unLookUserList.isEmpty()) {
                     return null;
                 }
-                return "不给谁看: " + (unLookUserList.size() > 1 ? unLookUserList.get(0).getName()+"..等"+unLookUserList.size()+"人" : unLookUserList.get(0).getName());
+                return "不给谁看: " + (unLookUserList.size() > 1 ? unLookUserList.get(0).getName() + "..等" + unLookUserList.size() + "人" : unLookUserList.get(0).getName());
             }
         }
         return null;
@@ -720,18 +732,19 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         boolean check = PermissionUtils.checkPermissionAllGranted(this, permissions);
         if (check) {
             LocationService.startService(this);
-        }else{
+        } else {
             ToastUtils.showShort("定位权限缺失");
         }
     }
 
 
-
-    /** 定位部分 begin*/
+    /**
+     * 定位部分 begin
+     */
     private void checkPermission() {
-        boolean check = PermissionUtils.checkPermission(this,  new String[]{
+        boolean check = PermissionUtils.checkPermission(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION ,
+                Manifest.permission.ACCESS_FINE_LOCATION,
         });
         if (check) {
             LocationService.startService(this);
@@ -758,7 +771,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         PoiSearch.Query query = new PoiSearch.Query(poiName, "", cityCode);
         query.setPageSize(20);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);//设置查询页码
-        PoiSearch poiSearch = new PoiSearch(this,query);
+        PoiSearch poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(lat, lon), 1000));//设置周边搜索的中心点以及半径
         poiSearch.searchPOIAsyn();
@@ -769,7 +782,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         locationBeans.clear();
         int index = 0;
         for (PoiItem item : poiResult.getPois()) {
-            if (index == 6){
+            if (index == 6) {
                 break;
             }
             LocationBean bean = new LocationBean();
@@ -793,7 +806,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         bean.address = "查看更多";
         locationBeans.add(bean);
         publishLocationAdapter.setList(locationBeans);
-        if (this.locationBean!=null)
+        if (this.locationBean != null)
             equalsLocation(locationBean);
     }
 
@@ -810,7 +823,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
      */
     private void getDraftContent() {
         String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-        SaveDraftBean bean = viewModel.getDraftsById(this,fileName,publishDraftId);
+        SaveDraftBean bean = viewModel.getDraftsById(this, fileName, publishDraftId);
         if (bean == null) {
             return;
         }
@@ -848,8 +861,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         PublishDesBean publishDesBean = binding.desText.getDesStr();
         SaveDraftBean saveDraftBean;
         if (publishDraftId > 0) {
-            saveDraftBean = viewModel.getDraftsById(this,fileName,publishDraftId);
-        }else{
+            saveDraftBean = viewModel.getDraftsById(this, fileName, publishDraftId);
+        } else {
             saveDraftBean = new SaveDraftBean();
             saveDraftBean.setId(System.currentTimeMillis() / 1000);
         }
@@ -859,7 +872,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
 
         saveDraftBean.setCoverPath(mCoverPath);
         saveDraftBean.setVideoPath(mVideoPath);
-        if (locationBean!=null) {
+        if (locationBean != null) {
             saveDraftBean.setAddress(locationBean.desName);
             saveDraftBean.setLon(lon);
             saveDraftBean.setLat(lat);
@@ -890,9 +903,8 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
         startActivity(MainActivity.class, bundle);
-        overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+        overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
     }
-
 
 
     /** 保存草稿箱 end*/
