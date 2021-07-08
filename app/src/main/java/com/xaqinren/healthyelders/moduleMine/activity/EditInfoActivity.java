@@ -112,9 +112,15 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
             } else if (position == 2) {
                 changeInfo();
             } else if (position == 3) {
+                if (userInfoBean.getHasRealName()) {
+                    return;
+                }
                 updateType = 1;
                 changeSex();
             } else if (position == 4) {
+                if (userInfoBean.getHasRealName()) {
+                    return;
+                }
                 updateType = 2;
                 changeBirth();
             } else if (position == 5) {
@@ -130,8 +136,8 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         editMenuBeans.add(new EditMenuBean("名字", userInfoBean.getNickname(), true, ""));
         editMenuBeans.add(new EditMenuBean("健康号", userInfoBean.getRecommendedCode(), false, ""));
         editMenuBeans.add(new EditMenuBean("简介", getValue(userInfoBean.getIntroduce(), "点击设置"), true, ""));
-        editMenuBeans.add(new EditMenuBean("性别", getValue(getSex(userInfoBean.getSex()), "不展示"), true, ""));
-        editMenuBeans.add(new EditMenuBean("生日", getValue(userInfoBean.getBirthday(), "不展示"), true, ""));
+        editMenuBeans.add(new EditMenuBean("性别", getValue(getSex(userInfoBean.getSex()), "不展示"), userInfoBean.getHasRealName() ? false : true, ""));
+        editMenuBeans.add(new EditMenuBean("生日", getValue(userInfoBean.getBirthday(), "不展示"), userInfoBean.getHasRealName() ? false : true, ""));
         editMenuBeans.add(new EditMenuBean("所在地", getValue(userInfoBean.getCityAddress(), "暂不设置"), true, ""));
     }
 

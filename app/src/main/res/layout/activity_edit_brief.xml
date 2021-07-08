@@ -9,24 +9,20 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/dp_16"
-        android:background="@color/white">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/gray_666"
-            android:text="个人简介"/>
-
+        android:background="@color/pageColor">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_EAEA"
+            />
         <EditText
             android:id="@+id/info_et"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_210"
-            android:layout_marginTop="@dimen/dp_16"
             android:textColor="@color/color_252525"
             android:textColorHint="@color/gray_999"
             android:hint="填写个人简介更容易获得别人关注哦"
-            android:background="@drawable/bg_edit_gray_cir"
+            android:background="@color/white"
             android:maxLength="242"
             android:padding="@dimen/sp_14"
             android:gravity="top"

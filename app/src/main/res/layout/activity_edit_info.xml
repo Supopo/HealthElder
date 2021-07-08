@@ -11,8 +11,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/pageColor">
             <LinearLayout
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -45,7 +46,13 @@
                     android:layout_margin="@dimen/dp_16"
                     android:includeFontPadding="false"
                     />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_12"
+                    android:background="@color/pageColor"
+                    />
                 <androidx.recyclerview.widget.RecyclerView
+                    android:background="@color/white"
                     android:id="@+id/menu_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

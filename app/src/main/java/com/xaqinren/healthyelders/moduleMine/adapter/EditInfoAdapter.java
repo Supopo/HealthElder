@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleMine.adapter;
 
+import android.view.View;
+
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -19,5 +21,8 @@ public class EditInfoAdapter extends BaseQuickAdapter<EditMenuBean, BaseViewHold
     protected void convert(@NotNull BaseViewHolder baseViewHolder, EditMenuBean editMenuBean) {
         ItemEditInfoBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
         binding.setViewModel(editMenuBean);
+        if (baseViewHolder.getLayoutPosition() == getItemCount() - 1) {
+            binding.line.setVisibility(View.GONE);
+        }
     }
 }

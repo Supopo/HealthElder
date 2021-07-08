@@ -52,6 +52,12 @@
                 android:visibility="@{viewModel.hasMore ? View.VISIBLE : View.INVISIBLE}"/>
         </LinearLayout>
 
-        <View style="@style/line" android:layout_below="@id/title_layout"/>
+        <View
+            android:id="@+id/line"
+            style="@style/line"
+            android:layout_below="@id/title_layout"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            />
     </RelativeLayout>
 </layout>
