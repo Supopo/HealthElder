@@ -58,7 +58,7 @@ import razerdp.basepopup.BasePopupWindow;
  */
 public class ZBUserInfoPop extends BasePopupWindow {
 
-    private ZBUserListBean zbUserListBean;
+    private String userId;
     private ZBListMenuPop listBottomPopup;
     private UserInfoBean userInfoBean;
     private LiveInitInfo mLiveInitInfo;
@@ -68,9 +68,9 @@ public class ZBUserInfoPop extends BasePopupWindow {
     private int type;
     private Disposable uniSubscribe;
 
-    public ZBUserInfoPop(Context context, LiveInitInfo mLiveInitInfo, ZBUserListBean zbUserListBean) {
+    public ZBUserInfoPop(Context context, LiveInitInfo mLiveInitInfo, String userId) {
         super(context);
-        this.zbUserListBean = zbUserListBean;
+        this.userId = userId;
         this.mLiveInitInfo = mLiveInitInfo;
         setBackground(R.color.transparent);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
@@ -78,9 +78,9 @@ public class ZBUserInfoPop extends BasePopupWindow {
         initView();
     }
 
-    public ZBUserInfoPop(Context context, int type, LiveInitInfo mLiveInitInfo, ZBUserListBean zbUserListBean) {
+    public ZBUserInfoPop(Context context, int type, LiveInitInfo mLiveInitInfo, String userId) {
         super(context);
-        this.zbUserListBean = zbUserListBean;
+        this.userId = userId;
         this.mLiveInitInfo = mLiveInitInfo;
         this.type = type;
 
@@ -112,12 +112,8 @@ public class ZBUserInfoPop extends BasePopupWindow {
         LinearLayout llGz = findViewById(R.id.ll_gz);
         tvAt.setText("@TA");
         QMUIRadiusImageView rivPhoto = findViewById(R.id.riv_photo);
-        tvName.setText(zbUserListBean.nickname);
-        ivSex.setBackground(zbUserListBean.sex.equals("MALE") ? getContext().getResources().getDrawable(R.mipmap.male) : getContext().getResources().getDrawable(R.mipmap.female));
-        Glide.with(getContext()).load(zbUserListBean.avatarUrl).into(rivPhoto);
 
-
-        UserRepository.getInstance().getLiveUserInfo(otherUserInfo, zbUserListBean.userId, mLiveInitInfo.liveRoomRecordId);
+        UserRepository.getInstance().getLiveUserInfo(otherUserInfo, userId, mLiveInitInfo.liveRoomRecordId);
         otherUserInfo.observe((LifecycleOwner) getContext(), userInfoBean -> {
             if (userInfoBean != null) {
                 this.userInfoBean = userInfoBean;
@@ -136,7 +132,10 @@ public class ZBUserInfoPop extends BasePopupWindow {
                     ivGz.setVisibility(View.VISIBLE);
                     tvGz.setTextColor(getContext().getResources().getColor(R.color.color_DC3530));
                 }
-                zbUserListBean.hasSpeech = userInfoBean.getHasSpeech();
+
+                tvName.setText(userInfoBean.getNickname());
+                ivSex.setBackground(userInfoBean.getSex().equals("MALE") ? getContext().getResources().getDrawable(R.mipmap.male) : getContext().getResources().getDrawable(R.mipmap.female));
+                Glide.with(getContext()).load(userInfoBean.getAvatarUrl()).into(rivPhoto);
             }
         });
 
@@ -150,13 +149,13 @@ public class ZBUserInfoPop extends BasePopupWindow {
 
         llJb.setOnClickListener(lis -> {
             //举报用户
-            UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, 99, Constant.USER_REPORT + zbUserListBean.userId);
+            UniService.startService(getContext(), Constant.JKZL_MINI_APP_ID, 99, Constant.USER_REPORT + userId);
         });
 
         tvAt.setOnClickListener(lis -> {
             //弹出输入dialog
             Bundle bundle = new Bundle();
-            bundle.putString("content", "@" + zbUserListBean.nickname + " ");
+            bundle.putString("content", "@" + userInfoBean.getNickname() + " ");
             Intent intent = new Intent(getContext(), ZBEditTextDialogActivity.class);
             intent.putExtras(bundle);
             getContext().startActivity(intent);
@@ -165,7 +164,7 @@ public class ZBUserInfoPop extends BasePopupWindow {
 
         tvHome.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
-            bundle.putString("userId", zbUserListBean.userId);
+            bundle.putString("userId", userId);
             Intent intent = new Intent(getContext(), UserInfoActivity.class);
             intent.putExtras(bundle);
             getContext().startActivity(intent);
@@ -188,14 +187,14 @@ public class ZBUserInfoPop extends BasePopupWindow {
     }
 
     private void showListPop() {
-        listBottomPopup = new ZBListMenuPop(getContext(), mLiveInitInfo, zbUserListBean);
+        listBottomPopup = new ZBListMenuPop(getContext(), mLiveInitInfo, userInfoBean);
         listBottomPopup.showPopupWindow();
     }
 
     //关注用户操作
     private void setUserFollow() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("userId", zbUserListBean.userId);
+        hashMap.put("userId", userId);
         hashMap.put("attentionSource", "LIVE_ROOM");
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
@@ -237,5 +236,13 @@ public class ZBUserInfoPop extends BasePopupWindow {
     @Override
     public View onCreateContentView() {
         return createPopupById(R.layout.pop_zbj_user_info);
+    }
+
+    @Override
+    public void onDismiss() {
+        super.onDismiss();
+        if (uniSubscribe != null) {
+            uniSubscribe.dispose();
+        }
     }
 }

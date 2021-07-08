@@ -12,7 +12,9 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentMineSmBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
@@ -21,7 +23,9 @@ import com.xaqinren.healthyelders.moduleMine.viewModel.MineSMViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/24.
@@ -32,6 +36,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
     private int pageSize = 10;
     private SMVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
+    private Disposable subscribe;
 
 
     @Override
@@ -99,7 +104,11 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
             bundle.putInt("openType", 2);
-            startActivity(VideoListActivity.class, bundle);
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), VideoListActivity.class);
+            intent.putExtras(bundle);
+
+            this.startActivityForResult(intent, 10087);
 
         }));
     }
@@ -114,8 +123,31 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
+    }
+
+    private int resCode;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10087 && resCode == 99) {
+            toRefresh();
+            resCode = 0;
+        }
+    }
+
+    @Override
     public void initViewObservable() {
         super.initViewObservable();
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("mine-sm")) {
+                resCode = 99;
+            }
+        });
         viewModel.mVideoList.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {

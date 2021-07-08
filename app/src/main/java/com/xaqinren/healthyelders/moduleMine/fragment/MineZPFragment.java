@@ -13,8 +13,10 @@ import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineZpBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.DraftActivity;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
@@ -29,7 +31,9 @@ import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/24.
@@ -43,6 +47,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     private boolean hasDraft;
     private int draftCount;
     private String draftDoverPath;
+    private Disposable subscribe;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,7 +103,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             }
 
             if (videoAdapter.getData().get(position).isArticle()) {
-                Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).resourceId);
                 intent.putExtra(Constant.MINE_OPEN, true);
                 startActivity(intent);
@@ -132,9 +137,23 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
             bundle.putInt("openType", 1);
-            startActivity(VideoListActivity.class, bundle);
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), VideoListActivity.class);
+            intent.putExtras(bundle);
+
+            this.startActivityForResult(intent, 10086);
 
         }));
+    }
+
+    private int resCode;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086 && resCode == 99) {
+            toRefresh();
+            resCode = 0;
+        }
     }
 
     public void toRefresh() {
@@ -162,8 +181,22 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
+    }
+
+    @Override
     public void initViewObservable() {
         super.initViewObservable();
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("mine-zp")) {
+                resCode = 99;
+            }
+        });
+
         viewModel.mVideoList.observe(this, dataList -> {
             if (dataList != null) {
                 if (dataList.size() > 0) {

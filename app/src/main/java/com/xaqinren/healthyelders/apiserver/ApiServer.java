@@ -589,7 +589,11 @@ public interface ApiServer {
 
     //刷新token
     @Headers({"content-type:application/json"})
-    @POST("/merchant/oauth/refresh/token")
-    Observable<MBaseResponse<LoginTokenBean>> refreshToken( @Body RequestBody body);
+    @POST("merchant/oauth/refresh/token")
+    Observable<MBaseResponse<LoginTokenBean>> refreshToken(@Body RequestBody body);
+
+    //设置视频公开 私密 userDiary
+    @POST("content/shortVideo/viewAuthUpdate")
+    Observable<MBaseResponse<Object>> setVideoStatus(@Header("Authorization") String authorization, @Body RequestBody requestBody);
 }
 

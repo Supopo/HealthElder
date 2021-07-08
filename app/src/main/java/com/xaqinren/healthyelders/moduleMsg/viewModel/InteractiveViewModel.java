@@ -11,6 +11,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.InteractiveBean;
+import com.xaqinren.healthyelders.modulePicture.bean.DiaryInfoBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class InteractiveViewModel extends BaseViewModel {
 
     public MutableLiveData<Boolean> request = new MutableLiveData<>();
     public MutableLiveData<Boolean> flow = new MutableLiveData<>();
+    public MutableLiveData<DiaryInfoBean> diaryInfo = new MutableLiveData<>();
 
 
     public InteractiveViewModel(@NonNull Application application) {
@@ -46,6 +48,10 @@ public class InteractiveViewModel extends BaseViewModel {
 
     public void recommendFriend(String id) {
         MsgRepository.getInstance().toFollow(request, flow, id);
+    }
+    //日记详情
+    public void diaryInfo(String id) {
+        LiteAvRepository.getInstance().getDiaryInfo(requestSuccess, diaryInfo, id);
     }
 
 }

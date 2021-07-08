@@ -23,6 +23,7 @@ import com.xaqinren.healthyelders.bean.BaseListRes;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.http.RetrofitClient;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
@@ -52,10 +53,10 @@ public class ZBListMenuPop extends BasePopupWindow {
     public List<ListPopMenuBean> menus;
     private BaseQuickAdapter<ListPopMenuBean, BaseViewHolder> adapter;
     private LiveInitInfo mLiveInitInfo;
-    private ZBUserListBean userListBean;
+    private UserInfoBean userListBean;
     private LoadingDialog loadingDialog;
 
-    public ZBListMenuPop(Context context, LiveInitInfo mLiveInitInfo, ZBUserListBean userListBean) {
+    public ZBListMenuPop(Context context, LiveInitInfo mLiveInitInfo, UserInfoBean userListBean) {
         super(context);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
         setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
@@ -67,7 +68,7 @@ public class ZBListMenuPop extends BasePopupWindow {
 
     private void initView() {
         menus = new ArrayList<>();
-        menus.add(new ListPopMenuBean(userListBean.hasSpeech ? "取消禁言" : "禁言", 0, 0));
+        menus.add(new ListPopMenuBean(userListBean.getHasSpeech() ? "取消禁言" : "禁言", 0, 0));
         menus.add(new ListPopMenuBean("拉黑", 0, 0));
         menus.add(new ListPopMenuBean("踢出直播间", 0, 0));
 
@@ -112,7 +113,7 @@ public class ZBListMenuPop extends BasePopupWindow {
             switch (position) {
                 case 0:
                     //禁言
-                    setUserSpeechStatus(!userListBean.hasSpeech);
+                    setUserSpeechStatus(!userListBean.getHasSpeech());
                     break;
                 case 1:
                     //拉黑
@@ -121,7 +122,7 @@ public class ZBListMenuPop extends BasePopupWindow {
                 case 2:
                     //踢出
                     RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_TICHU,
-                            userListBean.userId, userListBean.nickname));
+                            userListBean.getId(), userListBean.getNickname()));
                     break;
             }
             dismiss();
@@ -134,7 +135,7 @@ public class ZBListMenuPop extends BasePopupWindow {
     //通知后台禁言操作
     private void setUserSpeechStatus(boolean status) {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("targetId", userListBean.userId);
+        hashMap.put("targetId", userListBean.getId());
         hashMap.put("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
         hashMap.put("status", status);
         String json = JSON.toJSONString(hashMap);
@@ -159,7 +160,7 @@ public class ZBListMenuPop extends BasePopupWindow {
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
                         //通知主播页面禁言操作了 1禁言 0没有禁言
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_JINYAN,
-                                userListBean.userId, status ? 1 : 0));
+                                userListBean.getId(), status ? 1 : 0));
                     }
                 });
     }
@@ -167,7 +168,7 @@ public class ZBListMenuPop extends BasePopupWindow {
     //通知后台拉黑操作
     private void setUserBlackStatus() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("targetId", userListBean.userId);
+        hashMap.put("targetId", userListBean.getId());
         hashMap.put("liveRoomId", mLiveInitInfo.liveRoomId);
         hashMap.put("status", true);
         String json = JSON.toJSONString(hashMap);
@@ -193,7 +194,7 @@ public class ZBListMenuPop extends BasePopupWindow {
 
                         //通知主播页面拉黑操作了
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_LAHEI,
-                                userListBean.userId, userListBean.nickname));
+                                userListBean.getId(), userListBean.getNickname()));
                     }
                 });
     }

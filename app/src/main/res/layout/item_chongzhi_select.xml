@@ -38,6 +38,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/color_252525"
                 android:text="@{String.valueOf(viewModel.rechargeAmount *viewModel.beiLv)}"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
@@ -65,14 +67,14 @@
                 android:layout_height="wrap_content"
                 android:text="@{String.valueOf(viewModel.rechargeAmount)}"
                 android:textColor="@color/gray_999"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_13" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="元"
                 android:textColor="@color/gray_999"
-                android:textSize="@dimen/sp_11" />
+                android:textSize="@dimen/sp_12" />
         </LinearLayout>
 
 

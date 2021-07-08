@@ -347,16 +347,19 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         });
 
         viewModel.diaryInfo.observe(this, diaryInfoBean -> {
-            this.diaryInfoBean = diaryInfoBean;
-            if (UserInfoMgr.getInstance().getAccessToken() != null) {
-                String uid = UserInfoMgr.getInstance().getUserInfo().getId();
-                if (diaryInfoBean.userId.equals(uid)) {
-                    //是自己发的
-                    binding.guanzhu.setVisibility(View.GONE);
+            if (diaryInfoBean != null) {
+                this.diaryInfoBean = diaryInfoBean;
+                if (UserInfoMgr.getInstance().getAccessToken() != null) {
+                    String uid = UserInfoMgr.getInstance().getUserInfo().getId();
+                    if (diaryInfoBean.userId.equals(uid)) {
+                        //是自己发的
+                        binding.guanzhu.setVisibility(View.GONE);
+                    }
                 }
+                setBannerData(diaryInfoBean.bannerImages);
+                setContentData(this.diaryInfoBean);
             }
-            setBannerData(diaryInfoBean.bannerImages);
-            setContentData(this.diaryInfoBean);
+
         });
 
         viewModel.follow.observe(this, follow -> {

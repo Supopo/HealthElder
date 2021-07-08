@@ -202,11 +202,6 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
 
         binding.includePublish.publishBtn.setOnClickListener(view -> {
-            //判断内容
-            if (TextUtils.isEmpty(binding.desText.getText().toString())) {
-                ToastUtil.toastShortMessage("请输入标题");
-                return;
-            }
             if (!checkParams())return;
             showDialog();
             uploadFile();

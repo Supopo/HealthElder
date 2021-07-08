@@ -14,8 +14,8 @@ public class Constant {
     public static final String JKZL_MINI_APP_ID = "__UNI__DFE7692";
 
     public static String SERVICE_PHONE = "";//客服电话
-    public static boolean DEBUG = true;
-    public static boolean TEST = true ;
+    public static boolean DEBUG = false;
+    public static boolean TEST = false ;
     public static boolean ENABLE_CHAT = false;//打开单聊功能
 
     public static String baseUrl = "http://api.hjyiyuanjiankang.com/";
@@ -51,6 +51,10 @@ public class Constant {
     public static String REQ_TAG_WZ = "ARTICLE";//文章
     public static String REQ_ZB_TYPE_XN = "PSEUDO_LIVE";//虚拟直播
     public static String REQ_ZB_TYPE_SP = "VIDEO_LIVE";//虚拟直播
+
+    public static String ZP_STATUS_GK = "OPEN";//公开
+    public static String ZP_STATUS_HY = "FRIENDS";//好友可见
+    public static String ZP_STATUS_SM = "PRIVATE";//私密
     //认证类型
     public static String REN_ZHENG_TYPE = "ren_zheng_type";
     //支付密码

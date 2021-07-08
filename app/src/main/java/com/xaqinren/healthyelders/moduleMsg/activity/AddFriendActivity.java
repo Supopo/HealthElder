@@ -107,11 +107,11 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 currentScroll -= dy;
-                LogUtils.e(TAG, "滑动距离 -> "+dy);
+                LogUtils.e(TAG, "滑动距离 -> " + dy);
                 binding.includeHeader.rlHeaderLayout.setTranslationY(currentScroll);
             }
         });
-        binding.includeHeader.searchEt.addTextChangedListener(new TextWatcherImpl(){
+        binding.includeHeader.searchEt.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
@@ -124,7 +124,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                     //搜索
                     sPage = 1;
                     showType = 2;
-                    viewModel.searchUserList(sPage,sPageSize,editable.toString());
+                    viewModel.searchUserList(sPage, sPageSize, editable.toString());
                 }
             }
         });
@@ -137,7 +137,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                     ToastUtils.showShort("该用户还不是平台用户,快分享给他(她)吧!");
                     return;
                 }
-                UserInfoActivity.startActivity(this,friendBean.getUserId());
+                UserInfoActivity.startActivity(this, friendBean.getUserId());
                 //用户详情
             } else if (view.getId() == R.id.favorite) {
                 //关注，回关
@@ -156,7 +156,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         addFriendAdapter.getLoadMoreModule().setAutoLoadMore(true);
         addFriendAdapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
             if (showType == 2) {
-                viewModel.searchUserList(sPage,sPageSize,binding.includeHeader.searchEt.toString());
+                viewModel.searchUserList(sPage, sPageSize, binding.includeHeader.searchEt.getText().toString());
             }
         });
     }
@@ -203,7 +203,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;
 
-        Glide.with(getContext()).asBitmap().load(R.mipmap.icon_app).into(new SimpleTarget<Bitmap>(100,100) {
+        Glide.with(getContext()).asBitmap().load(R.mipmap.icon_app).into(new SimpleTarget<Bitmap>(100, 100) {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 msg.setThumbImage(resource);
@@ -226,12 +226,12 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 dismissDialog();
             }
         });
-        viewModel.friendLiveData.observe(this,list->{
+        viewModel.friendLiveData.observe(this, list -> {
             friendBeans.addAll(list);
             addFriendAdapter.setList(friendBeans);
             addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
         });
-        viewModel.flow.observe(this,bool->{
+        viewModel.flow.observe(this, bool -> {
             FriendBean friendBean = addFriendAdapter.getData().get(opIndex);
             if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
                 //陌生人
@@ -245,23 +245,27 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
             } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
                 //朋友
                 friendBean.setIdentity(AddFriendAdapter.FANS);
-            }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
                 //关注的人
                 friendBean.setIdentity(AddFriendAdapter.STRANGER);
             }
             addFriendAdapter.notifyItemChanged(opIndex + 1);
         });
         viewModel.liteAvUserList.observe(this, liteAvUserBeans -> {
+            if (liteAvUserBeans == null) {
+                return;
+            }
+
             if (sPage == 1) {
                 addFriendAdapter.getData().clear();
-                addFriendAdapter.getLoadMoreModule().setEnableLoadMore(true);
-            }
-            if (liteAvUserBeans.isEmpty()) {
-                addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
-            } else if (liteAvUserBeans.size() < sPageSize) {
-                addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
-            } else {
                 addFriendAdapter.getLoadMoreModule().loadMoreComplete();
+            } else {
+                if (liteAvUserBeans.size() == 0) {
+                    addFriendAdapter.getLoadMoreModule().loadMoreEnd(false);
+                }
+            }
+
+            if (liteAvUserBeans.size() > 0) {
                 sPage++;
             }
             List<FriendBean> list = new ArrayList<>();
@@ -275,6 +279,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
                 friendBean.setUserId(bean.getId());
                 list.add(friendBean);
             }
+
             addFriendAdapter.addData(list);
         });
     }
@@ -300,11 +305,11 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
 
     private void checkPermission() {
         boolean granted = PermissionUtils.checkPermissionAllGranted(this, new String[]{Manifest.permission.READ_CONTACTS});
-        if (granted){
+        if (granted) {
             startActivity(ContactsActivity.class);
-        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},600);
-        }else{
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 600);
+        } else {
             startActivity(ContactsActivity.class);
         }
     }
@@ -317,7 +322,7 @@ public class AddFriendActivity extends BaseActivity<ActivityAddFriendBinding, Ad
             boolean granted = PermissionUtils.checkPermissionAllGranted(this, new String[]{Manifest.permission.READ_CONTACTS});
             if (!granted) {
                 ToastUtil.toastLongMessage("获取联系人权限失败");
-            }else{
+            } else {
                 startActivity(ContactsActivity.class);
             }
         }

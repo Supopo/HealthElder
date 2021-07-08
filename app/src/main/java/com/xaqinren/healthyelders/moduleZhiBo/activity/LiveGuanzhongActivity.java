@@ -256,11 +256,16 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         topHeadAdapter.setOnItemClickListener(((adapter, view, position) -> {
 
             if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(topHeadAdapter.getData().get(position).userId)) {
-                userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, topHeadAdapter.getData().get(position));
+                userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, topHeadAdapter.getData().get(position).userId);
                 userInfoPop.showPopupWindow();
             }
 
         }));
+
+        binding.rivPhoto.setOnClickListener(lis ->{
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, mLiveInitInfo.userId);
+            userInfoPop.showPopupWindow();
+        });
 
         //初始化多人连麦座位表
         moreLinkAdapter = new MoreLinkAdapter(R.layout.item_more_link);

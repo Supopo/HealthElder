@@ -53,6 +53,7 @@ public class LiteAvRepository {
 
     private LiteAvRepository() {
     }
+
     public static LiteAvRepository getInstance() {
         if (instance == null) {
             instance = new LiteAvRepository();
@@ -62,7 +63,7 @@ public class LiteAvRepository {
 
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
-    public void getMyAtList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> startLiveInfo,int page ,int pageSize) {
+    public void getMyAtList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> startLiveInfo, int page, int pageSize) {
         userApi.getLiteAvPublishMyAtList(UserInfoMgr.getInstance().getHttpToken(), page, pageSize)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
@@ -109,7 +110,7 @@ public class LiteAvRepository {
     }
 
 
-    public void publishVideo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> listMutableLiveData , PublishBean bean) {
+    public void publishVideo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Boolean> listMutableLiveData, PublishBean bean) {
         String json = JSON.toJSONString(bean);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.postPublishLiteAv(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -133,8 +134,9 @@ public class LiteAvRepository {
                     }
                 });
     }
-    public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, String token ,int page, int pageSize, String identity) {
-        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity,token)
+
+    public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, String token, int page, int pageSize, String identity) {
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity, token)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -155,8 +157,9 @@ public class LiteAvRepository {
                     }
                 });
     }
+
     public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, int page, int pageSize, String identity) {
-        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity,null)
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity, null)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -178,8 +181,8 @@ public class LiteAvRepository {
                 });
     }
 
-    public void getUserList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, String identity,MutableLiveData<BaseListRes<List<LiteAvUserBean>>> listMutableLiveData ) {
-        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity,null)
+    public void getUserList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, String identity, MutableLiveData<BaseListRes<List<LiteAvUserBean>>> listMutableLiveData) {
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity, null)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -202,18 +205,20 @@ public class LiteAvRepository {
     }
 
 
-    public List<SaveDraftBean>  getDraftsList(Context context , String fileName) {
+    public List<SaveDraftBean> getDraftsList(Context context, String fileName) {
         String json = ACache.get(context).getAsString(fileName);
         List<SaveDraftBean> saveDraftBeans;
         if (!StringUtils.isEmpty(json)) {
             saveDraftBeans = JSON.parseArray(json, SaveDraftBean.class);
-        } else saveDraftBeans = new ArrayList<>();
-        if (saveDraftBeans == null) saveDraftBeans = new ArrayList<>();
+        } else
+            saveDraftBeans = new ArrayList<>();
+        if (saveDraftBeans == null)
+            saveDraftBeans = new ArrayList<>();
         return saveDraftBeans;
     }
 
-    public SaveDraftBean getDraftsById(Context context , String fileName , long id) {
-        List<SaveDraftBean> saveDraftBeans =  getDraftsList(context, fileName);
+    public SaveDraftBean getDraftsById(Context context, String fileName, long id) {
+        List<SaveDraftBean> saveDraftBeans = getDraftsList(context, fileName);
         for (SaveDraftBean bean : saveDraftBeans) {
             if (bean.getId() == id) {
                 return bean;
@@ -221,34 +226,38 @@ public class LiteAvRepository {
         }
         return null;
     }
-    public void saveDraftsById(Context context , String fileName ,  SaveDraftBean saveDraftBean) {
-        List<SaveDraftBean> saveDraftBeans =  getDraftsList(context, fileName);
+
+    public void saveDraftsById(Context context, String fileName, SaveDraftBean saveDraftBean) {
+        List<SaveDraftBean> saveDraftBeans = getDraftsList(context, fileName);
         int index = -1;
         for (int i = 0; i < saveDraftBeans.size(); i++) {
-            SaveDraftBean bean =  saveDraftBeans.get(i);
+            SaveDraftBean bean = saveDraftBeans.get(i);
             if (bean.getId() == saveDraftBean.getId()) {
                 index = i;
                 break;
             }
         }
         if (index == -1)
-            saveDraftBeans.add(0 ,saveDraftBean );
-        else saveDraftBeans.set(index ,saveDraftBean );
-        ACache.get(context).put(fileName , JSON.toJSONString(saveDraftBeans));
+            saveDraftBeans.add(0, saveDraftBean);
+        else
+            saveDraftBeans.set(index, saveDraftBean);
+        ACache.get(context).put(fileName, JSON.toJSONString(saveDraftBeans));
     }
-    public void delDraftsById(Context context , String fileName ,  long id) {
-        List<SaveDraftBean> saveDraftBeans =  getDraftsList(context, fileName);
+
+    public void delDraftsById(Context context, String fileName, long id) {
+        List<SaveDraftBean> saveDraftBeans = getDraftsList(context, fileName);
         int index = -1;
         for (int i = 0; i < saveDraftBeans.size(); i++) {
-            SaveDraftBean bean =  saveDraftBeans.get(i);
+            SaveDraftBean bean = saveDraftBeans.get(i);
             if (bean.getId() == id) {
                 index = i;
                 break;
             }
         }
-        if (index==-1)return;
+        if (index == -1)
+            return;
         saveDraftBeans.remove(index);
-        ACache.get(context).put(fileName , JSON.toJSONString(saveDraftBeans));
+        ACache.get(context).put(fileName, JSON.toJSONString(saveDraftBeans));
     }
 
     public void getSearchUserList(MutableLiveData<Boolean> requestSuccess, int page, int pageSize, String key, MutableLiveData<BaseListRes<List<LiteAvUserBean>>> searchUserList) {
@@ -274,8 +283,8 @@ public class LiteAvRepository {
                 });
     }
 
-    public void getSearchUserList(MutableLiveData<Boolean> requestSuccess, MutableLiveData<List<LiteAvUserBean>> searchUserList, int page, int pageSize,String key) {
-        userApi.getSearchUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize,key)
+    public void getSearchUserList(MutableLiveData<Boolean> requestSuccess, MutableLiveData<List<LiteAvUserBean>> searchUserList, int page, int pageSize, String key) {
+        userApi.getSearchUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, key)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -326,7 +335,7 @@ public class LiteAvRepository {
                 .setType(MultipartBody.FORM);
         File file = new File(filePath);
         LogUtils.e("updatePhoto", "file size  -> " + file.length());
-        builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
+        builder.addFormDataPart("files", file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file));
         RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
 
                 UserInfoMgr.getInstance().getHttpToken(), builder.build())
@@ -350,6 +359,7 @@ public class LiteAvRepository {
 
     /**
      * 上传图片 多图
+     *
      * @param dismissDialog
      * @param fileUrl
      * @param filePath
@@ -359,7 +369,7 @@ public class LiteAvRepository {
                 .setType(MultipartBody.FORM);
         for (String s : filePath) {
             File file = new File(s);
-            builder.addFormDataPart("files", file.getName(),RequestBody.create(MediaType.parse("image/jpeg"), file));
+            builder.addFormDataPart("files", file.getName(), RequestBody.create(MediaType.parse("image/jpeg"), file));
         }
         RetrofitClient.getInstance().create(ApiServer.class).uploadMultiFile(
                 UserInfoMgr.getInstance().getHttpToken(), builder.build())
@@ -404,7 +414,7 @@ public class LiteAvRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<Object> data) {
-                        if (data.getData()!=null)
+                        if (data.getData() != null)
                             publish.postValue("发布成功");
                         else
                             publish.postValue(data.getMessage());
@@ -456,13 +466,14 @@ public class LiteAvRepository {
 
     /**
      * 音乐搜索
+     *
      * @param id
      * @param name
      * @param page
      * @param pagesize
      */
-    public void getMusicList(String id, String name, int page, int pagesize ,MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<MMusicItemBean>> publish) {
-            userApi.getMusicList(UserInfoMgr.getInstance().getHttpToken(),page, pagesize, name, id)
+    public void getMusicList(String id, String name, int page, int pagesize, MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<MMusicItemBean>> publish) {
+        userApi.getMusicList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, name, id)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<MMusicItemBean>>>>() {
@@ -524,10 +535,11 @@ public class LiteAvRepository {
                     }
                 });
     }
+
     /**
      * 获取收藏音乐
      */
-    public void musicColl(MutableLiveData<Boolean> collList, String objectId , boolean favoriteStatus) {
+    public void musicColl(MutableLiveData<Boolean> collList, String objectId, boolean favoriteStatus) {
         HashMap hashMap = new HashMap();
         hashMap.put("objectId", objectId);
         hashMap.put("favoriteStatus", favoriteStatus);
@@ -552,30 +564,30 @@ public class LiteAvRepository {
     public void toComment(String id, String content, MutableLiveData<CommentListBean> commentSuccess) {
 
         HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put("id", id);
-            hashMap.put("content", content);
+        hashMap.put("id", id);
+        hashMap.put("content", content);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-            userApi.toDiaryComment(UserInfoMgr.getInstance().getHttpToken(), body)
+        userApi.toDiaryComment(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {
-            @Override
-            public void accept(Disposable disposable) throws Exception {
-            }
-        })
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
                 .subscribe(new CustomObserver<MBaseResponse<CommentListBean>>() {
-            @Override
-            protected void dismissDialog() {
+                    @Override
+                    protected void dismissDialog() {
 
-            }
+                    }
 
-            @Override
-            protected void onSuccess(MBaseResponse< CommentListBean > data) {
-                commentSuccess.postValue(data.getData());
-            }
+                    @Override
+                    protected void onSuccess(MBaseResponse<CommentListBean> data) {
+                        commentSuccess.postValue(data.getData());
+                    }
 
-        });
+                });
     }
 
     public void getCommentList(MutableLiveData<List<CommentListBean>> commentList, int page, String id) {
@@ -706,6 +718,14 @@ public class LiteAvRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<DiaryInfoBean> data) {
                         diray.postValue(data.getData());
+                    }
+
+                    @Override
+                    public void onNext(MBaseResponse<DiaryInfoBean> response) {
+                        super.onNext(response);
+                        if (!response.isOk()) {
+                            diray.postValue(null);
+                        }
                     }
                 });
     }

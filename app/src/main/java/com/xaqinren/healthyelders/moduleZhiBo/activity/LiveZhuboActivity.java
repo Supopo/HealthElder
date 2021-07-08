@@ -370,7 +370,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         binding.rvAvatar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
         binding.rvAvatar.setAdapter(topHeadAdapter);
         topHeadAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, topHeadAdapter.getData().get(position));
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, topHeadAdapter.getData().get(position).userId);
             userInfoPop.showPopupWindow();
         }));
 
@@ -675,7 +675,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         });
         tvInfo.setOnClickListener(lis -> {
             //查看资料
-            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, moreLinkAdapter.getData().get(postion));
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, moreLinkAdapter.getData().get(postion).userId);
             userInfoPop.showPopupWindow();
             moreLinkSettingDialog.dismiss();
         });

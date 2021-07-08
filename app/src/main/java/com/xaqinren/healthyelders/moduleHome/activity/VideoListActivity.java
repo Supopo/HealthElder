@@ -73,7 +73,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         isMineOpen = bundle.getBoolean(Constant.MINE_OPEN, false);
         openType = bundle.getInt("openType", 0);
 
-        //从附近打开
+        //1-从首页直播列表打开 2-从附近（首页菜单视频页面）打开 3 我的-作品 4 我的-私密 5 我的-点赞
         if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5) {
             position = videos.position;
             page = videos.page;
@@ -292,7 +292,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     }
 
     public void addFragment(List<VideoInfo> tempList, int i) {
-        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen,  openType, timeTag));
+        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType, timeTag));
         fragmentPosition++;
     }
 }

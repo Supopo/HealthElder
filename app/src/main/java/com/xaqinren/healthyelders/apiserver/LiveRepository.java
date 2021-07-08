@@ -969,4 +969,29 @@ public class LiveRepository {
                     }
                 });
     }
+
+
+    public void setVideoStatus(MutableLiveData<Boolean> request,  String id,String status) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", id);
+        hashMap.put("creationViewAuth", status);
+        String json = JSON.toJSONString(hashMap);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.setVideoStatus(UserInfoMgr.getInstance().getHttpToken(),body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        if (request != null) {
+                            request.postValue(true);
+                        }
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+
+                    }
+                });
+    }
 }

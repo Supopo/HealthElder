@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.view.View;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
@@ -18,6 +19,7 @@ import androidx.lifecycle.Observer;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -32,6 +34,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -109,6 +112,19 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
         binding.logoutLayout.setOnClickListener(v -> {
             //退出登录
             showLogout();
+        });
+        binding.zhuxiaoLayout.setOnClickListener(v -> {
+            //注销
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(this);
+            yesOrNoDialog.setMessageText("确定注销账号吗？");
+            yesOrNoDialog.showDialog();
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    yesOrNoDialog.dismissDialog();
+                    ToastUtil.toastShortMessage("您已提交申请！");
+                }
+            });
         });
     }
 

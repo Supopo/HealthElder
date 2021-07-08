@@ -162,8 +162,9 @@
         </RelativeLayout>
 
         <View
+            android:id="@+id/line"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:background="@color/color_EAEAEA" />

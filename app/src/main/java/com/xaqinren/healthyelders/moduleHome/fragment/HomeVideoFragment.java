@@ -114,6 +114,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private LiteAvOpenModePopupWindow openModePop;
     private int publishMode;
 
+    //Unable to instantiate fragment xxx: could not find Fragment constructor
+    //使用Fragment的时候，因为使用到了有参数的构造函数，没有提供无参的构造函数，有时会报错。
+    //Fragment必须有一个无参public的构造函数。
+    public HomeVideoFragment() {
+    }
+
     public HomeVideoFragment(VideoInfo videoInfo, String type, int position, boolean isMineOpen) {
         this.videoInfo = videoInfo;
         this.type = type;
@@ -184,7 +190,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     } else {
                         binding.commentLayout.setVisibility(View.GONE);//列表页面需要展示评论
                         binding.llSetting.setVisibility(View.VISIBLE);
-                        binding.tvShareNum.setVisibility(View.INVISIBLE);
+                        binding.tvShareNum.setVisibility(View.GONE);
                         binding.ivShare.setBackground(getActivity().getResources().getDrawable(R.mipmap.icon_video_more));
                     }
 
@@ -1275,21 +1281,30 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void showOpenModeDialog() {
         if (openModePop == null) {
             openModePop = new LiteAvOpenModePopupWindow(getActivity());
-            openModePop.setMode(0);
+
+            if (videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_GK)) {
+                openModePop.setMode(0);
+            }else if(videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_HY)){
+                openModePop.setMode(1);
+            }else if(videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_SM)){
+                openModePop.setMode(2);
+            }
+
             openModePop.setOnItemSelListener(new LiteAvOpenModePopupWindow.OnItemSelListener() {
                 @Override
                 public void onItemSel(int mode) {
                     publishMode = mode;
-                    switch (mode) {
-                        case LiteAvOpenModePopupWindow.HIDE_MODE: {
-                            Intent intent = new Intent(getActivity(), ChooseUnLookActivity.class);
-                            intent.putExtra(LiteAvConstant.UnLookList, (Serializable) unLookUserList);
-                            startActivityForResult(intent, 999);
-                            getActivity().overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_push_none);
-                        }
-                        break;
-                    }
+                    showDialog();
+                    viewModel.setVideoStatus(videoInfo.resourceId,publishMode);
+                    //通知我的页面刷新
 
+                    String content = "";
+                    if(videoOpenType == 1){
+                        content = "mine-zp";
+                    }else if(videoOpenType == 2){
+                        content = "mine-sm";
+                    }
+                    RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,content));
                 }
 
                 @Override

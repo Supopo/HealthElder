@@ -52,6 +52,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
 
+    public HomeGZFragment(){}
+
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
     }

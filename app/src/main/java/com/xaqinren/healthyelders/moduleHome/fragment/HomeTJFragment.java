@@ -56,6 +56,9 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private Handler handler;
     private Disposable subscribe;
 
+    public HomeTJFragment() {
+
+    }
 
     public HomeTJFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;

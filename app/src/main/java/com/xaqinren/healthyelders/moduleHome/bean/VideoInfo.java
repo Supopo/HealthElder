@@ -259,7 +259,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     }
 
     public boolean isArticle() {
-        if (resourceType.equals("USER_DIARY")) {
+        if (!TextUtils.isEmpty(resourceType) && resourceType.equals("USER_DIARY")) {
             return true;
         }
         return false;

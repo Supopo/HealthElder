@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import android.text.TextUtils;
+
 import com.xaqinren.healthyelders.utils.Num2TextUtil;
 
 import java.util.List;
@@ -65,6 +67,10 @@ public class LiveOverInfo {
 
 
     public String getUserCount() {
+        if (TextUtils.isEmpty(userCount)) {
+            return "0";
+        }
+
         return Num2TextUtil.sNum2Text2(userCount);
     }
 }

@@ -101,14 +101,14 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
                 showDialog();
                 viewModel.getMessage(page, pageSize, messageGroup, messageType);
             } else if (bean.getItemType() == MessageDetailBean.TYPE_TOP) {
+                showDialog();
                 //跳转详情
                 InteractiveBean interactiveBean = (InteractiveBean) bean;
                 if (interactiveBean.getExtra().getCreationType().equals(Constant.SHORT_VIDEO)) {
                     viewModel.getVideoInfo(interactiveBean.getExtra().getId());
                 } else {
-                    Intent intent = new Intent(this, TextPhotoDetailActivity.class);
-                    intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, interactiveBean.getExtra().getId());
-                    startActivity(intent);
+                    diaryInfoId = interactiveBean.getExtra().getId();
+                    viewModel.diaryInfo(diaryInfoId);
                 }
             }
         });
@@ -212,6 +212,8 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         viewModel.getMessage(page, pageSize, messageGroup, messageType);
     }
 
+    //当前点击的作品id
+    private String diaryInfoId;
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -281,7 +283,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
         });
         viewModel.videoInfoLiveData.observe(this, videoInfo -> {
             if (videoInfo == null) {
-                ToastUtils.showLong("该视频/文章已被删除");
+                ToastUtils.showLong("作品已被删除");
                 return;
             }
             videoInfo.resourceType = "VIDEO";
@@ -309,6 +311,16 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
                 friendBean.setIdentity(AddFriendAdapter.STRANGER);
             }
             interactiveAdapter.notifyItemChanged(opIndex);
+        });
+        viewModel.diaryInfo.observe(this, diaryInfo -> {
+            if (diaryInfo == null) {
+                ToastUtils.showLong("作品已被删除");
+                return;
+            }
+            Intent intent = new Intent(this, TextPhotoDetailActivity.class);
+            intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, diaryInfoId);
+            startActivity(intent);
+
         });
     }
 

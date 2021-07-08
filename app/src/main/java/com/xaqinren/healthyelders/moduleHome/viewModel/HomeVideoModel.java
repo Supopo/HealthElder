@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -52,5 +53,17 @@ public class HomeVideoModel extends BaseViewModel {
 
     public void delVideo(String liveRoomId) {
         LiveRepository.getInstance().delVideo(dismissDialog, delSuccess, liveRoomId);
+    }
+
+    public void setVideoStatus(String id, int type) {
+        String status = "";
+        if(type == 0)
+            status = Constant.ZP_STATUS_GK;
+        else if(type == 1)
+            status =  Constant.ZP_STATUS_HY;
+        else if(type == 2)
+            status =  Constant.ZP_STATUS_SM;
+
+        LiveRepository.getInstance().setVideoStatus(dismissDialog, id, status);
     }
 }

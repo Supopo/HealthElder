@@ -216,6 +216,30 @@
                 </LinearLayout>
                 <View style="@style/lineMarginDp16" />
                 <LinearLayout
+                    android:id="@+id/zhuxiao_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_56"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/sp_16"
+                        android:textColor="@color/color_252525"
+                        android:text="注销"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_16"
+                        android:textColor="@color/color_252525"
+                        android:drawableRight="@drawable/arrow_right"
+                        />
+                </LinearLayout>
+                <View style="@style/lineMarginDp16" />
+                <LinearLayout
                     android:id="@+id/logout_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_56"

@@ -49,7 +49,6 @@ public class ZBUserListPop extends BasePopupWindow {
     private RecyclerView rvUsers;
     private ZBUserListAdapter usersAdapter;
     private int page = 1;
-    private LiveInitInfo mLiveInitInfo;
     private String liveRoomRecordId;
     private String liveRoomId;
     private int nowPosition;
@@ -98,7 +97,7 @@ public class ZBUserListPop extends BasePopupWindow {
                 showMenuDialog(position, userId, context);
             } else {
                 if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(usersAdapter.getData().get(position).userId)) {
-                    userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position));
+                    userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position).userId);
                     userInfoPop.showPopupWindow();
                 }
 
@@ -113,7 +112,7 @@ public class ZBUserListPop extends BasePopupWindow {
             } else if (view.getId() == R.id.iv_avatar) {
                 //头像
                 if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(usersAdapter.getData().get(position).userId)) {
-                    userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position));
+                    userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position).userId);
                     userInfoPop.showPopupWindow();
                 }
             }
