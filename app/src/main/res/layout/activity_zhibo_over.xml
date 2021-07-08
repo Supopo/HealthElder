@@ -440,9 +440,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:background="@drawable/bg_zhibo_over_btn"
+                android:background="@drawable/bg_btn_comfrim_shape"
                 android:text="提交"
-                android:textColor="@color/color_FFBDBDC0"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
         </RelativeLayout>

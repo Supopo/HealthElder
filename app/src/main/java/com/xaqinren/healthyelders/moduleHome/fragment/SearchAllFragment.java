@@ -170,11 +170,32 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             }
 
             if (view.getId() == R.id.rl_avatar) {
-                UserInfoActivity.startActivity(getActivity(), userAdapter.getData().get(position).id);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("userId", userAdapter.getData().get(position).id);
+                Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 10086);
+
             } else if (view.getId() == R.id.tv_follow) {
                 searchAllViewModel.toFollow(userAdapter.getData().get(position).id);
             }
         }));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086) {
+            Boolean aBoolean = AppApplication.get().followList.get(userAdapter.getData().get(followPosition).id);
+            if (aBoolean == null) {
+                aBoolean = false;
+            }
+            if (aBoolean) {
+                userAdapter.getData().get(followPosition).hasAttention = aBoolean;
+            }
+            userAdapter.notifyItemChanged(followPosition, 99);
+        }
     }
 
     private int followPosition;

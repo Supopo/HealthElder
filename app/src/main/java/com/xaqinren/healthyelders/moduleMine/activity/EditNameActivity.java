@@ -49,7 +49,6 @@ public class EditNameActivity extends BaseActivity <ActivityEditNameBinding, Edi
         });
         binding.clear.setOnClickListener(view -> binding.nameEt.setText(null));
         tvRight.setOnClickListener(view -> {
-            //TODO 修改名字接口
             String name = binding.nameEt.getText().toString();
             if (StringUtils.isEmpty(name)) {
                 ToastUtil.toastShortMessage("请输入名字");

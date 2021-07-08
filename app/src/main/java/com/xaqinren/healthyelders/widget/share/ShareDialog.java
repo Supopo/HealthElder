@@ -366,7 +366,9 @@ public class ShareDialog {
     private int pageSize = 10;
 
     public void getFriends() {
-        UserRepository.getInstance().getFriendsList(datas, page, pageSize);
+        //暂时没有分享好友功能 先隐藏，注释
+        binding.atUserList.setVisibility(View.GONE);
+        //        UserRepository.getInstance().getFriendsList(datas, page, pageSize);
     }
 
     private void saveVideo(String url) {

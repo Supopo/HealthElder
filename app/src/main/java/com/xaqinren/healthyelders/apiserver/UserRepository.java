@@ -746,6 +746,18 @@ public class UserRepository {
                     @Override
                     protected void onSuccess(MBaseResponse<Boolean> data) {
                         status.postValue(data.isOk());
+                        if (!StringUtils.isEmpty(avatarUrl))
+                            UserInfoMgr.getInstance().getUserInfo().setAvatarUrl(avatarUrl);
+                        if (!StringUtils.isEmpty(nickname))
+                            UserInfoMgr.getInstance().getUserInfo().setNickname(nickname);
+                        if (!StringUtils.isEmpty(introduce))
+                            UserInfoMgr.getInstance().getUserInfo().setIntroduce(introduce);
+                        if (!StringUtils.isEmpty(sex))
+                            UserInfoMgr.getInstance().getUserInfo().setSex(sex);
+                        if (!StringUtils.isEmpty(birthday))
+                            UserInfoMgr.getInstance().getUserInfo().setBirthday(birthday);
+                        if (!StringUtils.isEmpty(cityAddress))
+                            UserInfoMgr.getInstance().getUserInfo().setCityAddress(cityAddress);
                     }
                 });
     }

@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentSearchYhBinding;
 import com.xaqinren.healthyelders.databinding.FragmentSearchZbBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
@@ -94,6 +96,7 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
         });
 
         mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            mPosition = position;
             //关注
             switch (view.getId()) {
                 case R.id.tv_follow:
@@ -107,16 +110,34 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
                         return;
                     }
 
-                    mPosition = position;
                     viewModel.toFollow(mAdapter.getData().get(position).id);
                 }
                     break;
                 case R.id.rl_avatar:{
-                    UserInfoActivity.startActivity(getActivity(),mAdapter.getData().get(position).id);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("userId", mAdapter.getData().get(position).id);
+                    Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 10086);
                 } break;
             }
 
         }));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086) {
+            Boolean aBoolean = AppApplication.get().followList.get(mAdapter.getData().get(mPosition).id);
+            if (aBoolean == null) {
+                aBoolean = false;
+            }
+            if (aBoolean) {
+                mAdapter.getData().get(mPosition).hasAttention = aBoolean;
+            }
+            mAdapter.notifyItemChanged(mPosition, 99);
+        }
     }
 
     @Override

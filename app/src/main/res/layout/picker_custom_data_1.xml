@@ -15,6 +15,7 @@
         >
 
         <TextView
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_16"
@@ -23,6 +24,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:text="不展示"/>
         <com.xaqinren.healthyelders.widget.SwitchButton
+            android:visibility="invisible"
             android:id="@+id/sb_menu1"
             android:layout_width="@dimen/dp_51"
             android:layout_height="@dimen/dp_31"

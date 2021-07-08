@@ -286,7 +286,6 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                 if (result.size() > 0) {
                     String path = PictureSelectorUtils.getFilePath(result.get(0));
                     GlideUtil.intoImageView(this, path, binding.avatar);
-                    showDialog();
                     updateAvatar(path);
                 }
 

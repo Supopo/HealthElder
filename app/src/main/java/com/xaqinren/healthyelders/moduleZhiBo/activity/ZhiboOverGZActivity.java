@@ -25,7 +25,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/4/30.
- * 主结束直播用户展示页面
+ * 结束直播用户展示页面
  */
 public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding, ZhiboOverGZViewModel> {
     private String liveRoomRecordId;
