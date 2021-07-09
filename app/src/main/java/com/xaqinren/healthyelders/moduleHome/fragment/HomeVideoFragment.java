@@ -841,6 +841,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     break;
                 case 2:
                     double2DianZan();
+                    //判断视频没点赞的话显示点赞
+                    if (!videoInfo.hasFavorite) {
+                        //先判断是否登录
+                        if (!InfoCache.getInstance().checkLogin()) {
+                            startActivity(SelectLoginActivity.class);
+                            return;
+                        }      //判断是否绑手机号
+                        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                            startActivity(PhoneLoginActivity.class);
+                            return;
+                        }
+                        viewModel.toLikeVideo(videoInfo.resourceId, !videoInfo.hasFavorite, position);
+                    }
                     break;
             }
         }
