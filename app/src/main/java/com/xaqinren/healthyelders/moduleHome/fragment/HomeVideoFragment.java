@@ -172,6 +172,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().getTjPlayPosition() == -1) {
+            //展示骨架图
             showSkeleton1();
             binding.rlView.setVisibility(View.GONE);
         } else {
@@ -1051,9 +1052,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     }
 
+    private String fragmentStatus = "";
     @Override
     public void onPause() {
         super.onPause();
+        fragmentStatus = "onPause";
         pauseMsg();
     }
 
@@ -1090,6 +1093,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onResume() {
         super.onResume();
+        fragmentStatus = "onResume";
         resumeMsg();
         showFollow();
     }
@@ -1159,7 +1163,24 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void showStartLayout() {
+        //这种情况一般出现在视频没加载完时候切了页面
+        //加判断，如果此时已经不是当前播放则不播放
+        if (AppApplication.get().isShowTopMenu()) {
+            LogUtils.v(Constant.TAG_LIVE,"showStartLayout--isShowTopMenu");
+            //停止播放
+            stopPlay(true);
+            return;
+        }
 
+        //判断当前是隐藏状态
+        if (fragmentStatus.equals("onPause")) {
+            LogUtils.v(Constant.TAG_LIVE,"showStartLayout--onPause");
+            //暂停
+            pauseMsg();
+            return;
+        }
+
+        //这种情况会出下在第二次播放
         if (hasPlaying) {
             return;
         }

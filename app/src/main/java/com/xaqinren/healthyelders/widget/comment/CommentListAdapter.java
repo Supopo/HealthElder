@@ -86,7 +86,8 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
         baseViewHolder.commentChildAdapter.setList(iCommentBean.allReply);
 
 
-        if (iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() > 0 || iCommentBean.lodaState == 1) {
+        //必须大于等于0 否则第一条评论的回复是作者的话不行
+        if (iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() >= 0 || iCommentBean.lodaState == 1) {
 
 
             //增加一个加载更多底部

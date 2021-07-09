@@ -15,7 +15,7 @@ public class Constant {
 
     public static String SERVICE_PHONE = "";//客服电话
     public static boolean DEBUG = false;
-    public static boolean TEST = false ;
+    public static boolean TEST = false;
     public static boolean ENABLE_CHAT = false;//打开单聊功能
 
     public static String baseUrl = "http://api.hjyiyuanjiankang.com/";
@@ -82,13 +82,12 @@ public class Constant {
     public static String LiveInitInfo = "LIVE_INIT_INFO";
 
 
-
     public static final int QR_CODE = 0x65895;
 
 
-
-
     /* SPUtils 存储 KEY */
+    //第一次展示隐私政策弹窗
+    public static final String SHOW_POP_WEB = "showPopWeb";
     /**
      * 微信登录返回的数据
      */
@@ -118,6 +117,8 @@ public class Constant {
     public static final String CONVERSATION_WALLET_ID = "66666";//钱包
     public static final String CONVERSATION_CUSTOMER_SERVICE_ID = "77777";//客服
 
+    //用户协议与隐私政策
+    public static final String PRIMARY_RULE = "https://jkzl.hjyiyuanjiankang.com/healthelder/h5/content.html?title=yhxy";
 
     /**
      * UNI小程序 事件

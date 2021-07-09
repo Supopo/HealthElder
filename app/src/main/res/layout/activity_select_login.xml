@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="《用户协议》"
+                android:text="《用户协议与隐私政策》"
                 android:textColor="@color/colorSendName2"
                 android:textSize="@dimen/sp_11" />
         </LinearLayout>

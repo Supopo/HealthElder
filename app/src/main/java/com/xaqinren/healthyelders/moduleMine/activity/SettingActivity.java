@@ -34,6 +34,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
+import com.xaqinren.healthyelders.widget.MyProgressDialog;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.io.File;
@@ -46,6 +47,7 @@ import java.util.List;
 import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -194,6 +196,8 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                 InfoCache.getInstance().clearLogin();
                 //跳到登录页面
                 AppManager.getAppManager().finishAllActivity();
+                //清除展示弹窗信息
+                SPUtils.getInstance().clear();
                 startActivity(SelectLoginActivity.class);
             }
         });
@@ -214,7 +218,6 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
             boolean status = intent.getBooleanExtra("status", false);
             if (status) {
                 //认证成功,更新个人信息
-
             }
         }
     }
@@ -324,9 +327,10 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
      */
     private void downloadApk() {
         //显示下载进度
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setTitle(versionName + "版本更新 (" + size + "MB)");
+        MyProgressDialog dialog = new MyProgressDialog(this);
+        dialog.setTitle(versionName + "版本更新");
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.setProgressDrawable(getResources().getDrawable(R.drawable.load_update_progress));
         dialog.setMax(100);
         dialog.setCancelable(false);
         dialog.show();
@@ -339,11 +343,11 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
      * 访问网络下载apk
      */
     private class DownloadApk implements Runnable {
-        private ProgressDialog dialog;
+        private MyProgressDialog dialog;
         InputStream is;
         FileOutputStream fos;
 
-        public DownloadApk(ProgressDialog dialog) {
+        public DownloadApk(MyProgressDialog dialog) {
             this.dialog = dialog;
         }
 
