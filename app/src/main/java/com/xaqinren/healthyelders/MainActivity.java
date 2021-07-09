@@ -60,6 +60,7 @@ import com.xaqinren.healthyelders.moduleHome.fragment.HomeFragment;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
+import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
 import com.xaqinren.healthyelders.moduleMine.activity.SettingActivity;
@@ -205,6 +206,28 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         disableDrawer();
         //        viewModel.getAppConfig();
         viewModel.checkVersion();
+
+        DCUniMPSDK.getInstance().setOnUniMPEventCallBack(new DCUniMPSDK.IOnUniMPEventCallBack() {
+            @Override
+            public void onUniMPEventReceive(String s, Object o, DCUniMPJSCallback dcUniMPJSCallback) {
+                LogUtils.e("UNIAPP", s);
+                if (s.equals("loginSuccess")) {
+                    //小程序 wx/mobile 登录成功,本地需要存储
+                    try {
+                        LoginTokenBean tokenBean = JSON.parseObject(o.toString(), LoginTokenBean.class);
+                        tokenBean.saveTime = System.currentTimeMillis();
+                        InfoCache.getInstance().setTokenInfo(tokenBean);
+                        UserInfoMgr.getInstance().setAccessToken(tokenBean.access_token);
+                        UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + tokenBean.access_token);
+                        LogUtils.e("UNIAPP", "token 刷新完成");
+                        viewModel.getUserInfo(tokenBean.access_token, false);
+                    } catch (Exception e) {
+                        LogUtils.e("UNIAPP", "uni 回传 数据错误");
+                    }
+
+                }
+            }
+        });
     }
 
     @Override

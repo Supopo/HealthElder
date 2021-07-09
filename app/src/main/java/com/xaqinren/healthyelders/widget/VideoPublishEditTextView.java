@@ -1,15 +1,11 @@
 package com.xaqinren.healthyelders.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.text.LineBreaker;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
@@ -17,13 +13,11 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
-import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishFocusItemBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.VideoPublishEditBean;
@@ -273,7 +267,12 @@ public class VideoPublishEditTextView extends AppCompatEditText implements TextW
             int end = videoAtEditBean.getEndPoint();
             if (selStart > start && selStart < end) {
                 isOptionSelection = true;
-                setSelection(end);
+                try {
+                    setSelection(end);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
             }
         }
     }
