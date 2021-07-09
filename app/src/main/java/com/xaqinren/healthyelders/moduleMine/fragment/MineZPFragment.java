@@ -114,17 +114,28 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             VideoListBean listBean = new VideoListBean();
 
             listBean.videoInfos = new ArrayList<>();
-            listBean.videoInfos.addAll(videoAdapter.getData());
 
             if (hasDraft) {
                 listBean.videoInfos.remove(0);
             }
 
-            if (hasDraft) {
-                listBean.position = position - 1;
-            } else {
-                listBean.position = position;
+            //去除文章
+            for (VideoInfo videoInfo : videoAdapter.getData()) {
+                if (!videoInfo.isArticle()) {
+                    listBean.videoInfos.add(videoInfo);
+                }
             }
+
+            //重新计算点击的位置
+            int newPos = 0;
+            for (int i = 0; i < listBean.videoInfos.size(); i++) {
+                if (listBean.videoInfos.get(i).resourceId.equals(videoAdapter.getData().get(position).resourceId)) {
+                    newPos = i;
+                    break;
+                }
+            }
+
+            listBean.position = newPos;
 
             //里面每页3条数据 重新计算
             if (listBean.videoInfos.size() % Constant.loadVideoSize == 0) {
@@ -147,6 +158,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
     }
 
     private int resCode;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

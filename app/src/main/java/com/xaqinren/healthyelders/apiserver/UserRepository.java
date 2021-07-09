@@ -458,7 +458,7 @@ public class UserRepository {
 
     public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type, String tagerId) {
         //PRIVETE
-        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, type, tagerId)
+        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, 10, type, tagerId)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {

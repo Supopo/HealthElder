@@ -70,6 +70,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         Bundle bundle = intent.getExtras();
         videos = (VideoListBean) bundle.getSerializable("key");
         isSingle = bundle.getBoolean("key1", false);
+
         isMineOpen = bundle.getBoolean(Constant.MINE_OPEN, false);
         openType = bundle.getInt("openType", 0);
 
@@ -106,6 +107,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         timeTag = System.currentTimeMillis();
         AppApplication.get().setTimeTag(timeTag);
+
 
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
 
@@ -157,7 +159,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             }
         });
 
-        binding.srl.setEnabled(true);
+
+        binding.srl.setEnabled(!isSingle);
         binding.srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -214,26 +217,21 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
                 List<VideoInfo> tempList = new ArrayList<>();
 
-                if (videos.openType == 2) {
-
+                if (videos.openType == 1) {
+                    tempList.addAll(datas);
+                } else {
                     //先判断是否包含文章有先移除
                     for (VideoInfo data : datas) {
                         if (!data.isArticle()) {
                             tempList.add(data);
                         }
                     }
-
-                } else if (videos.openType == 1) {
-                    tempList.addAll(datas);
                 }
 
                 if (page == 1) {
                     mVideoInfoList.clear();
                     fragmentList.clear();
                     fragmentPosition = 0;
-                    //需要重new否者会出现缓存
-                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
-                    binding.viewPager2.setAdapter(homeAdapter);
                 }
 
                 mVideoInfoList.addAll(tempList);
@@ -241,6 +239,12 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 //ViewPage添加
                 for (int i = 0; i < tempList.size(); i++) {
                     addFragment(tempList, i);
+                }
+
+                if (page == 1) {
+                    //需要重new否者会出现缓存
+                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
+                    binding.viewPager2.setAdapter(homeAdapter);
                 }
 
             } else {
@@ -264,16 +268,15 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 List<VideoInfo> tempList = new ArrayList<>();
 
                 for (DZVideoInfo dzVideoInfo : datas) {
-                    tempList.add(dzVideoInfo.homeComprehensiveHall);
+                    if (!dzVideoInfo.homeComprehensiveHall.isArticle()) {
+                        tempList.add(dzVideoInfo.homeComprehensiveHall);
+                    }
                 }
 
                 if (page == 1) {
                     mVideoInfoList.clear();
                     fragmentList.clear();
                     fragmentPosition = 0;
-                    //需要重new否者会出现缓存
-                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
-                    binding.viewPager2.setAdapter(homeAdapter);
                 }
 
                 mVideoInfoList.addAll(tempList);
@@ -281,6 +284,12 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 //ViewPage添加
                 for (int i = 0; i < tempList.size(); i++) {
                     addFragment(tempList, i);
+                }
+
+                if (page == 1) {
+                    //需要重new否者会出现缓存
+                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
+                    binding.viewPager2.setAdapter(homeAdapter);;
                 }
 
             } else {
