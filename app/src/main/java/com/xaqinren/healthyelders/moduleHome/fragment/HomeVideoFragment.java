@@ -87,7 +87,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
 public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, HomeVideoModel> implements TelephonyUtil.OnTelephoneListener, ITXLivePlayListener, ITXVodPlayListener {
     private VideoInfo videoInfo;
     private int position;
-    private String type;//区分是从哪里进来的
+    private String type;//区分是从哪里进来的 home-tj home-gz home-list
     private TXVodPlayer vodPlayer;
     private Disposable disposable;
     private Animation musicRotateAnim;//音乐Icon旋转动画
@@ -990,8 +990,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void resumePlay() {
-        //后面的判断是在我的列表里面观看时候的
-        if ((AppApplication.get().bottomMenu == 0) || (AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
+        //判断播放条件 首页模块-消息进入的列表页面-我的进入列表页面
+        if ((AppApplication.get().bottomMenu == 0) || (AppApplication.get().bottomMenu == 2 && type.equals("home-list"))||(AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
             binding.mainVideoView.onResume();
 
             //是否开启播放状态
@@ -1008,6 +1008,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         }
                     }
                 }
+
             } else {
                 if (!AppApplication.get().isShowTopMenu()) {
                     startPlay(true);
@@ -1052,11 +1053,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     }
 
-    private String fragmentStatus = "";
+
     @Override
     public void onPause() {
         super.onPause();
-        fragmentStatus = "onPause";
         pauseMsg();
     }
 
@@ -1081,6 +1081,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     pausePlay();
                 }
             } else if (type.equals("home-list")) {
+
+                // todo 视频列表页打开列表页，返回之后不继续播放
                 if (AppApplication.get().getPlayPosition() == position) {
                     resumePlay();
                 } else {
@@ -1090,12 +1092,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }
     }
 
+
+    private boolean isFirstResume = true;
+
     @Override
     public void onResume() {
         super.onResume();
-        fragmentStatus = "onResume";
-        resumeMsg();
+        //防止第一次打开列表页面播放
+        if (!isFirstResume) {
+            resumeMsg();
+        }
         showFollow();
+        isFirstResume = false;
     }
 
     @Override
@@ -1159,28 +1167,26 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_ERR_NET_DISCONNECT) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_ERR_NET_DISCONNECT");
         }
-
     }
 
     private void showStartLayout() {
         //这种情况一般出现在视频没加载完时候切了页面
-        //加判断，如果此时已经不是当前播放则不播放
-        if (AppApplication.get().isShowTopMenu()) {
-            LogUtils.v(Constant.TAG_LIVE,"showStartLayout--isShowTopMenu");
+        //如果已经不是首页了，如果首页菜单展开情况下直接停止
+        if (AppApplication.get().isShowTopMenu() && (type.equals("home-tj") || type.equals("home-gz"))) {
             //停止播放
             stopPlay(true);
             return;
         }
 
-        //判断当前是隐藏状态
-        if (fragmentStatus.equals("onPause")) {
-            LogUtils.v(Constant.TAG_LIVE,"showStartLayout--onPause");
+
+        //如果已经不是首页了，首页的不该再播放
+        if (AppApplication.get().getBottomMenu() != 0 && (type.equals("home-tj") || type.equals("home-gz"))) {
             //暂停
             pauseMsg();
             return;
         }
 
-        //这种情况会出下在第二次播放
+        //这种情况会出下在第一次播放完之后
         if (hasPlaying) {
             return;
         }
@@ -1318,9 +1324,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             if (videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_GK)) {
                 openModePop.setMode(0);
-            }else if(videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_HY)){
+            } else if (videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_HY)) {
                 openModePop.setMode(1);
-            }else if(videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_SM)){
+            } else if (videoInfo.creationViewAuth.equals(Constant.ZP_STATUS_SM)) {
                 openModePop.setMode(2);
             }
 
@@ -1329,16 +1335,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 public void onItemSel(int mode) {
                     publishMode = mode;
                     showDialog();
-                    viewModel.setVideoStatus(videoInfo.resourceId,publishMode);
+                    viewModel.setVideoStatus(videoInfo.resourceId, publishMode);
                     //通知我的页面刷新
 
                     String content = "";
-                    if(videoOpenType == 1){
+                    if (videoOpenType == 1) {
                         content = "mine-zp";
-                    }else if(videoOpenType == 2){
+                    } else if (videoOpenType == 2) {
                         content = "mine-sm";
                     }
-                    RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,content));
+                    RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, content));
                 }
 
                 @Override

@@ -23,7 +23,7 @@ public class GlideUtil {
     }
 
     public static void intoImageView(Context context, Object res, ImageView view) {
-        Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
+        Glide.with(context).load(res).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(0.5f).into(view);
     }
 
     public static void intoImageView(Context context, Object res, ImageView view, int placeholder) {

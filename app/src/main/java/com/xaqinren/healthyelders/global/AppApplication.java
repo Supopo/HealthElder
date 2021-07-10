@@ -249,6 +249,14 @@ public class AppApplication extends BaseApplication {
     //本次关注列表
     public HashMap<String, Boolean> followList = new HashMap<>();
 
+    public int getBottomMenu() {
+        return bottomMenu;
+    }
+
+    public void setBottomMenu(int bottomMenu) {
+        this.bottomMenu = bottomMenu;
+    }
+
     //底部菜单位置
     public int bottomMenu;
 
