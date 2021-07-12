@@ -313,7 +313,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //发送HomeFragment回顶消息
                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
                 //底部菜单变白色
-                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+                setBottomColors(R.color.black, dawable, R.color.color_252525, false);
+                //                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
                 //发送停止播放消息
                 RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
             } else {
@@ -538,9 +539,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     binding.line.setVisibility(View.GONE);
                 } else if (o.msgType == CodeTable.SET_MENU_WHITE) {
 
-                    binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
-                    selectView.setCompoundDrawables(null, null, null, dawable);
-                    selectView.setTextColor(getResources().getColor(R.color.color_252525));
+                    //                    binding.llMenu.setBackgroundColor(getResources().getColor(R.color.white));
+                    binding.llMenu.setBackgroundColor(getResources().getColor(R.color.black));
+                    //                    selectView.setCompoundDrawables(null, null, null, dawable);
+                    selectView.setCompoundDrawables(null, null, null, dawable2);
+                    //                    selectView.setTextColor(getResources().getColor(R.color.color_252525));
+                    selectView.setTextColor(getResources().getColor(R.color.white));
                     binding.lineBottom.setVisibility(View.VISIBLE);
                 } else if (o.msgType == CodeTable.SET_MENU_COLOR) {
 
@@ -552,9 +556,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                         //背景色从白-透明 10-0
                         String alphaColor = ColorsUtils.getAlphaColor("ffffff", o.status);
-                        binding.llMenu.setBackgroundColor(Color.parseColor(alphaColor));
+                        //                        binding.llMenu.setBackgroundColor(Color.parseColor(alphaColor));
+                        binding.llMenu.setBackgroundColor(getResources().getColor(R.color.black));
+
                         //字体色从黑-白
-                        selectView.setTextColor(Color.parseColor(textColors[o.status]));
+                        //                        selectView.setTextColor(Color.parseColor(textColors[o.status]));
+                        selectView.setTextColor(getResources().getColor(R.color.white));
 
                     }
 
@@ -639,8 +646,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         oldView.setTextSize(ScreenUtils.px2sp(this, getResources().getDimension(R.dimen.sp_16)));
 
 
-        if (selectView.getId() == R.id.tv_menu1 && isTranMenu) {
-            binding.llMenu.setBackgroundColor(getResources().getColor(R.color.transparent));
+        if (selectView.getId() == R.id.tv_menu1) {
+            binding.llMenu.setBackgroundColor(getResources().getColor(isTranMenu ? R.color.transparent : R.color.black));
             binding.lineBottom.setVisibility(View.VISIBLE);
             selectView.setCompoundDrawables(null, null, null, dawable2);
             selectView.setTextColor(getResources().getColor(R.color.white));
