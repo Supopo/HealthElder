@@ -6,7 +6,7 @@
     <RelativeLayout
         android:background="@drawable/bg_y_o_n_dialog"
         android:layout_centerInParent="true"
-        android:layout_width="@dimen/dp_300"
+        android:layout_width="@dimen/dp_280"
         android:layout_height="@dimen/dp_137">
 
         <TextView

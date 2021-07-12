@@ -274,5 +274,10 @@ dependencies {
 
     //汉字转拼音
     implementation 'com.belerweb:pinyin4j:2.5.0'
+
+    //compileOnly 去重引用
+    //腾讯Bugly
+    compileOnly 'com.tencent.bugly:crashreport:latest.release'
+    compileOnly 'com.tencent.bugly:nativecrashreport:latest.release'
 }
 

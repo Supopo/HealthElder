@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.text.TextUtils;
 
 import com.igexin.sdk.PushManager;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -32,6 +33,9 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.uniApp.module.JSCommModule;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 import io.dcloud.common.util.RuningAcitvityUtil;
@@ -79,6 +83,35 @@ public class AppApplication extends BaseApplication {
      */
     public static boolean isUserMini = false;
 
+    /**
+     * 获取进程号对应的进程名
+     *
+     * @param pid 进程号
+     * @return 进程名
+     */
+    private static String getProcessName(int pid) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("/proc/" + pid + "/cmdline"));
+            String processName = reader.readLine();
+            if (!TextUtils.isEmpty(processName)) {
+                processName = processName.trim();
+            }
+            return processName;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void onCreate() {
@@ -95,6 +128,9 @@ public class AppApplication extends BaseApplication {
                 throwable.printStackTrace();//这里处理所有的Rxjava异常
             }
         });
+
+        //初始化Bugly
+        initBugly();
 
         //初始化全局异常崩溃
         initCrash();
@@ -128,6 +164,22 @@ public class AppApplication extends BaseApplication {
         }
 
         //        registerLife();
+    }
+
+    //Bugly崩溃日志收集
+    public void initBugly() {
+        Context context = getApplicationContext();
+        // 获取当前包名
+        String packageName = context.getPackageName();
+        // 获取当前进程名
+        String processName = getProcessName(android.os.Process.myPid());
+        // 设置是否为上报进程
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+        strategy.setUploadProcess(processName == null || processName.equals(packageName));
+        //初始化腾讯Bugly appid:f80c4a7127 key:9c31906f-84fe-4b7b-a6a2-bb491dab1488
+        CrashReport.initCrashReport(context, "f80c4a7127", Constant.DEBUG, strategy);
+        // 如果通过“AndroidManifest.xml”来配置APP信息，初始化方法如下
+        // CrashReport.initCrashReport(context, strategy);
     }
 
 
