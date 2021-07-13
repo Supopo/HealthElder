@@ -285,6 +285,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         if (mSelfAccountInfo != null) {
             mSelfAccountInfo.userName = userName;
             mSelfAccountInfo.userAvatar = avatarURL;
+            mSelfAccountInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
         }
         IMMessageMgr imMessageMgr = mIMMessageMgr;
         if (imMessageMgr != null) {

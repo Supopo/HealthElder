@@ -14,15 +14,14 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -136,6 +135,9 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             holder = new ViewHolder();
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
             convertView = layoutInflater.inflate(R.layout.item_live_msg, null);
+            holder.llLeave = (LinearLayout) convertView.findViewById(R.id.ll_leave);
+            holder.tvLeave = (TextView) convertView.findViewById(R.id.tv_leave);
+            holder.ivLeave = (ImageView) convertView.findViewById(R.id.iv_leave);
             holder.sendContext = (TextView) convertView.findViewById(R.id.sendcontext);
             holder.sendImg = (ImageView) convertView.findViewById(R.id.iv_gift);
             convertView.setTag(R.id.tag_first, holder);
@@ -154,14 +156,17 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             //展示消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorShowMsg));
             holder.sendContext.setText(item.getContent());
+            holder.llLeave.setVisibility(View.GONE);
         } else if (item.getType() == LiveConstants.TYPE_DES) {
             //展示消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.white));
             holder.sendContext.setText(item.getContent());
+            holder.llLeave.setVisibility(View.GONE);
         } else if (item.getType() == LiveConstants.IMCMD_GIFT) {
             //礼物消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorGiftMsg));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
+            holder.llLeave.setVisibility(View.VISIBLE);
         } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
             spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
             //文字消息
@@ -169,14 +174,17 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
                     0, item.getSenderName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorTextMsg));
             holder.sendContext.setText(spanString);
+            holder.llLeave.setVisibility(View.VISIBLE);
         } else {
             // 其他消息类型
             // StyleSpan boldStyle = new StyleSpan(Typeface.NORMAL);
             // spanString.setSpan(boldStyle, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
+            holder.llLeave.setVisibility(View.VISIBLE);
         }
         holder.sendImg.setVisibility(View.GONE);
+        holder.tvLeave.setText(item.getLeaveName());
 
         // 设置控件实际宽度以便计算列表项实际高度
         //holder.sendContext.fixViewWidth(mListView.getWidth());
@@ -191,6 +199,9 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
     static class ViewHolder {
         public TextView sendContext;
         public ImageView sendImg;
+        public TextView tvLeave;
+        public ImageView ivLeave;
+        public LinearLayout llLeave;
 
     }
 

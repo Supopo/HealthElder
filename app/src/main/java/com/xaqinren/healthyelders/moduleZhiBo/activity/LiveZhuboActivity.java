@@ -712,6 +712,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         TCChatEntity entity = new TCChatEntity();
         entity.setSenderName("我 ");
         entity.setContent(msg);
+        entity.setLeaveName(UserInfoMgr.getInstance().getUserInfo().getLevelName());
         entity.setType(LiveConstants.IMCMD_TEXT_MSG);
         notifyMsg(entity);
         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TEXT_MSG), msg, null);
@@ -725,9 +726,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             entity.setSenderName(LiveConstants.NIKENAME + userInfo.userid);
         } else {
             entity.setSenderName(userInfo.nickname);
-
         }
         text = SensitiveWordsUtils.replaceSensitiveWord(text, "***");
+        entity.setLeaveName(userInfo.leaveName);
         entity.setContent(text);
         entity.setType(type);
 
@@ -894,7 +895,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             return;
         }
         roomDestroy = true;
-        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
+        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "overLive-zb"));
         finish();
     }
 
@@ -996,7 +997,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         if (!roomID.equals(mRoomID)) {
             return;
         }
-        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
+        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar, userLevel);
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_TEXT_MSG:

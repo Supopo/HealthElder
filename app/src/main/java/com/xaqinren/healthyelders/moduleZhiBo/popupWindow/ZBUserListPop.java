@@ -21,12 +21,16 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBUserListAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +60,9 @@ public class ZBUserListPop extends BasePopupWindow {
     private QMUIBottomSheet menuDialog;
     private LoadingDialog dialog;
     private ZBUserInfoPop userInfoPop;
+    private Disposable subscribe;
+    private LiveInitInfo mLiveInitInfo;
+    private ZBListMenuPop listBottomPopup;
 
     public ZBUserListPop(Context context) {
         super(context);
@@ -63,6 +70,7 @@ public class ZBUserListPop extends BasePopupWindow {
 
     public ZBUserListPop(Context context, LiveInitInfo mLiveInitInfo, String fansTeamName) {
         super(context);
+        this.mLiveInitInfo = mLiveInitInfo;
         this.liveRoomId = mLiveInitInfo.liveRoomId;
         this.liveRoomRecordId = mLiveInitInfo.liveRoomRecordId;
         rvUsers = findViewById(R.id.rv_list);
@@ -94,7 +102,7 @@ public class ZBUserListPop extends BasePopupWindow {
             if (mLiveInitInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
                 nowPosition = position;
                 String userId = String.valueOf(usersAdapter.getData().get(position).userId);
-                showMenuDialog(position, userId, context);
+                showMenuDialog(position);
             } else {
                 if (!UserInfoMgr.getInstance().getUserInfo().getId().equals(usersAdapter.getData().get(position).userId)) {
                     userInfoPop = new ZBUserInfoPop(getContext(), 1, mLiveInitInfo, usersAdapter.getData().get(position).userId);
@@ -118,6 +126,27 @@ public class ZBUserListPop extends BasePopupWindow {
             }
         }));
 
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean.msgId == LiveConstants.ZB_USER_SET) {
+                if (eventBean.msgType == LiveConstants.SETTING_JINYAN) {      //禁言-取消禁言
+                    usersAdapter.getData().get(nowPosition).hasSpeech = !usersAdapter.getData().get(nowPosition).hasSpeech;
+                    usersAdapter.notifyItemChanged(nowPosition, 99);
+                } else if (eventBean.msgType == LiveConstants.SETTING_LAHEI) {      //拉黑
+                    usersAdapter.remove(nowPosition);
+                } else if (eventBean.msgType == LiveConstants.SETTING_TICHU) {      //踢出
+                    usersAdapter.remove(nowPosition);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 
     @Override
@@ -140,38 +169,14 @@ public class ZBUserListPop extends BasePopupWindow {
         }
     }
 
-    private void showMenuDialog(int position, String userId, Context context) {
-        menuDialog = new QMUIBottomSheet.BottomListSheetBuilder(context)
-                .setGravityCenter(true)
-                .addItem(usersAdapter.getData().get(position).hasSpeech ? "解除禁言" : "禁言")
-                .addItem("拉黑")
-                .addItem("踢出直播间")
-                .setAddCancelBtn(true)
-                .setOnSheetItemClickListener(new QMUIBottomSheet.BottomListSheetBuilder.OnSheetItemClickListener() {
-                    @Override
-                    public void onClick(QMUIBottomSheet dialog, View itemView, int pos, String tag) {
-                        setUserEvent(dialog, pos, userId);
-                    }
-                })
-                .build();
-        menuDialog.show();
-    }
-
-
-    private void setUserEvent(QMUIBottomSheet dialog, int pos, String userId) {
-        dialog.dismiss();
-
-        if (pos == 0) {
-            setUserSpeechStatus(userId, !usersAdapter.getData().get(nowPosition).hasSpeech);
-        } else if (pos == 1) {
-            //拉黑
-            setUserBlackStatus(userId);
-        } else {
-            //踢出
-            RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_TICHU,
-                    userId, usersAdapter.getData().get(nowPosition).nickname));
-            usersAdapter.remove(nowPosition);
-        }
+    private void showMenuDialog(int position) {
+        ZBUserListBean userListBean = usersAdapter.getData().get(position);
+        UserInfoBean userInfoBean = new UserInfoBean();
+        userInfoBean.setId(userListBean.userId);
+        userInfoBean.setNickname(userListBean.nickname);
+        userInfoBean.setHasSpeech(userListBean.hasSpeech);
+        listBottomPopup = new ZBListMenuPop(getContext(), mLiveInitInfo, userInfoBean);
+        listBottomPopup.showPopupWindow();
     }
 
     private void getUserList() {
@@ -210,82 +215,6 @@ public class ZBUserListPop extends BasePopupWindow {
     @Override
     public View onCreateContentView() {
         return createPopupById(R.layout.layout_top_list_pop);
-    }
-
-    //通知后台禁言操作
-    private void setUserSpeechStatus(String userId, boolean status) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("targetId", userId);
-        hashMap.put("liveRoomRecordId", liveRoomRecordId);
-        hashMap.put("status", status);
-        String json = JSON.toJSONString(hashMap);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        RetrofitClient.getInstance().create(ApiServer.class).setUserSpeech(
-                UserInfoMgr.getInstance().getHttpToken(),
-                body)
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        showWaitDialog();
-                    }
-                })
-                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<Object>>>() {
-                    @Override
-                    protected void dismissDialog() {
-                        dismissWaitDialog();
-                    }
-
-                    @Override
-                    protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
-                        usersAdapter.getData().get(nowPosition).hasSpeech = status;
-                        //刷新item
-                        usersAdapter.notifyItemChanged(nowPosition, 99);
-                        //通知主播页面禁言操作了 1禁言 0没有禁言
-                        RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_JINYAN,
-                                userId, status ? 1 : 0));
-                    }
-                });
-    }
-
-    //通知后台拉黑操作
-    private void setUserBlackStatus(String userId) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("targetId", userId);
-        hashMap.put("liveRoomId", liveRoomId);
-        hashMap.put("status", true);
-        String json = JSON.toJSONString(hashMap);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        RetrofitClient.getInstance().create(ApiServer.class).setUserBlack(
-                UserInfoMgr.getInstance().getHttpToken(),
-                body)
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        showWaitDialog();
-                    }
-                })
-                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<Object>>>() {
-                    @Override
-                    protected void dismissDialog() {
-                        dismissWaitDialog();
-                    }
-
-                    @Override
-                    protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
-                        //更新列表
-                        rvUsers.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                usersAdapter.remove(nowPosition);
-                            }
-                        });
-                        //通知主播页面拉黑操作了
-                        RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_LAHEI,
-                                userId, usersAdapter.getData().get(nowPosition).nickname));
-                    }
-                });
     }
 
     //关注用户操作

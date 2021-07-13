@@ -48,6 +48,7 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
+        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
         mLiveRoom.login(false, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

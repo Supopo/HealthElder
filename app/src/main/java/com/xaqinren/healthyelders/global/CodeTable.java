@@ -8,6 +8,7 @@ public class CodeTable {
     public static int CODE_SUCCESS = 100;
     public static int RESH_VIEW_CODE = 99;
     public static int SET_MENU_WHITE = 97;//设置首页底部菜单栏变白
+    public static int SET_MENU_BLACK = 95;//设置首页底部菜单栏变黑
     public static int SET_MENU_COLOR = 9710;//设置首页底部菜单逐渐变白
     public static int SHOW_HOME1_TOP = 971;//展示推荐列表顶部
     public static int SHOW_HOME1_TOP_HT = 9712;//回弹顶部
@@ -30,6 +31,7 @@ public class CodeTable {
     public static int MUSIC_BACK = 90001;//直播间礼物点击事件
     public static int ZBJ_SETTING_BLOCK = 90002;//直播间设置屏蔽词
     public static int FINISH_ACT = 88;//
+    public static int JUMP_ACT = 66;//
 
     /**
      * 成功

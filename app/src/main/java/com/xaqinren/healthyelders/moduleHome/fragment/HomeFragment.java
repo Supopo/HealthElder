@@ -295,7 +295,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                     } else if (position == 1) {//关注
                         RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
                     } else {//附近
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_WHITE));
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
                     }
                 }
                 isFirst = false;

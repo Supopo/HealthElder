@@ -16,6 +16,24 @@ public class TCChatEntity {
     private String content;        // 消息内容
     private int type;            // 消息类型
 
+    public String getSendName() {
+        return sendName;
+    }
+
+    public void setSendName(String sendName) {
+        this.sendName = sendName;
+    }
+
+    public String getLeaveName() {
+        return leaveName;
+    }
+
+    public void setLeaveName(String leaveName) {
+        this.leaveName = leaveName;
+    }
+
+    private String leaveName;            // 用户等级
+
     public String getSenderName() {
         if (TextUtils.isEmpty(sendName)) {
             return LiveConstants.NIKENAME;

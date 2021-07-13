@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.apiserver;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -435,6 +434,7 @@ public class UserRepository {
         loginInfo.sdkAppID = 1400392607;
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
+        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
         LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录" + loginInfo.userSig);
         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(true, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override

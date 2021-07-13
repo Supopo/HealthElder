@@ -12,6 +12,16 @@ public class TCUserInfo {
     public String avatar;       // 头像链接
     public Boolean isForbidden = false;
     public String giftIcon;//
+    public String leaveName;//
+
+    public String getLeaveName() {
+        return leaveName;
+    }
+
+    public void setLeaveName(String leaveName) {
+        this.leaveName = leaveName;
+    }
+
 
     public String getGiftName() {
         return giftName;
@@ -32,10 +42,11 @@ public class TCUserInfo {
     }
 
 
-    public TCUserInfo(String userId, String nickname, String avatar) {
+    public TCUserInfo(String userId, String nickname, String avatar,String leaveName) {
         this.userid = userId;
         this.nickname = nickname;
         this.avatar = avatar;
+        this.leaveName = leaveName;
     }
 
     public String getUserid() {

@@ -52,6 +52,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
         loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
         //3887
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
+        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
         //4545
         //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
         mLiveRoom.login(false,loginInfo, new IMLVBLiveRoomListener.LoginCallback() {

@@ -262,7 +262,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         }));
 
-        binding.rivPhoto.setOnClickListener(lis ->{
+        binding.rivPhoto.setOnClickListener(lis -> {
             userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, mLiveInitInfo.userId);
             userInfoPop.showPopupWindow();
         });
@@ -596,6 +596,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     private void addMsg2List(String sendName, String msg, int type) {
         TCChatEntity entity = new TCChatEntity();
+        entity.setLeaveName(UserInfoMgr.getInstance().getUserInfo().getLevelName());
         entity.setSenderName(sendName);
         entity.setContent(msg);
         entity.setType(type);
@@ -1024,9 +1025,9 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             entity.setSenderName(userInfo.nickname);
 
         }
+        entity.setLeaveName(userInfo.leaveName);
         entity.setContent(text);
         entity.setType(type);
-
         notifyMsg(entity);
     }
 
@@ -1244,7 +1245,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         if (!roomID.equals(mRoomID)) {
             return;
         }
-        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar);
+        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar, userLevel);
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_TEXT_MSG:

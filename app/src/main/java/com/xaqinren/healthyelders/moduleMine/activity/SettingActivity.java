@@ -22,8 +22,10 @@ import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivitySettingBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
@@ -47,6 +49,7 @@ import java.util.List;
 import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.OkHttpClient;
@@ -194,11 +197,13 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                 listBottomPopup.dismiss();
                 //清除缓存
                 InfoCache.getInstance().clearLogin();
-                //跳到登录页面
-                AppManager.getAppManager().finishAllActivity();
                 //清除展示弹窗信息
                 SPUtils.getInstance().clear();
+                //给主页发送消息回到首页模块
+                RxBus.getDefault().post(new EventBean(CodeTable.JUMP_ACT,"main-act"));
+                //跳到登录页面
                 startActivity(SelectLoginActivity.class);
+                finish();
             }
         });
         listBottomPopup.showPopupWindow();
