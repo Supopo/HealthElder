@@ -103,6 +103,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
         rlTitle.setVisibility(View.GONE);
 
 
+        //刷新token
         LoginTokenBean loginTokenBean = InfoCache.getInstance().getLoginTokenBean();
         if (loginTokenBean != null) {
             //            if (System.currentTimeMillis() >= ((loginTokenBean.expires_in * 1000) + loginTokenBean.saveTime)) {
