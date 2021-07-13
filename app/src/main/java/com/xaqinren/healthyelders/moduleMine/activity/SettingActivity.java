@@ -77,10 +77,23 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
         return BR.viewModel;
     }
 
+    private int count;
+
     @Override
     public void initData() {
         super.initData();
         setTitle("设置");
+        tvTitle.setOnClickListener(lis -> {
+            count++;
+            if (count == 3) {
+                ToastUtil.toastShortMessage("再点2下获取版本号");
+            } else if (count == 4) {
+                ToastUtil.toastShortMessage("再点1下获取版本号");
+            } else if (count == 5) {
+                ToastUtil.toastShortMessage(getVersionName(this));
+                count = 0;
+            }
+        });
         userInfoBean = UserInfoMgr.getInstance().getUserInfo();
         binding.setData(userInfoBean);
         binding.phoneLayout.setOnClickListener(v -> {
@@ -173,7 +186,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                         downUrl = versionBean.newAppVersion.upgradeUrl;
                         mustUpdate = versionBean.autoUpdateApplet;
                         updateDialog();
-                    }else{
+                    } else {
                         ToastUtils.showShort("已是最新版本");
                     }
                 }
@@ -200,7 +213,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                 //清除展示弹窗信息
                 SPUtils.getInstance().clear();
                 //给主页发送消息回到首页模块
-                RxBus.getDefault().post(new EventBean(CodeTable.JUMP_ACT,"main-act"));
+                RxBus.getDefault().post(new EventBean(CodeTable.JUMP_ACT, "main-act"));
                 //跳到登录页面
                 startActivity(SelectLoginActivity.class);
                 finish();
@@ -248,6 +261,16 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
             //            installApk();
             downloadApk();
         }
+    }
+
+    private String getVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (Exception e) {
+            return "";
+        }
+
     }
 
 

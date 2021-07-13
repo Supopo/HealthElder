@@ -129,6 +129,9 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     public void initEvent() {
         binding.tvCancel.setOnClickListener(lis -> {
             if (isSearch) {
+                if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
+                    tags = binding.etSearch.getText().toString();
+                }
                 toSearch();
             } else {
                 finish();

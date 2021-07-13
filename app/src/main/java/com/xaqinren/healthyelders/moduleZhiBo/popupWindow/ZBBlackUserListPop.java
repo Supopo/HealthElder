@@ -28,6 +28,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -266,7 +267,7 @@ public class ZBBlackUserListPop extends BasePopupWindow {
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
                         zbBlackListAdapter.remove(blackPos);
-                        if (blackNum > 1) {
+                        if (blackNum > 0) {
                             tvTips.setText("已被拉黑的用户 (" + (blackNum - 1) + "/5000)");
                         }
                     }
