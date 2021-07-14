@@ -273,7 +273,7 @@ public class UserInfoBean implements Serializable {
 
     public String getLevelName() {
         if (TextUtils.isEmpty(levelName)) {
-            return "99";
+            return "1";
         }
         return levelName;
     }

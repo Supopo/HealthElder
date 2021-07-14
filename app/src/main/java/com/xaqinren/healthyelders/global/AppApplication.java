@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.dcloud.common.util.RuningAcitvityUtil;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
@@ -373,6 +374,9 @@ public class AppApplication extends BaseApplication {
     public void setPlayPosition(int playPosition) {
         this.playPosition = playPosition;
     }
+
+    public Map<Long, Integer> listPos = new HashMap<>();
+
 
 
     public int getLayoutPos() {

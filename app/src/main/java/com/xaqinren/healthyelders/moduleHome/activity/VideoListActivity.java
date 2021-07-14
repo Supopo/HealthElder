@@ -90,6 +90,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AppApplication.get().listPos.remove(timeTag);
         handler.removeCallbacksAndMessages(null);
         if (subscribe != null) {
             subscribe.dispose();
@@ -122,6 +123,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5) {
             //从附近打开-我的作品-我的私密作品
             binding.viewPager2.setCurrentItem(position, false);
+            //给列表序号加标记
+            AppApplication.get().listPos.put(timeTag, position);
             AppApplication.get().setPlayPosition(position);
             handler.postDelayed(new Runnable() {
                 @Override
@@ -146,6 +149,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 if (position != 0 && position == lastPos) {
                     return;
                 }
+                AppApplication.get().listPos.put(timeTag, position);
                 AppApplication.get().setPlayPosition(position);
                 RxBus.getDefault().post(new VideoEvent(1, TAG));
                 //判断数据数量滑动到倒数第三个时候去进行加载
@@ -268,7 +272,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 List<VideoInfo> tempList = new ArrayList<>();
 
                 for (DZVideoInfo dzVideoInfo : datas) {
-                    if (!dzVideoInfo.homeComprehensiveHall.isArticle()) {
+                    if (dzVideoInfo.homeComprehensiveHall != null && !dzVideoInfo.homeComprehensiveHall.isArticle()) {
                         tempList.add(dzVideoInfo.homeComprehensiveHall);
                     }
                 }
@@ -289,7 +293,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 if (page == 1) {
                     //需要重new否者会出现缓存
                     homeAdapter = new FragmentPagerAdapter(this, fragmentList);
-                    binding.viewPager2.setAdapter(homeAdapter);;
+                    binding.viewPager2.setAdapter(homeAdapter);
                 }
 
             } else {
@@ -301,7 +305,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     }
 
     public void addFragment(List<VideoInfo> tempList, int i) {
-        fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType, timeTag));
-        fragmentPosition++;
+        if (tempList.get(i) != null) {
+            fragmentList.add(new HomeVideoFragment(tempList.get(i), TAG, fragmentPosition, isMineOpen, openType, timeTag));
+            fragmentPosition++;
+        }
+
     }
 }

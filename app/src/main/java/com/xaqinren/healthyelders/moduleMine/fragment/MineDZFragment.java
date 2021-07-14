@@ -79,7 +79,9 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
-
+            if (videoAdapter.getData().get(position).homeComprehensiveHall == null) {
+                return;
+            }
 
             if (videoAdapter.getData().get(position).homeComprehensiveHall.isArticle()) {
                 Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);

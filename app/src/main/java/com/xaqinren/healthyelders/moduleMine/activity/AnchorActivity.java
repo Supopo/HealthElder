@@ -1,7 +1,17 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
+import android.view.View;
+import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.tabs.TabLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityAnchorBinding;
@@ -15,8 +25,9 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
+
 public class AnchorActivity extends BaseActivity<ActivityAnchorBinding, AnchorViewModel> {
-    private String phone = "测试售价好";
+    private String phone = "13812345678";
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -32,17 +43,20 @@ public class AnchorActivity extends BaseActivity<ActivityAnchorBinding, AnchorVi
     public void initData() {
         super.initData();
         setTitle("主播中心");
-        binding.myService.setOnClickListener(v -> {
+        binding.llWdkf.setOnClickListener(v -> {
             callService();
         });
-        binding.myWallet.setOnClickListener(v -> {
+        binding.llWallet.setOnClickListener(v -> {
             startActivity(WalletActivity.class);
         });
+
     }
+
+    private String[] titles = {"今日", "前7天", "前30天"};
 
     private void callService() {
         List<ListPopMenuBean> menus = new ArrayList<>();
-        menus.add(new ListPopMenuBean("拨打电话："+phone));
+        menus.add(new ListPopMenuBean("拨打电话：" + phone));
         ListBottomPopup listBottomPopup = new ListBottomPopup(this, menus);
         listBottomPopup.setOnItemClickListener((adapter, view, position) -> {
             //掉接口

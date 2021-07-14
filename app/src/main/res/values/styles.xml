@@ -373,6 +373,4 @@
         <item name="horizontalProgressLayout">@layout/progress_dialog</item>
     </style>
 
-
-
 </resources>

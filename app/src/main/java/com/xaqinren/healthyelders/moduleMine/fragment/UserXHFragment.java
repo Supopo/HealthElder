@@ -90,6 +90,10 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
                 startActivity(intent);
                 return;
             }
+            if (videoAdapter.getData().get(position).homeComprehensiveHall == null) {
+                return;
+            }
+
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 

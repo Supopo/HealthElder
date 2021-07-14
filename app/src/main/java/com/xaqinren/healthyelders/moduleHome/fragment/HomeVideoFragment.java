@@ -138,7 +138,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         this.isMineOpen = isMineOpen;
         this.videoOpenType = videoOpenType;
         this.timeTag = timeTag;
-        if (videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
+        if (videoInfo != null && !TextUtils.isEmpty(videoInfo.resourceType) && videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
         }
@@ -922,8 +922,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startListVideo() {
-        if (AppApplication.get().getPlayPosition() == position && AppApplication.get().getTimeTag() == timeTag) {
-            startPlay(true);
+        if (AppApplication.get().getTimeTag() == timeTag) {
+            Integer integer = AppApplication.get().listPos.get(timeTag);
+            if (integer != null && integer == position) {
+                startPlay(true);
+            }
         }
     }
 
@@ -991,7 +994,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     private void resumePlay() {
         //判断播放条件 首页模块-消息进入的列表页面-我的进入列表页面
-        if ((AppApplication.get().bottomMenu == 0) || (AppApplication.get().bottomMenu == 2 && type.equals("home-list"))||(AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
+        if ((AppApplication.get().bottomMenu == 0) || (AppApplication.get().bottomMenu == 2 && type.equals("home-list")) || (AppApplication.get().bottomMenu == 3 && type.equals("home-list"))) {
             binding.mainVideoView.onResume();
 
             //是否开启播放状态
@@ -1083,11 +1086,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             } else if (type.equals("home-list")) {
 
                 // todo 视频列表页打开列表页，返回之后不继续播放
-                if (AppApplication.get().getPlayPosition() == position) {
+                Integer integer = AppApplication.get().listPos.get(timeTag);
+                if (integer != null && integer == position) {
                     resumePlay();
                 } else {
                     pausePlay();
                 }
+
+                //                if (AppApplication.get().getPlayPosition() == position) {
+                //                    resumePlay();
+                //                } else {
+                //                    pausePlay();
+                //                }
             }
         }
     }

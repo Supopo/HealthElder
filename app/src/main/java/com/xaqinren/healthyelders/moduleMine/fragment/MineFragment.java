@@ -28,6 +28,7 @@ import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
+import com.xaqinren.healthyelders.moduleMine.activity.AnchorActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.MyRecommendCodeActivity;
@@ -319,7 +320,6 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             mainActivity.openDrawer();
         });
         binding.rivPhoto2.setOnClickListener(lis -> {
-
         });
         binding.tvName.setOnClickListener(lis -> {
         });
@@ -350,7 +350,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     public void initViewObservable() {
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
-            GlideUtil.intoPhotoImageView(getActivity(),userInfo.getAvatarUrl(),binding.rivPhoto2);
+            GlideUtil.intoPhotoImageView(getActivity(), userInfo.getAvatarUrl(), binding.rivPhoto2);
             dismissDialog();
         });
 

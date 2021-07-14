@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityZhiboOverBinding;
@@ -53,6 +54,10 @@ public class ZhiboOverActivity extends BaseActivity<ActivityZhiboOverBinding, Zh
             finish();
         });
         RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
+        binding.btnCommit.setOnClickListener(lis ->{
+            ToastUtil.toastShortMessage("提交成功~");
+            finish();
+        });
     }
 
 

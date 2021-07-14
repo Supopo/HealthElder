@@ -434,6 +434,7 @@
             </RelativeLayout>
 
             <Button
+                android:id="@+id/btn_commit"
                 android:layout_width="@dimen/dp_323"
                 android:layout_height="@dimen/dp_36"
                 android:layout_below="@id/rl_info3"

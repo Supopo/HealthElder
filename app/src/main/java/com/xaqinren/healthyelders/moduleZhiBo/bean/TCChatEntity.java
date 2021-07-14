@@ -25,6 +25,9 @@ public class TCChatEntity {
     }
 
     public String getLeaveName() {
+        if (TextUtils.isEmpty(leaveName)) {
+            return "1";
+        }
         return leaveName;
     }
 

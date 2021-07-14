@@ -48,6 +48,9 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
     private Disposable subscribe;
     private SkeletonScreen skeletonScreen;
 
+    public GoodsListFragment() {
+    }
+
     public GoodsListFragment(int position, String category, boolean isFirstNet) {
         this.fPosition = position;
         this.category = category;
