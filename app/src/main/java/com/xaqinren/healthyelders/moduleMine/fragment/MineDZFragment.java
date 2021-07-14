@@ -96,7 +96,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             List<VideoInfo> temp = new ArrayList<>();
 
             for (DZVideoInfo dzVideoInfo : videoAdapter.getData()) {
-                if (!dzVideoInfo.homeComprehensiveHall.isArticle()) {
+                if (dzVideoInfo.homeComprehensiveHall != null&& !dzVideoInfo.homeComprehensiveHall.isArticle()) {
                     temp.add(dzVideoInfo.homeComprehensiveHall);
                 }
             }

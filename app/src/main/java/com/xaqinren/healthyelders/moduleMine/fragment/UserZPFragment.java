@@ -16,12 +16,15 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentUserZpBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.ZPVideoAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserZPViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+
+import java.util.ArrayList;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 
@@ -95,9 +98,25 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             Bundle bundle = new Bundle();
             VideoListBean listBean = new VideoListBean();
 
-            listBean.videoInfos = videoAdapter.getData();
+            listBean.videoInfos = new ArrayList<>();
 
-            listBean.position = position;
+            //去除文章
+            for (VideoInfo videoInfo : videoAdapter.getData()) {
+                if (!videoInfo.isArticle()) {
+                    listBean.videoInfos.add(videoInfo);
+                }
+            }
+
+            //重新计算点击的位置
+            int newPos = 0;
+            for (int i = 0; i < listBean.videoInfos.size(); i++) {
+                if (listBean.videoInfos.get(i).resourceId.equals(videoAdapter.getData().get(position).resourceId)) {
+                    newPos = i;
+                    break;
+                }
+            }
+
+            listBean.position = newPos;
 
             //里面每页3条数据 重新计算
             if (listBean.videoInfos.size() % Constant.loadVideoSize == 0) {

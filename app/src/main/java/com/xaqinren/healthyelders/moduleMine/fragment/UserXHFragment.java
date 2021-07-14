@@ -100,7 +100,9 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             List<VideoInfo> temp = new ArrayList<>();
 
             for (DZVideoInfo dzVideoInfo : videoAdapter.getData()) {
-                temp.add(dzVideoInfo.homeComprehensiveHall);
+                if (dzVideoInfo.homeComprehensiveHall != null && !dzVideoInfo.homeComprehensiveHall.isArticle()) {
+                    temp.add(dzVideoInfo.homeComprehensiveHall);
+                }
             }
 
             listBean.videoInfos = temp;
