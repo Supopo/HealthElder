@@ -36,11 +36,14 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.dcloud.common.util.RuningAcitvityUtil;
 import io.dcloud.feature.sdk.DCSDKInitConfig;
 import io.dcloud.feature.sdk.DCUniMPSDK;
+import io.dcloud.feature.sdk.MenuActionSheetItem;
 import io.dcloud.feature.uniapp.UniSDKEngine;
 import io.dcloud.feature.uniapp.common.UniException;
 import io.reactivex.functions.Consumer;
@@ -196,15 +199,29 @@ public class AppApplication extends BaseApplication {
     }
 
     public void initUni(OnUniIntCallBack callBack) {
-
+        List<MenuActionSheetItem> var1 = new ArrayList<>();
+        MenuActionSheetItem item = new MenuActionSheetItem("关于:小程序由健康长老提供", "gy");
+        var1.add(item);
         DCSDKInitConfig config = new DCSDKInitConfig.Builder()
                 .setCapsule(true)
                 .setMenuDefFontSize("16px")
-                .setMenuDefFontColor("#ff00ff")
+                .setMenuDefFontColor("#252525")
                 .setMenuDefFontWeight("normal")
+                .setMenuActionSheetItems(var1)
                 .setEnableBackground(true)
+                .setCapsule(false)
                 .build();
+        DCUniMPSDK.getInstance().setDefMenuButtonClickCallBack(new DCUniMPSDK.IMenuButtonClickCallBack() {
+            @Override
+            public void onClick(String appid, String id) {
+                switch (id) {
+                    case "gy":{
 
+                        break;
+                    }
+                }
+            }
+        });
         try {
             UniSDKEngine.registerModule("qnx-extPlugin", JSCommModule.class);
         } catch (UniException e) {

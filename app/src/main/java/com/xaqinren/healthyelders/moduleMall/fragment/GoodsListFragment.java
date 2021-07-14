@@ -159,12 +159,14 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         viewModel.goodsList.observe(this, datas -> {
             if (datas != null) {
                 if (skeletonScreen != null) {
-                    binding.rvContent.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            skeletonScreen.hide();
-                        }
-                    }, 1000);
+                    if (page == 1) {
+                        binding.rvContent.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                skeletonScreen.hide();
+                            }
+                        }, 1000);
+                    }
                 }
 
 
