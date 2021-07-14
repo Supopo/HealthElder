@@ -58,7 +58,6 @@ public class MyAbsWXPayCallbackActivity extends Activity implements IWXAPIEventH
             bundle.putString("style", "BaseReq");
             req.toBundle(bundle);
             n.putExtra("result", bundle);
-            ProcessMediator.setResult(n);
         }
 
         this.finish();
@@ -107,7 +106,6 @@ public class MyAbsWXPayCallbackActivity extends Activity implements IWXAPIEventH
             bundle.putString("style", "BaseResp");
             resp.toBundle(bundle);
             n.putExtra("result", bundle);
-            ProcessMediator.setResult(n);
         }
 
         this.overridePendingTransition(0, 0);

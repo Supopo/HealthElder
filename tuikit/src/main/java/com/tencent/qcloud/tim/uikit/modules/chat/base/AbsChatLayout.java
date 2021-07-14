@@ -275,6 +275,7 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         if (getMessageLayout().getAdapter() == null) {
             mAdapter = new MessageListAdapter();
             getMessageLayout().setAdapter(mAdapter);
+            //TODO 自定义消息
             mAdapter.setOnCustomMessageDrawListener(new IOnCustomMessageDrawListener() {
                 @Override
                 public void onDraw(ICustomMessageViewGroup parent, MessageInfo info) {

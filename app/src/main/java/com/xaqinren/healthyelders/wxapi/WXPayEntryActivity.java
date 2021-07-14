@@ -15,10 +15,11 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
+import io.dcloud.feature.payment.weixin.AbsWXPayCallbackActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.SPUtils;
 
-public class WXPayEntryActivity extends MyAbsWXPayCallbackActivity {
+public class WXPayEntryActivity extends AbsWXPayCallbackActivity {
     //private IWXAPI api;
 
     @Override
