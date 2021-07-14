@@ -45,6 +45,15 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/sendName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/sendcontext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

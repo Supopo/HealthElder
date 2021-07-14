@@ -256,7 +256,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
 
         //开启远端视频渲染
-        mLiveRoom.startRemoteView(anchorInfo, txCloudVideoView, new IMLVBLiveRoomListener.PlayCallback() {
+        mLiveRoom.startRemoteView(linkType == 1 ? true : false, anchorInfo, txCloudVideoView, new IMLVBLiveRoomListener.PlayCallback() {
             @Override
             public void onBegin() {
                 isLianMai = true;

@@ -368,7 +368,7 @@ public abstract class MLVBLiveRoom {
      * @param callback   播放器监听器
      * @note 在 onUserVideoAvailable 回调时，调用这个接口
      */
-    public abstract void startRemoteView(final AnchorInfo anchorInfo, final TXCloudVideoView view, final IMLVBLiveRoomListener.PlayCallback callback);
+    public abstract void startRemoteView(boolean isAudio, final AnchorInfo anchorInfo, final TXCloudVideoView view, final IMLVBLiveRoomListener.PlayCallback callback);
 
     /**
      * 停止渲染远端视频画面

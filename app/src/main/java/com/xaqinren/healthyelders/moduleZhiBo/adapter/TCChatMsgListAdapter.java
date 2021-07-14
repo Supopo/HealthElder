@@ -138,6 +138,7 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             holder.llLeave = (LinearLayout) convertView.findViewById(R.id.ll_leave);
             holder.tvLeave = (TextView) convertView.findViewById(R.id.tv_leave);
             holder.ivLeave = (ImageView) convertView.findViewById(R.id.iv_leave);
+            holder.sendName = (TextView) convertView.findViewById(R.id.sendName);
             holder.sendContext = (TextView) convertView.findViewById(R.id.sendcontext);
             holder.sendImg = (ImageView) convertView.findViewById(R.id.iv_gift);
             convertView.setTag(R.id.tag_first, holder);
@@ -154,28 +155,35 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         // 判断是否展示文本  展示文本设置展示文本的颜色 提示语 消息文本要设置名字颜色
         if (item.getType() == LiveConstants.TYPE_SHOW) {
             //展示消息
+            holder.sendName.setText("");
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorShowMsg));
             holder.sendContext.setText(item.getContent());
             holder.llLeave.setVisibility(View.GONE);
         } else if (item.getType() == LiveConstants.TYPE_DES) {
+            holder.sendName.setText("");
             //展示消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.white));
             holder.sendContext.setText(item.getContent());
             holder.llLeave.setVisibility(View.GONE);
         } else if (item.getType() == LiveConstants.IMCMD_GIFT) {
+            holder.sendName.setText("");
             //礼物消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorGiftMsg));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
             holder.llLeave.setVisibility(View.VISIBLE);
         } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
-            spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
+//            spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
             //文字消息
-            spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
-                    0, item.getSenderName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.sendName.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
+            holder.sendName.setText(item.getSenderName() + ":  ");
+            holder.sendContext.setText(item.getContent());
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorTextMsg));
-            holder.sendContext.setText(spanString);
+//            spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
+//                    0, item.getSenderName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//            holder.sendContext.setText(spanString);
             holder.llLeave.setVisibility(View.VISIBLE);
         } else {
+            holder.sendName.setText("");
             // 其他消息类型
             // StyleSpan boldStyle = new StyleSpan(Typeface.NORMAL);
             // spanString.setSpan(boldStyle, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -185,6 +193,9 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         }
         holder.sendImg.setVisibility(View.GONE);
         holder.tvLeave.setText(item.getLeaveName());
+
+        //暂时隐藏用户等级
+        holder.llLeave.setVisibility(View.GONE);
 
         // 设置控件实际宽度以便计算列表项实际高度
         //holder.sendContext.fixViewWidth(mListView.getWidth());
@@ -197,6 +208,7 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
 
 
     static class ViewHolder {
+        public TextView sendName;
         public TextView sendContext;
         public ImageView sendImg;
         public TextView tvLeave;

@@ -1244,8 +1244,9 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                         mTXLivePusher.setConfig(config);
                     }
 
+                    String newPushUrl = data.pushURL + "&isPusher=0";//0意思是上麦推流
                     //5. 开始推流
-                    startPushStream(data.pushURL, TXLiveConstants.VIDEO_QUALITY_LINKMIC_SUB_PUBLISHER, new StandardCallback() {
+                    startPushStream(newPushUrl, type == 1 ? TXLiveConstants.VIDEO_QUALITY_LINKMIC_MAIN_PUBLISHER : TXLiveConstants.VIDEO_QUALITY_LINKMIC_SUB_PUBLISHER, new StandardCallback() {
                         @Override
                         public void onError(final int code, final String info) {
                             callbackOnThread(callback, "onError", code, info);
@@ -1255,7 +1256,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                         public void onSuccess() {
                             mBackground = false;
                             //6. 推流成功，请求CGI:add_pusher，把自己加入房间成员列表
-                            addAnchor(mCurrRoomID, data.pushURL, new StandardCallback() {
+                            addAnchor(mCurrRoomID, newPushUrl, new StandardCallback() {
                                 @Override
                                 public void onError(final int code, final String info) {
                                     callbackOnThread(callback, "onError", code, info);
@@ -1644,7 +1645,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @note 在 onUserVideoAvailable 回调时，调用这个接口
      */
     @Override
-    public void startRemoteView(final AnchorInfo anchorInfo, final TXCloudVideoView view, final IMLVBLiveRoomListener.PlayCallback callback) {
+    public void startRemoteView(boolean isAudio,final AnchorInfo anchorInfo, final TXCloudVideoView view, final IMLVBLiveRoomListener.PlayCallback callback) {
         TXCLog.i(TAG, "API -> startRemoteView:" + anchorInfo.userID + ":" + anchorInfo.accelerateURL);
         //主线程启动播放
         Handler handler = new Handler(mAppContext.getMainLooper());
@@ -1700,7 +1701,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                                 if (mMixMode == STREAM_MIX_MODE_PK) {
                                     mStreamMixturer.addPKVideoStream(anchorInfo.accelerateURL);
                                 } else {
-                                    mStreamMixturer.addSubVideoStream(anchorInfo.accelerateURL);
+                                    mStreamMixturer.addSubVideoStream(anchorInfo.accelerateURL, isAudio);
                                 }
                             }
                             callbackOnThread(callback, "onBegin");
@@ -1762,7 +1763,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     if (mMixMode == STREAM_MIX_MODE_PK) {
                         mStreamMixturer.delPKVideoStream(anchorInfo.accelerateURL);
                     } else {
-                        mStreamMixturer.delSubVideoStream(anchorInfo.accelerateURL);
+                        mStreamMixturer.delSubVideoStream(anchorInfo.accelerateURL,false);
                     }
                     if (mPlayers.size() == 0) {
                         //没有播放流了，切换推流回直播模式
@@ -2862,10 +2863,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
     protected void mixtureStream(List<AnchorInfo> addAnchors, List<AnchorInfo> delAnchors) {
         for (AnchorInfo member : addAnchors) {
-            mStreamMixturer.addSubVideoStream(member.accelerateURL);
+            mStreamMixturer.addSubVideoStream(member.accelerateURL,false);
         }
         for (AnchorInfo member : delAnchors) {
-            mStreamMixturer.delSubVideoStream(member.accelerateURL);
+            mStreamMixturer.delSubVideoStream(member.accelerateURL,false);
         }
     }
 
@@ -3389,7 +3390,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             }
         }
 
-        public void addSubVideoStream(String streamUrl) {
+        public void addSubVideoStream(String streamUrl, boolean isAudio) {
             if (mSubStreamIds.size() > 3) {
                 return;
             }
@@ -3409,10 +3410,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             }
 
             mSubStreamIds.add(streamId);
-            sendStreamMergeRequest(5);
+            sendStreamMergeRequest(5, isAudio);
         }
 
-        public void delSubVideoStream(String streamUrl) {
+        public void delSubVideoStream(String streamUrl,boolean isAudio) {
             String streamId = getStreamIDByStreamUrl(streamUrl);
 
             Log.e(TAG, "MergeVideoStream: delSubVideoStream " + streamId);
@@ -3427,7 +3428,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
             if (bExist == true) {
                 mSubStreamIds.remove(streamId);
-                sendStreamMergeRequest(1);
+                sendStreamMergeRequest(1,isAudio);
             }
         }
 
@@ -3474,12 +3475,12 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             mMainStreamHeight = 960;
         }
 
-        private void sendStreamMergeRequest(final int retryCount) {
+        private void sendStreamMergeRequest(final int retryCount, boolean isAudio) {
             if (mMainStreamId == null || mMainStreamId.length() == 0) {
                 return;
             }
 
-            final JSONObject requestParam = createRequestParam();
+            final JSONObject requestParam = createRequestParam(isAudio);
             if (requestParam == null) {
                 return;
             }
@@ -3527,7 +3528,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
 
         //连麦合流参数拼接
-        private JSONObject createRequestParam() {
+        private JSONObject createRequestParam(boolean isAudio) {
 
             JSONObject requestParam = null;
 
@@ -3566,6 +3567,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     layoutParam.put("image_layer", layerIndex + 2);
                     layoutParam.put("image_width", subWidth);
                     layoutParam.put("image_height", subHeight);
+                    if (isAudio) {
+                        //纯音频需要设置否则观众端听不到声音
+                        layoutParam.put("input_type", 4);
+                    }
                     layoutParam.put("location_x", subLocationX);
                     layoutParam.put("location_y", subLocationY - layerIndex * subHeight);
 

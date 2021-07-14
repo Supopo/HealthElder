@@ -35,11 +35,11 @@ public class HttpRequests {
     private final OkHttpClient okHttpClient;
     private static final MediaType MEDIA_JSON = MediaType.parse("application/json; charset=utf-8");
     private final String domain;
-    private String userID  = "";
+    private String userID = "";
     private String token = "";
     private HeartBeatCallback heartBeatCallback = null;
 
-    private class HttpInteraptorLog implements HttpLoggingInterceptor.Logger{
+    private class HttpInteraptorLog implements HttpLoggingInterceptor.Logger {
         @Override
         public void log(String message) {
             Log.i("HttpRequest", message);
@@ -76,7 +76,7 @@ public class HttpRequests {
         return domain.concat(String.format("%s?userID=%s&token=%s", cgi, this.userID, this.token));
     }
 
-    public void cancelAllRequests(){
+    public void cancelAllRequests() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -85,7 +85,7 @@ public class HttpRequests {
         }).start();
     }
 
-    private <R extends HttpResponse> void request(Request request, final Class<R> rClass, final OnResponseCallback<R> callback){
+    private <R extends HttpResponse> void request(Request request, final Class<R> rClass, final OnResponseCallback<R> callback) {
 
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -119,7 +119,7 @@ public class HttpRequests {
     }
 
     public void getRoomList(int index, int count,
-                            final OnResponseCallback<HttpResponse.RoomList> callback){
+                            final OnResponseCallback<HttpResponse.RoomList> callback) {
         String body = "";
 
         try {
@@ -141,7 +141,7 @@ public class HttpRequests {
 
     }//getRoomList
 
-    public void getPushUrl(String userID, String roomID, OnResponseCallback<HttpResponse.PushUrl> callback){
+    public void getPushUrl(String userID, String roomID, OnResponseCallback<HttpResponse.PushUrl> callback) {
 
         String body = String.format("{\"userID\": \"%s\"}", userID);
         if (roomID != null && roomID.length() > 0) {
@@ -154,7 +154,7 @@ public class HttpRequests {
         request(request, HttpResponse.PushUrl.class, callback);
     }
 
-    public void getAudienceList(String roomId, final OnResponseCallback<HttpResponse.AudienceList> callback){
+    public void getAudienceList(String roomId, final OnResponseCallback<HttpResponse.AudienceList> callback) {
 
         String body = String.format("{\"roomID\":\"%s\"}", roomId);
 
@@ -165,7 +165,7 @@ public class HttpRequests {
         request(request, HttpResponse.AudienceList.class, callback);
     }
 
-    public void getPushers(String roomId, final OnResponseCallback<HttpResponse.PusherList> callback){
+    public void getPushers(String roomId, final OnResponseCallback<HttpResponse.PusherList> callback) {
 
         String body = String.format("{\"roomID\":\"%s\"}", roomId);
 
@@ -176,11 +176,11 @@ public class HttpRequests {
         request(request, HttpResponse.PusherList.class, callback);
     }
 
-    public void createRoom (String userID, String roomName,
+    public void createRoom(String userID, String roomName,
                            String userName,
                            String userAvatar,
                            String pushURL,
-                           final OnResponseCallback<HttpResponse.CreateRoom> callback){
+                           final OnResponseCallback<HttpResponse.CreateRoom> callback) {
 
         String body = "";
         try {
@@ -204,7 +204,7 @@ public class HttpRequests {
 
     } //createRoom
 
-    public void createRoom (final String roomID, String userID, String roomInfo, final OnResponseCallback<HttpResponse.CreateRoom> callback){
+    public void createRoom(final String roomID, String userID, String roomInfo, final OnResponseCallback<HttpResponse.CreateRoom> callback) {
 
         String body = "";
         try {
@@ -226,7 +226,7 @@ public class HttpRequests {
 
     } //createRoom
 
-    public void destroyRoom(String roomID, String userID, final OnResponseCallback<HttpResponse> callback){
+    public void destroyRoom(String roomID, String userID, final OnResponseCallback<HttpResponse> callback) {
 
         String body = "";
         try {
@@ -249,8 +249,8 @@ public class HttpRequests {
 
 
     public void addPusher(String roomID, String userID,
-                          String  userName, String userAvatar,
-                          String pushURL, final OnResponseCallback<HttpResponse> callback){
+                          String userName, String userAvatar,
+                          String pushURL, final OnResponseCallback<HttpResponse> callback) {
         String body = "";
         try {
             body = new JsonBuilder()
@@ -273,7 +273,7 @@ public class HttpRequests {
     }
 
     public void delPusher(String roomID, String userID,
-                          final OnResponseCallback<HttpResponse> callback){
+                          final OnResponseCallback<HttpResponse> callback) {
         String body = "";
         try {
             body = new JsonBuilder()
@@ -294,7 +294,7 @@ public class HttpRequests {
     }
 
     public void addAudience(String roomID, String userID,
-                          String  userInfo, final OnResponseCallback<HttpResponse> callback){
+                            String userInfo, final OnResponseCallback<HttpResponse> callback) {
         String body = "";
         try {
             body = new JsonBuilder()
@@ -315,7 +315,7 @@ public class HttpRequests {
     }
 
     public void delAudience(String roomID, String userID,
-                          final OnResponseCallback<HttpResponse> callback){
+                            final OnResponseCallback<HttpResponse> callback) {
         String body = "";
         try {
             body = new JsonBuilder()
@@ -336,7 +336,7 @@ public class HttpRequests {
     }
 
     public void setCustomInfo(String roomID, String fieldName,
-                          String  operation, Object value, final OnResponseCallback<HttpResponse> callback){
+                              String operation, Object value, final OnResponseCallback<HttpResponse> callback) {
         String body = "";
         try {
             JsonBuilder builder = new JsonBuilder()
@@ -344,9 +344,9 @@ public class HttpRequests {
                     .put("fieldName", fieldName)
                     .put("operation", operation);
             if (value instanceof String) {
-                builder.put("value", (String)value);
+                builder.put("value", (String) value);
             } else if (value instanceof Integer) {
-                builder.put("value", ((Integer)value).intValue());
+                builder.put("value", ((Integer) value).intValue());
             }
             body = builder.build();
         } catch (JSONException e) {
@@ -379,7 +379,7 @@ public class HttpRequests {
         request(request, HttpResponse.GetCustomInfoResponse.class, callback);
     }
 
-    public boolean heartBeat(String user_id, String room_id, int roomStatusCode){
+    public boolean heartBeat(String user_id, String room_id, int roomStatusCode) {
         String body = "";
         try {
             body = new JsonBuilder()
@@ -459,8 +459,7 @@ public class HttpRequests {
                     }
                 }
             });
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             callback.onResponse(-1, e.getMessage(), null);
         }
     }
@@ -498,28 +497,29 @@ public class HttpRequests {
         }
     }
 
-    private class JsonBuilder{
+    private class JsonBuilder {
         private JSONObject obj;
-        public JsonBuilder(){
+
+        public JsonBuilder() {
             obj = new JSONObject();
         }
 
-        public JsonBuilder put(String k, int v) throws JSONException{
+        public JsonBuilder put(String k, int v) throws JSONException {
             obj.put(k, v);
             return this;
         }
 
-        public JsonBuilder put(String k, long v) throws JSONException{
+        public JsonBuilder put(String k, long v) throws JSONException {
             obj.put(k, v);
             return this;
         }
 
-        public JsonBuilder put(String k, double v) throws JSONException{
+        public JsonBuilder put(String k, double v) throws JSONException {
             obj.put(k, v);
             return this;
         }
 
-        public JsonBuilder put(String k, String v) throws JSONException{
+        public JsonBuilder put(String k, String v) throws JSONException {
             obj.put(k, v);
             return this;
         }
@@ -529,13 +529,13 @@ public class HttpRequests {
             return this;
         }
 
-        public String build(){
+        public String build() {
             return obj.toString();
         }
 
     }
 
-    public interface OnResponseCallback<T>{
+    public interface OnResponseCallback<T> {
         public void onResponse(final int retcode, final @Nullable String retmsg, final @Nullable T data);
     }
 

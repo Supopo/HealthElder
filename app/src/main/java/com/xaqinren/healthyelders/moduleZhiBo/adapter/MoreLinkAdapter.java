@@ -103,7 +103,7 @@ public class MoreLinkAdapter extends BaseQuickAdapter<ZBUserListBean, BaseViewHo
 
             Glide.with(getContext())
                     .load(item.avatarUrl)
-                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(5, 15)))
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(8, 1)))
                     .into((ImageView) helper.getView(R.id.iv_bg));
             helper.setTextColor(R.id.tv_name, getContext().getResources().getColor(R.color.white));
         } else {
