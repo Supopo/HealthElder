@@ -391,6 +391,12 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             viewModel.setVoiceMicMute(mLiveInitInfo.liveRoomRecordId, UserInfoMgr.getInstance().getUserInfo().getId(), !voiceMicMute);
             moreLinkSettingDialog.dismiss();
         });
+        tvInfo.setOnClickListener(lis -> {
+            //查看资料
+            userInfoPop = new ZBUserInfoPop(this, mLiveInitInfo, moreLinkAdapter.getData().get(postion).userId);
+            userInfoPop.showPopupWindow();
+            moreLinkSettingDialog.dismiss();
+        });
 
         //点击外部可dismiss
         moreLinkSettingDialog.setCancelable(true);
