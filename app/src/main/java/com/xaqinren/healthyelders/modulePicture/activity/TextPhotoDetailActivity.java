@@ -158,6 +158,12 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                 int position = iCommentBean.parentPos - 1;
                 //点赞评论
                 viewModel.setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
+                if (!iCommentBean.hasFavorite) {
+                    diaryInfoBean.favoriteCount++;
+                }else{
+                    diaryInfoBean.favoriteCount--;
+                }
+                binding.likeTv.setText(Num2TextUtil.num2Text(diaryInfoBean.favoriteCount));
 
                 CommentListBean commentBean = commentAdapter.getData().get(position);
 
@@ -334,6 +340,8 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
 
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null) {
+                diaryInfoBean.commentCount++;
+                binding.commentTv.setText(Num2TextUtil.num2Text(diaryInfoBean.commentCount));
                 //本地刷新
                 if (openType == 0) {
                     //往评论列表查插数据
