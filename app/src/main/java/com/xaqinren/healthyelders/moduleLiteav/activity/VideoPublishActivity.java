@@ -297,7 +297,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         binding.includePublish.openModeTv.setText(publishModeGetName(publishMode));
         //        Glide.with(this).asBitmap().load(mCoverPath).into(binding.coverView);
         initListView();
-        loginUser();
+//        loginUser();
         //热门话题
         viewModel.getHotTopic();
 
