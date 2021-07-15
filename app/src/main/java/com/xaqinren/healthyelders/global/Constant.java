@@ -149,7 +149,7 @@ public class Constant {
     //直播举报
     public static final String LIVE_REPORT = "pages_base/feedback/reportType?action=redirect&title=直播举报&type=video&id=";
     //直播间添加商品小程序
-    public static final String LIVE_ADD_GOODS = "pages_commodity/addLiveCommodity?action=redirect";
+    public static final String LIVE_ADD_GOODS = "pages_live/addLiveCommodity?action=redirect";
 
 
     //腾讯云小视频加防盗链

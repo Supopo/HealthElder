@@ -5,7 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -52,10 +52,8 @@ import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
-import com.xaqinren.healthyelders.moduleLiteav.activity.ChooseUnLookActivity;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishDesBean;
-import com.xaqinren.healthyelders.moduleLiteav.liteAv.LiteAvConstant;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
@@ -72,11 +70,11 @@ import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
 import io.reactivex.disposables.Disposable;
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 
@@ -94,7 +92,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private Animation avatarAnim;//头像放大缩小动画
     private AnimationDrawable avatarBgAnim;//头像背景圈动画
     private ObjectAnimator objectAnimator;//音乐Icon旋转动画 可暂停
-    private boolean noPlayPause;//判断播放状态
+    private int chickPlayStatus;//判断播放状态 0 未开始 1开始 2暂停
     private boolean hasPlaying;//是否已经开始了 因为视频播放第一次播放只走进度，滑动后播放先走开始回调
     private AnimationDrawable avatarAddAnim;
     private AnimationDrawable zbingAnim;
@@ -931,7 +929,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void startPlay(boolean b) {
-
+        hasPlaying = false;
 
         if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
             if (videoInfo.getVideoType() == 4) {
@@ -963,8 +961,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         //单击暂停
         if (videoInfo.getVideoType() == 1) {
             if (hasPlaying) {
-                noPlayPause = !noPlayPause;
-                if (noPlayPause) {
+                if (chickPlayStatus == 1) {
+                    chickPlayStatus = 2;
+                }
+                if (chickPlayStatus == 2) {
+                    chickPlayStatus = 1;
+                }
+                if (chickPlayStatus == 1) {
                     vodPlayer.resume();
                     binding.playImageView.setVisibility(View.GONE);
                 } else {
@@ -977,7 +980,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
     }
 
+    private boolean isPause;
     private void pausePlay() {
+        if (isPause) {
+            return;
+        }
         binding.mainVideoView.onPause();
 
         if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
@@ -989,6 +996,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 mLivePlayer.pause();
             }
         }
+        isPause = true;
         LogUtils.v(Constant.TAG_LIVE, "---------------------pausePlay" + position);
     }
 
@@ -1000,9 +1008,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //是否开启播放状态
             if (hasPlaying) {
                 //判断之前不是暂停状态
-                if (noPlayPause) {
+                if (chickPlayStatus == 1) {
                     if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
                         if (vodPlayer != null) {
+                            LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay--resume" + position);
                             vodPlayer.resume();
                         }
                     } else if (videoInfo.getVideoType() == 2) {
@@ -1010,15 +1019,20 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                             mLivePlayer.resume();
                         }
                     }
+                } else if (chickPlayStatus == 0) {
+                    LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay--start1" + position);
+                    startPlay(true);
                 }
 
             } else {
                 if (!AppApplication.get().isShowTopMenu()) {
+                    LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay--start2" + position);
                     startPlay(true);
                 }
             }
         }
 
+        isPause = false;
         LogUtils.v(Constant.TAG_LIVE, "---------------------resumePlay" + position);
 
     }
@@ -1049,7 +1063,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         binding.coverImageView.setVisibility(View.VISIBLE);//--展示
         hasPlaying = false;
-        noPlayPause = false;
+        chickPlayStatus = 0;
 
 
         LogUtils.v(Constant.TAG_LIVE, "---------------------stopPlay" + position);
@@ -1060,6 +1074,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     @Override
     public void onPause() {
         super.onPause();
+        isResume = false;
+        pauseMsg();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         pauseMsg();
     }
 
@@ -1073,8 +1094,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (!editTextOpen) {
             if (type.equals("home-tj")) {
                 if (AppApplication.get().getLayoutPos() == 0 && AppApplication.get().getTjPlayPosition() == position) {
+                    LogUtils.v(Constant.TAG_LIVE, " void onResume1");
                     resumePlay();
                 } else {
+                    LogUtils.v(Constant.TAG_LIVE, " void onResume2");
                     pausePlay();
                 }
             } else if (type.equals("home-gz")) {
@@ -1085,7 +1108,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
             } else if (type.equals("home-list")) {
 
-                // todo 视频列表页打开列表页，返回之后不继续播放
                 Integer integer = AppApplication.get().listPos.get(timeTag);
                 if (integer != null && integer == position) {
                     resumePlay();
@@ -1093,21 +1115,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     pausePlay();
                 }
 
-                //                if (AppApplication.get().getPlayPosition() == position) {
-                //                    resumePlay();
-                //                } else {
-                //                    pausePlay();
-                //                }
             }
         }
     }
 
 
     private boolean isFirstResume = true;
+    private boolean isResume;
 
     @Override
     public void onResume() {
         super.onResume();
+        isResume = true;
+        LogUtils.v(Constant.TAG_LIVE, " void onResume");
         //防止第一次打开列表页面播放
         if (!isFirstResume) {
             resumeMsg();
@@ -1180,6 +1200,16 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void showStartLayout() {
+
+        //这种情况会出下在第一次播放完之后
+        if (hasPlaying) {
+            return;
+        }
+
+        hasPlaying = true;
+        LogUtils.v(Constant.TAG_LIVE, "---------------------showStartLayout");
+
+
         //这种情况一般出现在视频没加载完时候切了页面
         //如果已经不是首页了，如果首页菜单展开情况下直接停止
         if (AppApplication.get().isShowTopMenu() && (type.equals("home-tj") || type.equals("home-gz"))) {
@@ -1188,7 +1218,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             return;
         }
 
-
         //如果已经不是首页了，首页的不该再播放
         if (AppApplication.get().getBottomMenu() != 0 && (type.equals("home-tj") || type.equals("home-gz"))) {
             //暂停
@@ -1196,10 +1225,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             return;
         }
 
-        //这种情况会出下在第一次播放完之后
-        if (hasPlaying) {
-            return;
+        if (!isResume) {
+            LogUtils.v(Constant.TAG_LIVE, "---------------------准备去暂停");
+            //判断栈顶不是MainAct页面和VideoList页面 onPause的时候拿不到的。在onStop中最靠谱。
+            Activity activity = AppManager.getAppManager().currentActivity();
+            LogUtils.v(Constant.TAG_LIVE, "---------------------className"+activity.getLocalClassName());
+            if (!activity.getLocalClassName().contains("MainActivity") && !activity.getLocalClassName().contains("VideoListActivity")) {
+                LogUtils.v(Constant.TAG_LIVE, "---------------------去暂停");
+                pauseMsg();
+                return;
+            }
         }
+
 
         binding.coverImageView.setVisibility(View.GONE);
 
@@ -1212,8 +1249,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else {
             zbingAnim.start();
         }
-        hasPlaying = true;
-        noPlayPause = true;
+        chickPlayStatus = 1;
     }
 
     @Override

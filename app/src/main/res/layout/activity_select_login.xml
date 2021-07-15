@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_375"
@@ -120,6 +121,12 @@
                 android:textSize="@dimen/sp_11" />
         </LinearLayout>
 
-
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_30"
+            android:background="@mipmap/icon_close_w" />
     </RelativeLayout>
 </layout>

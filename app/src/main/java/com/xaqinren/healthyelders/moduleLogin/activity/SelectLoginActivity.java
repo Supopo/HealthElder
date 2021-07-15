@@ -66,6 +66,9 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
     }
 
     private void initEvent() {
+        binding.ivBack.setOnClickListener(lis ->{
+            finish();
+        });
         binding.btnLogin.setOnClickListener(lis -> {
             if (checkAgree())
                 wxLogin();
