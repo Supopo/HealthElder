@@ -994,4 +994,24 @@ public class LiveRepository {
                     }
                 });
     }
+
+    public void feedbackSave(MutableLiveData<Boolean> request, MutableLiveData<Boolean> commitSuccess, String json) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+        userApi.feedbackSave(UserInfoMgr.getInstance().getHttpToken(),body)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<Object>>() {
+                    @Override
+                    protected void dismissDialog() {
+                        if (request != null) {
+                            request.postValue(true);
+                        }
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<Object> data) {
+                        commitSuccess.postValue(true);
+                    }
+                });
+    }
 }

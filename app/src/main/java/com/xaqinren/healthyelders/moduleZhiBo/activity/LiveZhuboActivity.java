@@ -560,6 +560,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 if (viewModel.exitSuccess.getValue().booleanValue()) {
                     Bundle bundle = new Bundle();
                     bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                    bundle.putString("liveRoomId", mLiveInitInfo.liveRoomId);
                     startActivity(ZhiboOverActivity.class, bundle);
                 }
 

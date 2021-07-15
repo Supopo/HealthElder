@@ -419,7 +419,7 @@
                 </LinearLayout>
 
                 <EditText
-                    android:id="@+id/line2"
+                    android:id="@+id/et_content"
                     android:layout_width="@dimen/dp_323"
                     android:layout_height="@dimen/dp_93"
                     android:layout_centerHorizontal="true"

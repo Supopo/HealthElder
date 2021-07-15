@@ -595,5 +595,9 @@ public interface ApiServer {
     //设置视频公开 私密 userDiary
     @POST("content/shortVideo/viewAuthUpdate")
     Observable<MBaseResponse<Object>> setVideoStatus(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
+    //主播结束页面提交
+    @POST("content/feedbackSave")
+    Observable<MBaseResponse<Object>> feedbackSave(@Header("Authorization") String authorization, @Body RequestBody requestBody);
 }
 
