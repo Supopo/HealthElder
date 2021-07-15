@@ -92,12 +92,16 @@ public class ZBGoodsListPop extends BasePopupWindow {
         rvList.setLayoutManager(new LinearLayoutManager(getContext()));
         rvList.setAdapter(mAdapter);
 
-        if (type == 2) {
-            tvGl.setVisibility(View.INVISIBLE);
-        }
+
 
         emptyView = View.inflate(getContext(), R.layout.empty_zb_goods, null);
         TextView tvAdd = emptyView.findViewById(R.id.tv_add);
+
+        if (type == 2) {
+            tvGl.setVisibility(View.INVISIBLE);
+            tvAdd.setVisibility(View.INVISIBLE);
+        }
+
         tvAdd.setOnClickListener(lis -> {
             if (!TextUtils.isEmpty(uniAPPId) && !TextUtils.isEmpty(uniUrl)) {
                 UniService.startService(getContext(), uniAPPId, 99, uniUrl);

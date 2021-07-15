@@ -955,10 +955,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             }
         }
 
-        if (mPendingRequest) {
-            mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "请稍后，主播正在处理其它人的连麦请求");
-            return;
-        }
+        //多人连麦不需要
+//        if (mPendingRequest) {
+//            mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "请稍后，主播正在处理其它人的连麦请求");
+//            return;
+//        }
         if (mPusherList.size() > 6) {
             mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "主播端连麦人数超过最大限制");
             return;
