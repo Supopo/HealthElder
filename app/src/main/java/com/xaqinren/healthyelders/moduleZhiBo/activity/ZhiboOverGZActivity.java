@@ -16,7 +16,10 @@ import com.xaqinren.healthyelders.databinding.ActivityZhiboOverGzBinding;
 import com.xaqinren.healthyelders.databinding.HeaderZhiboOverGzBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.SomeVideoListAdapter;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveOverInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.ZhiboOverGZViewModel;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
@@ -33,6 +36,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
     private SomeVideoListAdapter mAdapter;
     private BaseLoadMoreModule mLoadMore;
     private HeaderZhiboOverGzBinding headBinding;
+    private LiveOverInfo mLiveInfo;
 
 
     @Override
@@ -83,7 +87,7 @@ public class ZhiboOverGZActivity extends BaseActivity<ActivityZhiboOverGzBinding
         });
         mAdapter.setOnItemClickListener(((adapter, view, position) -> {
             //判断是直播间
-            if (mAdapter.getData().get(position).getVideoType() == 2) {
+            if (mAdapter.getData().get(position).resourceType.equals("LIVE")) {
                 //进入直播间
                 viewModel.joinLive(mAdapter.getData().get(position).liveRoomId);
             }
