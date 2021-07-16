@@ -119,7 +119,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     fragmentList.clear();
                     fragmentPosition = 0;
                     //需要重new否者会出现缓存
-                    videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    videoAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
                     binding.viewPager2.setAdapter(videoAdapter);
                 }
 
@@ -140,7 +140,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 if (page > 1) {
                     page--;
                 } else {
-                    videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    videoAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
                     binding.viewPager2.setAdapter(videoAdapter);
                     binding.viewPager2.setVisibility(View.GONE);
                     binding.rlEmpty.setVisibility(View.VISIBLE);
@@ -228,7 +228,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
     private void initVideoViews() {
 
-        videoAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+        videoAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
 
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {

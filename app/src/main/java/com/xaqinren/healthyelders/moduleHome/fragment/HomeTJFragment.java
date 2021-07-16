@@ -100,7 +100,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     fragmentPosition = 0;
 
                     //需要重new否者会出现缓存
-                    homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+                    homeAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
                     binding.viewPager2.setAdapter(homeAdapter);
                 }
 
@@ -155,7 +155,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
     private int lastPos = -1;
 
     private void initVideoViews() {
-        homeAdapter = new FragmentPagerAdapter(fragmentActivity, fragmentList);
+        homeAdapter = new FragmentPagerAdapter(getActivity(), fragmentList);
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
             fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));

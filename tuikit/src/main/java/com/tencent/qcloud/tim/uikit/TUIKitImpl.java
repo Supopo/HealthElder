@@ -222,9 +222,11 @@ public class TUIKitImpl {
             public void onMemberEnter(String groupID, List<V2TIMGroupMemberInfo> memberList) {
                 TUIKitLog.i(TAG, "onMemberEnter groupID:" + groupID + ", size:" + memberList.size());
                 for (V2TIMGroupMemberInfo v2TIMGroupMemberInfo : memberList) {
-                    if (v2TIMGroupMemberInfo.getUserID().equals(V2TIMManager.getInstance().getLoginUser())) {
-                        GroupChatManagerKit.getInstance().notifyJoinGroup(groupID, false);
-                        return;
+                    if (V2TIMManager.getInstance().getLoginUser() != null) {//防止同账号被挤掉报错
+                        if (v2TIMGroupMemberInfo.getUserID().equals(V2TIMManager.getInstance().getLoginUser())) {
+                            GroupChatManagerKit.getInstance().notifyJoinGroup(groupID, false);
+                            return;
+                        }
                     }
                 }
             }
@@ -237,9 +239,11 @@ public class TUIKitImpl {
             @Override
             public void onMemberInvited(String groupID, V2TIMGroupMemberInfo opUser, List<V2TIMGroupMemberInfo> memberList) {
                 for (V2TIMGroupMemberInfo v2TIMGroupMemberInfo : memberList) {
-                    if (v2TIMGroupMemberInfo.getUserID().equals(V2TIMManager.getInstance().getLoginUser())) {
-                        GroupChatManagerKit.getInstance().notifyJoinGroup(groupID, true);
-                        return;
+                    if (V2TIMManager.getInstance().getLoginUser() != null) {
+                        if (v2TIMGroupMemberInfo.getUserID().equals(V2TIMManager.getInstance().getLoginUser())) {
+                            GroupChatManagerKit.getInstance().notifyJoinGroup(groupID, true);
+                            return;
+                        }
                     }
                 }
             }
@@ -247,10 +251,13 @@ public class TUIKitImpl {
             @Override
             public void onMemberKicked(String groupID, V2TIMGroupMemberInfo opUser, List<V2TIMGroupMemberInfo> memberList) {
                 for (V2TIMGroupMemberInfo v2TIMGroupMemberInfo : memberList) {
-                    if (v2TIMGroupMemberInfo.getUserID().equals(V2TIMManager.getInstance().getLoginUser())) {
-                        GroupChatManagerKit.getInstance().notifyKickedFromGroup(groupID);
-                        return;
+                    if (V2TIMManager.getInstance().getLoginUser() != null) {
+                        if (v2TIMGroupMemberInfo.getUserID().equals(V2TIMManager.getInstance().getLoginUser())) {
+                            GroupChatManagerKit.getInstance().notifyKickedFromGroup(groupID);
+                            return;
+                        }
                     }
+
                 }
             }
 

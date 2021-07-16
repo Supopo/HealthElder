@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,6 +54,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
@@ -723,6 +726,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     }
 
+    public boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+
     private void disWaitLinkDialog() {
         if (waitLinkTask != null) {
             waitLinkTask.cancel();
@@ -734,9 +741,18 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             waitLinkTimer = null;
         }
 
-        if (waitLinkDialog != null && waitLinkDialog.isShowing()) {
-            waitLinkDialog.dismiss();
+        //防止有些手机崩溃
+        try {
+            if (waitLinkDialog != null && waitLinkDialog.isShowing()) {
+                waitLinkDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            waitLinkDialog = null;
         }
+
+
     }
 
     //新的同意拒绝dialog
@@ -846,8 +862,16 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             selectLinkTimer = null;
         }
 
-        if (selectLinkDialog != null && selectLinkDialog.isShowing()) {
-            selectLinkDialog.dismiss();
+
+        //防止有些手机崩溃
+        try {
+            if (selectLinkDialog != null && selectLinkDialog.isShowing()) {
+                selectLinkDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            selectLinkDialog = null;
         }
     }
 
