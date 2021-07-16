@@ -42,7 +42,7 @@ public class MenuBean implements Serializable {
     public int beiLv;
     public double rechargeAmount;
     public int giveAmount;
-    public String giveAmount(){
+    public String giveAmountSS(){
         return "送"+giveAmount;
     }
 

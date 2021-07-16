@@ -432,7 +432,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     showFollow();
-
                     stopPlay(true);
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
@@ -464,6 +463,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         if (AppApplication.get().getTjPlayPosition() == position || (AppApplication.get().getTjPlayPosition() == -1 && position == 0)) {
                             //隐藏
                             binding.rlView.setVisibility(View.GONE);
+                        }
+                    }
+                } else if (bean.msgId == 10011) {//首页展开了
+                    //判断
+                    if (AppApplication.get().getLayoutPos() == 0 && type.equals("home-tj")) {
+                        if (AppApplication.get().getTjPlayPosition() == position || (AppApplication.get().getTjPlayPosition() == 0 && position == 0)) {
+                            //隐藏
+                            binding.rlView.setVisibility(View.VISIBLE);
                         }
                     }
                 }

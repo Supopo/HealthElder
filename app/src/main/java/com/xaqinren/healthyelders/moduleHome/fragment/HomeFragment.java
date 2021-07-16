@@ -324,6 +324,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //设置开始播放第一条
                         if (AppApplication.get().getTjPlayPosition() < 0) {
                             AppApplication.get().setTjPlayPosition(0);
+                            //通知视频播放页面显示信息View
+                            RxBus.getDefault().post(new VideoEvent(10011, 0));
                         }
                     } else if (AppApplication.get().getLayoutPos() == 1) {
                         gzFragment.setVP2Enabled(true);

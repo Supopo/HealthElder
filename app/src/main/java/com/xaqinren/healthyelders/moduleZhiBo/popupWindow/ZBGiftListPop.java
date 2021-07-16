@@ -122,6 +122,12 @@ public class ZBGiftListPop extends BasePopupWindow {
         UserRepository.getInstance().getWalletInfo(null, userBanlance);
     }
 
+    @Override
+    public void showPopupWindow() {
+        super.showPopupWindow();
+        UserRepository.getInstance().getWalletInfo(null, userBanlance);
+    }
+
     private MutableLiveData<WalletBean> userBanlance = new MutableLiveData<>();
 
     int pageCount;//menu1菜单页数 ViewPager+RecvclerView
