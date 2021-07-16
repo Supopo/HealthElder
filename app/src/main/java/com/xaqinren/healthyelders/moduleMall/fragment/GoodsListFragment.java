@@ -76,13 +76,15 @@ public class GoodsListFragment extends BaseFragment<FragmentGoodsListBinding, Go
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 3, true));
         //瀑布流
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
         //防止Item切换
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         binding.rvContent.setLayoutManager(manager);
-
         binding.rvContent.setAdapter(mallGoodsAdapter);
+
         //防止刷新跳动
         binding.rvContent.setItemAnimator(null);
+
 
         mLoadMore = mallGoodsAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载

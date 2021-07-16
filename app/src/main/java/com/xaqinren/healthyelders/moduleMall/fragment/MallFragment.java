@@ -203,9 +203,8 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         runnable = new Runnable() {
             @Override
             public void run() {
-                Log.e("--", "来吧，展示~");
                 showGonggao();
-                mHandler.postDelayed(runnable, 10 * 1000);
+                mHandler.postDelayed(runnable, 6 * 1000);
             }
         };
         startHandler();
@@ -213,7 +212,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
     public void startHandler() {
         if (mHandler != null && runnable != null) {
-            mHandler.postDelayed(runnable, 1000);
+            mHandler.postDelayed(runnable, 5000);
         }
     }
 
@@ -258,7 +257,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         int temp = ra.nextInt(11);//0-11
         GlideUtil.intoImageView(getActivity(), photos[temp], binding.rivPhoto);
 
-        binding.tvGgname.setText("用户" + names1[temp] + names2[temp] + temp + (3 * temp) + "*****");
+        binding.tvGgname.setText(names1[temp] + names2[temp] + temp + (3 * temp) + "**");
 
         ggShowAnimation = AnimUtils.getAnimation(getActivity(), R.anim.anim_slice_in_bottom);
         ggGoneAnimation = AnimUtils.getAnimation(getActivity(), R.anim.anim_slice_out_top);

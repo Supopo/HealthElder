@@ -198,13 +198,13 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_34"
+                    android:layout_height="@dimen/dp_32"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_mall_gonggao"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/dp_34"
-                    android:paddingRight="@dimen/dp_12">
+                    android:paddingRight="@dimen/dp_5">
 
 
                     <TextView
