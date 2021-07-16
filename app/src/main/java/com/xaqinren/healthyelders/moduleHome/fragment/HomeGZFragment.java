@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,8 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
 
-    public HomeGZFragment(){}
+    public HomeGZFragment() {
+    }
 
     public HomeGZFragment(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -94,12 +96,18 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                         //在切过来之后设置不然会导致HomeFragment里面的NSV滑动
                         resetVVPHeight();
                         initVideoViews();
+                    } else {
+                        if (videoAdapter != null && mVideoInfoList.size() == 0) {
+                            refreshData();
+                        }
                     }
                 } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("overLive")) {
                     //判断刷新
                     if (AppApplication.get().getLayoutPos() == 1) {
                         needRefreshData = true;
                     }
+                }else if(event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("loginSuccess")){
+                    refreshData();
                 }
             }
         });
@@ -126,7 +134,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition,false));
+                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition, false));
                     fragmentPosition++;
                 }
                 videoAdapter.notifyDataSetChanged();
@@ -215,6 +223,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     @Override
     public void onStart() {
         super.onStart();
+        Log.e("--", "onStartLe ");
         if (needRefreshData) {
             refreshData();
             needRefreshData = false;
@@ -232,7 +241,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition,false));
+            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));
             fragmentPosition++;
         }
         //判断有无登录

@@ -135,6 +135,12 @@ public class UserRepository {
 
                             InfoCache.getInstance().setLoginUser(data.getData());
                             UserInfoMgr.getInstance().setUserInfo(data.getData());
+
+                            //此情况是点击到关注页面然后跳到登陆页面登陆之后
+                            if (AppApplication.get().bottomMenu == 0 && AppApplication.get().getLayoutPos() == 1) {
+                                RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "loginSuccess"));
+                            }
+
                             if (refreshSign) {
                                 //绑定cid
                                 PushManager.getInstance().bindAlias(AppApplication.get(), data.getData().getId());

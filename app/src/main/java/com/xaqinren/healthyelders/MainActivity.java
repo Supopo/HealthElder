@@ -244,6 +244,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private void getCacheUserInfo() {
         //获取token
         accessToken = InfoCache.getInstance().getAccessToken();
+        //登陆信息
         userInfoBean = InfoCache.getInstance().getLoginUser();
 
 
@@ -265,7 +266,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 viewModel.getUserSig(accessToken);
             }
         }
-
     }
 
     @Override
@@ -312,12 +312,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             selectView = binding.tvMenu1;
             AppApplication.get().bottomMenu = 0;
             if (oldView.getId() == selectView.getId()) {
-                //发送HomeFragment回顶消息
-                RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
-                //底部菜单变白色
-                setBottomColors(R.color.white, dawable, R.color.color_252525, false);
-                //发送停止播放消息
-                RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
+                toTop();
             } else {
                 RxBus.getDefault().post(new VideoEvent(3, "继续播放"));
             }
@@ -402,6 +397,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                     });
         });
+    }
+
+    private void toTop() {
+        //发送HomeFragment回顶消息
+        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
+        //底部菜单变白色
+        setBottomColors(R.color.white, dawable, R.color.color_252525, false);
+        //发送停止播放消息
+        RxBus.getDefault().post(new VideoEvent(1, "全部停止播放"));
     }
 
     private void setBottomColors(int p, Drawable dawable, int p2, boolean b) {
@@ -524,7 +528,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.JUMP_ACT && o.content.equals("main-act")) {
                 //收到跳转首页得消息
-                binding.rlMenu1.performClick();
+
+                selectView = binding.tvMenu1;
+                AppApplication.get().bottomMenu = 0;
+                initBottomTab();
+                oldView = binding.tvMenu1;
+
+
             } else if (o.msgId == CodeTable.TOKEN_ERR) {
                 SPUtils.getInstance().put(Constant.SP_KEY_LOGIN_USER, "");
                 SPUtils.getInstance().put(Constant.SP_KEY_SIG_USER, "");
