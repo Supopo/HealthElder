@@ -504,6 +504,7 @@
         <activity android:name=".qrcode.QRCodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CaptureTheme"/>
+        <activity android:name=".moduleLogin.activity.Splash2Activity" />
 
         <service
             android:name=".push.IPushService"

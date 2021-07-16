@@ -2,9 +2,13 @@ package com.xaqinren.healthyelders.moduleMall.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -30,6 +34,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMallBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
@@ -46,6 +51,8 @@ import com.xaqinren.healthyelders.moduleMine.activity.OrderListActivity;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
+import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
@@ -54,12 +61,17 @@ import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+
+import static com.luck.picture.lib.thread.PictureThreadUtils.runOnUiThread;
 
 /**
  * Created by Lee. on 2021/5/25.
@@ -79,6 +91,11 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     private Disposable subscribe;
     private ViewSkeletonScreen skeletonScreen1, skeletonScreen3;
     private RecyclerViewSkeletonScreen skeletonScreen2, skeletonScreen4;
+    private Runnable runnable;
+    private Animation ggShowAnimation;
+    private Animation ggGoneAnimation;
+    private Timer ggTimer;
+    private TimerTask ggAnimTask;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -181,6 +198,122 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
         showSkeleton4();
         viewModel.getMenuInfo();
         viewModel.getMenuType();
+
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.e("--", "来吧，展示~");
+                showGonggao();
+                mHandler.postDelayed(runnable, 10 * 1000);
+            }
+        };
+        startHandler();
+    }
+
+    public void startHandler() {
+        if (mHandler != null && runnable != null) {
+            mHandler.postDelayed(runnable, 1000);
+        }
+    }
+
+    public void stopHandler() {
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        stopHandler();
+    }
+
+    public Handler mHandler = new Handler(Looper.getMainLooper());
+
+    public void freedGGTimerTask() {
+        if (ggAnimTask != null) {
+            ggAnimTask.cancel();
+            ggAnimTask = null;
+        }
+        if (ggTimer != null) {
+            ggTimer.cancel();
+            ggTimer.purge();
+            ggTimer = null;
+        }
+
+    }
+
+    private int[] photos = {R.mipmap.def_photo_1, R.mipmap.def_photo_2, R.mipmap.def_photo_3,
+            R.mipmap.def_photo_4, R.mipmap.def_photo_5, R.mipmap.def_photo_6,
+            R.mipmap.def_photo_7, R.mipmap.def_photo_8, R.mipmap.def_photo_9,
+            R.mipmap.def_photo_10, R.mipmap.def_photo_11, R.mipmap.def_photo_12,
+    };
+
+    private String[] names1 = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"};
+    private String[] names2 = {"m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x"};
+
+    public void showGonggao() {
+        Random ra = new Random();
+        int temp = ra.nextInt(11);//0-11
+        GlideUtil.intoImageView(getActivity(), photos[temp], binding.rivPhoto);
+
+        binding.tvGgname.setText("用户" + names1[temp] + names2[temp] + temp + (3 * temp) + "*****");
+
+        ggShowAnimation = AnimUtils.getAnimation(getActivity(), R.anim.anim_slice_in_bottom);
+        ggGoneAnimation = AnimUtils.getAnimation(getActivity(), R.anim.anim_slice_out_top);
+        binding.rlGonggao.clearAnimation();
+        binding.rlGonggao.startAnimation(ggShowAnimation);
+        ggShowAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                binding.rlGonggao.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                freedGGTimerTask();
+                ggTimer = new Timer();
+                ggAnimTask = new TimerTask() {
+
+                    @Override
+                    public void run() {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.rlGonggao.clearAnimation();
+                                binding.rlGonggao.startAnimation(ggGoneAnimation);
+                                ggGoneAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                    @Override
+                                    public void onAnimationStart(Animation animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animation animation) {
+                                        binding.rlGonggao.setVisibility(View.GONE);
+                                        freedGGTimerTask();
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animation animation) {
+
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                };
+                ggTimer.schedule(ggAnimTask, 3000);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 
     public void showSkeleton1() {
@@ -283,7 +416,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
 
                 fragments = new ArrayList<>();
                 for (int i = 0; i < datas.size(); i++) {
-                    GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).menuName,isFirst);
+                    GoodsListFragment goodsListFragment = new GoodsListFragment(i, datas.get(i).menuName, isFirst);
                     fragments.add(goodsListFragment);
                 }
                 isFirst = false;

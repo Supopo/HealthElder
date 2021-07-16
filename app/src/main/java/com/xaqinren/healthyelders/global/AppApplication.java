@@ -28,6 +28,8 @@ import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
+import com.xaqinren.healthyelders.moduleLogin.activity.Splash2Activity;
+import com.xaqinren.healthyelders.moduleLogin.activity.SplashActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.uniApp.module.JSCommModule;
@@ -138,6 +140,7 @@ public class AppApplication extends BaseApplication {
 
         //初始化全局异常崩溃
         initCrash();
+
         //        //内存泄漏检测
         //        if (BuildConfig.DEBUG) {
         //            if (!LeakCanary.isInAnalyzerProcess(this)) {
@@ -249,13 +252,13 @@ public class AppApplication extends BaseApplication {
         CaocConfig.Builder.create()
                 .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //背景模式,开启沉浸式
                 .enabled(true) //是否启动全局异常捕获
-                .showErrorDetails(true) //是否显示错误详细信息
-                .showRestartButton(true) //是否显示重启按钮
-                .trackActivities(true) //是否跟踪Activity
-                .minTimeBetweenCrashesMs(500) //崩溃的间隔时间(毫秒)
+                .showErrorDetails(false) //是否显示错误详细信息
+                .showRestartButton(false) //是否显示重启按钮
+                .trackActivities(false) //是否跟踪Activity
+                .minTimeBetweenCrashesMs(300) //崩溃的间隔时间(毫秒)
                 .errorDrawable(R.mipmap.no_goods_data) //错误图标
                 .restartActivity(MainActivity.class) //重新启动后的activity
-                // .errorActivity(YourCustomErrorActivity.class) //崩溃后的错误activity
+                 .errorActivity(Splash2Activity.class) //崩溃后的错误activity //为用户体验直接进入欢迎页重启
                 // .eventListener(new YourCustomEventListener()) //崩溃后的错误监听
                 .apply();
     }

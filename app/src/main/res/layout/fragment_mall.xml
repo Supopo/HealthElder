@@ -18,169 +18,228 @@
         android:addStatesFromChildren="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_30"
-                android:background="@color/white" />
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/ll_search"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_44"
-                android:background="@color/white"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/order_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_12"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
-                        android:background="@mipmap/shangc_sy_dingd" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="订单"
-                        android:textSize="@dimen/sp_11" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/et_search"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_30"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_search"
-                    android:clickable="true"
-                    android:drawableLeft="@mipmap/search_icon"
-                    android:drawablePadding="@dimen/dp_9"
-                    android:enabled="true"
-                    android:gravity="center_vertical"
-                    android:hint="请输入需要搜索的内容"
-                    android:paddingLeft="@dimen/dp_9"
-                    android:paddingRight="@dimen/dp_9"
-                    android:singleLine="true"
-                    android:textColor="@color/colorTextG4"
-                    android:textColorHint="@color/colorTextG2"
-                    android:textSize="@dimen/sp_13" />
-
-                <LinearLayout
-                    android:id="@+id/more_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_15"
-                    android:layout_marginRight="@dimen/dp_13"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
-                        android:background="@mipmap/shangc_sy_more" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="更多"
-                        android:textSize="@dimen/sp_11" />
-
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@color/pageColor">
-
-                <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/app_bar"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/pageColor"
-                    app:layout_behavior=".moduleMall.adapter.AppBarLayoutBehavior">
+                    android:layout_height="@dimen/dp_30"
+                    android:background="@color/white" />
 
-                    <!--            app:layout_scrollFlags="scroll|exitUntilCollapsed"滑动隐藏的-->
-
+                <LinearLayout
+                    android:id="@+id/ll_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_44"
+                    android:background="@color/white"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/order_layout"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/pageColor"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_12"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                        android:visibility="gone">
 
+                        <ImageView
+                            android:layout_width="@dimen/dp_18"
+                            android:layout_height="@dimen/dp_18"
+                            android:background="@mipmap/shangc_sy_dingd" />
 
-                        <com.youth.banner.Banner
-                            android:id="@+id/banner"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_110"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_14"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:background="@color/color_EAEA"
-                            app:banner_auto_loop="false"
-                            app:banner_infinite_loop="false" />
-
-
-                        <androidx.viewpager2.widget.ViewPager2
-                            android:id="@+id/vp_menu1"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_14"
-                            android:nestedScrollingEnabled="false"
-                            android:orientation="horizontal"
-                            android:overScrollMode="never" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_menu2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:overScrollMode="never" />
+                            android:text="订单"
+                            android:textSize="@dimen/sp_11" />
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/et_search"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_search"
+                        android:clickable="true"
+                        android:drawableLeft="@mipmap/search_icon"
+                        android:drawablePadding="@dimen/dp_9"
+                        android:enabled="true"
+                        android:gravity="center_vertical"
+                        android:hint="请输入需要搜索的内容"
+                        android:paddingLeft="@dimen/dp_9"
+                        android:paddingRight="@dimen/dp_9"
+                        android:singleLine="true"
+                        android:textColor="@color/colorTextG4"
+                        android:textColorHint="@color/colorTextG2"
+                        android:textSize="@dimen/sp_13" />
 
-                    <!--            商品菜单-->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_menu3"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_65"
-                        android:overScrollMode="never" />
+                    <LinearLayout
+                        android:id="@+id/more_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_15"
+                        android:layout_marginRight="@dimen/dp_13"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                </com.google.android.material.appbar.AppBarLayout>
+                        <ImageView
+                            android:layout_width="@dimen/dp_18"
+                            android:layout_height="@dimen/dp_18"
+                            android:background="@mipmap/shangc_sy_more" />
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/vp_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="更多"
+                            android:textSize="@dimen/sp_11" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/pageColor">
+
+                    <com.google.android.material.appbar.AppBarLayout
+                        android:id="@+id/app_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/pageColor"
+                        app:layout_behavior=".moduleMall.adapter.AppBarLayoutBehavior">
+
+                        <!--            app:layout_scrollFlags="scroll|exitUntilCollapsed"滑动隐藏的-->
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/pageColor"
+                            android:orientation="vertical"
+                            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+                            <com.youth.banner.Banner
+                                android:id="@+id/banner"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dp_110"
+                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginTop="@dimen/dp_14"
+                                android:layout_marginRight="@dimen/dp_16"
+                                android:background="@color/color_EAEA"
+                                app:banner_auto_loop="false"
+                                app:banner_infinite_loop="false" />
+
+
+                            <androidx.viewpager2.widget.ViewPager2
+                                android:id="@+id/vp_menu1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/dp_14"
+                                android:nestedScrollingEnabled="false"
+                                android:orientation="horizontal"
+                                android:overScrollMode="never" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_menu2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginRight="@dimen/dp_16"
+                                android:overScrollMode="never" />
+
+                        </LinearLayout>
+
+
+                        <!--            商品菜单-->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_menu3"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_65"
+                            android:overScrollMode="never" />
+
+                    </com.google.android.material.appbar.AppBarLayout>
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/vp_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/rl_gonggao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_80">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_34"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_mall_gonggao"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                    android:paddingLeft="@dimen/dp_34"
+                    android:paddingRight="@dimen/dp_12">
 
 
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_ggname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_6"
+                        android:layout_marginRight="@dimen/dp_3"
+                        android:text="用户"
+                        android:textColor="#ffffff"
+                        android:textSize="@dimen/sp_13" />
+
+                    <TextView
+                        android:id="@+id/tv_ggcontent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_3"
+                        android:text="1分钟前下单成功"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+
+                </LinearLayout>
+
+                <com.qmuiteam.qmui.widget.QMUIRadiusImageView
+                    android:id="@+id/riv_photo"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/def_photo_1"
+                    app:qmui_border_color="@color/white"
+                    app:qmui_border_width="@dimen/dp_2"
+                    app:qmui_is_circle="true" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

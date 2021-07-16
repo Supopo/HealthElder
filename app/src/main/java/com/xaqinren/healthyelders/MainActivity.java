@@ -306,9 +306,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
     private void initEvent() {
         binding.rlMenu1.setOnClickListener(lis -> {
+            if (mallFragment != null) {
+                mallFragment.stopHandler();
+            }
             selectView = binding.tvMenu1;
             AppApplication.get().bottomMenu = 0;
-
             if (oldView.getId() == selectView.getId()) {
                 //发送HomeFragment回顶消息
                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP));
@@ -323,6 +325,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             oldView = binding.tvMenu1;
         });
         binding.rlMenu2.setOnClickListener(lis -> {
+            if (mallFragment != null) {
+                mallFragment.startHandler();
+            }
             //发送停止播放消息
             RxBus.getDefault().post(new VideoEvent(2, "暂停播放"));
             selectView = binding.tvMenu2;
@@ -331,6 +336,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             AppApplication.get().bottomMenu = 1;
         });
         binding.rlMenu3.setOnClickListener(lis -> {
+            if (mallFragment != null) {
+                mallFragment.stopHandler();
+            }
             if (!InfoCache.getInstance().checkLogin()) {
                 //跳转登录页面
                 startActivity(SelectLoginActivity.class);
@@ -344,6 +352,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             AppApplication.get().bottomMenu = 2;
         });
         binding.rlMenu4.setOnClickListener(lis -> {
+            if (mallFragment != null) {
+                mallFragment.stopHandler();
+            }
             //判断是否登录
             if (!InfoCache.getInstance().checkLogin()) {
                 //跳转登录页面

@@ -25,6 +25,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowInsets;
@@ -43,6 +44,8 @@ import me.goldze.mvvmhabit.R;
 
 
 public final class DefaultErrorActivity extends AppCompatActivity {
+
+    private CaocConfig config;
 
     public void setStatusBarTransparentBlack() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -86,7 +89,7 @@ public final class DefaultErrorActivity extends AppCompatActivity {
         //It is recommended that you follow this logic if implementing a custom error activity.
         Button restartButton = (Button) findViewById(R.id.customactivityoncrash_error_activity_restart_button);
 
-        final CaocConfig config = CustomActivityOnCrash.getConfigFromIntent(getIntent());
+        config = CustomActivityOnCrash.getConfigFromIntent(getIntent());
 
         if (config.isShowRestartButton() && config.getRestartActivityClass()!=null) {
             restartButton.setText(R.string.customactivityoncrash_error_activity_restart_app);
@@ -151,5 +154,17 @@ public final class DefaultErrorActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(getString(R.string.customactivityoncrash_error_activity_error_details_clipboard_label), errorInformation);
         clipboard.setPrimaryClip(clip);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //自定义打开就重启
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                CustomActivityOnCrash.restartApplication(DefaultErrorActivity.this, config);
+//            }
+//        },1000);
     }
 }
