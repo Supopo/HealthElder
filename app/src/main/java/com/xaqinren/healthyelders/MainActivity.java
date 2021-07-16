@@ -244,7 +244,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private void getCacheUserInfo() {
         //获取token
         accessToken = InfoCache.getInstance().getAccessToken();
-        //登陆信息
         userInfoBean = InfoCache.getInstance().getLoginUser();
 
 
@@ -527,8 +526,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.JUMP_ACT && o.content.equals("main-act")) {
-                //收到跳转首页得消息
-
+                //退出登陆时候收到跳转首页得消息
                 selectView = binding.tvMenu1;
                 AppApplication.get().bottomMenu = 0;
                 initBottomTab();
