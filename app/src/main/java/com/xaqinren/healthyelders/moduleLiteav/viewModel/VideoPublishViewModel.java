@@ -22,6 +22,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.PublishBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.SaveDraftBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.TopicBean;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
@@ -83,12 +84,16 @@ public class VideoPublishViewModel extends BaseViewModel {
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         LoginInfo loginInfo = new LoginInfo();
-        loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
-        loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        UserInfoBean userInfo = UserInfoMgr.getInstance().getUserInfo();
+        if (userInfo == null) {
+            return;
+        }
+        loginInfo.userAvatar = userInfo.getAvatarUrl();
+        loginInfo.userName = userInfo.getNickname();
         loginInfo.sdkAppID = 1400392607;
-        loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
+        loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
+        loginInfo.userLevel = userInfo.getLevelName();
         mLiveRoom.login(false,loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

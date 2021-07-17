@@ -435,12 +435,16 @@ public class UserRepository {
 
     public void toLoginRoom() {
         LoginInfo loginInfo = new LoginInfo();
-        loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
-        loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        UserInfoBean userInfo = UserInfoMgr.getInstance().getUserInfo();
+        if (userInfo == null) {
+            return;
+        }
+        loginInfo.userAvatar = userInfo.getAvatarUrl();
+        loginInfo.userName = userInfo.getNickname();
         loginInfo.sdkAppID = 1400392607;
-        loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
+        loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
+        loginInfo.userLevel = userInfo.getLevelName();
         LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录" + loginInfo.userSig);
         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(true, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override

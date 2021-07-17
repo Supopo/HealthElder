@@ -51,12 +51,15 @@ import com.tencent.rtmp.TXVodPlayer;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
@@ -194,7 +197,20 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         mLiveRoom = MLVBLiveRoom.sharedInstance(getApplication());
         //登录直播间IM服务
         showDialog("进入中...");
-        viewModel.toLoginRoom(mLiveRoom);
+        //判断下内存里面的UserInfo为空不
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            UserInfoBean loginUser = InfoCache.getInstance().getLoginUser();
+            if (loginUser == null) {
+                //请求用户信息
+                viewModel.getUserInfo(UserInfoMgr.getInstance().getHttpToken());
+            } else {
+                UserInfoMgr.getInstance().setUserInfo(loginUser);
+                viewModel.toLoginRoom(mLiveRoom);
+            }
+        } else {
+            viewModel.toLoginRoom(mLiveRoom);
+        }
+
         initEvent();
         initLiveInfo();
         initMsgList();
@@ -463,6 +479,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         //虚拟直播传空链接进去
         //加入直播间 mLiveInitInfo.pullStreamUrl
+        if (mLiveInitInfo.liveRoomType == null) {
+            return;
+        }
+
         mLiveRoom.enterRoom(mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN) ? "" : mLiveInitInfo.pullStreamUrl, Constant.getRoomId(mLiveInitInfo.liveRoomCode), binding.mTxVideoView, new EnterRoomCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
@@ -1821,6 +1841,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
                 toSendTextMsg(eventBean.content);
@@ -1842,6 +1863,13 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             }
         });
         RxSubscriptions.add(disposable);
+
+        viewModel.userInfo.observe(this, userInfoBean -> {
+            if (userInfoBean != null) {
+                viewModel.toLoginRoom(mLiveRoom);
+            }
+        });
+
         viewModel.dismissDialog.observe(this, dismissDialog -> {
             if (dismissDialog != null) {
                 if (dismissDialog) {

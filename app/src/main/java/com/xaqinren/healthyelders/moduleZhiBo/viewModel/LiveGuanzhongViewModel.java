@@ -36,19 +36,27 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
     public MutableLiveData<LiveHeaderInfo> liveHeaderInfo = new MutableLiveData<>();
     public MutableLiveData<LiveInitInfo> setInitInfo = new MutableLiveData<>();
+    public MutableLiveData<UserInfoBean> userInfo = new MutableLiveData<>();
     public MutableLiveData<Integer> netSuccess = new MutableLiveData<>();//1 禁言 2加入多人连麦 21加入多人连麦失败
     public MutableLiveData<List<ZBUserListBean>> moreLinkList = new MutableLiveData<>();
+
+    public void getUserInfo(String token){
+        UserRepository.getInstance().getUserInfo(userInfo,token);
+    }
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         //判断登录
         LoginInfo loginInfo = new LoginInfo();
         UserInfoBean userInfo = UserInfoMgr.getInstance().getUserInfo();
-        loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
-        loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        if (userInfo == null) {
+            return;
+        }
+        loginInfo.userAvatar = userInfo.getAvatarUrl();
+        loginInfo.userName = userInfo.getNickname();
         loginInfo.sdkAppID = 1400392607;
-        loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
+        loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
+        loginInfo.userLevel = userInfo.getLevelName();
         mLiveRoom.login(false, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

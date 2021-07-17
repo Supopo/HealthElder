@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
@@ -46,16 +47,20 @@ public class LiveZhuboViewModel extends BaseViewModel {
 
     public void toLoginRoom(MLVBLiveRoom mLiveRoom) {
         LoginInfo loginInfo = new LoginInfo();
-        loginInfo.userAvatar = UserInfoMgr.getInstance().getUserInfo().getAvatarUrl();
-        loginInfo.userName = UserInfoMgr.getInstance().getUserInfo().getNickname();
+        UserInfoBean userInfo = UserInfoMgr.getInstance().getUserInfo();
+        if (userInfo == null) {
+            return;
+        }
+        loginInfo.userAvatar = userInfo.getAvatarUrl();
+        loginInfo.userName = userInfo.getNickname();
         loginInfo.sdkAppID = 1400392607;
-        loginInfo.userID = UserInfoMgr.getInstance().getUserInfo().getId();
+        loginInfo.userID = userInfo.getId();
         //3887
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
-        loginInfo.userLevel = UserInfoMgr.getInstance().getUserInfo().getLevelName();
+        loginInfo.userLevel = userInfo.getLevelName();
         //4545
         //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
-        mLiveRoom.login(false,loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
+        mLiveRoom.login(false, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
@@ -72,12 +77,12 @@ public class LiveZhuboViewModel extends BaseViewModel {
 
     //通知服务器
     public void startLive(LiveInitInfo map) {
-        LiveRepository.getInstance().startLive(startError,dismissDialog, startLiveInfo, map);
+        LiveRepository.getInstance().startLive(startError, dismissDialog, startLiveInfo, map);
     }
 
     //通知服务器继续直播
     public void reStartLive(String liveRoomRecordId) {
-        LiveRepository.getInstance().reStartLive(startError,dismissDialog, startLiveInfo, liveRoomRecordId);
+        LiveRepository.getInstance().reStartLive(startError, dismissDialog, startLiveInfo, liveRoomRecordId);
     }
 
     //结束直播
@@ -107,7 +112,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
 
     //多人连麦列表
     public void findMicUsers(String liveRoomRecordId) {
-        LiveRepository.getInstance().findMicUsers(liveRoomRecordId,moreLinkList);
+        LiveRepository.getInstance().findMicUsers(liveRoomRecordId, moreLinkList);
     }
 
 }

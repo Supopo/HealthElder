@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.luck.picture.lib.tools.BitmapUtils;
 import com.tencent.qcloud.tim.uikit.utils.FileUtil;
@@ -54,6 +55,9 @@ public class RetrieverUtils {
      * @return 裁剪后的图像
      */
     public static void cropBitmap(String path,OnBitmapCall call) {
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
         Observable.just(path)
                 .subscribeOn(Schedulers.io())
                 .map(s -> {

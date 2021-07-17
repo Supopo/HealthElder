@@ -258,6 +258,9 @@ public class ImManager {
 
     public void clearUnreadById(String id) {
         ConversationInfo info = getConversationById(id);
+        if (info == null) {
+            return;
+        }
         unReadCount -= info.getUnRead();
         info.setUnRead(0);
         ConversationManagerKit.getInstance().updateConversation(info);
