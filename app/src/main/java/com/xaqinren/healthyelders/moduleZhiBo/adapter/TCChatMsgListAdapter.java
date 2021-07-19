@@ -4,9 +4,11 @@ package com.xaqinren.healthyelders.moduleZhiBo.adapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -172,21 +174,23 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
             holder.llLeave.setVisibility(View.VISIBLE);
         } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
-//            spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
+            spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
             //文字消息
-            holder.sendName.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
-            holder.sendName.setText(item.getSenderName() + ":  ");
+//            holder.sendName.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
+//            holder.sendName.setText(item.getSenderName() + ":  ");
             holder.sendContext.setText(item.getContent());
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorTextMsg));
-//            spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
-//                    0, item.getSenderName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-//            holder.sendContext.setText(spanString);
+            spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
+                    0, item.getSenderName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.sendContext.setText(spanString);
             holder.llLeave.setVisibility(View.VISIBLE);
+            //设置处理加载聊天表情文字
+            FaceManager.handlerZBMsgEmojiText(item.getSenderName().length() + 3,holder.sendContext, holder.sendContext.getText().toString(), false);
         } else {
             holder.sendName.setText("");
             // 其他消息类型
-            // StyleSpan boldStyle = new StyleSpan(Typeface.NORMAL);
-            // spanString.setSpan(boldStyle, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
+            spanString.setSpan(spanString, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
             holder.llLeave.setVisibility(View.VISIBLE);
@@ -199,9 +203,6 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
 
         // 设置控件实际宽度以便计算列表项实际高度
         //holder.sendContext.fixViewWidth(mListView.getWidth());
-
-        //设置处理加载聊天表情文字
-        FaceManager.handlerEmojiText(holder.sendContext, holder.sendContext.getText().toString(), false);
 
         return convertView;
     }

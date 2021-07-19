@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 import android.util.LruCache;
@@ -209,6 +210,35 @@ public class FaceManager {
             ((EditText) comment).setSelection(selection);
         }
     }
+
+    public static void handlerZBMsgEmojiText(int nameLenght, TextView comment, String content, boolean typing) {
+        SpannableStringBuilder sb = new SpannableStringBuilder(content);
+        String regex = "\\[(\\S+?)\\]";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(content);
+        boolean imageFound = false;
+        while (m.find()) {
+            String emojiName = m.group();
+            Bitmap bitmap = drawableCache.get(emojiName);
+            if (bitmap != null) {
+                imageFound = true;
+                sb.setSpan(new ImageSpan(context, bitmap),
+                        m.start(), m.end(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
+        }
+        // 如果没有发现表情图片，并且当前是输入状态，不再重设输入框
+        if (!imageFound && typing) {
+            return;
+        }
+        int selection = comment.getSelectionStart();
+        sb.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.colorSendName8)),
+                0, nameLenght, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        comment.setText(sb);
+        if (comment instanceof EditText) {
+            ((EditText) comment).setSelection(selection);
+        }
+    }
+
 
     public static Bitmap getEmoji(String name) {
         return drawableCache.get(name);

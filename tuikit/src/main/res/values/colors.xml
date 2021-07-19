@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorSendName8">#F5DE27</color>
 
     <!-- 灰色背景 -->
     <color name="status_bar_color">#EDEDED</color>
