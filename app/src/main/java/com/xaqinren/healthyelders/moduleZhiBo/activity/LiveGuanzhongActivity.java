@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,18 +43,17 @@ import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
-import com.tencent.rtmp.TXVodPlayConfig;
+import com.tencent.rtmp.TXLivePlayer;
 import com.tencent.rtmp.TXVodPlayer;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
-import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
@@ -121,7 +118,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * 直播间-观众页面
  */
 public class
-LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener, ITXVodPlayListener {
+LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener, ITXLivePlayListener {
 
     private MLVBLiveRoom mLiveRoom;
     private LiveInitInfo mLiveInitInfo;
@@ -160,7 +157,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private Disposable uniSubscribe;
     private ZBUserListPop zbUserListPop;
     private ZBUserInfoPop userInfoPop;
-    private TXVodPlayer vodPlayer;
+    private TXLivePlayer txLivePlayer;
     private int mRenderMode;
 
 
@@ -520,7 +517,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
                 //判断虚拟直播开始加载播放
                 if (mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
-                    startVodPlayer();
+                    startXNPlayer();
                 } else {
                     //正式直播
                     isPlaying = true;
@@ -538,34 +535,26 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     }
 
-    //初始化虚拟直播
-    public void startVodPlayer() {
-        //视频播放
-        vodPlayer = new TXVodPlayer(getActivity());
+    //初始化虚拟直播 采用直播播放器 否则文件过大播放会失败。
+    public void startXNPlayer() {
+        //创建 player 对象
+        txLivePlayer = new TXLivePlayer(this);
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
         //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
-        vodPlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+        txLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
 
         //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
         //RENDER_ROTATION_LANDSCAPE 画面顺时针旋转 270 度（Home 键在画面正左方）
-        vodPlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
-        vodPlayer.setVodListener(LiveGuanzhongActivity.this);
-        TXVodPlayConfig config = new TXVodPlayConfig();
-        //缓存设置
-        File sdcardDir = getActivity().getExternalFilesDir(null);
-        if (sdcardDir != null) {
-            config.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/JKZLcache");
-        }
-        config.setMaxCacheItems(4);
-        vodPlayer.setConfig(config);
-        vodPlayer.setPlayerView(binding.mTxVideoView);
-        vodPlayer.setAutoPlay(true);
-        vodPlayer.startPlay(mLiveInitInfo.pullStreamUrl);
+        txLivePlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
+        txLivePlayer.setPlayListener(
+                LiveGuanzhongActivity.this);
+        txLivePlayer.setPlayerView(binding.mTxVideoView);
+        txLivePlayer.startPlay(mLiveInitInfo.pullStreamUrl, TXLivePlayer.PLAY_TYPE_VOD_HLS);
     }
 
-    public void stopVodPlayer() {
-        if (vodPlayer != null) {
-            vodPlayer.stopPlay(true);
+    public void stopXNPlayer() {
+        if (txLivePlayer != null) {
+            txLivePlayer.stopPlay(true);
         }
     }
 
@@ -591,7 +580,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 }
 
                 if (mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
-                    stopVodPlayer();
+                    stopXNPlayer();
                 }
 
                 mLiveRoom.setListener(null);
@@ -2429,33 +2418,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
 
-    @Override
-    public void onPlayEvent(TXVodPlayer txVodPlayer, int event, Bundle bundle) {
-        if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
-            if (vodPlayer != null) {
-                vodPlayer.resume();
-            }
-        }
-    }
-
-    @Override
-    public void onNetStatus(TXVodPlayer txVodPlayer, Bundle status) {
-        //判断横竖屏
-        if (status.getInt(TXLiveConstants.NET_STATUS_VIDEO_WIDTH) > status.getInt(TXLiveConstants.NET_STATUS_VIDEO_HEIGHT)) {
-            //横屏设置
-            if (mRenderMode != TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION) {
-                mRenderMode = TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION;
-                txVodPlayer.setRenderMode(mRenderMode);
-            }
-        } else {
-            //竖屏设置
-            if (mRenderMode != TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN) {
-                mRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN;
-                txVodPlayer.setRenderMode(mRenderMode);
-            }
-        }
-    }
-
 
     /**
      * 二次点击（返回键）退出
@@ -2480,5 +2442,32 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onPlayEvent(int event, Bundle bundle) {
+        if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
+            if (txLivePlayer != null) {
+                txLivePlayer.resume();
+            }
+        }
+    }
+
+    @Override
+    public void onNetStatus(Bundle status) {
+        //判断横竖屏
+        if (status.getInt(TXLiveConstants.NET_STATUS_VIDEO_WIDTH) > status.getInt(TXLiveConstants.NET_STATUS_VIDEO_HEIGHT)) {
+            //横屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION;
+                txLivePlayer.setRenderMode(mRenderMode);
+            }
+        } else {
+            //竖屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN;
+                txLivePlayer.setRenderMode(mRenderMode);
+            }
+        }
     }
 }

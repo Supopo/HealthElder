@@ -497,8 +497,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     mSelfPushUrl = data.pushURL;
                     mSelfAccelerateURL = data.accelerateURL;
                     LogUtils.v(Constant.TAG_LIVE, "主播自己的加速流：" + mSelfAccelerateURL);
-                    //3.开始推流
-                    startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
+                    //3.开始推流  设置分辨率 画面质量
+                    startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_SUPER_DEFINITION, new StandardCallback() {
                         @Override
                         public void onError(int errCode, String errInfo) {
                             callbackOnThread(callback, "onError", errCode, errInfo);
@@ -600,7 +600,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         //1. 在应用层调用startLocalPreview，启动本地预览
         //2. 请求CGI:get_push_url，异步获取到推流地址pushUrl(此处已经省略)
         //3. 开始推流
-        startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
+        startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_SUPER_DEFINITION, new StandardCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 callbackOnThread(callback, "onError", errCode, errInfo);
@@ -2578,6 +2578,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             public void run() {
                 if (mTXLivePusher != null && mTXLivePushListener != null) {
                     mTXLivePushListener.setCallback(callback);
+                    //设置直播分辨率 ，第二个参数为若弱网自动切换
                     mTXLivePusher.setVideoQuality(videoQuality, false, false);
                     int ret = mTXLivePusher.startPusher(url);
                     if (ret == -5) {
