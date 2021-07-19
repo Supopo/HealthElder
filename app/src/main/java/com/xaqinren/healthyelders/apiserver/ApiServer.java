@@ -599,5 +599,9 @@ public interface ApiServer {
     //主播结束页面提交
     @POST("content/feedbackSave")
     Observable<MBaseResponse<Object>> feedbackSave(@Header("Authorization") String authorization, @Body RequestBody requestBody);
+
+    //绑定用户关系
+    @GET("user/bindRecommendRelationship")
+    Observable<MBaseResponse<Object>> bindUserRelationship(@Header("Authorization") String authorization, @Query("recommendCode") String id);
 }
 

@@ -1002,4 +1002,26 @@ public class UserRepository {
                 });
     }
 
+    public void sendScanResult(String code, MutableLiveData<Boolean> datas, MutableLiveData<Boolean> requestDialog) {
+        userApi.bindUserRelationship(UserInfoMgr.getInstance().getHttpToken(),code)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new DisposableObserver<MBaseResponse<Object>>() {
+                    @Override
+                    public void onNext(@NonNull MBaseResponse<Object> response) {
+                        datas.postValue(response.isOk());
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        requestDialog.postValue(true);
+                    }
+
+                });
+    }
 }

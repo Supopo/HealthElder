@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.dcloud.zxing2.WriterException;
 import com.king.zxing.CameraScan;
@@ -24,6 +25,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityMyRecommendBinding;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
+import com.xaqinren.healthyelders.moduleMine.viewModel.MyRecommendCodeViewModel;
 import com.xaqinren.healthyelders.qrcode.QRCodeActivity;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -36,7 +38,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.goldze.mvvmhabit.utils.Utils;
 
-public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBinding, BaseViewModel>{
+public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBinding, MyRecommendCodeViewModel>{
     UserInfoBean userInfoBean;
     private int requestCode = Constant.QR_CODE;
 
@@ -80,7 +82,7 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
         });
         binding.scanLayout.setOnClickListener(v -> {
             //跳转的默认扫码界面
-//            startActivityForResult(new Intent(context, QRCodeActivity.class),requestCode);
+            startActivityForResult(new Intent(context, QRCodeActivity.class),requestCode);
         });
     }
 
@@ -104,7 +106,16 @@ public class MyRecommendCodeActivity extends BaseActivity <ActivityMyRecommendBi
             if (requestCode == this.requestCode) {
                 String result = CameraScan.parseScanResult(data);
                 LogUtils.e(TAG, "扫码结果 -> "+result);
+                viewModel.sendScanResult(result);
             }
         }
+    }
+
+    @Override
+    public void initViewObservable() {
+        super.initViewObservable();
+        viewModel.scanResponseSuccess.observe(this, aBoolean -> {
+            ToastUtils.showShort("绑定成功");
+        });
     }
 }
