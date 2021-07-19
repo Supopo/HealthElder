@@ -298,12 +298,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             initVideo();
         } else if (videoInfo.resourceType.equals("LIVE")) {
             zbingAnim = (AnimationDrawable) binding.ivZBing.getBackground();
-
-            if (videoInfo.liveRoomType.equals("PSEUDO_LIVE")) {
-                initVideo();
-            } else {
-                initLive();
-            }
+            initLive();
         }
 
     }
@@ -938,10 +933,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void startPlay(boolean b) {
 
 
-        if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
-            if (videoInfo.getVideoType() == 4) {
-                zbingAnim.start();
-            }
+        if (videoInfo.getVideoType() == 1 ) {
 
             if (vodPlayer != null) {
                 vodPlayer.setAutoPlay(b);
@@ -954,10 +946,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
 
 
-        } else if (videoInfo.getVideoType() == 2) {
+        } else if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
             zbingAnim.start();
             if (mLivePlayer != null) {
-                mLivePlayer.startPlay(videoInfo.resourceUrl, TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
+                mLivePlayer.startPlay(videoInfo.resourceUrl, videoInfo.getVideoType() == 4 ?TXLivePlayer.PLAY_TYPE_VOD_HLS:TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
             }
         }
 
@@ -991,11 +983,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void pausePlay() {
         binding.mainVideoView.onPause();
 
-        if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
+        if (videoInfo.getVideoType() == 1 ) {
             if (vodPlayer != null) {
                 vodPlayer.pause();
             }
-        } else if (videoInfo.getVideoType() == 2) {
+        } else if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
             if (mLivePlayer != null) {
                 mLivePlayer.pause();
             }
@@ -1012,11 +1004,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (hasPlaying) {
                 //判断之前不是暂停状态
                 if (playStatus == 1) {
-                    if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
+                    if (videoInfo.getVideoType() == 1 ) {
                         if (vodPlayer != null) {
                             vodPlayer.resume();
                         }
-                    } else if (videoInfo.getVideoType() == 2) {
+                    } else if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
                         if (mLivePlayer != null) {
                             mLivePlayer.resume();
                         }
@@ -1037,23 +1029,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void stopPlay(boolean clearLastFrame) {
-        if (videoInfo.getVideoType() == 2) {
+        if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
             if (zbingAnim != null) {
                 zbingAnim.stop();
             }
             if (mLivePlayer != null) {
                 mLivePlayer.stopPlay(false);
             }
-        } else if (videoInfo.getVideoType() == 1 || videoInfo.getVideoType() == 4) {
+        } else if (videoInfo.getVideoType() == 1 ) {
             if (videoInfo.getVideoType() == 1) {
                 stopMusicAnim();
                 binding.playImageView.setVisibility(View.GONE);
-            } else if (videoInfo.getVideoType() == 4) {
-                if (zbingAnim != null) {
-                    zbingAnim.stop();
-                }
             }
-
             if (vodPlayer != null) {
                 vodPlayer.stopPlay(clearLastFrame);
             }
@@ -1333,8 +1320,21 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     @Override
-    public void onNetStatus(Bundle bundle) {
-
+    public void onNetStatus(Bundle status) {
+        //判断横竖屏
+        if (status.getInt(TXLiveConstants.NET_STATUS_VIDEO_WIDTH) > status.getInt(TXLiveConstants.NET_STATUS_VIDEO_HEIGHT)) {
+            //横屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION;
+                mLivePlayer.setRenderMode(mRenderMode);
+            }
+        } else {
+            //竖屏设置
+            if (mRenderMode != TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN) {
+                mRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN;
+                mLivePlayer.setRenderMode(mRenderMode);
+            }
+        }
     }
 
 
