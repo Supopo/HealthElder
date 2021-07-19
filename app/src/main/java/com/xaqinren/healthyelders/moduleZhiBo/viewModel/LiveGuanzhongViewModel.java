@@ -113,7 +113,6 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
 
 
     public void sendGift(String liveRoomRecordId, String targetId, String giftId) {
-
         LiveRepository.getInstance().sendGift(sendGiftSuccess, liveRoomRecordId, targetId, giftId);
     }
 }

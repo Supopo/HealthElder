@@ -420,7 +420,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
                 }
                 isFirst = false;
                 binding.vpContent.setOffscreenPageLimit(datas.size());
-                goodsPagerAdapter = new FragmentPagerAdapter(getActivity(), fragments);
+                goodsPagerAdapter = new FragmentPagerAdapter(this, fragments);
                 binding.vpContent.setAdapter(goodsPagerAdapter);
 
 

@@ -251,7 +251,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         fragments.add(tjFragment);
         fragments.add(gzFragment);
         fragments.add(fjFragment);
-        HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(getActivity(), fragments);
+        HomeVP2Adapter vp2Adapter = new HomeVP2Adapter(this, fragments);
         vp2 = binding.viewPager2;
         nsv = binding.nsv;
         binding.viewPager2.setUserInputEnabled(false);

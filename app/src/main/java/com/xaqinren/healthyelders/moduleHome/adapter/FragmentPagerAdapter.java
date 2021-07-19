@@ -18,6 +18,14 @@ public class FragmentPagerAdapter extends FragmentStateAdapter {
 
     }
 
+    //第一次getFragmentManager()获取到的FragmentManager，只提供给activity那一层使用。
+    //在viewPager那一层只能使用getChildFragmentManager()获取FragmentManager来处理子fragment
+    public FragmentPagerAdapter(@NonNull Fragment fragment, List<Fragment> fragments) {
+        super(fragment);
+        this.mFragments = fragments;
+
+    }
+
     @NonNull
     @Override
     public Fragment createFragment(int position) {
