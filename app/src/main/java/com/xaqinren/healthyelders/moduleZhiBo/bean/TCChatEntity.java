@@ -12,9 +12,18 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
  * Function: 消息载体类。
  */
 public class TCChatEntity {
+    private String userId;    // 发送者的Id
     private String sendName;    // 发送者的名字
     private String content;        // 消息内容
     private int type;            // 消息类型
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getSendName() {
         return sendName;

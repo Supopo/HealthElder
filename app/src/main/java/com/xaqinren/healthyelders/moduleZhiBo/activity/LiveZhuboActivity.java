@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -479,6 +480,27 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
+
+        binding.lvMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //判断当前消息是文本消息
+                if (msgList.get(position).getType() == LiveConstants.IMCMD_TEXT_MSG) {
+                    //不是自己的消息
+                    if (TextUtils.isEmpty(msgList.get(position).getUserId())) {
+                        return;
+                    }
+
+                    if (msgList.get(position).getUserId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                        return;
+                    }
+
+                    //查看资料
+                    userInfoPop = new ZBUserInfoPop(LiveZhuboActivity.this, mLiveInitInfo, msgList.get(position).getUserId());
+                    userInfoPop.showPopupWindow();
+                }
+            }
+        });
     }
 
     private void startPublish() {
@@ -729,6 +751,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             entity.setSenderName(userInfo.nickname);
         }
         text = SensitiveWordsUtils.replaceSensitiveWord(text, "***");
+        entity.setUserId(userInfo.userid);
         entity.setLeaveName(userInfo.leaveName);
         entity.setContent(text);
         entity.setType(type);

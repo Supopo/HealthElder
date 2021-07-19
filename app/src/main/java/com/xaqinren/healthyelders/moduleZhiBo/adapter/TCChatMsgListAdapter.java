@@ -79,7 +79,6 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         mListView.setOnScrollListener(this);
     }
 
-
     @Override
     public int getCount() {
         return mList.size();

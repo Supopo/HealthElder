@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -468,6 +469,25 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
+        binding.lvMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //判断当前消息是文本消息
+                if (msgList.get(position).getType() == LiveConstants.IMCMD_TEXT_MSG) {
+                    if (TextUtils.isEmpty(msgList.get(position).getUserId())) {
+                        return;
+                    }
+                    //不是自己的消息
+                    if (msgList.get(position).getUserId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                        return;
+                    }
+
+                    //查看资料
+                    userInfoPop = new ZBUserInfoPop(LiveGuanzhongActivity.this, mLiveInitInfo, msgList.get(position).getUserId());
+                    userInfoPop.showPopupWindow();
+                }
+            }
+        });
 
     }
 
@@ -1075,6 +1095,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             entity.setSenderName(userInfo.nickname);
 
         }
+        entity.setUserId(userInfo.userid);
         entity.setLeaveName(userInfo.leaveName);
         entity.setContent(text);
         entity.setType(type);
