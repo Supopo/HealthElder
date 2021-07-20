@@ -76,7 +76,12 @@ public class UniService extends Service implements LifecycleOwner {
     public void onCreate() {
         super.onCreate();
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
-        fileDir = getExternalCacheDir().getAbsolutePath();
+        if (getExternalCacheDir() != null) { //storage/emulated/0/Android/data/com.xxx.xxx/cache
+            fileDir = getExternalCacheDir().getAbsolutePath();
+        } else { //防止上面娶不到路径 //storage/emulated/0/Android/data/com.xxx.xxx/files/uni
+            fileDir = getExternalFilesDir("uni").getAbsolutePath();
+        }
+
         saveBeans = new ArrayList<>();
         uniBeans = new ArrayList<>();
         needDown = new ArrayList<>();
@@ -127,7 +132,7 @@ public class UniService extends Service implements LifecycleOwner {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            int key  =  intent.getIntExtra(KEY, 0);
+            int key = intent.getIntExtra(KEY, 0);
             if (key == KEY_REFRESH) {
                 getUniList();
             } else if (key == KEY_OPEN) {
@@ -145,6 +150,7 @@ public class UniService extends Service implements LifecycleOwner {
         }
         return super.onStartCommand(intent, flags, startId);
     }
+
     //获取线上小程序列表
     private void getUniList() {
         UniRepository.getInstance().getMyAtList(mutableLiveData);
@@ -154,7 +160,7 @@ public class UniService extends Service implements LifecycleOwner {
     //开始下载
     private void down(SaveBean uniBean) {
         //下载
-        DownLoadManager.getInstance().load(uniBean.getDownUrl(), new ProgressCallBack(fileDir, uniBean.getAppId()+".wgt") {
+        DownLoadManager.getInstance().load(uniBean.getDownUrl(), new ProgressCallBack(fileDir, uniBean.getAppId() + ".wgt") {
             @Override
             public void onSuccess(Object o) {
                 LogUtils.d(TAG, uniBean.getAppId() + " >>>>>>> 下载完成");
@@ -176,8 +182,9 @@ public class UniService extends Service implements LifecycleOwner {
             }
         });
     }
+
     //自动下载的时候自动释放
-    private void toXCX(SaveBean saveBean,int tid , String url) {
+    private void toXCX(SaveBean saveBean, int tid, String url) {
         if (!saveBean.isDownComplete()) {
             saveBean.setOpenActivity(true);
             down(saveBean);
@@ -193,7 +200,7 @@ public class UniService extends Service implements LifecycleOwner {
                         saveCache();
                         if (saveBean.isAutoUpdateApplet()) {
                             RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null, true, url));
-                        }else{
+                        } else {
                             RxBus.getDefault().post(new UniEventBean(CodeTable.UNI_RELEASE, saveBean.getAppId(), tid, null, false, url));
                         }
                     }
@@ -213,6 +220,7 @@ public class UniService extends Service implements LifecycleOwner {
     }
 
     private Object look;
+
     private void saveCache() {
         synchronized (look) {
             aCache.put(CACHE_KEY, JSON.toJSONString(saveBeans));
@@ -230,6 +238,7 @@ public class UniService extends Service implements LifecycleOwner {
             }
         }
     }
+
     //保存下载的数据
     private void saveAllBean() {
         for (UniBean uniBean : uniBeans) {
@@ -239,6 +248,7 @@ public class UniService extends Service implements LifecycleOwner {
         saveCache();
         checkVersion();
     }
+
     //通过uniBean保存一个本地bean
     private void saveBean(UniBean uniBean) {
         boolean flag = false;
@@ -254,7 +264,7 @@ public class UniService extends Service implements LifecycleOwner {
                     saveBean.setCurrentVersion(uniBean.getNewAppVersion().getVersionNumber());
                     saveBean.setDownUrl(uniBean.getNewAppVersion().getUpgradeUrl());
                     saveBean.setName(uniBean.getAppName());
-                    saveBean.setSavePath(new File(fileDir, uniBean.getAppId()+".wgt").getAbsolutePath());
+                    saveBean.setSavePath(new File(fileDir, uniBean.getAppId() + ".wgt").getAbsolutePath());
                     saveBean.setNeedDown(true);
                     saveBean.setDownComplete(false);
                     saveBean.setAppId(uniBean.getAppId());
@@ -276,7 +286,7 @@ public class UniService extends Service implements LifecycleOwner {
         saveBean.setDownUrl(uniBean.getNewAppVersion().getUpgradeUrl());
         saveBean.setName(uniBean.getAppName());
         saveBean.setAppId(uniBean.getAppId());
-        saveBean.setSavePath(new File(fileDir, uniBean.getAppId()+".wgt").getAbsolutePath());
+        saveBean.setSavePath(new File(fileDir, uniBean.getAppId() + ".wgt").getAbsolutePath());
         saveBean.setNeedDown(true);
         return saveBean;
     }
