@@ -657,7 +657,7 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@mipmap/zbj_menu_more_gz"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/btn_jtfz"

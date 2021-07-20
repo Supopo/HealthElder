@@ -49,6 +49,7 @@ public class UniService extends Service implements LifecycleOwner {
     public static int KEY_REFRESH = 0X0011;
     public static int KEY_OPEN = 0X0012;
 
+
     public static void startService(Context context) {
         Intent intent = new Intent(context, UniService.class);
         context.startService(intent);
@@ -78,7 +79,7 @@ public class UniService extends Service implements LifecycleOwner {
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
         if (getExternalCacheDir() != null) { //storage/emulated/0/Android/data/com.xxx.xxx/cache
             fileDir = getExternalCacheDir().getAbsolutePath();
-        } else { //防止上面娶不到路径 //storage/emulated/0/Android/data/com.xxx.xxx/files/uni
+        } else { //防止上面取不到路径 //storage/emulated/0/Android/data/com.xxx.xxx/files/uni
             fileDir = getExternalFilesDir("uni").getAbsolutePath();
         }
 

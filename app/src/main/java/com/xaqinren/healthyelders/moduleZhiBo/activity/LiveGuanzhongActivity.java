@@ -76,6 +76,8 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.Anchor
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMoreGZPop;
+import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMorePop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
@@ -159,6 +161,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private ZBUserInfoPop userInfoPop;
     private TXLivePlayer txLivePlayer;
     private int mRenderMode;
+    private ZBMoreGZPop zbMorePop;
 
 
     @Override
@@ -259,7 +262,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         SensitiveWordsUtils.init(pbWords);
 
 
-        if (mLiveInitInfo.getHasFollow()) {
+        if (mLiveInitInfo.getHasFollow() || mLiveInitInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
             binding.tvFollow.setText("");
             binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00061));
         } else {
@@ -1733,6 +1736,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.btnGoods.setOnClickListener(this);
         binding.ivCloseGood.setOnClickListener(this);
         binding.llPay.setOnClickListener(this);
+        binding.btnMore.setOnClickListener(this);
     }
 
     @Override
@@ -1838,7 +1842,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                         UniService.startService(getContext(), nowGoodsBean.appId, 99, nowGoodsBean.jumpUrl);
                     }
                 }
-
+                break;
+            case R.id.btn_more:
+                //更多设置
+                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
+                zbMorePop.showPopupWindow();
                 break;
             default:
                 break;
