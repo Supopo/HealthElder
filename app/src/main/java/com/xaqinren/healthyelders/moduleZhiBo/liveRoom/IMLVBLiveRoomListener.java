@@ -193,7 +193,7 @@ public interface IMLVBLiveRoomListener {
      * @param cmd        自定义 cmd
      * @param message    自定义消息内容 改为Object类型
      */
-    public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel);
+    public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel,String userLevelIcon);
 
     /**
      * 收单聊自定义消息

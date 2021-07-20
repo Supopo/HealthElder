@@ -16,6 +16,18 @@ public class TCChatEntity {
     private String sendName;    // 发送者的名字
     private String content;        // 消息内容
     private int type;            // 消息类型
+    private String leaveName;            // 用户等级
+    private String leaveIcon;
+
+    public String getLeaveIcon() {
+        return leaveIcon;
+    }
+
+    public void setLeaveIcon(String leaveIcon) {
+        this.leaveIcon = leaveIcon;
+    }
+
+
 
     public String getUserId() {
         return userId;
@@ -35,7 +47,7 @@ public class TCChatEntity {
 
     public String getLeaveName() {
         if (TextUtils.isEmpty(leaveName)) {
-            return "1";
+            return "0";
         }
         return leaveName;
     }
@@ -44,7 +56,7 @@ public class TCChatEntity {
         this.leaveName = leaveName;
     }
 
-    private String leaveName;            // 用户等级
+
 
     public String getSenderName() {
         if (TextUtils.isEmpty(sendName)) {

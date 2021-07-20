@@ -481,6 +481,8 @@ public abstract class MLVBLiveRoom {
     public abstract void setPusher(final boolean pusher);
 
 
+    public abstract void setPause();
+    public abstract void setResume();
     /// @}
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -635,7 +637,7 @@ public abstract class MLVBLiveRoom {
      * @param cmd      命令字，由开发者自定义，主要用于区分不同消息类型
      * @param message  文本消息
      * @param callback 发送结果回调
-     * @see {@link IMLVBLiveRoomListener#onRecvRoomCustomMsg(String, String, String, String, String, Object, String)}
+     * @see {@link IMLVBLiveRoomListener#onRecvRoomCustomMsg(String, String, String, String, String, Object, String, String)}
      */
     public abstract void sendRoomCustomMsg(String cmd, String message, final IMLVBLiveRoomListener.SendRoomCustomMsgCallback callback);
 

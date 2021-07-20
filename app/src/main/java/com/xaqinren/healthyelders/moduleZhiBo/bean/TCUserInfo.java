@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import android.text.TextUtils;
+
 /**
  * Module:   TCUserInfo
  * <p>
@@ -13,8 +15,21 @@ public class TCUserInfo {
     public Boolean isForbidden = false;
     public String giftIcon;//
     public String leaveName;//
+    public String leaveIcon;//
+
+    public String getLeaveIcon() {
+        return leaveIcon;
+    }
+
+    public void setLeaveIcon(String leaveIcon) {
+        this.leaveIcon = leaveIcon;
+    }
+
 
     public String getLeaveName() {
+        if (TextUtils.isEmpty(leaveName)) {
+            return "0";
+        }
         return leaveName;
     }
 
@@ -42,11 +57,19 @@ public class TCUserInfo {
     }
 
 
-    public TCUserInfo(String userId, String nickname, String avatar,String leaveName) {
+    public TCUserInfo(String userId, String nickname, String avatar, String leaveName) {
         this.userid = userId;
         this.nickname = nickname;
         this.avatar = avatar;
         this.leaveName = leaveName;
+    }
+
+    public TCUserInfo(String userId, String nickname, String avatar, String leaveName, String leaveIcon) {
+        this.userid = userId;
+        this.nickname = nickname;
+        this.avatar = avatar;
+        this.leaveName = leaveName;
+        this.leaveIcon = leaveIcon;
     }
 
     public String getUserid() {

@@ -1645,7 +1645,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @note 在 onUserVideoAvailable 回调时，调用这个接口
      */
     @Override
-    public void startRemoteView(boolean isAudio,final AnchorInfo anchorInfo, final TXCloudVideoView view, final IMLVBLiveRoomListener.PlayCallback callback) {
+    public void startRemoteView(boolean isAudio, final AnchorInfo anchorInfo, final TXCloudVideoView view, final IMLVBLiveRoomListener.PlayCallback callback) {
         TXCLog.i(TAG, "API -> startRemoteView:" + anchorInfo.userID + ":" + anchorInfo.accelerateURL);
         //主线程启动播放
         Handler handler = new Handler(mAppContext.getMainLooper());
@@ -1763,7 +1763,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     if (mMixMode == STREAM_MIX_MODE_PK) {
                         mStreamMixturer.delPKVideoStream(anchorInfo.accelerateURL);
                     } else {
-                        mStreamMixturer.delSubVideoStream(anchorInfo.accelerateURL,false);
+                        mStreamMixturer.delSubVideoStream(anchorInfo.accelerateURL, false);
                     }
                     if (mPlayers.size() == 0) {
                         //没有播放流了，切换推流回直播模式
@@ -1853,6 +1853,20 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
         if (mTXLivePlayer != null && mTXLivePlayer.isPlaying()) {
             mTXLivePlayer.setMute(mute);
+        }
+    }
+
+    @Override
+    public void setPause() {
+        if (mTXLivePlayer != null) {
+            mTXLivePlayer.pause();
+        }
+    }
+
+    @Override
+    public void setResume() {
+        if (mTXLivePlayer != null) {
+            mTXLivePlayer.resume();
         }
     }
 
@@ -2166,7 +2180,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @param cmd      命令字，由开发者自定义，主要用于区分不同消息类型
      * @param message  文本消息
      * @param callback 发送消息的结果回调
-     * @see {@link IMLVBLiveRoomListener#onRecvRoomCustomMsg(String, String, String, String, String, Object, String)}
+     * @see {@link IMLVBLiveRoomListener#onRecvRoomCustomMsg(String, String, String, String, String, Object, String, String)}
      */
     @Override
     public void sendRoomCustomMsg(String cmd, String message, final IMLVBLiveRoomListener.SendRoomCustomMsgCallback callback) {
@@ -2177,6 +2191,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         customMessage.userName = mSelfAccountInfo.userName;
         customMessage.userAvatar = mSelfAccountInfo.userAvatar;
         customMessage.userLevel = mSelfAccountInfo.userLevel;
+        customMessage.userLevelIcon = mSelfAccountInfo.userLevelIcon;
         customMessage.cmd = "CustomCmdMsg";
         cm.msg = message;
         final String content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
@@ -2212,6 +2227,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             customMessage.userName = mSelfAccountInfo.userName;
             customMessage.userAvatar = mSelfAccountInfo.userAvatar;
             customMessage.userLevel = mSelfAccountInfo.userLevel;
+            customMessage.userLevelIcon = mSelfAccountInfo.userLevelIcon;
             customMessage.cmd = "CustomCmdMsg";
             SendGiftBean sendGiftBean = (SendGiftBean) message;
             cm.cmd = cmd;
@@ -2248,7 +2264,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             customMessage.data = cm;
             customMessage.userName = zbUserListBean.nickname;
             customMessage.userAvatar = zbUserListBean.avatarUrl;
-            customMessage.userLevel = zbUserListBean.userId;
+            customMessage.userLevel = zbUserListBean.getLevelName();
             customMessage.cmd = "CustomCmdMsg";
 
             content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomSomeMessage<SendUserLinkBean>>>() {
@@ -2298,6 +2314,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             customMessage.userName = mSelfAccountInfo.userName;
             customMessage.userAvatar = mSelfAccountInfo.userAvatar;
             customMessage.userLevel = mSelfAccountInfo.userLevel;
+            customMessage.userLevelIcon = mSelfAccountInfo.userLevelIcon;
+
             content = new Gson().toJson(customMessage, new TypeToken<CommonJson<CustomMessage>>() {
             }.getType());
 
@@ -2864,10 +2882,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
     protected void mixtureStream(List<AnchorInfo> addAnchors, List<AnchorInfo> delAnchors) {
         for (AnchorInfo member : addAnchors) {
-            mStreamMixturer.addSubVideoStream(member.accelerateURL,false);
+            mStreamMixturer.addSubVideoStream(member.accelerateURL, false);
         }
         for (AnchorInfo member : delAnchors) {
-            mStreamMixturer.delSubVideoStream(member.accelerateURL,false);
+            mStreamMixturer.delSubVideoStream(member.accelerateURL, false);
         }
     }
 
@@ -3211,18 +3229,19 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
         if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_GIFT))) {
             ReceiveGiftsMessage gifsMessage = new Gson().fromJson(message, ReceiveGiftsMessage.class);
-            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel);
+            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel,gifsMessage.userLevelIcon);
         } else if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
             ReceiveLinkMessage linkMessage = new Gson().fromJson(message, ReceiveLinkMessage.class);
             callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, linkMessage.data.cmd, linkMessage.data.msg, linkMessage.userLevel);
         } else {
-            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, customMessage.data.cmd, customMessage.data.msg, customMessage.userLevel);
+            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, customMessage.data.cmd, customMessage.data.msg, customMessage.userLevel,customMessage.userLevelIcon);
         }
 
     }
 
     protected class ReceiveCustomMessage {
         public String userLevel;
+        public String userLevelIcon;
         public String userAvatar;
         public String msg;
         public String cmd;
@@ -3240,6 +3259,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
     }
 
     protected class ReceiveGiftsMessage {
+        public String userLevelIcon;
         public String userLevel;
         public String userAvatar;
         public String cmd;
@@ -3414,7 +3434,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             sendStreamMergeRequest(5, isAudio);
         }
 
-        public void delSubVideoStream(String streamUrl,boolean isAudio) {
+        public void delSubVideoStream(String streamUrl, boolean isAudio) {
             String streamId = getStreamIDByStreamUrl(streamUrl);
 
             Log.e(TAG, "MergeVideoStream: delSubVideoStream " + streamId);
@@ -3429,7 +3449,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
             if (bExist == true) {
                 mSubStreamIds.remove(streamId);
-                sendStreamMergeRequest(1,isAudio);
+                sendStreamMergeRequest(1, isAudio);
             }
         }
 
@@ -3932,6 +3952,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         public String userName;
         public String userAvatar;
         public String userLevel;
+        public String userLevelIcon;
         public String msg;
         public GoodsBean commodityInformation;
         public String reviceID;

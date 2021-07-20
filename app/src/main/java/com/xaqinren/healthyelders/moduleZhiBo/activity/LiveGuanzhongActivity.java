@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -45,10 +46,8 @@ import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.rtmp.ITXLivePlayListener;
-import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXLivePlayer;
-import com.tencent.rtmp.TXVodPlayer;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -77,8 +76,6 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.Anchor
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AudienceInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGiftListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBGoodsListPop;
-import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMoreGZPop;
-import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBMorePop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserInfoPop;
 import com.xaqinren.healthyelders.moduleZhiBo.popupWindow.ZBUserListPop;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.LiveGuanzhongViewModel;
@@ -112,6 +109,7 @@ import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.BlurTransformation;
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
@@ -121,8 +119,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * Created by Lee. on 2021/4/25.
  * 直播间-观众页面
  */
-public class
-LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener, ITXLivePlayListener {
+public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuanzhongViewModel> implements IMLVBLiveRoomListener, View.OnClickListener, ITXLivePlayListener {
 
     private MLVBLiveRoom mLiveRoom;
     private LiveInitInfo mLiveInitInfo;
@@ -494,15 +491,27 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
         binding.lvMsg.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //长按@
-                //弹出输入dialog
-                Bundle bundle = new Bundle();
-                bundle.putString("content", "@" + msgList.get(position).getSenderName() + " ");
-                Intent intent = new Intent(getContext(), ZBEditTextDialogActivity.class);
-                intent.putExtras(bundle);
-                getContext().startActivity(intent);
+                //判断当前消息是文本消息
+                if (msgList.get(position).getType() == LiveConstants.IMCMD_TEXT_MSG) {
+                    if (TextUtils.isEmpty(msgList.get(position).getUserId())) {
+                        return true;
+                    }
+                    //不是自己的消息
+                    if (msgList.get(position).getUserId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                        return true;
+                    }
 
-                return false;
+                    //长按@
+                    //弹出输入dialog
+                    Bundle bundle = new Bundle();
+                    bundle.putString("content", "@" + msgList.get(position).getSenderName() + " ");
+                    Intent intent = new Intent(getContext(), ZBEditTextDialogActivity.class);
+                    intent.putExtras(bundle);
+                    getContext().startActivity(intent);
+                }
+
+
+                return true;
             }
         });
     }
@@ -1320,11 +1329,11 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
     @Override
-    public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel) {
+    public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel, String userLevelIcon) {
         if (!roomID.equals(mRoomID)) {
             return;
         }
-        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar, userLevel);
+        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar, userLevel, userLevelIcon);
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_TEXT_MSG:
@@ -1861,8 +1870,8 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 break;
             case R.id.btn_more:
                 //更多设置
-//                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
-//                zbMorePop.showPopupWindow();
+                //                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
+                //                zbMorePop.showPopupWindow();
                 shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, 2);
                 shareDialog.show(binding.llMenu);
                 break;
@@ -2470,12 +2479,43 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (isPlaying) {
+            if (txLivePlayer != null) {
+                txLivePlayer.resume();
+            } else {
+                mLiveRoom.setResume();
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isPlaying) {
+            Activity activity = AppManager.getAppManager().currentActivity();
+            //判断当前栈顶是否当前页面
+            if (activity.getLocalClassName().contains("LiveGuanzhongActivity")) {
+                // 暂停
+                if (txLivePlayer != null) {
+                    txLivePlayer.pause();
+                } else {
+                    mLiveRoom.setPause();
+                }
+            }
+        }
+    }
+
+    @Override
     public void onPlayEvent(int event, Bundle bundle) {
         LogUtils.v(Constant.TAG_LIVE, "onPlayEvent: " + event);
         if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
             if (txLivePlayer != null) {
                 txLivePlayer.resume();
             }
+        } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
+            isPlaying = true;
         }
     }
 

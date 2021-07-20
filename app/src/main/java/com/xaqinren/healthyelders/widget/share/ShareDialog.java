@@ -30,6 +30,7 @@ import com.dcloud.zxing2.MultiFormatWriter;
 import com.dcloud.zxing2.common.BitMatrix;
 import com.dcloud.zxing2.qrcode.QRCodeWriter;
 import com.dcloud.zxing2.qrcode.encoder.QRCode;
+import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
@@ -50,6 +51,7 @@ import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.DownloadUtil;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
 
@@ -224,9 +226,17 @@ public class ShareDialog {
                 ToastUtils.showShort("内容未审核");
                 return;
             }
+            if (!AppApplication.mWXapi.isWXAppInstalled()) {
+                ToastUtil.toastShortMessage("您还未安装微信客户端");
+                return;
+            }
             shareWebPage(1);
         });
         binding.shareClsLayout.shareWxCircle.setOnClickListener(view -> {
+            if (!AppApplication.mWXapi.isWXAppInstalled()) {
+                ToastUtil.toastShortMessage("您还未安装微信客户端");
+                return;
+            }
             //私信微信朋友圈
             shareWebPage(2);
         });
@@ -306,7 +316,7 @@ public class ShareDialog {
      */
     private void shareWebPage(int type) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = Constant.baseH5Url+"#"+shareBean.url;
+        webpage.webpageUrl = Constant.baseH5Url + "#" + shareBean.url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;
@@ -324,7 +334,10 @@ public class ShareDialog {
                 } else if (type == 2) {
                     req.scene = SendMessageToWX.Req.WXSceneTimeline;
                 }
-                AppApplication.mWXapi.sendReq(req);
+                boolean sendReq = AppApplication.mWXapi.sendReq(req);
+                if (sendReq) {
+                    hide();
+                }
             }
 
         }); //方法中设置asBitmap可以设置回调类型
@@ -360,7 +373,6 @@ public class ShareDialog {
     public void hide() {
         popupWindow.dismiss();
     }
-
 
 
     private MutableLiveData<List<ZBUserListBean>> datas = new MutableLiveData<>();

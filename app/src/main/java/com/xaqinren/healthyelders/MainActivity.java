@@ -249,21 +249,33 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         //已登陆，判断下用户信息存不存在请求用户信息接口
         if (!TextUtils.isEmpty(accessToken)) {
-            if (userInfoBean == null || TextUtils.isEmpty(userInfoBean.getId())) {
+            //因为要获取用户等级和icon所以每次都请求一下
+            if (UserInfoMgr.getInstance().getUserInfo() == null) {
                 //获取用户信息
                 viewModel.getUserInfo(accessToken, true);
-            } else {
-                if (callBack != null) {
-                    callBack.invoke(accessToken);
-                    callBack = null;
-                }
-                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
-                UserInfoMgr.getInstance().setUserInfo(userInfoBean);
-                UserInfoMgr.getInstance().setAccessToken(accessToken);
-                UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
-                onUnReadWatch(ImManager.getInstance().getUnreadCount());
+            }else {
                 viewModel.getUserSig(accessToken);
+                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
+                onUnReadWatch(ImManager.getInstance().getUnreadCount());
             }
+
+
+
+//            if (userInfoBean == null || TextUtils.isEmpty(userInfoBean.getId())) {
+//                //获取用户信息
+//                viewModel.getUserInfo(accessToken, true);
+//            } else {
+//                if (callBack != null) {
+//                    callBack.invoke(accessToken);
+//                    callBack = null;
+//                }
+//                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
+//                UserInfoMgr.getInstance().setUserInfo(userInfoBean);
+//                UserInfoMgr.getInstance().setAccessToken(accessToken);
+//                UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
+//                onUnReadWatch(ImManager.getInstance().getUnreadCount());
+//                viewModel.getUserSig(accessToken);
+//            }
         }
     }
 

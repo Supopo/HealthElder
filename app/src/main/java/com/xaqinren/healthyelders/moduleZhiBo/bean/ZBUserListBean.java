@@ -57,7 +57,7 @@ public class ZBUserListBean implements Serializable {
 
     public String getLevelName() {
         if (levelName == null) {
-            return "1";
+            return "0";
         }
         return levelName;
     }

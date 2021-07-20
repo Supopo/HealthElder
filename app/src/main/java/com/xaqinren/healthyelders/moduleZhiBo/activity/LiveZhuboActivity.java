@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;
@@ -501,6 +502,32 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 }
             }
         });
+        binding.lvMsg.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //判断当前消息是文本消息
+                if (msgList.get(position).getType() == LiveConstants.IMCMD_TEXT_MSG) {
+                    if (TextUtils.isEmpty(msgList.get(position).getUserId())) {
+                        return true;
+                    }
+                    //不是自己的消息
+                    if (msgList.get(position).getUserId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                        return true;
+                    }
+
+                    //长按@
+                    //弹出输入dialog
+                    Bundle bundle = new Bundle();
+                    bundle.putString("content", "@" + msgList.get(position).getSenderName() + " ");
+                    Intent intent = new Intent(getContext(), ZBEditTextDialogActivity.class);
+                    intent.putExtras(bundle);
+                    getContext().startActivity(intent);
+                }
+
+
+                return true;
+            }
+        });
     }
 
     private void startPublish() {
@@ -980,10 +1007,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
 
         //多人连麦不需要
-//        if (mPendingRequest) {
-//            mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "请稍后，主播正在处理其它人的连麦请求");
-//            return;
-//        }
+        //        if (mPendingRequest) {
+        //            mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "请稍后，主播正在处理其它人的连麦请求");
+        //            return;
+        //        }
         if (mPusherList.size() > 6) {
             mLiveRoom.responseJoinAnchor(anchorInfo.userID, false, "主播端连麦人数超过最大限制");
             return;
@@ -1018,11 +1045,11 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     @Override
-    public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel) {
+    public void onRecvRoomCustomMsg(String roomID, String userID, String userName, String userAvatar, String cmd, Object message, String userLevel, String userLevelIcon) {
         if (!roomID.equals(mRoomID)) {
             return;
         }
-        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar, userLevel);
+        TCUserInfo userInfo = new TCUserInfo(userID, userName, userAvatar, userLevel, userLevelIcon);
         int type = Integer.parseInt(cmd);
         switch (type) {
             case LiveConstants.IMCMD_TEXT_MSG:

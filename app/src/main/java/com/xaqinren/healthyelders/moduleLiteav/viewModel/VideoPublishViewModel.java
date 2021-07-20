@@ -94,6 +94,8 @@ public class VideoPublishViewModel extends BaseViewModel {
         loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         loginInfo.userLevel = userInfo.getLevelName();
+        loginInfo.userLevelIcon = userInfo.getIcon();
+
         mLiveRoom.login(false,loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

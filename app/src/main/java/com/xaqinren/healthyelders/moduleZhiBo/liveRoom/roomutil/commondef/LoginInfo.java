@@ -33,6 +33,7 @@ public class LoginInfo implements Parcelable {
     public String   userAvatar;
 
     public String   userLevel;
+    public String   userLevelIcon;
 
     public LoginInfo() {
 

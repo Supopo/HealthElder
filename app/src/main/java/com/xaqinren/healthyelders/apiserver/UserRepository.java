@@ -445,6 +445,7 @@ public class UserRepository {
         loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         loginInfo.userLevel = userInfo.getLevelName();
+        loginInfo.userLevelIcon = userInfo.getIcon();
         LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录" + loginInfo.userSig);
         MLVBLiveRoom.sharedInstance(AppApplication.getContext()).login(true, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override

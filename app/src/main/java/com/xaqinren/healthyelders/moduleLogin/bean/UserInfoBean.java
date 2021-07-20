@@ -23,6 +23,7 @@ public class UserInfoBean implements Serializable {
     private Boolean defaultLevel;
     private String levelImage;
     private String levelName;
+    private String icon;//用户等级图标
     private Boolean hasRealName;
     private String recommendedCode;
     private String birthday;
@@ -34,6 +35,14 @@ public class UserInfoBean implements Serializable {
     private int fansCount;
     private int attentionCount;
     private MenuBean menu;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
     public boolean hasMobileNum() {
         if (TextUtils.isEmpty(mobileNumber)) {
@@ -273,7 +282,7 @@ public class UserInfoBean implements Serializable {
 
     public String getLevelName() {
         if (TextUtils.isEmpty(levelName)) {
-            return "1";
+            return "0";
         }
         return levelName;
     }
