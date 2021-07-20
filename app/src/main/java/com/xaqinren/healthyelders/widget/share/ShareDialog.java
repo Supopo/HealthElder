@@ -306,7 +306,7 @@ public class ShareDialog {
      */
     private void shareWebPage(int type) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = shareBean.url;
+        webpage.webpageUrl = Constant.baseH5Url+"#"+shareBean.url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;

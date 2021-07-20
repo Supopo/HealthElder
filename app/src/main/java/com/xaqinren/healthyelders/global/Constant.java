@@ -18,6 +18,7 @@ public class Constant {
     public static boolean TEST = false;
     public static boolean ENABLE_CHAT = false;//打开单聊功能
 
+    public static String baseH5Url = "http://h5.hjyiyuanjiankang.com/";//分享短视频-文章-直播
     public static String baseUrl = "http://api.hjyiyuanjiankang.com/";
     public static String testUrl = "http://test.hjyiyuanjiankang.com/";
     public static String debugUrl = "http://192.168.1.113:18080/";

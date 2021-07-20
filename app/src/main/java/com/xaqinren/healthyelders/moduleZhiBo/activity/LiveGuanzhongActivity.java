@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
@@ -92,6 +93,7 @@ import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.SensitiveWordsUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
+import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -161,7 +163,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     private ZBUserInfoPop userInfoPop;
     private TXLivePlayer txLivePlayer;
     private int mRenderMode;
-    private ZBMoreGZPop zbMorePop;
+    private ShareDialog shareDialog;
 
 
     @Override
@@ -489,6 +491,20 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
             }
         });
 
+        binding.lvMsg.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //长按@
+                //弹出输入dialog
+                Bundle bundle = new Bundle();
+                bundle.putString("content", "@" + msgList.get(position).getSenderName() + " ");
+                Intent intent = new Intent(getContext(), ZBEditTextDialogActivity.class);
+                intent.putExtras(bundle);
+                getContext().startActivity(intent);
+
+                return false;
+            }
+        });
     }
 
     private void startPlay() {
@@ -1845,8 +1861,10 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
                 break;
             case R.id.btn_more:
                 //更多设置
-                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
-                zbMorePop.showPopupWindow();
+//                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
+//                zbMorePop.showPopupWindow();
+                shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, 2);
+                shareDialog.show(binding.llMenu);
                 break;
             default:
                 break;
@@ -2426,7 +2444,6 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
     }
 
 
-
     /**
      * 二次点击（返回键）退出
      */
@@ -2454,6 +2471,7 @@ LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBinding, LiveGuan
 
     @Override
     public void onPlayEvent(int event, Bundle bundle) {
+        LogUtils.v(Constant.TAG_LIVE, "onPlayEvent: " + event);
         if (event == TXLiveConstants.PLAY_EVT_PLAY_END) {//视频播放结束
             if (txLivePlayer != null) {
                 txLivePlayer.resume();

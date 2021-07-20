@@ -35,6 +35,7 @@ import com.tencent.qcloud.ugckit.utils.BitmapUtils;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.DialogPostBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleLiteav.dialog.CreatePostBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -128,7 +129,7 @@ public class PostPop extends BottomDialog {
      */
     private void shareWebPage(int type) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = shareBean.url;
+        webpage.webpageUrl =  Constant.baseH5Url+"#"+shareBean.url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;
