@@ -23,7 +23,7 @@ public class UserInfoBean implements Serializable {
     private Boolean defaultLevel;
     private String levelImage;
     private String levelName;
-    private String icon;//用户等级图标
+    private String levelIcon;//用户等级图标
     private Boolean hasRealName;
     private String recommendedCode;
     private String birthday;
@@ -37,11 +37,11 @@ public class UserInfoBean implements Serializable {
     private MenuBean menu;
 
     public String getIcon() {
-        return icon;
+        return levelIcon;
     }
 
     public void setIcon(String icon) {
-        this.icon = icon;
+        this.levelIcon = icon;
     }
 
     public boolean hasMobileNum() {

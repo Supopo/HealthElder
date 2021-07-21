@@ -27,6 +27,7 @@ public class ZBUserListBean implements Serializable {
     public boolean hasFansTeam;//是否加入粉丝团
     public String levelCode;//
     public String levelName;//
+    public String levelIcon;//
     public String fansTeamName;//粉丝团名字
     public int active;//活跃度
     public String viewerDuration;//用户看播时间

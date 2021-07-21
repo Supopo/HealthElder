@@ -107,8 +107,11 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition, false));
-                    fragmentPosition++;
+                    if (datas.get(i) != null) {
+                        fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition, false));
+                        fragmentPosition++;
+                    }
+
                 }
                 homeAdapter.notifyDataSetChanged();
 
@@ -158,8 +161,10 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         homeAdapter = new FragmentPagerAdapter(this, fragmentList);
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));
-            fragmentPosition++;
+            if (mVideoInfoList.get(i) != null) {
+                fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));
+                fragmentPosition++;
+            }
         }
         showLoadView();
         //请求数据

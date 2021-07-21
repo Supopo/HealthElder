@@ -417,22 +417,31 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
      * 长按录制停止
      */
     public void shortPauseRecode() {
-        VideoRecordSDK.getInstance().getRecorder().pauseBGM();
-        if (isIsRecodeStatus()) {
-            VideoRecordSDK.getInstance().pauseRecord();
-            currentStatus = STATUS_PAUSE;
-            LogUtils.e("LiteAVRecode","已暂停录制");
-            recodeLiteListener.onRecodeSuccess(false);
+        try {
+            VideoRecordSDK.getInstance().getRecorder().pauseBGM();
+            if (isIsRecodeStatus()) {
+                VideoRecordSDK.getInstance().pauseRecord();
+                currentStatus = STATUS_PAUSE;
+                LogUtils.e("LiteAVRecode","已暂停录制");
+                recodeLiteListener.onRecodeSuccess(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
     public void pauseRecode() {
-        VideoRecordSDK.getInstance().stopCameraPreview();
-        VideoRecordSDK.getInstance().getRecorder().pauseBGM();
-        if (isIsRecodeStatus()) {
-            VideoRecordSDK.getInstance().pauseRecord();
-            currentStatus = STATUS_PAUSE;
-            LogUtils.e("LiteAVRecode","已暂停录制");
-            recodeLiteListener.onRecodeSuccess(false);
+        try {
+            VideoRecordSDK.getInstance().stopCameraPreview();
+            VideoRecordSDK.getInstance().getRecorder().pauseBGM();
+            if (isIsRecodeStatus()) {
+                VideoRecordSDK.getInstance().pauseRecord();
+                currentStatus = STATUS_PAUSE;
+                LogUtils.e("LiteAVRecode","已暂停录制");
+                recodeLiteListener.onRecodeSuccess(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -440,20 +449,28 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
      * 停止录像，去编辑
      */
     public void stopRecode() {
-        VideoRecordSDK.getInstance().getRecorder().stopBGM();
-        if (isIsRecodeStatus()) {
-            currentStatus = STATUS_IDLE;
-            VideoRecordSDK.getInstance().stopRecord();
-            LogUtils.e("LiteAVRecode","已停止录像");
+        try {
+            VideoRecordSDK.getInstance().getRecorder().stopBGM();
+            if (isIsRecodeStatus()) {
+                currentStatus = STATUS_IDLE;
+                VideoRecordSDK.getInstance().stopRecord();
+                LogUtils.e("LiteAVRecode","已停止录像");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void releaseRecode() {
-        currentStatus = STATUS_IDLE;
-        if (VideoRecordSDK.getInstance()!=null){
-            VideoRecordSDK.getInstance().releaseRecord();
+        try {
+            currentStatus = STATUS_IDLE;
+            if (VideoRecordSDK.getInstance()!=null){
+                VideoRecordSDK.getInstance().releaseRecord();
+            }
+            LogUtils.i(getClass().getSimpleName(), "onDestroyView\tl=");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        LogUtils.i(getClass().getSimpleName(), "onDestroyView\tl=");
     }
 
     public void restart() {

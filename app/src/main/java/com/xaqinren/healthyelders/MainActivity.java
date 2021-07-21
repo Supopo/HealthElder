@@ -166,9 +166,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         SPUtils.getInstance().put(Constant.PAY_WAY, "uni");
         ImManager.getInstance().setOnUnReadWatch(this);
         setStatusBarTransparent();
+        getCacheUserInfo();
+
         //初始化Fragment
         initFragment();
-        getCacheUserInfo();
         handler = new Handler();
 
         //设置底部背景线
@@ -251,31 +252,28 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (!TextUtils.isEmpty(accessToken)) {
             //因为要获取用户等级和icon所以每次都请求一下
             if (UserInfoMgr.getInstance().getUserInfo() == null) {
-                //获取用户信息
+
+                //先设置是防止第一次请求列表数据uid传不到
+                if (userInfoBean != null) {
+                    UserInfoMgr.getInstance().setUserInfo(userInfoBean);
+                    UserInfoMgr.getInstance().setAccessToken(accessToken);
+                    UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
+
+                    if (callBack != null) {
+                        callBack.invoke(accessToken);
+                        callBack = null;
+                    }
+
+                    ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
+                    onUnReadWatch(ImManager.getInstance().getUnreadCount());
+                }
+
+                //更新获取用户信息
                 viewModel.getUserInfo(accessToken, true);
             }else {
                 viewModel.getUserSig(accessToken);
-                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
-                onUnReadWatch(ImManager.getInstance().getUnreadCount());
             }
 
-
-
-//            if (userInfoBean == null || TextUtils.isEmpty(userInfoBean.getId())) {
-//                //获取用户信息
-//                viewModel.getUserInfo(accessToken, true);
-//            } else {
-//                if (callBack != null) {
-//                    callBack.invoke(accessToken);
-//                    callBack = null;
-//                }
-//                ImManager.getInstance().init(new File(getFilesDir(), "msg").getAbsolutePath());
-//                UserInfoMgr.getInstance().setUserInfo(userInfoBean);
-//                UserInfoMgr.getInstance().setAccessToken(accessToken);
-//                UserInfoMgr.getInstance().setHttpToken(Constant.API_HEADER + accessToken);
-//                onUnReadWatch(ImManager.getInstance().getUnreadCount());
-//                viewModel.getUserSig(accessToken);
-//            }
         }
     }
 

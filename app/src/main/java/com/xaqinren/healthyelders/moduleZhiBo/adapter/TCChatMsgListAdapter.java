@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.TCChatEntity;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -137,8 +139,8 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
             convertView = layoutInflater.inflate(R.layout.item_live_msg, null);
             holder.llLeave = (LinearLayout) convertView.findViewById(R.id.ll_leave);
-            holder.tvLeave = (TextView) convertView.findViewById(R.id.tv_leave);
             holder.ivLeave = (ImageView) convertView.findViewById(R.id.iv_leave);
+            holder.tvLeave = (TextView) convertView.findViewById(R.id.tv_leave);
             holder.sendName = (TextView) convertView.findViewById(R.id.sendName);
             holder.sendContext = (TextView) convertView.findViewById(R.id.sendcontext);
             holder.sendImg = (ImageView) convertView.findViewById(R.id.iv_gift);
@@ -171,20 +173,36 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             //礼物消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorGiftMsg));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
-            holder.llLeave.setVisibility(View.VISIBLE);
+            if (item.getLeaveName().equals("0")) {
+                holder.llLeave.setVisibility(View.GONE);
+            } else {
+                holder.llLeave.setVisibility(View.VISIBLE);
+                holder.tvLeave.setText(item.getLeaveName());
+                if (TextUtils.isEmpty(item.getLeaveIcon())) {
+                    GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
+                }else {
+                    GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
+                }
+            }
         } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
             spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
             //文字消息
-//            holder.sendName.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
-//            holder.sendName.setText(item.getSenderName() + ":  ");
             holder.sendContext.setText(item.getContent());
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorTextMsg));
-            spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorSendName8)),
-                    0, item.getSenderName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             holder.sendContext.setText(spanString);
-            holder.llLeave.setVisibility(View.VISIBLE);
+            if (item.getLeaveName().equals("0")) {
+                holder.llLeave.setVisibility(View.GONE);
+            } else {
+                holder.llLeave.setVisibility(View.VISIBLE);
+                holder.tvLeave.setText(item.getLeaveName());
+                if (TextUtils.isEmpty(item.getLeaveIcon())) {
+                    GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
+                }else {
+                    GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
+                }
+            }
             //设置处理加载聊天表情文字
-            FaceManager.handlerZBMsgEmojiText(item.getSenderName().length() + 3,holder.sendContext, holder.sendContext.getText().toString(), false);
+            FaceManager.handlerZBMsgEmojiText(item.getSenderName().length() + 3, holder.sendContext, holder.sendContext.getText().toString(), false);
         } else {
             holder.sendName.setText("");
             // 其他消息类型
@@ -192,13 +210,19 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             spanString.setSpan(spanString, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
-            holder.llLeave.setVisibility(View.VISIBLE);
+            if (item.getLeaveName().equals("0")) {
+                holder.llLeave.setVisibility(View.GONE);
+            } else {
+                holder.llLeave.setVisibility(View.VISIBLE);
+                holder.tvLeave.setText(item.getLeaveName());
+                if (TextUtils.isEmpty(item.getLeaveIcon())) {
+                    GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
+                }else {
+                    GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
+                }
+            }
         }
         holder.sendImg.setVisibility(View.GONE);
-        holder.tvLeave.setText(item.getLeaveName());
-
-        //暂时隐藏用户等级
-        holder.llLeave.setVisibility(View.GONE);
 
         // 设置控件实际宽度以便计算列表项实际高度
         //holder.sendContext.fixViewWidth(mListView.getWidth());
@@ -210,8 +234,8 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
     static class ViewHolder {
         public TextView sendName;
         public TextView sendContext;
-        public ImageView sendImg;
         public TextView tvLeave;
+        public ImageView sendImg;
         public ImageView ivLeave;
         public LinearLayout llLeave;
 

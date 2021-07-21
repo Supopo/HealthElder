@@ -2597,7 +2597,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 if (mTXLivePusher != null && mTXLivePushListener != null) {
                     mTXLivePushListener.setCallback(callback);
                     //设置直播分辨率 ，第二个参数为若弱网自动切换
-                    mTXLivePusher.setVideoQuality(videoQuality, false, false);
+                    mTXLivePusher.setVideoQuality(videoQuality, true, false);
                     int ret = mTXLivePusher.startPusher(url);
                     if (ret == -5) {
                         String msg = "[LiveRoom] 推流失败[license 校验失败]";
@@ -3232,7 +3232,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel,gifsMessage.userLevelIcon);
         } else if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
             ReceiveLinkMessage linkMessage = new Gson().fromJson(message, ReceiveLinkMessage.class);
-            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, linkMessage.data.cmd, linkMessage.data.msg, linkMessage.userLevel);
+            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, linkMessage.data.cmd, linkMessage.data.msg, linkMessage.userLevel,linkMessage.userLevelIcon);
         } else {
             callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, customMessage.data.cmd, customMessage.data.msg, customMessage.userLevel,customMessage.userLevelIcon);
         }
@@ -3278,6 +3278,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
 
     protected class ReceiveLinkMessage {
+        public String userLevelIcon;
         public String userLevel;
         public String userAvatar;
         public String cmd;

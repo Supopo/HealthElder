@@ -134,8 +134,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                 mVideoInfoList.addAll(datas);
 
                 for (int i = 0; i < datas.size(); i++) {
-                    fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition, false));
-                    fragmentPosition++;
+                    if (datas.get(i) != null) {
+                        fragmentList.add(new HomeVideoFragment(datas.get(i), TAG, fragmentPosition, false));
+                        fragmentPosition++;
+                    }
+
                 }
                 videoAdapter.notifyDataSetChanged();
 
@@ -241,8 +244,11 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
 
 
         for (int i = 0; i < mVideoInfoList.size(); i++) {
-            fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));
-            fragmentPosition++;
+            if (mVideoInfoList.get(i) != null) {
+                fragmentList.add(new HomeVideoFragment(mVideoInfoList.get(i), TAG, fragmentPosition, false));
+                fragmentPosition++;
+            }
+
         }
         //判断有无登录
         if (!TextUtils.isEmpty(UserInfoMgr.getInstance().getAccessToken())) {
