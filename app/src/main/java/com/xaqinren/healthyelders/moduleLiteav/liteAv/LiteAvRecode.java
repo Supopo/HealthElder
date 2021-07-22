@@ -54,7 +54,7 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
     private boolean cameraSwitch = true;        //是否前置摄像头UI判断
     private boolean mIsTorchOpenFlag;           // 是否打开闪光灯UI判断
     private int minRecordTime = 3 * 1000;
-    private int maxRecordTime = 60 * 1000;
+    private int maxRecordTime = 3 * 60 * 1000;
     private int currentAsp = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;  //屏幕比
 
     private final int STATUS_IDLE = 0;

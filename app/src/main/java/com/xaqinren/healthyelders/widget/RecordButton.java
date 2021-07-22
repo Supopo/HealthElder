@@ -28,7 +28,7 @@ public class RecordButton extends RelativeLayout implements View.OnTouchListener
     private ArcView arcView;
     private int tranColor;
     private boolean isClickRecode;
-    private boolean enableClickRecode = false;
+    private boolean enableClickRecode = true;
     private int starts_idle = 0;
     private int starts_recode = 1;
     private int starts_complete = 2;

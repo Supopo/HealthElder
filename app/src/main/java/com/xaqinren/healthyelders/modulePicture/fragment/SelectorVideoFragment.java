@@ -44,6 +44,7 @@ import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.module.OnMultiClickListener;
 import me.goldze.mvvmhabit.utils.ConvertUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * 拍视频，选择视频
@@ -53,6 +54,7 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
     private ArrayList<TCVideoFileInfo> selList;
     private SelPictureAdapter adapter;
     private MenuAdapter menuAdapter;
+    private long maxTime = 3 * 60 * 1000;
 
     @NonNull
     private Handler mHandlder = new Handler();
@@ -87,6 +89,13 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
         adapter.addFooterView(footer);
         adapter.setOnItemClickListener((adapter, view, position) -> {
             TCVideoFileInfo info = list.get(position);
+            if (checkMaxTime(info.getDuration())){
+                ToastUtils.showShort("最多支持选择3分钟");
+                return;
+            }
+
+            //计算添加后是否超过3分钟
+
             info.setSelected(!info.isSelected());
             if (info.isSelected()) {
                 //更改序列号
@@ -127,7 +136,32 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
             }
         });
     }
-
+    private boolean checkMaxTime() {
+        long time = 0;
+        for (TCVideoFileInfo info : selList) {
+            time += info.getDuration();
+        }
+        if (time > maxTime){
+            return true;
+        }
+        return false;
+    }
+    private boolean checkMaxTime(long duration) {
+        long time = 0;
+        for (TCVideoFileInfo info : selList) {
+            time += info.getDuration();
+        }
+        if (time > maxTime){
+            //当前已经大于3分钟
+            return true;
+        }
+        time += duration;
+        if (time > maxTime){
+            //加上当前需要添加的后大于3分钟
+            return true;
+        }
+        return false;
+    }
     private void setMenuVisible() {
         if (menuAdapter.getAll().isEmpty()) {
             binding.menuList.setVisibility(View.GONE);
