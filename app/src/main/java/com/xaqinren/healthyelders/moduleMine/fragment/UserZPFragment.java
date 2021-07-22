@@ -172,6 +172,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
                     if (dataList.size() == 0) {
                         //加载更多加载结束
                         mLoadMore.loadMoreEnd(true);
+                        page--;
                     }
                     videoAdapter.addData(dataList);
                 }

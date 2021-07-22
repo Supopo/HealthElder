@@ -81,7 +81,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
 
             if (videoAdapter.getData().get(position).isArticle()) {
-                Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+                Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).resourceId);
                 intent.putExtra(Constant.MINE_OPEN, true);
                 startActivity(intent);
@@ -131,6 +131,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
     }
 
     private int resCode;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -165,6 +166,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
                     if (dataList.size() == 0) {
                         //加载更多加载结束
                         mLoadMore.loadMoreEnd(true);
+                        page--;
                     }
                     videoAdapter.addData(dataList);
                 }

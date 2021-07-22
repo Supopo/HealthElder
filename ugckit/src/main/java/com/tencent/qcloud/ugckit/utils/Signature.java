@@ -1,5 +1,6 @@
 package com.tencent.qcloud.ugckit.utils;
 
+import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.UnsupportedEncodingException;
@@ -12,6 +13,7 @@ import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 public class Signature {
     private static final String ID = "AKIDU5QXQ4DXOyGI3XslTyECtQgfMmzwK1C6";
     private static final String KEY = "nKZbNs5h38vRgfNo0xd18yXpqcS1NSF7";
@@ -62,7 +64,7 @@ public class Signature {
 
     private String base64Encode(byte[] buffer) {
         try {
-            return new String(Base64.encode(buffer, Base64.DEFAULT),"UTF-8");
+            return new String(Base64.encode(buffer, Base64.DEFAULT), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -108,17 +110,22 @@ public class Signature {
             return null;
         }
     }
-    public static String getTimeExpire(long timeS){
+
+    public static String getTimeExpire(long timeS) {
         String day10X16 = String.format("%x", timeS);
         return day10X16;
     }
-    public static String singVideo(String playUrl , String UrlTimeExpire) throws URISyntaxException {
+
+    public static String singVideo(String playUrl, String UrlTimeExpire) throws URISyntaxException {
+        if (TextUtils.isEmpty(playUrl)) {
+            return "";
+        }
         URI uri = new URI(playUrl);
         String query = uri.getPath();
         int last = query.lastIndexOf("/");
         query = query.substring(0, last);
-        String key = HOLDER_KEY  ;
-        String md5Key = stringToMD5(key+query+"/"+UrlTimeExpire);
+        String key = HOLDER_KEY;
+        String md5Key = stringToMD5(key + query + "/" + UrlTimeExpire);
         return md5Key;
     }
 

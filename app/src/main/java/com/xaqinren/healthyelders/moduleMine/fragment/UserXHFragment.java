@@ -152,6 +152,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
                     if (dataList.size() == 0) {
                         //加载更多加载结束
                         mLoadMore.loadMoreEnd(true);
+                        page--;
                     }
                     videoAdapter.addData(dataList);
                 }

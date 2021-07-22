@@ -96,7 +96,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             List<VideoInfo> temp = new ArrayList<>();
 
             for (DZVideoInfo dzVideoInfo : videoAdapter.getData()) {
-                if (dzVideoInfo.homeComprehensiveHall != null&& !dzVideoInfo.homeComprehensiveHall.isArticle()) {
+                if (dzVideoInfo.homeComprehensiveHall != null && !dzVideoInfo.homeComprehensiveHall.isArticle()) {
                     temp.add(dzVideoInfo.homeComprehensiveHall);
                 }
             }
@@ -160,6 +160,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
                     if (dataList.size() == 0) {
                         //加载更多加载结束
                         mLoadMore.loadMoreEnd(true);
+                        page--;
                     }
                     videoAdapter.addData(dataList);
                 }
