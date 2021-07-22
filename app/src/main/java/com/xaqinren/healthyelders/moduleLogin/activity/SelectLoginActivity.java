@@ -158,6 +158,7 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
         BottomDialog dialog = new BottomDialog(this, popView,
                 new int[]{R.id.tvAgree, R.id.tvDisagree}, (int) (ScreenUtil.getScreenWidth(this) * 0.8), (int) (ScreenUtil.getScreenHeight(this) * 0.85), Gravity.CENTER);
         ProgressBar bar = popView.findViewById(R.id.bar);
+        bar.setProgressDrawable(getResources().getDrawable(R.drawable.web_progress_bar));
         WebView webView = popView.findViewById(R.id.webView);
         WebSettings seting = webView.getSettings();
         seting.setJavaScriptCanOpenWindowsAutomatically(true);//设置js可以直接打开窗口，如window.open()，默认为false

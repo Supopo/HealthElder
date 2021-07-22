@@ -2,14 +2,23 @@ package com.xaqinren.healthyelders.moduleLogin.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.MainActivity;
@@ -23,10 +32,12 @@ import com.xaqinren.healthyelders.moduleLogin.viewModel.SplashViewModel;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.widget.BottomDialog;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.SPUtils;
@@ -135,20 +146,12 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
                 AppApplication.get().setHasNavBar(isHasBar);
             }
         });
-
-        disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(granted -> {
-                    if (granted) {
-                        hasParm = true;
-                        if (canNext) {
-                            toNext();
-                        }
-                    } else {
-                        finish();
-                        ToastUtils.showShort("访问权限已拒绝");
-                    }
-
-                });
+        boolean showPop = SPUtils.getInstance().getBoolean(Constant.SHOW_POP_WEB, true);
+        if (showPop) {
+            showWebPop();
+        }else {
+            checkPermissions();
+        }
 
         LoadGiftService.startService(this);
 
@@ -163,6 +166,23 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
                 toNext();
             }
         }, recLen * 1000);
+    }
+
+    public void checkPermissions() {
+        disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) {
+                        SPUtils.getInstance().put(Constant.SHOW_POP_WEB, false);
+                        hasParm = true;
+                        if (canNext) {
+                            toNext();
+                        }
+                    } else {
+                        finish();
+                        ToastUtils.showShort("访问权限已拒绝");
+                    }
+
+                });
     }
 
     private void toNext() {
@@ -186,5 +206,83 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             }
         });
     }
+
+    private void showWebPop() {
+        View popView = View.inflate(this, R.layout.pop_web, null);
+        BottomDialog dialog = new BottomDialog(this, popView,
+                new int[]{R.id.tvAgree, R.id.tvDisagree}, (int) (ScreenUtil.getScreenWidth(this) * 0.8), (int) (ScreenUtil.getScreenHeight(this) * 0.85), Gravity.CENTER);
+        ProgressBar bar = popView.findViewById(R.id.bar);
+        bar.setProgressDrawable(getResources().getDrawable(R.drawable.web_progress_bar));
+        WebView webView = popView.findViewById(R.id.webView);
+        WebSettings seting = webView.getSettings();
+        seting.setJavaScriptCanOpenWindowsAutomatically(true);//设置js可以直接打开窗口，如window.open()，默认为false
+        seting.setJavaScriptEnabled(true);//是否允许执行js，默认为false。设置true时，会提醒可能造成XSS漏洞
+        seting.setSupportZoom(true);//是否可以缩放，默认true
+        seting.setBuiltInZoomControls(true);//是否显示缩放按钮，默认false
+        seting.setUseWideViewPort(true);//设置此属性，可任意比例缩放。大视图模式
+        seting.setLoadWithOverviewMode(true);//和setUseWideViewPort(true)一起解决网页自适应问题
+        seting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        seting.setAppCacheEnabled(true);//是否使用缓存
+        seting.setDomStorageEnabled(true);//DOM Storage
+        seting.setUseWideViewPort(true); // 关键点
+        seting.setSupportMultipleWindows(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            seting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+
+        WebViewClient webViewClient = new WebViewClient() {
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();  // 接受所有网站的证书
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
+
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                webView.loadUrl(url);
+                return true;//如果这里返回true，B站打不开
+            }
+        };
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (bar != null) {
+                    if (newProgress == 100) {
+                        bar.setVisibility(View.GONE);
+                    } else {
+                        if (bar.getVisibility() == View.GONE) {
+                            bar.setVisibility(View.VISIBLE);
+                        }
+                        bar.setProgress(newProgress);
+                    }
+                }
+            }
+        });
+        webView.setWebViewClient(webViewClient);
+        webView.loadUrl(Constant.PRIMARY_RULE);
+        dialog.setOnBottomItemClickListener(new BottomDialog.OnBottomItemClickListener() {
+            @Override
+            public void onBottomItemClick(BottomDialog dialog, View view) {
+                int id = view.getId();
+                if (id == R.id.tvAgree) {
+                    dialog.dismiss();
+                    checkPermissions();
+                } else if (id == R.id.tvDisagree) {
+                    dialog.dismiss();
+                    finish();
+                }
+            }
+        });
+        dialog.show();
+    }
+
 
 }
