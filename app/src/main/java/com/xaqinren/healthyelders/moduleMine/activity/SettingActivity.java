@@ -21,6 +21,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.tencent.qcloud.ugckit.utils.ScreenUtils;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
+import com.xaqinren.healthyelders.BuildConfig;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -144,6 +145,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                 }
             });
         });
+        binding.versionName.setText(BuildConfig.VERSION_NAME);
     }
 
     private void showClearDialog() {

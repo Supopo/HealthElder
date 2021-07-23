@@ -207,10 +207,13 @@
                         android:textColor="@color/color_252525"
                         android:text="检查更新"/>
                     <TextView
+                        android:id="@+id/version_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_16"
                         android:textColor="@color/color_252525"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="@dimen/dp_3"
                         android:drawableRight="@drawable/arrow_right"
                         />
                 </LinearLayout>
