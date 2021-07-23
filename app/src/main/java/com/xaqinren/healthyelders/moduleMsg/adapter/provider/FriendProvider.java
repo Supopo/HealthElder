@@ -43,21 +43,27 @@ public class FriendProvider<T extends MessageDetailBean> extends BaseItemProvide
         if (friendBean.getIdentity() == null){
             //陌生人
             binding.favorite.setText("分享");
+            binding.favorite.setSelected(true);
         } else if (friendBean.getIdentity().equals(STRANGER)) {
             //陌生人
             binding.favorite.setText("关注");
+            binding.favorite.setSelected(true);
         } else if (friendBean.getIdentity().equals(FANS)) {
             //粉丝
             binding.favorite.setText("回关");
+            binding.favorite.setSelected(true);
         } else if (friendBean.getIdentity().equals(ATTENTION)) {
             //关注的人
             binding.favorite.setText("已关注");
+            binding.favorite.setSelected(false);
         } else if (friendBean.getIdentity().equals(FRIEND)) {
             //朋友
             binding.favorite.setText("互相关注");
+            binding.favorite.setSelected(false);
         } else if (friendBean.getIdentity().equals(FOLLOW)) {
             //关注的人
             binding.favorite.setText("已关注");
+            binding.favorite.setSelected(false);
         }
     }
 }
