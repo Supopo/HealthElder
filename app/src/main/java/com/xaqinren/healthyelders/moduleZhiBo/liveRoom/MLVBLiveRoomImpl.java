@@ -3198,6 +3198,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      */
     @Override
     public void onGroupTextMessage(final String groupID, final String senderID, final String userName, final String headPic, final String message) {
+        //如果要用的话主要加上leaveIcon
         callbackOnThread(mListener, "onRecvRoomTextMsg", groupID, senderID, userName, headPic, message);
     }
 

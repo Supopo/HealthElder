@@ -55,6 +55,8 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.List;
@@ -63,6 +65,9 @@ import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+import me.goldze.mvvmhabit.utils.compression.Luban;
+
+import static com.xaqinren.healthyelders.global.AppApplication.mWXapi;
 
 public class ShareDialog {
     private PopupWindow popupWindow;
@@ -233,6 +238,7 @@ public class ShareDialog {
             shareWebPage(1);
         });
         binding.shareClsLayout.shareWxCircle.setOnClickListener(view -> {
+
             if (!AppApplication.mWXapi.isWXAppInstalled()) {
                 ToastUtil.toastShortMessage("您还未安装微信客户端");
                 return;
@@ -321,10 +327,15 @@ public class ShareDialog {
         msg.title = shareBean.title;
         msg.description = shareBean.subTitle;
 
-        Glide.with(mContext).asBitmap().load(UrlUtils.resetImgUrl(shareBean.coverUrl, 100, 100)).into(new SimpleTarget<Bitmap>() {
+
+        Glide.with(mContext).asBitmap().load(shareBean.coverUrl).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                msg.setThumbImage(resource);
+
+                //限制内容大小不超过 32KB
+                Bitmap bitmap = compressImage(resource);
+
+                msg.setThumbImage(bitmap);
 
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.message = msg;
@@ -341,6 +352,26 @@ public class ShareDialog {
             }
 
         }); //方法中设置asBitmap可以设置回调类型
+    }
+
+    /**
+     * 图片质量压缩方法
+     *
+     * @param image
+     * @return
+     */
+    public Bitmap compressImage(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 30, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 90;
+        while (baos.toByteArray().length / 1024 > 30) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset(); // 重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
+            options -= 10;// 每次都减少10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());// 把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);// 把ByteArrayInputStream数据生成图片
+        return bitmap;
     }
 
 

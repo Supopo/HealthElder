@@ -568,6 +568,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             @Override
             public void onError(int errCode, String e) {
                 dismissDialog();
+                ToastUtil.toastShortMessage("直播间开启失败，请重新尝试");
+                finish();
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + errCode);
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + e);
             }

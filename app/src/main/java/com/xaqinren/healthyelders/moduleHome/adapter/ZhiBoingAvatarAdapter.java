@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleHome.adapter;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import androidx.databinding.DataBindingUtil;
@@ -12,11 +13,14 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemZbingAvatarBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.utils.AnimUtils;
 
 import java.util.List;
 
 
 public class ZhiBoingAvatarAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> implements LoadMoreModule {
+
+
     public ZhiBoingAvatarAdapter(int layoutResId) {
         super(layoutResId);
     }
@@ -31,6 +35,11 @@ public class ZhiBoingAvatarAdapter extends BaseQuickAdapter<VideoInfo, BaseViewH
         ImageView ivBg = helper.getView(R.id.avatarBg);
         AnimationDrawable bgAnim = (AnimationDrawable) ivBg.getBackground();
         bgAnim.start();
+        //头像缩小动画
+        Animation avatarAnim = AnimUtils.getAnimation(getContext(), R.anim.avatar_start_zb);
+        //直播头像动画
+        binding.rlAvatar.clearAnimation();
+        binding.rlAvatar.startAnimation(avatarAnim);
     }
 
 

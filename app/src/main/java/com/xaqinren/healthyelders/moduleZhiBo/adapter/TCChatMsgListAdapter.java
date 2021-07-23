@@ -173,34 +173,18 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             //礼物消息
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorGiftMsg));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
-            if (item.getLeaveName().equals("0")) {
-                holder.llLeave.setVisibility(View.GONE);
-            } else {
-                holder.llLeave.setVisibility(View.VISIBLE);
-                holder.tvLeave.setText(item.getLeaveName());
-                if (TextUtils.isEmpty(item.getLeaveIcon())) {
-                    GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
-                }else {
-                    GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
-                }
-            }
+
+            showLeaveIcon(holder, item);
+
         } else if (item.getType() == LiveConstants.IMCMD_TEXT_MSG) {
             spanString = new SpannableString(item.getSenderName() + ":  " + item.getContent());
             //文字消息
             holder.sendContext.setText(item.getContent());
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorTextMsg));
             holder.sendContext.setText(spanString);
-            if (item.getLeaveName().equals("0")) {
-                holder.llLeave.setVisibility(View.GONE);
-            } else {
-                holder.llLeave.setVisibility(View.VISIBLE);
-                holder.tvLeave.setText(item.getLeaveName());
-                if (TextUtils.isEmpty(item.getLeaveIcon())) {
-                    GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
-                }else {
-                    GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
-                }
-            }
+
+            showLeaveIcon(holder, item);
+
             //设置处理加载聊天表情文字
             FaceManager.handlerZBMsgEmojiText(item.getSenderName().length() + 3, holder.sendContext, holder.sendContext.getText().toString(), false);
         } else {
@@ -210,17 +194,9 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
             spanString.setSpan(spanString, 0, item.getSenderName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.sendContext.setTextColor(mContext.getResources().getColor(R.color.colorSendName8));
             holder.sendContext.setText(item.getSenderName() + "  " + item.getContent());
-            if (item.getLeaveName().equals("0")) {
-                holder.llLeave.setVisibility(View.GONE);
-            } else {
-                holder.llLeave.setVisibility(View.VISIBLE);
-                holder.tvLeave.setText(item.getLeaveName());
-                if (TextUtils.isEmpty(item.getLeaveIcon())) {
-                    GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
-                }else {
-                    GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
-                }
-            }
+
+            showLeaveIcon(holder, item);
+
         }
         holder.sendImg.setVisibility(View.GONE);
 
@@ -228,6 +204,20 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
         //holder.sendContext.fixViewWidth(mListView.getWidth());
 
         return convertView;
+    }
+
+    public void showLeaveIcon(ViewHolder holder, TCChatEntity item) {
+        if (item.getLeaveName().equals("0")) {
+            holder.llLeave.setVisibility(View.GONE);
+        } else {
+            holder.llLeave.setVisibility(View.VISIBLE);
+            holder.tvLeave.setText(item.getLeaveName());
+            if (TextUtils.isEmpty(item.getLeaveIcon())) {
+                GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
+            } else {
+                GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
+            }
+        }
     }
 
 
