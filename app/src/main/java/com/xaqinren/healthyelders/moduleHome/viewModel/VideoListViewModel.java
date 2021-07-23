@@ -28,7 +28,7 @@ public class VideoListViewModel extends BaseViewModel {
     public MutableLiveData<Boolean> closeRsl = new MutableLiveData<>();
 
     //1 从首页直播列表 2 从附近打开 3我的作品 4我的私密 5我的点赞作品
-    public void getVideoData(int page, VideoListBean videoListBean) {
+    public void getVideoData(int page, VideoListBean videoListBean,String userId) {
 
         int type = videoListBean.openType;
         String tags = videoListBean.tags;
@@ -40,9 +40,9 @@ public class VideoListViewModel extends BaseViewModel {
             resourceType = "LIVE,VIDEO,USER_DIARY";
             LiveRepository.getInstance().getHomeVideoList(closeRsl, page, Constant.loadVideoSize, 2, datas, resourceType, tags);
         } else if (type == 3) {
-            UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "");
+            UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "", userId);
         } else if (type == 4) {
-            UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "PRIVATE");
+            UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "PRIVATE", userId);
         } else if (type == 5) {
             UserRepository.getInstance().getMyLikeVideoList(dzDatas, page, Constant.loadVideoSize);
         }

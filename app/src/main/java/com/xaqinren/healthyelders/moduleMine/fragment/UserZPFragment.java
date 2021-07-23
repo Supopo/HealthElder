@@ -90,6 +90,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             if (videoAdapter.getData().get(position).isArticle()) {
                 Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).resourceId);
+                intent.putExtra("userId", userId);
                 startActivity(intent);
                 return;
             }
@@ -128,6 +129,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
 
             bundle.putSerializable("key", listBean);
             bundle.putSerializable("openType", 1);
+            bundle.putString("userId", userId);
             startActivity(VideoListActivity.class, bundle);
 
         }));

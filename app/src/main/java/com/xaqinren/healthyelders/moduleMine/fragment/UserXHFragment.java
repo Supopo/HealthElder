@@ -87,6 +87,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             if (videoAdapter.getData().get(position).homeComprehensiveHall.isArticle()) {
                 Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).homeComprehensiveHall.resourceId);
+                intent.putExtra("userId", userId);
                 startActivity(intent);
                 return;
             }
@@ -117,6 +118,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             listBean.openType = 5;
 
             bundle.putSerializable("key", listBean);
+            bundle.putString("userId", userId);
             startActivity(VideoListActivity.class, bundle);
 
         }));

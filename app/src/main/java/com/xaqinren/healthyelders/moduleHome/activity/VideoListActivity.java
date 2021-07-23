@@ -51,6 +51,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     private boolean isMineOpen;
     private int openType;//打开方式 1 从某个用户作品列表打开 2私密作品 3赞过
     private long timeTag;
+    private String userId;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -73,6 +74,8 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         isMineOpen = bundle.getBoolean(Constant.MINE_OPEN, false);
         openType = bundle.getInt("openType", 0);
+
+        userId = bundle.getString("userId", "");
 
         //1-从首页直播列表打开 2-从附近（首页菜单视频页面）打开 3 我的-作品 4 我的-私密 5 我的-点赞
         if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5) {
@@ -135,7 +138,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             }, 500);
         } else if (videos.openType == 1) {
             //请求数据  推荐打开 主播列表
-            viewModel.getVideoData(page, videos);
+            viewModel.getVideoData(page, videos , userId);
         }
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -156,7 +159,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                 if ((position + 2) == fragmentList.size()) {
                     //加载更多数据
                     page++;
-                    viewModel.getVideoData(page, videos);
+                    viewModel.getVideoData(page, videos ,userId);
                 }
 
                 lastPos = position;
@@ -182,7 +185,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
     public void refreshData() {
         page = 1;
         binding.srl.setRefreshing(false);
-        viewModel.getVideoData(page, videos);
+        viewModel.getVideoData(page, videos ,userId);
     }
 
     private boolean needRefreshData;

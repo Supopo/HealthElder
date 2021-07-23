@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FramentAttentionBinding;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
@@ -30,6 +31,8 @@ import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.Utils;
 
 /**
  *
@@ -73,7 +76,14 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     @Override
     public void initData() {
         super.initData();
-        adapter = new AttentionAdapter(R.layout.item_attention, type == 1 ? true : false);
+        String mUid = UserInfoMgr.getInstance().getUserInfo().getId();
+        boolean showClose = type == 1 ? true : false;
+        boolean isMe = false;
+        if (StringUtils.isEmpty(uid) || uid.equals(mUid)) {
+            isMe = true;
+        }
+
+        adapter = new AttentionAdapter(R.layout.item_attention, showClose && isMe);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         adapter.setEmptyView(R.layout.list_empty);
