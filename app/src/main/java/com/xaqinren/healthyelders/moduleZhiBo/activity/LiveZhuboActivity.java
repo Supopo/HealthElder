@@ -764,7 +764,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         TCChatEntity entity = new TCChatEntity();
         entity.setSenderName("我 ");
         entity.setContent(msg);
-        entity.setLeaveName(UserInfoMgr.getInstance().getUserInfo().getLevelName());
+        entity.setLevelIcon(UserInfoMgr.getInstance().getUserInfo().getLevelIcon());
+        entity.setLevelName(UserInfoMgr.getInstance().getUserInfo().getLevelName());
         entity.setType(LiveConstants.IMCMD_TEXT_MSG);
         notifyMsg(entity);
         mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_TEXT_MSG), msg, null);
@@ -781,7 +782,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
         text = SensitiveWordsUtils.replaceSensitiveWord(text, "***");
         entity.setUserId(userInfo.userid);
-        entity.setLeaveName(userInfo.leaveName);
+        entity.setLevelName(userInfo.leaveName);
         entity.setContent(text);
         entity.setType(type);
 
@@ -1774,6 +1775,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         super.initViewObservable();
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             switch (eventBean.msgId) {
+                case CodeTable.IM_LOGIN_SUCCESS:
+                    if (!isPlaying) {
+                        showDialog("创建直播间...");
+                        //开启推流
+                        startPublish();
+                    }
+                    break;
+
                 case Constant.NET_SPEED:
                     if (eventBean.msgType == 1) {
                         binding.tvNet.setText("网络良好");

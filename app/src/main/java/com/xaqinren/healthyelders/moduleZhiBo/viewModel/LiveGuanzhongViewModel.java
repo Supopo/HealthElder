@@ -17,7 +17,6 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
-import com.xaqinren.healthyelders.utils.LogUtils;
 
 import java.util.List;
 
@@ -57,13 +56,15 @@ public class LiveGuanzhongViewModel extends BaseViewModel {
         loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         loginInfo.userLevel = userInfo.getLevelName();
-        loginInfo.userLevelIcon = userInfo.getIcon();
+        loginInfo.userLevelIcon = userInfo.getLevelIcon();
 
         mLiveRoom.login(false, loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 Log.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
                 Log.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errInfo);
+                //登陆失败操作
+                UserRepository.getInstance().getUserSig(UserInfoMgr.getInstance().getHttpToken());
             }
 
             @Override

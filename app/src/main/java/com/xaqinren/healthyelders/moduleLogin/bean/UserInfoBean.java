@@ -36,11 +36,11 @@ public class UserInfoBean implements Serializable {
     private int attentionCount;
     private MenuBean menu;
 
-    public String getIcon() {
+    public String getLevelIcon() {
         return levelIcon;
     }
 
-    public void setIcon(String icon) {
+    public void setLevelIcon(String icon) {
         this.levelIcon = icon;
     }
 

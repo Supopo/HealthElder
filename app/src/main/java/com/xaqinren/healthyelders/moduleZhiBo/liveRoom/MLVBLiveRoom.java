@@ -430,6 +430,8 @@ public abstract class MLVBLiveRoom {
 
     /// @name 摄像头相关接口函数
     /// @{
+    public abstract void setRenderMode(int mode);
+
 
     /**
      * 切换摄像头

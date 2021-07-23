@@ -116,7 +116,7 @@ public class NativeDialog {
 
     public void setSingleConfirm(boolean singleConfirm) {
         this.singleConfirm = singleConfirm;
-        if (singleConfirm) {
+        if (!singleConfirm) {
             leftBtn.setVisibility(View.GONE);
             bottomLine.setVisibility(View.GONE);
         }else{

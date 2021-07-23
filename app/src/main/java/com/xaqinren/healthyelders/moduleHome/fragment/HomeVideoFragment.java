@@ -546,6 +546,47 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             firstLikeTime = secondTime;
         });
 
+        binding.authorTextView.setOnClickListener(lis -> {
+            if (AppApplication.isToLogin()) {
+                return;
+            }
+
+            //如果视频从我的页面列表打开，切该视频是自己发的 不用跳页
+            if (videoOpenType != 0 && videoInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                //通知前一页关闭
+                RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "video-list"));
+                return;
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", videoInfo.userId);
+            startActivity(UserInfoActivity.class, bundle);
+
+
+        });
+
+
+        binding.authorTextView2.setOnClickListener(lis -> {
+            if (AppApplication.isToLogin()) {
+                return;
+            }
+
+            //如果视频从我的页面列表打开，切该视频是自己发的 不用跳页
+            if (videoOpenType != 0 && videoInfo.userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                //通知前一页关闭
+                RxBus.getDefault().post(new EventBean(CodeTable.FINISH_ACT, "video-list"));
+                return;
+            }
+
+
+            //判断如果开着直播去直播间
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", videoInfo.userId);
+            startActivity(UserInfoActivity.class, bundle);
+
+        });
+
+
         binding.avatarImageView.setOnClickListener(lis -> {
             if (AppApplication.isToLogin()) {
                 return;

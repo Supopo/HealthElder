@@ -1,12 +1,12 @@
 package com.xaqinren.healthyelders.moduleZhiBo.viewModel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -14,15 +14,12 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.IMLVBLiveRoomListener;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.AnchorInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -58,7 +55,7 @@ public class LiveZhuboViewModel extends BaseViewModel {
         //3887
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         loginInfo.userLevel = userInfo.getLevelName();
-        loginInfo.userLevelIcon = userInfo.getIcon();
+        loginInfo.userLevelIcon = userInfo.getLevelIcon();
 
         //4545
         //        loginInfo.userSig = "eJw1jl0LgjAYhf-Lbg3b3s1tCl0GFoKI4UV0I23GW5YyJY3ovydal*fjOZw3OSS5b8cWnSURSKUFpavZfFpHIgI*JYvuzK1sWzQkYlOHhyCpWhI09tFjhTPAuJagBedKCBUoJgL5H8DLlB-TrbuWYTDkXTo0XjHGtD6tsXbsldEz7eKs8sTOmaTYN5sf2eN9esckUNAAQn**VREzgA__";
@@ -67,6 +64,8 @@ public class LiveZhuboViewModel extends BaseViewModel {
             public void onError(int errCode, String errInfo) {
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "LiveRoom登录失败：" + errInfo);
+                //登陆失败操作
+                UserRepository.getInstance().getUserSig(UserInfoMgr.getInstance().getHttpToken());
             }
 
             @Override

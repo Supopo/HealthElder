@@ -4,12 +4,9 @@ package com.xaqinren.healthyelders.moduleZhiBo.adapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,15 +204,15 @@ public class TCChatMsgListAdapter extends BaseAdapter implements AbsListView.OnS
     }
 
     public void showLeaveIcon(ViewHolder holder, TCChatEntity item) {
-        if (item.getLeaveName().equals("0")) {
+        if (item.getLevelName().equals("0")) {
             holder.llLeave.setVisibility(View.GONE);
         } else {
             holder.llLeave.setVisibility(View.VISIBLE);
-            holder.tvLeave.setText(item.getLeaveName());
-            if (TextUtils.isEmpty(item.getLeaveIcon())) {
+            holder.tvLeave.setText(item.getLevelName());
+            if (TextUtils.isEmpty(item.getLevelIcon())) {
                 GlideUtil.intoImageView(mContext, R.mipmap.icon_dj_def, holder.ivLeave);
             } else {
-                GlideUtil.intoImageView(mContext, item.getLeaveIcon(), holder.ivLeave);
+                GlideUtil.intoImageView(mContext, item.getLevelIcon(), holder.ivLeave);
             }
         }
     }

@@ -101,7 +101,7 @@ public class JSCommModule extends UniModule {
     }
 
     @UniJSMethod(uiThread = true)
-    public void openCity(UniJSCallback callback) {
+    public void searchLocation(JSONObject options,UniJSCallback callback) {
         this.callback = callback;
         Activity context = (Activity) mUniSDKInstance.getContext();//DCUniMPActivity
         LogUtils.e(TAG, context.toString());
@@ -118,7 +118,7 @@ public class JSCommModule extends UniModule {
     }
     //银行卡识别
     @UniJSMethod(uiThread = true)
-    public void openCameraRecognize(JSONObject options, UniJSCallback callback) {
+    public void startRecognize(JSONObject options, UniJSCallback callback) {
         this.callback = callback;
         maskType = options.getString("maskType");
         initAccessToken();
@@ -273,7 +273,7 @@ public class JSCommModule extends UniModule {
 
     NativeDialog nativeDialog;
     @UniJSMethod(uiThread = true)
-    public void showModal(JSONObject options, UniJSCallback jsCallback, UniJSCallback cancelCallback) {
+    public void showModal(JSONObject options, UniJSCallback jsCallback) {
 
         if (nativeDialog == null) {
             nativeDialog = new NativeDialog(mUniSDKInstance.getContext());
@@ -287,33 +287,33 @@ public class JSCommModule extends UniModule {
             nativeDialog.setColorTitle(titleColor);
         }
 
-        if (options.containsKey("con")){
-            String con = options.getString("con");
-            nativeDialog.setMessageText(con);
+        if (options.containsKey("content")){
+            String content = options.getString("content");
+            nativeDialog.setMessageText(content);
         }
-        if (options.containsKey("conColor")){
-            String conColor = options.getString("conColor");
-            nativeDialog.setColorMessage(conColor);
-        }
-
-        if (options.containsKey("okTitle")){
-            String okTitle = options.getString("okTitle");
-            nativeDialog.setRightBtnText(okTitle);
+        if (options.containsKey("contentColor")){
+            String contentColor = options.getString("contentColor");
+            nativeDialog.setColorMessage(contentColor);
         }
 
-        if (options.containsKey("okTextColor")){
-            String okTextColor = options.getString("okTextColor");
-            nativeDialog.setColorConfirm(okTextColor);
+        if (options.containsKey("confirmTitle")){
+            String confirmTitle = options.getString("confirmTitle");
+            nativeDialog.setRightBtnText(confirmTitle);
         }
 
-        if (options.containsKey("okTextColor")){
-            String cancleTitle = options.getString("cancleTitle");
-            nativeDialog.setLeftBtnText(cancleTitle);
+        if (options.containsKey("confirmColor")){
+            String confirmColor = options.getString("confirmColor");
+            nativeDialog.setColorConfirm(confirmColor);
         }
 
-        if (options.containsKey("cancleTextColor")){
-            String cancleTextColor = options.getString("cancleTextColor");
-            nativeDialog.setColorCancel(cancleTextColor);
+        if (options.containsKey("cancelTitle")){
+            String cancelTitle = options.getString("cancelTitle");
+            nativeDialog.setLeftBtnText(cancelTitle);
+        }
+
+        if (options.containsKey("cancelColor")){
+            String cancelColor = options.getString("cancelColor");
+            nativeDialog.setColorCancel(cancelColor);
         }
 
 
@@ -334,8 +334,9 @@ public class JSCommModule extends UniModule {
         }
 
         nativeDialog.showDialog();
+        //取消
         nativeDialog.setLeftBtnClickListener(v -> {
-            cancelCallback.invoke(false);
+            jsCallback.invoke(false);
             nativeDialog.dismissDialog();
         });
         nativeDialog.setRightBtnClickListener(v -> {

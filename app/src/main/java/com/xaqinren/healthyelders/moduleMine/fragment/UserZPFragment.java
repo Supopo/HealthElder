@@ -125,7 +125,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             } else {
                 listBean.page = (listBean.videoInfos.size() / 2) + 1;
             }
-            listBean.openType = 3;
+            listBean.openType = 6;//别人的作品
 
             bundle.putSerializable("key", listBean);
             bundle.putSerializable("openType", 1);

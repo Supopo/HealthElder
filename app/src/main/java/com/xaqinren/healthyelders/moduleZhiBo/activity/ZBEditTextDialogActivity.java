@@ -247,7 +247,7 @@ public class ZBEditTextDialogActivity extends Activity {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
                 if (type == 0) {
-                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString()));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString(),System.currentTimeMillis()));
                 } else if (type == 1) {
                     RxBus.getDefault().post(new EventBean(LiveConstants.SEND_WORD, etView.getText().toString()));
                 }

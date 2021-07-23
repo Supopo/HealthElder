@@ -497,8 +497,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     mSelfPushUrl = data.pushURL;
                     mSelfAccelerateURL = data.accelerateURL;
                     LogUtils.v(Constant.TAG_LIVE, "主播自己的加速流：" + mSelfAccelerateURL);
-                    //3.开始推流  设置分辨率 画面质量
-                    startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_SUPER_DEFINITION, new StandardCallback() {
+                    //3.开始推流  设置分辨率 画面质量。默认高清，超清连麦时候容易断。
+                    startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
                         @Override
                         public void onError(int errCode, String errInfo) {
                             callbackOnThread(callback, "onError", errCode, errInfo);
@@ -600,7 +600,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         //1. 在应用层调用startLocalPreview，启动本地预览
         //2. 请求CGI:get_push_url，异步获取到推流地址pushUrl(此处已经省略)
         //3. 开始推流
-        startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_SUPER_DEFINITION, new StandardCallback() {
+        startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 callbackOnThread(callback, "onError", errCode, errInfo);
@@ -1867,6 +1867,13 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
     public void setResume() {
         if (mTXLivePlayer != null) {
             mTXLivePlayer.resume();
+        }
+    }
+
+    @Override
+    public void setRenderMode(int mode) {
+        if (mTXLivePlayer != null) {
+            mTXLivePlayer.setRenderMode(mode);
         }
     }
 
@@ -3574,11 +3581,11 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
                 int subWidth = 160;
                 int subHeight = 240;
-                int offsetHeight = 90;
+                int offsetHeight = 20;
                 if (mMainStreamWidth < 540 || mMainStreamHeight < 960) {
                     subWidth = 120;
                     subHeight = 180;
-                    offsetHeight = 60;
+                    offsetHeight = 20;
                 }
                 int subLocationX = mMainStreamWidth - subWidth;
                 int subLocationY = mMainStreamHeight - subHeight - offsetHeight;

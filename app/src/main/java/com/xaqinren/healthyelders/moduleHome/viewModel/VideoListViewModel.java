@@ -45,6 +45,11 @@ public class VideoListViewModel extends BaseViewModel {
             UserRepository.getInstance().getMyVideoList(dismissDialog, datas, page, Constant.loadVideoSize, "PRIVATE", userId);
         } else if (type == 5) {
             UserRepository.getInstance().getMyLikeVideoList(dzDatas, page, Constant.loadVideoSize);
+        }else if (type == 6) {
+            UserRepository.getInstance().getMyVideoList(dismissDialog,datas, page, Constant.loadVideoSize, "", userId);
+        }else if (type == 7) {
+            UserRepository.getInstance().getMyLikeVideoList(dzDatas, page, Constant.loadVideoSize, userId);
+
         }
 
     }

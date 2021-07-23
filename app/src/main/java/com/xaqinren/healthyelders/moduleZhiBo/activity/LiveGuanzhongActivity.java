@@ -534,6 +534,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 dismissDialog();
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间失败：" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "加入直播间失败：" + errInfo);
+                ToastUtil.toastShortMessage("加入直播间失败，请重新进入");
+                finish();
             }
 
             @Override
@@ -570,7 +572,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
         //RENDER_MODE_ADJUST_RESOLUTION 将图像等比例缩放，适配最长边，缩放后的宽和高都不会超过显示区域，居中显示，画面可能会留有黑边。
         txLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
-
         //RENDER_ROTATION_PORTRAIT 正常播放（Home 键在画面正下方）
         //RENDER_ROTATION_LANDSCAPE 画面顺时针旋转 270 度（Home 键在画面正左方）
         txLivePlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
@@ -662,7 +663,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     private void addMsg2List(String sendName, String msg, int type) {
         TCChatEntity entity = new TCChatEntity();
-        entity.setLeaveName(UserInfoMgr.getInstance().getUserInfo().getLevelName());
+        entity.setLevelIcon(UserInfoMgr.getInstance().getUserInfo().getLevelIcon());
+        entity.setLevelName(UserInfoMgr.getInstance().getUserInfo().getLevelName());
         entity.setSenderName(sendName);
         entity.setContent(msg);
         entity.setType(type);
@@ -1113,7 +1115,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         }
         entity.setUserId(userInfo.userid);
-        entity.setLeaveName(userInfo.leaveName);
+        entity.setLevelName(userInfo.leaveName);
         entity.setContent(text);
         entity.setType(type);
         notifyMsg(entity);
@@ -1596,6 +1598,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             @Override
             public void onAnimationEnd(Animation animation) {
                 binding.rvMoreLink.setVisibility(View.VISIBLE);
+                //                mLiveRoom.setRenderMode(TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION);
             }
 
             @Override
@@ -1616,6 +1619,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         binding.mTxVideoView.clearAnimation();
         binding.mTxVideoView.setAnimation(animation2);
+        //        mLiveRoom.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
         binding.rvMoreLink.setVisibility(View.INVISIBLE);
     }
 
@@ -1882,6 +1886,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     private boolean isFirst = true;
     private boolean needToLink = false;//判断是否连麦中闪退
+    private long lastMsgTime;
+    private String lastMsg;
 
     @Override
     public void initViewObservable() {
@@ -1889,7 +1895,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
+                //防止重复发送
+                if (eventBean.time - lastMsgTime < 200 && lastMsg.equals(eventBean.content)) {
+                    return;
+                }
                 toSendTextMsg(eventBean.content);
+                lastMsgTime = eventBean.time;
+                lastMsg = eventBean.content;
             } else if (eventBean.msgId == CodeTable.ZHJ_SEND_GIFT) {
                 selectGift = (GiftBean) eventBean.data;
                 //发送礼物-接口请求
@@ -1905,6 +1917,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 ViewGroup.LayoutParams params = binding.view.getLayoutParams();
                 params.height = 0;
                 binding.view.setLayoutParams(params);
+            } else if (eventBean.msgId == CodeTable.IM_LOGIN_SUCCESS) {
+                if (!isPlaying) {
+                    startPlay();
+                    toRushLiveInfo();
+                }
+
             }
         });
         RxSubscriptions.add(disposable);

@@ -115,7 +115,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             } else {
                 listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
             }
-            listBean.openType = 5;
+            listBean.openType = 7;//别人的点赞
 
             bundle.putSerializable("key", listBean);
             bundle.putString("userId", userId);

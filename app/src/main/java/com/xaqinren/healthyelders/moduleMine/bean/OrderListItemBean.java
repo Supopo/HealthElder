@@ -9,6 +9,8 @@ public class OrderListItemBean {
     private Integer itemNumber;
     private Double itemPrice;
     private Double itemSalesPrice;
+    private String refundStatus;
+    private String refundStatusName;
 
     public String getCommodityId() {
         return commodityId;

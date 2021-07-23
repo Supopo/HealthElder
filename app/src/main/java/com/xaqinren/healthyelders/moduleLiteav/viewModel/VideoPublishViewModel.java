@@ -2,20 +2,13 @@ package com.xaqinren.healthyelders.moduleLiteav.viewModel;
 
 import android.app.Application;
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.tencent.qcloud.ugckit.UGCKit;
-import com.tencent.qcloud.ugckit.UGCKitConstants;
-import com.tencent.qcloud.ugckit.utils.BackgroundTasks;
 import com.tencent.qcloud.ugckit.utils.LogReport;
-import com.tencent.qcloud.ugckit.utils.NetworkUtil;
 import com.tencent.qcloud.ugckit.utils.TCUserMgr;
 import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
-import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
@@ -28,12 +21,6 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoom;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
 
-import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -94,7 +81,7 @@ public class VideoPublishViewModel extends BaseViewModel {
         loginInfo.userID = userInfo.getId();
         loginInfo.userSig = UserInfoMgr.getInstance().getUserSig();
         loginInfo.userLevel = userInfo.getLevelName();
-        loginInfo.userLevelIcon = userInfo.getIcon();
+        loginInfo.userLevelIcon = userInfo.getLevelIcon();
 
         mLiveRoom.login(false,loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override

@@ -10,8 +10,8 @@ public class OrderListBean {
     private String orderNo;
     private String distributionChannel;
     private Double commodityTotalAmount;
-    private Integer couponDiscountAmount;
-    private Integer vipDiscountAmount;
+    private Double couponDiscountAmount;
+    private Double vipDiscountAmount;
     private Double receivableAmount;
     private Double payableAmount;
     private Double receiptsAmount;
@@ -106,19 +106,19 @@ public class OrderListBean {
         this.commodityTotalAmount = commodityTotalAmount;
     }
 
-    public Integer getCouponDiscountAmount() {
+    public Double getCouponDiscountAmount() {
         return couponDiscountAmount;
     }
 
-    public void setCouponDiscountAmount(Integer couponDiscountAmount) {
+    public void setCouponDiscountAmount(Double couponDiscountAmount) {
         this.couponDiscountAmount = couponDiscountAmount;
     }
 
-    public Integer getVipDiscountAmount() {
+    public Double getVipDiscountAmount() {
         return vipDiscountAmount;
     }
 
-    public void setVipDiscountAmount(Integer vipDiscountAmount) {
+    public void setVipDiscountAmount(Double vipDiscountAmount) {
         this.vipDiscountAmount = vipDiscountAmount;
     }
 
