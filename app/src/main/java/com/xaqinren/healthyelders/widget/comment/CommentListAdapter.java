@@ -25,9 +25,17 @@ import java.util.List;
 public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, CommentListAdapter.ViewHolder> implements LoadMoreModule {
     private OnChildLoadMoreCommentListener loadMoreCommentListener;
     private OnOperationItemClickListener operationItemClickListener;
+    private int type;//0视频 1图文
 
     public CommentListAdapter(int layoutResId, OnChildLoadMoreCommentListener loadMoreCommentListener, OnOperationItemClickListener operationItemClickListener) {
         super(layoutResId);
+        this.loadMoreCommentListener = loadMoreCommentListener;
+        this.operationItemClickListener = operationItemClickListener;
+    }
+
+    public CommentListAdapter(int type, int layoutResId, OnChildLoadMoreCommentListener loadMoreCommentListener, OnOperationItemClickListener operationItemClickListener) {
+        super(layoutResId);
+        this.type = type;
         this.loadMoreCommentListener = loadMoreCommentListener;
         this.operationItemClickListener = operationItemClickListener;
     }
@@ -45,9 +53,17 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
             iCommentBean.allReply = new ArrayList<>();
         }
 
-        if (iCommentBean.shortVideoCommentReplyList == null) {
-            iCommentBean.shortVideoCommentReplyList = new ArrayList<>();
+
+        if (type == 1) {
+            if (iCommentBean.userDiaryCommentReplyList == null) {
+                iCommentBean.userDiaryCommentReplyList = new ArrayList<>();
+            }
+        } else {
+            if (iCommentBean.shortVideoCommentReplyList == null) {
+                iCommentBean.shortVideoCommentReplyList = new ArrayList<>();
+            }
         }
+
         if (iCommentBean.mReplyList == null) {
             iCommentBean.mReplyList = new ArrayList<>();
         }
@@ -81,13 +97,14 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
 
 
         iCommentBean.allReply.clear();
-        iCommentBean.allReply.addAll(iCommentBean.shortVideoCommentReplyList);
+        iCommentBean.allReply.addAll(type == 1 ? iCommentBean.userDiaryCommentReplyList : iCommentBean.shortVideoCommentReplyList);
         iCommentBean.allReply.addAll(iCommentBean.replyList);
         baseViewHolder.commentChildAdapter.setList(iCommentBean.allReply);
 
 
         //必须大于等于0 否则第一条评论的回复是作者的话不行
-        if (iCommentBean.commentCount - iCommentBean.shortVideoCommentReplyList.size() >= 0 || iCommentBean.lodaState == 1) {
+        List<CommentListBean> temp = type == 1 ? iCommentBean.userDiaryCommentReplyList : iCommentBean.shortVideoCommentReplyList;
+        if (iCommentBean.commentCount - temp.size() >= 0 || iCommentBean.lodaState == 1) {
 
 
             //增加一个加载更多底部
@@ -111,7 +128,7 @@ public class CommentListAdapter extends BaseQuickAdapter<CommentListBean, Commen
                             //收起
                             iCommentBean.replyList.clear();
                             iCommentBean.allReply.clear();
-                            iCommentBean.allReply.addAll(iCommentBean.shortVideoCommentReplyList);
+                            iCommentBean.allReply.addAll(type == 1 ? iCommentBean.userDiaryCommentReplyList : iCommentBean.shortVideoCommentReplyList);
                             baseViewHolder.commentChildAdapter.setList(iCommentBean.allReply);
                             loadMoreCommentListener.onPackUp(baseViewHolder.getAdapterPosition(), iCommentBean, baseViewHolder.page, baseViewHolder.pageSize);
                             notifyItemChanged(baseViewHolder.getAdapterPosition());

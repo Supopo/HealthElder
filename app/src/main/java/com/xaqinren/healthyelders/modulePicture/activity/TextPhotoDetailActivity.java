@@ -111,7 +111,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         rlTitle.setVisibility(View.GONE);
         View headerBanner = View.inflate(this, R.layout.header_text_photo_banner, null);
         View headerText = View.inflate(this, R.layout.header_text_photo_text, null);
-        commentAdapter = new CommentListAdapter(R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
+        commentAdapter = new CommentListAdapter(1,R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
             public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {
                 iCommentBean.parentPos = position;
@@ -331,7 +331,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                             replyDatas.replyList);
 
                     commentAdapter.getData().get(position)
-                            .shortVideoCommentReplyList.removeAll(commentAdapter.getData().get(position).mReplyList);
+                            .userDiaryCommentReplyList.removeAll(commentAdapter.getData().get(position).mReplyList);
 
                     commentAdapter.notifyItemChanged(replyDatas.parentPos);
                 }
@@ -512,7 +512,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         int position = commentListBean.parentPos - 1;
         CommentListBean adapterCommentBean = commentAdapter.getData().get(position);
 
-        adapterCommentBean.shortVideoCommentReplyList.add(0, commentListBean);
+        adapterCommentBean.userDiaryCommentReplyList.add(0, commentListBean);
         adapterCommentBean.mReplyList.add(commentListBean);
         adapterCommentBean.commentCount++;
         adapterCommentBean.lodaState = 1;//展示  展开回复
