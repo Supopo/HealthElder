@@ -22,8 +22,7 @@
             android:scaleType="center"
             android:src="@mipmap/quanp_zhez"
             app:qmui_border_color="@color/transparent"
-            app:qmui_corner_radius="@dimen/dp_4"
-            app:url="@{viewModel.homeComprehensiveHall.coverUrl}" />
+            app:qmui_corner_radius="@dimen/dp_4" />
 
 
         <LinearLayout

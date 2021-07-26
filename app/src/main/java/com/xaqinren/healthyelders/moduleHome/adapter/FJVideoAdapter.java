@@ -46,6 +46,7 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
             int picHeight = Integer.parseInt(UrlUtils.getUrlQueryByTag(item.coverUrl, "h"));
             //计算新高度
             int newHeight = itemWidth * 280 / 186;
+            GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 600, 600), binding.ivCover, R.mipmap.bg_video);
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rlItem.getLayoutParams();
             params.height = newHeight;
@@ -60,11 +61,10 @@ public class FJVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         }
 
 
-        GlideUtil.intoImageView(getContext(), item.coverUrl, binding.ivCover);
 
         if (TextUtils.isEmpty(item.title)) {
             helper.setGone(R.id.tv_title, true);
-        }else {
+        } else {
             helper.setGone(R.id.tv_title, false);
         }
 

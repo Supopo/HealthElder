@@ -15,6 +15,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemFjVideoBinding;
 import com.xaqinren.healthyelders.databinding.ItemGridVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 
@@ -45,6 +46,7 @@ public class GridVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder
         //瀑布流图片的宽度
         int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_3)) / 2;
 
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 600, 600), binding.ivCover, R.mipmap.bg_video);
         binding.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         //图片真是宽高

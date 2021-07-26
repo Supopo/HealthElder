@@ -16,6 +16,7 @@ import com.xaqinren.healthyelders.databinding.ItemMallGoodBinding;
 import com.xaqinren.healthyelders.databinding.ItemMallHotBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
@@ -58,6 +59,8 @@ public class MallGoodsAdapter extends BaseQuickAdapter<GoodsBean, BaseViewHolder
             lp.setMargins(0, 0, 0, 0);
         }
         binding.llItem.setLayoutParams(lp);
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.imageUrl, 400, 400), binding.ivCover, R.mipmap.bg_video);
+
     }
 
     //局部刷新用的

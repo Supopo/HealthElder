@@ -20,8 +20,7 @@
             android:layout_height="@dimen/dp_151"
             android:scaleType="center"
             app:qmui_border_color="@color/transparent"
-            app:qmui_corner_radius="@dimen/dp_4"
-            app:url="@{viewModel.coverUrl}" />
+            app:qmui_corner_radius="@dimen/dp_4" />
 
         <LinearLayout
             android:layout_width="@dimen/dp_30"

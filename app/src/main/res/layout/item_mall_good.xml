@@ -27,8 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_100"
             android:background="@color/color_EAEAEA"
-            android:scaleType="centerCrop"
-            app:url="@{viewModel.imageUrl}" />
+            android:scaleType="centerCrop" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -5,9 +5,12 @@ import androidx.databinding.DataBindingUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemMineDzVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
+import com.xaqinren.healthyelders.utils.GlideUtil;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
 
@@ -24,6 +27,8 @@ public class DZVideoAdapter extends BaseQuickAdapter<DZVideoInfo, BaseViewHolder
         ItemMineDzVideoBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.homeComprehensiveHall.coverUrl, 400, 400), binding
+                .ivVideo, R.mipmap.bg_video);
     }
 
     //局部刷新用的

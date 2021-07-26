@@ -27,6 +27,7 @@ public class SearchZhiboAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
         ItemSearchZbBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 1000, 1000), binding.rivCover, R.mipmap.bg_video);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rivCover.getLayoutParams();
 
@@ -44,6 +45,6 @@ public class SearchZhiboAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
             e.printStackTrace();
         }
 
-        GlideUtil.intoImageView(getContext(), item.coverUrl, binding.rivCover);
+
     }
 }

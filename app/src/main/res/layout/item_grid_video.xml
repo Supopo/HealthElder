@@ -42,7 +42,7 @@
                 android:id="@+id/iv_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:url="@{viewModel.coverUrl}" />
+                />
 
             <ImageView
                 android:layout_width="@dimen/dp_22"
@@ -62,7 +62,7 @@
                 android:background="@drawable/btn_2top"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/dp_6"
-                android:visibility="@{viewModel.hasLive?View.VISIBLE:View.GONE}">
+                android:visibility="@{viewModel.getVideoType() == 2?View.VISIBLE:View.GONE}">
 
                 <ImageView
                     android:layout_width="@dimen/dp_6"

@@ -13,6 +13,8 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemSearchGoodsBinding;
 import com.xaqinren.healthyelders.databinding.ItemSearchVideoBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.utils.GlideUtil;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 
 public class SearchGoodsAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> implements LoadMoreModule {
@@ -28,6 +30,7 @@ public class SearchGoodsAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
         ItemSearchGoodsBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 600, 600), binding.ivCover, R.mipmap.bg_video);
 
         int screenWidth = ScreenUtil.getScreenWidth(getContext());
         //瀑布流图片的宽度

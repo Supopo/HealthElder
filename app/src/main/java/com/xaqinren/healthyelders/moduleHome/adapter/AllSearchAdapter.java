@@ -43,6 +43,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
         if (videoInfo.getItemType() == 0 || videoInfo.getItemType() == 4) {
             ItemAllSearchArticleBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             binding.setViewModel(videoInfo);
+            GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(videoInfo.coverUrl, 600, 600), binding.rivCover, R.mipmap.bg_video);
 
             if (videoInfo.hasFavorite) {
                 GlideUtil.intoImageView(getContext(), R.mipmap.icon_zan_gray_1, binding.ivZan);
@@ -86,6 +87,7 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
         } else if (videoInfo.getItemType() == 2) {
             ItemAllSearchGoodsBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             binding.setViewModel(videoInfo);
+            GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(videoInfo.coverUrl, 900, 900), binding.ivCover, R.mipmap.bg_video);
 
             //计算View宽度
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.ivCover.getLayoutParams();
@@ -97,6 +99,8 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
         } else if (videoInfo.getItemType() == 3) {
             ItemSearchZbBinding binding = DataBindingUtil.bind(baseViewHolder.itemView);
             binding.setViewModel(videoInfo);
+            GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(videoInfo.coverUrl, 1000, 1000), binding.rivCover, R.mipmap.bg_video);
+            //            GlideUtil.intoImageView(getContext(), videoInfo.coverUrl, binding.rivCover, R.drawable.bg_edit_zb);
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.rivCover.getLayoutParams();
             int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_103));
@@ -116,7 +120,6 @@ public class AllSearchAdapter extends BaseMultiItemQuickAdapter<VideoInfo, BaseV
             params.height = newHeight;
             binding.rivCover.setLayoutParams(params);
 
-            GlideUtil.intoImageView(getContext(), videoInfo.coverUrl, binding.rivCover, R.drawable.bg_edit_zb);
         }
 
     }

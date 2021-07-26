@@ -35,6 +35,7 @@ public class SearchVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
         ItemSearchVideoBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 600, 600), binding.ivCover, R.mipmap.bg_video);
 
 
         if (item.hasFavorite) {
@@ -68,7 +69,6 @@ public class SearchVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHold
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        GlideUtil.intoImageView(getContext(), item.coverUrl, binding.ivCover);
 
         //判断前两个距离顶部
         if (helper.getLayoutPosition() == 0 || helper.getLayoutPosition() == 1) {

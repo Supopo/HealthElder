@@ -26,8 +26,7 @@
             android:id="@+id/iv_cover"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            app:url="@{viewModel.coverUrl}" />
+            android:scaleType="centerCrop" />
 
         <TextView
             android:layout_width="match_parent"

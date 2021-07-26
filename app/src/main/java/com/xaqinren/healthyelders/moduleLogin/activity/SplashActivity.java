@@ -178,8 +178,12 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
                             toNext();
                         }
                     } else {
-                        finish();
                         ToastUtils.showShort("访问权限已拒绝");
+                        //暂时不让退出，直接进入
+                        hasParm = true;
+                        if (canNext) {
+                            toNext();
+                        }
                     }
 
                 });
