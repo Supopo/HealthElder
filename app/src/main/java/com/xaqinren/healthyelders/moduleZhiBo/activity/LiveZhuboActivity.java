@@ -57,6 +57,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
@@ -208,6 +209,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         showDialog("进入中...");
         //后期判断是否登录，如果已经则登录注入用户信息一定要注入的
         viewModel.toLoginRoom(mLiveRoom);
+
+        LoadGiftService.startService(this);
 
         initEvent();
         initLiveInfo();

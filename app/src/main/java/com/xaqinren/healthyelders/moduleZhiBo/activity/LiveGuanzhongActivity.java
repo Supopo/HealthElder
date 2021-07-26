@@ -57,6 +57,7 @@ import com.xaqinren.healthyelders.databinding.ActivityLiveGuanzhunBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
+import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.MoreLinkAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
@@ -210,6 +211,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         } else {
             viewModel.toLoginRoom(mLiveRoom);
         }
+
+        LoadGiftService.startService(this);
+
 
         initEvent();
         initLiveInfo();
