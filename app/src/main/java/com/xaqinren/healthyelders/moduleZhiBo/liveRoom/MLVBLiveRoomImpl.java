@@ -1207,16 +1207,19 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             public void onUpdateAnchors(int retcode, List<AnchorInfo> addAnchors, List<AnchorInfo> delAnchors, HashMap<String, AnchorInfo> mergedAnchors, AnchorInfo roomCreator) {
                 //3.结束播放大主播的普通流，改为播放加速流
                 //这一步很关键 如过不设置这样 连麦用户（小主播）这边加载的是混流后的直播
-                if (retcode == 0) {
-                    String accelerateURL = roomCreator.accelerateURL;
-                    LogUtils.v(Constant.TAG_LIVE, "加速流：" + accelerateURL);
-                    if (accelerateURL != null && accelerateURL.length() > 0) {
-                        mTXLivePlayer.stopPlay(true);
-                        mTXLivePlayer.startPlay(accelerateURL, TXLivePlayer.PLAY_TYPE_LIVE_RTMP_ACC);
-                    } else {
-                        TXCLog.e(TAG, "观众连麦获取不到加速流地址");
+                if (type == 0) { //判断是语音连麦的话选择混流
+                    if (retcode == 0) {
+                        String accelerateURL = roomCreator.accelerateURL;
+                        LogUtils.v(Constant.TAG_LIVE, "加速流：" + accelerateURL);
+                        if (accelerateURL != null && accelerateURL.length() > 0) {
+                            mTXLivePlayer.stopPlay(true);
+                            mTXLivePlayer.startPlay(accelerateURL, TXLivePlayer.PLAY_TYPE_LIVE_RTMP_ACC);
+                        } else {
+                            TXCLog.e(TAG, "观众连麦获取不到加速流地址");
+                        }
                     }
                 }
+
             }
         });
 
@@ -2604,7 +2607,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 if (mTXLivePusher != null && mTXLivePushListener != null) {
                     mTXLivePushListener.setCallback(callback);
                     //设置直播分辨率 ，第二个参数为若弱网自动切换
-                    mTXLivePusher.setVideoQuality(videoQuality, true, false);
+                    mTXLivePusher.setVideoQuality(videoQuality, false, false);
                     int ret = mTXLivePusher.startPusher(url);
                     if (ret == -5) {
                         String msg = "[LiveRoom] 推流失败[license 校验失败]";

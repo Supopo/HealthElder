@@ -1393,7 +1393,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     private void showGiftAnim(String nowUrl) {
         binding.rlShowGift.setVisibility(View.VISIBLE);
-        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "http");
+        //svga缓存设置
+        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "svga");
         try {
             HttpResponseCache.install(cacheDir, 1024 * 1024 * 200);
         } catch (IOException e) {

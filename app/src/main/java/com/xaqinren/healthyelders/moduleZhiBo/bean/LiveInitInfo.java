@@ -22,6 +22,7 @@ public class LiveInitInfo implements Serializable {
     public String liveRoomRemark;//直播备注
     public String noticeTime;//预告直播时间
     public String roomPassword;//房间密码
+    public boolean hasPassword;//是否有房间密码
     public Boolean hasNotice;//是否开播提醒直播时间
     public String shields;//屏蔽词, - 多个逗号隔开
     public Boolean hasLocation;//是否开启定位

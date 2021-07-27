@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.text.TextUtils;
 
 import com.igexin.sdk.PushManager;
+import com.opensource.svgaplayer.SVGACache;
+import com.opensource.svgaplayer.utils.log.SVGALogger;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
@@ -157,6 +159,10 @@ public class AppApplication extends BaseApplication {
         initTIM();
         //初始化直播
         initLiveRoom();
+        //SVGA动画缓存设置
+        SVGACache.INSTANCE.onCreate(this, SVGACache.Type.FILE);
+        SVGALogger.INSTANCE.setLogEnabled(true);
+
         //初始化用户信息持有类
         UserInfoMgr.getInstance().initContext(getApplicationContext());
         //个推
@@ -219,7 +225,7 @@ public class AppApplication extends BaseApplication {
             @Override
             public void onClick(String appid, String id) {
                 switch (id) {
-                    case "gy":{
+                    case "gy": {
 
                         break;
                     }
@@ -258,7 +264,7 @@ public class AppApplication extends BaseApplication {
                 .minTimeBetweenCrashesMs(300) //崩溃的间隔时间(毫秒)
                 .errorDrawable(R.mipmap.no_goods_data) //错误图标
                 .restartActivity(MainActivity.class) //重新启动后的activity
-                 .errorActivity(Splash2Activity.class) //崩溃后的错误activity //为用户体验直接进入欢迎页重启
+                .errorActivity(Splash2Activity.class) //崩溃后的错误activity //为用户体验直接进入欢迎页重启
                 // .eventListener(new YourCustomEventListener()) //崩溃后的错误监听
                 .apply();
     }
@@ -379,7 +385,6 @@ public class AppApplication extends BaseApplication {
     }
 
     public Map<Long, Integer> listPos = new HashMap<>();
-
 
 
     public int getLayoutPos() {

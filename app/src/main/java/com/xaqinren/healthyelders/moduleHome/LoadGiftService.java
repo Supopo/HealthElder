@@ -118,8 +118,8 @@ public class LoadGiftService extends Service implements LifecycleOwner {
 
     //下载svga动画
     private void loadCache(List<GiftBean> gifts) {
-
-        File cacheDir = new File(getApplicationContext().getExternalFilesDir("Gifts").getAbsolutePath(), "http");
+        //svga缓存设置
+        File cacheDir = new File(getApplicationContext().getCacheDir().getAbsolutePath(), "svga");
         try {
             HttpResponseCache.install(cacheDir, 1024 * 1024 * 200);
         } catch (IOException e) {

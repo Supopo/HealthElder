@@ -483,11 +483,9 @@
                 android:layout_below="@id/rl_top"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="-50dp"
-                app:placeholderRes="@mipmap/default_avatar"
                 app:qmui_border_color="@color/white"
                 app:qmui_border_width="@dimen/dp_1"
-                app:qmui_is_circle="true"
-                app:url="@{viewModel.userInfo.avatarUrl}" />
+                app:qmui_is_circle="true" />
         </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

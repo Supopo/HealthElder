@@ -120,6 +120,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private ZBGoodsListPop zbGoodsListPop;
     private Disposable uniSubscribe;
     private boolean isCloseXN;
+    private int goodsTempPos;//商品位置
+    private int openTempPos;//公开位置
+    private boolean noPwd;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -158,8 +161,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         for (int i = 0; i < menuNames.length; i++) {
             menus.add(new MenuBean(menuNames[i], menuRes[i]));
         }
+        //暂时去掉密码
         menus.remove(5);
-
+        noPwd = true;
 
         menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
             switch (menuAdapter.getData().get(position).menuName) {
@@ -190,21 +194,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     zbGoodsListPop.showPopupWindow();
                     break;
                 case "私密":
+                    mLiveInitInfo.roomPassword = "";
+                    menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_gongkai;
+                    menuAdapter.getData().get(openTempPos).menuName = "公开";
+                    menuAdapter.notifyItemChanged(openTempPos, 99);
+                    break;
                 case "公开":
-
                     //密码锁图标变化
-                    if (TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
-                        Intent intent = new Intent();
-                        intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-                        startActivityForResult(intent, 1001);
-                    } else {
-                        mLiveInitInfo.roomPassword = "";
-                        menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
-                        menuAdapter.getData().get(5).menuName = "公开";
-                        menuAdapter.notifyItemChanged(5, 99);
-                    }
-
-
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                    startActivityForResult(intent, 1001);
                     break;
                 case "设置":
                     startSettingPop = new ZBStartSettingPop(getActivity(), mLiveInitInfo);
@@ -248,14 +247,14 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         binding.btnStart.setOnClickListener(lis -> {
             if (hasCheckInfo) {
                 //判断是不是存在虚拟直播
-                if (mLiveInitInfo != null && mLiveInitInfo.liveRoomType != null && mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN)) {
+                if (mLiveInitInfo != null && mLiveInitInfo.liveRoomType != null && mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN) && !mLiveInitInfo.liveRoomStatus.equals("LIVE_OVER")) {
                     isCloseXN = true;
                     //偷偷结束直播
                     viewModel.closeLastLive(mLiveInitInfo.liveRoomRecordId);
                 } else {
                     toStartLive();
                 }
-            }else {
+            } else {
                 viewModel.checkLiveInfo();
             }
 
@@ -338,9 +337,29 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 hasCheckInfo = true;
                 //初始化房间信息
                 mLiveInitInfo = liveInfo;
-                if ((mLiveInitInfo.liveRoomLevel != null && !mLiveInitInfo.liveRoomLevel.getCanSale()) || !mLiveInitInfo.getCanSale()) {
-                    menus.remove(4);
+
+                for (int i = 0; i < menus.size(); i++) {
+                    if (menus.get(i).menuName.equals("商品")) {
+                        goodsTempPos = i;
+                    }
                 }
+
+
+                if ((mLiveInitInfo.liveRoomLevel != null && !mLiveInitInfo.liveRoomLevel.getCanSale()) || !mLiveInitInfo.getCanSale()) {
+                    //如果没有带货权限移除商品
+                    menus.remove(goodsTempPos);
+                }
+
+                if (!noPwd) {
+                    for (int i = 0; i < menus.size(); i++) {
+                        if (menus.get(i).menuName.equals("公开") || menus.get(i).menuName.equals("私密")) {
+                            openTempPos = i;
+                        }
+                    }
+                }
+
+
+
                 menuAdapter.setNewInstance(menus);
                 binding.rvMenu.setAdapter(menuAdapter);
                 initRoomInfo();
@@ -442,16 +461,20 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
     private void initRoomInfo() {
         binding.etTitle.setText(mLiveInitInfo.liveRoomName);
-        Glide.with(getActivity()).load(mLiveInitInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
-        //密码锁图标变化
-        //        if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
-        //            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_jiami;
-        //            menuAdapter.getData().get(5).menuName = "私密";
-        //        } else {
-        //            menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
-        //            menuAdapter.getData().get(5).menuName = "公开";
-        //        }
-        //        menuAdapter.notifyItemChanged(5, 99);
+        Glide.with(this).load(mLiveInitInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
+
+        if (!noPwd) {
+            //密码锁图标变化
+            if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
+                menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_jiami;
+                menuAdapter.getData().get(openTempPos).menuName = "私密";
+            } else {
+                menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_gongkai;
+                menuAdapter.getData().get(openTempPos).menuName = "公开";
+            }
+            menuAdapter.notifyItemChanged(openTempPos, 99);
+        }
+
     }
 
     private void showSelectDialog(String liveRoomRecordId) {
@@ -704,15 +727,22 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         } else if (requestCode == 1001) {
             if (data != null) {
                 mLiveInitInfo.roomPassword = data.getStringExtra("pwd");
+                int temp = 0;
+                for (int i = 0; i < menuAdapter.getData().size(); i++) {
+                    if (menuAdapter.getData().get(i).menuName.equals("私密") || menuAdapter.getData().get(i).menuName.equals("公开")) {
+                        temp = i;
+                    }
+                }
+
                 //密码锁图标变化
                 if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
-                    menuAdapter.getData().get(5).menuRes = R.mipmap.icon_jiami;
-                    menuAdapter.getData().get(5).menuName = "私密";
+                    menuAdapter.getData().get(temp).menuRes = R.mipmap.icon_jiami;
+                    menuAdapter.getData().get(temp).menuName = "私密";
                 } else {
-                    menuAdapter.getData().get(5).menuRes = R.mipmap.icon_gongkai;
-                    menuAdapter.getData().get(5).menuName = "公开";
+                    menuAdapter.getData().get(temp).menuRes = R.mipmap.icon_gongkai;
+                    menuAdapter.getData().get(temp).menuName = "公开";
                 }
-                menuAdapter.notifyItemChanged(5, 99);
+                menuAdapter.notifyItemChanged(temp, 99);
             }
         }
     }

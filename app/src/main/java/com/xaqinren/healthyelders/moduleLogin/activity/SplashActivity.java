@@ -48,7 +48,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
     private Handler handler;
     private Runnable runnable;
     private Timer timer = new Timer();
-    private int recLen = 2;//跳过倒计时提示3秒
+    private int recLen = 1;//跳过倒计时提示3秒
     TimerTask task = new TimerTask() {
         @Override
         public void run() {

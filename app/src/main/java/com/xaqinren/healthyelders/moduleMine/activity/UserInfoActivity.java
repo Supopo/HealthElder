@@ -24,6 +24,7 @@ import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserXHFragment;
 import com.xaqinren.healthyelders.moduleMine.fragment.UserZPFragment;
 import com.xaqinren.healthyelders.moduleMine.viewModel.UserInfoViewModel;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.IntentUtils;
 
 import java.util.ArrayList;
@@ -288,7 +289,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             //储存关注状态列表
             if (binding.llFollow.getVisibility() == View.VISIBLE) {
                 AppApplication.get().followList.put(userId, true);
-            }else {
+            } else {
                 AppApplication.get().followList.put(userId, false);
             }
             viewModel.toFollow(userId);
@@ -300,7 +301,10 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
     public void initViewObservable() {
         super.initViewObservable();
         viewModel.userInfo.observe(this, userInfo -> {
-            userInfoBean = userInfo;
+            if (userInfo != null) {
+                userInfoBean = userInfo;
+                GlideUtil.intoImageView(this, userInfo.getAvatarUrl(), binding.rivPhoto2, R.mipmap.default_avatar);
+            }
         });
         viewModel.dismissDialog.observe(this, isDis -> {
             if (isDis != null) {
