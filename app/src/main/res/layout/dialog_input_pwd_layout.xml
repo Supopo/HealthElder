@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="@dimen/dp_280"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_y_o_n_dialog">
+
+        <TextView
+            android:layout_marginTop="@dimen/dp_20"
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="请输入房间密码"
+            android:textSize="@dimen/sp_18" />
+
+        <com.xaqinren.healthyelders.widget.VerificationCodeView
+            android:id="@+id/vcv_code"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:vcv_et_bg="@drawable/vcv_edit_bg"
+            app:vcv_et_cursor="@color/color_FFF4F5F7"
+            app:vcv_et_cursor_visible="false"
+            app:vcv_et_inputType="number"
+            app:vcv_et_number="4"
+            app:vcv_et_spacing="@dimen/dp_12"
+            app:vcv_et_text_color="@color/color_252525"
+            app:vcv_et_text_size="10sp"
+            app:vcv_et_width="@dimen/dp_52" />
+
+        <View
+            style="@style/line"
+            android:layout_below="@id/vcv_code"
+            android:layout_marginTop="@dimen/dp_20" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/vcv_code"
+            android:layout_marginTop="@dimen/dp_21"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/left_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_52"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_16" />
+
+            <View
+                style="@style/lineV"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/right_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_52"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@color/color_252525"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -38,6 +39,7 @@ import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
+import com.xaqinren.healthyelders.widget.InputPwdDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private FragmentPagerAdapter videoAdapter;
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
+    private InputPwdDialog pwdDialog;
 
     public HomeGZFragment() {
     }
@@ -221,10 +224,19 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
             nowPos = position;
             //判断如果不需要输入密码直接进入
             if (zbingAdapter.getData().get(position).hasPassword) {
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-                intent.putExtra("type", 1);
-                startActivityForResult(intent, 1001);
+                pwdDialog = new InputPwdDialog(getActivity());
+                pwdDialog.setRightBtnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (TextUtils.isEmpty(pwdDialog.code)) {
+                            ToastUtil.toastShortMessage("请输入密码");
+                            return;
+                        }
+                        viewModel.joinLive(zbingAdapter.getData().get(nowPos).liveRoomId, pwdDialog.code);
+                        pwdDialog.dismissDialog();
+                    }
+                });
+                pwdDialog.showDialog();
             } else {
                 viewModel.joinLive(zbingAdapter.getData().get(position).liveRoomId, "");
             }

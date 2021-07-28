@@ -32,6 +32,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.ViewSkeletonScreen;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -59,7 +60,6 @@ import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverGZActivity;
 import com.xaqinren.healthyelders.utils.AnimUtil;
@@ -67,13 +67,13 @@ import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
+import com.xaqinren.healthyelders.widget.InputPwdDialog;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -115,6 +115,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private int mRenderMode;
     private LiteAvOpenModePopupWindow openModePop;
     private int publishMode;
+    private InputPwdDialog pwdDialog;
 
     //Unable to instantiate fragment xxx: could not find Fragment constructor
     //使用Fragment的时候，因为使用到了有参数的构造函数，没有提供无参的构造函数，有时会报错。
@@ -622,10 +623,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (videoInfo.hasLive) {
                 //判断如果不需要输入密码直接进入
                 if (videoInfo.hasPassword) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-                    intent.putExtra("type", 1);
-                    startActivityForResult(intent, 1001);
+                    pwdDialog = new InputPwdDialog(getActivity());
+                    pwdDialog.setRightBtnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (TextUtils.isEmpty(pwdDialog.code)) {
+                                ToastUtil.toastShortMessage("请输入密码");
+                                return;
+                            }
+                            viewModel.joinLive(videoInfo.liveRoomId, pwdDialog.code);
+                            pwdDialog.dismissDialog();
+                        }
+                    });
+                    pwdDialog.showDialog();
                 } else {
                     viewModel.joinLive(videoInfo.liveRoomId, "");
                 }
@@ -702,10 +712,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
                 //进入直播间
                 if (videoInfo.hasPassword) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-                    intent.putExtra("type", 1);
-                    startActivityForResult(intent, 1001);
+                    pwdDialog = new InputPwdDialog(getActivity());
+                    pwdDialog.setRightBtnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (TextUtils.isEmpty(pwdDialog.code)) {
+                                ToastUtil.toastShortMessage("请输入密码");
+                                return;
+                            }
+                            viewModel.joinLive(videoInfo.liveRoomId, pwdDialog.code);
+                            pwdDialog.dismissDialog();
+                        }
+                    });
+                    pwdDialog.showDialog();
                 } else {
                     viewModel.joinLive(videoInfo.liveRoomId, "");
                 }
@@ -718,10 +737,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
                 //进入直播间
                 if (videoInfo.hasPassword) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
-                    intent.putExtra("type", 1);
-                    startActivityForResult(intent, 1001);
+                    pwdDialog = new InputPwdDialog(getActivity());
+                    pwdDialog.setRightBtnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (TextUtils.isEmpty(pwdDialog.code)) {
+                                ToastUtil.toastShortMessage("请输入密码");
+                                return;
+                            }
+                            viewModel.joinLive(videoInfo.liveRoomId, pwdDialog.code);
+                            pwdDialog.dismissDialog();
+                        }
+                    });
+                    pwdDialog.showDialog();
                 } else {
                     viewModel.joinLive(videoInfo.liveRoomId, "");
                 }
