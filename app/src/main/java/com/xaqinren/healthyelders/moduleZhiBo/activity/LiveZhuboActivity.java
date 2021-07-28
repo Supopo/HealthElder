@@ -624,6 +624,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             @Override
             public void onError(int errCode, String e) {
                 dismissDialog();
+                finish();
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
             }
@@ -679,7 +680,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     //展示邀请用户连麦的列表
     private void showUserLinkPopShow(int openType, int showType) {
         mLiveInitInfo.linkType = linkType;
-        userLinkPopShow = new ZBLinkUsersPop(mLiveInitInfo, openType, this, showType, linksShowAdapter, mPusherList, isLianMai);
+        userLinkPopShow = new ZBLinkUsersPop(mLiveInitInfo, openType, this, 0, linksShowAdapter, mPusherList, isLianMai);
         userLinkPopShow.showPopupWindow();
     }
 
@@ -2323,6 +2324,22 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     showDialog("结束直播...");
                     //去通知服务器退出了直播
                     viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
+
+                    try {
+                        if (mHandler != null) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isPlaying) {
+                                        finish();
+                                    }
+                                }
+                            }, 2000);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 //返回键返回判断
                 return true;

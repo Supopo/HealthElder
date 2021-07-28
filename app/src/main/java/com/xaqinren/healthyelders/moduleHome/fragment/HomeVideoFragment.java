@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -58,10 +59,12 @@ import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverGZActivity;
 import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
@@ -70,6 +73,7 @@ import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -248,7 +252,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (!isHP) {
                 binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
-            Glide.with(getActivity()).load(videoInfo.coverUrl).diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.coverImageView);
+
+            //判断是不是加密直播间
+            if (videoInfo.resourceType.equals("LIVE") && videoInfo.hasPassword) {
+                GlideUtil.intoGaoSiImageView(getActivity(), videoInfo.coverUrl, binding.coverImageView, 25);
+                binding.ivZbJm.setVisibility(View.VISIBLE);
+            } else {
+                GlideUtil.intoImageView(getActivity(), videoInfo.coverUrl, binding.coverImageView);
+            }
+
             binding.coverImageView.setVisibility(View.VISIBLE);
         }
 
@@ -530,7 +542,13 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (!InfoCache.getInstance().checkLogin()) {
                 startActivity(SelectLoginActivity.class);
                 return;
-            }      //判断是否绑手机号
+            }
+            if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+
+            //判断是否绑手机号
             if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                 startActivity(PhoneLoginActivity.class);
                 return;
@@ -602,7 +620,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
             //判断如果开着直播去直播间
             if (videoInfo.hasLive) {
-                viewModel.joinLive(videoInfo.liveRoomId);
+                //判断如果不需要输入密码直接进入
+                if (videoInfo.hasPassword) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                    intent.putExtra("type", 1);
+                    startActivityForResult(intent, 1001);
+                } else {
+                    viewModel.joinLive(videoInfo.liveRoomId, "");
+                }
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putString("userId", videoInfo.userId);
@@ -617,7 +643,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (!InfoCache.getInstance().checkLogin()) {
                 startActivity(SelectLoginActivity.class);
                 return;
-            }      //判断是否绑手机号
+            }
+            if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+            //判断是否绑手机号
             if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                 startActivity(PhoneLoginActivity.class);
                 return;
@@ -670,7 +701,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     return;
                 }
                 //进入直播间
-                viewModel.joinLive(videoInfo.liveRoomId);
+                if (videoInfo.hasPassword) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                    intent.putExtra("type", 1);
+                    startActivityForResult(intent, 1001);
+                } else {
+                    viewModel.joinLive(videoInfo.liveRoomId, "");
+                }
             }
         });
         binding.llZhiBoTip.setOnClickListener(lis -> {
@@ -679,7 +717,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 dismissLoading();
 
                 //进入直播间
-                viewModel.joinLive(videoInfo.liveRoomId);
+                if (videoInfo.hasPassword) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                    intent.putExtra("type", 1);
+                    startActivityForResult(intent, 1001);
+                } else {
+                    viewModel.joinLive(videoInfo.liveRoomId, "");
+                }
             }
         });
         viewModel.liveInfo.observe(this, liveInfo -> {
@@ -735,6 +780,18 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001) {
+            if (data != null) {
+                String roomPassword = data.getStringExtra("pwd");
+                viewModel.joinLive(videoInfo.liveRoomId, roomPassword);
+            }
+        }
+    }
+
+
     //判断自己账号隐藏关注
     private void showFollow() {
         Boolean aBoolean = AppApplication.get().followList.get(videoInfo.userId);
@@ -766,7 +823,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             //跳转登录页面
             startActivity(SelectLoginActivity.class);
             return;
-        }      //判断是否绑手机号
+        }
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        //判断是否绑手机号
         if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
             startActivity(PhoneLoginActivity.class);
             return;
@@ -858,7 +920,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (!InfoCache.getInstance().checkLogin()) {
             startActivity(SelectLoginActivity.class);
             return;
-        }      //判断是否绑手机号
+        }
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        //判断是否绑手机号
         if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
             startActivity(PhoneLoginActivity.class);
             return;
@@ -889,7 +956,12 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         if (!InfoCache.getInstance().checkLogin()) {
                             startActivity(SelectLoginActivity.class);
                             return;
-                        }      //判断是否绑手机号
+                        }
+                        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                            startActivity(SelectLoginActivity.class);
+                            return;
+                        }
+                        //判断是否绑手机号
                         if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                             startActivity(PhoneLoginActivity.class);
                             return;
@@ -974,7 +1046,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void startPlay(boolean b) {
 
 
-        if (videoInfo.getVideoType() == 1 ) {
+        if (videoInfo.getVideoType() == 1) {
 
             if (vodPlayer != null) {
                 vodPlayer.setAutoPlay(b);
@@ -987,11 +1059,19 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             }
 
 
-        } else if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
+        } else if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
             zbingAnim.start();
-            if (mLivePlayer != null) {
-                mLivePlayer.startPlay(videoInfo.resourceUrl, videoInfo.getVideoType() == 4 ?TXLivePlayer.PLAY_TYPE_VOD_HLS:TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
+
+            //判断是不是有密码，有密码不播放
+            if (videoInfo.hasPassword) {
+                dismissLoading();
+                //展示加密的样子
+            } else {
+                if (mLivePlayer != null) {
+                    mLivePlayer.startPlay(videoInfo.resourceUrl, videoInfo.getVideoType() == 4 ? TXLivePlayer.PLAY_TYPE_VOD_HLS : TXLivePlayer.PLAY_TYPE_LIVE_RTMP);
+                }
             }
+
         }
 
         LogUtils.v(Constant.TAG_LIVE, "---------------------startPlay" + position);
@@ -1024,11 +1104,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void pausePlay() {
         binding.mainVideoView.onPause();
 
-        if (videoInfo.getVideoType() == 1 ) {
+        if (videoInfo.getVideoType() == 1) {
             if (vodPlayer != null) {
                 vodPlayer.pause();
             }
-        } else if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
+        } else if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
             if (mLivePlayer != null) {
                 mLivePlayer.pause();
             }
@@ -1045,11 +1125,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             if (hasPlaying) {
                 //判断之前不是暂停状态
                 if (playStatus == 1) {
-                    if (videoInfo.getVideoType() == 1 ) {
+                    if (videoInfo.getVideoType() == 1) {
                         if (vodPlayer != null) {
                             vodPlayer.resume();
                         }
-                    } else if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
+                    } else if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
                         if (mLivePlayer != null) {
                             mLivePlayer.resume();
                         }
@@ -1070,14 +1150,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     }
 
     private void stopPlay(boolean clearLastFrame) {
-        if (videoInfo.getVideoType() == 2|| videoInfo.getVideoType() == 4) {
+        if (videoInfo.getVideoType() == 2 || videoInfo.getVideoType() == 4) {
             if (zbingAnim != null) {
                 zbingAnim.stop();
             }
             if (mLivePlayer != null) {
                 mLivePlayer.stopPlay(false);
             }
-        } else if (videoInfo.getVideoType() == 1 ) {
+        } else if (videoInfo.getVideoType() == 1) {
             if (videoInfo.getVideoType() == 1) {
                 stopMusicAnim();
                 binding.playImageView.setVisibility(View.GONE);

@@ -27,7 +27,7 @@ public class SMVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         binding.setViewModel(item);
         binding.executePendingBindings();
         GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 400, 400), binding
-                .ivVideo, R.mipmap.bg_video);
+                .ivVideo, R.mipmap.icon_video_def);
     }
 
     //局部刷新用的

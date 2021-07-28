@@ -75,6 +75,7 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     public String musicId;//":
     public String musicIcon;//":
     public String musicName;//":
+    public boolean hasPassword;//是否有密码
 
     public ShareBean share;//":
     public String roomPassword;//":

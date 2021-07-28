@@ -40,8 +40,8 @@ public class HomeGZViewModel extends BaseViewModel {
         LiveRepository.getInstance().getLiveFiends(firendDatas);
     }
 
-    public void joinLive(String liveRoomId) {
+    public void joinLive(String liveRoomId,String liveRoomPassword) {
         showDialog();
-        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
+        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId,liveRoomPassword);
     }
 }

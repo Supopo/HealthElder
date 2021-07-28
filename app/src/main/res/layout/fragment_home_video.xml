@@ -469,6 +469,7 @@
                         android:background="@drawable/zbing_anim" />
 
                     <TextView
+                        android:id="@+id/tv_zbTip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="点击进入直播间"
@@ -484,6 +485,16 @@
                     android:background="#ccffffff" />
 
             </LinearLayout>
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/iv_zbJm"
+                android:layout_width="@dimen/dp_113"
+                android:layout_height="@dimen/dp_113"
+                android:layout_above="@id/llZhiBoTip"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/dp_150"
+                android:background="@mipmap/icon_zb_jiami" />
 
             <LinearLayout
                 android:id="@+id/view_bottom"

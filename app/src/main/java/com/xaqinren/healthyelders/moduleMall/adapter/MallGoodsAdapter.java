@@ -59,7 +59,7 @@ public class MallGoodsAdapter extends BaseQuickAdapter<GoodsBean, BaseViewHolder
             lp.setMargins(0, 0, 0, 0);
         }
         binding.llItem.setLayoutParams(lp);
-        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.imageUrl, 400, 400), binding.ivCover, R.mipmap.bg_video);
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.imageUrl, 400, 400), binding.ivCover, R.mipmap.icon_video_def);
 
     }
 

@@ -162,8 +162,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             menus.add(new MenuBean(menuNames[i], menuRes[i]));
         }
         //暂时去掉密码
-        menus.remove(5);
-        noPwd = true;
+//        menus.remove(5);
+//        noPwd = true;
 
         menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
             switch (menuAdapter.getData().get(position).menuName) {

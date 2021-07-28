@@ -19,6 +19,8 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 public class SettingRoomPwdActivity extends BaseActivity<ActivitySettingRoomPwdBinding, BaseViewModel> {
 
     private String code;
+    private Intent intent;
+    private int type;//1表示进入直播间需要输入密码
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -33,6 +35,11 @@ public class SettingRoomPwdActivity extends BaseActivity<ActivitySettingRoomPwdB
     @Override
     public void initData() {
         super.initData();
+        intent = getIntent();
+        type = intent.getIntExtra("type", 0);
+        if (type == 1) {
+            binding.tvTip.setText("进入该直播间需要输入密码");
+        }
         tvTitle.setText("私密房间");
         binding.vcvCode.setOnCodeFinishListener(new VerificationCodeView.OnCodeFinishListener() {
             @Override
@@ -46,7 +53,6 @@ public class SettingRoomPwdActivity extends BaseActivity<ActivitySettingRoomPwdB
             }
         });
         binding.btnOk.setOnClickListener(lis -> {
-            Intent intent = getIntent();
             intent.putExtra("pwd", code);
             setResult(1001, intent);
             finish();

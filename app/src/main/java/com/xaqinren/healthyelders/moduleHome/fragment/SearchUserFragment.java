@@ -105,6 +105,10 @@ public class SearchUserFragment extends BaseFragment<FragmentSearchYhBinding, Se
                         startActivity(SelectLoginActivity.class);
                         return;
                     }
+                    if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                        startActivity(SelectLoginActivity.class);
+                        return;
+                    }
                     if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                         startActivity(PhoneLoginActivity.class);
                         return;

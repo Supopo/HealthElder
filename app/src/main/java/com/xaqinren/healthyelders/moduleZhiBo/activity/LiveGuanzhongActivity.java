@@ -625,6 +625,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + errCode);
                 LogUtils.v(Constant.TAG_LIVE, "直播间退出失败:" + e);
                 dismissDialog();
+                finish();
             }
         });
     }
@@ -1784,6 +1785,22 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             case R.id.btn_back:
                 showDialog("离开直播间...");
                 viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
+
+                try {
+                    if (mHandler != null) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isPlaying) {
+                                    finish();
+                                }
+                            }
+                        }, 2000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 break;
             case R.id.tv_msg:
                 //判断是否被禁言
@@ -2494,6 +2511,20 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     showDialog("离开直播间...");
                     //去通知服务器退出了直播
                     viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
+                    try {
+                        if (mHandler != null) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isPlaying) {
+                                        finish();
+                                    }
+                                }
+                            }, 2000);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 //返回键返回判断
                 return true;

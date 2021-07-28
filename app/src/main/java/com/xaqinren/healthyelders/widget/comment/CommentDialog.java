@@ -148,11 +148,16 @@ public class CommentDialog {
                 onChildClick.toLike(iCommentBean);
                 //先判断是否登录
                 if (!InfoCache.getInstance().checkLogin()) {
-                    mContext.startActivity(new Intent(mContext,SelectLoginActivity.class));
+                    mContext.startActivity(new Intent(mContext, SelectLoginActivity.class));
                     return;
-                }      //判断是否绑手机号
+                }
+                if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                    mContext.startActivity(new Intent(mContext, SelectLoginActivity.class));
+                    return;
+                }
+                //判断是否绑手机号
                 if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
-                    mContext.startActivity(new Intent(mContext,PhoneLoginActivity.class));
+                    mContext.startActivity(new Intent(mContext, PhoneLoginActivity.class));
                     return;
                 }
 
@@ -179,11 +184,16 @@ public class CommentDialog {
             public void toLikeReply(CommentListBean iCommentBean) {
                 //先判断是否登录
                 if (!InfoCache.getInstance().checkLogin()) {
-                    mContext.startActivity(new Intent(mContext,SelectLoginActivity.class));
+                    mContext.startActivity(new Intent(mContext, SelectLoginActivity.class));
                     return;
-                }      //判断是否绑手机号
+                }
+                if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                    mContext.startActivity(new Intent(mContext, SelectLoginActivity.class));
+                    return;
+                }
+                //判断是否绑手机号
                 if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
-                    mContext.startActivity(new Intent(mContext,PhoneLoginActivity.class));
+                    mContext.startActivity(new Intent(mContext, PhoneLoginActivity.class));
                     return;
                 }
 
@@ -294,10 +304,9 @@ public class CommentDialog {
         binding.commentCountTv.setText(mCommentCount + "条评论");
         commentAdapter.addData(0, commentListBean);
         //只刷新当前得会导致别的item的parentPos还是旧的。
-//        commentAdapter.notifyItemChanged(0);
+        //        commentAdapter.notifyItemChanged(0);
         commentAdapter.notifyDataSetChanged();
         binding.commentList.scrollToPosition(0);
-
 
 
     }

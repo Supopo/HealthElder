@@ -115,7 +115,7 @@ public class LiveRepository {
                 });
     }
 
-    public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomRecordId) {
+    public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomRecordId, String roomPassword) {
         if (!InfoCache.getInstance().checkLogin()) {
             dismissDialog.postValue(true);
             RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
@@ -127,9 +127,9 @@ public class LiveRepository {
             RxBus.getDefault().post(new EventBean(CodeTable.MSG_NO_PHONE, null));
             return;
         }
-
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("liveRoomId", liveRoomRecordId);
+        hashMap.put("roomPassword", roomPassword);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toJoinLive(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -152,6 +152,22 @@ public class LiveRepository {
 
                     }
                 });
+    }
+
+    public void joinLive(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo, String liveRoomRecordId) {
+        if (!InfoCache.getInstance().checkLogin()) {
+            dismissDialog.postValue(true);
+            RxBus.getDefault().post(new EventBean(CodeTable.TOKEN_ERR, null));
+            return;
+        }
+
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            dismissDialog.postValue(true);
+            RxBus.getDefault().post(new EventBean(CodeTable.MSG_NO_PHONE, null));
+            return;
+        }
+
+        joinLive(dismissDialog, liveInfo, liveRoomRecordId,"");
     }
 
     public void checkLiveInfo(MutableLiveData<Boolean> dismissDialog, MutableLiveData<LiveInitInfo> liveInfo) {
@@ -530,7 +546,7 @@ public class LiveRepository {
     }
 
     public void getHomeVideoList(MutableLiveData<Boolean> dismissDialog, int page, int pageSize, Integer type, MutableLiveData<List<VideoInfo>> videoList, String resourceType, String tags) {
-       getHomeVideoList(dismissDialog,page,pageSize,type,videoList,resourceType,tags,"");
+        getHomeVideoList(dismissDialog, page, pageSize, type, videoList, resourceType, tags, "");
     }
 
 
@@ -971,13 +987,13 @@ public class LiveRepository {
     }
 
 
-    public void setVideoStatus(MutableLiveData<Boolean> request,  String id,String status) {
+    public void setVideoStatus(MutableLiveData<Boolean> request, String id, String status) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("id", id);
         hashMap.put("creationViewAuth", status);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.setVideoStatus(UserInfoMgr.getInstance().getHttpToken(),body)
+        userApi.setVideoStatus(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {
@@ -997,7 +1013,7 @@ public class LiveRepository {
 
     public void feedbackSave(MutableLiveData<Boolean> request, MutableLiveData<Boolean> commitSuccess, String json) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-        userApi.feedbackSave(UserInfoMgr.getInstance().getHttpToken(),body)
+        userApi.feedbackSave(UserInfoMgr.getInstance().getHttpToken(), body)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new CustomObserver<MBaseResponse<Object>>() {

@@ -119,8 +119,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_9"
-                android:maxLength="4"
                 android:ellipsize="end"
+                android:maxLength="4"
                 android:text="@{viewModel.getTop1User().nickname}"
                 android:textColor="#FFE5E5E5"
                 android:textSize="@dimen/sp_13" />
@@ -140,13 +140,13 @@
 
         <View
             android:id="@+id/line1"
-            android:layout_width="@dimen/dp_0_5"
+            android:layout_width="1dp"
             android:layout_height="@dimen/dp_95"
             android:layout_alignBottom="@id/ll_info1"
             android:layout_marginTop="50dp"
             android:layout_marginRight="33dp"
             android:layout_toLeftOf="@id/ll_info1"
-            android:background="#FFE5E5E5"
+            android:background="#4DFFFFFF"
             android:visibility="@{viewModel.getLiveRoomUsersSize() > 1 ?View.VISIBLE:View.GONE}" />
 
         <LinearLayout
@@ -173,8 +173,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_9"
-                android:maxLength="4"
                 android:ellipsize="end"
+                android:maxLength="4"
                 android:text="@{viewModel.getTop2User().nickname}"
                 android:textColor="#FFE5E5E5"
                 android:textSize="@dimen/sp_13" />
@@ -195,12 +195,12 @@
 
         <View
             android:id="@+id/line2"
-            android:layout_width="@dimen/dp_0_5"
+            android:layout_width="1dp"
             android:layout_height="@dimen/dp_95"
             android:layout_alignBottom="@id/ll_info1"
             android:layout_marginLeft="@dimen/dp_31"
             android:layout_toRightOf="@id/ll_info1"
-            android:background="#FFE5E5E5"
+            android:background="#4DFFFFFF"
             android:visibility="@{viewModel.getLiveRoomUsersSize() > 2 ?View.VISIBLE:View.GONE}" />
 
         <LinearLayout
@@ -227,8 +227,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_9"
-                android:maxLength="4"
                 android:ellipsize="end"
+                android:maxLength="4"
                 android:text="@{viewModel.getTop3User().nickname}"
                 android:textColor="#FFE5E5E5"
                 android:textSize="@dimen/sp_13" />

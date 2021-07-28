@@ -39,10 +39,16 @@ public class InfoCache {
             String userToken = SPUtils.getInstance().getString(Constant.SP_KEY_TOKEN_INFO);
             if (StringUtils.isEmpty(userToken))
                 return false;
+            //判断一次内存中的用户信息
+            if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                UserInfoBean userInfoBean = getLoginUser();
+                if (userInfoBean != null) {
+                    UserInfoMgr.getInstance().setUserInfo(userInfoBean);
+                }
+            }
             return true;
         }
     }
-
 
 
     public UserInfoBean getLoginUser() {

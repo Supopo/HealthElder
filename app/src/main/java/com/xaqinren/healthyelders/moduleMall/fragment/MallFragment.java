@@ -179,7 +179,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
             }
         });
         binding.orderLayout.setOnClickListener(v -> {
-            if (InfoCache.getInstance().checkLogin()) {
+            if (InfoCache.getInstance().checkLogin() && UserInfoMgr.getInstance().getUserInfo() != null) {
                 if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                     startActivity(PhoneLoginActivity.class);
                     return;

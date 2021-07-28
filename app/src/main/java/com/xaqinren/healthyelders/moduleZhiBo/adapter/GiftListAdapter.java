@@ -12,6 +12,8 @@ import com.xaqinren.healthyelders.databinding.ItemMallMenu1Binding;
 import com.xaqinren.healthyelders.databinding.ItemZbGiftBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
+import com.xaqinren.healthyelders.utils.GlideUtil;
+import com.xaqinren.healthyelders.utils.UrlUtils;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class GiftListAdapter extends BaseQuickAdapter<GiftBean, BaseViewHolder> 
         ItemZbGiftBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
+        GlideUtil.intoImageView(getContext(), item.giftImage, binding.ivGiftImg, R.mipmap.icon_logo_def);
 
         if (item.isSelect) {
             binding.tvGiftName.setVisibility(View.GONE);

@@ -28,7 +28,7 @@ public class DZVideoAdapter extends BaseQuickAdapter<DZVideoInfo, BaseViewHolder
         binding.setViewModel(item);
         binding.executePendingBindings();
         GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.homeComprehensiveHall.coverUrl, 400, 400), binding
-                .ivVideo, R.mipmap.bg_video);
+                .ivVideo, R.mipmap.icon_video_def);
     }
 
     //局部刷新用的

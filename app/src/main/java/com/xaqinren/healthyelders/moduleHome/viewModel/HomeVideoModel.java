@@ -46,9 +46,9 @@ public class HomeVideoModel extends BaseViewModel {
         LiveRepository.getInstance().toCommentReply(mCommentListBean, content, type, commentSuccess, dismissDialog);
     }
 
-    public void joinLive(String liveRoomId) {
+    public void joinLive(String liveRoomId,String roomPassword) {
         showDialog();
-        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId);
+        LiveRepository.getInstance().joinLive(dismissDialog, liveInfo, liveRoomId,roomPassword);
     }
 
     public void delVideo(String liveRoomId) {

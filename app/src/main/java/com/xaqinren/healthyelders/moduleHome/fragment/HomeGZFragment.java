@@ -1,5 +1,8 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -29,6 +36,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.ArrayList;
@@ -106,7 +114,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                     if (AppApplication.get().getLayoutPos() == 1) {
                         needRefreshData = true;
                     }
-                }else if(event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("loginSuccess")){
+                } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("loginSuccess")) {
                     refreshData();
                 }
             }
@@ -210,8 +218,30 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         binding.rvZbList.setAdapter(zbingAdapter);
 
         zbingAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            viewModel.joinLive(zbingAdapter.getData().get(position).liveRoomId);
+            nowPos = position;
+            //判断如果不需要输入密码直接进入
+            if (zbingAdapter.getData().get(position).hasPassword) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), SettingRoomPwdActivity.class);
+                intent.putExtra("type", 1);
+                startActivityForResult(intent, 1001);
+            } else {
+                viewModel.joinLive(zbingAdapter.getData().get(position).liveRoomId, "");
+            }
         }));
+    }
+
+    private int nowPos;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001) {
+            if (data != null) {
+                String roomPassword = data.getStringExtra("pwd");
+                viewModel.joinLive(zbingAdapter.getData().get(nowPos).liveRoomId, roomPassword);
+            }
+        }
     }
 
     @Override
@@ -226,7 +256,6 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     @Override
     public void onStart() {
         super.onStart();
-        Log.e("--", "onStartLe ");
         if (needRefreshData) {
             refreshData();
             needRefreshData = false;

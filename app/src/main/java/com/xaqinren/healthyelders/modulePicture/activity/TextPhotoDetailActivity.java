@@ -149,7 +149,12 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                 if (!InfoCache.getInstance().checkLogin()) {
                     startActivity(SelectLoginActivity.class);
                     return;
-                }      //判断是否绑手机号
+                }
+                if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+                //判断是否绑手机号
                 if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                     startActivity(PhoneLoginActivity.class);
                     return;
@@ -187,7 +192,12 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                 if (!InfoCache.getInstance().checkLogin()) {
                     startActivity(SelectLoginActivity.class);
                     return;
-                }      //判断是否绑手机号
+                }
+                if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+                //判断是否绑手机号
                 if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
                     startActivity(PhoneLoginActivity.class);
                     return;
@@ -262,10 +272,14 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         binding.shareIv.setOnClickListener(this);
         binding.shareTv.setOnClickListener(this);
         binding.avatar.setOnClickListener(view -> {
-            //TODO 查看用户
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", diaryInfoBean.userId);
+            startActivity(UserInfoActivity.class, bundle);
         });
         binding.nickname.setOnClickListener(view -> {
-            //TODO 查看用户
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", diaryInfoBean.userId);
+            startActivity(UserInfoActivity.class, bundle);
         });
 
         binding.guanzhu.setOnClickListener(this);
@@ -281,7 +295,12 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         if (!InfoCache.getInstance().checkLogin()) {
             startActivity(SelectLoginActivity.class);
             return;
-        }      //判断是否绑手机号
+        }
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        //判断是否绑手机号
         if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
             startActivity(PhoneLoginActivity.class);
             return;

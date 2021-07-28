@@ -46,7 +46,7 @@ public class GridVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder
         //瀑布流图片的宽度
         int itemWidth = (screenWidth - (int) getContext().getResources().getDimension(R.dimen.dp_3)) / 2;
 
-        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 600, 600), binding.ivCover, R.mipmap.bg_video);
+        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 600, 600), binding.ivCover, R.mipmap.icon_video_def);
         binding.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         //图片真是宽高

@@ -35,7 +35,7 @@ public class ZPVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
                     .ivVideo, 2);
         } else {
             GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.coverUrl, 400, 400), binding
-                    .ivVideo, R.mipmap.bg_video);
+                    .ivVideo, R.mipmap.icon_video_def);
         }
 
     }

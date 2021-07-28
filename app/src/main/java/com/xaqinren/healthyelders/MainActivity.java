@@ -270,7 +270,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                 //更新获取用户信息
                 viewModel.getUserInfo(accessToken, true);
-            }else {
+            } else {
                 viewModel.getUserSig(accessToken);
             }
 
@@ -382,17 +382,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 startActivity(SelectLoginActivity.class);
                 return;
             }
-            if (UserInfoMgr.getInstance().getUserInfo() != null) {
-                //判断是否绑手机号
-                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
-                    startActivity(PhoneLoginActivity.class);
-                    return;
-                }
-                //判断是否实名认证
-                if (!UserInfoMgr.getInstance().getUserInfo().getHasRealName()) {
-                    startActivity(StartRenZhengActivity.class);
-                    return;
-                }
+            if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                startActivity(SelectLoginActivity.class);
+                return;
+            }
+
+            //判断是否绑手机号
+            if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                startActivity(PhoneLoginActivity.class);
+                return;
+            }
+            //判断是否实名认证
+            if (!UserInfoMgr.getInstance().getUserInfo().getHasRealName()) {
+                startActivity(StartRenZhengActivity.class);
+                return;
             }
 
 

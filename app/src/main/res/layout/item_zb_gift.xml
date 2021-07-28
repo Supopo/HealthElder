@@ -32,7 +32,7 @@
                     android:layout_width="@dimen/dp_51"
                     android:layout_height="@dimen/dp_51"
                     android:layout_marginTop="@dimen/dp_8"
-                    app:url="@{viewModel.giftImage}" />
+                   />
 
                 <TextView
                     android:id="@+id/tv_gift_name"
