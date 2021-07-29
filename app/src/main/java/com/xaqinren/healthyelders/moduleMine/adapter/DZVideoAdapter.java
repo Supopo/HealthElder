@@ -27,8 +27,12 @@ public class DZVideoAdapter extends BaseQuickAdapter<DZVideoInfo, BaseViewHolder
         ItemMineDzVideoBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
-        GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.homeComprehensiveHall.coverUrl, 400, 400), binding
-                .ivVideo, R.mipmap.icon_video_def);
+        if (item.homeComprehensiveHall != null) {
+            GlideUtil.intoImageView(getContext(), UrlUtils.resetImgUrl(item.homeComprehensiveHall.coverUrl, 400, 400), binding
+                    .ivVideo, R.mipmap.icon_video_def);
+            binding.tvNum.setText("" + item.homeComprehensiveHall.getFavoriteCount());
+        }
+
     }
 
     //局部刷新用的

@@ -47,7 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:gravity="center_vertical"
-                android:text="@{String.valueOf(viewModel.homeComprehensiveHall.favoriteCount)}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>

@@ -1,11 +1,8 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.bumptech.glide.Glide;
-import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -37,7 +30,6 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.InputPwdDialog;
 
