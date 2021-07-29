@@ -142,13 +142,13 @@ public class Constant {
     public static final String ZB_XWGF = "pages_base/agreement/liveStandard?action=redirect";
 
     //视频举报
-    public static final String VIDEO_REPORT = "pages_base/feedback/reportType?action=redirect&title=视频举报&type=video&id=";
+    public static final String VIDEO_REPORT = "pages_base/feedback/reportType?action=redirect&title=视频举报&type=USER_CREATION_REPORT&id=";
     //用户举报
-    public static final String USER_REPORT = "pages_base/feedback/reportType?action=redirect&title=用户举报&type=user&id=";
+    public static final String USER_REPORT = "pages_base/feedback/reportType?action=redirect&title=用户举报&type=USER_REPORT&id=";
     //日记举报
-    public static final String USERDIARY_REPORT = "pages_base/feedback/reportType?action=redirect&title=日记举报&type=UserDiary&id=";
+    public static final String USERDIARY_REPORT = "pages_base/feedback/reportType?action=redirect&title=日记举报&type=USER_CREATION_REPORT&id=";
     //直播举报
-    public static final String LIVE_REPORT = "pages_base/feedback/reportType?action=redirect&title=直播举报&type=video&id=";
+    public static final String LIVE_REPORT = "pages_base/feedback/reportType?action=redirect&title=直播举报&type=LIVE_REPORT&id=";
     //直播间添加商品小程序
     public static final String LIVE_ADD_GOODS = "pages_live/addLiveCommodity?action=redirect";
 

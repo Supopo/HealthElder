@@ -1916,6 +1916,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
             if (eventBean.msgId == LiveConstants.SEND_MSG) {
+                //二次判断当前是否禁言
+                if (!mLiveInitInfo.getCanComment()) {
+                    ToastUtil.toastShortMessage(LiveConstants.SHOW_JZPL);
+                    return;
+                }
                 //防止重复发送
                 if (eventBean.time - lastMsgTime < 200 && lastMsg.equals(eventBean.content)) {
                     return;

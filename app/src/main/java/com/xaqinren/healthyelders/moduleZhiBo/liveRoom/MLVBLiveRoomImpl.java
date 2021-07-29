@@ -479,6 +479,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @param roomInfo 房间信息（非必填），用于房间描述的信息，比如房间名称，允许使用 JSON 格式作为房间信息。
      * @param callback 创建房间的结果回调
      */
+
+    //直播分辨率
+    private int mVideoQuality = TXLiveConstants.VIDEO_QUALITY_SUPER_DEFINITION;
+
     @Override
     public void createRoom(final String roomID, final String roomInfo, final IMLVBLiveRoomListener.CreateRoomCallback callback) {
 
@@ -498,7 +502,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     mSelfAccelerateURL = data.accelerateURL;
                     LogUtils.v(Constant.TAG_LIVE, "主播自己的加速流：" + mSelfAccelerateURL);
                     //3.开始推流  设置分辨率 画面质量。默认高清，超清连麦时候容易断。
-                    startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
+                    startPushStream(pushURL, mVideoQuality, new StandardCallback() {
                         @Override
                         public void onError(int errCode, String errInfo) {
                             callbackOnThread(callback, "onError", errCode, errInfo);
@@ -600,7 +604,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         //1. 在应用层调用startLocalPreview，启动本地预览
         //2. 请求CGI:get_push_url，异步获取到推流地址pushUrl(此处已经省略)
         //3. 开始推流
-        startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
+        startPushStream(pushURL, mVideoQuality, new StandardCallback() {
             @Override
             public void onError(int errCode, String errInfo) {
                 callbackOnThread(callback, "onError", errCode, errInfo);
@@ -1249,7 +1253,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
                     String newPushUrl = data.pushURL + "&isPusher=0";//0意思是上麦推流
                     //5. 开始推流
-                    startPushStream(newPushUrl, type == 1 ? TXLiveConstants.VIDEO_QUALITY_LINKMIC_MAIN_PUBLISHER : TXLiveConstants.VIDEO_QUALITY_LINKMIC_SUB_PUBLISHER, new StandardCallback() {
+                    startPushStream(newPushUrl, TXLiveConstants.VIDEO_QUALITY_LINKMIC_SUB_PUBLISHER, new StandardCallback() {
                         @Override
                         public void onError(final int code, final String info) {
                             callbackOnThread(callback, "onError", code, info);
@@ -1771,7 +1775,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     if (mPlayers.size() == 0) {
                         //没有播放流了，切换推流回直播模式
                         if (mTXLivePusher != null) {
-                            mTXLivePusher.setVideoQuality(TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, false, false);
+                            mTXLivePusher.setVideoQuality(mVideoQuality, false, false);
                             TXLivePushConfig config = mTXLivePusher.getConfig();
                             config.setVideoEncodeGop(2);
                             mTXLivePusher.setConfig(config);
@@ -3240,12 +3244,12 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
         if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_GIFT))) {
             ReceiveGiftsMessage gifsMessage = new Gson().fromJson(message, ReceiveGiftsMessage.class);
-            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel,gifsMessage.userLevelIcon);
+            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, gifsMessage.data.cmd, gifsMessage.data.msg, gifsMessage.userLevel, gifsMessage.userLevelIcon);
         } else if (customMessage.data.cmd.equals(String.valueOf(LiveConstants.IMCMD_TO_LINK))) {
             ReceiveLinkMessage linkMessage = new Gson().fromJson(message, ReceiveLinkMessage.class);
-            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, linkMessage.data.cmd, linkMessage.data.msg, linkMessage.userLevel,linkMessage.userLevelIcon);
+            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, linkMessage.data.cmd, linkMessage.data.msg, linkMessage.userLevel, linkMessage.userLevelIcon);
         } else {
-            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, customMessage.data.cmd, customMessage.data.msg, customMessage.userLevel,customMessage.userLevelIcon);
+            callbackOnThread(mListener, "onRecvRoomCustomMsg", groupID, senderID, userName, userAvatar, customMessage.data.cmd, customMessage.data.msg, customMessage.userLevel, customMessage.userLevelIcon);
         }
 
     }
@@ -3403,8 +3407,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         private String mMainStreamId = "";
         private String mPKStreamId = "";
         private Vector<String> mSubStreamIds = new Vector<String>();
-        private int mMainStreamWidth = 540;
-        private int mMainStreamHeight = 960;
+        private int mMainStreamWidth = 720;
+        private int mMainStreamHeight = 1280;
 
         public StreamMixturer() {
 
@@ -3504,8 +3508,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             mSubStreamIds.clear();
             mMainStreamId = null;
             mPKStreamId = null;
-            mMainStreamWidth = 540;
-            mMainStreamHeight = 960;
+            mMainStreamWidth = 720;
+            mMainStreamHeight = 1080;
         }
 
         private void sendStreamMergeRequest(final int retryCount, boolean isAudio) {
@@ -3582,15 +3586,15 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 }
 
 
-                int subWidth = 160;
-                int subHeight = 240;
+                int subWidth = 180;
+                int subHeight = 270;
                 int offsetHeight = 20;
-                if (mMainStreamWidth < 540 || mMainStreamHeight < 960) {
-                    subWidth = 120;
-                    subHeight = 180;
+                if (mMainStreamWidth < 720 || mMainStreamHeight < 1080) {
+                    subWidth = 180;
+                    subHeight = 240;
                     offsetHeight = 20;
                 }
-                int subLocationX = mMainStreamWidth - subWidth;
+                int subLocationX = mMainStreamWidth - subWidth - 2 * offsetHeight;
                 int subLocationY = mMainStreamHeight - subHeight - offsetHeight;
 
                 // 小主播
