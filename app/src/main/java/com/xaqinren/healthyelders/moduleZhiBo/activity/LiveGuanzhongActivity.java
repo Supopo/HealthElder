@@ -1096,6 +1096,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         linkStatus = 1;
         binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmai_gz);
 
+
+
         if (linkType == 0) {
             //关闭1v1视频连麦，切回主播屏幕
             binding.rlAnchor2.setVisibility(View.GONE);
@@ -1108,6 +1110,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             //            updateLinkerPos(mLinkPos, null, "请求上麦", null);
         }
 
+        //判断是否关闭连麦了
+        if (!mLiveInitInfo.getCanMic()) {
+            ToastUtil.toastShortMessage(LiveConstants.SHOW_JZLM);
+            binding.btnLianmai.setVisibility(View.GONE);
+        }
     }
 
 
@@ -1433,9 +1440,15 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 mLiveInitInfo.setCanMic(true);
                 break;
             case LiveConstants.IMCMD_FORBIDDEN_MIC://禁止连麦
-                ToastUtil.toastShortMessage(LiveConstants.SHOW_JZLM);
-                binding.btnLianmai.setVisibility(View.GONE);
+
+                //判断是否在未连麦
                 mLiveInitInfo.setCanMic(false);
+                if (linkStatus == 1) {
+                    ToastUtil.toastShortMessage(LiveConstants.SHOW_JZLM);
+                    binding.btnLianmai.setVisibility(View.GONE);
+                }
+
+
                 break;
             case LiveConstants.IMCMD_SETTING_PL://评论设置
                 if (((String) message).equals("1")) {

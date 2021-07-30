@@ -480,8 +480,10 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @param callback 创建房间的结果回调
      */
 
-    //直播分辨率
-    private int mVideoQuality = TXLiveConstants.VIDEO_QUALITY_SUPER_DEFINITION;
+    //直播分辨率 超清容易im掉线
+    private int mVideoQuality = TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION;
+    private int bgW = 540;
+    private int bgH = 960;
 
     @Override
     public void createRoom(final String roomID, final String roomInfo, final IMLVBLiveRoomListener.CreateRoomCallback callback) {
@@ -2217,6 +2219,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             imMessageMgr.sendGroupCustomMessage(content, new IMMessageMgr.Callback() {
                 @Override
                 public void onError(int code, String errInfo) {
+                    //todo 掉线重登  6014
                     String msg = "[IM] 自定义消息发送失败[" + errInfo + ":" + code + "]";
                     TXCLog.e(TAG, msg);
                     callbackOnThread(callback, "onError", code, msg);
@@ -2291,6 +2294,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             imMessageMgr.sendGroupCustomMessage(content, new IMMessageMgr.Callback() {
                 @Override
                 public void onError(int code, String errInfo) {
+                    //todo 掉线重登 6014 被踢
                     String msg = "[IM] 自定义消息发送失败[" + errInfo + ":" + code + "]";
                     TXCLog.e(TAG, msg);
                     callbackOnThread(callback, "onError", code, msg);
@@ -3407,8 +3411,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         private String mMainStreamId = "";
         private String mPKStreamId = "";
         private Vector<String> mSubStreamIds = new Vector<String>();
-        private int mMainStreamWidth = 720;
-        private int mMainStreamHeight = 1280;
+        private int mMainStreamWidth = bgW;
+        private int mMainStreamHeight = bgH;
 
         public StreamMixturer() {
 
@@ -3508,8 +3512,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             mSubStreamIds.clear();
             mMainStreamId = null;
             mPKStreamId = null;
-            mMainStreamWidth = 720;
-            mMainStreamHeight = 1080;
+            mMainStreamWidth = bgW;
+            mMainStreamHeight = bgH;
         }
 
         private void sendStreamMergeRequest(final int retryCount, boolean isAudio) {
@@ -3590,7 +3594,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 int subHeight = 270;
                 int offsetHeight = 20;
                 if (mMainStreamWidth < 720 || mMainStreamHeight < 1080) {
-                    subWidth = 180;
+                    subWidth = 160;
                     subHeight = 240;
                     offsetHeight = 20;
                 }
