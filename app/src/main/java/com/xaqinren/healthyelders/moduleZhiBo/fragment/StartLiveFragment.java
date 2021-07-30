@@ -245,6 +245,11 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
 
         binding.btnStart.setOnClickListener(lis -> {
+            if (!isAgree) {
+                ToastUtil.toastShortMessage("请先阅读并同意使用条款和行为规范");
+                return;
+            }
+
             if (hasCheckInfo) {
                 //判断是不是存在虚拟直播
                 if (mLiveInitInfo != null && mLiveInitInfo.liveRoomType != null && mLiveInitInfo.liveRoomType.equals(Constant.REQ_ZB_TYPE_XN) && !mLiveInitInfo.liveRoomStatus.equals("LIVE_OVER")) {

@@ -60,6 +60,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_3"
+            android:maxLength="5"
             android:singleLine="true"
             android:text="@{viewModel.nickname}"
             android:textColor="@color/white"

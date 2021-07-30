@@ -472,6 +472,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
+        binding.lvMsg.setSelection(0);
+
         binding.lvMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -491,7 +493,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 }
             }
         });
-
         binding.lvMsg.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -1929,6 +1930,12 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 lastMsgTime = eventBean.time;
                 lastMsg = eventBean.content;
             } else if (eventBean.msgId == CodeTable.ZHJ_SEND_GIFT) {
+                //发送礼物二次判断
+                if (!mLiveInitInfo.getCanGift()) {
+                    ToastUtil.toastShortMessage(LiveConstants.SHOW_JZLW);
+                    return;
+                }
+
                 selectGift = (GiftBean) eventBean.data;
                 //发送礼物-接口请求
                 viewModel.sendGift(mLiveInitInfo.liveRoomRecordId, mLiveInitInfo.userId, selectGift.id);

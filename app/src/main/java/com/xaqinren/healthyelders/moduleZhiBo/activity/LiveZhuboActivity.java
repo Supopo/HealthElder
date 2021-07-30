@@ -484,6 +484,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
         msgAdapter = new TCChatMsgListAdapter(this, binding.lvMsg, msgList);
         binding.lvMsg.setAdapter(msgAdapter);
+        binding.lvMsg.setSelection(0);
 
         binding.lvMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
