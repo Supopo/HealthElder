@@ -107,7 +107,7 @@ public class UrlUtils {
 
     public static String resetImgUrl(String url, int width, int height) {
         //此格式无效无需操作
-        if (url.contains(".jpeg")) {
+        if (url.contains(".jpeg") || url.contains(".jpg")) {
             return url;
         }
 

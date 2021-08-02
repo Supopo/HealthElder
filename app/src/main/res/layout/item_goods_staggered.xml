@@ -17,7 +17,6 @@
             android:id="@+id/cover"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:url="@{viewModel.imageUrl}"
             />
 
         <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
