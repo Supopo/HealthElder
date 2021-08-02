@@ -2,11 +2,18 @@ package com.xaqinren.healthyelders.widget.share;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.SyncStateContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,10 +62,14 @@ import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.ref.SoftReference;
+import java.net.URL;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -416,6 +427,7 @@ public class ShareDialog {
         //        UserRepository.getInstance().getFriendsList(datas, page, pageSize);
     }
 
+
     private void saveVideo(String url) {
         File downLoadPath = DownloadUtil.get().getSaveFileFromUrl(shareBean.oldUrl, mContext, "Video");
         if (downloadProgress == null) {
@@ -425,8 +437,10 @@ public class ShareDialog {
         downloadProgress.show();
         DownloadUtil.get().download(url, downLoadPath, new DownloadUtil.OnDownloadListener() {
             @Override
-            public void onDownloadSuccess() {
-                ToastUtil.toastLongMessage("视频已下载至：" + downLoadPath.getPath());
+            public void onDownloadSuccess(File file) {
+                ToastUtil.toastLongMessage("视频已下载至：JKZL/Video");
+                //刷新视频库
+                mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file)));
                 downloadProgress.dismiss();
             }
 

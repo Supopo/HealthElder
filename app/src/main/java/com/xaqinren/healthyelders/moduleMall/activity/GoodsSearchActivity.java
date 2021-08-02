@@ -1,23 +1,16 @@
 package com.xaqinren.healthyelders.moduleMall.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -27,7 +20,6 @@ import com.xaqinren.healthyelders.impl.TextWatcherImpl;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMall.adapter.GoodsLinearAdapter;
 import com.xaqinren.healthyelders.moduleMall.adapter.GoodsStaggeredAdapter;
-import com.xaqinren.healthyelders.moduleMall.bean.GoodsItemBean;
 import com.xaqinren.healthyelders.moduleMall.viewModel.GoodsSearchViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.GoodsBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
@@ -40,7 +32,6 @@ import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
-import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 
