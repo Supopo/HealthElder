@@ -87,6 +87,7 @@ public class CodeTable {
      * 定位成功
      */
     public static final int LOCATION_SUCCESS = 0x100015;
+    public static final int LOCATION_ERROR = 0x1000151;
     public static final int NO_CARD = 0x100016;
 
     /**

@@ -2,13 +2,17 @@ package com.xaqinren.healthyelders.moduleLiteav.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -39,6 +43,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.ChooseLocationViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
 
 import java.util.ArrayList;
@@ -66,7 +71,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private String poiName;
     private String cityCode;
     private String cityName;
-    private Inputtips inputTips ;
+    private Inputtips inputTips;
     private Disposable eventDisposable;
     private PoiSearch poiSearch;
     private int locationPageIndex = 1;
@@ -77,6 +82,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private int CITY_CODE = 123;
     private String addressName;
     private String addressInfo;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_lite_av_location;
@@ -87,6 +93,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         return BR.viewModel;
     }
 
+    private int locSuccess; //0未开始 1定位成功 2定位失败 3去GPS定位
+
     @Override
     public void initData() {
         super.initData();
@@ -95,6 +103,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         binding.cancel.setOnClickListener(view -> finish());
         eventDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(o -> {
             if (o.msgId == CodeTable.LOCATION_SUCCESS) {
+                dismissDialog();
+                locSuccess = 1;
                 //定位成功
                 LocationBean locationBean = (LocationBean) o.data;
                 lat = locationBean.lat;
@@ -104,12 +114,56 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                 poiName = locationBean.desName;
                 getAddressList();
                 binding.cityName.setText(cityName);
+            } else if (o.msgId == CodeTable.LOCATION_ERROR) {
+                dismissDialog();
+                // 等于3说明已经尝试过一次GPS定位
+                if (locSuccess != 3) {
+                    openGPSSettings();
+                }
             }
         });
         RxSubscriptions.add(eventDisposable);
         initView();
         checkPermission();
     }
+
+    /**
+     * 检测GPS是否打开
+     */
+    private boolean checkGPSIsOpen() {
+        boolean isOpen;
+        LocationManager locationManager = (LocationManager) getActivity()
+                .getSystemService(Context.LOCATION_SERVICE);
+        isOpen = locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+        return isOpen;
+    }
+
+    /**
+     * 跳转GPS设置
+     */
+    private void openGPSSettings() {
+        if (!checkGPSIsOpen()) {
+            //没有打开则弹出对话框
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+            yesOrNoDialog.setMessageText("为确保定位成功，请打开GPS");
+            yesOrNoDialog.showDialog();
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    locSuccess = 3; //尝试GPS定位
+                    //去打开GPS
+                    //跳转GPS设置界面
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(intent, 1010);
+
+                    yesOrNoDialog.dismissDialog();
+                }
+            });
+        } else {
+            locSuccess = 2;
+        }
+    }
+
 
     private void initView() {
         adapter = new ChooseLocationAdapter(R.layout.item_lite_av_location);
@@ -130,15 +184,15 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
-                    if (locationType == 0){
+                    if (locationType == 0) {
                         locationType = 1;
                     }
                     if (!editable.equals(currentSearch)) {
                         locationPageIndex = 1;
                     }
                     searchAddress(editable.toString());
-                }else{
-                    if (locationType == 1){
+                } else {
+                    if (locationType == 1) {
                         locationType = 0;
                         locationPageIndex = 1;
                     }
@@ -158,7 +212,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         adapter.getLoadMoreModule().setOnLoadMoreListener(() -> {
             if (binding.searchView.getText().length() > 0) {
                 searchAddress(binding.searchView.getText().toString());
-            }else {
+            } else {
                 getAddressList();
             }
         });
@@ -167,21 +221,21 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             intent.putExtra("show_area", 0);
             intent.putExtra("city", cityName);
             intent.setClass(this, CityPickerActivity.class);
-            startActivityForResult(intent,CITY_CODE);
+            startActivityForResult(intent, CITY_CODE);
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        eventDisposable.dispose();
-    }
 
     @Override
     protected void onDestroy() {
-        poiSearch.setOnPoiSearchListener(null);
-        poiSearch = null;
-        inputTips = null;
+        if (poiSearch != null) {
+            poiSearch.setOnPoiSearchListener(null);
+            poiSearch = null;
+            inputTips = null;
+        }
+        if (eventDisposable != null) {
+            eventDisposable.dispose();
+        }
         super.onDestroy();
     }
 
@@ -194,9 +248,9 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
      * 检查并申请权限
      */
     public void checkPermission() {
-        boolean check = PermissionUtils.checkPermission(this,  new String[]{
+        boolean check = PermissionUtils.checkPermission(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION ,
+                Manifest.permission.ACCESS_FINE_LOCATION,
         });
         if (check) {
             showDialog();
@@ -210,7 +264,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         boolean check = PermissionUtils.checkPermissionAllGranted(this, permissions);
         if (check) {
             LocationService.startService(this);
-        }else{
+        } else {
             ToastUtils.showShort("定位权限缺失");
         }
     }
@@ -223,7 +277,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         PoiSearch.Query query = new PoiSearch.Query(poiName, "", cityCode);
         query.setPageSize(15);// 设置每页最多返回多少条poiitem
         query.setPageNum(locationPageIndex);//设置查询页码
-        poiSearch = new PoiSearch(this,query);
+        poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(lat, lon), 500));//设置周边搜索的中心点以及半径
         poiSearch.searchPOIAsyn();
@@ -234,8 +288,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         if (inputTips == null) {
             inputTips = new Inputtips(this, inputquery);
             inputTips.setInputtipsListener(this);
-        }
-        else
+        } else
             inputTips.setQuery(inputquery);
         inputTips.requestInputtipsAsyn();
     }
@@ -246,7 +299,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             geocoderSearch.setOnGeocodeSearchListener(this);
         }
         // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
-        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,GeocodeSearch.AMAP);
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200, GeocodeSearch.AMAP);
         geocoderSearch.getFromLocationAsyn(query);
     }
 
@@ -254,7 +307,8 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     public void onPoiSearched(PoiResult poiResult, int i) {
         LogUtils.e("Location", JSON.toJSONString(poiResult));
         dismissDialog();
-        if (locationPageIndex == 1) selLocationBeans.clear();
+        if (locationPageIndex == 1)
+            selLocationBeans.clear();
         for (PoiItem item : poiResult.getPois()) {
             LocationBean bean = new LocationBean();
             bean.address = item.getSnippet();
@@ -271,7 +325,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         adapter.setList(selLocationBeans);
         if (poiResult.getPois().isEmpty()) {
             adapter.getLoadMoreModule().loadMoreEnd();
-        }else{
+        } else {
             adapter.getLoadMoreModule().loadMoreComplete();
         }
     }
@@ -284,7 +338,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     @Override
     public void onGetInputtips(List<Tip> list, int i) {
         LogUtils.e("Location", JSON.toJSONString(list));
-        LatLng latLng1 = new LatLng(lat,lon);
+        LatLng latLng1 = new LatLng(lat, lon);
         if (locationPageIndex == 1) {
             selLocationTipBeans.clear();
         }
@@ -292,15 +346,15 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
             LocationBean bean = new LocationBean();
             bean.desName = item.getName();
             bean.address = item.getAddress();
-            if (item.getPoint()!=null) {
+            if (item.getPoint() != null) {
                 bean.lat = item.getPoint().getLatitude();
                 bean.lon = item.getPoint().getLongitude();
             }
             item.getDistrict();
             if (bean.lat != 0 && bean.lon != 0) {
-                LatLng latLng2 = new LatLng(bean.lat,bean.lon);
-                int distance = (int) AMapUtils.calculateLineDistance(latLng1,latLng2);
-                bean.distance = distance+"";
+                LatLng latLng2 = new LatLng(bean.lat, bean.lon);
+                int distance = (int) AMapUtils.calculateLineDistance(latLng1, latLng2);
+                bean.distance = distance + "";
             }
             selLocationTipBeans.add(bean);
         }
@@ -319,7 +373,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         bean.city = regeocodeResult.getRegeocodeAddress().getCity();
         bean.district = regeocodeResult.getRegeocodeAddress().getDistrict();
         bean.desName = clickDesName;
-//        bean.addressInfo = regeocodeResult.getRegeocodeAddress().getFormatAddress();
+        //        bean.addressInfo = regeocodeResult.getRegeocodeAddress().getFormatAddress();
         bean.address = addressInfo;
         bean.addressInfo = addressName;
         //选择返回
@@ -334,8 +388,9 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
 
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CITY_CODE) {
@@ -345,6 +400,11 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                     binding.searchView.setText(null);
                 }
             }
+        }
+        if (requestCode == 1010) {
+            //开启定位
+            showDialog();
+            LocationService.startService(this);
         }
     }
 }

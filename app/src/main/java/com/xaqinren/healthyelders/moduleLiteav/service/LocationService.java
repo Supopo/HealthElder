@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -106,9 +107,9 @@ public class LocationService extends Service implements AMapLocationListener {
                 locationBean.cityCode = cityCode;
                 locationBean.cityName = cityName;
                 //发送定位成功请求
-                RxBus.getDefault().post(new EventBean<>(CodeTable.LOCATION_SUCCESS, locationBean));
+                RxBus.getDefault().post(new EventBean(CodeTable.LOCATION_SUCCESS, locationBean));
             } else {
-
+                RxBus.getDefault().post(new EventBean(CodeTable.LOCATION_ERROR, amapLocation.getErrorCode()));
             }
         }
     }

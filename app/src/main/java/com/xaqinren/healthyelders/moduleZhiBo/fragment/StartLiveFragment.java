@@ -4,12 +4,15 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -73,6 +76,7 @@ import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,8 +166,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             menus.add(new MenuBean(menuNames[i], menuRes[i]));
         }
         //暂时去掉密码
-//        menus.remove(5);
-//        noPwd = true;
+        //        menus.remove(5);
+        //        noPwd = true;
 
         menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
             switch (menuAdapter.getData().get(position).menuName) {
@@ -231,6 +235,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             selectImage();
         });
         binding.llLoc.setOnClickListener(lis -> {
+            if (locSuccess != 1) {
+                openGPSSettings();
+            }
             showListPop();
         });
 
@@ -267,6 +274,45 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
     }
 
+    /**
+     * 检测GPS是否打开
+     */
+    private boolean checkGPSIsOpen() {
+        boolean isOpen;
+        LocationManager locationManager = (LocationManager) getActivity()
+                .getSystemService(Context.LOCATION_SERVICE);
+        isOpen = locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+        return isOpen;
+    }
+
+    /**
+     * 跳转GPS设置
+     */
+    private void openGPSSettings() {
+        if (checkGPSIsOpen()) {
+            LocationService.startService(getActivity());
+        } else {
+            //没有打开则弹出对话框
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+            yesOrNoDialog.setMessageText("为确保定位成功，请打开GPS");
+            yesOrNoDialog.showDialog();
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    locSuccess = 3;
+                    //去打开GPS
+                    //跳转GPS设置界面
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(intent, 1010);
+
+                    yesOrNoDialog.dismissDialog();
+                }
+            });
+
+        }
+    }
+
+
     private void toStartLive() {
         disposable = permissions.request(Manifest.permission.RECORD_AUDIO)
                 .subscribe(granted -> {
@@ -300,12 +346,15 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 });
     }
 
+    private int locSuccess;
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == CodeTable.LOCATION_SUCCESS) {
+                    locSuccess = 1;
                     //定位成功
                     LocationBean locationBean = (LocationBean) event.data;
                     lat = locationBean.lat;
@@ -318,6 +367,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     district = locationBean.district;
                     poiName = locationBean.desName;
                     binding.tvLoc.setText(cityName + poiName);
+                } else if (event.msgId == CodeTable.LOCATION_ERROR) {
+                    locSuccess = 2;
                 }
             }
         });
@@ -362,7 +413,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                         }
                     }
                 }
-
 
 
                 menuAdapter.setNewInstance(menus);
@@ -749,6 +799,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 }
                 menuAdapter.notifyItemChanged(temp, 99);
             }
+        } else if (requestCode == 1010) {
+            //开启定位
+            LocationService.startService(getActivity());
         }
     }
 

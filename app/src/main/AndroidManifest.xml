@@ -16,21 +16,23 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-<!--    <uses-permission android:name="android.permission.SEND_SMS" />-->
-<!--    <uses-permission android:name="android.permission.READ_SMS" />-->
-<!--    <uses-permission android:name="android.permission.RECEIVE_SMS" />-->
+    <!--    <uses-permission android:name="android.permission.SEND_SMS" />-->
+    <!--    <uses-permission android:name="android.permission.READ_SMS" />-->
+    <!--    <uses-permission android:name="android.permission.RECEIVE_SMS" />-->
+    <!--如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
 
     <application
         android:name=".global.AppApplication"
-        android:extractNativeLibs="true"
         android:allowBackup="true"
         android:allowClearUserData="true"
+        android:extractNativeLibs="true"
         android:icon="@mipmap/icon_app"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -64,8 +66,8 @@
 
         <activity
             android:name=".moduleLogin.activity.SplashActivity"
-            android:theme="@style/FullScreenAppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreenAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -116,8 +118,12 @@
             android:name="com.amap.api.v2.apikey"
             android:value="c7e12ebf28500a8715e6a77a418f3cb2" />
 
-        <service android:name="com.amap.api.location.APSService" />
-        <service android:name=".moduleLiteav.service.LocationService" />
+        <service android:name="com.amap.api.location.APSService"
+            android:foregroundServiceType="location"
+            />
+        <service
+            android:name=".moduleLiteav.service.LocationService"
+            android:foregroundServiceType="location" />
         <!-- 微信分享 配置begin -->
         <meta-data
             android:name="WX_APPID"
@@ -176,7 +182,7 @@
             android:name=".moduleZhiBo.activity.StartLiveActivity"
             android:launchMode="singleTask"
             android:theme="@style/AnimTheme"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".moduleZhiBo.activity.StartRenZhengActivity"
             android:theme="@style/AnimTheme" />
@@ -192,20 +198,20 @@
         <activity
             android:name=".moduleLiteav.activity.LiveAVActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleZhiBo.activity.LiveZhuboActivity"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
-            />
+        <activity
+            android:name=".moduleZhiBo.activity.LiveZhuboActivity"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity
             android:name=".moduleZhiBo.activity.LiveGuanzhongActivity"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
-            android:theme="@style/AnimTheme" />
+            android:theme="@style/AnimTheme"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity
             android:name=".moduleZhiBo.activity.ZBEditTextDialogActivity"
             android:theme="@style/EditDialogStyle" />
         <activity
             android:name=".moduleLiteav.activity.VideoEditerActivity"
-            android:theme="@style/AnimTheme"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleLiteav.activity.VideoPublishActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -228,7 +234,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
@@ -253,15 +259,17 @@
         <activity
             android:name=".moduleLiteav.activity.LiteAvPlay2Activity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".modulePicture.activity.SelectorMediaActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleLiteav.activity.MusicDetailsActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleLiteav.activity.ChooseMusicActivity"
-            android:theme="@style/TranslucentAppTheme"/>
-        <activity android:name=".moduleHome.activity.VideoListActivity"
+        <activity
+            android:name=".modulePicture.activity.SelectorMediaActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleLiteav.activity.MusicDetailsActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleLiteav.activity.ChooseMusicActivity"
+            android:theme="@style/TranslucentAppTheme" />
+        <activity
+            android:name=".moduleHome.activity.VideoListActivity"
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".modulePicture.activity.TextPhotoDetailActivity"
@@ -270,8 +278,7 @@
         <activity
             android:name=".moduleZhiBo.activity.VideoEditTextDialogActivity"
             android:theme="@style/EditDialogStyle"
-            android:windowSoftInputMode="adjustResize"
-            />
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".moduleHome.activity.DraftActivity">
             <intent-filter>
                 <data
@@ -280,11 +287,11 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
-        <activity android:name=".moduleHome.activity.VideoGridActivity" >
+        <activity android:name=".moduleHome.activity.VideoGridActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
@@ -292,17 +299,18 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
-        <activity android:name=".modulePicture.activity.PublishAtActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMsg.activity.ChatActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleHome.activity.SearchActivity"
+        <activity
+            android:name=".modulePicture.activity.PublishAtActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMsg.activity.ChatActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleHome.activity.SearchActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleMsg.activity.InteractiveActivity">
             <intent-filter>
@@ -312,7 +320,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
             </intent-filter>
         </activity>
@@ -320,7 +328,8 @@
         <activity
             android:name=".moduleMsg.activity.AddFriendActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".moduleHome.activity.SearchAllActivity"
+        <activity
+            android:name=".moduleHome.activity.SearchAllActivity"
             android:theme="@style/AnimTheme" />
         <activity android:name=".moduleMsg.activity.FansMsgActivity">
             <intent-filter>
@@ -330,7 +339,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.SysMsgActivity">
@@ -341,7 +350,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.LiveMsgActivity">
@@ -352,7 +361,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.ServiceMsgActivity">
@@ -363,7 +372,7 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".moduleMsg.activity.WalletMsgActivity">
@@ -374,15 +383,18 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
         <activity android:name=".widget.pickerView.cityPicker.CityPickerActivity" />
-        <activity android:name=".moduleMine.activity.EditInfoActivity"
+        <activity
+            android:name=".moduleMine.activity.EditInfoActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleMine.activity.EditNameActivity"
+        <activity
+            android:name=".moduleMine.activity.EditNameActivity"
             android:theme="@style/AnimTheme" />
-        <activity android:name=".moduleMine.activity.EditBriefActivity"
+        <activity
+            android:name=".moduleMine.activity.EditBriefActivity"
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.CZSelectPopupActivity"
@@ -395,7 +407,7 @@
         <activity
             android:name=".moduleZhiBo.activity.PayActivity"
             android:theme="@style/EditDialogStyleEx"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden|adjustResize" >
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden|adjustResize">
             <intent-filter>
                 <data
                     android:host="app_open"
@@ -403,18 +415,19 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMine.activity.LookAttentionActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.MyRecommendCodeActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.WalletActivity"
+        <activity
+            android:name=".moduleMine.activity.LookAttentionActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.MyRecommendCodeActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.WalletActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AnimTheme" >
+            android:theme="@style/AnimTheme">
             <intent-filter>
                 <data
                     android:host="app_open"
@@ -422,34 +435,34 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMine.activity.SettingPayPassActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.ConfirmPassActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.CoinActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.BandCardActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.AddBankCardActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.AnchorActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.MiniActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.UserInfoActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.SettingActivity" >
+        <activity
+            android:name=".moduleMine.activity.SettingPayPassActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.ConfirmPassActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.CoinActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.BandCardActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.AddBankCardActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.AnchorActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.MiniActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.UserInfoActivity"
+            android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleMine.activity.SettingActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
@@ -457,32 +470,33 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleMine.activity.LookAuthActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.CoinDetailActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.ChangePhoneActivity"
-            android:theme="@style/AnimTheme"
-            />
+        <activity
+            android:name=".moduleMine.activity.LookAuthActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.CoinDetailActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.ChangePhoneActivity"
+            android:theme="@style/AnimTheme" />
         <activity android:name=".moduleMine.activity.WithdrawWXActivity" />
-        <activity android:name=".moduleMine.activity.WithdrawActivity"
+        <activity
+            android:name=".moduleMine.activity.WithdrawActivity"
             android:theme="@style/AnimTheme"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustPan"/>
-        <activity android:name=".moduleMine.activity.OrderListActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMine.activity.WithdrawApplySuccess"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".uniApp.activity.PhotoActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleMall.activity.GoodsSearchActivity" >
+            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
+        <activity
+            android:name=".moduleMine.activity.OrderListActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleMine.activity.WithdrawApplySuccess"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".uniApp.activity.PhotoActivity"
+            android:theme="@style/AnimTheme" />
+        <activity android:name=".moduleMall.activity.GoodsSearchActivity">
             <intent-filter>
                 <data
                     android:host="app_open"
@@ -490,21 +504,23 @@
                     android:scheme="jkzl" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <!--                <category android:name="android.intent.category.BROWSABLE" />-->
             </intent-filter>
         </activity>
-        <activity android:name=".moduleHome.activity.TestActivity"
-            android:theme="@style/AnimTheme"
-            />
-        <activity android:name=".moduleHome.activity.MenuSearchActivity"
+        <activity
+            android:name=".moduleHome.activity.TestActivity"
+            android:theme="@style/AnimTheme" />
+        <activity
+            android:name=".moduleHome.activity.MenuSearchActivity"
             android:theme="@style/AnimTheme" />
         <activity
             android:name="com.king.zxing.CaptureActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CaptureTheme"/>
-        <activity android:name=".qrcode.QRCodeActivity"
+            android:theme="@style/CaptureTheme" />
+        <activity
+            android:name=".qrcode.QRCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CaptureTheme"/>
+            android:theme="@style/CaptureTheme" />
         <activity android:name=".moduleLogin.activity.Splash2Activity" />
 
         <service
@@ -517,6 +533,8 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".uniApp.UniService" />
         <service android:name=".moduleHome.LoadGiftService" />
+
+
     </application>
 
 </manifest>
