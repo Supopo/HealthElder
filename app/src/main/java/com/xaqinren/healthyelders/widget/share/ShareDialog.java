@@ -311,7 +311,7 @@ public class ShareDialog {
         //获取剪贴板管理器：
         cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         // 创建普通字符型ClipData
-        mClipData = ClipData.newPlainText("Label", shareBean.url);
+        mClipData = ClipData.newPlainText("Label", Constant.baseH5Url + "#" + shareBean.url);
         // 将ClipData内容放到系统剪贴板里。
         cm.setPrimaryClip(mClipData);
         ToastUtil.toastShortMessage("复制成功");
