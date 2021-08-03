@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
@@ -39,10 +40,9 @@ public class EditBriefActivity extends BaseActivity<ActivityEditBriefBinding, Ed
         userInfoBean = UserInfoMgr.getInstance().getUserInfo();
         tvRight.setTextColor(getResources().getColor(R.color.color_F81E4D));
         tvRight.setOnClickListener(view -> {
-            //TODO 修改接口
-            String name = binding.infoEt.getText().toString();
-            if (StringUtils.isEmpty(name)) {
-                ToastUtil.toastShortMessage("请输入简介");
+            String name = binding.infoEt.getText().toString().trim();
+            if (TextUtils.isEmpty(name)) {
+                ToastUtil.toastShortMessage("简介不能为空！");
                 return;
             }
             showDialog();

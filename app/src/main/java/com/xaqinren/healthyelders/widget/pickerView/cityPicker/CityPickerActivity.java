@@ -3,7 +3,9 @@ package com.xaqinren.healthyelders.widget.pickerView.cityPicker;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,8 +23,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amap.api.location.AMapLocation;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.CpActivityCityListBinding;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.adapter.AreaGridAdapter;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.adapter.CityListAdapter;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.adapter.ResultListAdapter;
@@ -79,9 +84,42 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
             mCityAdapter.updateLocateState(LocateState.SUCCESS, location);
         } else {
             //定位失败
+            if (!checkGPSIsOpen()) {
+                openGPSSettings();
+            }
             mCityAdapter.updateLocateState(LocateState.FAILED, null);
         }
     }
+
+    private boolean checkGPSIsOpen() {
+        boolean isOpen;
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(Context.LOCATION_SERVICE);
+        isOpen = locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+        return isOpen;
+    }
+
+    /**
+     * 跳转GPS设置
+     */
+    private void openGPSSettings() {
+        //没有打开则弹出对话框
+        YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+        yesOrNoDialog.setMessageText("为确保定位成功，请打开GPS");
+        yesOrNoDialog.showDialog();
+        yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //去打开GPS
+                //跳转GPS设置界面
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(intent, 1010);
+
+                yesOrNoDialog.dismissDialog();
+            }
+        });
+    }
+
 
     @Override
     public void initData() {
@@ -262,6 +300,12 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1010) {
+            //开启定位
+            //点击定位
+            mCityAdapter.updateLocateState(LocateState.LOCATING, null);
+            mHelper.startMapLocation();
+        }
     }
 
     @Override
@@ -275,5 +319,10 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
             location = city;
             initLocation();
         }
+    }
+
+    @Override
+    public void onCallLocationEro() {
+        initLocation();
     }
 }

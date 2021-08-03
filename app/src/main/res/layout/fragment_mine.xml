@@ -432,6 +432,7 @@
                 android:layout_below="@id/rl_top"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="-50dp"
+                android:src="@mipmap/icon_photo_def"
                 app:qmui_border_color="@color/white"
                 app:qmui_is_circle="true" />
         </RelativeLayout>

@@ -45,7 +45,7 @@ public class MapLocationHelper implements AMapLocationListener {
         // 设置定位监听
         mLocationClient.setLocationListener(this);
         // 设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         mLocationOption.setOnceLocation(true);  //获取一次定位结果：
         // 设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
@@ -53,9 +53,10 @@ public class MapLocationHelper implements AMapLocationListener {
 
     /**
      * 设置回调
+     *
      * @param locationCallBack
      */
-    public void setLocationCallBack(LocationCallBack locationCallBack){
+    public void setLocationCallBack(LocationCallBack locationCallBack) {
         mLocationCallBack = locationCallBack;
     }
 
@@ -95,16 +96,18 @@ public class MapLocationHelper implements AMapLocationListener {
                 Log.e("AmapError", "location Error, ErrCode:"
                         + aMapLocation.getErrorCode() + ", errInfo:"
                         + aMapLocation.getErrorInfo());
-                stopMapLocation();
+                mLocationCallBack.onCallLocationEro();
             }
         } else {
-            stopMapLocation();
+            mLocationCallBack.onCallLocationEro();
         }
     }
 
     public interface LocationCallBack {
 
         void onCallLocationSuc(AMapLocation location);
+
+        void onCallLocationEro();
     }
 }
 
