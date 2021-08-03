@@ -36,7 +36,7 @@
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_14"
                 android:singleLine="true"
-                android:maxLength="20"
+                android:maxLength="10"
                 android:background="@null"/>
 
             <ImageView
@@ -57,7 +57,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/gray_999"
-            android:text="0/20"/>
+            android:text="0/10"/>
 
     </LinearLayout>
 </layout>

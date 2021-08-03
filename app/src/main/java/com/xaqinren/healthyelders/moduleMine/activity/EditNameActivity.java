@@ -66,7 +66,7 @@ public class EditNameActivity extends BaseActivity <ActivityEditNameBinding, Edi
 
     private void showCount() {
         int count = binding.nameEt.getText().length();
-        binding.textCount.setText(count + "/20");
+        binding.textCount.setText(count + "/10");
     }
 
     @Override

@@ -115,15 +115,17 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
 
             listBean.videoInfos = new ArrayList<>();
 
-            if (hasDraft) {
-                listBean.videoInfos.remove(0);
-            }
+
 
             //去除文章
             for (VideoInfo videoInfo : videoAdapter.getData()) {
                 if (!videoInfo.isArticle()) {
                     listBean.videoInfos.add(videoInfo);
                 }
+            }
+
+            if (hasDraft) {
+                listBean.videoInfos.remove(0);
             }
 
             //重新计算点击的位置

@@ -212,8 +212,6 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                 listBottomPopup.dismiss();
                 //清除缓存
                 InfoCache.getInstance().clearLogin();
-                //清除展示弹窗信息
-                SPUtils.getInstance().clear();
                 //给主页发送消息回到首页模块
                 RxBus.getDefault().post(new EventBean(CodeTable.JUMP_ACT, "main-act"));
                 //跳到登录页面

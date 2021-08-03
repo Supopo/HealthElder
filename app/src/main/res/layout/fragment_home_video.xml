@@ -329,6 +329,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:text="@{'@'+viewModel.videoInfo.nickname}"
                 android:textColor="@color/text"
+                android:maxLength="10"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 android:visibility="@{viewModel.videoInfo.getVideoType() == 2||viewModel.videoInfo.getVideoType() == 4?View.VISIBLE:View.INVISIBLE}" />
@@ -354,6 +355,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:text="@{'@'+viewModel.videoInfo.nickname}"
                 android:textColor="@color/text"
+                android:maxLength="10"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 android:visibility="@{viewModel.videoInfo.getVideoType() == 2 || viewModel.videoInfo.getVideoType() == 4?View.INVISIBLE:View.VISIBLE}" />
