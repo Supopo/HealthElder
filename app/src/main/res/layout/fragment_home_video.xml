@@ -613,6 +613,7 @@
 
         <RelativeLayout
             android:id="@+id/rl_click"
+            android:layout_marginTop="@dimen/dp_70"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="@{viewModel.videoInfo.getVideoType() == 2||viewModel.videoInfo.getVideoType() == 4?View.VISIBLE:View.INVISIBLE}" />
