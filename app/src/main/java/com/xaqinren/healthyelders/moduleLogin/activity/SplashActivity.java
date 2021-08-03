@@ -281,7 +281,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
                     checkPermissions();
                 } else if (id == R.id.tvDisagree) {
                     dialog.dismiss();
-                    finish();
+                    SplashActivity.this.finish();
                 }
             }
         });

@@ -2141,6 +2141,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         }
         entity.setContent("送出" + userInfo.giftName);
         entity.setType(LiveConstants.IMCMD_GIFT);
+        entity.setLevelName(userInfo.leaveName);
+        entity.setLevelIcon(userInfo.leaveIcon);
         notifyMsg(entity);
     }
 
