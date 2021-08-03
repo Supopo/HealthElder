@@ -482,6 +482,12 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
             }
 
             @Override
+            public void toOpenFeace(String videoId) {
+                //评论视频本体
+                showPublishCommentDialog();
+            }
+
+            @Override
             public void toLike(CommentListBean iCommentBean) {
                 LogUtils.e(TAG,"准备点赞");
             }

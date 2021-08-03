@@ -30,11 +30,10 @@
                 android:hint="发条评论吧"
                 android:imeOptions="actionUnspecified"
                 android:inputType="text"
-                android:maxLength="32"
+                android:maxLength="200"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
-                android:singleLine="true"
                 android:textColor="@color/black" />
 
 

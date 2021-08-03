@@ -572,6 +572,12 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
             }
 
             @Override
+            public void toOpenFeace(String videoId) {
+                //评论视频本体
+                showPublishCommentDialog();
+            }
+
+            @Override
             public void toCommentVideo(String videoId) {
                 //评论视频本体
                 showPublishCommentDialog();

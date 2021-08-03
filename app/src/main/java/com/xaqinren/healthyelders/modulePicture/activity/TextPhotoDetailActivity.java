@@ -91,6 +91,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     private Banner banner;
     private TextView banneCount;
     private boolean isMine;
+    private String commentText;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -310,6 +311,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         bundle.putString("hint", nickName);
         bundle.putInt("pos", -10);
         bundle.putString("type", diaryType);
+        bundle.putString("commentText", commentText);
         startActivity(VideoEditTextDialogActivity.class, bundle);
     }
 
@@ -410,7 +412,6 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             finish();
             overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
         });
-        //TODO 发表评论弹窗的接口
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
             if (bean != null) {
                 if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT && bean.type.equals(diaryType)) {
@@ -425,6 +426,8 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                         //回复回复
                         viewModel.toCommentReply(mCommentListBean, content, 1);
                     }
+                }else if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER ) {
+                    commentText = bean.content;
                 }
             }
         });

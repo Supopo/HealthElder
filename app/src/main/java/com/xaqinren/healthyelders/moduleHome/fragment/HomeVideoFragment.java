@@ -116,6 +116,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private LiteAvOpenModePopupWindow openModePop;
     private int publishMode;
     private InputPwdDialog pwdDialog;
+    private String commentText;
 
     //Unable to instantiate fragment xxx: could not find Fragment constructor
     //使用Fragment的时候，因为使用到了有参数的构造函数，没有提供无参的构造函数，有时会报错。
@@ -224,6 +225,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             Bundle bundle = new Bundle();
             bundle.putInt("pos", position);
             bundle.putString("type", type);
+            bundle.putString("commentText", commentText);
             commentType = 0;
             editTextOpen = true;
             startActivity(VideoEditTextDialogActivity.class, bundle);
@@ -501,6 +503,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         viewModel.toCommentReply(mCommentListBean, content, 1);
                     }
                 } else if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER && bean.pos == position && bean.type.equals(type)) {
+                    commentText = bean.content;
                     editTextOpen = false;
                 }
             }
@@ -924,7 +927,15 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 commentType = 0;
                 commentId = videoId;
                 //评论视频本体
-                showPublishCommentDialog("说点什么吧");
+                showPublishCommentDialog("留下你的精彩评论吧");
+            }
+
+            @Override
+            public void toOpenFeace(String videoId) {
+                commentType = 0;
+                commentId = videoId;
+                //评论视频本体
+                showPublishCommentDialog("留下你的精彩评论吧", 1);
             }
 
             @Override
@@ -944,6 +955,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
      * 发表评论
      */
     private void showPublishCommentDialog(String nickName) {
+        showPublishCommentDialog(nickName, 0);
+    }
+
+    private void showPublishCommentDialog(String nickName, int openType) {
         //先判断是否登录
         if (!InfoCache.getInstance().checkLogin()) {
             startActivity(SelectLoginActivity.class);
@@ -961,8 +976,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         Bundle bundle = new Bundle();
         bundle.putString("hint", nickName);
+        bundle.putString("commentText", commentText);
         bundle.putInt("pos", position);
         bundle.putString("type", type);
+        bundle.putInt("openType", openType);
         editTextOpen = true;
         startActivity(VideoEditTextDialogActivity.class, bundle);
     }

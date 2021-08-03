@@ -1299,6 +1299,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         viewModel.leaveLive(mLiveInitInfo.liveRoomRecordId);
     }
 
+    //有麦者
     @Override
     public void onAnchorEnter(AnchorInfo anchorInfo) {
 

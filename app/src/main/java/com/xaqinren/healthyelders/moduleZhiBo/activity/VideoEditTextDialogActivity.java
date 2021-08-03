@@ -44,6 +44,8 @@ public class VideoEditTextDialogActivity extends Activity {
     private String TAG = getClass().getSimpleName();
     private RelativeLayout rlView;
     private int openType;
+    private boolean hasSend;
+    private String commentText;
 
 
     @Override
@@ -52,6 +54,7 @@ public class VideoEditTextDialogActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             hint = extras.getString("hint");
+            commentText = extras.getString("commentText");
             type = extras.getString("type");
             pos = extras.getInt("pos");
             openType = extras.getInt("openType", 0);
@@ -83,6 +86,15 @@ public class VideoEditTextDialogActivity extends Activity {
         if (!TextUtils.isEmpty(hint)) {
             etView.setHint(hint);
         }
+
+        if (!TextUtils.isEmpty(commentText)) {
+            etView.setText(commentText);
+            //设置光标
+            etView.setSelection(commentText.length());
+            //加载表情
+            FaceManager.handlerEmojiText(etView, commentText, false);
+        }
+
         ImageView ivPublish = findViewById(R.id.iv_send);
         ImageView ivFace = findViewById(R.id.iv_face);
 
@@ -97,6 +109,7 @@ public class VideoEditTextDialogActivity extends Activity {
         ivPublish.setOnClickListener(lis -> {
             //发送消息通知发送
             RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, etView.getText().toString(), type, pos));
+            hasSend = true;
             finish();
         });
         ivFace.setOnClickListener(lis -> {
@@ -122,7 +135,7 @@ public class VideoEditTextDialogActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT_OVER, "", type, pos));
+        RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT_OVER, hasSend ? "" : etView.getText().toString(), type, pos));
     }
 
     private FragmentManager mFragmentManager;

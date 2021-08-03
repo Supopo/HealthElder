@@ -51,6 +51,7 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 
 //评论PopUpWindow
@@ -72,6 +73,7 @@ public class CommentDialog {
     private Activity activity;
     private int page = 1;
     private int mCommentCount;
+    private Disposable commentDisposable;
 
     public CommentDialog(Context context, String videoId) {
         this.context = new SoftReference<>(context);
@@ -93,7 +95,21 @@ public class CommentDialog {
         this.onChildClick = onChildClick;
     }
 
+
     private void init() {
+
+        commentDisposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
+            if (bean != null) {
+                if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER) {
+                    if (TextUtils.isEmpty(bean.content)) {
+                        binding.tvComment.setText("留下你的精彩评论吧");
+                    }else {
+                        binding.tvComment.setText(bean.content);
+                    }
+                }
+            }
+        });
+
 
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
@@ -235,7 +251,9 @@ public class CommentDialog {
         binding.commentLayout.setOnClickListener(view -> {
             onChildClick.toCommentVideo(videoId);
         });
-
+        binding.ivFace.setOnClickListener(view -> {
+            onChildClick.toOpenFeace(videoId);
+        });
         loadMoreModule = commentAdapter.getLoadMoreModule();
         loadMoreModule.setAutoLoadMore(true);
         loadMoreModule.setEnableLoadMore(true);
@@ -374,6 +392,8 @@ public class CommentDialog {
 
         //查看用户
         void toUser(CommentListBean iCommentBean);
+
+        void toOpenFeace(String videoId);
     }
 
     public MutableLiveData<List<CommentListBean>> commentList = new MutableLiveData<>();
