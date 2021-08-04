@@ -335,8 +335,17 @@ public class ShareDialog {
         WXWebpageObject webpage = new WXWebpageObject();
         webpage.webpageUrl = Constant.baseH5Url + "#" + shareBean.url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
-        msg.title = shareBean.title;
-        msg.description = shareBean.subTitle;
+        //判空防止分享不出去
+        if (TextUtils.isEmpty(shareBean.title)) {
+            msg.title = "分享作品";
+        } else {
+            msg.title = shareBean.title;
+        }
+        if (TextUtils.isEmpty(shareBean.subTitle)) {
+            msg.description = shareBean.introduce;
+        } else {
+            msg.description = shareBean.subTitle;
+        }
 
 
         Glide.with(mContext).asBitmap().load(shareBean.coverUrl).into(new SimpleTarget<Bitmap>() {
@@ -373,9 +382,9 @@ public class ShareDialog {
      */
     public Bitmap compressImage(Bitmap image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 30, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-        int options = 90;
-        while (baos.toByteArray().length / 1024 > 30) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
+        int options = 100;
+        image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        while (baos.toByteArray().length / 1024 > 31) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
             baos.reset(); // 重置baos即清空baos
             image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中
             options -= 10;// 每次都减少10
