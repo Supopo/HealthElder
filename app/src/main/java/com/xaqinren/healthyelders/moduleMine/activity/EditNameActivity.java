@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleMine.activity;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
@@ -49,9 +50,9 @@ public class EditNameActivity extends BaseActivity <ActivityEditNameBinding, Edi
         });
         binding.clear.setOnClickListener(view -> binding.nameEt.setText(null));
         tvRight.setOnClickListener(view -> {
-            String name = binding.nameEt.getText().toString();
-            if (StringUtils.isEmpty(name)) {
-                ToastUtil.toastShortMessage("请输入名字");
+            String name = binding.nameEt.getText().toString().trim();
+            if (TextUtils.isEmpty(name)) {
+                ToastUtil.toastShortMessage("名字不能为空");
                 return;
             }
             showDialog();
