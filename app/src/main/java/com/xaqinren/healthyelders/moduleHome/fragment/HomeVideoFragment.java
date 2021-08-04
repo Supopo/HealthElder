@@ -833,6 +833,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (!videoInfo.showFollow()) {
             binding.followImageView.setVisibility(View.INVISIBLE);
         } else {
+            binding.followImageView.clearAnimation();
+            binding.followImageView.setBackground(getActivity().getResources().getDrawable(R.drawable.avatar_gz_zb_anim));
             binding.followImageView.setVisibility(View.VISIBLE);
         }
     }
