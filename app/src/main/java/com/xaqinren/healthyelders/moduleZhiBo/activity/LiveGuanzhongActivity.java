@@ -1307,9 +1307,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     @Override
     public void onAnchorExit(AnchorInfo anchorInfo) {
-//        mLiveRoom.stopRemoteView(anchorInfo);
-//        remoteSet.remove(anchorInfo.userID);
-//        LogUtils.v(Constant.TAG_LIVE, "下麦者：" + anchorInfo.userID);
+        mLiveRoom.stopRemoteView(anchorInfo);
+        remoteSet.remove(anchorInfo.userID);
+        LogUtils.v(Constant.TAG_LIVE, "下麦者：" + anchorInfo.userID);
     }
 
     @Override
@@ -2097,6 +2097,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 }
                 isFirst = false;
 
+                //连麦者渲染别的上麦者
                 //多人连麦且自己在上麦
                 if (linkType == 1 && linkStatus == 3) {
                     for (int i = 0; i < moreLinkList.size(); i++) {
