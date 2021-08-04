@@ -381,7 +381,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (sdcardDir != null) {
             config.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/JKZLcache");
         }
-        config.setMaxCacheItems(4);
+        config.setMaxCacheItems(5);
         vodPlayer.setConfig(config);
         vodPlayer.setPlayerView(binding.mainVideoView);
         startPlay(false);
@@ -442,7 +442,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     showFollow();
-                    stopPlay(true);
+
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
                     }
@@ -460,7 +460,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     //继续播放
                     resumeMsg();
                 } else if (bean.msgId == 101) {//左右切换
-                    stopPlay(true);
+
                     if ((bean.position == 0 && type.equals("home-tj"))) {
                         startTjVideo();
                     } else if ((bean.position == 1 && type.equals("home-gz"))) {
@@ -1377,12 +1377,9 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
 
         //如果未加载出来时候跳页的情况需要去暂停
         if (isPause) {
-            LogUtils.v(Constant.TAG_LIVE, "---------------------准备去暂停");
             //判断栈顶不是MainAct页面和VideoList页面 onPause的时候拿不到的。在onStop中最靠谱。
             Activity activity = AppManager.getAppManager().currentActivity();
-            LogUtils.v(Constant.TAG_LIVE, "---------------------className" + activity.getLocalClassName());
             if (!activity.getLocalClassName().contains("MainActivity") && !activity.getLocalClassName().contains("VideoListActivity")) {
-                LogUtils.v(Constant.TAG_LIVE, "---------------------去暂停");
                 pauseMsg();
                 return;
             }
