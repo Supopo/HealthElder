@@ -406,6 +406,7 @@ public class LiveRepository {
     public void setVoiceMic(MutableLiveData<Boolean> dismissDialog, MutableLiveData<Integer> netSuccess, MutableLiveData<AnchorInfo> micAnchorInfo, String liveRoomRecordId, AnchorInfo anchorInfo) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("liveRoomRecordId", liveRoomRecordId);
+        hashMap.put("pullStreamUrl", anchorInfo.accelerateURL);
         hashMap.put("targetId", anchorInfo.userID);
         hashMap.put("micStatus", anchorInfo.micStatus == 1 ? "CONNECT" : "BREAK");
         hashMap.put("position", anchorInfo.position);

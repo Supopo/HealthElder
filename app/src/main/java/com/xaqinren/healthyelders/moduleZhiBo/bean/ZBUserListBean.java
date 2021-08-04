@@ -16,6 +16,7 @@ public class ZBUserListBean implements Serializable {
     public String userId;
     public String nickname;
     public String avatarUrl;
+    public String pullStreamUrl;//连麦者的加速流
     public int sortOrder;
     public boolean hasSpeech;//是否被禁言
     public boolean hasAway;

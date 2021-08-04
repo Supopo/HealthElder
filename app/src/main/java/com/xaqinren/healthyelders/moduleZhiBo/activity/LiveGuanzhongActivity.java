@@ -162,6 +162,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private TXLivePlayer txLivePlayer;
     private int mRenderMode;
     private ShareDialog shareDialog;
+    private LinearLayoutManager moreLinkManager;
 
 
     @Override
@@ -293,12 +294,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         //初始化多人连麦座位表
         moreLinkAdapter = new MoreLinkAdapter(R.layout.item_more_link);
         //垂直布局 禁止滑动
-        binding.rvMoreLink.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false) {
+        moreLinkManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
-        });
+        };
+        binding.rvMoreLink.setLayoutManager(moreLinkManager);
         binding.rvMoreLink.setAdapter(moreLinkAdapter);
         initMoreLinkData();
 
@@ -1097,7 +1099,6 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
         binding.btnLianmai.setBackgroundResource(R.mipmap.zbj_menu_lianmai_gz);
 
 
-
         if (linkType == 0) {
             //关闭1v1视频连麦，切回主播屏幕
             binding.rlAnchor2.setVisibility(View.GONE);
@@ -1302,12 +1303,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     //有麦者
     @Override
     public void onAnchorEnter(AnchorInfo anchorInfo) {
-
     }
 
     @Override
     public void onAnchorExit(AnchorInfo anchorInfo) {
-
+//        mLiveRoom.stopRemoteView(anchorInfo);
+//        remoteSet.remove(anchorInfo.userID);
+//        LogUtils.v(Constant.TAG_LIVE, "下麦者：" + anchorInfo.userID);
     }
 
     @Override
@@ -2094,6 +2096,46 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     }, 2000);
                 }
                 isFirst = false;
+
+                //多人连麦且自己在上麦
+                if (linkType == 1 && linkStatus == 3) {
+                    for (int i = 0; i < moreLinkList.size(); i++) {
+                        //排除自己，空的，还有已经渲染过的
+                        if (!TextUtils.isEmpty(moreLinkList.get(i).userId) &&
+                                !remoteSet.equals(moreLinkList.get(i).userId) &&
+                                !moreLinkList.get(i).userId.equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                            //开启远端视频渲染
+                            View item = moreLinkManager.getChildAt(i);
+
+                            AnchorInfo anchorInfo = new AnchorInfo(moreLinkList.get(i).userId, moreLinkList.get(i).nickname,
+                                    moreLinkList.get(i).avatarUrl, moreLinkList.get(i).pullStreamUrl);
+
+                            TXCloudVideoView txCView = item.findViewById(R.id.anchor_video_view);
+                            LogUtils.v(Constant.TAG_LIVE, "渲染上麦者：" + anchorInfo.userID);
+
+                            mLiveRoom.startRemoteView(true, anchorInfo, txCView, new IMLVBLiveRoomListener.PlayCallback() {
+                                @Override
+                                public void onBegin() {
+                                    remoteSet.add(anchorInfo.userID);
+                                    LogUtils.v(Constant.TAG_LIVE, "上麦者：" + anchorInfo.userID);
+                                }
+
+                                @Override
+                                public void onError(int errCode, String errInfo) {
+                                    LogUtils.v(Constant.TAG_LIVE, "上麦者：" + errInfo);
+                                }
+
+                                @Override
+                                public void onEvent(int event, Bundle param) {
+
+                                }
+                            });
+                        }
+
+                    }
+                }
+
+
             }
         });
         viewModel.setInitInfo.observe(this, setInitInfo -> {
@@ -2131,6 +2173,8 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             }
         });
     }
+
+    private Set<String> remoteSet = new HashSet<>();//存储已经渲染的小主播
 
     //处理礼物信息
     protected void handleGiftMSg(TCUserInfo userInfo) {
