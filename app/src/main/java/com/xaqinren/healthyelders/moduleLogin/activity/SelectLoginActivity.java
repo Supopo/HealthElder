@@ -84,6 +84,9 @@ public class SelectLoginActivity extends BaseActivity<ActivitySelectLoginBinding
         binding.userAgree.setOnClickListener(lis -> {
             UniUtil.openUniApp(getContext(), Constant.JKZL_MINI_APP_ID, Constant.MINI_AGREEMENT, null, true);
         });
+        binding.userAgree2.setOnClickListener(lis -> {
+            UniUtil.openUniApp(getContext(), Constant.JKZL_MINI_APP_ID, Constant.MINI_PRIVACY, null, true);
+        });
         binding.ivPhone.setOnClickListener(lis -> {
             //手机号登录
             if (checkAgree()) {

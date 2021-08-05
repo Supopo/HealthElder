@@ -1,5 +1,7 @@
 package com.xaqinren.healthyelders.widget.share;
 
+import android.Manifest;
+import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,12 +40,15 @@ import com.dcloud.zxing2.MultiFormatWriter;
 import com.dcloud.zxing2.common.BitMatrix;
 import com.dcloud.zxing2.qrcode.QRCodeWriter;
 import com.dcloud.zxing2.qrcode.encoder.QRCode;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.qcloud.tim.uikit.base.BaseActvity;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
+import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -52,6 +58,7 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
@@ -105,6 +112,10 @@ public class ShareDialog {
     private boolean isMine = false;
 
     private float disEnable = 0.4f;
+    private RxPermissions permissions;
+    private FragmentActivity fragmentActivity;
+    private Fragment fragment;
+    private Disposable disposable;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -128,6 +139,11 @@ public class ShareDialog {
         init();
         showType();
     }
+
+    public void setRxPermissions(RxPermissions permissions) {
+        this.permissions = permissions;
+    }
+
 
     public ShareDialog(Context context, ShareBean shareInfo, int showType) {
         this.context = new SoftReference<>(context);
@@ -257,11 +273,19 @@ public class ShareDialog {
             //私信微信朋友圈
             shareWebPage(2);
         });
-
         binding.shareOperationLayout.shareSaveNative.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(shareBean.downUrl)) {
-                //保存本地 当前下载url应该是解密之后的
-                saveVideo(shareBean.downUrl);
+                if (permissions != null) {
+                    //保存本地 当前下载url应该是解密之后的
+                    disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            .subscribe(granted -> {
+                                if (granted) {
+                                    saveVideo(shareBean.downUrl);
+                                }
+                            });
+                }
+
+
             }
 
         });

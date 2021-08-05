@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -73,6 +74,7 @@ import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.GlideEngine;
+import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
@@ -86,6 +88,8 @@ import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+
+import static com.tencent.liteav.demo.beauty.utils.BeautyUtils.getPackageName;
 
 /**
  * Created by Lee. on 2021/4/23.
@@ -121,12 +125,17 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private LiveZhuboViewModel liveZbViewModel;
     private List<MenuBean> menus;
     private Disposable disposable;
+    private Disposable disposable1;
+    private Disposable disposable2;
     private ZBGoodsListPop zbGoodsListPop;
     private Disposable uniSubscribe;
     private boolean isCloseXN;
     private int goodsTempPos;//商品位置
     private int openTempPos;//公开位置
     private boolean noPwd;
+    private Handler handler;
+    private boolean granted1;
+    private boolean granted2;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -152,8 +161,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         viewModel.checkLiveInfo();
         initEvent();
         mLiveInitInfo.setHasLocation(true);
-        LocationService.startService(getActivity());
+        granted1 = permissions.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
+        granted2 = permissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION);
 
+        if (granted1 && granted2) {
+            LocationService.startService(getActivity());
+        }
 
     }
 
@@ -165,9 +178,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         for (int i = 0; i < menuNames.length; i++) {
             menus.add(new MenuBean(menuNames[i], menuRes[i]));
         }
-        //暂时去掉密码
-        //        menus.remove(5);
-        //        noPwd = true;
 
         menuAdapter.setOnItemClickListener(((adapter, view, position) -> {
             switch (menuAdapter.getData().get(position).menuName) {
@@ -234,11 +244,30 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         binding.rlAddCover.setOnClickListener(lis -> {
             selectImage();
         });
+
+
         binding.llLoc.setOnClickListener(lis -> {
-            if (locSuccess != 1) {
-                openGPSSettings();
+            //如果权限被拒绝，提示打开设置去开启
+            if (!granted1 && !granted2) {
+                YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+                yesOrNoDialog.setMessageText("请打开应用权限-位置信息");
+                yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //引导用户到设置中去进行设置
+                        Intent intent = new Intent();
+                        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                        intent.setData(Uri.fromParts("package", getPackageName(), null));
+                        startActivityForResult(intent, 1011);
+                        yesOrNoDialog.dismissDialog();
+                    }
+                });
+                yesOrNoDialog.showDialog();
+            } else {
+                showListPop();
             }
-            showListPop();
+
+
         });
 
         //选择同意协议
@@ -289,9 +318,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
      * 跳转GPS设置
      */
     private void openGPSSettings() {
-        if (checkGPSIsOpen()) {
-            LocationService.startService(getActivity());
-        } else {
+        if (!checkGPSIsOpen()) {
             //没有打开则弹出对话框
             YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
             yesOrNoDialog.setMessageText("为确保定位成功，请打开GPS");
@@ -314,7 +341,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
 
     private void toStartLive() {
-        disposable = permissions.request(Manifest.permission.RECORD_AUDIO)
+        disposable2 = permissions.request(Manifest.permission.RECORD_AUDIO)
                 .subscribe(granted -> {
                     if (granted) {
                         if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
@@ -369,6 +396,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     binding.tvLoc.setText(cityName + poiName);
                 } else if (event.msgId == CodeTable.LOCATION_ERROR) {
                     locSuccess = 2;
+                    openGPSSettings();
                 }
             }
         });
@@ -516,7 +544,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
     private void initRoomInfo() {
         binding.etTitle.setText(mLiveInitInfo.liveRoomName);
-        Glide.with(this).load(mLiveInitInfo.liveRoomCover).thumbnail(0.2f).into(binding.ivCover);
+        GlideUtil.intoImageView(getActivity(), mLiveInitInfo.liveRoomCover, binding.ivCover, R.mipmap.icon_add_cover);
+
 
         if (!noPwd) {
             //密码锁图标变化
@@ -802,6 +831,10 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         } else if (requestCode == 1010) {
             //开启定位
             LocationService.startService(getActivity());
+        } else if (requestCode == 1011) {
+            //开启定位
+            LocationService.startService(getActivity());
+            showListPop();
         }
     }
 
@@ -851,6 +884,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         super.onDestroyView();
         if (disposable != null) {
             disposable.dispose();
+        }
+        if (disposable1 != null) {
+            disposable1.dispose();
+        }
+        if (disposable2 != null) {
+            disposable2.dispose();
         }
         if (subscribe != null) {
             subscribe.dispose();

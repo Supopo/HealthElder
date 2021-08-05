@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeFJViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
+import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
@@ -53,6 +55,7 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
     private double lon;
     public RecyclerView recyclerView;
     public View viewTop;
+    private Disposable disposable;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -175,6 +178,14 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
             if (event != null) {
                 if (event.msgId == 101 && event.msgType == 2) {
                     if (isFirst) {
+
+                        disposable = permissions.request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                                .subscribe(granted -> {
+                                    if (granted) {
+                                        LocationService.startService(getActivity());
+                                    }
+                                });
+
                         //判断是不是第一次切换到关注列表
                         showLoadView();
                         viewModel.getVideoData(page);
@@ -244,6 +255,9 @@ public class HomeFJFragment extends BaseFragment<FragmentHomeFjBinding, HomeFJVi
         super.onDestroyView();
         if (subscribe != null) {
             subscribe.dispose();
+        }
+        if (disposable != null) {
+            disposable.dispose();
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.xaqinren.healthyelders.widget.pickerView.cityPicker;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
@@ -43,6 +45,9 @@ import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.base.BaseViewModel;
+import me.goldze.mvvmhabit.utils.PermissionUtils;
+
+import static com.tencent.liteav.demo.beauty.utils.BeautyUtils.getPackageName;
 
 /**
  *
@@ -83,10 +88,32 @@ public class CityPickerActivity extends BaseActivity<CpActivityCityListBinding, 
         if (locateState) {
             mCityAdapter.updateLocateState(LocateState.SUCCESS, location);
         } else {
-            //定位失败
-            if (!checkGPSIsOpen()) {
-                openGPSSettings();
+            //定位失败，先判断权限
+            boolean check = PermissionUtils.checkPermission(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+            });
+            if (!check) {
+                YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+                yesOrNoDialog.setMessageText("请打开应用权限-位置信息");
+                yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //引导用户到设置中去进行设置
+                        Intent intent = new Intent();
+                        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                        intent.setData(Uri.fromParts("package", getPackageName(), null));
+                        startActivityForResult(intent, 1010);
+                        yesOrNoDialog.dismissDialog();
+                    }
+                });
+                yesOrNoDialog.showDialog();
+            } else {
+                if (!checkGPSIsOpen()) {
+                    openGPSSettings();
+                }
             }
+
             mCityAdapter.updateLocateState(LocateState.FAILED, null);
         }
     }

@@ -871,6 +871,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         }
         shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
+        shareDialog.setRxPermissions(permissions);
         if (videoInfo.getVideoType() != 2) {
             shareDialog.isMineOpen(videoOpenType == 3 ? false : isMineOpen);
             shareDialog.setOnDelClickListener(new ShareDialog.OnDelClickListener() {

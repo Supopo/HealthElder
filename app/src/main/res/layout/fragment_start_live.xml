@@ -103,6 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/ll_et"
                     android:layout_marginLeft="@dimen/dp_13"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:layout_toRightOf="@id/rl_addCover"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
@@ -118,6 +119,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_6"
                         android:layout_marginRight="@dimen/dp_1"
+                        android:singleLine="true"
+                        android:maxLines="1"
                         android:text="开启位置"
                         android:textColor="@color/color_FFDCDBDB"
                         android:textSize="@dimen/sp_13" />

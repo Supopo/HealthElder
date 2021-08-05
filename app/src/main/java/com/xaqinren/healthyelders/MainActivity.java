@@ -8,15 +8,12 @@ import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -31,19 +28,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.dmcbig.mediapicker.utils.ScreenUtils;
-import com.google.gson.Gson;
-import com.opensource.svgaplayer.SVGAParser;
-import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.SlideBarBean;
 import com.xaqinren.healthyelders.bean.SlideParamBean;
@@ -63,38 +58,26 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.LoginTokenBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMall.fragment.MallFragment;
-import com.xaqinren.healthyelders.moduleMine.activity.SettingActivity;
-import com.xaqinren.healthyelders.moduleMine.activity.WalletActivity;
 import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.fragment.MsgFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
-import com.xaqinren.healthyelders.moduleZhiBo.bean.GiftBean;
 import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.ColorsUtils;
-import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.IntentUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.MyProgressDialog;
-
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -109,7 +92,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import kotlin.jvm.internal.FunctionBase;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
@@ -135,7 +117,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private Drawable dawable2;
     private Drawable dawable;
     private boolean isTranMenu;
-    private Handler handler;
+    private Handler mHandler;
     private MallFragment mallFragment;
     private MineFragment mineFragment;
     private MsgFragment msgFragment;
@@ -149,9 +131,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private SlideBarAdapter slideBarAdapter;
     private SlideBarBean slideBarBean;
     private Disposable uniSubscribe;
+    private Runnable runnable;
+    private Disposable disposable1;
 
     @Override
-
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_main;
     }
@@ -170,20 +153,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
         //初始化Fragment
         initFragment();
-        handler = new Handler();
+        mHandler = new Handler();
 
         //设置底部背景线
         ViewGroup.LayoutParams layoutParams = binding.lineBottom.getLayoutParams();
         layoutParams.height = 1;
         binding.lineBottom.setLayoutParams(layoutParams);
-
-        //开启定位服务
-        boolean check = PermissionUtils.checkPermission(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-        });
-        if (check)
-            LocationService.startService(this);
 
         UniService.startService(this);
 
@@ -229,18 +204,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 }
             }
         });
+
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        boolean check = PermissionUtils.checkPermissionAllGranted(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-        });
-        if (check)
-            LocationService.startService(this);
-    }
 
     private void getCacheUserInfo() {
         //获取token
@@ -283,7 +249,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         boolean booleanExtra = intent.getBooleanExtra(Constant.PUBLISH_SUCCESS, false);
         if (booleanExtra) {
             binding.rlMenu4.performClick();
-            handler.postDelayed(() -> {
+            mHandler.postDelayed(() -> {
                 mineFragment.refreshData();
             }, 500);
         }
@@ -402,7 +368,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS)
                     .subscribe(granted -> {
                         if (granted) {
-                            startActivity(StartLiveActivity.class);
+
+                            disposable1 = permissions.request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                                    .subscribe(granted1 -> {
+                                        if (granted1) {
+                                            startActivity(StartLiveActivity.class);
+                                        } else {
+                                            startActivity(StartLiveActivity.class);
+                                        }
+
+                                    });
+
+
                         } else {
                             ToastUtils.showShort("访问权限已拒绝");
                         }
@@ -510,14 +487,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     //判断滑动距离
                     if (scrollY2 < ((int) getResources().getDimension(R.dimen.dp_234) / 2)) {
                         //发送HomeFragment回顶消息
-                        handler.postDelayed(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_HT));
                             }
                         }, 100);
                     } else {
-                        handler.postDelayed(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_ZK));
@@ -553,7 +530,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 SPUtils.getInstance().put(Constant.SP_KEY_WX_INFO, "");
                 startActivity(SelectLoginActivity.class);
             } else if (o.msgId == CodeTable.NO_CARD) {
-                handler.postDelayed(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         startActivity(StartRenZhengActivity.class);
@@ -789,10 +766,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         if (disposable != null) {
             disposable.dispose();
         }
+        if (disposable1 != null) {
+            disposable1.dispose();
+        }
+
         if (eventDisposable != null) {
             eventDisposable.dispose();
         }
-        handler.removeCallbacksAndMessages(null);
+        mHandler.removeCallbacksAndMessages(null);
         RxSubscriptions.remove(mSubscription);
         RxSubscriptions.remove(eventDisposable);
         RxSubscriptions.remove(uniSubscribe);
@@ -1054,25 +1035,29 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                     @Override
                     public void onClick(QMUIDialog dialog, int index) {
-                        //                        Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(downUrl));
-                        //                        startActivity(mIntent);
                         dialog.dismiss();
+                        //检查存储权限
+                        disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                                .subscribe(granted -> {
+                                    if (granted) {
+                                        //先根据下载路径去安装，如果文件为空会自动下载。
+                                        //安装应用的流程
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            //先获取是否有安装未知来源应用的权限
+                                            haveInstallPermission = getPackageManager().canRequestPackageInstalls();
+                                            if (!haveInstallPermission) {
+                                                //没有权限
+                                                installDialog();
+                                                return;
+                                            }
+                                        }
+                                        //有权限，开始安装应用程序
+                                        downloadApk();
+                                    } else {
+                                        ToastUtils.showShort("访问权限已拒绝");
+                                    }
 
-
-                        //先根据下载路径去安装，如果文件为空会自动下载。
-                        //安装应用的流程
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            //先获取是否有安装未知来源应用的权限
-                            haveInstallPermission = getPackageManager().canRequestPackageInstalls();
-                            if (!haveInstallPermission) {
-                                //没有权限
-                                installDialog();
-                                return;
-                            }
-                        }
-                        //有权限，开始安装应用程序
-                        //                        installApk();
-                        downloadApk();
+                                });
                     }
                 })
                 .show();

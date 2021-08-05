@@ -524,7 +524,6 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
                 if (!singleSearchAt) {
                     //查询用户,只有ID,没有USerID,手动设置
                     avUserBean.setId(avUserBean.getId());
-                    ;
                 }
             }
             atPage++;

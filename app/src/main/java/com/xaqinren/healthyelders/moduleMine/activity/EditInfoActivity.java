@@ -1,8 +1,11 @@
 package com.xaqinren.healthyelders.moduleMine.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -53,6 +56,7 @@ import com.xaqinren.healthyelders.utils.PictureSelectorUtils;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.SwitchButton;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 import com.xaqinren.healthyelders.widget.pickerView.cityPicker.CityPickerActivity;
 
 import java.text.ParseException;
@@ -62,8 +66,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.goldze.mvvmhabit.utils.Utils;
 import razerdp.basepopup.BasePopupWindow;
 
@@ -75,6 +81,8 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
     private int REQUEST_GALLERY = 666;
     private int updateType = 0;//0头像1性别2生日3地址
     private String updateValue = "";
+    private Disposable disposable;
+    private YesOrNoDialog yesOrNoDialog;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -99,9 +107,20 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
         binding.menuList.setAdapter(editInfoAdapter);
         binding.tv1.getPaint().setFakeBoldText(true);
         binding.selAvatar.setOnClickListener(view -> {
-            //选择头像
-            updateType = 0;
-            selAvatar();
+
+            //检查存储权限
+            disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .subscribe(granted -> {
+                        if (granted) {
+                            //选择头像
+                            updateType = 0;
+                            selAvatar();
+                        } else {
+                            ToastUtils.showShort("访问权限已拒绝");
+                        }
+
+                    });
+
         });
         editInfoAdapter.setOnItemClickListener((adapter, view, position) -> {
             if (position == 0) {
@@ -271,10 +290,23 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
     }
 
     private void changeCity() {
-        Intent intent = new Intent();
-        intent.putExtra("show_area", 0);
-        intent.setClass(this, CityPickerActivity.class);
-        startActivityForResult(intent, 0x0030);
+        disposable = permissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                .subscribe(granted -> {
+                    if (granted) {
+                        Intent intent = new Intent();
+                        intent.putExtra("show_area", 0);
+                        intent.setClass(this, CityPickerActivity.class);
+                        startActivityForResult(intent, 0x0030);
+                    }else {
+                        Intent intent = new Intent();
+                        intent.putExtra("show_area", 0);
+                        intent.setClass(this, CityPickerActivity.class);
+                        startActivityForResult(intent, 0x0030);
+                    }
+                });
+
+
+
     }
 
     @Override
@@ -411,5 +443,13 @@ public class EditInfoActivity extends BaseActivity<ActivityEditInfoBinding, Edit
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 }

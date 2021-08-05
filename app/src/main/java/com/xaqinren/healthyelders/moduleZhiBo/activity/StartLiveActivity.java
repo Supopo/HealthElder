@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private boolean isLiteAVRecode = false;
     private String TAG = getClass().getSimpleName();
     private Disposable subscribe;
+    private Disposable disposable;
+    private int po;
 
 
     @Override
@@ -97,7 +100,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         binding.llMenu.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int po = tab.getPosition();
+                po = tab.getPosition();
                 /*if (po == 2) {
                     PictureSelector.create(StartLiveActivity.this)
                             .openCamera(PictureMimeType.ofImage())
@@ -105,6 +108,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                             .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
                     return;
                 }*/
+
                 if (po == 2) {
                     po = 1;
                     commitAllowingStateLoss(po);

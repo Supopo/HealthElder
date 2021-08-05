@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleHome.fragment;
 
+import android.Manifest;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeViewModel;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
@@ -54,6 +56,7 @@ import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by Lee. on 2021/5/11.
@@ -74,6 +77,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     private int oldWidth;
     public LockableNestedScrollView nsv;
     private RecyclerViewSkeletonScreen skeletonScreen1;
+    private Disposable disposable;
 
 
     @Override

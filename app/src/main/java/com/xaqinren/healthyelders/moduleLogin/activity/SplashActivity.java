@@ -69,6 +69,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
     };
     private boolean isHasBar;
     private Disposable disposable;
+    private boolean canNext;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -151,66 +152,42 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
         boolean showPop = SPUtils.getInstance().getBoolean(Constant.SHOW_POP_WEB, true);
         if (showPop) {
             showWebPop();
-        }else {
-            checkPermissions();
+            SPUtils.getInstance().put(Constant.SHOW_POP_WEB, false);
+        } else {
+            canNext = true;
         }
 
         LoadGiftService.startService(this);
 
-        //        binding.tvJump.setText("跳过 " + recLen);
-        //        timer.schedule(task, 1000, 1000);//等待时间一秒，停顿时间一秒
 
         handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(runnable = new Runnable() {
             @Override
             public void run() {
-                canNext = true;
                 toNext();
             }
         }, recLen * 1000);
     }
 
-    public void checkPermissions() {
-        disposable = permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(granted -> {
-                    if (granted) {
-                        SPUtils.getInstance().put(Constant.SHOW_POP_WEB, false);
-                        hasParm = true;
-                        if (canNext) {
-                            toNext();
-                        }
-                    } else {
-                        ToastUtils.showShort("访问权限已拒绝");
-                        //暂时不让退出，直接进入
-                        hasParm = true;
-                        if (canNext) {
-                            toNext();
-                        }
-                    }
-
-                });
-    }
 
     private void toNext() {
-        if (hasParm) {
+        if (canNext) {
             startActivity(MainActivity.class);
             finish();
         }
-
     }
-
-    private boolean hasParm;
-    private boolean canNext;
 
     //页面事件监听的方法，一般用于ViewModel层转到View层的事件注册
     @Override
     public void initViewObservable() {
-        binding.tvJump.setOnClickListener(listener -> {
-            toNext();
-            if (runnable != null) {
-                handler.removeCallbacks(runnable);
-            }
-        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 
     private void showWebPop() {
@@ -280,7 +257,8 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
                 int id = view.getId();
                 if (id == R.id.tvAgree) {
                     dialog.dismiss();
-                    checkPermissions();
+                    canNext = true;
+                    toNext();
                 } else if (id == R.id.tvDisagree) {
                     dialog.dismiss();
                     SplashActivity.this.finish();

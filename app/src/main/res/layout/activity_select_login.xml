@@ -116,7 +116,24 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="《用户协议与隐私政策》"
+                android:text="《用户协议》"
+                android:textColor="@color/colorSendName2"
+                android:textSize="@dimen/sp_11" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="与"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_11" />
+            <TextView
+                android:id="@+id/user_agree2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="《隐私政策》"
                 android:textColor="@color/colorSendName2"
                 android:textSize="@dimen/sp_11" />
         </LinearLayout>
