@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -82,6 +83,7 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
     private int CITY_CODE = 123;
     private String addressName;
     private String addressInfo;
+    private boolean check;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -116,9 +118,10 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
                 binding.cityName.setText(cityName);
             } else if (o.msgId == CodeTable.LOCATION_ERROR) {
                 dismissDialog();
-                // 等于3说明已经尝试过一次GPS定位
-                if (locSuccess != 3) {
-                    openGPSSettings();
+                if (check) {
+                    if (!checkGPSIsOpen()) {
+                        openGPSSettings();
+                    }
                 }
             }
         });
@@ -142,26 +145,22 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
      * 跳转GPS设置
      */
     private void openGPSSettings() {
-        if (!checkGPSIsOpen()) {
-            //没有打开则弹出对话框
-            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
-            yesOrNoDialog.setMessageText("为确保定位成功，请打开GPS");
-            yesOrNoDialog.showDialog();
-            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    locSuccess = 3; //尝试GPS定位
-                    //去打开GPS
-                    //跳转GPS设置界面
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivityForResult(intent, 1010);
+        //没有打开则弹出对话框
+        YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+        yesOrNoDialog.setMessageText("为确保定位成功，请打开GPS");
+        yesOrNoDialog.showDialog();
+        yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locSuccess = 3; //尝试GPS定位
+                //去打开GPS
+                //跳转GPS设置界面
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(intent, 1010);
 
-                    yesOrNoDialog.dismissDialog();
-                }
-            });
-        } else {
-            locSuccess = 2;
-        }
+                yesOrNoDialog.dismissDialog();
+            }
+        });
     }
 
 
@@ -248,13 +247,28 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
      * 检查并申请权限
      */
     public void checkPermission() {
-        boolean check = PermissionUtils.checkPermission(this, new String[]{
+        check = PermissionUtils.checkPermission(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
         });
         if (check) {
             showDialog();
             LocationService.startService(this);
+        }else {
+            YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+            yesOrNoDialog.setMessageText("请打开应用权限-位置信息");
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //引导用户到设置中去进行设置
+                    Intent intent = new Intent();
+                    intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                    intent.setData(Uri.fromParts("package", getPackageName(), null));
+                    startActivityForResult(intent, 1010);
+                    yesOrNoDialog.dismissDialog();
+                }
+            });
+            yesOrNoDialog.showDialog();
         }
     }
 
@@ -264,8 +278,6 @@ public class ChooseLocationActivity extends BaseActivity<ActivityLiteAvLocationB
         boolean check = PermissionUtils.checkPermissionAllGranted(this, permissions);
         if (check) {
             LocationService.startService(this);
-        } else {
-            ToastUtils.showShort("定位权限缺失");
         }
     }
 
