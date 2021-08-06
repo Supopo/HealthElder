@@ -252,10 +252,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            //判单横竖屏设置不同模式封面图片加载 横屏不用设置CenterInside
-            if (!isHP) {
-                binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            }
+
 
             //判断是不是加密直播间
             if (videoInfo.resourceType.equals("LIVE") && videoInfo.hasPassword) {
@@ -263,6 +260,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 binding.ivZbJm.setVisibility(View.VISIBLE);
             } else {
                 GlideUtil.intoImageView(getActivity(), videoInfo.coverUrl, binding.coverImageView);
+            }
+
+            //判单横竖屏设置不同模式封面图片加载 横屏不用设置CenterInside
+            if (!isHP) {
+                binding.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
 
             binding.coverImageView.setVisibility(View.VISIBLE);
@@ -1335,8 +1337,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         } else if (event == TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED) {//播放器已准备完成,可以播放
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_VOD_PLAY_PREPARED");
             dismissLoading();
-            binding.coverImageView.setVisibility(View.GONE);
-
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_LOADING) {//视频播放loading，如果能够恢复，之后会有BEGIN事件
         } else if (event == TXLiveConstants.PLAY_EVT_PLAY_BEGIN) {//视频播放开始
             LogUtils.v(Constant.TAG_LIVE, type + position + "PLAY_EVT_PLAY_BEGIN");
