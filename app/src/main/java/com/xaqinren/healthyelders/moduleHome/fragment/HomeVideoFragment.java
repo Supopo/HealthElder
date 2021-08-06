@@ -405,12 +405,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         mPlayerConfig.setAutoAdjustCacheTime(true);
         mPlayerConfig.setMinAutoAdjustCacheTime(CACHE_TIME_FAST);
         mPlayerConfig.setMaxAutoAdjustCacheTime(CACHE_TIME_FAST);
-        //        //缓存设置
-        //        File sdcardDir = getActivity().getExternalFilesDir(null);
-        //        if (sdcardDir != null) {
-        //            mPlayerConfig.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/JKZLcache");
-        //        }
-        //        mPlayerConfig.setMaxCacheItems(4);
 
         mLivePlayer.setConfig(mPlayerConfig);
 
@@ -442,6 +436,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     showFollow();
+                    stopPlay(true);
 
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
@@ -460,6 +455,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     //继续播放
                     resumeMsg();
                 } else if (bean.msgId == 101) {//左右切换
+                    stopPlay(true);
 
                     if ((bean.position == 0 && type.equals("home-tj"))) {
                         startTjVideo();

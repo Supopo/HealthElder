@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +25,14 @@ import com.xaqinren.healthyelders.databinding.FragmentHomeGzBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.ZhiBoingAvatarAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeGZViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 import com.xaqinren.healthyelders.widget.InputPwdDialog;
 
@@ -55,6 +58,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
     private int fragmentPosition;//视频Fragment在list中的位置
     private FragmentActivity fragmentActivity;
     private InputPwdDialog pwdDialog;
+    private boolean hasLogin;
 
     public HomeGZFragment() {
     }
@@ -110,7 +114,12 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
                         needRefreshData = true;
                     }
                 } else if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("loginSuccess")) {
-                    refreshData();
+                    //加判断，有个偶发性bug，点进用户信息页面退出会触发。
+                    if (!hasLogin) {
+                        refreshData();
+                        hasLogin = true;
+                    }
+
                 }
             }
         });
@@ -253,6 +262,7 @@ public class HomeGZFragment extends BaseFragment<FragmentHomeGzBinding, HomeGZVi
         super.initData();
         //开始时候可能有头布局所以禁止滑动
         binding.viewPager2.setUserInputEnabled(false);
+        hasLogin = InfoCache.getInstance().checkLogin();
     }
 
     private boolean needRefreshData;

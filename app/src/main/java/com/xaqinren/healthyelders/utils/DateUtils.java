@@ -72,7 +72,7 @@ public class DateUtils {
         Date date = null;
         try {
             date = format.parse(time);
-            return months[date.getMonth() - 1];
+            return months[date.getMonth()];
         } catch (ParseException e) {
             e.printStackTrace();
         }
