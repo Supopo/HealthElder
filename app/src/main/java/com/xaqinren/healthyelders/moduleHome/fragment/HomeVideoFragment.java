@@ -117,6 +117,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private int publishMode;
     private InputPwdDialog pwdDialog;
     private String commentText;
+    private boolean isCaching;//是否在缓解
 
     //Unable to instantiate fragment xxx: could not find Fragment constructor
     //使用Fragment的时候，因为使用到了有参数的构造函数，没有提供无参的构造函数，有时会报错。
@@ -377,13 +378,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         vodPlayer.setVodListener(this);
         TXVodPlayConfig config = new TXVodPlayConfig();
         //缓存设置
-        File sdcardDir = getActivity().getExternalFilesDir(null);
+        File sdcardDir = getActivity().getCacheDir();
         if (sdcardDir != null) {
             config.setCacheFolderPath(sdcardDir.getAbsolutePath() + "/JKZLcache");
         }
-        config.setMaxCacheItems(5);
+        config.setMaxCacheItems(10);
         vodPlayer.setConfig(config);
         vodPlayer.setPlayerView(binding.mainVideoView);
+        isCaching = true;
         startPlay(false);
     }
 
@@ -436,7 +438,11 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 LogUtils.v(Constant.TAG_LIVE, "App: " + AppApplication.get().getTjPlayPosition() + "-" + type + "-" + position + "-" + bean.toString());
                 if (bean.msgId == 1) {
                     showFollow();
-                    stopPlay(true);
+
+                    //正在缓存的不要停止，否则不会缓存了。
+                    if (!isCaching) {
+                        stopPlay(false);
+                    }
 
                     if (bean.fragmentId.equals("home-tj") && type.equals("home-tj")) {
                         startTjVideo();
@@ -1069,12 +1075,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
     private void startTjVideo() {
         if (AppApplication.get().getTjPlayPosition() == position) {
             startPlay(true);
+            isCaching = false;
         }
     }
 
     private void startGzVideo() {
         if (AppApplication.get().getGzPlayPosition() == position) {
             startPlay(true);
+            isCaching = false;
         }
     }
 
@@ -1083,6 +1091,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             Integer integer = AppApplication.get().listPos.get(timeTag);
             if (integer != null && integer == position) {
                 startPlay(true);
+                isCaching = false;
             }
         }
     }

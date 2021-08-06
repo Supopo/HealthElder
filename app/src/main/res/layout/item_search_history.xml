@@ -32,6 +32,7 @@
                 android:id="@+id/iv_girls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="@{viewModel.menuName}"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_13" />

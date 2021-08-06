@@ -42,7 +42,6 @@
                 android:hint="请输入需要搜索的内容"
                 android:paddingLeft="@dimen/dp_9"
                 android:paddingRight="@dimen/dp_9"
-                android:maxLength="15"
                 android:singleLine="true"
                 android:textColor="@color/colorTextG4"
                 android:textColorHint="@color/colorTextG2"
