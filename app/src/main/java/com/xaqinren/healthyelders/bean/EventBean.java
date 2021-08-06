@@ -33,7 +33,11 @@ public class EventBean<T> {
         this.msgId = msgId;
         this.msgType = msgType;
     }
-
+    public EventBean(int msgId, int msgType,String content) {
+        this.msgId = msgId;
+        this.msgType = msgType;
+        this.content = content;
+    }
 
     public EventBean(int msgId, String content) {
         this.msgId = msgId;

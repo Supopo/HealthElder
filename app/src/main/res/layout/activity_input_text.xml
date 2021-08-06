@@ -13,10 +13,13 @@
         <LinearLayout
             android:id="@+id/ll_input"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_60"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_11"
+            android:paddingBottom="@dimen/dp_11"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16">
 
@@ -24,14 +27,15 @@
             <EditText
                 android:id="@+id/et_input_message"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_38"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_38"
                 android:layout_weight="1"
                 android:background="@drawable/bg_edit_zb"
                 android:hint="发条评论吧"
                 android:imeOptions="actionUnspecified"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:maxLength="200"
-                android:maxLines="1"
+                android:maxLines="3"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
                 android:textColor="@color/black" />

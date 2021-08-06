@@ -30,6 +30,7 @@ import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -58,6 +59,7 @@ public class ZBEditTextDialogActivity extends Activity {
     private FaceFragment mFaceFragment;
     private RelativeLayout moreGroups;
     private int type;//1-直播间 设置屏蔽词弹窗
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,6 +160,8 @@ public class ZBEditTextDialogActivity extends Activity {
             if (!TextUtils.isEmpty(content)) {
                 etView.setText(content);
                 etView.setSelection(content.length());//将光标移至文字末尾
+                //加载表情
+                FaceManager.handlerEmojiText(etView, content, false);
             }
         }
 
@@ -247,7 +251,8 @@ public class ZBEditTextDialogActivity extends Activity {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
                 if (type == 0) {
-                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString(),System.currentTimeMillis()));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString(), System.currentTimeMillis()));
+                    hasSend = true;
                 } else if (type == 1) {
                     RxBus.getDefault().post(new EventBean(LiveConstants.SEND_WORD, etView.getText().toString()));
                 }
@@ -312,12 +317,15 @@ public class ZBEditTextDialogActivity extends Activity {
         super.onDestroy();
     }
 
+    private boolean hasSend;
+
+
     @Override
     public void finish() {
         super.finish();
         if (type == 0) {
             //通知前一页消息列表位置还原
-            RxBus.getDefault().post(new EventBean(LiveConstants.DISMISS_ET, 0));
+            RxBus.getDefault().post(new EventBean(LiveConstants.DISMISS_ET, 0, hasSend ? "" : etView.getText().toString()));
         }
         //关闭键盘
         closeKeybord(this);

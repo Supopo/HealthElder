@@ -44,6 +44,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -163,6 +164,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private int mRenderMode;
     private ShareDialog shareDialog;
     private LinearLayoutManager moreLinkManager;
+    private String mMsg;//评论框输入的内容
 
 
     @Override
@@ -1822,7 +1824,9 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
             case R.id.tv_msg:
                 //判断是否被禁言
                 if (!mLiveInitInfo.getHasSpeech() && mLiveInitInfo.getCanComment()) {
-                    startActivity(ZBEditTextDialogActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("content", mMsg);
+                    startActivity(ZBEditTextDialogActivity.class, bundle);
                 } else {
                     if (!mLiveInitInfo.getCanComment()) {
                         ToastUtil.toastShortMessage(LiveConstants.SHOW_JZPL);
@@ -1966,6 +1970,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 ViewGroup.LayoutParams params = binding.view.getLayoutParams();
                 params.height = 0;
                 binding.view.setLayoutParams(params);
+
+                mMsg = eventBean.content;
+                if (!TextUtils.isEmpty(mMsg)) {
+                    binding.tvMsg.setText(mMsg);
+                    FaceManager.handlerEmojiText(binding.tvMsg, mMsg, false);
+                } else {
+                    binding.tvMsg.setText("发条评论吧");
+                }
             } else if (eventBean.msgId == CodeTable.IM_LOGIN_SUCCESS) {
                 if (!isPlaying) {
                     startPlay();

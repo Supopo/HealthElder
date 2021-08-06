@@ -37,6 +37,7 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textMultiLine"
                 android:maxLines="3"
+                android:maxLength="200"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
                 android:textColor="@color/black" />

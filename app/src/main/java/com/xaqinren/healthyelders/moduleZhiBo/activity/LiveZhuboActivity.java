@@ -48,6 +48,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.liteav.audio.TXCAudioEngine;
 import com.tencent.liteav.audio.TXCAudioUGCRecorder;
 import com.tencent.liteav.audio.impl.Record.TXCAudioSysRecord;
+import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.xaqinren.healthyelders.BR;
@@ -165,6 +166,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private ZBMorePop zbMorePop;
     private ZBUserInfoPop userInfoPop;
     private ZBGoodsListPop zbGoodsListPop;
+    private String mMsg;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -1724,7 +1726,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
                 break;
             case R.id.tv_msg:
-                startActivity(ZBEditTextDialogActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("content", mMsg);
+                startActivity(ZBEditTextDialogActivity.class, bundle);
                 break;
             case R.id.btn_lianmai:
                 if (isLianMai || hasLinkMsg || linkType == 1) {
@@ -1948,6 +1952,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     ViewGroup.LayoutParams params1 = binding.view.getLayoutParams();
                     params1.height = 0;
                     binding.view.setLayoutParams(params1);
+
+                    mMsg = eventBean.content;
+                    if (!TextUtils.isEmpty(mMsg)) {
+                        binding.tvMsg.setText(mMsg);
+                        FaceManager.handlerEmojiText(binding.tvMsg, mMsg, false);
+                    } else {
+                        binding.tvMsg.setText("发条评论吧");
+                    }
                     break;
                 case LiveConstants.IMCMD_SHOW_GOODS://群发带货消息
                     mLiveRoom.sendRoomCustomMsg(String.valueOf(LiveConstants.IMCMD_SHOW_GOODS), eventBean.content, null);
