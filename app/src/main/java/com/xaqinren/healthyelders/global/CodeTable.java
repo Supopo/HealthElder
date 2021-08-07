@@ -32,6 +32,7 @@ public class CodeTable {
     public static int ZBJ_SETTING_BLOCK = 90002;//直播间设置屏蔽词
     public static int FINISH_ACT = 88;//
     public static int JUMP_ACT = 66;//
+    public static int VIDEO_DZ = 777;//
 
     /**
      * 成功

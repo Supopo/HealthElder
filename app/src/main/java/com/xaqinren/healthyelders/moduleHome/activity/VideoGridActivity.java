@@ -14,7 +14,9 @@ import com.ethanhua.skeleton.RecyclerViewSkeletonScreen;
 import com.ethanhua.skeleton.Skeleton;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityVideoGridBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.adapter.GridVideoAdapter;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -26,7 +28,9 @@ import com.xaqinren.healthyelders.widget.SpeacesItemDecorationEx;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/24.
@@ -42,6 +46,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     private String tags;
     private long firstLikeTime;
     private Bundle extras;
+    private Disposable disposable;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -176,6 +181,26 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+
+        disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean != null) {
+                if (eventBean.msgId == CodeTable.VIDEO_DZ) {
+                    //找出adapter中对应pos
+                    int temp = -1;
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        if (mAdapter.getData().get(i).resourceId.equals(eventBean.content)) {
+                            temp = i;
+                        }
+                    }
+                    if (temp != -1) {
+                        //局部刷新
+                        mAdapter.getData().get(temp).hasFavorite = eventBean.msgType == 1 ? true : false;
+                        mAdapter.notifyItemChanged(temp, 99);
+                    }
+                }
+            }
+        });
+
         viewModel.dismissDialog.observe(this, dis -> {
             dismissDialog();
             if (binding.srlContent.isRefreshing()) {
