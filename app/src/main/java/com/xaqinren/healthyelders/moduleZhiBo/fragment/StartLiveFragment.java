@@ -601,8 +601,21 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                         binding.tvLoc.setText(cityName + poiName);
                     }
                 } else if (position == 2) {
-                    mLiveInitInfo.setHasLocation(false);
-                    binding.tvLoc.setText("开启位置");
+
+
+                    YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
+                    yesOrNoDialog.setMessageText("隐藏位置，更多人将无法看到你，确定隐藏吗？");
+                    yesOrNoDialog.setMessageTextSize(17);
+                    yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mLiveInitInfo.setHasLocation(false);
+                            binding.tvLoc.setText("开启位置");
+                            yesOrNoDialog.dismissDialog();
+                        }
+                    });
+                    yesOrNoDialog.showDialog();
+
                 }
                 listBottomPopup.dismiss();
             }

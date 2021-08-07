@@ -69,6 +69,9 @@ public class YesOrNoDialog {
     public void setMessageText(String str) {
         message.setText(str);
     }
+    public void setMessageTextSize(float size){
+        message.setTextSize(size);
+    }
 
     public void setLeftBtnText(String str) {
         leftBtn.setText(str);

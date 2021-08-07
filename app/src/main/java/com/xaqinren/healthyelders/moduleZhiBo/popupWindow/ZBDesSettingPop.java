@@ -4,8 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -24,6 +26,8 @@ import razerdp.basepopup.BasePopupWindow;
 /**
  * Created by Lee. on 2021/4/20.
  * 开启直播间简介设置弹窗
+ * PopupWindow中打开键盘顶起弹窗需要在Pop所在Activity设置android:windowSoftInputMode="adjustPan"
+ * adjustPan  软键盘弹出时，平推整个界面
  */
 public class ZBDesSettingPop extends BasePopupWindow {
     private LiveInitInfo liveInitInfo;

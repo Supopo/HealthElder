@@ -118,9 +118,9 @@
             android:name="com.amap.api.v2.apikey"
             android:value="c7e12ebf28500a8715e6a77a418f3cb2" />
 
-        <service android:name="com.amap.api.location.APSService"
-            android:foregroundServiceType="location"
-            />
+        <service
+            android:name="com.amap.api.location.APSService"
+            android:foregroundServiceType="location" />
         <service
             android:name=".moduleLiteav.service.LocationService"
             android:foregroundServiceType="location" />
@@ -182,7 +182,8 @@
             android:name=".moduleZhiBo.activity.StartLiveActivity"
             android:launchMode="singleTask"
             android:theme="@style/AnimTheme"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustPan" />
+        <!--        adjustPan  软键盘弹出时，平推整个界面-->
         <activity
             android:name=".moduleZhiBo.activity.StartRenZhengActivity"
             android:theme="@style/AnimTheme" />
@@ -200,7 +201,7 @@
             android:theme="@style/AnimTheme" />
         <activity
             android:name=".moduleZhiBo.activity.LiveZhuboActivity"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name=".moduleZhiBo.activity.LiveGuanzhongActivity"
             android:theme="@style/AnimTheme"

@@ -282,7 +282,10 @@ public class VideoInfo implements Serializable, MultiItemEntity {
     }
 
     public String getDay() {
-        return DateUtils.getDay(createdAt);
+        if (!TextUtils.isEmpty(createdAt) && createdAt.length() > 10) {
+            return createdAt.substring(8, 10);
+        }
+        return "";
     }
 
     public String getRelativeTime() {

@@ -68,24 +68,11 @@ public class DateUtils {
 
     public static String getMonth(String time) {
         //转换时间戳
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         try {
             date = format.parse(time);
             return months[date.getMonth()];
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public static String getDay(String time) {
-        //转换时间戳
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = null;
-        try {
-            date = format.parse(time);
-            return String.valueOf(date.getDay());
         } catch (ParseException e) {
             e.printStackTrace();
         }
