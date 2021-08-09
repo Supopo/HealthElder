@@ -1,6 +1,7 @@
 package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -9,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
@@ -50,6 +52,8 @@ public class ZBMorePop extends BasePopupWindow {
     private ZBSettingBean settingBean;
     private ZBMoreSettingPop settingPop;
     private Context context;
+    private QMUITipDialog qmuiTipDialog;
+    private Handler mHandler;
 
     public ZBMorePop(Context context, MLVBLiveRoom mLiveRoom, LiveInitInfo mLiveInitInfo) {
         super(context);
@@ -71,6 +75,10 @@ public class ZBMorePop extends BasePopupWindow {
             R.mipmap.icon_zb_fanzhuan, R.mipmap.icon_shezhi_hui, R.mipmap.icon_zb_share,
             R.mipmap.icon_zb_kqlm, R.mipmap.icon_zb_meiy, R.mipmap.icon_zb_kqpl, R.mipmap.icon_zb_kqlw, R.mipmap.icon_zb_lj
     };
+
+    public void setHandler(Handler handler) {
+        mHandler = handler;
+    }
 
     private void initView() {
         loadingDialog = new LoadingDialog(getContext());
@@ -136,6 +144,17 @@ public class ZBMorePop extends BasePopupWindow {
                     loadingDialog.show();
                     settingBean.setCanMic(!mLiveInitInfo.getCanMic());
                     LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, settingBean);
+                    qmuiTipDialog = new QMUITipDialog.Builder(context)
+                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                            .setTipWord(!mLiveInitInfo.getCanMic() ? "已开启连麦" : "已禁止连麦")
+                            .create();
+                    qmuiTipDialog.show();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            qmuiTipDialog.dismiss();
+                        }
+                    },1000);
                     break;
                 case 4:
                     showMYPop();
@@ -144,11 +163,33 @@ public class ZBMorePop extends BasePopupWindow {
                     loadingDialog.show();
                     settingBean.setCanComment(!mLiveInitInfo.getCanComment());
                     LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, settingBean);
+                    qmuiTipDialog = new QMUITipDialog.Builder(context)
+                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                            .setTipWord(!mLiveInitInfo.getCanComment() ? "已开启评论" : "已禁止评论")
+                            .create();
+                    qmuiTipDialog.show();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            qmuiTipDialog.dismiss();
+                        }
+                    },1000);
                     break;
                 case 6:
                     loadingDialog.show();
                     settingBean.setCanGift(!mLiveInitInfo.getCanGift());
                     LiveRepository.getInstance().setZBStatus(dismissDialog, setSuccess, settingBean);
+                    qmuiTipDialog = new QMUITipDialog.Builder(context)
+                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                            .setTipWord(!mLiveInitInfo.getCanGift() ? "已开启刷礼物" : "已禁止刷礼物")
+                            .create();
+                    qmuiTipDialog.show();
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            qmuiTipDialog.dismiss();
+                        }
+                    },1000);
                     break;
                 case 7:
                     showLJPop();
