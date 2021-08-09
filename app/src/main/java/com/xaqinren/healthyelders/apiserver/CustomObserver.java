@@ -34,7 +34,7 @@ public abstract class CustomObserver<T extends MBaseResponse> implements Observe
     public void onSubscribe(Disposable d) {
         if (!NetworkUtil.isNetworkAvailable(AppApplication.getInstance())) {
             d.dispose();
-            ToastUtils.showShort("请检查网络");
+            ToastUtils.showShort("当前无网络，请检查后重试");
         }
     }
 

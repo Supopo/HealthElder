@@ -56,6 +56,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
@@ -115,6 +116,7 @@ import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
+import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
@@ -167,6 +169,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private ZBUserInfoPop userInfoPop;
     private ZBGoodsListPop zbGoodsListPop;
     private String mMsg;
+    private QMUITipDialog tipDialog;
+    private QMUITipDialog tipNetDialog;
+    private int lastNetStatus = 1;//上一次网络状态
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -957,6 +962,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
         roomDestroy = true;
         RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "overLive-zb"));
+        LogUtils.v(Constant.TAG_LIVE,"群已解散");
         finish();
     }
 
@@ -1742,6 +1748,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             case R.id.btn_more:
                 zbMorePop = new ZBMorePop(this, mLiveRoom, mLiveInitInfo);
                 zbMorePop.showPopupWindow();
+                zbMorePop.setHandler(mHandler);
                 break;
             case R.id.btn_goods:
                 zbGoodsListPop = new ZBGoodsListPop(this, mLiveInitInfo.liveRoomId, 1);
@@ -1799,13 +1806,38 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     if (eventBean.msgType == 1) {
                         binding.tvNet.setText("网络良好");
                         binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluolh));
+                        if (lastNetStatus != eventBean.msgType) {
+                            tipDialog = new QMUITipDialog.Builder(getContext())
+                                    .setTipWord("网络恢复")
+                                    .create();
+                            tipDialog.show();
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tipDialog.dismiss();
+                                }
+                            }, 1000);
+                        }
                     } else if (eventBean.msgType == 2) {
                         binding.tvNet.setText("网络一般");
                         binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluoyb));
                     } else if (eventBean.msgType == 3) {
                         binding.tvNet.setText("网络卡顿");
                         binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluokd));
+                        if (lastNetStatus != eventBean.msgType) {
+                            tipDialog = new QMUITipDialog.Builder(getContext())
+                                    .setTipWord("当前网络卡顿")
+                                    .create();
+                            tipDialog.show();
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tipDialog.dismiss();
+                                }
+                            }, 1000);
+                        }
                     }
+                    lastNetStatus = eventBean.msgType;
                     break;
                 case LiveConstants.SEND_MSG:
                     //发送文本消息
@@ -2363,8 +2395,10 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private Runnable runnable;
-
     private void initLinkMsgManger() {
+        tipNetDialog = new QMUITipDialog.Builder(getContext())
+                .setTipWord("当前无网络，请检查后重试")
+                .create();
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -2403,6 +2437,21 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     }
                 }
 
+
+                //无网络
+                boolean hasNet = NetworkUtil.isNetworkAvailable(AppApplication.getInstance());
+                if (!hasNet) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tipNetDialog.show();
+                        }
+                    });
+                } else {
+                    if (tipNetDialog != null && tipNetDialog.isShowing()) {
+                        tipNetDialog.dismiss();
+                    }
+                }
 
                 mHandler.postDelayed(runnable, 1000L);
             }

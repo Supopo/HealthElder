@@ -20,6 +20,7 @@ import com.tencent.imsdk.TIMUserProfile;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.liteav.beauty.TXBeautyManager;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.tencent.rtmp.ITXLivePlayListener;
 import com.tencent.rtmp.ITXLivePushListener;
 import com.tencent.rtmp.TXLiveConstants;
@@ -3872,6 +3873,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             } else if (event == TXLiveConstants.PUSH_ERR_NET_DISCONNECT || event == TXLiveConstants.PUSH_ERR_INVALID_ADDRESS) {
                 String msg = "[LivePusher] 推流失败[网络断开]";
                 TXCLog.e(TAG, msg);
+                ToastUtil.toastShortMessage("当前无网络，请检查后重试");
                 callbackOnThread(mCallback, "onError", event, msg);
             } else if (event == TXLiveConstants.PUSH_ERR_SCREEN_CAPTURE_START_FAILED) {
                 String msg = "[LivePusher] 推流失败[录屏启动失败]";
@@ -3882,8 +3884,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
         @Override
         public void onNetStatus(Bundle status) {
+            LogUtils.v(Constant.TAG_LIVE, "网速：" + status.toString());
             int netSpeed = status.getInt(TXLiveConstants.NET_STATUS_NET_SPEED);
-
             if (netSpeed >= 900) {
                 nowNetStatus = 1;
             } else if (netSpeed > 500) {
