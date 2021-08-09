@@ -208,10 +208,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     zbGoodsListPop.showPopupWindow();
                     break;
                 case "私密":
-                    mLiveInitInfo.roomPassword = "";
-                    menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_gongkai;
-                    menuAdapter.getData().get(openTempPos).menuName = "公开";
-                    menuAdapter.notifyItemChanged(openTempPos, 99);
+                    //恢复公开直播
+                    showOpenRoomPop();
                     break;
                 case "公开":
                     //密码锁图标变化
@@ -587,8 +585,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private void showListPop() {
         List<ListPopMenuBean> menus = new ArrayList<>();
         menus.add(new ListPopMenuBean("显示位置更多人能看到你噢", getResources().getColor(R.color.gray_999), 14));
-        menus.add(new ListPopMenuBean("显示位置", 0, 0));
-        menus.add(new ListPopMenuBean("隐藏位置", 0, 0));
+        menus.add(new ListPopMenuBean("显示位置", 0, 16));
+        menus.add(new ListPopMenuBean("隐藏位置", 0, 16));
         ListBottomPopup listBottomPopup = new ListBottomPopup(getActivity(), menus);
         listBottomPopup.setOnItemClickListener(new OnItemClickListener() {
 
@@ -622,6 +620,28 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
         listBottomPopup.showPopupWindow();
     }
+
+    private void showOpenRoomPop() {
+        List<ListPopMenuBean> menus = new ArrayList<>();
+        menus.add(new ListPopMenuBean("恢复公开直播", 0, 16));
+        ListBottomPopup listBottomPopup = new ListBottomPopup(getActivity(), menus);
+        listBottomPopup.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (position == 0) {
+                    //恢复公开直播
+                    mLiveInitInfo.roomPassword = "";
+                    menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_gongkai;
+                    menuAdapter.getData().get(openTempPos).menuName = "公开";
+                    menuAdapter.notifyItemChanged(openTempPos, 99);
+                }
+                listBottomPopup.dismiss();
+            }
+        });
+        listBottomPopup.showPopupWindow();
+    }
+
 
     private void showMYPop() {
 

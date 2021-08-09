@@ -2,8 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:binding="http://schemas.android.com/apk/res-auto">
 
-    <data>
-    </data>
+    <data></data>
 
     <!--    随机背景颜色-->
     <!--    android:background="@{viewModel.placeholderRes}"-->
@@ -18,20 +17,19 @@
             android:id="@+id/tv_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_252525"
             android:gravity="center"
-            android:textSize="@dimen/sp_16"
-            />
+            android:textColor="@color/color_252525"
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/tv_menu_sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_252525"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
             android:layout_marginTop="@dimen/dp_12"
-            android:visibility="gone"
-            />
+            android:gravity="center"
+            android:textColor="@color/color_252525"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
