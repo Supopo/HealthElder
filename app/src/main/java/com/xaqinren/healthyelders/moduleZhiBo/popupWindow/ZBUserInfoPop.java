@@ -38,6 +38,7 @@ import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,7 +145,23 @@ public class ZBUserInfoPop extends BasePopupWindow {
         });
 
         llGz.setOnClickListener(lis -> {
-            setUserFollow();
+
+            if (userInfoBean.getHasAttention()) {
+                //取消关注
+                YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getContext());
+                yesOrNoDialog.setMessageText("确定不再关注此人？");
+                yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setUserFollow();
+                        yesOrNoDialog.dismissDialog();
+                    }
+                });
+                yesOrNoDialog.showDialog();
+            } else {
+                setUserFollow();
+            }
+
         });
 
         llJb.setOnClickListener(lis -> {
