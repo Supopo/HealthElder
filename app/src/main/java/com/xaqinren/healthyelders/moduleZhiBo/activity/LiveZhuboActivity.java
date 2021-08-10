@@ -170,7 +170,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private ZBGoodsListPop zbGoodsListPop;
     private String mMsg;
     private QMUITipDialog tipDialog;
-    private QMUITipDialog tipNetDialog;
     private int lastNetStatus = 1;//上一次网络状态
 
     @Override
@@ -1806,6 +1805,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     if (eventBean.msgType == 1) {
                         binding.tvNet.setText("网络良好");
                         binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluolh));
+                        if (tipDialog != null && tipDialog.isShowing()) {
+                            tipDialog.dismiss();
+                        }
                         if (lastNetStatus != eventBean.msgType) {
                             tipDialog = new QMUITipDialog.Builder(getContext())
                                     .setTipWord("网络恢复")
@@ -1819,9 +1821,15 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                             }, 1000);
                         }
                     } else if (eventBean.msgType == 2) {
+                        if (tipDialog != null && tipDialog.isShowing()) {
+                            tipDialog.dismiss();
+                        }
                         binding.tvNet.setText("网络一般");
                         binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluoyb));
                     } else if (eventBean.msgType == 3) {
+                        if (tipDialog != null && tipDialog.isShowing()) {
+                            tipDialog.dismiss();
+                        }
                         binding.tvNet.setText("网络卡顿");
                         binding.ivNet.setBackground(getResources().getDrawable(R.mipmap.wangluokd));
                         if (lastNetStatus != eventBean.msgType) {
@@ -1836,6 +1844,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                                 }
                             }, 1000);
                         }
+                    }else if(eventBean.msgType == 4){
+                        if (tipDialog != null && tipDialog.isShowing()) {
+                            tipDialog.dismiss();
+                        }
+                        tipDialog = new QMUITipDialog.Builder(getContext())
+                                .setTipWord("当前无网络，请检查后重试")
+                                .create();
+                        tipDialog.show();
                     }
                     lastNetStatus = eventBean.msgType;
                     break;
@@ -2396,9 +2412,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
 
     private Runnable runnable;
     private void initLinkMsgManger() {
-        tipNetDialog = new QMUITipDialog.Builder(getContext())
-                .setTipWord("当前无网络，请检查后重试")
-                .create();
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -2436,23 +2449,6 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                         }
                     }
                 }
-
-
-                //无网络
-                boolean hasNet = NetworkUtil.isNetworkAvailable(AppApplication.getInstance());
-                if (!hasNet) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tipNetDialog.show();
-                        }
-                    });
-                } else {
-                    if (tipNetDialog != null && tipNetDialog.isShowing()) {
-                        tipNetDialog.dismiss();
-                    }
-                }
-
                 mHandler.postDelayed(runnable, 1000L);
             }
         };

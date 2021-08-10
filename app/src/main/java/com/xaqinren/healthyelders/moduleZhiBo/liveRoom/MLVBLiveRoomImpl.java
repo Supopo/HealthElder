@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.imsdk.TIMUserProfile;
 import com.tencent.imsdk.TIMValueCallBack;
 import com.tencent.liteav.basic.log.TXCLog;
@@ -3849,9 +3850,11 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
     private class TXLivePushListenerImpl implements ITXLivePushListener {
         private StandardCallback mCallback = null;
-        private int oldNetStatus;
+        private boolean isFirst = true;
         private int nowNetStatus;
         private int oldNetSpeed;
+        private QMUITipDialog tipNetDialog;
+
 
         public void setCallback(StandardCallback callback) {
             mCallback = callback;
@@ -3890,9 +3893,16 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 nowNetStatus = 1;
             } else if (netSpeed > 500) {
                 nowNetStatus = 2;
-            } else {
+            } else if (netSpeed > 0) {
                 nowNetStatus = 3;
+            } else {
+                nowNetStatus = 4;
+                if (isFirst) {
+                    nowNetStatus = 3;
+                }
+                isFirst = false;
             }
+
 
             if (oldNetSpeed != nowNetStatus) {
                 RxBus.getDefault().post(new EventBean(Constant.NET_SPEED, nowNetStatus));
