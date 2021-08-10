@@ -194,6 +194,15 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                     }
                     if (temp != -1) {
                         //局部刷新
+                        int favoriteCount = mAdapter.getData().get(temp).getFavoriteCount();
+
+                        if (eventBean.msgType == 1) {
+                            favoriteCount++;
+                        } else {
+                            favoriteCount--;
+                        }
+                        mAdapter.getData().get(temp).favoriteCount = String.valueOf(favoriteCount);
+
                         mAdapter.getData().get(temp).hasFavorite = eventBean.msgType == 1 ? true : false;
                         mAdapter.notifyItemChanged(temp, 99);
                     }
@@ -253,5 +262,8 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 }
