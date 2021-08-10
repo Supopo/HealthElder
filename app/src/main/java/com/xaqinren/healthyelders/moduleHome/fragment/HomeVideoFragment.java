@@ -367,7 +367,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             showLoading();
         }
 
-
         //视频播放
         vodPlayer = new TXVodPlayer(getActivity());
         //RENDER_MODE_FULL_FILL_SCREEN 将图像等比例铺满整个屏幕，多余部分裁剪掉，此模式下画面不会留黑边，但可能因为部分区域被裁剪而显示不全。
@@ -480,6 +479,8 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         }
                     }
                 } else if (bean.msgId == 10011) {//首页展开了
+                    //防止回到首页了加载动画还未隐藏
+                    dismissLoading();
                     //判断
                     if (AppApplication.get().getLayoutPos() == 0 && type.equals("home-tj")) {
                         if (AppApplication.get().getTjPlayPosition() == position || (AppApplication.get().getTjPlayPosition() == 0 && position == 0)) {

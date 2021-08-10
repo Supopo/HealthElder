@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen;
 import com.ethanhua.skeleton.Skeleton;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
@@ -45,6 +46,7 @@ import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +59,7 @@ import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+import me.goldze.mvvmhabit.widget.LoadingDialog;
 
 /**
  * Created by Lee. on 2021/5/11.
@@ -78,6 +81,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public LockableNestedScrollView nsv;
     private RecyclerViewSkeletonScreen skeletonScreen1;
     private Disposable disposable;
+    private LoadingDialog loadingDialog;
 
 
     @Override
@@ -93,6 +97,21 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     public boolean isShowTop = true;
 
+    private boolean isNeedRefresh;//点击了首页刷新
+
+    public void showMDialog() {
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(getActivity(), false);
+        }
+        loadingDialog.show();
+    }
+
+    public void dismissMDialog() {
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
+    }
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
@@ -104,7 +123,12 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //展示TabLayout
                         binding.rlTabMenu.setVisibility(View.VISIBLE);
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP) {
-                        showDialog();
+                        if (isNeedRefresh) {
+                            return;
+                        }
+                        isNeedRefresh = true;
+
+                        showMDialog();
 
                         AppApplication.get().setShowTopMenu(true);
                         isShowTop = true;
@@ -115,7 +139,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //回到推荐页面
                         binding.tabLayout.setCurrentTab(0, false);
                         //刷新推荐
-                        tjFragment.refreshData();
+                        tjFragment.homeRefreshData();
 
                         //隐藏视频播放视图层
                         RxBus.getDefault().post(new VideoEvent(10010, 0));
@@ -129,7 +153,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         binding.cardView.setRadius(getResources().getDimension(R.dimen.dp_14));
 
                         if (AppApplication.get().getLayoutPos() == 0) {
-
                             tjFragment.tjViewPager2.setUserInputEnabled(false);
                         } else if (AppApplication.get().getLayoutPos() == 1) {
                             gzFragment.setVP2Enabled(false);
@@ -146,12 +169,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         binding.nsv.fling(0);
                         binding.nsv.smoothScrollTo(0, 0);
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dismissDialog();
-                            }
-                        }, 500);
                     } else if (event.msgType == CodeTable.SHOW_HOME1_TOP_HT) {
                         //回弹到顶部
                         binding.nsv.setScrollingEnabled(true);
@@ -162,6 +179,15 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         //展开全部
                         binding.nsv.fling((int) getResources().getDimension(R.dimen.dp_234));
                         binding.nsv.smoothScrollTo(0, (int) getResources().getDimension(R.dimen.dp_234));
+                    } else if (event.msgType == CodeTable.HOME_STOP_LOADING) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                isNeedRefresh = false;
+                                dismissMDialog();
+                            }
+                        },500);
+
                     }
                 }
             }
@@ -272,52 +298,82 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.viewPager2.setAdapter(vp2Adapter);
         binding.viewPager2.setOffscreenPageLimit(2);
         binding.tabLayout.setViewPager2(binding.viewPager2, titles);
-        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        binding.tabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-
+            public void onTabSelect(int position) {
                 AppApplication.get().setLayoutPos(position);
 
-                //第一次加载完所有Fragment会触发
-                if (!isFirst) {
-
-                    if (binding.rlTabMenu.getVisibility() == View.GONE) {
-                        binding.rlTabMenu.setVisibility(View.VISIBLE);
-                    }
-                    if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
-                        binding.rlTabMenu.setVisibility(View.GONE);
-                    }
-
-                    //通知HomeVideoFragment做出左右滑动相应操作
-                    RxBus.getDefault().post(new VideoEvent(101, position));
-                    //通知关注列表页面开始加载数据
-                    RxBus.getDefault().post(new EventBean(101, position));
-
-                    if (position == 0) {//推荐
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                    } else if (position == 1) {//关注
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                    } else {//附近
-                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
-                    }
+                if (binding.rlTabMenu.getVisibility() == View.GONE) {
+                    binding.rlTabMenu.setVisibility(View.VISIBLE);
                 }
-                isFirst = false;
+                if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
+                    binding.rlTabMenu.setVisibility(View.GONE);
+                }
+
+                //通知HomeVideoFragment做出左右滑动相应操作
+                RxBus.getDefault().post(new VideoEvent(101, position));
+                //通知关注列表页面开始加载数据
+                RxBus.getDefault().post(new EventBean(101, position));
+
+                if (position == 0) {//推荐
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                } else if (position == 1) {//关注
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                } else {//附近
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
+                }
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+
             }
         });
+
+        //        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        //            @Override
+        //            public void onPageSelected(int position) {
+        //                super.onPageSelected(position);
+        //
+        //                AppApplication.get().setLayoutPos(position);
+        //
+        //                //第一次加载完所有Fragment会触发
+        //                if (!isFirst) {
+        //
+        //                    if (binding.rlTabMenu.getVisibility() == View.GONE) {
+        //                        binding.rlTabMenu.setVisibility(View.VISIBLE);
+        //                    }
+        //                    if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
+        //                        binding.rlTabMenu.setVisibility(View.GONE);
+        //                    }
+        //
+        //                    //通知HomeVideoFragment做出左右滑动相应操作
+        //                    RxBus.getDefault().post(new VideoEvent(101, position));
+        //                    //通知关注列表页面开始加载数据
+        //                    RxBus.getDefault().post(new EventBean(101, position));
+        //
+        //                    if (position == 0) {//推荐
+        //                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+        //                    } else if (position == 1) {//关注
+        //                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+        //                    } else {//附近
+        //                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
+        //                    }
+        //                }
+        //                isFirst = false;
+        //            }
+        //        });
 
         binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
                 if (scrollY >= (int) getResources().getDimension(R.dimen.dp_234)) {
+                    LogUtils.v("首页消息：", "滑动了234");
                     AppApplication.get().setShowTopMenu(false);
 
                     isShowTop = false;
-                    //隐藏头部菜单
-                    binding.nsv.setScrollingEnabled(false);
-                    binding.viewPager2.setUserInputEnabled(true);
-                    binding.rlTop.setVisibility(View.GONE);
+
 
                     //ViewPager2变宽
                     setCardWidth(screenWidth);
@@ -338,6 +394,10 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         fjFragment.viewTop.setVisibility(View.VISIBLE);
                     }
 
+                    //隐藏头部菜单
+                    binding.nsv.setScrollingEnabled(false);
+                    binding.viewPager2.setUserInputEnabled(true);
+                    binding.rlTop.setVisibility(View.GONE);
 
                     String tag = "";
                     if (AppApplication.get().getLayoutPos() == 0) {

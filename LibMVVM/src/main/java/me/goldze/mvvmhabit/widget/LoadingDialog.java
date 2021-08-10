@@ -24,9 +24,14 @@ public class LoadingDialog {
     private Context context;
     private View.OnClickListener onClickListener;
     private LottieAnimationView loadView;
-
+    private boolean cancel = true;
     public LoadingDialog(Context context) {
         this.context = context;
+        init(context);
+    }
+    public LoadingDialog(Context context,boolean cancel) {
+        this.context = context;
+        this.cancel = cancel;
         init(context);
     }
 
@@ -35,7 +40,7 @@ public class LoadingDialog {
         //填充对话框的布局
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_tip_load, null);
         //点击外部不可dismiss
-        centerDialog.setCancelable(true);
+        centerDialog.setCancelable(cancel);
         //将布局设置给Dialog
         centerDialog.setContentView(view);
         //获取当前Activity所在的窗体

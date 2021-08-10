@@ -94,6 +94,14 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
         viewModel.datas.observe(this, datas -> {
             closeLoadView();
             if (datas != null && datas.size() > 0) {
+
+                if (isHomeRefresh) {
+
+                    //通知首页关闭加载
+                    isHomeRefresh = false;
+                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME,CodeTable.HOME_STOP_LOADING));
+                }
+
                 if (page == 1) {
                     mVideoInfoList.clear();
                     fragmentList.clear();
@@ -176,6 +184,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                LogUtils.v("首页消息：", "onPageSelected" + position);
 
 
                 //第一次加载所有Fragment完会触发
@@ -190,6 +199,7 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
                     if (!AppApplication.get().isShowTopMenu()) {
                         AppApplication.get().setTjPlayPosition(position);
                         if (position == 0) {
+                            LogUtils.v("首页消息：", "点击首页刷新时候展开");
                             binding.viewPager2.setUserInputEnabled(true);
                         }
                     }
@@ -220,6 +230,15 @@ public class HomeTJFragment extends BaseFragment<FragmentHomeTjBinding, HomeTJVi
 
 
     public void refreshData() {
+        binding.srl.setRefreshing(false);
+        page = 1;
+        viewModel.getVideoData(page);
+    }
+
+    private boolean isHomeRefresh;
+
+    public void homeRefreshData() {
+        isHomeRefresh = true;
         binding.srl.setRefreshing(false);
         page = 1;
         viewModel.getVideoData(page);
