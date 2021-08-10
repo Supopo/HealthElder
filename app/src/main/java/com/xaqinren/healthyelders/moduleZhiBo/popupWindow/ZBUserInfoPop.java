@@ -23,6 +23,7 @@ import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.BaseListRes;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
@@ -33,10 +34,12 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.ZBEditTextDialogActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
 
@@ -68,6 +71,7 @@ public class ZBUserInfoPop extends BasePopupWindow {
     private ImageView ivGz;
     private int type;
     private Disposable uniSubscribe;
+    private Disposable subscribe;
 
     public ZBUserInfoPop(Context context, LiveInitInfo mLiveInitInfo, String userId) {
         super(context);
@@ -201,6 +205,21 @@ public class ZBUserInfoPop extends BasePopupWindow {
                 }
             }
         });
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean != null) {
+                if (eventBean.msgId == LiveConstants.ZB_USER_SET) {
+                    LogUtils.v(Constant.TAG_LIVE, eventBean.toString());
+                    if (eventBean.msgType == LiveConstants.SETTING_JINYAN) {      //禁言-取消禁言
+                        if (eventBean.status == 1) {
+                            //禁言
+                            userInfoBean.setHasSpeech(true);
+                        } else {
+                            userInfoBean.setHasSpeech(false);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void showListPop() {
@@ -260,6 +279,9 @@ public class ZBUserInfoPop extends BasePopupWindow {
         super.onDismiss();
         if (uniSubscribe != null) {
             uniSubscribe.dispose();
+        }
+        if (subscribe != null) {
+            subscribe.dispose();
         }
     }
 }

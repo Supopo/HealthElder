@@ -159,6 +159,7 @@ public class ZBListMenuPop extends BasePopupWindow {
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<Object>> data) {
                         //通知主播页面禁言操作了 1禁言 0没有禁言
+                        userListBean.setHasSpeech(status);
                         RxBus.getDefault().post(new EventBean(LiveConstants.ZB_USER_SET, LiveConstants.SETTING_JINYAN,
                                 userListBean.getId(), status ? 1 : 0));
                     }
