@@ -251,9 +251,13 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         boolean isGroup = type == V2TIMConversation.V2TIM_GROUP;
         info.setLastMessageTime(message.getTimestamp());
         List<MessageInfo> list = MessageInfoUtil.TIMMessage2MessageInfo(message);
-        if (list != null && list.size() > 0) {
-            info.setLastMessage(list.get(list.size() - 1));
+
+        //判断消息列表中每条消息有没有历史消息不显示
+        if (list == null || list.size() == 0) {
+            return null;
         }
+
+        info.setLastMessage(list.get(list.size() - 1));
 
         info.setTitle(conversation.getShowName());
         if (isGroup) {
