@@ -66,6 +66,7 @@ import com.xaqinren.healthyelders.utils.AnimUtil;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.Num2TextUtil;
 import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.InputPwdDialog;
 import com.xaqinren.healthyelders.widget.LiteAvOpenModePopupWindow;
@@ -692,6 +693,14 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         }*/
         viewModel.commentSuccess.observe(this, commentListBean -> {
             if (commentListBean != null && commentDialog != null) {
+                //评论成功通知视频页面评论数加1
+                try {
+                    videoInfo.commentCount = (Integer.parseInt(videoInfo.commentCount) + 1) + "";
+                    binding.tvComment.setText(Num2TextUtil.sNum2Text2(videoInfo.commentCount));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 //本地刷新
                 if (commentType == 0) {
                     //往评论列表查插数据

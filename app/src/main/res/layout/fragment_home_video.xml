@@ -175,6 +175,7 @@
                     android:background="@mipmap/icon_play_pl" />
 
                 <TextView
+                    android:id="@+id/tv_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
