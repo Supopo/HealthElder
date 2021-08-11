@@ -162,7 +162,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     //客服消息
                     return true;
                 }
-                //自定义
+                //自定义IM消息
             }
         }
 

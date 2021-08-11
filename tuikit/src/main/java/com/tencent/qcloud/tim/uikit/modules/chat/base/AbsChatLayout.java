@@ -6,7 +6,9 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +31,14 @@ import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.MessageListAdapt
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder.ICustomMessageViewGroup;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder.IOnCustomMessageDrawListener;
 import com.tencent.qcloud.tim.uikit.modules.message.CustomHelloTIMUIController;
+import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.ShareTopicBean;
 import com.tencent.qcloud.tim.uikit.utils.BackgroundTasks;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout {
@@ -275,7 +281,7 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         if (getMessageLayout().getAdapter() == null) {
             mAdapter = new MessageListAdapter();
             getMessageLayout().setAdapter(mAdapter);
-            //TODO 自定义消息
+            // IM设置自定义消息
             mAdapter.setOnCustomMessageDrawListener(new IOnCustomMessageDrawListener() {
                 @Override
                 public void onDraw(ICustomMessageViewGroup parent, MessageInfo info) {
@@ -284,16 +290,19 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
                         return;
                     }
                     V2TIMCustomElem elem = info.getTimMessage().getCustomElem();
+                    String msg = new String(elem.getData());
+                    Log.v("--IM-ZDY-：", msg);
                     // 自定义的json数据，需要解析成bean实例
-                    ShareTopicBean data = null;
+                    CustomMessage data = null;
                     try {
-                        data = new Gson().fromJson(new String(elem.getData()), ShareTopicBean.class);
+                        data = new Gson().fromJson(msg, CustomMessage.class);
                     } catch (Exception e) {
                     }
                     if (data == null) {
                         return;
-                    } else  {
-                        CustomHelloTIMUIController.onDraw(parent, data, getContext());
+                    } else {
+                        //判断IM自定义消息类型分类展示
+                        CustomHelloTIMUIController.onDraw(parent, (ShareTopicBean) data.content, getContext());
                     }
                 }
             });

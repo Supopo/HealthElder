@@ -8,4 +8,5 @@ public class MessageCustom {
     public String businessID;
     public String opUser;
     public String content;
+    public String cmd;
 }

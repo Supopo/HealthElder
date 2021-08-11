@@ -312,71 +312,40 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         binding.viewPager2.setAdapter(vp2Adapter);
         binding.viewPager2.setOffscreenPageLimit(2);
         binding.tabLayout.setViewPager2(binding.viewPager2, titles);
-        binding.tabLayout.setOnTabSelectListener(new OnTabSelectListener() {
+
+        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void onTabSelect(int position) {
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
                 AppApplication.get().setLayoutPos(position);
 
-                if (binding.rlTabMenu.getVisibility() == View.GONE) {
-                    binding.rlTabMenu.setVisibility(View.VISIBLE);
+                //第一次加载完所有Fragment会触发
+                if (!isFirst) {
+
+                    if (binding.rlTabMenu.getVisibility() == View.GONE) {
+                        binding.rlTabMenu.setVisibility(View.VISIBLE);
+                    }
+                    if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
+                        binding.rlTabMenu.setVisibility(View.GONE);
+                    }
+
+                    //通知HomeVideoFragment做出左右滑动相应操作
+                    RxBus.getDefault().post(new VideoEvent(101, position));
+                    //通知关注列表页面开始加载数据
+                    RxBus.getDefault().post(new EventBean(101, position));
+
+                    if (position == 0) {//推荐
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                    } else if (position == 1) {//关注
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
+                    } else {//附近
+                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
+                    }
                 }
-                if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
-                    binding.rlTabMenu.setVisibility(View.GONE);
-                }
-
-                //通知HomeVideoFragment做出左右滑动相应操作
-                RxBus.getDefault().post(new VideoEvent(101, position));
-                //通知关注列表页面开始加载数据
-                RxBus.getDefault().post(new EventBean(101, position));
-
-                if (position == 0) {//推荐
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                } else if (position == 1) {//关注
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-                } else {//附近
-                    RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
-                }
-            }
-
-            @Override
-            public void onTabReselect(int position) {
-
+                isFirst = false;
             }
         });
-
-        //        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-        //            @Override
-        //            public void onPageSelected(int position) {
-        //                super.onPageSelected(position);
-        //
-        //                AppApplication.get().setLayoutPos(position);
-        //
-        //                //第一次加载完所有Fragment会触发
-        //                if (!isFirst) {
-        //
-        //                    if (binding.rlTabMenu.getVisibility() == View.GONE) {
-        //                        binding.rlTabMenu.setVisibility(View.VISIBLE);
-        //                    }
-        //                    if (position == 0 && binding.rlTop.getVisibility() == View.VISIBLE) {
-        //                        binding.rlTabMenu.setVisibility(View.GONE);
-        //                    }
-        //
-        //                    //通知HomeVideoFragment做出左右滑动相应操作
-        //                    RxBus.getDefault().post(new VideoEvent(101, position));
-        //                    //通知关注列表页面开始加载数据
-        //                    RxBus.getDefault().post(new EventBean(101, position));
-        //
-        //                    if (position == 0) {//推荐
-        //                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-        //                    } else if (position == 1) {//关注
-        //                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_TOUMING));
-        //                    } else {//附近
-        //                        RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SET_MENU_BLACK));
-        //                    }
-        //                }
-        //                isFirst = false;
-        //            }
-        //        });
 
         binding.nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
