@@ -407,7 +407,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     private float before_press_Y;
     private float before_press_X;
 
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -422,18 +421,17 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 double scrollX = Math.abs(now_press_X - before_press_X);
                 double scrollY = Math.abs(now_press_Y - before_press_Y);
 
+                LogUtils.v("首页","scrollX: "+scrollX);
+                LogUtils.v("首页","scrollY: "+scrollY);
+
                 if (selectView.getId() == R.id.tv_menu1) {
-                    if (scrollX <= 50 || scrollX < scrollY) {
-                        //左右滑动过小，禁止滑动
+                    if (scrollX <= scrollY) {
                         if (homeFragment != null && homeFragment.vp2 != null) {
                             homeFragment.vp2.setUserInputEnabled(false);
                         }
-                    } else {
+                    }else {
                         if (homeFragment != null && homeFragment.vp2 != null) {
-
-                            if (!homeFragment.isShowTop) {
-                                homeFragment.vp2.setUserInputEnabled(true);
-                            }
+                            homeFragment.vp2.setUserInputEnabled(true);
                         }
                     }
                 }
@@ -492,14 +490,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                             public void run() {
                                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_HT));
                             }
-                        }, 100);
+                        }, 50);
                     } else {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 RxBus.getDefault().post(new EventBean(CodeTable.EVENT_HOME, CodeTable.SHOW_HOME1_TOP_ZK));
                             }
-                        }, 100);
+                        }, 50);
                     }
                 }
 

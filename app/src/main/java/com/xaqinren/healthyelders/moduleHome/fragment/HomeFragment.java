@@ -22,6 +22,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen;
 import com.ethanhua.skeleton.Skeleton;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.tencent.bugly.proguard.A;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
@@ -133,6 +134,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         AppApplication.get().setShowTopMenu(true);
                         isShowTop = true;
 
+                        //状态切到 推荐
+                        AppApplication.get().setLayoutPos(0);
                         AppApplication.get().setTjPlayPosition(-1);
                         //刷新首页菜单数据
                         viewModel.getHomeInfo();
