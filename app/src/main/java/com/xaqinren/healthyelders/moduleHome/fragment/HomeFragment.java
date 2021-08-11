@@ -100,11 +100,22 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     private boolean isNeedRefresh;//点击了首页刷新
 
+    private Handler mHandler = new Handler();
+
     public void showMDialog() {
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(getActivity(), false);
         }
         loadingDialog.show();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog.isShowing()) {
+                    isNeedRefresh = false;
+                    loadingDialog.dismiss();
+                }
+            }
+        }, 1000 * 10);
     }
 
     public void dismissMDialog() {
@@ -183,13 +194,13 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
                         binding.nsv.fling((int) getResources().getDimension(R.dimen.dp_234));
                         binding.nsv.smoothScrollTo(0, (int) getResources().getDimension(R.dimen.dp_234));
                     } else if (event.msgType == CodeTable.HOME_STOP_LOADING) {
-                        new Handler().postDelayed(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 isNeedRefresh = false;
                                 dismissMDialog();
                             }
-                        },500);
+                        }, 500);
 
                     }
                 }
@@ -506,6 +517,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     public void onDestroyView() {
         super.onDestroyView();
         RxSubscriptions.clear();
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
