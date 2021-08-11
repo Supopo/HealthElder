@@ -46,6 +46,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
     private int mUnreadTotal;
     private LoadSelfConversation loadSelfConversation;
     private boolean isLoadSelfData;
+
     private ConversationManagerKit() {
         init();
     }
@@ -71,6 +72,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
             public void onError(int code, String desc) {
                 TUIKitLog.v(TAG, "loadConversation getConversationList error, code = " + code + ", desc = " + desc);
             }
+
             @Override
             public void onSuccess(V2TIMConversationResult v2TIMConversationResult) {
                 ArrayList<ConversationInfo> infos = new ArrayList<>();
@@ -80,7 +82,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     ConversationInfo conversationInfo = TIMConversation2ConversationInfo(v2TIMConversation);
                     if (conversationInfo != null) {
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
-                        if (isCustomService(conversationInfo)){//不加入客服消息类
+                        if (isCustomService(conversationInfo)) {//不加入客服消息类
                             infos.add(conversationInfo);
                         }
                     }
@@ -91,6 +93,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
             }
         });
     }
+
     /**
      * 加载会话信息
      *
@@ -127,7 +130,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
                         if (GeneralConfig.enableChat) {//显示单聊条目
                             if (!conversationInfo.isGroup())//不加入群聊条目
-                                if (!isCustomService(conversationInfo)){//不加入客服消息类
+                                if (!isCustomService(conversationInfo)) {//不加入客服消息类
                                     infos.add(conversationInfo);
                                 }
                         }
@@ -151,15 +154,18 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
     }
 
     private boolean isCustomService(ConversationInfo conversationInfo) {
-        int msgType = conversationInfo.getLastMessage().getMsgType();
-        if (msgType == MessageInfo.MSG_TYPE_CUSTOM) {
-            String extra = (String) conversationInfo.getLastMessage().getExtra();//json 数据
-            if (extra.contains("customer")) {
-                //客服消息
-                return true;
+        if (conversationInfo != null && conversationInfo.getLastMessage() != null) {
+            int msgType = conversationInfo.getLastMessage().getMsgType();
+            if (msgType == MessageInfo.MSG_TYPE_CUSTOM) {
+                String extra = (String) conversationInfo.getLastMessage().getExtra();//json 数据
+                if (extra.contains("customer")) {
+                    //客服消息
+                    return true;
+                }
+                //自定义
             }
-            //自定义
         }
+
         return false;
     }
 
@@ -510,6 +516,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
 
     /**
      * 更新回话
+     *
      * @param conversationInfo
      * @return
      */
@@ -662,7 +669,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         void updateUnread(int count);
     }
 
-    public interface LoadSelfConversation{
+    public interface LoadSelfConversation {
         List<ConversationInfo> getConversation();
     }
 
