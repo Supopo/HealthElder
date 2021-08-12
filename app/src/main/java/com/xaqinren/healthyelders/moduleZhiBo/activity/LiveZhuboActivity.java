@@ -579,7 +579,17 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
             @Override
             public void onError(int errCode, String e) {
                 dismissDialog();
-                ToastUtil.toastShortMessage("直播间开启失败，请重新尝试");
+
+                //无网络
+                if (errCode != -1307) {
+                    ToastUtil.toastShortMessage("直播间开启失败，请重新尝试");
+                }else {
+                    //结束直播
+                    Bundle bundle = new Bundle();
+                    bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);
+                    bundle.putString("liveRoomId", mLiveInitInfo.liveRoomId);
+                    startActivity(ZhiboOverActivity.class, bundle);
+                }
                 finish();
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + errCode);
                 Log.v(Constant.TAG_LIVE, "直播间创建失败：" + e);
