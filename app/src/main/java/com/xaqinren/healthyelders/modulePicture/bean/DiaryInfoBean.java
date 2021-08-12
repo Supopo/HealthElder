@@ -8,7 +8,7 @@ import java.util.List;
 public class DiaryInfoBean {
 
     public String id;
-    public String createdAt;
+    public long createdAt;
     public String merchantId;
     public String coverUrl;
     public List<BannerImagesDTO> bannerImages;

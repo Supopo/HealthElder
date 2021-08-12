@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.ResBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -22,6 +23,7 @@ public class SearchAllViewModel extends BaseViewModel {
         super(application);
     }
 
+    public MutableLiveData<CommentListBean> commentSuccess = new MutableLiveData<>();
     public MutableLiveData<ResBean> dzSuccess = new MutableLiveData<>();
     public MutableLiveData<Boolean> toUsers = new MutableLiveData<>();
     public MutableLiveData<Boolean> dismissDialog = new MutableLiveData<>();
@@ -94,5 +96,14 @@ public class SearchAllViewModel extends BaseViewModel {
     public void toLike(int type, String shortVideoId, boolean favoriteStatus, int position) {
         showDialog();
         LiveRepository.getInstance().toLikeVideo(type, shortVideoId, favoriteStatus, position, dzSuccess, dismissDialog);
+    }
+
+
+    public void toComment(String id, String content) {
+        LiveRepository.getInstance().toComment(id, content, commentSuccess, dismissDialog);
+    }
+
+    public void toCommentReply(CommentListBean mCommentListBean, String content, int type) {
+        LiveRepository.getInstance().toCommentReply(mCommentListBean, content, type, commentSuccess, dismissDialog);
     }
 }

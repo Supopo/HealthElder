@@ -112,7 +112,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         rlTitle.setVisibility(View.GONE);
         View headerBanner = View.inflate(this, R.layout.header_text_photo_banner, null);
         View headerText = View.inflate(this, R.layout.header_text_photo_text, null);
-        commentAdapter = new CommentListAdapter(1,R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
+        commentAdapter = new CommentListAdapter(1, R.layout.item_comment_list, new CommentListAdapter.OnChildLoadMoreCommentListener() {
             @Override
             public void onLoadMore(int position, CommentListBean iCommentBean, int page, int pageSize) {
                 iCommentBean.parentPos = position;
@@ -166,7 +166,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                 viewModel.setCommentLike(videoId, iCommentBean.id, !iCommentBean.hasFavorite, false);
                 if (!iCommentBean.hasFavorite) {
                     diaryInfoBean.favoriteCount++;
-                }else{
+                } else {
                     diaryInfoBean.favoriteCount--;
                 }
                 binding.likeTv.setText(Num2TextUtil.num2Text(diaryInfoBean.favoriteCount));
@@ -403,14 +403,15 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
             binding.likeIv.setImageResource(diaryInfoBean.hasFavorite ? R.mipmap.icon_zan_red : R.mipmap.icon_zan_gray);
             diaryInfoBean.favoriteCount = diaryInfoBean.hasFavorite ? diaryInfoBean.favoriteCount + 1 : diaryInfoBean.favoriteCount - 1;
             binding.likeTv.setText(Num2TextUtil.num2Text(diaryInfoBean.favoriteCount));
+            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_DZ, diaryInfoBean.id, diaryInfoBean.hasFavorite ? 1 : 0));
         });
 
-        viewModel.delSuccess.observe(this,bls->{
+        viewModel.delSuccess.observe(this, bls -> {
             Bundle bundle = new Bundle();
             bundle.putBoolean(com.xaqinren.healthyelders.global.Constant.PUBLISH_SUCCESS, true);
             startActivity(MainActivity.class, bundle);
             finish();
-            overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+            overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
         });
         disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(bean -> {
             if (bean != null) {
@@ -426,7 +427,7 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
                         //回复回复
                         viewModel.toCommentReply(mCommentListBean, content, 1);
                     }
-                }else if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER ) {
+                } else if (bean.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER) {
                     commentText = bean.content;
                 }
             }
@@ -444,10 +445,11 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
         commentCountTv.setText("共" + diaryInfoBean.commentCount + "条评论");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         try {
-            Date date = simpleDateFormat.parse(diaryInfoBean.createdAt);
-            String format = simpleDateFormat.format(date);
-            diaryTime.setText("编辑于 " + format);
-        } catch (ParseException e) {
+            Date date = new Date(diaryInfoBean.createdAt);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            diaryTime.setText("编辑于 " + format.format(date));
+        } catch (Exception e) {
             diaryTime.setText("编辑于 " + diaryInfoBean.createdAt);
             e.printStackTrace();
         }

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleHome.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,23 +19,33 @@ import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentAllSearchBinding;
 import com.xaqinren.healthyelders.databinding.HeaderAllSearchBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.adapter.AllSearchAdapter;
 import com.xaqinren.healthyelders.moduleHome.adapter.SearchUserAdapter;
+import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
+import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
+import com.xaqinren.healthyelders.moduleLogin.activity.SelectLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.VideoEditTextDialogActivity;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.LogUtils;
+import com.xaqinren.healthyelders.utils.Num2TextUtil;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
+import com.xaqinren.healthyelders.widget.comment.CommentDialog;
+import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +70,11 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
     private SearchUserAdapter userAdapter;
     private HeaderAllSearchBinding headBinding;
     private Disposable uniSubscribe;
+    private String commentId;
+    private CommentListBean mCommentListBean;
+    private boolean editTextOpen;
+    private String commentText;
+    private int nowPos;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,12 +145,46 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         }));
 
         mAdapter.setOnItemChildClickListener(((adapter, view, position) -> {
+            nowPos = position;
+            videoInfo = mAdapter.getData().get(position);
             if (view.getId() == R.id.iv_zan) {
                 //视频点赞
                 searchAllViewModel.toLike(0, mAdapter.getData().get(position).resourceId, !mAdapter.getData().get(position).hasFavorite, position);
             } else if (view.getId() == R.id.iv_avatar) {
                 //进入用户信息
                 UserInfoActivity.startActivity(getActivity(), mAdapter.getData().get(position).userId);
+            } else if (view.getId() == R.id.iv_comment) {
+                if (!InfoCache.getInstance().checkLogin()) {
+                    //跳转登录页面
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+                if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+                //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    startActivity(PhoneLoginActivity.class);
+                    return;
+                }
+                showCommentDialog(videoInfo.resourceId);
+            } else if (view.getId() == R.id.iv_share) {
+                if (!InfoCache.getInstance().checkLogin()) {
+                    //跳转登录页面
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+                if (UserInfoMgr.getInstance().getUserInfo() == null) {
+                    startActivity(SelectLoginActivity.class);
+                    return;
+                }
+                //判断是否绑手机号
+                if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+                    startActivity(PhoneLoginActivity.class);
+                    return;
+                }
+                showShareDialog(videoInfo);
             }
         }));
 
@@ -216,9 +266,148 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         startActivity(VideoListActivity.class, bundle);
     }
 
+
+    //分享弹窗
+    private ShareDialog shareDialog;
+
+    private void showShareDialog(VideoInfo videoInfo) {
+        if (!InfoCache.getInstance().checkLogin()) {
+            //跳转登录页面
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        //判断是否绑手机号
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            startActivity(PhoneLoginActivity.class);
+            return;
+        }
+        if (videoInfo.share != null) {
+            videoInfo.share.downUrl = videoInfo.resourceUrl;
+            videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
+        }
+        shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
+        shareDialog.setRxPermissions(permissions);
+        if (videoInfo.getVideoType() != 2) {
+            shareDialog.isMineOpen(false);
+        }
+        shareDialog.show(binding.srlContent);
+    }
+
+    //评论弹窗
+    private CommentDialog commentDialog;
+    private VideoInfo videoInfo;
+    private int commentType;//评论打开方式0-评论 1-回复 2-回复回复
+
+    private void showCommentDialog(String videoId) {
+        if (commentDialog == null)
+            commentDialog = new CommentDialog(getContext(), videoId, getActivity());
+        commentDialog.setOnChildClick(new CommentDialog.OnChildClick() {
+            @Override
+            public void toComment(CommentListBean iCommentBean) {
+                //回复评论
+                commentType = 1;
+                commentId = iCommentBean.id;
+                mCommentListBean = iCommentBean;
+                showPublishCommentDialog("回复 @" + iCommentBean.nickname + " :");
+            }
+
+            @Override
+            public void toCommentReply(CommentListBean iCommentBean) {
+                //回复回复
+                commentType = 2;
+                commentId = iCommentBean.id;
+                mCommentListBean = iCommentBean;
+                showPublishCommentDialog("回复 @" + iCommentBean.fromUsername + " :");
+            }
+
+            @Override
+            public void toCommentVideo(String videoId) {
+                commentType = 0;
+                commentId = videoId;
+                //评论视频本体
+                showPublishCommentDialog("留下你的精彩评论吧");
+            }
+
+            @Override
+            public void toOpenFeace(String videoId) {
+                commentType = 0;
+                commentId = videoId;
+                //评论视频本体
+                showPublishCommentDialog("留下你的精彩评论吧", 1);
+            }
+
+            @Override
+            public void toLike(CommentListBean iCommentBean) {
+            }
+
+            @Override
+            public void toUser(CommentListBean iCommentBean) {
+                String id = iCommentBean.fromUserId == null ? iCommentBean.userId : iCommentBean.fromUserId;
+                UserInfoActivity.startActivity(getActivity(), id);
+            }
+        });
+        commentDialog.show(binding.srlContent, videoInfo.commentCount);
+    }
+
+    /**
+     * 发表评论
+     */
+    private void showPublishCommentDialog(String nickName) {
+        showPublishCommentDialog(nickName, 0);
+    }
+
+    private void showPublishCommentDialog(String nickName, int openType) {
+        //先判断是否登录
+        if (!InfoCache.getInstance().checkLogin()) {
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        if (UserInfoMgr.getInstance().getUserInfo() == null) {
+            startActivity(SelectLoginActivity.class);
+            return;
+        }
+        //判断是否绑手机号
+        if (!UserInfoMgr.getInstance().getUserInfo().hasMobileNum()) {
+            startActivity(PhoneLoginActivity.class);
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("hint", nickName);
+        bundle.putString("commentText", commentText);
+        bundle.putInt("openType", openType);
+        editTextOpen = true;
+        startActivity(VideoEditTextDialogActivity.class, bundle);
+    }
+
     @Override
     public void initViewObservable() {
         super.initViewObservable();
+        searchAllViewModel.commentSuccess.observe(this, commentListBean -> {
+            if (commentListBean != null && commentDialog != null) {
+                //评论成功通知视频页面评论数加1
+                try {
+                    mAdapter.getData().get(nowPos).commentCount = (Integer.parseInt(mAdapter.getData().get(nowPos).commentCount) + 1) + "";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mAdapter.notifyDataSetChanged();
+                //本地刷新
+                if (commentType == 0) {
+                    //往评论列表查插数据
+                    commentDialog.addMCommentData(commentListBean);
+                } else if (commentType == 1 || commentType == 2) {
+                    //往回复列表查插数据
+                    commentDialog.addMReplyData(commentListBean);
+                }
+                commentType = 0;
+            }
+        });
+
         searchAllViewModel.dzSuccess.observe(this, dzSuccess -> {
             if (dzSuccess != null && dzSuccess.type == 0 && dzSuccess.isSuccess) {
                 mAdapter.getData().get(dzSuccess.position).hasFavorite = !mAdapter.getData().get(dzSuccess.position).hasFavorite;
@@ -321,6 +510,42 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
                         mAdapter.getData().get(temp).favoriteCount = String.valueOf(favoriteCount);
                         mAdapter.getData().get(temp).hasFavorite = event.msgType == 1 ? true : false;
                         mAdapter.notifyDataSetChanged();
+                    }
+                } else if (event.msgId == CodeTable.VIDEO_PL) {
+                    //找出adapter中对应pos
+                    int temp = -1;
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        if (mAdapter.getData().get(i).resourceId.equals(event.content)) {
+                            temp = i;
+                        }
+                    }
+                    if (temp != -1) {
+                        try {
+                            mAdapter.getData().get(temp).commentCount = (Integer.parseInt(mAdapter.getData().get(temp).commentCount) + 1) + "";
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+                } else if (event.msgId == CodeTable.VIDEO_SEND_COMMENT_OVER) {
+                    commentText = event.content;
+                    editTextOpen = false;
+                } else if (event.msgId == CodeTable.VIDEO_SEND_COMMENT) {
+                    //不为空说明是从VideoFragment打开的
+                    if (!TextUtils.isEmpty(event.type)) {
+                        return;
+                    }
+
+                    String content = event.content;
+                    if (commentType == 0) {
+                        //发表评论
+                        searchAllViewModel.toComment(commentId, content);
+                    } else if (commentType == 1) {
+                        //回复评论
+                        searchAllViewModel.toCommentReply(mCommentListBean, content, 0);
+                    } else if (commentType == 2) {
+                        //回复回复
+                        searchAllViewModel.toCommentReply(mCommentListBean, content, 1);
                     }
                 }
             }

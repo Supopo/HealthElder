@@ -58,7 +58,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         super.initData();
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
-        ((BaseActivity)getActivity()).showDialog();
+        ((BaseActivity) getActivity()).showDialog();
         initAdapter();
 
 
@@ -102,7 +102,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
         });
         mAdapter.setOnItemClickListener(((adapter, view, position) -> {
             //跳转图文详情
-            Intent intent = new Intent(getContext() , TextPhotoDetailActivity.class);
+            Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
             intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, mAdapter.getData().get(position).resourceId);
             startActivity(intent);
         }));
@@ -131,7 +131,7 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
                 } else {
                     mAdapter.getData().get(dzSuccess.position).favoriteCount = String.valueOf(mAdapter.getData().get(dzSuccess.position).getFavoriteCount() - 1);
                 }
-                mAdapter.notifyItemChanged(dzSuccess.position , 99);
+                mAdapter.notifyItemChanged(dzSuccess.position, 99);
             }
         });
 
@@ -161,9 +161,34 @@ public class SearchTuwenFragment extends BaseFragment<FragmentSearchTwBinding, B
             }
         });
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
-            if (event != null && event.msgType == CodeTable.SEARCH_TAG) {
-                page = 1;
+            if (event != null) {
+                if (event.msgType == CodeTable.SEARCH_TAG) {
+                    page = 1;
+                } else if (event.msgId == CodeTable.VIDEO_DZ) {
+                    //找出adapter中对应pos
+                    int temp = -1;
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        if (mAdapter.getData().get(i).resourceId.equals(event.content)) {
+                            temp = i;
+                        }
+                    }
+                    if (temp != -1) {
+                        //局部刷新
+                        int favoriteCount = mAdapter.getData().get(temp).getFavoriteCount();
+
+                        if (event.msgType == 1) {
+                            favoriteCount++;
+                        } else {
+                            favoriteCount--;
+                        }
+                        mAdapter.getData().get(temp).favoriteCount = String.valueOf(favoriteCount);
+
+                        mAdapter.getData().get(temp).hasFavorite = event.msgType == 1 ? true : false;
+                        mAdapter.notifyItemChanged(temp, 99);
+                    }
+                }
             }
+
         });
     }
 

@@ -36,6 +36,7 @@ import com.xaqinren.healthyelders.moduleMine.viewModel.SettingViewModel;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartRenZhengActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
+import com.xaqinren.healthyelders.utils.ACache;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.MyProgressDialog;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
@@ -212,6 +213,7 @@ public class SettingActivity extends BaseActivity<ActivitySettingBinding, Settin
                 listBottomPopup.dismiss();
                 //清除缓存
                 InfoCache.getInstance().clearLogin();
+                ACache.get(this).clear();
                 //给主页发送消息回到首页模块
                 RxBus.getDefault().post(new EventBean(CodeTable.JUMP_ACT, "main-act"));
                 //跳到登录页面

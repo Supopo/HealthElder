@@ -383,7 +383,7 @@ public interface ApiServer {
     @POST("content/userDiary/commentFavorite")
     Observable<MBaseResponse<Object>> setDiaryCommentLike(@Header("Authorization") String authorization, @Body RequestBody body);
 
-    //日记评论点赞
+    //日记点赞
     @Headers({"content-type:application/json"})
     @POST("content/userDiary/favorite")
     Observable<MBaseResponse<Object>> setDiaryFavorite(@Header("Authorization") String authorization, @Body RequestBody body);

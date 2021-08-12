@@ -33,6 +33,7 @@ public class CodeTable {
     public static int FINISH_ACT = 88;//
     public static int JUMP_ACT = 66;//
     public static int VIDEO_DZ = 777;//
+    public static int VIDEO_PL = 778;//
     public static int HOME_STOP_LOADING = 555;//
 
     /**

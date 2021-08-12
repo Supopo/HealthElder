@@ -329,13 +329,17 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     }
 
     public void refreshUserInfo() {
-        viewModel.getUserInfo(UserInfoMgr.getInstance().getAccessToken());
-        if (menuPosition == 0) {
-            mineZPFragment.toRefresh();
-        } else if (menuPosition == 1) {
-            mineSMFragment.toRefresh();
-        } else {
-            mineDZFragment.toRefresh();
+        try {
+            viewModel.getUserInfo(UserInfoMgr.getInstance().getAccessToken());
+            if (menuPosition == 0) {
+                mineZPFragment.toRefresh();
+            } else if (menuPosition == 1) {
+                mineSMFragment.toRefresh();
+            } else {
+                mineDZFragment.toRefresh();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

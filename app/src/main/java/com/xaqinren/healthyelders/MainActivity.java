@@ -340,7 +340,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             selectView = binding.tvMenu4;
             initBottomTab();
             oldView = binding.tvMenu4;
-            mineFragment.getUserInfo();
+            //刷新我的页面数据
+            mineFragment.refreshUserInfo();
         });
         binding.ivLive.setOnClickListener(lis -> {
             //先判断是否登录
@@ -421,15 +422,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 double scrollX = Math.abs(now_press_X - before_press_X);
                 double scrollY = Math.abs(now_press_Y - before_press_Y);
 
-                LogUtils.v("首页","scrollX: "+scrollX);
-                LogUtils.v("首页","scrollY: "+scrollY);
+                LogUtils.v("首页", "scrollX: " + scrollX);
+                LogUtils.v("首页", "scrollY: " + scrollY);
 
                 if (selectView.getId() == R.id.tv_menu1) {
                     if (scrollX <= scrollY) {
                         if (homeFragment != null && homeFragment.vp2 != null) {
                             homeFragment.vp2.setUserInputEnabled(false);
                         }
-                    }else {
+                    } else {
                         if (homeFragment != null && homeFragment.vp2 != null) {
                             homeFragment.vp2.setUserInputEnabled(true);
                         }

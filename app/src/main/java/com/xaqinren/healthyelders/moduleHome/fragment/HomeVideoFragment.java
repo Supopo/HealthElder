@@ -711,6 +711,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
 
                 commentType = 0;
+                RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_PL, videoInfo.resourceId));
             }
         });
 
