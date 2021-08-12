@@ -20,6 +20,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
  */
 public class YesOrNoDialog {
     private Dialog centerDialog;
+    private TextView title;
     private TextView message;
     private TextView leftBtn, rightBtn;
     private Context context;
@@ -52,6 +53,7 @@ public class YesOrNoDialog {
 
 
         //初始化控件
+        title = view.findViewById(R.id.title);
         message = view.findViewById(R.id.message);
         leftBtn = view.findViewById(R.id.left_btn);
         rightBtn = view.findViewById(R.id.right_btn);
@@ -66,10 +68,16 @@ public class YesOrNoDialog {
         });
     }
 
+    public void setTitleText(String str) {
+        title.setVisibility(View.VISIBLE);
+        title.setText(str);
+    }
+
     public void setMessageText(String str) {
         message.setText(str);
     }
-    public void setMessageTextSize(float size){
+
+    public void setMessageTextSize(float size) {
         message.setTextSize(size);
     }
 

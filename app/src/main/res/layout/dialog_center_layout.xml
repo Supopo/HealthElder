@@ -10,25 +10,37 @@
         android:background="@drawable/bg_y_o_n_dialog"
         android:minHeight="@dimen/dp_137">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_34"
             android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginRight="@dimen/dp_34">
+            android:layout_marginRight="@dimen/dp_34"
+            android:orientation="vertical">
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:textColor="@color/gray_999"
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
                 android:includeFontPadding="false"
                 android:textColor="@color/color_252525"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <View
             style="@style/line"

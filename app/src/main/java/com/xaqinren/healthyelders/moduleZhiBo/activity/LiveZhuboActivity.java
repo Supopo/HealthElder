@@ -56,7 +56,6 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
-import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
@@ -65,6 +64,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.adapter.TCChatMsgListAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.TopUserHeadAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ZBLinkShowAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.JsonMsgBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveHeaderInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.SendGiftBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.SendUserLinkBean;
@@ -116,7 +116,6 @@ import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.bus.RxSubscriptions;
-import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
@@ -171,6 +170,8 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     private String mMsg;
     private QMUITipDialog tipDialog;
     private int lastNetStatus = 1;//上一次网络状态
+    private YesOrNoDialog quitRoomDialog;
+    private LiveHeaderInfo mLiveHeaderInfo;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -961,7 +962,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         }
         roomDestroy = true;
         RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS, "overLive-zb"));
-        LogUtils.v(Constant.TAG_LIVE,"群已解散");
+        LogUtils.v(Constant.TAG_LIVE, "群已解散");
         finish();
     }
 
@@ -1725,10 +1726,33 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 zbUserListPop.showPopupWindow();
                 break;
             case R.id.btn_back:
-                //弹窗提示
-                showDialog("结束直播...");
-                //去通知服务器退出了直播
-                viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
+                quitRoomDialog = new YesOrNoDialog(this);
+                try {
+                    if (mLiveHeaderInfo != null && !TextUtils.isEmpty(mLiveHeaderInfo.totalPeopleNum)) {
+                        if (Integer.parseInt(mLiveHeaderInfo.totalPeopleNum) > 0) {
+                            quitRoomDialog.setTitleText("还有观众正在观看你的直播");
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                quitRoomDialog.setMessageText("确定结束直播吗？");
+                quitRoomDialog.setRightBtnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        //弹窗提示
+                        showDialog("结束直播...");
+                        //去通知服务器退出了直播
+                        viewModel.closeLive(mLiveInitInfo.liveRoomRecordId, String.valueOf(commentSet.size()));
+
+                        quitRoomDialog.dismissDialog();
+
+                    }
+                });
+                quitRoomDialog.showDialog();
+
                 break;
             case R.id.tv_msg:
                 Bundle bundle = new Bundle();
@@ -1844,7 +1868,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                                 }
                             }, 1000);
                         }
-                    }else if(eventBean.msgType == 4){
+                    } else if (eventBean.msgType == 4) {
                         if (tipDialog != null && tipDialog.isShowing()) {
                             tipDialog.dismiss();
                         }
@@ -2099,6 +2123,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //更新点赞数和直播间人数
         viewModel.liveHeaderInfo.observe(this, liveHeaderInfo -> {
             if (liveHeaderInfo != null) {
+                mLiveHeaderInfo = liveHeaderInfo;
                 //更新点赞人数
                 if (TextUtils.isEmpty(liveHeaderInfo.totalZanNum)) {
                     binding.tvZanNum.setText(mLiveInitInfo.nickname);
@@ -2411,6 +2436,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
     }
 
     private Runnable runnable;
+
     private void initLinkMsgManger() {
         runnable = new Runnable() {
             @Override
