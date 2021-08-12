@@ -314,7 +314,13 @@ public class MessageInfoUtil {
                     return null;
                 }
                 TUIKitLog.i(TAG, "custom data:" + data);
+                CustomMessage msg = new Gson().fromJson(data, CustomMessage.class);
                 String content = "[自定义消息]";
+                if (msg.type == 1) {
+                    content = "[视频分享]";
+                } else if (msg.type == 2) {
+                    content = "[日记分享]";
+                }
                 msgInfo.setMsgType(MessageInfo.MSG_TYPE_CUSTOM);
                 msgInfo.setExtra(content);
                 Gson gson = new Gson();

@@ -4,25 +4,17 @@ import android.Manifest;
 import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.provider.SyncStateContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,57 +27,47 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.dcloud.zxing2.BarcodeFormat;
-import com.dcloud.zxing2.MultiFormatWriter;
-import com.dcloud.zxing2.common.BitMatrix;
-import com.dcloud.zxing2.qrcode.QRCodeWriter;
-import com.dcloud.zxing2.qrcode.encoder.QRCode;
+import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.tencent.imsdk.TIMUserProfile;
+import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
-import com.tencent.qcloud.tim.uikit.base.BaseActvity;
+import com.tencent.qcloud.tim.uikit.modules.chat.base.AbsChatLayout;
+import com.tencent.qcloud.tim.uikit.modules.chat.layout.input.InputLayout;
+import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
-import com.xaqinren.healthyelders.MainActivity;
 import com.xaqinren.healthyelders.R;
-import com.xaqinren.healthyelders.apiserver.UserRepository;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
-import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
-import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
-import com.xaqinren.healthyelders.moduleMine.fragment.MineFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im.IMMessageMgr;
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.DownloadUtil;
 import com.xaqinren.healthyelders.utils.LogUtils;
-import com.xaqinren.healthyelders.utils.UrlUtils;
 import com.xaqinren.healthyelders.widget.DownLoadProgressDialog;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.ref.SoftReference;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
-import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.goldze.mvvmhabit.utils.compression.Luban;
-
-import static com.xaqinren.healthyelders.global.AppApplication.mWXapi;
 
 public class ShareDialog {
     private PopupWindow popupWindow;
@@ -116,6 +98,7 @@ public class ShareDialog {
     private FragmentActivity fragmentActivity;
     private Fragment fragment;
     private Disposable disposable;
+    private IMMessageMgr imMessageMgr;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -204,6 +187,44 @@ public class ShareDialog {
 
         binding.atUserList.setLayoutManager(new LinearLayoutManager(context.get(), LinearLayoutManager.HORIZONTAL, false));
         binding.atUserList.setAdapter(shareFriendAdapter);
+        imMessageMgr = new IMMessageMgr(mContext);
+
+        //初始化
+        imMessageMgr.initialize(UserInfoMgr.getInstance().getUserInfo().getId(), UserInfoMgr.getInstance().getUserSig(), TCGlobalConfig.SDKAPPID, new IMMessageMgr.Callback() {
+            @Override
+            public void onError(final int code, final String errInfo) {
+                String msg = "[IM] 初始化失败[" + errInfo + ":" + code + "]";
+                LogUtils.v(Constant.TAG_LIVE, msg);
+            }
+
+            @Override
+            public void onSuccess(Object... args) {
+            }
+        });
+
+
+        shareFriendAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
+            //发送分享消息
+            Gson gson = new Gson();
+            CustomMessage messageCustom = new CustomMessage();
+            messageCustom.type = 1;
+            messageCustom.content = shareBean.introduce;
+            messageCustom.cover = shareBean.coverUrl;
+            String data = gson.toJson(messageCustom);
+            imMessageMgr.sendC2CCustomMessage(userInfo.userId, data, new IMMessageMgr.Callback() {
+                @Override
+                public void onError(int code, String errInfo) {
+
+                }
+
+                @Override
+                public void onSuccess(Object... args) {
+                    ToastUtil.toastShortMessage("分享成功");
+                }
+            });
+
+        }));
 
         if (shareBean != null)
             getFriends();
@@ -211,8 +232,7 @@ public class ShareDialog {
 
         //说明未审核
         if (shareBean == null) {
-            binding.atUserList.setVisibility(View.GONE);
-            binding.llShare.setVisibility(View.GONE);
+
             if (showType == 1 || showType == 0) {
                 binding.tvTitle.setText("作品审核中");
             }
@@ -251,6 +271,25 @@ public class ShareDialog {
 
         binding.shareClsLayout.shareFriend.setOnClickListener(view -> {
             //私信朋友
+            //发送分享消息
+            Gson gson = new Gson();
+            CustomMessage messageCustom = new CustomMessage();
+            messageCustom.type = 1;
+            messageCustom.content = shareBean.introduce;
+            messageCustom.cover = shareBean.coverUrl;
+            String data = gson.toJson(messageCustom);
+            imMessageMgr.sendC2CCustomMessage("1403170167030026240", data, new IMMessageMgr.Callback() {
+                @Override
+                public void onError(int code, String errInfo) {
+                    LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errInfo);
+                    LogUtils.v(Constant.TAG_LIVE, "code: " + code);
+                }
+
+                @Override
+                public void onSuccess(Object... args) {
+                    ToastUtil.toastShortMessage("分享成功");
+                }
+            });
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友

@@ -6,7 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,15 +29,11 @@ import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.MessageLayout;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.MessageListAdapter;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder.ICustomMessageViewGroup;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder.IOnCustomMessageDrawListener;
-import com.tencent.qcloud.tim.uikit.modules.message.CustomHelloTIMUIController;
+import com.tencent.qcloud.tim.uikit.modules.message.CustomVideoController;
 import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
-import com.tencent.qcloud.tim.uikit.modules.message.ShareTopicBean;
 import com.tencent.qcloud.tim.uikit.utils.BackgroundTasks;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout {
@@ -302,7 +297,10 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
                         return;
                     } else {
                         //判断IM自定义消息类型分类展示
-                        CustomHelloTIMUIController.onDraw(parent, (ShareTopicBean) data.content, getContext());
+                        //1 分享视频
+                        if (data.type == 1) {
+                            CustomVideoController.onDraw(parent, data, getContext());
+                        }
                     }
                 }
             });

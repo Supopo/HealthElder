@@ -1,5 +1,6 @@
 package com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder;
 
+import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -36,6 +37,24 @@ public class MessageCustomHolder extends MessageContentHolder implements ICustom
         mMessageInfo = msg;
         mPosition = position;
         super.layoutViews(msg, position);
+
+
+        //重新自定义 视频分享消息气泡
+        if (msg.isSelf()) {
+            if (properties.getRightBubble() != null && properties.getRightBubble().getConstantState() != null) {
+                msgContentFrame.setBackground(properties.getRightBubble().getConstantState().newDrawable());
+            } else {
+                msgContentFrame.setBackgroundResource(R.drawable.msg_video);
+            }
+        } else {
+            if (properties.getLeftBubble() != null && properties.getLeftBubble().getConstantState() != null) {
+                msgContentFrame.setBackground(properties.getLeftBubble().getConstantState().newDrawable());
+                msgContentFrame.setLayoutParams(msgContentFrame.getLayoutParams());
+            } else {
+                msgContentFrame.setBackgroundResource(R.drawable.msg_video);
+            }
+        }
+
     }
 
     @Override
