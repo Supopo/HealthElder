@@ -61,7 +61,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
         super.initData();
         //获取别的ViewModel
         searchAllViewModel = ViewModelProviders.of(getActivity()).get(SearchAllViewModel.class);
-        ((BaseActivity)getActivity()).showDialog();
+        ((BaseActivity) getActivity()).showDialog();
         initAdapter();
 
         //瀑布流
@@ -182,9 +182,33 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
                 }
             }
         });
-        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
-            if (event != null && event.msgType == CodeTable.SEARCH_TAG) {
-                page = 1;
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean != null) {
+                if (eventBean.msgType == CodeTable.SEARCH_TAG) {
+                    page = 1;
+                } else if (eventBean.msgId == CodeTable.VIDEO_DZ) {
+                    //找出adapter中对应pos
+                    int temp = -1;
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        if (mAdapter.getData().get(i).resourceId.equals(eventBean.content)) {
+                            temp = i;
+                        }
+                    }
+                    if (temp != -1) {
+                        //局部刷新
+                        int favoriteCount = mAdapter.getData().get(temp).getFavoriteCount();
+
+                        if (eventBean.msgType == 1) {
+                            favoriteCount++;
+                        } else {
+                            favoriteCount--;
+                        }
+                        mAdapter.getData().get(temp).favoriteCount = String.valueOf(favoriteCount);
+
+                        mAdapter.getData().get(temp).hasFavorite = eventBean.msgType == 1 ? true : false;
+                        mAdapter.notifyItemChanged(temp, 99);
+                    }
+                }
             }
         });
     }

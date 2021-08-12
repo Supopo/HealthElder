@@ -33,6 +33,7 @@ import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity
 import com.xaqinren.healthyelders.uniApp.UniService;
 import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
+import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -297,9 +298,33 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
         });
 
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
-            if (event != null && event.msgType == CodeTable.SEARCH_TAG) {
-                page = 1;
+            if (event != null) {
+                if (event.msgType == CodeTable.SEARCH_TAG) {
+                    page = 1;
+                } else if (event.msgId == CodeTable.VIDEO_DZ) {
+                    //找出adapter中对应pos
+                    int temp = -1;
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        if (mAdapter.getData().get(i).resourceId.equals(event.content)) {
+                            temp = i;
+                        }
+                    }
+                    if (temp != -1) {
+                        //局部刷新
+                        int favoriteCount = mAdapter.getData().get(temp).getFavoriteCount();
+
+                        if (event.msgType == 1) {
+                            favoriteCount++;
+                        } else {
+                            favoriteCount--;
+                        }
+                        mAdapter.getData().get(temp).favoriteCount = String.valueOf(favoriteCount);
+                        mAdapter.getData().get(temp).hasFavorite = event.msgType == 1 ? true : false;
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
             }
+
         });
     }
 
