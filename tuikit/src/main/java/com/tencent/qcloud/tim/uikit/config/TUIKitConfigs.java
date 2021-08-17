@@ -1,7 +1,5 @@
 package com.tencent.qcloud.tim.uikit.config;
 
-import android.util.Log;
-
 import com.tencent.imsdk.v2.V2TIMSDKConfig;
 
 public class TUIKitConfigs {
@@ -86,5 +84,4 @@ public class TUIKitConfigs {
         this.sdkConfig = timSdkConfig;
         return this;
     }
-
 }

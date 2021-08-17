@@ -1,10 +1,9 @@
 package com.tencent.qcloud.tim.uikit.modules.chat.layout.input;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,17 +13,19 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
+import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMConversation;
-import com.tencent.liteav.SelectContactActivity;
-import com.tencent.liteav.login.UserModel;
-import com.tencent.liteav.model.ITRTCAVCall;
-import com.tencent.liteav.trtcaudiocalldemo.ui.TRTCAudioCallActivity;
-import com.tencent.liteav.trtcvideocalldemo.ui.TRTCVideoCallActivity;
+import com.tencent.imsdk.v2.V2TIMGroupAtInfo;
+import com.tencent.imsdk.v2.V2TIMManager;
+
 import com.tencent.qcloud.tim.uikit.R;
+import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
 import com.tencent.qcloud.tim.uikit.component.AudioPlayer;
 import com.tencent.qcloud.tim.uikit.component.face.Emoji;
@@ -32,20 +33,23 @@ import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
 import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.tencent.qcloud.tim.uikit.component.video.CameraActivity;
 import com.tencent.qcloud.tim.uikit.component.video.JCameraView;
-import com.tencent.qcloud.tim.uikit.config.TUIKitConfigs;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.BaseInputFragment;
+import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.tencent.qcloud.tim.uikit.modules.chat.interfaces.IChatLayout;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.inputmore.InputMoreFragment;
+import com.tencent.qcloud.tim.uikit.modules.conversation.base.DraftInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
-import com.tencent.qcloud.tim.uikit.utils.PermissionUtils;
+import com.tencent.qcloud.tim.uikit.utils.FileUtil;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 聊天界面，底部发送图片、拍照、摄像、文件面板
@@ -71,6 +75,10 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
     private int mLastMsgLineCount;
     private float mStartRecordY;
     private String mInputContent;
+    private OnStartActivityListener mStartActivityListener;
+
+    private Map<String,String> atUserInfoMap = new HashMap<>();
+    private String displayInputString;
 
     public InputLayout(Context context) {
         super(context);
@@ -129,7 +137,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                         if (mChatInputHandler != null) {
                             mChatInputHandler.onRecordStatusChanged(ChatInputHandler.RECORD_START);
                         }
-                        mSendAudioButton.setText("松开结束");
+                        mSendAudioButton.setText(TUIKit.getAppContext().getString(R.string.release_end));
                         AudioPlayer.getInstance().startRecord(new AudioPlayer.Callback() {
                             @Override
                             public void onCompletion(Boolean success) {
@@ -151,7 +159,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                             }
                             mAudioCancel = false;
                         }
-                        mSendAudioButton.setText("松开结束");
+                        mSendAudioButton.setText(TUIKit.getAppContext().getString(R.string.release_end));
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
@@ -160,7 +168,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                             mChatInputHandler.onRecordStatusChanged(ChatInputHandler.RECORD_STOP);
                         }
                         AudioPlayer.getInstance().stopRecord();
-                        mSendAudioButton.setText("按住说话");
+                        mSendAudioButton.setText(TUIKit.getAppContext().getString(R.string.hold_say));
                         break;
                     default:
                         break;
@@ -168,12 +176,80 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                 return false;
             }
         });
+
+        mTextInput.setOnMentionInputListener(new TIMMentionEditText.OnMentionInputListener() {
+            @Override
+            public void onMentionCharacterInput(String tag) {
+                if ((tag.equals(TIMMentionEditText.TIM_METION_TAG) || tag.equals(TIMMentionEditText.TIM_METION_TAG_FULL))
+                        && mChatLayout.getChatInfo().getType() == V2TIMConversation.V2TIM_GROUP) {
+                    if (mStartActivityListener != null) {
+                        mStartActivityListener.onStartGroupMemberSelectActivity();
+                    }
+                }
+            }
+        });
+    }
+
+    public void updateInputText(String names, String ids){
+        if (names == null || ids == null || names.isEmpty() || ids.isEmpty()){
+            return;
+        }
+
+        updateAtUserInfoMap(names, ids);
+        if (mTextInput != null) {
+            mTextInput.setText(mTextInput.getText() + displayInputString);
+            mTextInput.setSelection(mTextInput.getText().length());
+        }
+    }
+
+    private void updateAtUserInfoMap(String names, String ids){
+        displayInputString = "";
+
+        if (ids.equals(V2TIMGroupAtInfo.AT_ALL_TAG)){
+            atUserInfoMap.put(names, ids);
+
+            //for display
+            displayInputString += names;
+            displayInputString += " ";
+            displayInputString += TIMMentionEditText.TIM_METION_TAG;
+        } else {
+            String[] listName = names.split(" ");
+            String[] listId = ids.split(" ");
+
+            //此处防止昵称和ID不对等
+            boolean isListName = (listName.length >= listId.length ? true : false);
+            int i = 0;
+            if (isListName) {
+                for (i = 0; i < listId.length; i++) {
+                    atUserInfoMap.put(listName[i], listId[i]);
+
+                    //for display
+                    displayInputString += listName[i];
+                    displayInputString += " ";
+                    displayInputString += TIMMentionEditText.TIM_METION_TAG;
+                }
+            } else {
+                for (i = 0; i < listName.length; i++) {
+                    atUserInfoMap.put(listName[i], listId[i]);
+
+                    //for display
+                    displayInputString += listName[i];
+                    displayInputString += " ";
+                    displayInputString += TIMMentionEditText.TIM_METION_TAG;
+                }
+            }
+        }
+
+        if(!displayInputString.isEmpty()) {
+            displayInputString = displayInputString.substring(0, displayInputString.length() - 1);
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mTextInput.removeTextChangedListener(this);
+        atUserInfoMap.clear();
     }
 
     @Override
@@ -183,17 +259,56 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
             TUIKitLog.i(TAG, "startSendPhoto checkPermission failed");
             return;
         }
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        String[] mimetypes = {"image/*", "video/*"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+
+        setOpenPhotoCallback();
+        mInputMoreFragment.startActivityForResult(intent, InputMoreFragment.REQUEST_CODE_PHOTO);
+    }
+
+    private void setOpenPhotoCallback() {
         mInputMoreFragment.setCallback(new IUIKitCallBack() {
             @Override
             public void onSuccess(Object data) {
                 TUIKitLog.i(TAG, "onSuccess: " + data);
-                MessageInfo info = MessageInfoUtil.buildImageMessage((Uri) data, true);
-                if (mMessageHandler != null) {
-                    mMessageHandler.sendMessage(info);
-                    hideSoftInput();
+                if (data == null){
+                    TUIKitLog.e(TAG, "data is null");
+                    return;
+                }
+
+                String uri = data.toString();
+                if (TextUtils.isEmpty(uri)){
+                    TUIKitLog.e(TAG, "uri is empty");
+                    return;
+                }
+
+                String videoPath = FileUtil.getPathFromUri((Uri) data);
+                String fileExtension = FileUtil.getFileExtensionFromUrl(videoPath);
+                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+                if (TextUtils.isEmpty(mimeType)) {
+                    TUIKitLog.e(TAG, "mimeType is empty.");
+                    return;
+                }
+                if (mimeType.contains("video")){
+                    MessageInfo msg = buildVideoMessage(FileUtil.getPathFromUri((Uri) data));
+                    if (msg == null){
+                        TUIKitLog.e(TAG, "start send video error data: " + data);
+                    } else if (mMessageHandler != null) {
+                        mMessageHandler.sendMessage(msg);
+                        hideSoftInput();
+                    }
+                } else if (mimeType.contains("image")){
+                    MessageInfo info = MessageInfoUtil.buildImageMessage((Uri) data, true);
+                    if (mMessageHandler != null) {
+                        mMessageHandler.sendMessage(info);
+                        hideSoftInput();
+                    }
+                } else {
+                    TUIKitLog.e(TAG, "Send photo or video failed , invalid mimeType : " + mimeType);
                 }
             }
 
@@ -203,7 +318,37 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                 ToastUtil.toastLongMessage(errMsg);
             }
         });
-        mInputMoreFragment.startActivityForResult(intent, InputMoreFragment.REQUEST_CODE_PHOTO);
+    }
+
+    private MessageInfo buildVideoMessage(String mUri)
+    {
+        android.media.MediaMetadataRetriever mmr = new android.media.MediaMetadataRetriever();
+        try {
+            mmr.setDataSource(mUri);
+            String sDuration = mmr.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION);//时长(毫秒)
+            Bitmap bitmap = mmr.getFrameAtTime(0, android.media.MediaMetadataRetriever.OPTION_NEXT_SYNC);//缩略图
+
+            if (bitmap == null){
+                TUIKitLog.e(TAG, "buildVideoMessage() bitmap is null");
+                return null;
+            }
+
+            String imgPath = FileUtil.saveBitmap("JCamera", bitmap);
+            String videoPath = mUri;
+            int imgWidth = bitmap.getWidth();
+            int imgHeight = bitmap.getHeight();
+            long duration = Long.valueOf(sDuration);
+            MessageInfo msg = MessageInfoUtil.buildVideoMessage(imgPath, videoPath, imgWidth, imgHeight, duration);
+
+            return msg;
+        } catch (Exception ex)
+        {
+            TUIKitLog.e(TAG, "MediaMetadataRetriever exception " + ex);
+        } finally {
+            mmr.release();
+        }
+
+        return null;
     }
 
     @Override
@@ -231,7 +376,8 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
 
             }
         };
-        getContext().startActivity(captureIntent);
+        setOpenPhotoCallback();
+        mInputMoreFragment.startActivityForResult(captureIntent, InputMoreFragment.REQUEST_CODE_PHOTO);
     }
 
     @Override
@@ -264,7 +410,8 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
 
             }
         };
-        getContext().startActivity(captureIntent);
+        setOpenPhotoCallback();
+        mInputMoreFragment.startActivityForResult(captureIntent, InputMoreFragment.REQUEST_CODE_PHOTO);
     }
 
     @Override
@@ -295,52 +442,16 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         mInputMoreFragment.startActivityForResult(intent, InputMoreFragment.REQUEST_CODE_FILE);
     }
 
-    @Override
-    public void startAudioCall() {
-        if (!PermissionUtils.checkPermission(mActivity, Manifest.permission.RECORD_AUDIO)) {
-            TUIKitLog.i(TAG, "startAudioCall checkPermission failed");
-            return;
-        }
-        if (mChatLayout.getChatInfo().getType() == V2TIMConversation.V2TIM_C2C) {
-            List<UserModel> contactList = new ArrayList<>();
-            UserModel model = new UserModel();
-            model.userId = mChatLayout.getChatInfo().getId();
-            model.userName = mChatLayout.getChatInfo().getChatName();
-            model.userSig = TUIKitConfigs.getConfigs().getGeneralConfig().getUserSig();
-            contactList.add(model);
-            TRTCAudioCallActivity.startCallSomeone(mActivity.getApplicationContext(), contactList);
-        } else {
-            SelectContactActivity.start(mActivity.getApplicationContext(), mChatLayout.getChatInfo().getId(), ITRTCAVCall.TYPE_AUDIO_CALL);
-        }
-    }
-
-    @Override
-    protected void startVideoCall() {
-        if (!(PermissionUtils.checkPermission(mActivity, Manifest.permission.CAMERA)
-                && PermissionUtils.checkPermission(mActivity, Manifest.permission.RECORD_AUDIO))) {
-            TUIKitLog.i(TAG, "startVideoCall checkPermission failed");
-            return;
-        }
-        if (mChatLayout.getChatInfo().getType() == V2TIMConversation.V2TIM_C2C) {
-            List<UserModel> contactList = new ArrayList<>();
-            UserModel model = new UserModel();
-            model.userId = mChatLayout.getChatInfo().getId();
-            model.userName = mChatLayout.getChatInfo().getChatName();
-            model.userSig = TUIKitConfigs.getConfigs().getGeneralConfig().getUserSig();
-            contactList.add(model);
-            TRTCVideoCallActivity.startCallSomeone(mActivity.getApplicationContext(), contactList);
-        } else {
-            SelectContactActivity.start(mActivity.getApplicationContext(), mChatLayout.getChatInfo().getId(), ITRTCAVCall.TYPE_VIDEO_CALL);
-        }
-    }
-
     public void setChatInputHandler(ChatInputHandler handler) {
         this.mChatInputHandler = handler;
     }
 
-
     public void setMessageHandler(MessageHandler handler) {
         this.mMessageHandler = handler;
+    }
+
+    public void setStartActivityListener(OnStartActivityListener listener) {
+        this.mStartActivityListener = listener;
     }
 
     @Override
@@ -420,11 +531,37 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         } else if (view.getId() == R.id.send_btn) {
             if (mSendEnable) {
                 if (mMessageHandler != null) {
-                    mMessageHandler.sendMessage(MessageInfoUtil.buildTextMessage(mTextInput.getText().toString().trim()));
+                    if(mChatLayout.getChatInfo().getType() == V2TIMConversation.V2TIM_GROUP && !atUserInfoMap.isEmpty()) {
+                        //发送时通过获取输入框匹配上@的昵称list，去从map中获取ID list。
+                        List<String> atUserList = updateAtUserList(mTextInput.getMentionList(true));
+                        if (atUserList == null || atUserList.isEmpty()) {
+                            mMessageHandler.sendMessage(MessageInfoUtil.buildTextMessage(mTextInput.getText().toString().trim()));
+                        }else {
+                            mMessageHandler.sendMessage(MessageInfoUtil.buildTextAtMessage(atUserList, mTextInput.getText().toString().trim()));
+                        }
+                    }else {
+                        mMessageHandler.sendMessage(MessageInfoUtil.buildTextMessage(mTextInput.getText().toString().trim()));
+                    }
                 }
                 mTextInput.setText("");
             }
         }
+    }
+
+    private List<String> updateAtUserList(List<String> atMentionList){
+        if (atMentionList == null || atMentionList.isEmpty()){
+            return null;
+        }
+
+        List<String> atUserIdList = new ArrayList<>();
+        for (String name : atMentionList){
+            if (atUserInfoMap.containsKey(name)){
+                atUserIdList.add(atUserInfoMap.get(name));
+            }
+        }
+        atUserInfoMap.clear();
+
+        return atUserIdList;
     }
 
     private void showSoftInput() {
@@ -456,7 +593,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
     private void showFaceViewGroup() {
         TUIKitLog.i(TAG, "showFaceViewGroup");
         if (mFragmentManager == null) {
-            mFragmentManager = mActivity.getFragmentManager();
+            mFragmentManager = mActivity.getSupportFragmentManager();
         }
         if (mFaceFragment == null) {
             mFaceFragment = new FaceFragment();
@@ -517,7 +654,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
     private void showCustomInputMoreFragment() {
         TUIKitLog.i(TAG, "showCustomInputMoreFragment");
         if (mFragmentManager == null) {
-            mFragmentManager = mActivity.getFragmentManager();
+            mFragmentManager = mActivity.getSupportFragmentManager();
         }
         BaseInputFragment fragment = (BaseInputFragment) mMoreInputEvent;
         hideSoftInput();
@@ -536,7 +673,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
     private void showInputMoreLayout() {
         TUIKitLog.i(TAG, "showInputMoreLayout");
         if (mFragmentManager == null) {
-            mFragmentManager = mActivity.getFragmentManager();
+            mFragmentManager = mActivity.getSupportFragmentManager();
         }
         if (mInputMoreFragment == null) {
             mInputMoreFragment = new InputMoreFragment();
@@ -615,6 +752,43 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                 FaceManager.handlerEmojiText(mTextInput, mTextInput.getText().toString(), true);
             }
         }
+
+    }
+
+    public void setDraft() {
+        if (mChatInfo == null) {
+            TUIKitLog.e(TAG, "set drafts error :  chatInfo is null");
+            return;
+        }
+        if (mTextInput == null) {
+            TUIKitLog.e(TAG, "set drafts error :  textInput is null");
+            return;
+        }
+        String conversationIdPrefix = mChatInfo.getType() == V2TIMConversation.V2TIM_C2C ? "c2c_" : "group_";
+        String conversationId = conversationIdPrefix + mChatInfo.getId();
+        final String content = mTextInput.getText().toString();
+        V2TIMManager.getConversationManager().setConversationDraft(conversationId, content, new V2TIMCallback() {
+            @Override
+            public void onSuccess() {
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                TUIKitLog.e(TAG, "set drafts error : " + code + " " + desc);
+            }
+        });
+    }
+
+    @Override
+    public void setChatInfo(ChatInfo chatInfo) {
+        super.setChatInfo(chatInfo);
+        if (chatInfo != null) {
+            DraftInfo draftInfo = chatInfo.getDraft();
+            if (draftInfo != null && !TextUtils.isEmpty(draftInfo.getDraftText()) && mTextInput != null) {
+                mTextInput.setText(draftInfo.getDraftText());
+                mTextInput.setSelection(mTextInput.getText().length());
+            }
+        }
     }
 
     public void setChatLayout(IChatLayout chatLayout) {
@@ -636,6 +810,10 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         void onInputAreaClick();
 
         void onRecordStatusChanged(int status);
+    }
+
+    public interface OnStartActivityListener {
+        void onStartGroupMemberSelectActivity();
     }
 
 }

@@ -1,8 +1,9 @@
 package com.tencent.qcloud.tim.uikit.utils;
 
-import com.tencent.imsdk.log.QLog;
 
-public class TUIKitLog extends QLog {
+import android.util.Log;
+
+public class TUIKitLog  {
 
     private static final String PRE = "TUIKit-";
 
@@ -17,7 +18,7 @@ public class TUIKitLog extends QLog {
      * @param strInfo 消息
      */
     public static void v(String strTag, String strInfo) {
-        QLog.v(mixTag(strTag), strInfo);
+        Log.v(mixTag(strTag), strInfo);
     }
 
     /**
@@ -27,7 +28,7 @@ public class TUIKitLog extends QLog {
      * @param strInfo 消息
      */
     public static void d(String strTag, String strInfo) {
-        QLog.d(mixTag(strTag), strInfo);
+        Log.d(mixTag(strTag), strInfo);
     }
 
     /**
@@ -37,7 +38,7 @@ public class TUIKitLog extends QLog {
      * @param strInfo 消息
      */
     public static void i(String strTag, String strInfo) {
-        QLog.i(mixTag(strTag), strInfo);
+        Log.i(mixTag(strTag), strInfo);
     }
 
     /**
@@ -47,7 +48,7 @@ public class TUIKitLog extends QLog {
      * @param strInfo 消息
      */
     public static void w(String strTag, String strInfo) {
-        QLog.w(mixTag(strTag), strInfo);
+        Log.w(mixTag(strTag), strInfo);
     }
 
     /**
@@ -57,7 +58,7 @@ public class TUIKitLog extends QLog {
      * @param strInfo 消息
      */
     public static void w(String strTag, String strInfo, Throwable e) {
-        QLog.w(mixTag(strTag), strInfo + e.getMessage());
+        Log.w(mixTag(strTag), strInfo + e.getMessage());
     }
 
     /**
@@ -67,7 +68,7 @@ public class TUIKitLog extends QLog {
      * @param strInfo 消息
      */
     public static void e(String strTag, String strInfo) {
-        QLog.e(mixTag(strTag), strInfo);
+        Log.e(mixTag(strTag), strInfo);
     }
 
 }

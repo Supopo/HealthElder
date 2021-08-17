@@ -35,11 +35,23 @@
         android:id="@+id/chat_message_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/chat_input_layout"
         android:layout_below="@+id/chat_notice_layout"
+        android:layout_above="@id/chat_at_text_view"
         android:baselineAligned="false"
         android:clickable="false"
         android:descendantFocusability="blocksDescendants" />
+
+    <TextView
+        android:id="@+id/chat_at_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="@string/ui_at_me"
+        android:visibility="gone"
+        android:layout_above="@+id/chat_input_layout"
+        android:textColor="@color/read_dot_bg"
+        android:background="@color/list_bottom_text_bg"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/btn_margin_right"/>
 
 
     <com.tencent.qcloud.tim.uikit.modules.chat.layout.input.InputLayout
@@ -80,4 +92,34 @@
 
         </LinearLayout>
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/forward_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
+        <Button
+            android:id="@+id/forward_button"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@color/navigation_bar_color"
+            android:textColor="@color/black_font_color"
+            android:text="@string/forward_button" />
+
+
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="@color/navigation_bar_color"
+            android:textColor="@color/black_font_color"
+            android:text="@string/delete_button" />
+
+    </LinearLayout>
 </RelativeLayout>

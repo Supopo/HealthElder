@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMGroupInfo;
 import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.qcloud.tim.uikit.R;
 import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
 import com.tencent.qcloud.tim.uikit.component.LineControllerView;
@@ -48,11 +49,14 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
     private LineControllerView mNickView;
     private LineControllerView mJoinTypeView;
     private LineControllerView mTopSwitchView;
+    private LineControllerView mMsgRevOptionSwitchView;
     private Button mDissolveBtn;
 
     private GroupInfo mGroupInfo;
     private GroupInfoPresenter mPresenter;
     private ArrayList<String> mJoinTypes = new ArrayList<>();
+
+    private IUIKitCallBack mIUICallback;
 
     public GroupInfoLayout(Context context) {
         super(context);
@@ -118,8 +122,54 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
         mTopSwitchView = findViewById(R.id.chat_to_top_switch);
         mTopSwitchView.setCheckListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mPresenter.setTopConversation(isChecked);
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                mPresenter.setTopConversation(isChecked, new IUIKitCallBack() {
+                    @Override
+                    public void onSuccess(Object data) {
+
+                    }
+
+                    @Override
+                    public void onError(String module, int errCode, String errMsg) {
+                        buttonView.setChecked(false);
+                        if (mIUICallback != null) {
+                            mIUICallback.onError(module, errCode, errMsg);
+                        }
+                    }
+                });
+            }
+        });
+        // 消息接收选项
+        mMsgRevOptionSwitchView = findViewById(R.id.msg_rev_option);
+        mMsgRevOptionSwitchView.setCheckListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                if (mGroupInfo == null) {
+                    TUIKitLog.e(TAG, "mGroupInfo is NULL");
+                    return;
+                }
+                int option;
+//                if (isChecked) {
+//                    option = V2TIMMessage.V2TIM_NOT_RECEIVE_MESSAGE;
+//                } else {
+//                    option = V2TIMMessage.V2TIM_RECEIVE_MESSAGE;
+//                }
+
+                if (isChecked == mGroupInfo.getMessageReceiveOption()) {
+                    return;
+                }
+
+//                V2TIMManager.getMessageManager().setGroupReceiveMessageOpt(mGroupInfo.getId(), option, new V2TIMCallback(){
+//                    @Override
+//                    public void onSuccess() {
+//                        TUIKitLog.d(TAG, "setReceiveMessageOpt onSuccess");
+//                    }
+//
+//                    @Override
+//                    public void onError(int code, String desc) {
+//                        TUIKitLog.d(TAG, "setReceiveMessageOpt onError code = " + code + ", desc = " + desc);
+//                    }
+//                });
             }
         });
         // 退群
@@ -127,6 +177,10 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
         mDissolveBtn.setOnClickListener(this);
 
         mPresenter = new GroupInfoPresenter(this);
+    }
+
+    public void setUICallback(IUIKitCallBack callback) {
+        this.mIUICallback = callback;
     }
 
     @Override
@@ -161,12 +215,12 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
                 @Override
                 public void onError(int code, String desc) {
                     TUIKitLog.e(TAG, "modify group icon failed, code:" + code + "|desc:" + desc);
-                    ToastUtil.toastLongMessage("修改群头像失败, code = " + code + ", info = " + desc);
+                    ToastUtil.toastLongMessage(getContext().getString(R.string.modify_icon_fail) + ", code = " + code + ", info = " + desc);
                 }
 
                 @Override
                 public void onSuccess() {
-                    ToastUtil.toastLongMessage("修改群头像成功");
+                    ToastUtil.toastLongMessage(getContext().getString(R.string.modify_icon_suc));
                 }
             });
         } else if (v.getId() == R.id.group_notice) {
@@ -194,8 +248,8 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
                 }
             });
         } else if (v.getId() == R.id.join_type_bar) {
-            if (mGroupTypeView.getContent().equals("聊天室")) {
-                ToastUtil.toastLongMessage("加入聊天室为自动审批，暂不支持修改");
+            if (mGroupTypeView.getContent().equals(getContext().getString(R.string.chat_roon))) {
+                ToastUtil.toastLongMessage(getContext().getString(R.string.chat_roon_tip));
                 return;
             }
             Bundle bundle = new Bundle();
@@ -213,20 +267,20 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
         } else if (v.getId() == R.id.group_dissolve_button) {
             if (mGroupInfo.isOwner() &&
                     (!mGroupInfo.getGroupType().equals(TUIKitConstants.GroupType.TYPE_WORK)
-                            || !mGroupInfo.getGroupType().equals(TUIKitConstants.GroupType.TYPE_PRIVATE))) {
+                            && !mGroupInfo.getGroupType().equals(TUIKitConstants.GroupType.TYPE_PRIVATE))) {
                 new TUIKitDialog(getContext())
                         .builder()
                         .setCancelable(true)
                         .setCancelOutside(true)
-                        .setTitle("您确认解散该群?")
+                        .setTitle(getContext().getString(R.string.dismiss_group_tip))
                         .setDialogWidth(0.75f)
-                        .setPositiveButton("确定", new View.OnClickListener() {
+                        .setPositiveButton(getContext().getString(R.string.sure), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 mPresenter.deleteGroup();
                             }
                         })
-                        .setNegativeButton("取消", new View.OnClickListener() {
+                        .setNegativeButton(getContext().getString(R.string.cancel), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
 
@@ -238,15 +292,15 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
                         .builder()
                         .setCancelable(true)
                         .setCancelOutside(true)
-                        .setTitle("您确认退出该群？")
+                        .setTitle(getContext().getString(R.string.quit_group_tip))
                         .setDialogWidth(0.75f)
-                        .setPositiveButton("确定", new View.OnClickListener() {
+                        .setPositiveButton(getContext().getString(R.string.sure), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 mPresenter.quitGroup();
                             }
                         })
-                        .setNegativeButton("取消", new View.OnClickListener() {
+                        .setNegativeButton(getContext().getString(R.string.cancel), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
 
@@ -285,6 +339,7 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
         mJoinTypeView.setContent(mJoinTypes.get(info.getJoinType()));
         mNickView.setContent(mPresenter.getNickName());
         mTopSwitchView.setChecked(mGroupInfo.isTopChat());
+        mMsgRevOptionSwitchView.setChecked(mGroupInfo.getMessageReceiveOption());
 
         mDissolveBtn.setText(R.string.dissolve);
         if (mGroupInfo.isOwner()) {
@@ -308,12 +363,12 @@ public class GroupInfoLayout extends LinearLayout implements IGroupMemberLayout,
         }
         if (TextUtils.equals(groupType, TUIKitConstants.GroupType.TYPE_PRIVATE)
                 || TextUtils.equals(groupType, TUIKitConstants.GroupType.TYPE_WORK)) {
-            groupText = "讨论组";
+            groupText = getContext().getString(R.string.private_group);
         } else if (TextUtils.equals(groupType, TUIKitConstants.GroupType.TYPE_PUBLIC)) {
-            groupText = "公开群";
+            groupText = getContext().getString(R.string.public_group);
         } else if (TextUtils.equals(groupType, TUIKitConstants.GroupType.TYPE_CHAT_ROOM)
                 || TextUtils.equals(groupType, TUIKitConstants.GroupType.TYPE_MEETING)) {
-            groupText = "聊天室";
+            groupText = getContext().getString(R.string.chat_roon);
         }
         return groupText;
     }

@@ -1,6 +1,8 @@
 package com.tencent.qcloud.tim.uikit.modules.conversation.base;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
@@ -13,6 +15,9 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
 
     public static final int TYPE_COMMON = 1;
     public static final int TYPE_CUSTOM = 2;
+
+    public static final int TYPE_FORWAR_SELECT = 3;
+    public static final int TYPE_RECENT_LABEL = 4;
     /**
      * 会话类型，自定义会话or普通会话
      */
@@ -68,6 +73,31 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
      * 最后一条消息，MessageInfo对象
      */
     private MessageInfo lastMessage;
+
+    /**
+     * 会话界面显示的@提示消息
+     */
+    private String atInfoText;
+
+    /**
+     * 会话界面显示消息免打扰图标
+     */
+    private boolean showDisturbIcon;
+
+    /**
+     * 草稿
+     */
+    private DraftInfo draft;
+
+    /**
+     * 群类型
+     */
+    private String groupType;
+
+    /**
+     * 会话排序键值
+     */
+    private long orderKey;
 
     public ConversationInfo() {
 
@@ -152,9 +182,57 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
         this.lastMessage = lastMessage;
     }
 
+    public void setAtInfoText(String atInfoText) {
+        this.atInfoText = atInfoText;
+    }
+
+    public String getAtInfoText() {
+        return atInfoText;
+    }
+
+    public boolean isShowDisturbIcon() {
+        return showDisturbIcon;
+    }
+
+    public void setShowDisturbIcon(boolean showDisturbIcon) {
+        this.showDisturbIcon = showDisturbIcon;
+    }
+
+    public void setDraft(DraftInfo draft) {
+        this.draft = draft;
+    }
+
+    public DraftInfo getDraft() {
+        return this.draft;
+    }
+
+    public String getGroupType() {
+        return groupType;
+    }
+
+    public void setGroupType(String groupType) {
+        this.groupType = groupType;
+    }
+
+    public void setOrderKey(long orderKey) {
+        this.orderKey = orderKey;
+    }
+
+    public long getOrderKey() {
+        return orderKey;
+    }
+
     @Override
     public int compareTo(@NonNull ConversationInfo other) {
-        return this.lastMessageTime > other.lastMessageTime ? -1 : 1;
+        long thisOrderKey = this.orderKey;
+        long otherOrderKey = other.orderKey;
+        if (thisOrderKey > otherOrderKey) {
+            return -1;
+        } else if (thisOrderKey == otherOrderKey) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     @Override
@@ -171,6 +249,8 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
                 ", top=" + top +
                 ", lastMessageTime=" + lastMessageTime +
                 ", lastMessage=" + lastMessage +
+                ", draftText=" + draft +
+                ", groupType=" + groupType +
                 '}';
     }
 }

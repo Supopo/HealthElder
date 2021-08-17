@@ -158,24 +158,24 @@ public abstract class MessageContentHolder extends MessageEmptyHolder {
         }
 
         //// 聊天气泡的点击事件处理
-        if (onItemClickListener != null) {
+        if (onItemLongClickListener != null) {
             msgContentFrame.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onItemClickListener.onMessageLongClick(v, position, msg);
+                    onItemLongClickListener.onMessageLongClick(v, position, msg);
                     return true;
                 }
             });
             leftUserIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onUserIconClick(view, position, msg);
+                    onItemLongClickListener.onUserIconClick(view, position, msg);
                 }
             });
             rightUserIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onUserIconClick(view, position, msg);
+                    onItemLongClickListener.onUserIconClick(view, position, msg);
                 }
             });
         }
@@ -186,8 +186,8 @@ public abstract class MessageContentHolder extends MessageEmptyHolder {
             msgContentFrame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onMessageLongClick(msgContentFrame, position, msg);
+                    if (onItemLongClickListener != null) {
+                        onItemLongClickListener.onMessageLongClick(msgContentFrame, position, msg);
                     }
                 }
             });
@@ -204,11 +204,14 @@ public abstract class MessageContentHolder extends MessageEmptyHolder {
             msgContentLinear.removeView(msgContentFrame);
             msgContentLinear.addView(msgContentFrame, 0);
         }
+        if (rightGroupLayout != null) {
+            rightGroupLayout.setVisibility(View.VISIBLE);
+        }
         msgContentLinear.setVisibility(View.VISIBLE);
 
         //// 对方已读标识的设置
         if (TUIKitConfigs.getConfigs().getGeneralConfig().isShowRead()) {
-            if (msg.isSelf()) {
+            if (msg.isSelf() && V2TIMMessage.V2TIM_MSG_STATUS_SEND_SUCC == msg.getStatus()) {
                 if (msg.isGroup()) {
                     isReadText.setVisibility(View.GONE);
                 } else {

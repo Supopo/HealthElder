@@ -10,7 +10,10 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMSendCallback;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
+import com.tencent.qcloud.tim.uikit.R;
+import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
+import com.tencent.qcloud.tim.uikit.base.TUIKitListenerManager;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatManagerKit;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
@@ -102,7 +105,7 @@ public class GroupChatManagerKit extends ChatManagerKit {
                 messageCustom.version = TUIKitConstants.version;
                 messageCustom.businessID = MessageCustom.BUSINESS_ID_GROUP_CREATE;
                 messageCustom.opUser = V2TIMManager.getInstance().getLoginUser();
-                messageCustom.content = "创建群组";
+                messageCustom.content = TUIKit.getAppContext().getString(R.string.create_group);
                 String data = gson.toJson(messageCustom);
 
                 V2TIMMessage createTips = MessageInfoUtil.buildGroupCustomMessage(data);
@@ -225,18 +228,18 @@ public class GroupChatManagerKit extends ChatManagerKit {
 
     public void notifyJoinGroup(String groupID, boolean isInvited) {
         if (isInvited) {
-            ToastUtil.toastLongMessage("您已被邀请进群：" + groupID);
+            ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.join_group_tip)+ groupID);
         } else {
-//            ToastUtil.toastLongMessage("您已加入群：" + groupID);
+//            ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.joined_tip) + groupID);
         }
     }
 
     public void notifyJoinGroupRefused(String groupID) {
-        ToastUtil.toastLongMessage("您被拒绝加入群：" + groupID);
+        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.reject_join_tip) + groupID);
     }
 
     public void notifyKickedFromGroup(String groupID) {
-        ToastUtil.toastLongMessage("您已被踢出群：" + groupID);
+        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.kick_group) + groupID);
         ConversationManagerKit.getInstance().deleteConversation(groupID, true);
         if (mCurrentChatInfo != null && groupID.equals(mCurrentChatInfo.getId())) {
             onGroupForceExit();
@@ -244,7 +247,7 @@ public class GroupChatManagerKit extends ChatManagerKit {
     }
 
     public void notifyGroupDismissed(String groupID) {
-//        ToastUtil.toastLongMessage("您所在的群" + groupID + "已解散");
+        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.dismiss_tip_before) + groupID + TUIKit.getAppContext().getString(R.string.dismiss_tip_after));
         if (mCurrentChatInfo != null && groupID.equals(mCurrentChatInfo.getId())) {
             onGroupForceExit();
         }
@@ -253,7 +256,7 @@ public class GroupChatManagerKit extends ChatManagerKit {
 
     public void notifyGroupRESTCustomSystemData(String groupID, byte[] customData) {
         if (mCurrentChatInfo != null && groupID.equals(mCurrentChatInfo.getId())) {
-            ToastUtil.toastLongMessage("收到自定义系统通知：" + new String(customData));
+            ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.get_system_notice) + new String(customData));
         }
     }
 

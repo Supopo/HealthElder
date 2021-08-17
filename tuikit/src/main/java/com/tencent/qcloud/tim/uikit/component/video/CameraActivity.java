@@ -1,5 +1,6 @@
 package com.tencent.qcloud.tim.uikit.component.video;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,15 +18,15 @@ import com.tencent.qcloud.tim.uikit.component.video.listener.ErrorListener;
 import com.tencent.qcloud.tim.uikit.component.video.listener.JCameraListener;
 import com.tencent.qcloud.tim.uikit.component.video.util.DeviceUtil;
 import com.tencent.qcloud.tim.uikit.utils.FileUtil;
+import com.tencent.qcloud.tim.uikit.utils.PermissionUtils;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 
-import java.io.File;
-
 public class CameraActivity extends Activity {
 
     private static final String TAG = CameraActivity.class.getSimpleName();
+    private static final int REQUEST_CODE_PHOTO_AND_VIDEO = 1000;
     public static IUIKitCallBack mCallBack;
     private JCameraView jCameraView;
 
@@ -46,9 +47,9 @@ public class CameraActivity extends Activity {
         int state = getIntent().getIntExtra(TUIKitConstants.CAMERA_TYPE, JCameraView.BUTTON_STATE_BOTH);
         jCameraView.setFeatures(state);
         if (state == JCameraView.BUTTON_STATE_ONLY_CAPTURE) {
-            jCameraView.setTip("点击拍照");
+            jCameraView.setTip(getString(R.string.tap_capture));
         } else if (state == JCameraView.BUTTON_STATE_ONLY_RECORDER) {
-            jCameraView.setTip("长按摄像");
+            jCameraView.setTip(getString(R.string.tap_video));
         }
 
         jCameraView.setMediaQuality(JCameraView.MEDIA_QUALITY_MIDDLE);
@@ -64,22 +65,18 @@ public class CameraActivity extends Activity {
 
             @Override
             public void AudioPermissionError() {
-                ToastUtil.toastShortMessage("给点录音权限可以?");
+                ToastUtil.toastShortMessage(getString(R.string.audio_permission_error));
             }
         });
         //JCameraView监听
-        final File file = new File(getFilesDir(), "JCamera");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
         jCameraView.setJCameraLisenter(new JCameraListener() {
             @Override
             public void captureSuccess(Bitmap bitmap) {
                 //获取图片bitmap
-                String path = FileUtil.saveBitmap(file.getAbsolutePath(), bitmap);
-                Intent intent = new Intent();
-                intent.putExtra(TUIKitConstants.CAMERA_IMAGE_PATH, path);
-                setResult(-1, intent);
+                String path = FileUtil.saveBitmap("JCamera", bitmap);
+               /* Intent intent = new Intent();
+                intent.putExtra(ILiveConstants.CAMERA_IMAGE_PATH, path);
+                setResult(-1, intent);*/
                 if (mCallBack != null) {
                     mCallBack.onSuccess(path);
                 }
@@ -89,7 +86,7 @@ public class CameraActivity extends Activity {
             @Override
             public void recordSuccess(String url, Bitmap firstFrame, long duration) {
                 //获取视频路径
-                String path = FileUtil.saveBitmap(file.getAbsolutePath(), firstFrame);
+                String path = FileUtil.saveBitmap("JCamera", firstFrame);
                 Intent intent = new Intent();
                 intent.putExtra(TUIKitConstants.IMAGE_WIDTH, firstFrame.getWidth());
                 intent.putExtra(TUIKitConstants.IMAGE_HEIGHT, firstFrame.getHeight());
@@ -114,11 +111,48 @@ public class CameraActivity extends Activity {
         jCameraView.setRightClickListener(new ClickListener() {
             @Override
             public void onClick() {
-                ToastUtil.toastShortMessage("Right");
+                startSendPhoto();
             }
         });
         //jCameraView.setVisibility(View.GONE);
         TUIKitLog.i(TAG, DeviceUtil.getDeviceModel());
+    }
+
+    private boolean checkPermission() {
+        if (!PermissionUtils.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            return false;
+        }
+        if (!PermissionUtils.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            return false;
+        }
+        return true;
+    }
+
+    private void startSendPhoto() {
+        TUIKitLog.i(TAG, "startSendPhoto");
+        if (!checkPermission()) {
+            TUIKitLog.i(TAG, "startSendPhoto checkPermission failed");
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        String[] mimeTypes = {"image/*", "video/*"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, REQUEST_CODE_PHOTO_AND_VIDEO);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_PHOTO_AND_VIDEO) {
+            if (resultCode != RESULT_OK) {
+                return;
+            }
+            setResult(RESULT_OK, data);
+            finish();
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
@@ -33,7 +34,8 @@ public class FaceManager {
     private static ArrayList<Emoji> emojiList = new ArrayList<>();
     private static LruCache<String, Bitmap> drawableCache = new LruCache(1024);
     private static Context context = TUIKit.getAppContext();
-    private static String[] emojiFilters = context.getResources().getStringArray(R.array.emoji_filter);
+    private static String[] emojiFilters = context.getResources().getStringArray(R.array.emoji_filter_key);
+    private static String[] emojiFilters_values = context.getResources().getStringArray(R.array.emoji_filter_value);
     private static ArrayList<FaceGroup> customFace = new ArrayList<>();
 
     public static ArrayList<Emoji> getEmojiList() {
@@ -60,6 +62,14 @@ public class FaceManager {
             }
         }
         return null;
+    }
+
+    public static String[] getEmojiFiltersValues(){
+        return emojiFilters_values;
+    }
+
+    public static String[] getEmojiFilters(){
+        return emojiFilters;
     }
 
     public static void loadFaceFiles() {
@@ -231,13 +241,14 @@ public class FaceManager {
             return;
         }
         int selection = comment.getSelectionStart();
-        sb.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.colorSendName8)),
+        sb.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.black_font_color)),
                 0, nameLenght, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         comment.setText(sb);
         if (comment instanceof EditText) {
             ((EditText) comment).setSelection(selection);
         }
     }
+
 
 
     public static Bitmap getEmoji(String name) {

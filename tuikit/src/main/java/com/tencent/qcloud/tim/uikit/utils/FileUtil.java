@@ -12,11 +12,9 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import androidx.annotation.NonNull;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.qcloud.tim.uikit.TUIKit;
 
@@ -85,16 +83,14 @@ public class FileUtil {
     }
 
     public static String saveBitmap(String dir, Bitmap b) {
-        String jpegName = "picture_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
+        String jpegName = TUIKitConstants.MEDIA_DIR + File.separator + "picture_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
         try {
-            File file = new File(dir, jpegName);
-            Log.e("saveBitmap","filepath -> "+ file.getAbsolutePath());
-            FileOutputStream fout = new FileOutputStream(file);
+            FileOutputStream fout = new FileOutputStream(jpegName);
             BufferedOutputStream bos = new BufferedOutputStream(fout);
             b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             bos.flush();
             bos.close();
-            return file.getAbsolutePath();
+            return jpegName;
         } catch (IOException e) {
             e.printStackTrace();
             return "";
@@ -202,9 +198,9 @@ public class FileUtil {
 
                 if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
+                } else {
+                    return getPathByCopyFile(context, uri);
                 }
-
-                // TODO handle non-primary volumes
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
@@ -221,10 +217,10 @@ public class FileUtil {
                 };
 
                 for (String contentUriPrefix : contentUriPrefixesToTry) {
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.parseLong(id));
                     try {
                         String path = getDataColumn(context, contentUri, null, null);
-                        if (path != null) {
+                        if (path != null && Build.VERSION.SDK_INT < 29) {
                             return path;
                         }
                     } catch (Exception e) {
@@ -233,8 +229,7 @@ public class FileUtil {
                 }
 
                 // 在某些android8+的手机上，无法获取路径，所以用拷贝的方式，获取新文件名，然后把文件发出去
-                String destinationPath = getPathByCopyFile(context, uri);
-                return destinationPath;
+                return getPathByCopyFile(context, uri);
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -256,7 +251,7 @@ public class FileUtil {
                 final String[] selectionArgs = new String[]{split[1]};
 
                 String path = getDataColumn(context, contentUri, selection, selectionArgs);
-                if (TextUtils.isEmpty(path)) {
+                if (TextUtils.isEmpty(path) || Build.VERSION.SDK_INT >= 29) {
                     path = getPathByCopyFile(context, uri);
                 }
                 return path;
@@ -265,7 +260,7 @@ public class FileUtil {
         // MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
             String path = getDataColumn(context, uri, null, null);
-            if (TextUtils.isEmpty(path)) {
+            if (TextUtils.isEmpty(path) || Build.VERSION.SDK_INT >= 29) {
                 // 在某些华为android9+的手机上，无法获取路径，所以用拷贝的方式，获取新文件名，然后把文件发出去
                 path = getPathByCopyFile(context, uri);
             }
@@ -293,7 +288,7 @@ public class FileUtil {
     }
 
     @Nullable
-    private static File generateFileName(@Nullable String name, File directory) {
+    public static File generateFileName(@Nullable String name, File directory) {
         if (name == null) {
             return null;
         }
@@ -331,7 +326,7 @@ public class FileUtil {
         return file;
     }
 
-    private static String getFileName(@NonNull Context context, Uri uri) {
+    public static String getFileName(@NonNull Context context, Uri uri) {
         String mimeType = context.getContentResolver().getType(uri);
         String filename = null;
 
@@ -359,7 +354,7 @@ public class FileUtil {
         return filename.substring(index + 1);
     }
 
-    private static File getDocumentCacheDir(@NonNull Context context) {
+    public static File getDocumentCacheDir(@NonNull Context context) {
         File dir = new File(context.getCacheDir(), DOCUMENTS_DIR);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -629,5 +624,37 @@ public class FileUtil {
 
     }
 
+    // 修复 android.webkit.MimeTypeMap 的 getFileExtensionFromUrl 方法不支持中文的问题
+    public static String getFileExtensionFromUrl(String url) {
+        if (!TextUtils.isEmpty(url)) {
+            int fragment = url.lastIndexOf('#');
+            if (fragment > 0) {
+                url = url.substring(0, fragment);
+            }
+
+            int query = url.lastIndexOf('?');
+            if (query > 0) {
+                url = url.substring(0, query);
+            }
+
+            int filenamePos = url.lastIndexOf('/');
+            String filename =
+                    0 <= filenamePos ? url.substring(filenamePos + 1) : url;
+
+            // if the filename contains special characters, we don't
+            // consider it valid for our matching purposes:
+            // 去掉正则表达式判断以添加中文支持
+//          if (!filename.isEmpty() && Pattern.matches("[a-zA-Z_0-9\\.\\-\\(\\)\\%]+", filename))
+            if (!filename.isEmpty()) {
+                int dotPos = filename.lastIndexOf('.');
+                if (0 <= dotPos) {
+                    // 后缀转为小写
+                    return filename.substring(dotPos + 1).toLowerCase();
+                }
+            }
+        }
+
+        return "";
+    }
 
 }

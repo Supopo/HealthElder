@@ -5,14 +5,14 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+
+import androidx.annotation.NonNull;
+
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.tencent.qcloud.tim.uikit.TUIKit;
 
@@ -72,31 +72,12 @@ public class ScreenUtil {
         return result;
     }
 
-    public static int getScreenHeight(@Nullable Context context) {
-        if (context == null)
-            return 0;
-        //高度不准
-        //        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        //        return dm.heightPixels;
-
+    public static int getScreenHeight(Context context) {
         DisplayMetrics metric = new DisplayMetrics();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getRealMetrics(metric);
+        wm.getDefaultDisplay().getMetrics(metric);
         return metric.heightPixels;
-
     }
-
-    //获取虚拟按键的高度
-    public static int getNavigationBarHeight(Context context) {
-        int result = 0;
-        Resources res = context.getResources();
-        int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = res.getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
 
     public static int getScreenWidth(Context context) {
         DisplayMetrics metric = new DisplayMetrics();
@@ -105,20 +86,9 @@ public class ScreenUtil {
         return metric.widthPixels;
     }
 
-
     public static int getPxByDp(float dp) {
         float scale = TUIKit.getAppContext().getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
-    }
-
-    public static float dp2px(@NonNull Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return dp * scale + 0.5f;
-    }
-
-    public static float sp2px(@NonNull Context context, float sp) {
-        final float scale = context.getResources().getDisplayMetrics().scaledDensity;
-        return sp * scale;
     }
 
     public static int getDpi(Context context) {
@@ -170,5 +140,15 @@ public class ScreenUtil {
             height = (int) (containerWidth / rate);
         }
         return new int[]{width, height};
+    }
+
+    public static int dip2px(float dpValue) {
+        final float scale = TUIKit.getAppContext().getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static float dp2px(@NonNull Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return dp * scale + 0.5f;
     }
 }

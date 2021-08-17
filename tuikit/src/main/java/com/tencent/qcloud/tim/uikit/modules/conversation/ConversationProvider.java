@@ -31,30 +31,6 @@ public class ConversationProvider implements IConversationProvider {
         updateAdapter();
     }
 
-
-    /**
-     * 批量添加会话数据
-     *
-     * @param conversations 会话数据集合
-     * @return
-     */
-    @Override
-    public boolean addConversations(List<ConversationInfo> conversations) {
-        if (conversations.size() == 1) {
-            ConversationInfo conversation = conversations.get(0);
-            for (int i = 0; i < mDataSource.size(); i++) {
-                if (mDataSource.get(i).getId().equals(conversation.getId())) {
-                    return true;
-                }
-            }
-        }
-        boolean flag = mDataSource.addAll(conversations);
-        if (flag) {
-            updateAdapter();
-        }
-        return flag;
-    }
-
     /**
      * 批量添加会话数据
      *
@@ -71,6 +47,29 @@ public class ConversationProvider implements IConversationProvider {
             }
         }
         boolean flag = mDataSource.addAll(0, conversations);
+        if (flag) {
+            updateAdapter();
+        }
+        return flag;
+    }
+
+
+    /**
+     * 批量添加会话数据
+     *
+     * @param conversations 会话数据集合
+     * @return
+     */
+    @Override
+    public boolean addConversations(List<ConversationInfo> conversations) {
+        if (conversations.size() == 1) {
+            ConversationInfo conversation = conversations.get(0);
+            for (int i = 0; i < mDataSource.size(); i++) {
+                if (mDataSource.get(i).getId().equals(conversation.getId()))
+                    return true;
+            }
+        }
+        boolean flag = mDataSource.addAll(conversations);
         if (flag) {
             updateAdapter();
         }
@@ -156,12 +155,8 @@ public class ConversationProvider implements IConversationProvider {
                     break;
                 }
             }
-        }
-        if (!flag) {
-            flag = addConversationsToTop(conversations);
-            return flag;
-        }
 
+        }
         if (flag) {
             updateAdapter();
             return true;
@@ -184,36 +179,17 @@ public class ConversationProvider implements IConversationProvider {
      * 会话会话列界面，在数据源更新的地方调用
      */
     public void updateAdapter() {
-        clearDisableData();
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
     }
 
     public void updateAdapter(String id) {
-        clearDisableData();
         if (mAdapter != null) {
             mAdapter.notifyDataSourceChanged(id);
         }
     }
 
-    private void clearDisableData() {
-        if (mAdapter != null) {
-            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                ConversationInfo item = mAdapter.getItem(i);
-                if (GeneralConfig.enableChat) {
-                    //TODO 聊天 激活单聊
-                    if (item.isGroup()) {
-                        mAdapter.removeItemById(i);
-                    }
-                }else {
-                    if (item.getConversationId().length() > 6) {
-                        mAdapter.removeItemById(i);
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * 会话列表适配器绑定数据源是的回调

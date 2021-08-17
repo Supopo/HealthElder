@@ -1,13 +1,14 @@
 package com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder;
 
-import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tencent.qcloud.tim.uikit.R;
+import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 
@@ -18,8 +19,14 @@ public class MessageCustomHolder extends MessageContentHolder implements ICustom
 
     private TextView msgBodyText;
 
+    private boolean isShowMutiSelect = false;
+
     public MessageCustomHolder(View itemView) {
         super(itemView);
+    }
+
+    public void setShowMutiSelect(boolean showMutiSelect) {
+        isShowMutiSelect = showMutiSelect;
     }
 
     @Override
@@ -37,32 +44,24 @@ public class MessageCustomHolder extends MessageContentHolder implements ICustom
         mMessageInfo = msg;
         mPosition = position;
         super.layoutViews(msg, position);
-
-
-        //重新自定义 视频分享消息气泡
-        if (msg.isSelf()) {
-            if (properties.getRightBubble() != null && properties.getRightBubble().getConstantState() != null) {
-                msgContentFrame.setBackground(properties.getRightBubble().getConstantState().newDrawable());
-            } else {
-                msgContentFrame.setBackgroundResource(R.drawable.msg_video);
-            }
-        } else {
-            if (properties.getLeftBubble() != null && properties.getLeftBubble().getConstantState() != null) {
-                msgContentFrame.setBackground(properties.getLeftBubble().getConstantState().newDrawable());
-                msgContentFrame.setLayoutParams(msgContentFrame.getLayoutParams());
-            } else {
-                msgContentFrame.setBackgroundResource(R.drawable.msg_video);
-            }
-        }
-
     }
 
     @Override
-    public void layoutVariableViews(MessageInfo msg, int position) {
+    public void layoutVariableViews(final MessageInfo msg, final int position) {
+
+        // 因为recycleview的复用性，可能该holder回收后继续被custom类型的item复用
+        // 但是因为addMessageContentView破坏了msgContentFrame的view结构，所以会造成items的显示错乱。
+        // 这里我们重新添加一下msgBodyText
+        msgContentFrame.removeAllViews();
+        if (msgBodyText.getParent() != null) {
+            ((ViewGroup)msgBodyText.getParent()).removeView(msgBodyText);
+        }
+        msgContentFrame.addView(msgBodyText);
         msgBodyText.setVisibility(View.VISIBLE);
+
         if (msg.getExtra() != null) {
-            if (TextUtils.equals("[自定义消息]", msg.getExtra().toString())) {
-                msgBodyText.setText(Html.fromHtml(TUIKitConstants.covert2HTMLString("[不支持的自定义消息]")));
+            if (TextUtils.equals(TUIKit.getAppContext().getString(R.string.custom_msg), msg.getExtra().toString())) {
+                msgBodyText.setText(Html.fromHtml(TUIKitConstants.covert2HTMLString(TUIKit.getAppContext().getString(R.string.no_support_custom_msg))));
             } else {
                 msgBodyText.setText(msg.getExtra().toString());
             }
@@ -78,6 +77,12 @@ public class MessageCustomHolder extends MessageContentHolder implements ICustom
             if (properties.getLeftChatContentFontColor() != 0) {
                 msgBodyText.setTextColor(properties.getLeftChatContentFontColor());
             }
+        }
+
+        if (isShowMutiSelect){
+            mMutiSelectCheckBox.setVisibility(View.VISIBLE);
+        } else {
+            mMutiSelectCheckBox.setVisibility(View.GONE);
         }
     }
 

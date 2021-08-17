@@ -55,11 +55,6 @@
         <attr name="wheelview_lineSpacingMultiplier" format="float" />
     </declare-styleable>
 
-    <declare-styleable name="NoSpaceTextView" >
-        <attr name="needNoSpace" format="boolean"/>
-        <attr name="textWeight" format="float"/>
-    </declare-styleable>
-
 
     <declare-styleable name="ShadeImageView">
         <attr name="shadeRadio" format="dimension" />
@@ -94,5 +89,10 @@
         <attr name="canNav" format="boolean"/>
         <!-- 是否是开关 -->
         <attr name="isSwitch" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="NoSpaceTextView" >
+        <attr name="needNoSpace" format="boolean"/>
+        <attr name="textWeight" format="float"/>
     </declare-styleable>
 </resources>

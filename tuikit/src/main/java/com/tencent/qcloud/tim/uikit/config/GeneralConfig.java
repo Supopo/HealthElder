@@ -10,7 +10,6 @@ public class GeneralConfig {
     public final static int DEFAULT_AUDIO_RECORD_MAX_TIME = 60;
     public final static int DEFAULT_VIDEO_RECORD_MAX_TIME = 15;
     private static final String TAG = GeneralConfig.class.getSimpleName();
-    public static boolean enableChat = false;
     private String appCacheDir;
     private int audioRecordMaxTime = DEFAULT_AUDIO_RECORD_MAX_TIME;
     private int videoRecordMaxTime = DEFAULT_VIDEO_RECORD_MAX_TIME;
@@ -22,14 +21,8 @@ public class GeneralConfig {
     private String userId = "";
     private String userSig = "";
     private String userNickname = "";
-
-    public boolean isEnableChat() {
-        return enableChat;
-    }
-
-    public void setEnableChat(boolean enableChat) {
-        this.enableChat = enableChat;
-    }
+    private boolean excludedFromUnreadCount;
+    private boolean excludedFromLastMessage;
 
     public String getUserNickname() {
         return userNickname;
@@ -48,16 +41,6 @@ public class GeneralConfig {
     }
 
     private String userFaceUrl = "";
-
-    private static boolean isSupportAVCall;
-    static {
-        try {
-            Class.forName("com.tencent.trtc.TRTCCloud");
-            isSupportAVCall = true;
-        } catch (Exception e) {
-            isSupportAVCall = false;
-        }
-    }
 
     /**
      * 获取是否打印日志
@@ -181,10 +164,6 @@ public class GeneralConfig {
         this.testEnv = testEnv;
     }
 
-    public boolean isSupportAVCall() {
-        return isSupportAVCall;
-    }
-
     public void setSDKAppId(int sdkAppId) {
         this.sdkAppId = sdkAppId;
     }
@@ -209,4 +188,19 @@ public class GeneralConfig {
         this.userSig = userSig;
     }
 
+    public boolean isExcludedFromUnreadCount() {
+        return excludedFromUnreadCount;
+    }
+
+    public void setExcludedFromUnreadCount(boolean excludedFromUnreadCount) {
+        this.excludedFromUnreadCount = excludedFromUnreadCount;
+    }
+
+    public boolean isExcludedFromLastMessage() {
+        return excludedFromLastMessage;
+    }
+
+    public void setExcludedFromLastMessage(boolean excludedFromLastMessage) {
+        this.excludedFromLastMessage = excludedFromLastMessage;
+    }
 }

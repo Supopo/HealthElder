@@ -26,7 +26,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/action_audio_selector" />
 
-        <EditText
+        <com.tencent.qcloud.tim.uikit.modules.chat.layout.input.TIMMentionEditText
             android:id="@+id/chat_message_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/voice_btn_selector"
-            android:text="按住说话"
+            android:text="@string/hold_say"
             android:textColor="@color/text_color_gray"
             android:visibility="gone" />
 
@@ -63,7 +63,6 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="5dp"
-            android:visibility="gone"
             android:scaleType="fitXY"
             android:src="@drawable/action_more_selector" />
 

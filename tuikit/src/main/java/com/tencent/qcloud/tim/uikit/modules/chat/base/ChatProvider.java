@@ -1,8 +1,5 @@
 package com.tencent.qcloud.tim.uikit.modules.chat.base;
 
-import android.text.TextUtils;
-
-import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMMessageReceipt;
 import com.tencent.qcloud.tim.uikit.modules.chat.interfaces.IChatProvider;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.MessageLayout;
@@ -29,7 +26,7 @@ public class ChatProvider implements IChatProvider {
     public boolean addMessageList(List<MessageInfo> msgs, boolean front) {
         List<MessageInfo> list = new ArrayList<>();
         for (MessageInfo info : msgs) {
-            if (checkExist(info)) {
+            if (checkExistPosition(info) >= 0) {
                 continue;
             }
             list.add(info);
@@ -45,24 +42,22 @@ public class ChatProvider implements IChatProvider {
         return flag;
     }
 
-    private boolean checkExist(MessageInfo msg) {
+    private int checkExistPosition(MessageInfo msg) {
         if (msg != null) {
             String msgId = msg.getId();
             for (int i = mDataSource.size() - 1; i >= 0; i--) {
-                if (mDataSource.get(i).getId().equals(msgId)
-                        && mDataSource.get(i).getUniqueId() == msg.getUniqueId()
-                        && TextUtils.equals(mDataSource.get(i).getExtra().toString(), msg.getExtra().toString())) {
-                    return true;
+                if (mDataSource.get(i).getId().equals(msgId)) {
+                    return i;
                 }
             }
         }
-        return false;
+        return -1;
     }
 
     @Override
     public boolean deleteMessageList(List<MessageInfo> messages) {
-        for (int i = 0; i < mDataSource.size(); i++) {
-            for (int j = 0; j < messages.size(); j++) {
+        for (int i = mDataSource.size() -1; i >= 0 ; i--) {
+            for (int j = messages.size() -1; j >= 0; j--) {
                 if (mDataSource.get(i).getId().equals(messages.get(j).getId())) {
                     mDataSource.remove(i);
                     updateAdapter(MessageLayout.DATA_CHANGE_TYPE_DELETE, i);
@@ -78,36 +73,22 @@ public class ChatProvider implements IChatProvider {
         return false;
     }
 
-    public boolean addMessageInfoList(List<MessageInfo> msg) {
-        if (msg == null || msg.size() == 0) {
-            updateAdapter(MessageLayout.DATA_CHANGE_TYPE_LOAD, 0);
-            return true;
-        }
-        List<MessageInfo> list = new ArrayList<>();
-        for (MessageInfo info : msg) {
-            if (checkExist(info)) {
-                updateTIMMessageStatus(info);
-                continue;
-            }
-            list.add(info);
-        }
-        boolean flag = mDataSource.addAll(list);
-        updateAdapter(MessageLayout.DATA_CHANGE_TYPE_ADD_BACK, list.size());
-        return flag;
-
-    }
-
-    public boolean addMessageInfo(MessageInfo msg) {
+    public boolean addMessageInfo(MessageInfo msg, boolean isModifiedByServer) {
         if (msg == null) {
             updateAdapter(MessageLayout.DATA_CHANGE_TYPE_LOAD, 0);
             return true;
         }
-        if (checkExist(msg)) {
-            return true;
+
+        int existPosition = checkExistPosition(msg);
+        if (existPosition >= 0 && isModifiedByServer) {
+            // 被服务器修改了消息内容，消息会通过 onRecvMessageModified 回调出来，因此需要替换原有消息
+            mDataSource.set(existPosition, msg);
+            updateAdapter(MessageLayout.DATA_CHANGE_TYPE_REFRESH, 1);
+        } else {
+            mDataSource.add(msg);
+            updateAdapter(MessageLayout.DATA_CHANGE_TYPE_NEW_MESSAGE, 1);
         }
-        boolean flag = mDataSource.add(msg);
-        updateAdapter(MessageLayout.DATA_CHANGE_TYPE_ADD_BACK, 1);
-        return flag;
+        return true;
     }
 
     public boolean deleteMessageInfo(MessageInfo msg) {
@@ -133,7 +114,7 @@ public class ChatProvider implements IChatProvider {
         if (!found) {
             return false;
         }
-        return addMessageInfo(message);
+        return addMessageInfo(message, false);
     }
 
     public boolean updateMessageInfo(MessageInfo message) {
@@ -178,6 +159,8 @@ public class ChatProvider implements IChatProvider {
             MessageInfo messageInfo = mDataSource.get(i);
             if (messageInfo.getMsgTime() > max.getTimestamp()) {
                 messageInfo.setPeerRead(false);
+            } else if (messageInfo.isPeerRead()) {
+                // do nothing
             } else {
                 messageInfo.setPeerRead(true);
                 updateAdapter(MessageLayout.DATA_CHANGE_TYPE_UPDATE, i);

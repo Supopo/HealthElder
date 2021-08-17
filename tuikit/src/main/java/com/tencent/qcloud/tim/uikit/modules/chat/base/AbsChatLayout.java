@@ -1,44 +1,60 @@
 package com.tencent.qcloud.tim.uikit.modules.chat.base;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.tencent.imsdk.v2.V2TIMCustomElem;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.tencent.imsdk.v2.V2TIMConversation;
+import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMTextElem;
+import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.qcloud.tim.uikit.R;
+import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
 import com.tencent.qcloud.tim.uikit.component.AudioPlayer;
+import com.tencent.qcloud.tim.uikit.component.TitleBarLayout;
+import com.tencent.qcloud.tim.uikit.component.dialog.TUIKitDialog;
 import com.tencent.qcloud.tim.uikit.modules.chat.interfaces.IChatLayout;
 import com.tencent.qcloud.tim.uikit.modules.chat.interfaces.IChatProvider;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.input.InputLayout;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.MessageLayout;
 import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.MessageListAdapter;
-import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder.ICustomMessageViewGroup;
-import com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder.IOnCustomMessageDrawListener;
-import com.tencent.qcloud.tim.uikit.modules.message.CustomVideoController;
-import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
+import com.tencent.qcloud.tim.uikit.modules.forward.ForwardSelectActivity;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.utils.BackgroundTasks;
+import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout {
+    private static final String TAG = AbsChatLayout.class.getSimpleName();
+    // 逐条转发消息数量限制
+    private static final int FORWARD_MSG_NUM_LIMIT = 30;
 
     protected MessageListAdapter mAdapter;
+    private onForwardSelectActivityListener mForwardSelectActivityListener;
+
+    private V2TIMMessage mConversationLastMessage;
 
     private AnimationDrawable mVolumeAnim;
     private Runnable mTypingRunnable = null;
@@ -82,7 +98,13 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
                 }
                 if (msg.getMsgType() == MessageInfo.MSG_TYPE_TEXT) {
                     V2TIMTextElem textElem = msg.getTimMessage().getTextElem();
-                    ClipData clip = ClipData.newPlainText("message", textElem.getText());
+                    String copyContent;
+                    if (textElem == null) {
+                        copyContent = (String) msg.getExtra();
+                    } else {
+                        copyContent = textElem.getText();
+                    }
+                    ClipData clip = ClipData.newPlainText("message", copyContent);
                     clipboard.setPrimaryClip(clip);
                 }
             }
@@ -101,11 +123,36 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
             public void onRevokeMessageClick(int position, MessageInfo msg) {
                 revokeMessage(position, msg);
             }
+
+            @Override
+            public void onMultiSelectMessageClick(int position, MessageInfo msg) {
+                multiSelectMessage(position, msg);
+            }
+
+            @Override
+            public void onForwardMessageClick(int position, MessageInfo msg){
+                forwardMessage(position, msg);
+            }
         });
         getMessageLayout().setLoadMoreMessageHandler(new MessageLayout.OnLoadMoreHandler() {
             @Override
-            public void loadMore() {
-                loadMessages();
+            public void loadMore(int type) {
+                loadMessages(type);
+            }
+
+            @Override
+            public boolean isListEnd(int postion) {
+                if (mAdapter == null || mConversationLastMessage == null || mAdapter.getItem(postion) == null) {
+                    return true;
+                }
+                if (postion < 0 || postion >= mAdapter.getItemCount()) {
+                    return true;
+                }
+
+                if (mAdapter.getItem(postion).getTimMessage().getSeq() < mConversationLastMessage.getSeq()) {
+                    return false;
+                }
+                return true;
             }
         });
         getMessageLayout().setEmptySpaceClickListener(new MessageLayout.OnEmptySpaceClickListener() {
@@ -204,7 +251,7 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
                         mVolumeAnim = (AnimationDrawable) mRecordingIcon.getDrawable();
                         mVolumeAnim.start();
                         mRecordingTips.setTextColor(Color.WHITE);
-                        mRecordingTips.setText("手指上滑，取消发送");
+                        mRecordingTips.setText(TUIKit.getAppContext().getString(R.string.down_cancle_send));
                     }
                 });
             }
@@ -227,9 +274,9 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
                         mRecordingIcon.setImageResource(R.drawable.ic_volume_dialog_length_short);
                         mRecordingTips.setTextColor(Color.WHITE);
                         if (status == RECORD_TOO_SHORT) {
-                            mRecordingTips.setText("说话时间太短");
+                            mRecordingTips.setText(TUIKit.getAppContext().getString(R.string.say_time_short));
                         } else {
-                            mRecordingTips.setText("录音失败");
+                            mRecordingTips.setText(TUIKit.getAppContext().getString(R.string.record_fail));
                         }
                     }
                 });
@@ -246,7 +293,7 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
                     @Override
                     public void run() {
                         mRecordingIcon.setImageResource(R.drawable.ic_volume_dialog_cancel);
-                        mRecordingTips.setText("松开手指，取消发送");
+                        mRecordingTips.setText(TUIKit.getAppContext().getString(R.string.up_cancle_send));
                     }
                 });
             }
@@ -256,8 +303,6 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
     @Override
     public void initDefault() {
         getTitleBar().getLeftGroup().setVisibility(View.VISIBLE);
-        getTitleBar().getRightGroup().setVisibility(View.INVISIBLE);
-        getTitleBar().setBackgroundColor(getResources().getColor(R.color.white));
         getTitleBar().setOnLeftClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -276,36 +321,9 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         if (getMessageLayout().getAdapter() == null) {
             mAdapter = new MessageListAdapter();
             getMessageLayout().setAdapter(mAdapter);
-            // IM设置自定义消息
-            mAdapter.setOnCustomMessageDrawListener(new IOnCustomMessageDrawListener() {
-                @Override
-                public void onDraw(ICustomMessageViewGroup parent, MessageInfo info) {
-                    // 获取到自定义消息的json数据
-                    if (info.getTimMessage().getElemType() != V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM) {
-                        return;
-                    }
-                    V2TIMCustomElem elem = info.getTimMessage().getCustomElem();
-                    String msg = new String(elem.getData());
-                    Log.v("--IM-ZDY-：", msg);
-                    // 自定义的json数据，需要解析成bean实例
-                    CustomMessage data = null;
-                    try {
-                        data = new Gson().fromJson(msg, CustomMessage.class);
-                    } catch (Exception e) {
-                    }
-                    if (data == null) {
-                        return;
-                    } else {
-                        //判断IM自定义消息类型分类展示
-                        //1 分享视频
-                        if (data.type == 1) {
-                            CustomVideoController.onDraw(parent, data, getContext());
-                        }
-                    }
-                }
-            });
         }
         initListener();
+        resetForwardState("");
     }
 
     @Override
@@ -323,22 +341,33 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         }
         if (mAdapter != null) {
             mAdapter.setDataSource(provider);
+            getChatManager().setLastMessageInfo(mAdapter.getItemCount() > 0 ? mAdapter.getItem(1) : null);
         }
     }
 
     public abstract ChatManagerKit getChatManager();
 
     @Override
-    public void loadMessages() {
-        loadChatMessages(mAdapter.getItemCount() > 0 ? mAdapter.getItem(1) : null);
+    public void loadMessages(int type) {
+        if (type == TUIKitConstants.GET_MESSAGE_FORWARD) {
+            loadChatMessages(mAdapter.getItemCount() > 0 ? mAdapter.getItem(1).getTimMessage() : null, type);
+        } else if (type == TUIKitConstants.GET_MESSAGE_BACKWARD){
+            loadChatMessages(mAdapter.getItemCount() > 0 ? mAdapter.getItem(mAdapter.getItemCount() -1).getTimMessage() : null, type);
+        }
     }
 
-    public void loadChatMessages(final MessageInfo lastMessage) {
-        getChatManager().loadChatMessages(lastMessage, new IUIKitCallBack() {
+    public void loadChatMessages(final V2TIMMessage lastMessage, final int getMessageType) {
+        getChatManager().loadChatMessages(getMessageType, lastMessage, new IUIKitCallBack() {
             @Override
             public void onSuccess(Object data) {
-                if (lastMessage == null && data != null) {
+                if (getMessageType == TUIKitConstants.GET_MESSAGE_TWO_WAY || (lastMessage == null && data != null)) {
                     setDataProvider((ChatProvider) data);
+                }
+
+                if (getMessageType == TUIKitConstants.GET_MESSAGE_TWO_WAY) {
+                    if (mAdapter != null) {
+                       mAdapter.notifyDataSourceChanged(MessageLayout.DATA_CHANGE_SCROLL_TO_POSITION, mAdapter.getLastMessagePosition(lastMessage));
+                    }
                 }
             }
 
@@ -352,12 +381,260 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         });
     }
 
+    public void getConversationLastMessage(String id) {
+        V2TIMManager.getConversationManager().getConversation(id, new V2TIMValueCallback<V2TIMConversation>() {
+            @Override
+            public void onError(int code, String desc) {
+                Log.e(TAG, "getConversationLastMessage error:" + code + ", desc:" + desc);
+            }
+
+            @Override
+            public void onSuccess(V2TIMConversation v2TIMConversation) {
+                if (v2TIMConversation == null){
+                    Log.d(TAG,"getConversationLastMessage failed");
+                    mConversationLastMessage = null;
+                    return;
+                }
+                mConversationLastMessage = v2TIMConversation.getLastMessage();
+            }
+        });
+    }
+
     protected void deleteMessage(int position, MessageInfo msg) {
         getChatManager().deleteMessage(position, msg);
     }
 
+    protected void deleteMessages(final List<Integer> positions) {
+        getChatManager().deleteMessages(positions);
+    }
+
+    protected void deleteMessageInfos(final List<MessageInfo> msgIds) {
+        getChatManager().deleteMessageInfos(msgIds);
+    }
+
+    protected boolean checkFailedMessage(final List<Integer> positions) {
+        return getChatManager().checkFailedMessages(positions);
+    }
+
+    protected boolean checkFailedMessageInfos(final List<MessageInfo> msgIds){
+        return getChatManager().checkFailedMessageInfos(msgIds);
+    }
+
     protected void revokeMessage(int position, MessageInfo msg) {
         getChatManager().revokeMessage(position, msg);
+    }
+
+    protected void multiSelectMessage(int position, MessageInfo msg) {
+        if(mAdapter != null){
+            mAdapter.setShowMutiSelectCheckBox(true);
+            mAdapter.setItemChecked(msg.getId(), true);
+            mAdapter.notifyDataSetChanged();
+
+            setTitleBarWhenMultiSelectMessage();
+        }
+    }
+
+    protected void forwardMessage(int position, MessageInfo msg) {
+        if (mAdapter != null) {
+            mAdapter.setItemChecked(msg.getId(), true);
+            mAdapter.notifyDataSetChanged();
+            showForwardDialog(false);
+        }
+    }
+
+    private void resetTitleBar(String leftTitle){
+        getTitleBar().getRightGroup().setVisibility(VISIBLE);
+
+        getTitleBar().getLeftGroup().setVisibility(View.VISIBLE);
+        getTitleBar().getLeftIcon().setVisibility(VISIBLE);
+        if (!TextUtils.isEmpty(leftTitle)) {
+            getTitleBar().setTitle(leftTitle, TitleBarLayout.POSITION.LEFT);
+        } else {
+            getTitleBar().setTitle("", TitleBarLayout.POSITION.LEFT);
+        }
+        getTitleBar().setOnLeftClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getContext() instanceof Activity) {
+                    ((Activity) getContext()).finish();
+                }
+            }
+        });
+
+        getForwardLayout().setVisibility(GONE);
+    }
+
+    private void resetForwardState(String leftTitle){
+        //取消多选界面
+        if(mAdapter != null){
+            mAdapter.setShowMutiSelectCheckBox(false);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        //重置titlebar
+        resetTitleBar(leftTitle);
+    }
+
+    private void setTitleBarWhenMultiSelectMessage(){
+        getTitleBar().getRightGroup().setVisibility(GONE);
+
+        getTitleBar().getLeftGroup().setVisibility(View.VISIBLE);
+        getTitleBar().getLeftIcon().setVisibility(GONE);
+        final CharSequence leftTitle = getTitleBar().getLeftTitle().getText();
+        getTitleBar().setTitle(getContext().getString(R.string.cancel), TitleBarLayout.POSITION.LEFT);
+        //点击取消
+        getTitleBar().setOnLeftClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetForwardState(leftTitle.toString());
+            }
+        });
+
+        getForwardLayout().setVisibility(VISIBLE);
+        //点击转发
+        getForwardButton().setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showForwardDialog(true);
+            }
+        });
+
+        //点击删除
+        getDeleteButton().setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                List<MessageInfo> msgIds = new ArrayList<MessageInfo>();
+                msgIds =  mAdapter.getSelectedItem();
+
+                if(msgIds == null || msgIds.isEmpty()){
+                    ToastUtil.toastShortMessage("please select message!");
+                    return;
+                }
+
+                //deleteMessages(msgIds);
+                deleteMessageInfos(msgIds);
+
+                resetForwardState(leftTitle.toString());
+            }
+        });
+    }
+
+    private String SwitchToForwardBundle(List<V2TIMMessage> msgList){
+        if (msgList == null || msgList.size() == 0) {
+            return "";
+        }
+
+        String bundle = "";
+        for(int i = 0; i < msgList.size(); i++){
+            bundle += msgList.get(i).getMsgID();
+            bundle += ",";
+        }
+        //TUIKitLog.i(TAG, "bundle = " + bundle);
+        return bundle;
+    }
+
+    private List<MessageInfo> SwitchToV2TIMMessage(List<Integer> positions){
+        if (positions == null || positions.size() == 0) {
+            return null;
+        }
+
+        List<MessageInfo> msgList = getChatManager().getSelectPositionMessage(positions);
+
+        return msgList;
+    }
+
+    private void showForwardDialog(boolean isMultiSelect) {
+        if (mAdapter == null){
+            return;
+        }
+
+        final List<MessageInfo> messageInfoList = mAdapter.getSelectedItem();
+        if(messageInfoList == null || messageInfoList.isEmpty()){
+            ToastUtil.toastShortMessage(getContext().getString(R.string.forward_tip));
+            return;
+        }
+
+        if(checkFailedMessageInfos(messageInfoList)){
+            ToastUtil.toastShortMessage(getContext().getString(R.string.forward_failed_tip));
+            return;
+        }
+
+        if (!isMultiSelect) {
+            mAdapter.setShowMutiSelectCheckBox(false);//发送完清理选中
+        }
+
+        final Dialog bottomDialog = new Dialog(getContext(), R.style.BottomDialog);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.forward_dialog_layout, null);
+        bottomDialog.setContentView(contentView);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+        params.width = getResources().getDisplayMetrics().widthPixels - 8;
+        contentView.setLayoutParams(params);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        bottomDialog.show();
+
+        contentView.findViewById(R.id.forward_one_by_one).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (messageInfoList.size() > FORWARD_MSG_NUM_LIMIT) {
+                    showForwardLimitDialog(bottomDialog, messageInfoList);
+                } else {
+                    bottomDialog.dismiss();
+                    startSelectForwardActivity(ForwardSelectActivity.FORWARD_MODE_ONE_BY_ONE, messageInfoList);
+                    resetForwardState("");
+                    ;//发送完清理选中
+                }
+            }
+        });
+        contentView.findViewById(R.id.forward_merge).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomDialog.dismiss();
+
+                startSelectForwardActivity(ForwardSelectActivity.FORWARD_MODE_MERGE, messageInfoList);
+                resetForwardState("");;//发送完清理选中
+            }
+        });
+        contentView.findViewById(R.id.cancel_action).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomDialog.dismiss();
+            }
+        });
+    }
+
+    private void showForwardLimitDialog(final Dialog bottomDialog, final List<MessageInfo> messageInfoList) {
+        TUIKitDialog tipsDialog = new TUIKitDialog(getContext())
+                .builder()
+                .setCancelable(true)
+                .setCancelOutside(true)
+                .setTitle(getContext().getString(R.string.forward_oneByOne_limit_number_tip))
+                .setDialogWidth(0.75f)
+                .setPositiveButton(getContext().getString(R.string.forward_mode_merge), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomDialog.dismiss();
+                        startSelectForwardActivity(ForwardSelectActivity.FORWARD_MODE_MERGE, messageInfoList);
+                        resetForwardState("");;//发送完清理选中
+                    }
+                })
+                .setNegativeButton(getContext().getString(R.string.cancel), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+         tipsDialog.show();
+    }
+
+    private void startSelectForwardActivity(int mode, List<MessageInfo> msgIds){
+        if (mForwardSelectActivityListener != null) {
+            mForwardSelectActivityListener.onStartForwardSelectActivity(mode, msgIds);
+        }
+    }
+
+    public void setForwardSelectActivityListener(onForwardSelectActivityListener listener) {
+        this.mForwardSelectActivityListener = listener;
     }
 
     @Override
@@ -380,13 +657,17 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         });
     }
 
-
     @Override
     public void exitChat() {
         getTitleBar().getMiddleTitle().removeCallbacks(mTypingRunnable);
         AudioPlayer.getInstance().stopRecord();
         AudioPlayer.getInstance().stopPlay();
+        ChatManagerKit.markMessageAsRead(mChatInfo);
         if (getChatManager() != null) {
+            // 两者不相等说明 ChatManagerKit 中的 ChatInfo 已经在外部被修改，不能销毁不属于自己的 ChatInfo
+            if (getChatInfo() != getChatManager().getCurrentChatInfo()) {
+                return;
+            }
             getChatManager().destroyChat();
         }
     }
@@ -397,5 +678,8 @@ public abstract class AbsChatLayout extends ChatLayoutUI implements IChatLayout 
         exitChat();
     }
 
+    public interface onForwardSelectActivityListener {
+        public void onStartForwardSelectActivity(int mode, List<MessageInfo> msgIds);
+    }
 
 }

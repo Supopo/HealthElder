@@ -67,8 +67,8 @@ public class FaceFragment extends BaseInputFragment implements View.OnClickListe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        emojiList = FaceManager.getEmojiList();
         try {
+            emojiList = FaceManager.getEmojiList();
             if (recentManager.getCollection(RecentEmojiManager.PREFERENCE_NAME) != null) {
                 recentlyEmojiList = (ArrayList<Emoji>) recentManager.getCollection(RecentEmojiManager.PREFERENCE_NAME);
             } else {
@@ -102,6 +102,7 @@ public class FaceFragment extends BaseInputFragment implements View.OnClickListe
         faceFirstSetTv.setSelected(true);
         faceFirstSetTv.setOnClickListener(this);
         customFaces = FaceManager.getCustomFaceList();
+        mCurrentGroupIndex = 0;
 
         int width = ScreenUtil.getPxByDp(70);
         for (int i = 0; i < customFaces.size(); i++) {

@@ -5,7 +5,7 @@ package com.tencent.qcloud.tim.uikit.modules.message;
  * 自定义消息
  */
 public class CustomMessage {
-    public int type;//1视频  2作品  3直播
+    public int type;//1视频  2作品  3直播 4用户
     public String title;
     public String content;
     public String url;

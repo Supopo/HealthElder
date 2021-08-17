@@ -1,7 +1,7 @@
 package com.tencent.qcloud.tim.uikit.base;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class BaseFragment extends Fragment {
 
@@ -10,6 +10,9 @@ public class BaseFragment extends Fragment {
     }
 
     public void forward(int viewId, Fragment fragment, String name, boolean hide) {
+        if (getFragmentManager() == null){
+            return;
+        }
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         if (hide) {
             trans.hide(this);
@@ -23,6 +26,9 @@ public class BaseFragment extends Fragment {
     }
 
     public void backward() {
+        if (getFragmentManager() == null){
+            return;
+        }
         getFragmentManager().popBackStack();
     }
 }
