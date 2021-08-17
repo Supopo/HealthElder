@@ -118,7 +118,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     if (conversationInfo != null) {
                         mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
-                        if (conversationInfo.getLastMessage() != null) {//最后一条消息为空的移除消息列表
+                        if (conversationInfo.getLastMessage() != null) {//最后一条消息为空的移除消息列表 移除直播间消息
                             if (!conversationInfo.isGroup()) {//不加入群聊条目
                                 if (!isCustomService(conversationInfo)) {//不加入客服消息类
                                     infos.add(conversationInfo);

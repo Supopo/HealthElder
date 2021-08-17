@@ -434,7 +434,7 @@ public class MessageInfoUtil {
             try {
                 messageCustom = gson.fromJson(data, MessageCustom.class);
 
-                //包含cmd的消息来自直播间 过滤
+                //包含cmd的消息来自直播间 过滤直播间消息
                 if (!TextUtils.isEmpty(messageCustom.cmd)) {
                     return null;
                 }

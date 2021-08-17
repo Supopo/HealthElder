@@ -91,6 +91,9 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
         ImManager.getInstance().init(new File(getContext().getFilesDir(), "msg").getAbsolutePath());
         binding.conversationLayout.initDefault();
         binding.conversationLayout.getConversationList().setOnItemClickListener((view, position, messageInfo) -> {
+            if (messageInfo == null) {
+                return;
+            }
             String id = messageInfo.getId();
             switch (id) {
                 case Constant.CONVERSATION_SYS_ID: {

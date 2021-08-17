@@ -1,14 +1,14 @@
 package com.tencent.qcloud.tim.uikit.modules.conversation;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.qcloud.tim.uikit.R;
 import com.tencent.qcloud.tim.uikit.TUIKit;
@@ -160,7 +160,7 @@ public class ConversationListAdapter extends IConversationAdapter {
         //            return ITEM_TYPE_HEADER_SEARCH;
         //        } else
 
-        if (position == getItemCount()) {
+        if (position == getItemCount() - 1) {
             return ITEM_TYPE_FOOTER_LOADING;
         } else if (mDataSource != null) {
             try {

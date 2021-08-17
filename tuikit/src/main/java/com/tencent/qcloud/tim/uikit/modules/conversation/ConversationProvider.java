@@ -1,8 +1,6 @@
 package com.tencent.qcloud.tim.uikit.modules.conversation;
 
 
-import android.util.Log;
-
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.tencent.qcloud.tim.uikit.modules.conversation.interfaces.IConversationAdapter;
 import com.tencent.qcloud.tim.uikit.modules.conversation.interfaces.IConversationProvider;
@@ -29,7 +27,6 @@ public class ConversationProvider implements IConversationProvider {
     public void setDataSource(List<ConversationInfo> dataSource) {
         this.mDataSource.clear();
         this.mDataSource.addAll(dataSource);
-        Log.v("--", dataSource.toString());
         updateAdapter();
     }
 
