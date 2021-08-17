@@ -128,7 +128,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             chatInfo.setId(messageInfo.getId());
             ChatActivity.startChar(getContext(), chatInfo);
         });
-        /*binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
+        binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
             //条目长按,置顶，删除，
             String id = messageInfo.getId();
             switch (id) {
@@ -154,7 +154,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                     ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
                     return;
             }
-        });*/
+        });
     }
 
     @Override

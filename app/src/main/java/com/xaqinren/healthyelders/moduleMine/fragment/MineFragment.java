@@ -292,7 +292,19 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());
             startActivity(LookAttentionActivity.class, bundle);
         });
+        binding.tvGzNum.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 0);
+            bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());
+            startActivity(LookAttentionActivity.class, bundle);
+        });
         binding.tvFs.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 1);
+            bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());
+            startActivity(LookAttentionActivity.class, bundle);
+        });
+        binding.tvFsNum.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putInt("page", 1);
             bundle.putString("name", UserInfoMgr.getInstance().getUserInfo().getNickname());

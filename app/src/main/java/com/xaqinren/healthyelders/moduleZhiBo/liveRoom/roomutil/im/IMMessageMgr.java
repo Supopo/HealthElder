@@ -2,7 +2,6 @@ package com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im;
 
 import android.content.Context;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -37,7 +36,6 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.imsdk.v2.V2TIMMessage;
 import com.tencent.imsdk.v2.V2TIMValueCallback;
 import com.tencent.liteav.basic.log.TXCLog;
-import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.commondef.LoginInfo;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -47,8 +45,6 @@ import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import me.goldze.mvvmhabit.utils.SPUtils;
 
 
 /**

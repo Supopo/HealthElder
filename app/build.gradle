@@ -207,8 +207,8 @@ dependencies {
     api rootProject.ext.dependencies.gson
     //  腾讯云专业版SDK
     implementation 'com.tencent.liteav:LiteAVSDK_Professional:latest.release'
-    //  MLVB 需要依赖腾讯云 IM 服务
-    implementation 'com.tencent.imsdk:imsdk:4.9.1'
+    //  MLVB 需要依赖腾讯云 IM 服务 基础版
+    implementation 'com.tencent.imsdk:imsdk:5.1.65'
     //  弹幕功能需要依赖此库
     implementation 'com.github.ctiao:dfm:0.4.4'
     //  Dex 多分包依赖

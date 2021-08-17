@@ -154,6 +154,7 @@
                                         android:textSize="@dimen/sp_12" />
 
                                     <TextView
+                                        android:id="@+id/tv_gzNum"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@{String.valueOf(viewModel.userInfo.attentionCount)}"
@@ -171,6 +172,7 @@
                                         android:textSize="@dimen/sp_12" />
 
                                     <TextView
+                                        android:id="@+id/tv_fsNum"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@{String.valueOf(viewModel.userInfo.fansCount)}"
@@ -247,7 +249,7 @@
                                             android:background="@mipmap/zy_male"
                                             android:visibility="@{viewModel.userInfo.isMan()?View.VISIBLE:View.GONE}" />
 
-                                        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+                                        <com.xaqinren.healthyelders.widget.NoSpaceTextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginRight="@dimen/dp_4"

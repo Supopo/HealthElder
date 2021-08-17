@@ -104,6 +104,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
             bundle.putInt("openType", 2);
+            bundle.putBoolean("key1", true);
             Intent intent = new Intent();
             intent.setClass(getActivity(), VideoListActivity.class);
             intent.putExtras(bundle);

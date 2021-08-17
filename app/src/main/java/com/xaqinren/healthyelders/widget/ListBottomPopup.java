@@ -18,6 +18,7 @@ import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +64,7 @@ public class ListBottomPopup extends BasePopupWindow {
 
         //根据item计Pop的高度，不然是整页
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPop.getLayoutParams();
-        lp.height = (int) ScreenUtil.dp2px(getContext(), (64 + menus.size() * 57));
+        lp.height = (int) MScreenUtil.dp2px(getContext(), (64 + menus.size() * 57));
         rlPop.setLayoutParams(lp);
 
         rvPop.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -73,7 +74,7 @@ public class ListBottomPopup extends BasePopupWindow {
                 TextView tvMenu = holder.getView(R.id.tv_menu);
                 TextView tvMenuSub = holder.getView(R.id.tv_menu_sub);
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tvMenu.getLayoutParams();
-                lp.height = (int) ScreenUtil.dp2px(getContext(), 56);
+                lp.height = (int) MScreenUtil.dp2px(getContext(), 56);
                 tvMenu.setLayoutParams(lp);
 
                 holder.setText(R.id.tv_menu, menuBean.menuName);

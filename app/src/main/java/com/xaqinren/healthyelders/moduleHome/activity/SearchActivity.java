@@ -129,8 +129,8 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
     public void initEvent() {
         binding.tvCancel.setOnClickListener(lis -> {
             if (isSearch) {
-                if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
-                    tags = binding.etSearch.getText().toString();
+                if (!TextUtils.isEmpty(binding.etSearch.getText().toString().trim())) {
+                    tags = binding.etSearch.getText().toString().trim();
                 }
                 toSearch();
             } else {
@@ -154,8 +154,8 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
-                        tags = binding.etSearch.getText().toString();
+                    if (!TextUtils.isEmpty(binding.etSearch.getText().toString().trim())) {
+                        tags = binding.etSearch.getText().toString().trim();
                     }
                     toSearch();
                 }

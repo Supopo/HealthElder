@@ -2,24 +2,16 @@ package com.xaqinren.healthyelders.moduleMsg;
 
 import android.text.TextUtils;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
 import com.alibaba.fastjson.JSON;
 import com.tencent.imsdk.TIMCallBack;
 import com.tencent.imsdk.TIMFriendshipManager;
 import com.tencent.imsdk.TIMUserProfile;
-import com.tencent.imsdk.conversation.Conversation;
 import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.base.IMEventListener;
-import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
-import com.tencent.qcloud.tim.uikit.modules.chat.C2CChatManagerKit;
-import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatManagerKit;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
 import com.xaqinren.healthyelders.apiserver.MBaseResponse;
@@ -27,7 +19,6 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.http.RetrofitClient;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
-import com.xaqinren.healthyelders.moduleMsg.bean.FriendBean;
 import com.xaqinren.healthyelders.moduleMsg.bean.GroupIconBean;
 import com.xaqinren.healthyelders.push.PayLoadBean;
 import com.xaqinren.healthyelders.utils.ACache;
@@ -38,11 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import master.flame.danmaku.danmaku.model.ICacheManager;
 import me.goldze.mvvmhabit.utils.RxUtils;
-import me.goldze.mvvmhabit.utils.SPUtils;
-import me.goldze.mvvmhabit.utils.compression.Luban;
-import retrofit2.http.PUT;
 
 public class ImManager {
     private static final String TAG = "ImManager";
@@ -106,6 +93,7 @@ public class ImManager {
             fileName = bean.getId();
         }
     }
+
     //退出登录用的
     public void clear() {
         clearConversationByList();
@@ -175,6 +163,9 @@ public class ImManager {
         }
         unReadCount = 0;
         String json = aCache.getAsString(fileName);
+        if (TextUtils.isEmpty(json)) {
+            return null;
+        }
         List<ConversationInfo> temp = JSON.parseArray(json, ConversationInfo.class);
         if (temp != null) {
             for (ConversationInfo info : temp) {
@@ -247,6 +238,7 @@ public class ImManager {
             saveSp();
         }
     }
+
     //在列表上清除
     public void clearConversationByList() {
         if (localCon != null) {
@@ -321,6 +313,7 @@ public class ImManager {
 
     private GroupIconBean groupIconBean;
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
+
     public void getIcon() {
         if (groupIconBean != null) {
             return;

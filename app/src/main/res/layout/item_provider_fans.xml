@@ -21,7 +21,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:maxWidth="@dimen/dp_170"
             android:ellipsize="end" />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/describe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             android:maxLines="2"
             android:ellipsize="end" />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

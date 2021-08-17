@@ -140,7 +140,7 @@ public class ZBEditTextDialogActivity extends Activity {
 
             }
         });
-        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
+//        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
 
     }
 
@@ -247,7 +247,7 @@ public class ZBEditTextDialogActivity extends Activity {
         });
         ivSend.setOnClickListener(lis -> {
 
-            if (TextUtils.isEmpty(etView.getText().toString())) {
+            if (TextUtils.isEmpty(etView.getText().toString().trim())) {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
                 if (type == 0) {

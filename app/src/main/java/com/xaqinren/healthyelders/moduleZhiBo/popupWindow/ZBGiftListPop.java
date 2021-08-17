@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.ApiServer;
 import com.xaqinren.healthyelders.apiserver.CustomObserver;
@@ -29,8 +30,10 @@ import com.zhpan.indicator.IndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import razerdp.basepopup.BasePopupWindow;
@@ -48,6 +51,7 @@ public class ZBGiftListPop extends BasePopupWindow {
     private ViewPager2 vpContent;
     private IndicatorView indView;
     private Disposable subscribe;
+    private boolean isOpenCZ;
 
     public ZBGiftListPop(Context context, LiveInitInfo liveInitInfo) {
         super(context);
@@ -85,10 +89,17 @@ public class ZBGiftListPop extends BasePopupWindow {
             }
         });
 
-        //充值
-        tvCZ.setOnClickListener(lis -> {
-            context.startActivity(new Intent(context, CZSelectPopupActivity.class));
-        });
+
+        //防止重复点击充值
+        RxView.clicks(tvCZ)
+                .throttleFirst(1, TimeUnit.SECONDS)//1秒钟内只允许点击1次
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object object) throws Exception {
+                        //充值
+                        context.startActivity(new Intent(context, CZSelectPopupActivity.class));
+                    }
+                });
 
 
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {

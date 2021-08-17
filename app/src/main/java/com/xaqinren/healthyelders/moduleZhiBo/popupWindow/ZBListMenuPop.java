@@ -29,6 +29,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.utils.AnimUtils;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -80,7 +81,7 @@ public class ZBListMenuPop extends BasePopupWindow {
 
         //根据item计Pop的高度，不然是整页
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPop.getLayoutParams();
-        lp.height = (int) ScreenUtil.dp2px(getContext(), (64 + menus.size() * 57));
+        lp.height = (int) MScreenUtil.dp2px(getContext(), (64 + menus.size() * 57));
         rlPop.setLayoutParams(lp);
 
         rvPop.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -89,7 +90,7 @@ public class ZBListMenuPop extends BasePopupWindow {
             protected void convert(@NotNull BaseViewHolder holder, ListPopMenuBean menuBean) {
                 TextView tvMenu = holder.getView(R.id.tv_menu);
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tvMenu.getLayoutParams();
-                lp.height = (int) ScreenUtil.dp2px(getContext(), 56);
+                lp.height = (int) MScreenUtil.dp2px(getContext(), 56);
                 tvMenu.setLayoutParams(lp);
 
                 holder.setText(R.id.tv_menu, menuBean.menuName);

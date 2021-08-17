@@ -27,19 +27,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.imsdk.TIMUserProfile;
-import com.tencent.imsdk.v2.V2TIMManager;
-import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
-import com.tencent.qcloud.tim.uikit.modules.chat.base.AbsChatLayout;
-import com.tencent.qcloud.tim.uikit.modules.chat.layout.input.InputLayout;
-import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -62,7 +53,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -204,25 +194,25 @@ public class ShareDialog {
 
 
         shareFriendAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
-            //发送分享消息
-            Gson gson = new Gson();
-            CustomMessage messageCustom = new CustomMessage();
-            messageCustom.type = 1;
-            messageCustom.content = shareBean.introduce;
-            messageCustom.cover = shareBean.coverUrl;
-            String data = gson.toJson(messageCustom);
-            imMessageMgr.sendC2CCustomMessage(userInfo.userId, data, new IMMessageMgr.Callback() {
-                @Override
-                public void onError(int code, String errInfo) {
-
-                }
-
-                @Override
-                public void onSuccess(Object... args) {
-                    ToastUtil.toastShortMessage("分享成功");
-                }
-            });
+//            ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
+//            //发送分享消息
+//            Gson gson = new Gson();
+//            CustomMessage messageCustom = new CustomMessage();
+//            messageCustom.type = 1;
+//            messageCustom.content = shareBean.introduce;
+//            messageCustom.cover = shareBean.coverUrl;
+//            String data = gson.toJson(messageCustom);
+//            imMessageMgr.sendC2CCustomMessage(userInfo.userId, data, new IMMessageMgr.Callback() {
+//                @Override
+//                public void onError(int code, String errInfo) {
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(Object... args) {
+//                    ToastUtil.toastShortMessage("分享成功");
+//                }
+//            });
 
         }));
 
@@ -272,24 +262,24 @@ public class ShareDialog {
         binding.shareClsLayout.shareFriend.setOnClickListener(view -> {
             //私信朋友
             //发送分享消息
-            Gson gson = new Gson();
-            CustomMessage messageCustom = new CustomMessage();
-            messageCustom.type = 1;
-            messageCustom.content = shareBean.introduce;
-            messageCustom.cover = shareBean.coverUrl;
-            String data = gson.toJson(messageCustom);
-            imMessageMgr.sendC2CCustomMessage("1403170167030026240", data, new IMMessageMgr.Callback() {
-                @Override
-                public void onError(int code, String errInfo) {
-                    LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errInfo);
-                    LogUtils.v(Constant.TAG_LIVE, "code: " + code);
-                }
-
-                @Override
-                public void onSuccess(Object... args) {
-                    ToastUtil.toastShortMessage("分享成功");
-                }
-            });
+//            Gson gson = new Gson();
+//            CustomMessage messageCustom = new CustomMessage();
+//            messageCustom.type = 1;
+//            messageCustom.content = shareBean.introduce;
+//            messageCustom.cover = shareBean.coverUrl;
+//            String data = gson.toJson(messageCustom);
+//            imMessageMgr.sendC2CCustomMessage("1403170167030026240", data, new IMMessageMgr.Callback() {
+//                @Override
+//                public void onError(int code, String errInfo) {
+//                    LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errInfo);
+//                    LogUtils.v(Constant.TAG_LIVE, "code: " + code);
+//                }
+//
+//                @Override
+//                public void onSuccess(Object... args) {
+//                    ToastUtil.toastShortMessage("分享成功");
+//                }
+//            });
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友

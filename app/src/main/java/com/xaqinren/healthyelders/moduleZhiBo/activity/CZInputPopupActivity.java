@@ -68,7 +68,7 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
     private void setWindow() {
         //窗口对齐屏幕宽度
         Window win = this.getWindow();
-//        win.getDecorView().setPadding(0, 0, 0, 0);
+        //        win.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams lp = win.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -100,9 +100,15 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
         }
         numAdapter.setNewInstance(temp);
         numAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            etTextList.clear();
-            etTextList.add(czNums[position]);
-            showEditText();
+            String et = "";
+            for (String s : etTextList) {
+                et = et + s;
+            }
+            if (et.trim().length() < 9) {
+                etTextList.clear();
+                etTextList.add(czNums[position]);
+                showEditText();
+            }
         }));
     }
 
@@ -146,11 +152,17 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
                 extras.putString("orderType", "POINT_RECHARGE");
                 startActivity(PayActivity.class, extras);
             } else {
-                if (etTextList.size() == 1 && etTextList.get(0).equals("0")) {
-                    etTextList.clear();
+                String et = "";
+                for (String s : etTextList) {
+                    et = et + s;
                 }
-                etTextList.add(contents[position]);
-                showEditText();
+                if (et.trim().length() < 9) {
+                    if (etTextList.size() == 1 && etTextList.get(0).equals("0")) {
+                        etTextList.clear();
+                    }
+                    etTextList.add(contents[position]);
+                    showEditText();
+                }
             }
         }));
     }

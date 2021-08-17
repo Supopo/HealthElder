@@ -199,7 +199,7 @@ public class VideoEditTextDialogActivity extends Activity {
 
             }
         });
-        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
+//        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
 
     }
 

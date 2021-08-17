@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:maxLines="2"
             android:text="@{viewModel.title}"/>
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             app:needNoSpace="true"
             android:textSize="@dimen/sp_13"/>
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:layout_toRightOf="@id/tv1"
             android:textSize="@dimen/sp_16"/>
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/huiyuanjia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             android:layout_marginBottom="@dimen/dp_13"
             />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

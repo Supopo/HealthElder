@@ -149,6 +149,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
 
             bundle.putSerializable("key", listBean);
             bundle.putBoolean(Constant.MINE_OPEN, true);
+            bundle.putBoolean("key1", true);
             bundle.putInt("openType", 1);
             Intent intent = new Intent();
             intent.setClass(getActivity(), VideoListActivity.class);

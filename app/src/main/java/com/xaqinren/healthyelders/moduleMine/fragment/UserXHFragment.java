@@ -118,6 +118,7 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
             listBean.openType = 7;//别人的点赞
 
             bundle.putSerializable("key", listBean);
+            bundle.putBoolean("key1", true);
             bundle.putString("userId", userId);
             startActivity(VideoListActivity.class, bundle);
 

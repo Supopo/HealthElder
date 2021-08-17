@@ -12,6 +12,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ItemZhiboUserBeanBinding;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZhiboUserBean;
+import com.xaqinren.healthyelders.utils.MScreenUtil;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ZhiboOverAdapter extends BaseQuickAdapter<ZBUserListBean, BaseViewH
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         if (helper.getLayoutPosition() != 0) {
-            layoutParams.setMargins((int) (ScreenUtil.dp2px(getContext(), 13)), 0, 0, 0);
+            layoutParams.setMargins((int) (MScreenUtil.dp2px(getContext(), 13)), 0, 0, 0);
         }
         binding.rlItem.setLayoutParams(layoutParams);
         binding.tvNum.setText("0" + (helper.getLayoutPosition() + 1));

@@ -165,6 +165,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
     private ShareDialog shareDialog;
     private LinearLayoutManager moreLinkManager;
     private String mMsg;//评论框输入的内容
+    private AnimationDrawable animationDrawable;
 
 
     @Override
@@ -1983,7 +1984,14 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                     startPlay();
                     toRushLiveInfo();
                 }
-
+            } else if (eventBean.msgId == CodeTable.ZBJ_GZ) {
+                if (eventBean.msgType == 1) {
+                    binding.tvFollow.setText("");
+                    binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00061));
+                } else {
+                    binding.tvFollow.setText("关注");
+                    binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00034));
+                }
             }
         });
         RxSubscriptions.add(disposable);
@@ -2040,7 +2048,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 if (isFollow) {
                     mLiveInitInfo.setHasFollow(!mLiveInitInfo.getHasFollow());
                     if (mLiveInitInfo.getHasFollow()) {
-                        AnimationDrawable animationDrawable = (AnimationDrawable) getResources().getDrawable(
+                        animationDrawable = (AnimationDrawable) getResources().getDrawable(
                                 R.drawable.avatar_zbj_gz_anim);
                         binding.tvFollow.setBackground(animationDrawable);
                         binding.tvFollow.setText("");

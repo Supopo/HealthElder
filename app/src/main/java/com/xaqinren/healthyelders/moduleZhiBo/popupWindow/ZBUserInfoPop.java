@@ -263,6 +263,8 @@ public class ZBUserInfoPop extends BasePopupWindow {
                             ivGz.setVisibility(View.VISIBLE);
                             tvGz.setTextColor(getContext().getResources().getColor(R.color.color_DC3530));
                         }
+                        //通知直播间页面关注取关
+                        RxBus.getDefault().post(new EventBean(CodeTable.ZBJ_GZ, userInfoBean.getHasAttention() ? 1 : 0));
                     }
                 });
     }

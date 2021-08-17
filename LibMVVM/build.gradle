@@ -78,4 +78,5 @@ dependencies {
 
     //Lottie动画加载 支持加载json
     implementation 'com.airbnb.android:lottie:3.7.0'
+
 }

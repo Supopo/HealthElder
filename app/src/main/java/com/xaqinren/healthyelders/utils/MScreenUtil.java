@@ -165,8 +165,6 @@ public class MScreenUtil {
     }
 
     public static int[] scaledSize(int containerWidth, int containerHeight, int realWidth, int realHeight) {
-        TUIKitLog.i(TAG, "scaledSize  containerWidth: " + containerWidth + " containerHeight: " + containerHeight
-                + " realWidth: " + realWidth + " realHeight: " + realHeight);
         float deviceRate = (float) containerWidth / (float) containerHeight;
         float rate = (float) realWidth / (float) realHeight;
         int width = 0;

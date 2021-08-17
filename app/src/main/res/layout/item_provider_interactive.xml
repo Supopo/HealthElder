@@ -30,7 +30,7 @@
             android:layout_marginLeft="@dimen/dp_28"
             android:src="@mipmap/icon_yongh_dianzan" />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:ellipsize="end"
             app:needNoSpace="true"/>
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/friend_tag"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
@@ -62,7 +62,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:visibility="gone"/>
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/describe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             android:layout_marginRight="@dimen/dp_6"
             android:visibility="visible" />
 
-        <com.tencent.qcloud.tim.uikit.component.NoSpaceTextView
+        <com.xaqinren.healthyelders.widget.NoSpaceTextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

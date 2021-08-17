@@ -81,7 +81,14 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5 || videos.openType == 6 || videos.openType == 7) {
             position = videos.position;
             page = videos.page;
-            mVideoInfoList.addAll(videos.videoInfos);
+            if (isSingle) {
+                if (videos.videoInfos.size() >= position) {
+                    mVideoInfoList.add(videos.videoInfos.get(position));
+                    position = 0;
+                }
+            } else {
+                mVideoInfoList.addAll(videos.videoInfos);
+            }
         }
     }
 
@@ -125,7 +132,9 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5 || videos.openType == 6 || videos.openType == 7) {
             //从附近打开-我的作品-我的私密作品
-            binding.viewPager2.setCurrentItem(position, false);
+            if (isSingle) {
+                binding.viewPager2.setCurrentItem(position, false);
+            }
             //给列表序号加标记
             AppApplication.get().listPos.put(timeTag, position);
             AppApplication.get().setPlayPosition(position);

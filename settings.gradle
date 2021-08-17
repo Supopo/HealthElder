@@ -1,5 +1,6 @@
+include ':tuikit'
 include ':flycotablayout'
 include ':ugckit'
 include ':liteav'
-include ':app', ':LibMVVM', ':beautysettingkit', ':audioeffectsettingkit', ':tuikit'
+include ':app', ':LibMVVM', ':beautysettingkit', ':audioeffectsettingkit',
 rootProject.name='HealthElder'
