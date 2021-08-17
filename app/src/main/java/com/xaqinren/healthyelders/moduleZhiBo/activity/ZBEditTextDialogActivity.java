@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -22,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.tencent.qcloud.tim.uikit.component.face.Emoji;
 import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
@@ -48,7 +49,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  * Created by Lee on 2021/4/2.
  * 直播间输入框 Dialog
  */
-public class ZBEditTextDialogActivity extends Activity {
+public class ZBEditTextDialogActivity extends AppCompatActivity {
 
     private EditText etView;
     private LinearLayout llInput;
@@ -92,7 +93,7 @@ public class ZBEditTextDialogActivity extends Activity {
 
     private void showFaceViewGroup() {
         if (mFragmentManager == null) {
-            mFragmentManager = this.getFragmentManager();
+            mFragmentManager = this.getSupportFragmentManager();
         }
         if (mFaceFragment == null) {
             mFaceFragment = new FaceFragment();
@@ -140,8 +141,8 @@ public class ZBEditTextDialogActivity extends Activity {
 
             }
         });
-//        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
-
+        //表情面板
+        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
     }
 
     private List<Integer> highs = new ArrayList<>();

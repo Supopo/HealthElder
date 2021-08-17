@@ -78,6 +78,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
      */
     public void loadConversation(long nextSeq, final ILoadConversationCallback callBack) {
         TUIKitLog.i(TAG, "loadConversation callBack:" + callBack);
+        //去自己本地缓存的数据
         mConversationPreferences = TUIKit.getAppContext().getSharedPreferences(
                 TUIKitConfigs.getConfigs().getGeneralConfig().getSDKAppId() + "-"
                         + V2TIMManager.getInstance().getLoginUser() + SP_NAME,
@@ -111,18 +112,18 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                     isLoadSelfData = true;
                 }
 
-                for (V2TIMConversation v2TIMConversation : v2TIMConversationList) {
-                    //将 imsdk v2TIMConversation 转换为 UIKit ConversationInfo
-                    ConversationInfo conversationInfo = TIMConversation2ConversationInfo(v2TIMConversation);
-                    if (conversationInfo != null) {
-                        mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
-                        conversationInfo.setType(ConversationInfo.TYPE_COMMON);
-                        if (!conversationInfo.isGroup())//不加入群聊条目
-                            if (!isCustomService(conversationInfo)) {//不加入客服消息类
-                                infos.add(conversationInfo);
-                            }
-                    }
-                }
+//                for (V2TIMConversation v2TIMConversation : v2TIMConversationList) {
+//                    //将 imsdk v2TIMConversation 转换为 UIKit ConversationInfo
+//                    ConversationInfo conversationInfo = TIMConversation2ConversationInfo(v2TIMConversation);
+//                    if (conversationInfo != null) {
+//                        mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
+//                        conversationInfo.setType(ConversationInfo.TYPE_COMMON);
+//                        if (!conversationInfo.isGroup())//不加入群聊条目
+//                            if (!isCustomService(conversationInfo)) {//不加入客服消息类
+//                                infos.add(conversationInfo);
+//                            }
+//                    }
+//                }
 
                 //排序，imsdk加载处理的已按时间排序，但应用层有置顶会话操作，所有需根据置顶标识再次排序（置顶可考虑做到imsdk同步到服务器？）
                 mProvider.setDataSource(sortConversations(infos));
@@ -511,29 +512,30 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
 
         TUIKitLog.i(TAG, "clearConversationMessage index:" + index + "|conversation:" + conversation);
         if (conversation.isGroup()) {
-            //            V2TIMManager.getMessageManager().clearGroupHistoryMessage(conversation.getId(), new V2TIMCallback() {
-            //                @Override
-            //                public void onError(int code, String desc) {
-            //                    TUIKitLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + desc);
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess() {
-            //                    TUIKitLog.i(TAG, "clearConversationMessage success");
-            //                }
-            //            });
+            //  当前版本不支持
+//                        V2TIMManager.getMessageManager().clearGroupHistoryMessage(conversation.getId(), new V2TIMCallback() {
+//                            @Override
+//                            public void onError(int code, String desc) {
+//                                TUIKitLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + desc);
+//                            }
+//
+//                            @Override
+//                            public void onSuccess() {
+//                                TUIKitLog.i(TAG, "clearConversationMessage success");
+//                            }
+//                        });
         } else {
-            //            V2TIMManager.getMessageManager().clearC2CHistoryMessage(conversation.getId(), new V2TIMCallback() {
-            //                @Override
-            //                public void onError(int code, String desc) {
-            //                    TUIKitLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + desc);
-            //                }
-            //
-            //                @Override
-            //                public void onSuccess() {
-            //                    TUIKitLog.i(TAG, "clearConversationMessage success");
-            //                }
-            //            });
+//                        V2TIMManager.getMessageManager().clearC2CHistoryMessage(conversation.getId(), new V2TIMCallback() {
+//                            @Override
+//                            public void onError(int code, String desc) {
+//                                TUIKitLog.e(TAG, "clearConversationMessage error:" + code + ", desc:" + desc);
+//                            }
+//
+//                            @Override
+//                            public void onSuccess() {
+//                                TUIKitLog.i(TAG, "clearConversationMessage success");
+//                            }
+//                        });
         }
     }
 

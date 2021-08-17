@@ -1,7 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -17,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.tencent.qcloud.tim.uikit.component.face.Emoji;
 import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
@@ -35,7 +36,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  * Created by Lee on 2021/4/2.
  * 视频输入框 Dialog
  */
-public class VideoEditTextDialogActivity extends Activity {
+public class VideoEditTextDialogActivity extends AppCompatActivity {
 
     private String hint;
     private String type;
@@ -151,7 +152,7 @@ public class VideoEditTextDialogActivity extends Activity {
 
     private void showFaceViewGroup() {
         if (mFragmentManager == null) {
-            mFragmentManager = this.getFragmentManager();
+            mFragmentManager = this.getSupportFragmentManager();
         }
         if (mFaceFragment == null) {
             mFaceFragment = new FaceFragment();
@@ -199,7 +200,8 @@ public class VideoEditTextDialogActivity extends Activity {
 
             }
         });
-//        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
+        //表情展示
+        mFragmentManager.beginTransaction().replace(R.id.more_groups, mFaceFragment).commitAllowingStateLoss();
 
     }
 

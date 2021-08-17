@@ -132,7 +132,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5 || videos.openType == 6 || videos.openType == 7) {
             //从附近打开-我的作品-我的私密作品
-            if (isSingle) {
+            if (!isSingle) {
                 binding.viewPager2.setCurrentItem(position, false);
             }
             //给列表序号加标记

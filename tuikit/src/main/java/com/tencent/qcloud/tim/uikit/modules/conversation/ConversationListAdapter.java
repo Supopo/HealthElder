@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -149,6 +150,8 @@ public class ConversationListAdapter extends IConversationAdapter {
 
     @Override
     public int getItemCount() {
+        Log.v("--", "allCount: " + mDataSource.size());
+        Log.v("--", "allCount: " + mDataSource.toString());
         return mDataSource.size() + HEADER_COUNT + FOOTER_COUNT;
     }
 

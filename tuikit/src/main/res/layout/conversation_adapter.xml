@@ -39,9 +39,9 @@
                 android:layout_alignParentTop="true"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:maxLength="6"
+                android:maxLength="8"
                 android:textColor="@color/black_font_color"
-                android:text="aaa"
+                android:text="Nickname"
                 android:textSize="16.3sp" />
 
             <TextView

@@ -205,15 +205,15 @@ public class SearchActivity extends BaseActivity<ActivitySearchBinding, SearchVi
 
     private void toSearch() {
         //如果没有输入不存进历史
-        if (TextUtils.isEmpty(binding.etSearch.getText().toString())) {
-            return;
+        if (TextUtils.isEmpty(binding.etSearch.getText().toString().trim())) {
+            tags = binding.etSearch.getHint().toString();
         }
 
 
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
         }
-        addCache(binding.etSearch.getText().toString().trim());
+        addCache(tags);
 
         //跳页
         toJump();

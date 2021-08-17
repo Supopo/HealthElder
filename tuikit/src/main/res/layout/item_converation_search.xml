@@ -30,8 +30,8 @@ android:orientation="horizontal">
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/black_font_color"
-        android:maxLength="6"
-        android:text="aaa"
+        android:maxLength="8"
+        android:text="Seacher"
         android:textSize="16.3sp" />
 
     <TextView
