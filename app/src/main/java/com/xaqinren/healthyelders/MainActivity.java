@@ -422,8 +422,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 double scrollX = Math.abs(now_press_X - before_press_X);
                 double scrollY = Math.abs(now_press_Y - before_press_Y);
 
-                LogUtils.v("首页", "scrollX: " + scrollX);
-                LogUtils.v("首页", "scrollY: " + scrollY);
 
                 if (selectView.getId() == R.id.tv_menu1) {
                     if (scrollX <= scrollY) {
@@ -440,12 +438,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 //判断商城页面appBar处于展开，且向下滑动超过左右滑动再打开下拉刷新
                 else if (selectView.getId() == R.id.tv_menu2) {
                     if (scrollX > scrollY) {
+                        mallFragment.viewPager2.setUserInputEnabled(true);
                         if (mallFragment.isTop) {
                             if (mallFragment.srl != null) {
                                 mallFragment.srl.setEnabled(false);
                             }
                         }
                     } else {
+                        mallFragment.viewPager2.setUserInputEnabled(false);
                         if (mallFragment.isTop) {
                             if (mallFragment.srl != null) {
                                 mallFragment.srl.setEnabled(true);

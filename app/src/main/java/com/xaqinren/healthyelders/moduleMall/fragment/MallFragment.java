@@ -96,6 +96,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     private Animation ggGoneAnimation;
     private Timer ggTimer;
     private TimerTask ggAnimTask;
+    public ViewPager2 viewPager2;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,7 +113,7 @@ public class MallFragment extends BaseFragment<FragmentMallBinding, MallViewMode
     @Override
     public void initData() {
         super.initData();
-
+        viewPager2 = binding.vpContent;
         srl = binding.srlTop;
         binding.srlTop.setEnabled(false);
         pageAdapter = new MallMenu1PageAdapter(R.layout.item_mall_rv, new OnItemClickListener() {
