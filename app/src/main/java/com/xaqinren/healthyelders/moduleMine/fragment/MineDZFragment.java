@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleMine.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,7 +13,9 @@ import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.FragmentMineDzBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -26,7 +29,9 @@ import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/5/24.
@@ -37,6 +42,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
     private int pageSize = 10;
     private DZVideoAdapter videoAdapter;
     private BaseLoadMoreModule mLoadMore;
+    private Disposable subscribe;
 
 
     @Override
@@ -167,5 +173,56 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
                 }
             }
         });
+
+
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event.msgId == CodeTable.VIDEO_PL) {
+                //找出对应视频，评论数加1
+                for (DZVideoInfo datum : videoAdapter.getData()) {
+                    if (datum.homeComprehensiveHall.resourceId.equals(event.content)) {
+                        try {
+                            if (TextUtils.isEmpty(datum.homeComprehensiveHall.commentCount)) {
+                                datum.homeComprehensiveHall.commentCount = "1";
+                            } else {
+                                datum.homeComprehensiveHall.commentCount = String.valueOf(Integer.parseInt(datum.homeComprehensiveHall.commentCount) + 1);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } else if (event.msgId == CodeTable.VIDEO_DZ) {
+                //找出对应视频，点赞数加1
+                int temp = -1;
+                for (int i = 0; i < videoAdapter.getData().size(); i++) {
+                    VideoInfo datum = videoAdapter.getData().get(i).homeComprehensiveHall;
+                    if (datum.resourceId.equals(event.content)) {
+                        temp = i;
+                        try {
+                            if (event.msgType == 1) {
+                                datum.hasFavorite = true;
+                                datum.favoriteCount = String.valueOf(datum.getFavoriteCount() + 1);
+                            } else {
+                                datum.hasFavorite = false;
+                                datum.favoriteCount = String.valueOf(datum.getFavoriteCount() - 1);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (temp != -1) {
+                    videoAdapter.notifyItemChanged(temp, 99);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 }

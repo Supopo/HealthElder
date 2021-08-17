@@ -2,6 +2,8 @@ package com.xaqinren.healthyelders.moduleMine.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -116,7 +118,6 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             listBean.videoInfos = new ArrayList<>();
 
 
-
             //去除文章
             for (VideoInfo videoInfo : videoAdapter.getData()) {
                 if (!videoInfo.isArticle()) {
@@ -209,6 +210,44 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("mine-zp")) {
                 resCode = 99;
+            } else if (event.msgId == CodeTable.VIDEO_PL) {
+                //找出对应视频，评论数加1
+                for (VideoInfo datum : videoAdapter.getData()) {
+                    if (datum.resourceId.equals(event.content)) {
+                        try {
+                            if (TextUtils.isEmpty(datum.commentCount)) {
+                                datum.commentCount = "1";
+                            } else {
+                                datum.commentCount = String.valueOf(Integer.parseInt(datum.commentCount) + 1);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } else if (event.msgId == CodeTable.VIDEO_DZ) {
+                //找出对应视频，点赞数加1
+                int temp = -1;
+                for (int i = 0; i < videoAdapter.getData().size(); i++) {
+                    VideoInfo datum = videoAdapter.getData().get(i);
+                    if (datum.resourceId.equals(event.content)) {
+                        temp = i;
+                        try {
+                            if (event.msgType == 1) {
+                                datum.hasFavorite = true;
+                                datum.favoriteCount = String.valueOf(datum.getFavoriteCount() + 1);
+                            } else {
+                                datum.hasFavorite = false;
+                                datum.favoriteCount = String.valueOf(datum.getFavoriteCount() - 1);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (temp != -1) {
+                    videoAdapter.notifyItemChanged(temp, 99);
+                }
             }
         });
 

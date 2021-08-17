@@ -37,7 +37,9 @@ public class SMVideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> 
         if (payloads.size() > 0 && payloads.get(0) instanceof Integer) {
             //不为空，即调用notifyItemChanged(position,payloads)后执行的，可以在这里获取payloads中的数据进行局部刷新
             int type = (Integer) payloads.get(0);// 刷新哪个部分 标志位
-
+            if (type == 99) {
+                helper.setText(R.id.tv_num, item.favoriteCount);
+            }
         }
     }
 }

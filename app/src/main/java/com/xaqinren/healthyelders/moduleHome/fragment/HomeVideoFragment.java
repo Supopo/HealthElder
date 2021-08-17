@@ -711,7 +711,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                 }
 
                 commentType = 0;
-                RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_PL, videoInfo.resourceId));
+                RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_PL, videoInfo.resourceId, isMineOpen ? 1 : 0));
             }
         });
 
@@ -811,7 +811,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                     }
                     viewModel.videoInfo.setValue(videoInfo);
                     //向搜索列表发送
-                    RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_DZ, videoInfo.resourceId, videoInfo.hasFavorite ? 1 : 0));
+                    RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_DZ, videoInfo.hasFavorite ? 1 : 0, videoInfo.resourceId, isMineOpen ? 1 : 0));
                 }
             }
         });
