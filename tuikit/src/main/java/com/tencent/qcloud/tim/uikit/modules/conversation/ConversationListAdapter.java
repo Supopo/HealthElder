@@ -150,8 +150,6 @@ public class ConversationListAdapter extends IConversationAdapter {
 
     @Override
     public int getItemCount() {
-        Log.v("--", "allCount: " + mDataSource.size());
-        Log.v("--", "allCount: " + mDataSource.toString());
         return mDataSource.size() + HEADER_COUNT + FOOTER_COUNT;
     }
 

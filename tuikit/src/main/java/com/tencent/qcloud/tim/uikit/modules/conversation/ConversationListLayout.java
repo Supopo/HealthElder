@@ -1,11 +1,13 @@
 package com.tencent.qcloud.tim.uikit.modules.conversation;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.tencent.qcloud.tim.uikit.R;
@@ -21,6 +23,7 @@ public class ConversationListLayout extends RecyclerView implements IConversatio
     private ConversationListAdapter mAdapter;
     private long mNextSeq = 0;
     private boolean isLoadFinished = false;
+
     public ConversationListLayout(Context context) {
         super(context);
         init();
@@ -150,7 +153,7 @@ public class ConversationListLayout extends RecyclerView implements IConversatio
         });
     }
 
-    boolean isLoadCompleted(){
+    boolean isLoadCompleted() {
         return isLoadFinished;
     }
 }

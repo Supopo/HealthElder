@@ -202,8 +202,8 @@ public abstract class ChatManagerKit extends V2TIMAdvancedMsgListener implements
             String groupID = null;
             String userID = null;
             if (!TextUtils.isEmpty(msg.getGroupID())) {
-                // 群组消息
-                if (chatInfo.getType() == V2TIMConversation.V2TIM_C2C
+                // 群组消息     之前写的有误
+                if (chatInfo.getType() == V2TIMConversation.V2TIM_GROUP
                         || !chatInfo.getId().equals(msg.getGroupID())) {
                     return;
                 }
@@ -211,7 +211,7 @@ public abstract class ChatManagerKit extends V2TIMAdvancedMsgListener implements
                 groupID = msg.getGroupID();
             } else if (!TextUtils.isEmpty(msg.getUserID())) {
                 // C2C 消息
-                if (chatInfo.getType() == V2TIMConversation.V2TIM_GROUP
+                if (chatInfo.getType() == V2TIMConversation.V2TIM_C2C
                         || !chatInfo.getId().equals(msg.getUserID())) {
                     return;
                 }

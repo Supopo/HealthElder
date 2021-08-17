@@ -3,6 +3,7 @@ package com.tencent.qcloud.tim.uikit.modules.message;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tencent.imsdk.v2.V2TIMCustomElem;
@@ -394,6 +395,7 @@ public class MessageInfoUtil {
         return msgInfo;
     }
 
+    //自定义消息处理
     private static MessageInfo createCustomMessageInfo(V2TIMMessage timMessage, Context context) {
         for (TUIChatControllerListener chatListener : TUIKitListenerManager.getInstance().getTUIChatListeners()) {
             IBaseInfo IBaseInfo = chatListener.createCommonInfoFromTimMessage(timMessage);
@@ -431,6 +433,12 @@ public class MessageInfoUtil {
             MessageCustom messageCustom = null;
             try {
                 messageCustom = gson.fromJson(data, MessageCustom.class);
+
+                //包含cmd的消息来自直播间 过滤
+                if (!TextUtils.isEmpty(messageCustom.cmd)) {
+                    return null;
+                }
+
                 if (!TextUtils.isEmpty(messageCustom.businessID) && messageCustom.businessID.equals(MessageCustom.BUSINESS_ID_GROUP_CREATE)) {
                     msgInfo.setMsgType(MessageInfo.MSG_TYPE_GROUP_CREATE);
                     String message = TUIKitConstants.covert2HTMLString(messageCustom.opUser) + messageCustom.content;

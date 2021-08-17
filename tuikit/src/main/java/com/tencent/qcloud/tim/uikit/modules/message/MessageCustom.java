@@ -7,5 +7,6 @@ public class MessageCustom {
     public String businessID;
     public String opUser;
     public String content;
-    public String data;
+    public Object data;
+    public String cmd;//用来判断过滤直播间的消息
 }
