@@ -27,7 +27,7 @@ public class ConversationListAdapter extends IConversationAdapter {
 
     public static final int ITEM_TYPE_HEADER_SEARCH = 101;
     public static final int ITEM_TYPE_FOOTER_LOADING = -99;
-    public static final int HEADER_COUNT = 1;
+    public static final int HEADER_COUNT = 0;//暂时隐藏搜索
     public static final int FOOTER_COUNT = 1;
 
     private boolean mHasShowUnreadDot = true;
@@ -138,12 +138,17 @@ public class ConversationListAdapter extends IConversationAdapter {
     }
 
     public ConversationInfo getItem(int position) {
-        if (mDataSource.size() == 0 || position == 0 || position == getItemCount() - 1) {
-            return null;
+        if (HEADER_COUNT == 0) {
+            if (mDataSource.size() == 0 || position == getItemCount() - 1) {
+                return null;
+            }
+        } else {
+            if (mDataSource.size() == 0 || position == 0 || position == getItemCount() - 1) {
+                return null;
+            }
         }
-        //        if (mDataSource.size() == 0 || position == getItemCount() - 1) {
-        //            return null;
-        //        }
+
+
         return mDataSource.get(position - HEADER_COUNT);
     }
 
@@ -156,7 +161,10 @@ public class ConversationListAdapter extends IConversationAdapter {
     public int getItemViewType(int position) {
 
         if (position == 0) {
-            return ITEM_TYPE_HEADER_SEARCH;
+            //判断是否有头布局
+            if (HEADER_COUNT != 0) {
+                return ITEM_TYPE_HEADER_SEARCH;
+            }
         } else if (position == getItemCount() - 1) {
             return ITEM_TYPE_FOOTER_LOADING;
         } else if (mDataSource != null) {

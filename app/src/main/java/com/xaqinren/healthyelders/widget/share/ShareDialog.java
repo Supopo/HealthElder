@@ -27,10 +27,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.qcloud.tim.uikit.base.IBaseMessageSender;
+import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
+import com.tencent.qcloud.tim.uikit.base.TUIKitListenerManager;
+import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
@@ -39,6 +47,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
+import com.xaqinren.healthyelders.moduleMsg.bean.MCustomMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im.IMMessageMgr;
@@ -180,39 +189,39 @@ public class ShareDialog {
         imMessageMgr = new IMMessageMgr(mContext);
 
         //初始化
-        imMessageMgr.initialize(UserInfoMgr.getInstance().getUserInfo().getId(), UserInfoMgr.getInstance().getUserSig(), TCGlobalConfig.SDKAPPID, new IMMessageMgr.Callback() {
-            @Override
-            public void onError(final int code, final String errInfo) {
-                String msg = "[IM] 初始化失败[" + errInfo + ":" + code + "]";
-                LogUtils.v(Constant.TAG_LIVE, msg);
-            }
-
-            @Override
-            public void onSuccess(Object... args) {
-            }
-        });
+//        imMessageMgr.initialize(UserInfoMgr.getInstance().getUserInfo().getId(), UserInfoMgr.getInstance().getUserSig(), TCGlobalConfig.SDKAPPID, new IMMessageMgr.Callback() {
+//            @Override
+//            public void onError(final int code, final String errInfo) {
+//                String msg = "[IM] 初始化失败[" + errInfo + ":" + code + "]";
+//                LogUtils.v(Constant.TAG_LIVE, msg);
+//            }
+//
+//            @Override
+//            public void onSuccess(Object... args) {
+//            }
+//        });
 
 
         shareFriendAdapter.setOnItemClickListener(((adapter, view, position) -> {
-//            ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
-//            //发送分享消息
-//            Gson gson = new Gson();
-//            CustomMessage messageCustom = new CustomMessage();
-//            messageCustom.type = 1;
-//            messageCustom.content = shareBean.introduce;
-//            messageCustom.cover = shareBean.coverUrl;
-//            String data = gson.toJson(messageCustom);
-//            imMessageMgr.sendC2CCustomMessage(userInfo.userId, data, new IMMessageMgr.Callback() {
-//                @Override
-//                public void onError(int code, String errInfo) {
-//
-//                }
-//
-//                @Override
-//                public void onSuccess(Object... args) {
-//                    ToastUtil.toastShortMessage("分享成功");
-//                }
-//            });
+            ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
+            //发送分享消息
+            Gson gson = new Gson();
+            MCustomMsgBean messageCustom = new MCustomMsgBean();
+            messageCustom.msgType = 1;
+            messageCustom.content = shareBean.introduce;
+            messageCustom.cover = shareBean.coverUrl;
+            String data = gson.toJson(messageCustom);
+            imMessageMgr.sendC2CCustomMessage(userInfo.userId, data, new IMMessageMgr.Callback() {
+                @Override
+                public void onError(int code, String errInfo) {
+
+                }
+
+                @Override
+                public void onSuccess(Object... args) {
+                    ToastUtil.toastShortMessage("分享成功");
+                }
+            });
 
         }));
 
@@ -262,13 +271,39 @@ public class ShareDialog {
         binding.shareClsLayout.shareFriend.setOnClickListener(view -> {
             //私信朋友
             //发送分享消息
-//            Gson gson = new Gson();
-//            CustomMessage messageCustom = new CustomMessage();
-//            messageCustom.type = 1;
-//            messageCustom.content = shareBean.introduce;
-//            messageCustom.cover = shareBean.coverUrl;
-//            String data = gson.toJson(messageCustom);
-//            imMessageMgr.sendC2CCustomMessage("1403170167030026240", data, new IMMessageMgr.Callback() {
+
+
+
+
+            Gson gson = new Gson();
+
+            MCustomMsgBean messageCustom = new MCustomMsgBean();
+            messageCustom.msgType = 1;
+            messageCustom.content = shareBean.introduce;
+            messageCustom.cover = shareBean.coverUrl;
+            String data = gson.toJson(messageCustom);
+
+            MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
+            IBaseMessageSender messageSender = TUIKitListenerManager.getInstance().getMessageSender();
+            if (messageSender != null) {
+                // 发送消息
+                messageSender.sendMessage(info, null, "1398569262716555264",
+                        false, false, new IUIKitCallBack() {
+                            @Override
+                            public void onSuccess(Object data) {
+                                ToastUtil.toastShortMessage("分享成功");
+
+                            }
+                            @Override
+                            public void onError(String module, int errCode, String errMsg) {
+                                LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errMsg);
+                                LogUtils.v(Constant.TAG_LIVE, "code: " + errCode);
+                            }
+                        });
+            }
+
+
+//            imMessageMgr.sendC2CCustomMessage("1398569262716555264", data, new IMMessageMgr.Callback() {
 //                @Override
 //                public void onError(int code, String errInfo) {
 //                    LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errInfo);

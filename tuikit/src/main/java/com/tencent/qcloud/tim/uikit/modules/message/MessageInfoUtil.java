@@ -438,7 +438,6 @@ public class MessageInfoUtil {
                 if (!TextUtils.isEmpty(messageCustom.cmd)) {
                     return null;
                 }
-
                 if (!TextUtils.isEmpty(messageCustom.businessID) && messageCustom.businessID.equals(MessageCustom.BUSINESS_ID_GROUP_CREATE)) {
                     msgInfo.setMsgType(MessageInfo.MSG_TYPE_GROUP_CREATE);
                     String message = TUIKitConstants.covert2HTMLString(messageCustom.opUser) + messageCustom.content;

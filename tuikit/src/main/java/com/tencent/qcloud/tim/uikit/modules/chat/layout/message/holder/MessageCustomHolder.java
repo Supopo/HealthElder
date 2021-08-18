@@ -48,6 +48,8 @@ public class MessageCustomHolder extends MessageContentHolder implements ICustom
 
     @Override
     public void layoutVariableViews(final MessageInfo msg, final int position) {
+        //取消自定义消息背景
+        msgContentFrame.setBackground(null);
 
         // 因为recycleview的复用性，可能该holder回收后继续被custom类型的item复用
         // 但是因为addMessageContentView破坏了msgContentFrame的view结构，所以会造成items的显示错乱。

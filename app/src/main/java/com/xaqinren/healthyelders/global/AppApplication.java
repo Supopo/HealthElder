@@ -15,6 +15,7 @@ import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.qcloud.tim.uikit.TUIKit;
+import com.tencent.qcloud.tim.uikit.base.TUIKitListenerManager;
 import com.tencent.qcloud.tim.uikit.config.CustomFaceConfig;
 import com.tencent.qcloud.tim.uikit.config.GeneralConfig;
 import com.tencent.qcloud.tim.uikit.config.TUIKitConfigs;
@@ -32,6 +33,7 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.moduleLogin.activity.Splash2Activity;
 import com.xaqinren.healthyelders.moduleLogin.activity.SplashActivity;
+import com.xaqinren.healthyelders.moduleMsg.helper.CustomChatController;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.MLVBLiveRoomImpl;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
 import com.xaqinren.healthyelders.uniApp.module.JSCommModule;
@@ -157,6 +159,7 @@ public class AppApplication extends BaseApplication {
         initLiteAv();
         //初始化im聊天
         initTIM();
+        registerCustomListeners();
         //初始化直播
         initLiveRoom();
         //SVGA动画缓存设置
@@ -177,6 +180,11 @@ public class AppApplication extends BaseApplication {
         }
 
         //        registerLife();
+    }
+
+    private static void registerCustomListeners() {
+        TUIKitListenerManager.getInstance().addChatListener(new CustomChatController());
+        TUIKitListenerManager.getInstance().addConversationListener(new CustomChatController.CustomConversationController());
     }
 
     //Bugly崩溃日志收集

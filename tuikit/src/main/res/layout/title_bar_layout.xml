@@ -16,11 +16,11 @@
 
         <ImageView
             android:id="@+id/page_title_left_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_marginRight="10dp"
             android:clickable="false"
-            android:src="@drawable/icon_black_back" />
+            android:background="@drawable/icon_black_back" />
 
         <TextView
             android:id="@+id/page_title_left_text"
@@ -41,8 +41,8 @@
         android:layout_weight="1"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="@color/black_font_color"
-        android:textSize="16.3sp" />
+        android:textColor="#252525"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/page_title_right_group"
@@ -65,11 +65,11 @@
 
         <ImageView
             android:id="@+id/page_title_right_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginLeft="10dp"
             android:clickable="false"
-            android:src="@drawable/shangc_sy_more" />
+            android:background="@drawable/shangc_sy_more" />
     </LinearLayout>
 
 </RelativeLayout>
