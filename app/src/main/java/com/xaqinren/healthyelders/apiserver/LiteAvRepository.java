@@ -761,9 +761,9 @@ public class LiteAvRepository {
                 });
     }
 
-    public void toFavorite(MutableLiveData<Boolean> followSuccess, MutableLiveData<Boolean> dismissDialog, String userId, boolean isF) {
+    public void toFavorite(MutableLiveData<Boolean> followSuccess, MutableLiveData<Boolean> dismissDialog, String id, boolean isF) {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("objectId", userId);
+        hashMap.put("objectId", id);
         hashMap.put("favoriteStatus", isF);
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);

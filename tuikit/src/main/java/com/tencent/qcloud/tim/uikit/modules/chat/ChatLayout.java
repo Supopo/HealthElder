@@ -74,7 +74,7 @@ public class ChatLayout extends AbsChatLayout implements GroupChatManagerKit.Gro
             loadChatMessages(chatInfo.getLocateTimMessage(), chatInfo.getLocateTimMessage() == null ? TUIKitConstants.GET_MESSAGE_FORWARD : TUIKitConstants.GET_MESSAGE_TWO_WAY);
             getConversationLastMessage("group_" + chatInfo.getId());
             loadApplyList();
-            getTitleBar().getRightIcon().setImageResource(R.drawable.chat_group);
+            getTitleBar().getRightIcon().setImageResource(R.drawable.shangc_sy_more);
             getTitleBar().setOnRightClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -97,7 +97,7 @@ public class ChatLayout extends AbsChatLayout implements GroupChatManagerKit.Gro
             });
             TUIKitListenerManager.getInstance().setMessageSender(mGroupChatManager);
         } else {
-            getTitleBar().getRightIcon().setImageResource(R.drawable.chat_c2c);
+            getTitleBar().getRightIcon().setImageResource(R.drawable.shangc_sy_more);
             mC2CChatManager = C2CChatManagerKit.getInstance();
             mC2CChatManager.setCurrentChatInfo(chatInfo);
             loadChatMessages(chatInfo.getLocateTimMessage(), chatInfo.getLocateTimMessage() == null ? TUIKitConstants.GET_MESSAGE_FORWARD : TUIKitConstants.GET_MESSAGE_TWO_WAY);

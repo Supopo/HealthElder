@@ -116,8 +116,8 @@
                     <TextView
                         android:background="@drawable/bg_num_red"
                         android:id="@+id/unread"
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
                         android:includeFontPadding="false"
                         android:textColor="@color/white"

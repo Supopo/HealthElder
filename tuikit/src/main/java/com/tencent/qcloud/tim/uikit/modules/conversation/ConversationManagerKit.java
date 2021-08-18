@@ -119,7 +119,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
                         mUnreadTotal = mUnreadTotal + conversationInfo.getUnRead();
                         conversationInfo.setType(ConversationInfo.TYPE_COMMON);
                         if (conversationInfo.getLastMessage() != null) {//最后一条消息为空的移除消息列表 移除直播间消息
-                            if (!conversationInfo.isGroup()) {//不加入群聊条目
+                            if (!conversationInfo.isGroup()) {//不加入群聊条目 过滤群聊消息
                                 if (!isCustomService(conversationInfo)) {//不加入客服消息类
                                     infos.add(conversationInfo);
                                 }
@@ -187,7 +187,9 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
             TUIKitLog.v(TAG, "refreshConversation v2TIMConversation " + v2TIMConversation.toString());
             ConversationInfo conversationInfo = TIMConversation2ConversationInfo(v2TIMConversation);
             if (conversationInfo != null && !V2TIMManager.GROUP_TYPE_AVCHATROOM.equals(v2TIMConversation.getGroupType())) {
-                infos.add(conversationInfo);
+                if (conversationInfo.getLastMessage() != null) {//最后一条消息为空 不展示
+                    infos.add(conversationInfo);
+                }
             }
         }
         if (infos.size() == 0) {

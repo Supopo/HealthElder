@@ -51,6 +51,7 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.tencent.imsdk:imsdk:5.1.65'//基础版本
-
+    //QMUI小功能控件库
+    api rootProject.ext.dependencies.qmui
 }
 

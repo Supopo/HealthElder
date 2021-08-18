@@ -27,11 +27,11 @@ public class ConversationListAdapter extends IConversationAdapter {
 
     public static final int ITEM_TYPE_HEADER_SEARCH = 101;
     public static final int ITEM_TYPE_FOOTER_LOADING = -99;
-    public static final int HEADER_COUNT = 0;//先去掉搜索框
+    public static final int HEADER_COUNT = 1;
     public static final int FOOTER_COUNT = 1;
 
     private boolean mHasShowUnreadDot = true;
-    private int mItemAvatarRadius = ScreenUtil.getPxByDp(5);
+    private int mItemAvatarRadius = ScreenUtil.getPxByDp(25);
     private int mTopTextSize;
     private int mBottomTextSize;
     private int mDateTextSize;
@@ -138,13 +138,12 @@ public class ConversationListAdapter extends IConversationAdapter {
     }
 
     public ConversationInfo getItem(int position) {
-        // 去掉了搜索框
-        //        if (mDataSource.size() == 0 || position == 0 || position == getItemCount() - 1) {
-        //            return null;
-        //        }
-        if (mDataSource.size() == 0 || position == getItemCount() - 1) {
+        if (mDataSource.size() == 0 || position == 0 || position == getItemCount() - 1) {
             return null;
         }
+        //        if (mDataSource.size() == 0 || position == getItemCount() - 1) {
+        //            return null;
+        //        }
         return mDataSource.get(position - HEADER_COUNT);
     }
 
@@ -155,12 +154,10 @@ public class ConversationListAdapter extends IConversationAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        // 去掉了搜索框
-        //        if (position == 0) {
-        //            return ITEM_TYPE_HEADER_SEARCH;
-        //        } else
 
-        if (position == getItemCount() - 1) {
+        if (position == 0) {
+            return ITEM_TYPE_HEADER_SEARCH;
+        } else if (position == getItemCount() - 1) {
             return ITEM_TYPE_FOOTER_LOADING;
         } else if (mDataSource != null) {
             try {

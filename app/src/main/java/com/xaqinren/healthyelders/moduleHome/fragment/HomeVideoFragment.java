@@ -810,7 +810,6 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
                         videoInfo.favoriteCount = String.valueOf(videoInfo.getFavoriteCount() - 1);
                     }
                     viewModel.videoInfo.setValue(videoInfo);
-                    //向搜索列表发送
                     RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_DZ, videoInfo.hasFavorite ? 1 : 0, videoInfo.resourceId, isMineOpen ? 1 : 0));
                 }
             }

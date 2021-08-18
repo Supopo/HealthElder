@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:clickable="false"
-            android:src="@drawable/title_bar_back" />
+            android:src="@drawable/icon_black_back" />
 
         <TextView
             android:id="@+id/page_title_left_text"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:clickable="false"
-            android:src="@drawable/ic_personal_member" />
+            android:src="@drawable/shangc_sy_more" />
     </LinearLayout>
 
 </RelativeLayout>
