@@ -454,12 +454,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     }
                 } else if (selectView.getId() == R.id.tv_menu4) {
                     if (scrollX > scrollY) {
+                        mineFragment.vpContent.setUserInputEnabled(true);
                         if (mineFragment.isTop) {
                             if (mineFragment.srl != null) {
                                 mineFragment.srl.setEnabled(false);
                             }
                         }
                     } else {
+                        mineFragment.vpContent.setUserInputEnabled(false);
                         if (mineFragment.isTop) {
                             if (mineFragment.srl != null) {
                                 mineFragment.srl.setEnabled(true);

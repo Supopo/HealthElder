@@ -108,13 +108,24 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             }
 
             listBean.videoInfos = temp;
-            listBean.position = position;
 
-            //里面每页3条数据 重新计算
-            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize);
+            //重新计算点击的位置
+            int newPos = 0;
+            for (int i = 0; i < listBean.videoInfos.size(); i++) {
+                if (listBean.videoInfos.get(i).resourceId.equals(videoAdapter.getData().get(position).homeComprehensiveHall.resourceId)) {
+                    newPos = i;
+                    break;
+                }
+            }
+
+            listBean.position = newPos;
+
+
+            //里面每页10条数据 重新计算
+            if (videoAdapter.getData().size() % 10 == 0) {
+                listBean.page = (videoAdapter.getData().size() / 10);
             } else {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
+                listBean.page = (videoAdapter.getData().size() / 10) + 1;
             }
             listBean.openType = 5;
 
@@ -125,18 +136,11 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
             Intent intent = new Intent();
             intent.putExtras(bundle);
             intent.setClass(getActivity(), VideoListActivity.class);
-            this.startActivityForResult(intent, 10086);
+            startActivity(intent);
 
         }));
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 10086) {
-            toRefresh();
-        }
-    }
 
     public void toRefresh() {
         page = 1;

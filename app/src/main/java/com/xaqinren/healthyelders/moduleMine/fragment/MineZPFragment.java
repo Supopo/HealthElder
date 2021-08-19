@@ -141,10 +141,10 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
             listBean.position = newPos;
 
             //里面每页3条数据 重新计算
-            if (listBean.videoInfos.size() % Constant.loadVideoSize == 0) {
-                listBean.page = (listBean.videoInfos.size() / 2);
+            if (listBean.videoInfos.size() % 10 == 0) {
+                listBean.page = (listBean.videoInfos.size() / 10);
             } else {
-                listBean.page = (listBean.videoInfos.size() / 2) + 1;
+                listBean.page = (listBean.videoInfos.size() / 10) + 1;
             }
             listBean.openType = 3;
 

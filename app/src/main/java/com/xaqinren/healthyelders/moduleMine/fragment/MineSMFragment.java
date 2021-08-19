@@ -96,10 +96,10 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
             listBean.position = position;
 
             //里面每页3条数据 重新计算
-            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize);
+            if (videoAdapter.getData().size() % 10 == 0) {
+                listBean.page = (videoAdapter.getData().size() / 10);
             } else {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
+                listBean.page = (videoAdapter.getData().size() / 10) + 1;
             }
             listBean.openType = 4;
 
@@ -110,8 +110,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
             Intent intent = new Intent();
             intent.setClass(getActivity(), VideoListActivity.class);
             intent.putExtras(bundle);
-
-            this.startActivityForResult(intent, 10087);
+            startActivityForResult(intent, 10087);
 
         }));
     }

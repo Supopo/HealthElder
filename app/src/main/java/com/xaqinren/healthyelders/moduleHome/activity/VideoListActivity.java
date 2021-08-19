@@ -82,10 +82,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
             position = videos.position;
             page = videos.page;
             if (isSingle) {
-                position = 0;
                 if (videos.videoInfos.size() >= position) {
                     mVideoInfoList.add(videos.videoInfos.get(position));
                 }
+                position = 0;
             } else {
                 mVideoInfoList.addAll(videos.videoInfos);
             }

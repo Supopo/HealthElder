@@ -111,15 +111,25 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
                     temp.add(dzVideoInfo.homeComprehensiveHall);
                 }
             }
-
             listBean.videoInfos = temp;
-            listBean.position = position;
+
+            //重新计算点击的位置
+            int newPos = 0;
+            for (int i = 0; i < listBean.videoInfos.size(); i++) {
+                if (listBean.videoInfos.get(i).resourceId.equals(videoAdapter.getData().get(position).homeComprehensiveHall.resourceId)) {
+                    newPos = i;
+                    break;
+                }
+            }
+
+            listBean.position = newPos;
+
 
             //里面每页3条数据 重新计算
-            if (videoAdapter.getData().size() % Constant.loadVideoSize == 0) {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize);
+            if (videoAdapter.getData().size() % 10 == 0) {
+                listBean.page = (videoAdapter.getData().size() / 10);
             } else {
-                listBean.page = (videoAdapter.getData().size() / Constant.loadVideoSize) + 1;
+                listBean.page = (videoAdapter.getData().size() / 10) + 1;
             }
             listBean.openType = 7;//别人的点赞
 

@@ -60,6 +60,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     private MineDZFragment mineDZFragment;
     public boolean isTop = true;
     public SwipeRefreshLayout srl;
+    public ViewPager2 vpContent;
 
 
     @Override
@@ -76,6 +77,7 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
     public void initData() {
         super.initData();
         srl = binding.srlTop;
+        vpContent = binding.vpContent;
         mineZPFragment = new MineZPFragment();
         mineSMFragment = new MineSMFragment();
         mineDZFragment = new MineDZFragment();

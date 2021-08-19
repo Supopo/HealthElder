@@ -31,6 +31,7 @@ public class ConversationListAdapter extends IConversationAdapter {
     public static final int FOOTER_COUNT = 1;
 
     private boolean mHasShowUnreadDot = true;
+    //消息列表头像圆角
     private int mItemAvatarRadius = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_25);
     private int mTopTextSize;
     private int mBottomTextSize;
