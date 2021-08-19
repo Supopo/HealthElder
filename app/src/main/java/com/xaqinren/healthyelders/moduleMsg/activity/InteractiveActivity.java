@@ -203,7 +203,7 @@ public class InteractiveActivity extends BaseActivity<ActivityInteractiveBinding
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("key", listBean);
-        bundle.putBoolean("key1", true);
+        bundle.putBoolean("isSingle", true);
         startActivity(VideoListActivity.class, bundle);
     }
 

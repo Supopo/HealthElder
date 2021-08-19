@@ -136,7 +136,7 @@ public class ZBMorePop extends BasePopupWindow {
                     break;
                 case 2:
                     if (shareDialog == null) {
-                        shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, 2);
+                        shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, ShareDialog.LIVE_TYPE);
                     }
                     shareDialog.show(rlItem);
                     break;

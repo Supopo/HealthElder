@@ -11,4 +11,6 @@ public class MCustomMsgBean {
     public String url;
     public String userAvatar;
     public String userName;
+    public String resourceId;
+    public String resource;
 }

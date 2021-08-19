@@ -577,8 +577,10 @@ public class TextPhotoDetailActivity extends BaseActivity<ActivityTextPhotoDetai
     private void showShare() {
 
         if (shareDialog == null) {
-            shareDialog = new ShareDialog(this, diaryInfoBean.share);
-            shareDialog.setShowType(ShareDialog.TP_TYPE);
+            diaryInfoBean.share.userNickname = diaryInfoBean.nickname;
+            diaryInfoBean.share.userAvatar = diaryInfoBean.avatarUrl;
+            diaryInfoBean.share.resourceId = diaryInfoBean.id;
+            shareDialog = new ShareDialog(this, diaryInfoBean.share, ShareDialog.TP_TYPE);
             shareDialog.setUserId(diaryInfoBean.userId);
             shareDialog.isMineOpen(isMine);
             shareDialog.setOnClickListener(new OnClickListenerImpl() {

@@ -41,22 +41,22 @@
 
         <com.tencent.qcloud.tim.uikit.component.gatherimage.UserIconView
             android:id="@+id/left_user_icon_view"
-            android:layout_width="41dp"
-            android:layout_height="41dp"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
             android:layout_alignParentLeft="true"
-            android:layout_marginRight="6.23dp"
+            android:layout_marginRight="@dimen/dp_8"
             app:default_image="@drawable/default_user_icon"
-            app:image_radius="20dp"
+            app:image_radius="@dimen/dp_19"
             android:visibility="gone"/>
 
         <com.tencent.qcloud.tim.uikit.component.gatherimage.UserIconView
             android:id="@+id/right_user_icon_view"
-            android:layout_width="41dp"
-            android:layout_height="41dp"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="6.23dp"
+            android:layout_marginLeft="@dimen/dp_8"
             app:default_image="@drawable/default_user_icon"
-            app:image_radius="20dp"
+            app:image_radius="@dimen/dp_19"
             android:visibility="gone"/>
 
         <TextView

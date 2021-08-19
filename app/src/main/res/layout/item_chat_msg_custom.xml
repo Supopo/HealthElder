@@ -6,58 +6,58 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardCornerRadius="4dp"
+    app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="0dp">
 
     <RelativeLayout
-        android:layout_width="166dp"
-        android:layout_height="265dp">
+        android:layout_width="@dimen/dp_166"
+        android:layout_height="@dimen/dp_265">
 
         <com.qmuiteam.qmui.widget.QMUIRadiusImageView
             android:id="@+id/iv_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:qmui_border_width="0dp"
-            app:qmui_corner_radius="4dp" />
+            app:qmui_corner_radius="@dimen/dp_4" />
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/iv_video"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_28"
             android:layout_centerInParent="true"
-            android:background="@mipmap/icon_video_bf" />
+            android:background="@mipmap/icon_ship_yiny_bof" />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/ll_info"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_10"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="2"
-            android:text=""
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp_15" />
 
         <LinearLayout
             android:id="@+id/ll_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_10"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.qmuiteam.qmui.widget.QMUIRadiusImageView
                 android:id="@+id/iv_photo"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginRight="5dp"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_5"
                 app:qmui_is_circle="true" />
 
             <TextView
@@ -65,9 +65,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLength="6"
-                android:text=""
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp_12" />
 
         </LinearLayout>
     </RelativeLayout>

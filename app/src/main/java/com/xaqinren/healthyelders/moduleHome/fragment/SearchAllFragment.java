@@ -262,7 +262,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("key", listBean);
-        bundle.putBoolean("key1", true);
+        bundle.putBoolean("isSingle", true);
         startActivity(VideoListActivity.class, bundle);
     }
 
@@ -289,7 +289,7 @@ public class SearchAllFragment extends BaseFragment<FragmentAllSearchBinding, Ba
             videoInfo.share.downUrl = videoInfo.resourceUrl;
             videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         }
-        shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
+        shareDialog = new ShareDialog(getActivity(), videoInfo.share, videoInfo, ShareDialog.VIDEO_TYPE);
         shareDialog.setRxPermissions(permissions);
         if (videoInfo.getVideoType() != 2) {
             shareDialog.isMineOpen(false);

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,6 +52,7 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.global.InfoCache;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
+import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.viewModel.HomeVideoModel;
@@ -134,6 +136,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
+            Log.v(Constant.TAG_LIVE, videoInfo.resourceUrl);
         }
     }
 
@@ -147,6 +150,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
         if (videoInfo != null && !TextUtils.isEmpty(videoInfo.resourceType) && videoInfo.resourceType.equals(Constant.REQ_TAG_SP)) {
             videoInfo.oldResourceUrl = videoInfo.resourceUrl;
             videoInfo.resourceUrl = Constant.setVideoSigUrl(videoInfo.resourceUrl);
+            Log.v(Constant.TAG_LIVE, videoInfo.resourceUrl);
         }
     }
 
@@ -886,7 +890,7 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             videoInfo.share.downUrl = videoInfo.resourceUrl;
             videoInfo.share.oldUrl = videoInfo.oldResourceUrl;
         }
-        shareDialog = new ShareDialog(getActivity(), videoInfo.share, 0);
+        shareDialog = new ShareDialog(getActivity(), videoInfo.share, videoInfo, ShareDialog.VIDEO_TYPE);
         shareDialog.setRxPermissions(permissions);
         if (videoInfo.getVideoType() != 2) {
             shareDialog.isMineOpen(videoOpenType == 3 ? false : isMineOpen);

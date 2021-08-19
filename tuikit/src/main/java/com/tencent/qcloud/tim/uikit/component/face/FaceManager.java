@@ -241,7 +241,7 @@ public class FaceManager {
             return;
         }
         int selection = comment.getSelectionStart();
-        sb.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.black_font_color)),
+        sb.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.colorSendName8)),
                 0, nameLenght, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         comment.setText(sb);
         if (comment instanceof EditText) {

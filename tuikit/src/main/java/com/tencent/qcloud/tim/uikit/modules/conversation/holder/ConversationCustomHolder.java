@@ -1,14 +1,11 @@
 package com.tencent.qcloud.tim.uikit.modules.conversation.holder;
 
 import android.graphics.Color;
-import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tencent.qcloud.tim.uikit.R;
-import com.tencent.qcloud.tim.uikit.component.picture.imageEngine.impl.GlideEngine;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationIconView;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 

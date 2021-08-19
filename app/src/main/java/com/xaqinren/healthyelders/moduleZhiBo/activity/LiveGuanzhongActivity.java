@@ -1919,7 +1919,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //更多设置
                 //                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
                 //                zbMorePop.showPopupWindow();
-                shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, 2);
+                shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, ShareDialog.LIVE_TYPE);
                 shareDialog.show(binding.llMenu);
                 break;
             default:

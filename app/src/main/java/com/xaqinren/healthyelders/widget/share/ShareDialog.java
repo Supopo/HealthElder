@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
+import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleMsg.bean.MCustomMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
@@ -75,16 +77,17 @@ public class ShareDialog {
     private PopShareBinding binding;
     private ShareFriendAdapter shareFriendAdapter;
     private List<? extends IShareUser> userList;
-    public static int VIDEO_TYPE = 0;//短视频
-    public static int TP_TYPE = 1;//图文
-    public static int LIVE_TYPE = 2;//直播
-    public static int USER_TYPE = 3;//用户
+    public static int VIDEO_TYPE = 1;//短视频
+    public static int TP_TYPE = 2;//图文
+    public static int LIVE_TYPE = 3;//直播
+    public static int USER_TYPE = 4;//用户
     private int showType = VIDEO_TYPE;
     private Context mContext;
     private DownLoadProgressDialog downloadProgress;
     private OnClickListener onClickListener;
     private OnDelClickListener onDelClickListener;
     private ShareBean shareBean;
+    private VideoInfo videoInfo;
     private Disposable uniSubscribe;
     //视频/日记发布者id
     private String userId;
@@ -132,6 +135,20 @@ public class ShareDialog {
         this.showType = showType;
         mContext = context;
         shareBean = shareInfo;
+        selfUseId = UserInfoMgr.getInstance().getUserInfo().getId();
+        init();
+        showType();
+    }
+
+    public ShareDialog(Context context, ShareBean shareInfo, VideoInfo videoInfo, int showType) {
+        this.context = new SoftReference<>(context);
+        this.showType = showType;
+        this.videoInfo = videoInfo;
+        mContext = context;
+        shareBean = shareInfo;
+        shareBean.resourceId = videoInfo.resourceId;
+        shareBean.userAvatar = videoInfo.avatarUrl;
+        shareBean.userNickname = videoInfo.nickname;
         selfUseId = UserInfoMgr.getInstance().getUserInfo().getId();
         init();
         showType();
@@ -189,39 +206,21 @@ public class ShareDialog {
         imMessageMgr = new IMMessageMgr(mContext);
 
         //初始化
-//        imMessageMgr.initialize(UserInfoMgr.getInstance().getUserInfo().getId(), UserInfoMgr.getInstance().getUserSig(), TCGlobalConfig.SDKAPPID, new IMMessageMgr.Callback() {
-//            @Override
-//            public void onError(final int code, final String errInfo) {
-//                String msg = "[IM] 初始化失败[" + errInfo + ":" + code + "]";
-//                LogUtils.v(Constant.TAG_LIVE, msg);
-//            }
-//
-//            @Override
-//            public void onSuccess(Object... args) {
-//            }
-//        });
+        imMessageMgr.initialize(UserInfoMgr.getInstance().getUserInfo().getId(), UserInfoMgr.getInstance().getUserSig(), TCGlobalConfig.SDKAPPID, new IMMessageMgr.Callback() {
+            @Override
+            public void onError(final int code, final String errInfo) {
+                String msg = "[IM] 初始化失败[" + errInfo + ":" + code + "]";
+                LogUtils.v(Constant.TAG_LIVE, msg);
+            }
+
+            @Override
+            public void onSuccess(Object... args) {
+            }
+        });
 
 
         shareFriendAdapter.setOnItemClickListener(((adapter, view, position) -> {
             ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
-            //发送分享消息
-            Gson gson = new Gson();
-            MCustomMsgBean messageCustom = new MCustomMsgBean();
-            messageCustom.msgType = 1;
-            messageCustom.content = shareBean.introduce;
-            messageCustom.cover = shareBean.coverUrl;
-            String data = gson.toJson(messageCustom);
-            imMessageMgr.sendC2CCustomMessage(userInfo.userId, data, new IMMessageMgr.Callback() {
-                @Override
-                public void onError(int code, String errInfo) {
-
-                }
-
-                @Override
-                public void onSuccess(Object... args) {
-                    ToastUtil.toastShortMessage("分享成功");
-                }
-            });
 
         }));
 
@@ -273,48 +272,57 @@ public class ShareDialog {
             //发送分享消息
 
 
-
-
             Gson gson = new Gson();
 
             MCustomMsgBean messageCustom = new MCustomMsgBean();
-            messageCustom.msgType = 1;
+
+            messageCustom.msgType = showType;
             messageCustom.content = shareBean.introduce;
             messageCustom.cover = shareBean.coverUrl;
-            String data = gson.toJson(messageCustom);
-
-            MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
-            IBaseMessageSender messageSender = TUIKitListenerManager.getInstance().getMessageSender();
-            if (messageSender != null) {
-                // 发送消息
-                messageSender.sendMessage(info, null, "1398569262716555264",
-                        false, false, new IUIKitCallBack() {
-                            @Override
-                            public void onSuccess(Object data) {
-                                ToastUtil.toastShortMessage("分享成功");
-
-                            }
-                            @Override
-                            public void onError(String module, int errCode, String errMsg) {
-                                LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errMsg);
-                                LogUtils.v(Constant.TAG_LIVE, "code: " + errCode);
-                            }
-                        });
+            messageCustom.userAvatar = shareBean.userAvatar;
+            messageCustom.userName = shareBean.userNickname;
+            messageCustom.resourceId = shareBean.resourceId;
+            if (videoInfo != null) {
+                videoInfo.resourceUrl = videoInfo.oldResourceUrl;
+                messageCustom.resource = new Gson().toJson(videoInfo);
             }
 
+            String data = gson.toJson(messageCustom);
 
-//            imMessageMgr.sendC2CCustomMessage("1398569262716555264", data, new IMMessageMgr.Callback() {
-//                @Override
-//                public void onError(int code, String errInfo) {
-//                    LogUtils.v(Constant.TAG_LIVE, "errInfo: " + errInfo);
-//                    LogUtils.v(Constant.TAG_LIVE, "code: " + code);
-//                }
-//
-//                @Override
-//                public void onSuccess(Object... args) {
-//                    ToastUtil.toastShortMessage("分享成功");
-//                }
-//            });
+            //            MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
+            //            IBaseMessageSender messageSender = TUIKitListenerManager.getInstance().getMessageSender();
+            //            if (messageSender != null) {
+            //                // 发送消息
+            //                messageSender.sendMessage(info, null, "1398569262716555264",
+            //                        false, false, new IUIKitCallBack() {
+            //                            @Override
+            //                            public void onSuccess(Object data) {
+            //                                ToastUtil.toastShortMessage("分享成功");
+            //
+            //                            }
+            //
+            //                            @Override
+            //                            public void onError(String module, int errCode, String errMsg) {
+            //                                LogUtils.v("im-send", "errInfo: " + errMsg);
+            //                                LogUtils.v("im-send", "code: " + errCode);
+            //                            }
+            //                        });
+            //            }
+
+
+            imMessageMgr.sendC2CCustomMessage("1398569262716555264", data, new IMMessageMgr.Callback() {
+                @Override
+                public void onError(int code, String errInfo) {
+                    LogUtils.v("im-send", "errInfo: " + errInfo);
+                    LogUtils.v("im-send", "code: " + code);
+                }
+
+                @Override
+                public void onSuccess(Object... args) {
+                    Log.v("CustomChatController", "IM Custom Data: " + data);
+                    ToastUtil.toastShortMessage("分享成功");
+                }
+            });
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友

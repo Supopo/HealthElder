@@ -11,6 +11,7 @@
     <!-- 黑色字体-->
     <color name="black_font_color">#181818</color>
     <color name="text_tips_color">#A5A5A5</color>
+    <color name="colorSendName8">#F5DE27</color>
 
     <!-- 线 -->
     <color name="chat_title_line_color">#E6E6E6</color>

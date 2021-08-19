@@ -1,6 +1,5 @@
 package com.xaqinren.healthyelders.moduleMsg.helper;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.tencent.imsdk.v2.V2TIMCustomElem;
 import com.tencent.imsdk.v2.V2TIMMessage;
-import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.base.IBaseAction;
 import com.tencent.qcloud.tim.uikit.base.IBaseInfo;
 import com.tencent.qcloud.tim.uikit.base.IBaseViewHolder;
@@ -59,6 +57,12 @@ public class CustomChatController implements TUIChatControllerListener {
                         break;
                     case 2:
                         messageInfo.setExtra("[日记分享]");
+                        break;
+                    case 3:
+                        messageInfo.setExtra("[直播分享]");
+                        break;
+                    case 4:
+                        messageInfo.setExtra("[用户分享]");
                         break;
                     default:
                         messageInfo.setExtra("[自定义消息]");
@@ -143,6 +147,7 @@ public class CustomChatController implements TUIChatControllerListener {
             MCustomMsgBean data = null;
             try {
                 data = new Gson().fromJson(new String(elem.getData()), MCustomMsgBean.class);
+                Log.v(TAG, "IM Custom Data: " + new String(elem.getData()));
             } catch (Exception e) {
                 Log.w(TAG, "invalid json: " + new String(elem.getData()) + " " + e.getMessage());
             }
@@ -150,7 +155,7 @@ public class CustomChatController implements TUIChatControllerListener {
                 Log.e(TAG, "No Custom Data: " + new String(elem.getData()));
             } else if (data.msgType != 0) {
                 if (parent instanceof MessageBaseHolder) {
-                    CustomTIMUIController.onDraw(parent, data, position, ((MessageBaseHolder) parent).getOnItemClickListener(), info);
+                    CustomMsgController.onDraw(parent, data, position, ((MessageBaseHolder) parent).getOnItemClickListener(), info);
                 }
             } else {
                 Log.w(TAG, "unsupported version: " + data);

@@ -135,7 +135,7 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             listBean.openType = 6;//别人的作品
 
             bundle.putSerializable("key", listBean);
-            bundle.putBoolean("key1", true);
+            bundle.putBoolean("isSingle", true);
             bundle.putSerializable("openType", 1);
             bundle.putString("userId", userId);
             startActivity(VideoListActivity.class, bundle);

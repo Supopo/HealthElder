@@ -33,6 +33,7 @@ import com.tencent.qcloud.tim.uikit.component.video.VideoViewActivity;
 import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
 import com.tencent.qcloud.tim.uikit.utils.DateTimeUtil;
 import com.tencent.qcloud.tim.uikit.utils.ImageUtil;
+import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 import com.tencent.qcloud.tim.uikit.utils.TUIKitLog;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
@@ -45,7 +46,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MessageImageHolder extends MessageContentHolder {
 
-    private static final int DEFAULT_MAX_SIZE = 540;
+    private static final int DEFAULT_MAX_SIZE = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_166);
     private static final int DEFAULT_RADIUS = 10;
     private final List<String> downloadEles = new ArrayList<>();
     private ImageView contentImage;
@@ -119,17 +120,28 @@ public class MessageImageHolder extends MessageContentHolder {
         }
     }
 
-    private ViewGroup.LayoutParams getImageParams(ViewGroup.LayoutParams params, final MessageInfo msg) {
+    private ViewGroup.LayoutParams getImageParams(ViewGroup.LayoutParams params, final MessageInfo msg, int type) {
         if (msg.getImgWidth() == 0 || msg.getImgHeight() == 0) {
             return params;
         }
-        if (msg.getImgWidth() > msg.getImgHeight()) {
-            params.width = DEFAULT_MAX_SIZE;
-            params.height = DEFAULT_MAX_SIZE * msg.getImgHeight() / msg.getImgWidth();
-        } else {
-            params.width = DEFAULT_MAX_SIZE * msg.getImgWidth() / msg.getImgHeight();
-            params.height = DEFAULT_MAX_SIZE;
+        if (type == 1) {//图片
+            if (msg.getImgWidth() > msg.getImgHeight()) {
+                params.width = DEFAULT_MAX_SIZE * msg.getImgWidth() / msg.getImgHeight();
+                params.height = DEFAULT_MAX_SIZE;
+            } else {
+                params.width = DEFAULT_MAX_SIZE;
+                params.height = DEFAULT_MAX_SIZE * msg.getImgHeight() / msg.getImgWidth();
+            }
+        } else {//视频
+            if (msg.getImgWidth() > msg.getImgHeight()) {
+                params.width = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_265);
+                params.height = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_166);
+            } else {
+                params.width = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_166);
+                params.height = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_265);
+            }
         }
+
         return params;
     }
 
@@ -138,7 +150,7 @@ public class MessageImageHolder extends MessageContentHolder {
     }
 
     private void performImage(final MessageInfo msg, final int position) {
-        contentImage.setLayoutParams(getImageParams(contentImage.getLayoutParams(), msg));
+        contentImage.setLayoutParams(getImageParams(contentImage.getLayoutParams(), msg, 1));
         resetParentLayout();
         videoPlayBtn.setVisibility(View.GONE);
         videoDurationText.setVisibility(View.GONE);
@@ -243,7 +255,7 @@ public class MessageImageHolder extends MessageContentHolder {
     }
 
     private void performVideo(final MessageInfo msg, final int position) {
-        contentImage.setLayoutParams(getImageParams(contentImage.getLayoutParams(), msg));
+        contentImage.setLayoutParams(getImageParams(contentImage.getLayoutParams(), msg, 2));
         resetParentLayout();
 
         videoPlayBtn.setVisibility(View.VISIBLE);

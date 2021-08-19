@@ -19,13 +19,13 @@
         android:visibility="gone" />
 
     <RelativeLayout
-        android:layout_width="54dp"
-        android:layout_height="50dp">
+        android:layout_width="@dimen/dp_54"
+        android:layout_height="@dimen/dp_50">
 
         <com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationIconView
             android:id="@+id/conversation_icon"
-            android:layout_width="@dimen/conversation_avatar_width"
-            android:layout_height="@dimen/conversation_avatar_height" />
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50" />
 
         <TextView
             android:layout_alignParentRight="true"
@@ -37,7 +37,7 @@
             android:textColor="#fff"
             android:visibility="gone"
             android:background="@drawable/bg_num_red"
-            android:textSize="10sp" />
+            android:textSize="@dimen/sp_10" />
     </RelativeLayout>
 
     <RelativeLayout

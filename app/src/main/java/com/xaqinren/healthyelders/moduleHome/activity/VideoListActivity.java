@@ -70,7 +70,7 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         videos = (VideoListBean) bundle.getSerializable("key");
-        isSingle = bundle.getBoolean("key1", false);
+        isSingle = bundle.getBoolean("isSingle", false);
 
         isMineOpen = bundle.getBoolean(Constant.MINE_OPEN, false);
         openType = bundle.getInt("openType", 0);
@@ -78,13 +78,13 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         userId = bundle.getString("userId", "");
 
         //1-从首页直播列表打开 2-从附近（首页菜单视频页面）打开 3 我的-作品 4 我的-私密 5 我的-点赞 6别人的作品 7 别人的点赞
-        if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5 || videos.openType == 6 || videos.openType == 7) {
+        if (videos.openType != 1) {
             position = videos.position;
             page = videos.page;
             if (isSingle) {
+                position = 0;
                 if (videos.videoInfos.size() >= position) {
                     mVideoInfoList.add(videos.videoInfos.get(position));
-                    position = 0;
                 }
             } else {
                 mVideoInfoList.addAll(videos.videoInfos);
@@ -129,8 +129,10 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
 
         binding.viewPager2.setAdapter(homeAdapter);
         binding.viewPager2.setOffscreenPageLimit(Constant.loadVideoSize);
-
-        if (videos.openType == 2 || videos.openType == 3 || videos.openType == 4 || videos.openType == 5 || videos.openType == 6 || videos.openType == 7) {
+        if (videos.openType == 1) {
+            //请求数据  推荐打开 主播列表
+            viewModel.getVideoData(page, videos, userId);
+        } else {
             //从附近打开-我的作品-我的私密作品
             if (!isSingle) {
                 binding.viewPager2.setCurrentItem(position, false);
@@ -145,9 +147,6 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
                     RxBus.getDefault().post(new VideoEvent(1, TAG));
                 }
             }, 500);
-        } else if (videos.openType == 1) {
-            //请求数据  推荐打开 主播列表
-            viewModel.getVideoData(page, videos, userId);
         }
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {

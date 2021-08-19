@@ -62,13 +62,13 @@ public abstract class MessageContentHolder extends MessageEmptyHolder {
             leftUserIcon.setDefaultImageResId(R.drawable.default_head);
             rightUserIcon.setDefaultImageResId(R.drawable.default_head);
         }
-        if (properties.getAvatarRadius() != 0) {
-            leftUserIcon.setRadius(properties.getAvatarRadius());
-            rightUserIcon.setRadius(properties.getAvatarRadius());
-        } else {
-            leftUserIcon.setRadius(5);
-            rightUserIcon.setRadius(5);
-        }
+//        if (properties.getAvatarRadius() != 0) {
+//            leftUserIcon.setRadius(properties.getAvatarRadius());
+//            rightUserIcon.setRadius(properties.getAvatarRadius());
+//        } else {
+//            leftUserIcon.setRadius(5);
+//            rightUserIcon.setRadius(5);
+//        }
         if (properties.getAvatarSize() != null && properties.getAvatarSize().length == 2) {
             ViewGroup.LayoutParams params = leftUserIcon.getLayoutParams();
             params.width = properties.getAvatarSize()[0];

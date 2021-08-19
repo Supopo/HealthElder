@@ -131,7 +131,7 @@ public class SearchVideoFragment extends BaseFragment<FragmentSearchVideoBinding
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("key", listBean);
-        bundle.putBoolean("key1", true);
+        bundle.putBoolean("isSingle", true);
         startActivity(VideoListActivity.class, bundle);
     }
 

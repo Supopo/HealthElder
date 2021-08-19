@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.tencent.qcloud.tim.uikit.R;
+import com.tencent.qcloud.tim.uikit.TUIKit;
 import com.tencent.qcloud.tim.uikit.component.gatherimage.SynthesizedImageView;
 import com.tencent.qcloud.tim.uikit.utils.ImageUtil;
 import com.tencent.qcloud.tim.uikit.utils.ScreenUtil;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class ConversationIconView extends RelativeLayout {
 
-    private static final int icon_size = ScreenUtil.getPxByDp(50);
+    private static final int icon_size = (int) TUIKit.getAppContext().getResources().getDimension(R.dimen.dp_50);
     private ImageView mIconView;
 
 
