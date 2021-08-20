@@ -135,8 +135,8 @@ public class LiteAvRepository {
                 });
     }
 
-    public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, String token, int page, int pageSize, String identity) {
-        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity, token)
+    public void getUserList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<LiteAvUserBean>> listMutableLiveData, String targetId, int page, int pageSize, String identity) {
+        userApi.getUserFriend(UserInfoMgr.getInstance().getHttpToken(), page, pageSize, identity, targetId)
                 .compose(RxUtils.schedulersTransformer())  // 线程调度
                 .compose(RxUtils.exceptionTransformer())   // 网络错误的异常转换
                 .doOnSubscribe(new Consumer<Disposable>() {

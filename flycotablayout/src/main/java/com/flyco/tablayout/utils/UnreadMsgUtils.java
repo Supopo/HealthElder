@@ -40,7 +40,7 @@ public class UnreadMsgUtils {
             } else {//数字超过两位,显示99+
                 lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
                 msgView.setPadding((int) (6 * dm.density), 0, (int) (6 * dm.density), 0);
-                msgView.setText("99+");
+                msgView.setText("99");
             }
             msgView.setLayoutParams(lp);
         }

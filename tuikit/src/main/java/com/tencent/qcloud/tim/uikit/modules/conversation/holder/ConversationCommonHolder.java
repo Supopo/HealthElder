@@ -104,7 +104,7 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
         if (conversation.getUnRead() > 0 && !conversation.isShowDisturbIcon()) {
             unreadText.setVisibility(View.VISIBLE);
             if (conversation.getUnRead() > 99) {
-                unreadText.setText("99+");
+                unreadText.setText("99");
             } else {
                 unreadText.setText("" + conversation.getUnRead());
             }

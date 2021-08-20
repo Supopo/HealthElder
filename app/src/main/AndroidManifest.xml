@@ -523,6 +523,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/CaptureTheme" />
         <activity android:name=".moduleLogin.activity.Splash2Activity" />
+        <activity android:name=".moduleMsg.activity.FriendsListActivity"
+            android:theme="@style/AnimTheme"
+            />
 
         <service
             android:name=".push.IPushService"

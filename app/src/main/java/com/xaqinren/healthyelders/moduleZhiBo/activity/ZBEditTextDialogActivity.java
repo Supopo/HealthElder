@@ -326,7 +326,7 @@ public class ZBEditTextDialogActivity extends AppCompatActivity {
         super.finish();
         if (type == 0) {
             //通知前一页消息列表位置还原
-            RxBus.getDefault().post(new EventBean(LiveConstants.DISMISS_ET, 0, hasSend ? "" : etView.getText().toString()));
+            RxBus.getDefault().post(new EventBean(LiveConstants.DISMISS_ET, 0, hasSend ? "" : etView.getText().toString().trim()));
         }
         //关闭键盘
         closeKeybord(this);

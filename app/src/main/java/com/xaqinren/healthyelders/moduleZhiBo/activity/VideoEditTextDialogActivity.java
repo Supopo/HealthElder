@@ -136,7 +136,7 @@ public class VideoEditTextDialogActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT_OVER, hasSend ? "" : etView.getText().toString(), type, pos));
+        RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT_OVER, hasSend ? "" : etView.getText().toString().trim(), type, pos));
     }
 
     private FragmentManager mFragmentManager;

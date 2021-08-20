@@ -48,7 +48,7 @@ public class ConversationCustomHolder extends ConversationBaseHolder {
         if (conversation.getUnRead() > 0) {
             unreadText.setVisibility(View.VISIBLE);
             if (conversation.getUnRead() > 99) {
-                unreadText.setText("99+");
+                unreadText.setText("99");
             } else {
                 unreadText.setText("" + conversation.getUnRead());
             }

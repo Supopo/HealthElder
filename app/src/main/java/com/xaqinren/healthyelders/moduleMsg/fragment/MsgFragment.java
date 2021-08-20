@@ -22,6 +22,7 @@ import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.FansMsgActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.FriendsListActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.InteractiveActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.LiveMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ServiceMsgActivity;
@@ -66,7 +67,9 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             //添加联系人
             startActivity(AddFriendActivity.class);
         });
-
+        binding.ivFriend.setOnClickListener(v -> {
+            startActivity(FriendsListActivity.class);
+        });
 
         binding.srlContent.setEnabled(false);
         binding.conversationLayout.getTitleBar().setVisibility(View.GONE);

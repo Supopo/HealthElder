@@ -40,14 +40,13 @@
                 android:background="@mipmap/message_add" />
 
             <ImageView
-                android:id="@+id/iv_add2"
+                android:id="@+id/iv_friend"
                 android:layout_width="@dimen/dp_22"
                 android:layout_height="@dimen/dp_22"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_22"
                 android:layout_toLeftOf="@id/iv_add"
-                android:background="@mipmap/message_pengylb"
-                android:visibility="gone" />
+                android:background="@mipmap/message_pengylb" />
         </RelativeLayout>
 
         <View

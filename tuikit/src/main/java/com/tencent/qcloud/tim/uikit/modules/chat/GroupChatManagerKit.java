@@ -235,11 +235,11 @@ public class GroupChatManagerKit extends ChatManagerKit {
     }
 
     public void notifyJoinGroupRefused(String groupID) {
-        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.reject_join_tip) + groupID);
+//        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.reject_join_tip) + groupID);
     }
 
     public void notifyKickedFromGroup(String groupID) {
-        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.kick_group) + groupID);
+//        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.kick_group) + groupID);
         ConversationManagerKit.getInstance().deleteConversation(groupID, true);
         if (mCurrentChatInfo != null && groupID.equals(mCurrentChatInfo.getId())) {
             onGroupForceExit();
@@ -247,7 +247,7 @@ public class GroupChatManagerKit extends ChatManagerKit {
     }
 
     public void notifyGroupDismissed(String groupID) {
-        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.dismiss_tip_before) + groupID + TUIKit.getAppContext().getString(R.string.dismiss_tip_after));
+//        ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.dismiss_tip_before) + groupID + TUIKit.getAppContext().getString(R.string.dismiss_tip_after));
         if (mCurrentChatInfo != null && groupID.equals(mCurrentChatInfo.getId())) {
             onGroupForceExit();
         }
