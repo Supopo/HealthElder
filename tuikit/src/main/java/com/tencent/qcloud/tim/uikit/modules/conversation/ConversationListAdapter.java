@@ -161,14 +161,18 @@ public class ConversationListAdapter extends IConversationAdapter {
     @Override
     public int getItemViewType(int position) {
 
-        if (position == 0) {
-            //判断是否有头布局
-            if (HEADER_COUNT != 0) {
+        if (HEADER_COUNT != 0) {
+            if (position == 0) {
                 return ITEM_TYPE_HEADER_SEARCH;
+            } else if (position == getItemCount()) {
+                return ITEM_TYPE_FOOTER_LOADING;
             }
-        } else if (position == getItemCount() - 1) {
-            return ITEM_TYPE_FOOTER_LOADING;
-        } else if (mDataSource != null) {
+        } else {
+            if (position == getItemCount() - 1) {
+                return ITEM_TYPE_FOOTER_LOADING;
+            }
+        }
+        if (mDataSource != null) {
             try {
                 ConversationInfo conversation = mDataSource.get(position - HEADER_COUNT);
                 return conversation.getType();
@@ -176,6 +180,7 @@ public class ConversationListAdapter extends IConversationAdapter {
                 e.printStackTrace();
             }
         }
+
         return 1;
     }
 

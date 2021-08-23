@@ -90,6 +90,9 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
         binding.rvContent.addItemDecoration(new SpeacesItemDecoration(getActivity(), 4, 3, true));
 
         videoAdapter.setOnItemClickListener(((adapter, view, position) -> {
+            if (videoAdapter.getData().get(position) == null || videoAdapter.getData().get(position).homeComprehensiveHall == null) {
+                return;
+            }
             if (videoAdapter.getData().get(position).homeComprehensiveHall.isArticle()) {
                 Intent intent = new Intent(getContext(), TextPhotoDetailActivity.class);
                 intent.putExtra(com.xaqinren.healthyelders.moduleLiteav.Constant.VIDEO_ID, videoAdapter.getData().get(position).homeComprehensiveHall.resourceId);
@@ -200,23 +203,29 @@ public class UserXHFragment extends BaseFragment<FragmentUserXhBinding, UserXHVi
 
         viewModel.mVideoList.observe(this, dataList -> {
             if (dataList != null) {
+                List<DZVideoInfo> datas = new ArrayList<>();
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();
+                    for (DZVideoInfo dzVideoInfo : dataList) {
+                        if (dzVideoInfo.homeComprehensiveHall != null) {
+                            datas.add(dzVideoInfo);
+                        }
+                    }
                 }
                 if (page == 1) {
                     if (dataList.size() == 0) {
                         videoAdapter.setEmptyView(R.layout.item_empty);
                     }
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
-                    videoAdapter.setList(dataList);
+                    videoAdapter.setList(datas);
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束
                         mLoadMore.loadMoreEnd(true);
                         page--;
                     }
-                    videoAdapter.addData(dataList);
+                    videoAdapter.addData(datas);
                 }
             }
         });

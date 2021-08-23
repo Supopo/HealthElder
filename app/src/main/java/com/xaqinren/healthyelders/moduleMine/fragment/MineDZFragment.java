@@ -63,7 +63,6 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
         mLoadMore.setEnableLoadMore(true);//打开上拉加载
-        mLoadMore.setAutoLoadMore(true);//自动加载
         mLoadMore.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
         mLoadMore.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
@@ -143,6 +142,9 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
 
     public void toRefresh() {
+        if (mLoadMore != null) {
+            mLoadMore.loadMoreComplete();
+        }
         page = 1;
         viewModel.getMyLikeVideoList(page, pageSize);
     }
@@ -159,6 +161,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
                 if (dataList.size() > 0) {
                     //加载更多加载完成
                     mLoadMore.loadMoreComplete();
+                    mLoadMore.setAutoLoadMore(true);//自动加载
                 }
                 if (page == 1) {
                     //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
