@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -15,9 +16,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityUserInfoBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/6/5.
@@ -329,4 +333,35 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         });
     }
 
+    private float before_press_Y;
+    private float before_press_X;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                before_press_Y = event.getY();
+                before_press_X = event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                double now_press_Y = event.getY();
+                double now_press_X = event.getX();
+
+                double scrollX = Math.abs(now_press_X - before_press_X);
+                double scrollY = Math.abs(now_press_Y - before_press_Y);
+
+
+                if (scrollX > scrollY) {
+                    binding.vpContent.setUserInputEnabled(true);
+                } else {
+                    binding.vpContent.setUserInputEnabled(false);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                before_press_Y = 0;
+                before_press_X = 0;
+                break;
+        }
+        return super.dispatchTouchEvent(event);
+    }
 }
