@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -147,6 +149,21 @@ public class ZBEditTextDialogActivity extends AppCompatActivity {
 
     private List<Integer> highs = new ArrayList<>();
 
+
+    //过滤回车 禁止回车
+    public void setEditTextInhibitInputSpace() {
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (source.equals("\n"))
+                    return "";
+                else
+                    return null;
+            }
+        };
+        etView.setFilters(new InputFilter[]{filter});
+    }
+
     private void initView() {
         rlView = findViewById(R.id.rl_view);
         ivSend = findViewById(R.id.iv_send);
@@ -155,7 +172,7 @@ public class ZBEditTextDialogActivity extends AppCompatActivity {
         llInput = findViewById(R.id.ll_input);
         moreGroups = findViewById(R.id.more_groups);
 
-
+        setEditTextInhibitInputSpace();
         if (getIntent().getExtras() != null) {
             String content = getIntent().getExtras().getString("content");
             if (!TextUtils.isEmpty(content)) {

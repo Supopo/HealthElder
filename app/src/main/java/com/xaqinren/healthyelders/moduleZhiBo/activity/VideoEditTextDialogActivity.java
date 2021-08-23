@@ -5,6 +5,8 @@ import android.content.Context;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -106,7 +108,7 @@ public class VideoEditTextDialogActivity extends AppCompatActivity {
             showSoftInput(this, etView);
         }
 
-
+        setEditTextInhibitInputSpace();
         ivPublish.setOnClickListener(lis -> {
             //发送消息通知发送
             RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, etView.getText().toString(), type, pos));
@@ -131,6 +133,20 @@ public class VideoEditTextDialogActivity extends AppCompatActivity {
             etView.setFocusableInTouchMode(false);
             finish();
         });
+    }
+
+    //过滤回车 禁止回车
+    public void setEditTextInhibitInputSpace() {
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (source.equals("\n"))
+                    return "";
+                else
+                    return null;
+            }
+        };
+        etView.setFilters(new InputFilter[]{filter});
     }
 
     @Override
