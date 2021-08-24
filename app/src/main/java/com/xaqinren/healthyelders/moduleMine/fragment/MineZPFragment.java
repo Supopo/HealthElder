@@ -275,7 +275,7 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束
-                        mLoadMore.loadMoreEnd(true);
+                        mLoadMore.loadMoreEnd();
                         page--;
                     }
                     videoAdapter.addData(dataList);
