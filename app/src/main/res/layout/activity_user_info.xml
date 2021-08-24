@@ -162,6 +162,7 @@
                                         android:textSize="@dimen/sp_12" />
 
                                     <TextView
+                                        android:id="@+id/tv_gzNum"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@{String.valueOf(viewModel.userInfo.attentionCount)}"
@@ -179,6 +180,7 @@
                                         android:textSize="@dimen/sp_12" />
 
                                     <TextView
+                                        android:id="@+id/tv_fsNum"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@{String.valueOf(viewModel.userInfo.fansCount)}"

@@ -259,9 +259,23 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             initTabMenu();
             binding.vpContent.setCurrentItem(menuPosition);
         });
+        binding.tvGzNum.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 0);
+            bundle.putString("name", userInfoBean.getNickname());
+            bundle.putString("uid", userInfoBean.getId());
+            startActivity(LookAttentionActivity.class, bundle);
+        });
         binding.tvGz.setOnClickListener(lis -> {
             Bundle bundle = new Bundle();
             bundle.putInt("page", 0);
+            bundle.putString("name", userInfoBean.getNickname());
+            bundle.putString("uid", userInfoBean.getId());
+            startActivity(LookAttentionActivity.class, bundle);
+        });
+        binding.tvFsNum.setOnClickListener(lis -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("page", 1);
             bundle.putString("name", userInfoBean.getNickname());
             bundle.putString("uid", userInfoBean.getId());
             startActivity(LookAttentionActivity.class, bundle);
@@ -320,11 +334,12 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
         viewModel.followSuccess.observe(this, followSuccess -> {
             if (followSuccess != null) {
                 if (followSuccess) {
-
                     userInfoBean.hasFollow = !userInfoBean.hasFollow;
                     if (userInfoBean.hasFollow) {
+                        RxBus.getDefault().post(new EventBean(CodeTable.FOLLOW_USER, 1, userInfoBean.getId()));
                         userInfoBean.setIdentity("FOLLOW");
                     } else {
+                        RxBus.getDefault().post(new EventBean(CodeTable.FOLLOW_USER, 0, userInfoBean.getId()));
                         userInfoBean.setIdentity("STRANGER");
                     }
                     viewModel.userInfo.setValue(userInfoBean);

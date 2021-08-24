@@ -9,6 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ItemAttentionBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
@@ -36,6 +37,13 @@ public class AttentionAdapter extends BaseQuickAdapter<LiteAvUserBean, BaseViewH
         GlideUtil.intoImageView(getContext(), liteAvUserBean.attentionUserInfo.avatarUrl, binding.avatar);
         binding.nickname.setText(liteAvUserBean.attentionUserInfo.nickname);
         binding.close.setVisibility(showClose ? View.VISIBLE : View.GONE);
+
+        if (liteAvUserBean.getAttentionUserId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+            binding.attentionBtn.setVisibility(View.GONE);
+        }else {
+            binding.attentionBtn.setVisibility(View.VISIBLE);
+        }
+
         if (liteAvUserBean.identity == null){
             //陌生人
             binding.attentionBtn.setText("分享");
@@ -60,6 +68,7 @@ public class AttentionAdapter extends BaseQuickAdapter<LiteAvUserBean, BaseViewH
             binding.attentionBtn.setText("已关注");
             binding.attentionBtn.setSelected(false);
         }
+
     }
 
     //局部刷新用的

@@ -21,8 +21,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FramentAttentionBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.adapter.AttentionAdapter;
@@ -30,7 +32,9 @@ import com.xaqinren.healthyelders.moduleMine.viewModel.AttentionViewModel;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.Utils;
 
@@ -51,6 +55,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
 
     private LiteAvUserBean tempUserBean = null;
     private int tempUserIndex = -1;
+    private Disposable disposable;
 
     public AttentionFragment(int i, String uid) {
         super();
@@ -152,12 +157,12 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     @Override
     public void onResume() {
         super.onResume();
-        if (tempUserBean != null && tempUserIndex != -1) {
-            //重新请求单个用户信息
-            if (tempUserBean.attentionUserInfo != null) {
-                viewModel.refreshUserList(tempUserBean.attentionUserInfo.nickname);
-            }
-        }
+//        if (tempUserBean != null && tempUserIndex != -1) {
+//            //重新请求单个用户信息
+//            if (tempUserBean.attentionUserInfo != null) {
+//                viewModel.refreshUserList(tempUserBean.attentionUserInfo.nickname);
+//            }
+//        }
     }
 
 
@@ -226,6 +231,31 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                 ToastUtil.toastShortMessage("解除失败,请重试");
             }
         });
+        disposable = RxBus.getDefault().toObservable(EventBean.class).subscribe(eventBean -> {
+            if (eventBean != null) {
+                if (eventBean.msgId == CodeTable.FOLLOW_USER) {
+                    if (eventBean.content.equals(adapter.getData().get(opIndex).getId())) {
+                        //判断
+                        if (eventBean.msgType == 1) {
+                            //如果是陌生人 变成已关注
+                            if (adapter.getData().get(opIndex).identity.equals("STRANGER")) {
+                                adapter.getData().get(opIndex).identity = "ATTENTION";
+                            } else if (adapter.getData().get(opIndex).identity.equals("FANS")) {
+                                adapter.getData().get(opIndex).identity = "FRIEND";
+                            }
+                        } else if (eventBean.msgType == 0) {
+                            if (adapter.getData().get(opIndex).identity.equals("FOLLOW")) {
+                                adapter.getData().get(opIndex).identity = "STRANGER";
+                            } else if (adapter.getData().get(opIndex).identity.equals("FRIEND")) {
+                                adapter.getData().get(opIndex).identity = "FANS";
+                            }
+                        }
+                        adapter.notifyItemChanged(opIndex, 99);
+                    }
+                }
+            }
+        });
+
     }
 
     private Dialog dialog;

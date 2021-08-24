@@ -18,9 +18,9 @@ import me.goldze.mvvmhabit.utils.StringUtils;
 
 public class AddFriendAdapter extends BaseQuickAdapter<FriendBean,BaseViewHolder> implements LoadMoreModule {
 
+    public static String ATTENTION = "ATTENTION";//关注的人
     public static String FRIEND = "FRIEND";//朋友
     public static String FANS = "FANS";//粉丝
-    public static String ATTENTION = "ATTENTION";//关注的人
     public static String STRANGER = "STRANGER";//陌生人
     public static String FOLLOW = "FOLLOW";//已关注
 

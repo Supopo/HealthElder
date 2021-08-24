@@ -36,6 +36,7 @@ public class CodeTable {
     public static int VIDEO_PL = 778;//
     public static int HOME_STOP_LOADING = 555;//
     public static int ZBJ_GZ = 444;//
+    public static int FOLLOW_USER = 3331;//
 
     /**
      * 成功
