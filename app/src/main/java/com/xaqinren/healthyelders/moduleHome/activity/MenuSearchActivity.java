@@ -239,8 +239,6 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
                     if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
                         key = binding.etSearch.getText().toString();
                     }
-                    binding.rlSearch.setVisibility(View.GONE);
-                    binding.rvContent.setVisibility(View.VISIBLE);
                     toSearch();
                 }
                 return false;
@@ -294,8 +292,10 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     }
 
     private void toSearch() {
+        binding.rlSearch.setVisibility(View.GONE);
+        binding.rvContent.setVisibility(View.VISIBLE);
         //如果没有输入不存进历史
-        if (TextUtils.isEmpty(binding.etSearch.getText().toString())) {
+        if (TextUtils.isEmpty(binding.etSearch.getText().toString().trim())) {
             return;
         }
 

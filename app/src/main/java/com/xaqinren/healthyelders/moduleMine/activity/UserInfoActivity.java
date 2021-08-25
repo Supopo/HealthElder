@@ -342,6 +342,7 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
                         RxBus.getDefault().post(new EventBean(CodeTable.FOLLOW_USER, 0, userInfoBean.getId()));
                         userInfoBean.setIdentity("STRANGER");
                     }
+                    RxBus.getDefault().post(new EventBean(CodeTable.ZBJ_GZ, userInfoBean.hasFollow ? 1 : 0));
                     viewModel.userInfo.setValue(userInfoBean);
                 }
             }

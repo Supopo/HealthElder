@@ -636,7 +636,7 @@ public class LiveRepository {
     public void toComment(String id, String content, MutableLiveData<CommentListBean> commentSuccess, MutableLiveData<Boolean> dismissDialog) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("id", id);
-        hashMap.put("content", content);
+        hashMap.put("content", content.trim());
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toComment(UserInfoMgr.getInstance().getHttpToken(), body)
@@ -689,7 +689,7 @@ public class LiveRepository {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("replyType", type == 0 ? "REPLY_COMMENT" : "REPLY_REPLY");
         hashMap.put("id", mCommentListBean.id);
-        hashMap.put("content", content);
+        hashMap.put("content", content.trim());
         String json = JSON.toJSONString(hashMap);
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
         userApi.toCommentReply(UserInfoMgr.getInstance().getHttpToken(), body)
