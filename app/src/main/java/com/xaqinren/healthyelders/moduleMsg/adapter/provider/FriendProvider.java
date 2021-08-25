@@ -1,7 +1,5 @@
 package com.xaqinren.healthyelders.moduleMsg.adapter.provider;
 
-import android.os.Message;
-
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.provider.BaseItemProvider;
@@ -18,7 +16,7 @@ public class FriendProvider<T extends MessageDetailBean> extends BaseItemProvide
 
     public static String FRIEND = "FRIEND";//朋友
     public static String FANS = "FANS";//粉丝
-    public static String ATTENTION = "ATTENTION";//关注的人
+    public static String ATTENTION = "ATTENTION";//关注的人 //自定义的 为了展示 出已关注
     public static String STRANGER = "STRANGER";//陌生人
     public static String FOLLOW = "FOLLOW";//已关注
 

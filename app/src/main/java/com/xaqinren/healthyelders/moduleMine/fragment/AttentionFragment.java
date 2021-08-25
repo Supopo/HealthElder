@@ -30,6 +30,7 @@ import com.xaqinren.healthyelders.moduleMine.activity.UserInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.adapter.AttentionAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.AttentionViewModel;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
+import com.xaqinren.healthyelders.moduleMsg.adapter.provider.FriendProvider;
 import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import io.reactivex.disposables.Disposable;
@@ -238,16 +239,16 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                         //判断
                         if (eventBean.msgType == 1) {
                             //如果是陌生人 变成已关注
-                            if (adapter.getData().get(opIndex).identity.equals("STRANGER")) {
-                                adapter.getData().get(opIndex).identity = "ATTENTION";
-                            } else if (adapter.getData().get(opIndex).identity.equals("FANS")) {
-                                adapter.getData().get(opIndex).identity = "FRIEND";
+                            if (adapter.getData().get(opIndex).identity.equals(FriendProvider.STRANGER)) {
+                                adapter.getData().get(opIndex).identity = FriendProvider.ATTENTION;
+                            } else if (adapter.getData().get(opIndex).identity.equals(FriendProvider.FANS)) {
+                                adapter.getData().get(opIndex).identity = FriendProvider.FRIEND;
                             }
                         } else if (eventBean.msgType == 0) {
-                            if (adapter.getData().get(opIndex).identity.equals("FOLLOW")) {
-                                adapter.getData().get(opIndex).identity = "STRANGER";
-                            } else if (adapter.getData().get(opIndex).identity.equals("FRIEND")) {
-                                adapter.getData().get(opIndex).identity = "FANS";
+                            if (adapter.getData().get(opIndex).identity.equals(FriendProvider.FOLLOW)||adapter.getData().get(opIndex).identity.equals(FriendProvider.ATTENTION)) {
+                                adapter.getData().get(opIndex).identity = FriendProvider.STRANGER;
+                            } else if (adapter.getData().get(opIndex).identity.equals(FriendProvider.FRIEND)) {
+                                adapter.getData().get(opIndex).identity = FriendProvider.FANS;
                             }
                         }
                         adapter.notifyItemChanged(opIndex, 99);
