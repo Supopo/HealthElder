@@ -1891,7 +1891,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     break;
                 case LiveConstants.SEND_MSG:
                     //发送文本消息
-                    toSendTextMsg(eventBean.content);
+                    toSendTextMsg(eventBean.content.trim());
                     break;
                 case LiveConstants.ZB_USER_SET:
                     if (eventBean.msgType == LiveConstants.SETTING_JINYAN) {      //禁言-取消禁言

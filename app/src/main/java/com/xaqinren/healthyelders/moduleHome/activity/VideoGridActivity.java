@@ -251,7 +251,7 @@ public class VideoGridActivity extends BaseActivity<ActivityVideoGridBinding, Vi
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束
-                        mLoadMore.loadMoreEnd(true);
+                        mLoadMore.loadMoreEnd();
                     }
                     mAdapter.addData(dataList);
                 }

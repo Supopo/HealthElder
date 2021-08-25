@@ -236,9 +236,6 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if (!TextUtils.isEmpty(binding.etSearch.getText().toString())) {
-                        key = binding.etSearch.getText().toString();
-                    }
                     toSearch();
                 }
                 return false;
@@ -292,18 +289,18 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
     }
 
     private void toSearch() {
+
+        //如果没有输入不存进历史
+        if (!TextUtils.isEmpty(binding.etSearch.getText().toString().trim())) {
+            key = binding.etSearch.getText().toString().trim();
+        }
         binding.rlSearch.setVisibility(View.GONE);
         binding.rvContent.setVisibility(View.VISIBLE);
-        //如果没有输入不存进历史
-        if (TextUtils.isEmpty(binding.etSearch.getText().toString().trim())) {
-            return;
-        }
-
 
         if (binding.rlSearchHistory.getVisibility() == View.GONE) {
             binding.rlSearchHistory.setVisibility(View.VISIBLE);
         }
-        addCache(binding.etSearch.getText().toString().trim());
+        addCache(key);
 
         //跳页
         toJump();
@@ -434,7 +431,7 @@ public class MenuSearchActivity extends BaseActivity<ActivityMenuSearchBinding, 
                 } else {
                     if (dataList.size() == 0) {
                         //加载更多加载结束
-                        mLoadMore.loadMoreEnd(true);
+                        mLoadMore.loadMoreEnd();
                     }
                     mAdapter.addData(dataList);
                 }

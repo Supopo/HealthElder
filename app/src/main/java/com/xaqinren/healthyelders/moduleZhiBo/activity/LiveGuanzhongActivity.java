@@ -1947,7 +1947,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 if (eventBean.time - lastMsgTime < 200 && lastMsg.equals(eventBean.content)) {
                     return;
                 }
-                toSendTextMsg(eventBean.content);
+                toSendTextMsg(eventBean.content.trim());
                 lastMsgTime = eventBean.time;
                 lastMsg = eventBean.content;
             } else if (eventBean.msgId == CodeTable.ZHJ_SEND_GIFT) {
@@ -1988,9 +1988,11 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 if (eventBean.msgType == 1) {
                     binding.tvFollow.setText("");
                     binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00061));
+                    mLiveInitInfo.hasFollow = true;
                 } else {
                     binding.tvFollow.setText("关注");
                     binding.tvFollow.setBackground(getResources().getDrawable(R.mipmap.guanzhu_1_00034));
+                    mLiveInitInfo.hasFollow = false;
                 }
             }
         });

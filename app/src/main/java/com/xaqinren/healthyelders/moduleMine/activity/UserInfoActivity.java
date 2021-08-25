@@ -260,32 +260,44 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
             binding.vpContent.setCurrentItem(menuPosition);
         });
         binding.tvGzNum.setOnClickListener(lis -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt("page", 0);
-            bundle.putString("name", userInfoBean.getNickname());
-            bundle.putString("uid", userInfoBean.getId());
-            startActivity(LookAttentionActivity.class, bundle);
+            if (userInfoBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("page", 0);
+                bundle.putString("name", userInfoBean.getNickname());
+                bundle.putString("uid", userInfoBean.getId());
+                startActivity(LookAttentionActivity.class, bundle);
+            }
+
         });
         binding.tvGz.setOnClickListener(lis -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt("page", 0);
-            bundle.putString("name", userInfoBean.getNickname());
-            bundle.putString("uid", userInfoBean.getId());
-            startActivity(LookAttentionActivity.class, bundle);
+            if (userInfoBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("page", 0);
+                bundle.putString("name", userInfoBean.getNickname());
+                bundle.putString("uid", userInfoBean.getId());
+                startActivity(LookAttentionActivity.class, bundle);
+            }
+
         });
         binding.tvFsNum.setOnClickListener(lis -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt("page", 1);
-            bundle.putString("name", userInfoBean.getNickname());
-            bundle.putString("uid", userInfoBean.getId());
-            startActivity(LookAttentionActivity.class, bundle);
+            if (userInfoBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("page", 1);
+                bundle.putString("name", userInfoBean.getNickname());
+                bundle.putString("uid", userInfoBean.getId());
+                startActivity(LookAttentionActivity.class, bundle);
+            }
+
         });
         binding.tvFs.setOnClickListener(lis -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt("page", 1);
-            bundle.putString("name", userInfoBean.getNickname());
-            bundle.putString("uid", userInfoBean.getId());
-            startActivity(LookAttentionActivity.class, bundle);
+            if (userInfoBean != null) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("page", 1);
+                bundle.putString("name", userInfoBean.getNickname());
+                bundle.putString("uid", userInfoBean.getId());
+                startActivity(LookAttentionActivity.class, bundle);
+            }
+
         });
         binding.ivSetting.setOnClickListener(lis -> {
         });
