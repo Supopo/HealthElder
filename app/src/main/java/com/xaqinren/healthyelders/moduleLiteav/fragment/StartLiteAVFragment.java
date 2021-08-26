@@ -92,7 +92,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     private BottomDialog mLvJingPop;            //滤镜弹窗
     private BottomDialog mMeiYanPop;            //美颜弹窗
-//    private BottomDialog mMusicPop;            //美颜弹窗
+    //    private BottomDialog mMusicPop;            //美颜弹窗
     private MusicSelDialog mMusicPop;            //音乐弹窗
     private BeautyPanel mMeiYanControl;         //美颜控制器
     private BeautyPanel mLvJingControl;         //滤镜控制器
@@ -120,7 +120,6 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
 
-
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return R.layout.fragment_start_lite_av;
@@ -142,36 +141,45 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         super.initViewObservable();
         liveUiViewModel.getCurrentPage()
                 .observe(getActivity(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
-                if (integer.intValue() == 0 ) {
-                    //释放
-                    TXUGCRecord recorder = VideoRecordSDK.getInstance().getRecorder();
-                    if (recorder != null) {
-                        VideoRecordSDK.getInstance().getRecorder().stopBGM();
-                        VideoRecordSDK.getInstance().stopCameraPreview();
+                    @Override
+                    public void onChanged(Integer integer) {
+                        LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
+                        if (integer.intValue() == 0) {
+                            //释放
+                            TXUGCRecord recorder = VideoRecordSDK.getInstance().getRecorder();
+                            if (recorder != null) {
+                                VideoRecordSDK.getInstance().getRecorder().stopBGM();
+                                VideoRecordSDK.getInstance().stopCameraPreview();
+                            }
+                        } else {
+                            VideoRecordSDK.getInstance().initSDK();
+                            if (integer.intValue() == 2) {
+                                //变为拍照模式
+                                currentMode = RecordButton.PHOTO_MODE;
+                                changePhotoMode();
+                            } else {
+                                currentMode = RecordButton.VIDEO_MODE;
+                                VideoRecordSDK.getInstance().getRecorder().resumeBGM();
+                                changeVideoMode();
+                            }
+                            //重新加载
+                            VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
+                        }
                     }
-                }  else {
-                    VideoRecordSDK.getInstance().initSDK();
-                    if (integer.intValue() == 2) {
-                        //变为拍照模式
-                        currentMode = RecordButton.PHOTO_MODE;
-                        changePhotoMode();
-                    }else{
-                        currentMode = RecordButton.VIDEO_MODE;
-                        VideoRecordSDK.getInstance().getRecorder().resumeBGM();
-                        changeVideoMode();
-                    }
-                    //重新加载
-                    VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
-                }
-            }
-        });
+                });
 
     }
 
     private void changePhotoMode() {
+        //判断刚才是不是录制时间过短
+        //修复录制时间过短之后切换拍照黑屏问题
+        if (onFragmentStatusListener != null)
+            onFragmentStatusListener.isRecode(false);
+        binding.recodeTime.setText(null);
+        binding.recodeBtn.setRecodeProgress(0);
+        liteAvRecode.restart();
+
+
         binding.selMusic.setVisibility(View.GONE);
         binding.speedLayout.setVisibility(View.GONE);
         binding.recodeBtn.setMode(RecordButton.PHOTO_MODE);
@@ -182,7 +190,6 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         binding.speedLayout.setVisibility(View.VISIBLE);
         binding.recodeBtn.setMode(RecordButton.VIDEO_MODE);
     }
-
 
 
     @Override
@@ -230,8 +237,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         //选择音乐
         binding.selMusic.setOnClickListener(view -> {
             showMusic();
-//            Intent intent = new Intent(getContext(), ChooseMusicActivity.class);
-//            startActivityForResult(intent , REQUEST_MUSIC);
+            //            Intent intent = new Intent(getContext(), ChooseMusicActivity.class);
+            //            startActivityForResult(intent , REQUEST_MUSIC);
         });
         //录制
         /*binding.recodeBtn.setOnClickListener(view -> {
@@ -251,7 +258,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                         .compress(true)// 是否压缩图片 使用的是Luban压缩
                         .isAndroidQTransform(false)//开启沙盒 高版本必须选择不然拿不到小图
                         .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-            }else {
+            } else {
                 //录制的图库选择
                 Intent intent = new Intent(getActivity(), SelectorMediaActivity.class);
                 startActivity(intent);
@@ -287,7 +294,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                     binding.photoPreview.photoPreviewIv.setImageBitmap(bitmap);
                     holderScreen = true;
                     //隐藏activity 底部bar
-                    if (onFragmentStatusListener!=null)
+                    if (onFragmentStatusListener != null)
                         onFragmentStatusListener.isRecode(true);
                 });
             }
@@ -301,7 +308,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             photoPath = "";
             holderScreen = false;
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
-            if (onFragmentStatusListener!=null)
+            if (onFragmentStatusListener != null)
                 onFragmentStatusListener.isRecode(false);
         });
         binding.photoPreview.save.setOnClickListener(view -> {
@@ -310,24 +317,23 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             ArrayList<String> paths = new ArrayList<>();
             paths.add(photoPath);
             intent.putExtra(Constant.PHOTO_PATH, paths);
-            if (onFragmentStatusListener!=null)
+            if (onFragmentStatusListener != null)
                 onFragmentStatusListener.isRecode(false);
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
             if (getActivity() instanceof TackPictureActivity) {
-                getActivity().setResult(Activity.RESULT_OK,intent);
+                getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
-            }else{
+            } else {
                 startActivity(intent);
             }
         });
     }
 
 
-
     /**
      * 屏幕比例
      */
-    private void showScalePop(){
+    private void showScalePop() {
         if (scalePop == null) {
             View filterView = View.inflate(getActivity(), R.layout.pop_scale_control, null);
             ImageView oneOne = filterView.findViewById(R.id.one_one);
@@ -347,7 +353,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             sixNine.setOnClickListener(scaleClick);
             nineSix.setOnClickListener(scaleClick);
         }
-        if (scalePop.isShowing()){scalePop.dismiss();return;}
+        if (scalePop.isShowing()) {
+            scalePop.dismiss();
+            return;
+        }
         float dp16 = getResources().getDimension(R.dimen.dp_16);
         scalePop.showAsDropDown(binding.beautyLayout, 0, (int) dp16);
         scalePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -527,9 +536,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                 mMusicPop.dismiss();
                 isStartMusicActivity = true;
                 MusicRecode.CURRENT_BOURN = com.xaqinren.healthyelders.moduleLiteav.Constant.BOURN_RECODE;
-                Intent intent = new Intent(getActivity(),ChooseMusicActivity.class);
+                Intent intent = new Intent(getActivity(), ChooseMusicActivity.class);
                 getActivity().startActivityForResult(intent, CodeTable.MUSIC_BACK);
-                getActivity().overridePendingTransition(R.anim.activity_bottom_2enter,R.anim.activity_push_none);
+                getActivity().overridePendingTransition(R.anim.activity_bottom_2enter, R.anim.activity_push_none);
             }
 
             @Override
@@ -564,7 +573,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
     }
 
-    private void initCameraRecode(){
+    private void initCameraRecode() {
         liteAvRecode = LiteAvRecode.getInstance();
         liteAvRecode.init(getContext());
         liteAvRecode.setRecodeLiteListener(this);
@@ -590,23 +599,23 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         showNormalPanel();
         if (liteAvRecode.isCanEdit()) {
             liteAvRecode.stopRecode();
-        }else{
+        } else {
             liteAvRecode.shortPauseRecode();
         }
-        if (onFragmentStatusListener!=null)
-        onFragmentStatusListener.isRecode(false);
+        if (onFragmentStatusListener != null)
+            onFragmentStatusListener.isRecode(false);
     }
 
     @Override
-    public void onRecodeProgress(String time , long timeInt) {
+    public void onRecodeProgress(String time, long timeInt) {
         binding.recodeTime.setText(time);
         binding.recodeBtn.setRecodeProgress(timeInt);
     }
 
     @Override
     public void onRecodeSuccess(boolean success) {
-//        binding.recodeBtn.recodeComplete();
-        if (!success){
+        //        binding.recodeBtn.recodeComplete();
+        if (!success) {
             //录制开启失败
             dismissDialog();
             showNormalPanel();
@@ -614,8 +623,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         }
         //开始录制成功
         showRecodePanel();
-        if (onFragmentStatusListener!=null)
-        onFragmentStatusListener.isRecode(true);
+        if (onFragmentStatusListener != null)
+            onFragmentStatusListener.isRecode(true);
     }
 
     @Override
@@ -623,8 +632,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         //录制成功
         ToastUtils.showShort("录制成功");
         showNormalPanel();
-        if (onFragmentStatusListener!=null)
-        onFragmentStatusListener.isRecode(false);
+        if (onFragmentStatusListener != null)
+            onFragmentStatusListener.isRecode(false);
         binding.recodeTime.setText(null);
         binding.recodeBtn.setRecodeProgress(0);
         binding.recodeBtn.recodeComplete();
@@ -635,14 +644,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     public void onStart() {
         super.onStart();
         if (!hasPermission()) {
-            String[] permissions = {Manifest.permission.CAMERA , Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
-            requestPermissions(permissions,REQUEST_PERMISSION);
+            String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+            requestPermissions(permissions, REQUEST_PERMISSION);
         }
     }
 
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String[] permissions = {Manifest.permission.CAMERA , Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+            String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS};
             return PermissionUtils.checkPermissionAllGranted(getActivity(), permissions);
         }
         return true;
@@ -655,7 +664,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         intent.putExtra(UGCKitConstants.VIDEO_HAS_MUSIC, useMusicItem != null);
         startActivity(intent);
         //todo 录制完跳页前先关闭否则切到直播会没有声音
-//        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
+        //        RxBus.getDefault().post(new EventBean(CodeTable.CODE_SUCCESS,"overLive-zb"));
     }
 
     @Override
@@ -721,13 +730,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
 
     private void showNormalPanel() {
-            binding.recordSpeedLayout.setVisibility(View.GONE);
-            binding.recodeTime.setVisibility(View.INVISIBLE);
-            binding.galleryLayout.setVisibility(View.VISIBLE);
-            if (currentMode == RecordButton.VIDEO_MODE)
-                binding.selMusic.setVisibility(View.VISIBLE);
-            binding.recodeBtn.setVisibility(View.VISIBLE);
-            binding.rightPanel.setVisibility(View.VISIBLE);
+        binding.recordSpeedLayout.setVisibility(View.GONE);
+        binding.recodeTime.setVisibility(View.INVISIBLE);
+        binding.galleryLayout.setVisibility(View.VISIBLE);
+        if (currentMode == RecordButton.VIDEO_MODE)
+            binding.selMusic.setVisibility(View.VISIBLE);
+        binding.recodeBtn.setVisibility(View.VISIBLE);
+        binding.rightPanel.setVisibility(View.VISIBLE);
     }
 
     private void showRecodePanel() {
@@ -744,9 +753,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     @Override
     public void isCameraFront(boolean front) {
-        if (!front){
+        if (!front) {
             binding.lightLayout.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             binding.lightLayout.setVisibility(View.GONE);
         }
     }
@@ -755,7 +764,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     public void lightOpen(boolean open) {
         if (!open) {
             binding.lightIv.setImageResource(R.mipmap.icon_xsp_shgd);
-        }else{
+        } else {
             binding.lightIv.setImageResource(R.mipmap.icon_xsp_shgd_k);
         }
     }
@@ -770,10 +779,13 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     @Override
     public void onSetMusicInfoSuccess(MusicInfo musicInfo) {
         showMusicPanel();
-        if (musicPannel!=null)
+        if (musicPannel != null)
             musicPannel.setMusicInfo(musicInfo);
     }
-    /** music 部分 begin */
+
+    /**
+     * music 部分 begin
+     */
     @Override
     public void onMusicVolumChanged(float volume) {
         liteAvRecode.setVolum(volume);
@@ -781,7 +793,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     @Override
     public void onMusicTimeChanged(long startTime, long endTime) {
-        liteAvRecode.musicTimeChanged(startTime,endTime);
+        liteAvRecode.musicTimeChanged(startTime, endTime);
     }
 
     @Override
@@ -802,12 +814,14 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     }
     /** music 部分 end */
 
-    /** 对应 activity 生命周期 */
+    /**
+     * 对应 activity 生命周期
+     */
     public boolean onBackPress() {
         if (holderScreen) {
             holderScreen = false;
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
-            if (onFragmentStatusListener!=null)
+            if (onFragmentStatusListener != null)
                 onFragmentStatusListener.isRecode(false);
             return true;
         }
@@ -815,18 +829,20 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         return false;
     }
 
-    public void onActivityStop(){
+    public void onActivityStop() {
         if (isStartMusicActivity) {
             return;
         }
         liteAvRecode.pauseRecode();
     }
+
     public void onMusicSelActivityBack() {
         showMusic();
     }
-    public void onActivityRestart(){
+
+    public void onActivityRestart() {
         isStartMusicActivity = false;
-        liteAvRecode.restart();
+        //        liteAvRecode.restart();
         VideoRecordSDK instance = VideoRecordSDK.getInstance();
         instance.initSDK();
         VideoRecordSDK.getInstance().startCameraPreview(binding.videoView);
@@ -861,7 +877,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     }
 
-    public interface OnFragmentStatusListener{
+    public interface OnFragmentStatusListener {
         void isRecode(boolean isRecode);
     }
 }

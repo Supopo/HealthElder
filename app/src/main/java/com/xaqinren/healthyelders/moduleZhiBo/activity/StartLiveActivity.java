@@ -1,12 +1,10 @@
 package com.xaqinren.healthyelders.moduleZhiBo.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -42,7 +40,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     private boolean isLiteAVRecode = false;
     private String TAG = getClass().getSimpleName();
     private Disposable subscribe;
-    private Disposable disposable;
     private int po;
 
 
@@ -178,7 +175,8 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityStop();
         } else if (currentFragmentPosition == 0) {
-            startLiveFragment.onActivityStop();
+//            startLiveFragment.onActivityStop();
+            //最小化后会导致设置重置
         }
     }
 
@@ -203,7 +201,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             if (isMusicRestart)
                 startLiteAVFragment.onMusicSelActivityBack();
         } else if (currentFragmentPosition == 0) {
-            startLiveFragment.onActivityRestart();
+//            startLiveFragment.onActivityRestart();
         }
         isMusicRestart = false;
     }

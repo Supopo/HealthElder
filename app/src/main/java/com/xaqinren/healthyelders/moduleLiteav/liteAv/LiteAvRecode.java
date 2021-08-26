@@ -473,7 +473,11 @@ public class LiteAvRecode implements VideoRecordSDK.OnVideoRecordListener {
         }
     }
 
+    //用于录制未完成切换到拍照
     public void restart() {
+        currentStatus = STATUS_IDLE;
+        VideoRecordSDK.getInstance().pauseRecord();
+        VideoRecordSDK.getInstance().restart();
 
     }
 

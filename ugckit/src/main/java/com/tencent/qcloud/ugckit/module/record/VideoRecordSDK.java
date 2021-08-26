@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 
 import com.tencent.qcloud.ugckit.R;
@@ -31,26 +33,26 @@ import java.util.List;
 public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
     private static final String TAG = "VideoRecordSDK";
 
-    public static int STATE_START       = 1;
-    public static int STATE_STOP        = 2;
-    public static int STATE_RESUME      = 3;
-    public static int STATE_PAUSE       = 4;
+    public static int STATE_START = 1;
+    public static int STATE_STOP = 2;
+    public static int STATE_RESUME = 3;
+    public static int STATE_PAUSE = 4;
     public static int START_RECORD_SUCC = 0;
     public static int START_RECORD_FAIL = -1;
 
     @NonNull
-    private static VideoRecordSDK  sInstance = new VideoRecordSDK();
+    private static VideoRecordSDK sInstance = new VideoRecordSDK();
 
     @Nullable
-    private TXUGCRecord            mRecordSDK;
-    private UGCKitRecordConfig     mUGCKitRecordConfig;
-    private RecordDraftManager     mRecordDraftManager;
-    private OnVideoRecordListener  mOnVideoRecordListener;
+    private TXUGCRecord mRecordSDK;
+    private UGCKitRecordConfig mUGCKitRecordConfig;
+    private RecordDraftManager mRecordDraftManager;
+    private OnVideoRecordListener mOnVideoRecordListener;
     private OnRestoreDraftListener mOnRestoreDraftListener;
 
-    private int     mCurrentState  = STATE_STOP;
+    private int mCurrentState = STATE_STOP;
     private boolean mPreviewFlag;
-    private String  mRecordVideoPath;
+    private String mRecordVideoPath;
 
     private VideoRecordSDK() {
 
@@ -96,7 +98,7 @@ public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
 
         if (mUGCKitRecordConfig.mQuality >= 0) {
             // 推荐配置
-            TXRecordCommon.TXUGCSimpleConfig simpleConfig = new  TXRecordCommon.TXUGCSimpleConfig();
+            TXRecordCommon.TXUGCSimpleConfig simpleConfig = new TXRecordCommon.TXUGCSimpleConfig();
             simpleConfig.videoQuality = mUGCKitRecordConfig.mQuality;
             simpleConfig.minDuration = mUGCKitRecordConfig.mMinDuration;
             simpleConfig.maxDuration = mUGCKitRecordConfig.mMaxDuration;
@@ -140,6 +142,12 @@ public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
             mRecordSDK.stopCameraPreview();
         }
         mPreviewFlag = false;
+    }
+
+    //用于视频录制之后-拍照切换
+    public void restart() {
+        mPreviewFlag = true;
+        mCurrentState = STATE_STOP;
     }
 
     public int getRecordState() {
@@ -498,7 +506,7 @@ public class VideoRecordSDK implements TXRecordCommon.ITXVideoRecordListener {
         Log.d(TAG, "onRecordComplete");
         mCurrentState = STATE_STOP;
         if (result.retCode < 0) {
-//            ToastUtil.toastShortMessage(UGCKit.getAppContext().getResources().getString(R.string.ugckit_video_record_activity_on_record_complete_fail_tip) + result.descMsg);
+            //            ToastUtil.toastShortMessage(UGCKit.getAppContext().getResources().getString(R.string.ugckit_video_record_activity_on_record_complete_fail_tip) + result.descMsg);
             if (mOnVideoRecordListener != null) {
                 mOnVideoRecordListener.onRecordComplete(result);
             }
