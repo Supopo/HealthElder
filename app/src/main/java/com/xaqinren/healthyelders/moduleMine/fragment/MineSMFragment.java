@@ -21,9 +21,12 @@ import com.xaqinren.healthyelders.moduleHome.activity.VideoListActivity;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoListBean;
 import com.xaqinren.healthyelders.moduleMine.adapter.SMVideoAdapter;
+import com.xaqinren.healthyelders.moduleMine.bean.DZVideoInfo;
 import com.xaqinren.healthyelders.moduleMine.viewModel.MineSMViewModel;
 import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
+
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -58,8 +61,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
         videoAdapter = new SMVideoAdapter(R.layout.item_mine_sm_video);
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
-        mLoadMore.setEnableLoadMore(true);//打开上拉加载
-        mLoadMore.setAutoLoadMore(true);//自动加载
+
         mLoadMore.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
         mLoadMore.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
@@ -116,6 +118,9 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
     }
 
     public void toRefresh() {
+        if (mLoadMore != null) {
+            mLoadMore.setEnableLoadMore(false);
+        }
         page = 1;
         viewModel.getMyVideoList(page, pageSize);
     }
@@ -149,7 +154,7 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event.msgId == CodeTable.CODE_SUCCESS && event.content.equals("mine-sm")) {
                 resCode = 99;
-            }else if (event.msgId == CodeTable.VIDEO_PL) {
+            } else if (event.msgId == CodeTable.VIDEO_PL) {
                 //找出对应视频，评论数加1
                 for (VideoInfo datum : videoAdapter.getData()) {
                     if (datum.resourceId.equals(event.content)) {
@@ -189,26 +194,35 @@ public class MineSMFragment extends BaseFragment<FragmentMineSmBinding, MineSMVi
                 }
             }
         });
-        viewModel.mVideoList.observe(this, dataList -> {
-            if (dataList != null) {
-                if (dataList.size() > 0) {
-                    //加载更多加载完成
-                    mLoadMore.loadMoreComplete();
-                }
-                if (page == 1) {
-                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
-                    videoAdapter.setList(dataList);
-                    if (dataList.size() == 0) {
-                        //创建适配器.空布局，没有数据时候默认展示的
-                        videoAdapter.setEmptyView(R.layout.item_empty);
+        viewModel.mVideoList.observe(this, data -> {
+            if (data != null) {
+                List<VideoInfo> dataList = data.content;
+                if (dataList != null) {
+                    mLoadMore.setEnableLoadMore(true);//打开上拉加载
+
+                    //number从0开始的
+                    if (data.number == 0) {
+                        //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                        videoAdapter.setList(dataList);
+                    } else {
+                        videoAdapter.addData(dataList);
                     }
-                } else {
-                    if (dataList.size() == 0) {
-                        //加载更多加载结束
-                        mLoadMore.loadMoreEnd();
-                        page--;
+
+                    if (dataList.size() < 10) {
+                        if (dataList.size() == 0 && page == 1) {
+                            //创建适配器.空布局，没有数据时候默认展示的
+                            videoAdapter.setEmptyView(R.layout.item_empty);
+                        } else {
+                            mLoadMore.loadMoreEnd();
+                        }
+                    } else {
+                        mLoadMore.loadMoreComplete();
                     }
-                    videoAdapter.addData(dataList);
+
+                    //number从0开始的
+                    page = data.number + 2;
+                    mLoadMore.setAutoLoadMore(true);//自动加载
+
                 }
             }
         });

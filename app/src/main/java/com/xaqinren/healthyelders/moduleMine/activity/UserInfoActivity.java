@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -139,7 +140,12 @@ public class UserInfoActivity extends BaseActivity<ActivityUserInfoBinding, User
                 } else if (menuPosition == 1) {
                     userXHFragment.toRefresh();
                 }
-                binding.srlTop.setRefreshing(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.srlTop.setRefreshing(false);
+                    }
+                }, 500);
             }
         });
 

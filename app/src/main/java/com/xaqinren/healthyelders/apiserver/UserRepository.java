@@ -462,12 +462,31 @@ public class UserRepository {
         });
     }
 
-    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type) {
+    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog,  MutableLiveData<BaseListRes<List<VideoInfo>>> datas, int page, int pagesize, String type) {
         //PRIVETE
         getMyVideoList(dismissDialog, datas, page, pagesize, type, "");
     }
 
-    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, int pagesize, String type, String tagerId) {
+    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<BaseListRes<List<VideoInfo>>> datas, int page, int pagesize, String type, String tagerId) {
+        //PRIVETE
+        userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, 10, type, tagerId)
+                .compose(RxUtils.schedulersTransformer())
+                .compose(RxUtils.exceptionTransformer())
+                .subscribe(new CustomObserver<MBaseResponse<BaseListRes<List<VideoInfo>>>>() {
+
+                    @Override
+                    protected void dismissDialog() {
+                        dismissDialog.postValue(true);
+                    }
+
+                    @Override
+                    protected void onSuccess(MBaseResponse<BaseListRes<List<VideoInfo>>> data) {
+                        datas.postValue(data.getData());
+                    }
+                });
+    }
+
+    public void getMyVideoList(MutableLiveData<Boolean> dismissDialog, MutableLiveData<List<VideoInfo>> datas, int page, String type, String tagerId) {
         //PRIVETE
         userApi.getMyVideoList(UserInfoMgr.getInstance().getHttpToken(), page, 10, type, tagerId)
                 .compose(RxUtils.schedulersTransformer())
@@ -486,11 +505,11 @@ public class UserRepository {
                 });
     }
 
-    public void getMyLikeVideoList(MutableLiveData<List<DZVideoInfo>> datas, int page, int pagesize) {
+    public void getMyLikeVideoList(MutableLiveData<BaseListRes<List<DZVideoInfo>>> datas, int page, int pagesize) {
         getMyLikeVideoList(datas, page, pagesize, "");
     }
 
-    public void getMyLikeVideoList(MutableLiveData<List<DZVideoInfo>> datas, int page, int pagesize, String tagerId) {
+    public void getMyLikeVideoList(MutableLiveData<BaseListRes<List<DZVideoInfo>>>  datas, int page, int pagesize, String tagerId) {
         userApi.getMyLikeVideoList(UserInfoMgr.getInstance().getHttpToken(), page, pagesize, tagerId)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
@@ -503,7 +522,7 @@ public class UserRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<BaseListRes<List<DZVideoInfo>>> data) {
-                        datas.postValue(data.getData().content);
+                        datas.postValue(data.getData());
                     }
                 });
     }
@@ -1004,7 +1023,7 @@ public class UserRepository {
     }
 
     public void sendScanResult(String code, MutableLiveData<Boolean> datas, MutableLiveData<Boolean> requestDialog) {
-        userApi.bindUserRelationship(UserInfoMgr.getInstance().getHttpToken(),code)
+        userApi.bindUserRelationship(UserInfoMgr.getInstance().getHttpToken(), code)
                 .compose(RxUtils.schedulersTransformer())
                 .compose(RxUtils.exceptionTransformer())
                 .subscribe(new DisposableObserver<MBaseResponse<Object>>() {

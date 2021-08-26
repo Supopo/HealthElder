@@ -40,7 +40,6 @@ import me.goldze.mvvmhabit.utils.StringUtils;
 import me.goldze.mvvmhabit.utils.Utils;
 
 /**
- *
  * 关注/粉丝
  */
 public class AttentionFragment extends BaseFragment<FramentAttentionBinding, AttentionViewModel> {
@@ -93,7 +92,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         adapter.setEmptyView(R.layout.list_empty);
-//        adapter.addHeaderView(View.inflate(getContext(), R.layout.header_empty_56dp, null));
+        //        adapter.addHeaderView(View.inflate(getContext(), R.layout.header_empty_56dp, null));
         initHeader();
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -114,18 +113,18 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                     tempUserIndex = position;
                     Bundle bundle = new Bundle();
                     bundle.putString("userId", userBean.getId());
-                    startActivity(UserInfoActivity.class,bundle);
-                }break;
-                case R.id.attention_btn:
-                {
+                    startActivity(UserInfoActivity.class, bundle);
+                }
+                break;
+                case R.id.attention_btn: {
                     showDialog();
                     viewModel.recommendFriend(userBean.getId());
                 }
                 break;
-                case R.id.close:{
+                case R.id.close: {
                     showDelPop(userBean);
                 }
-                    break;
+                break;
             }
         });
         showDialog();
@@ -158,14 +157,13 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     @Override
     public void onResume() {
         super.onResume();
-//        if (tempUserBean != null && tempUserIndex != -1) {
-//            //重新请求单个用户信息
-//            if (tempUserBean.attentionUserInfo != null) {
-//                viewModel.refreshUserList(tempUserBean.attentionUserInfo.nickname);
-//            }
-//        }
+        //        if (tempUserBean != null && tempUserIndex != -1) {
+        //            //重新请求单个用户信息
+        //            if (tempUserBean.attentionUserInfo != null) {
+        //                viewModel.refreshUserList(tempUserBean.attentionUserInfo.nickname);
+        //            }
+        //        }
     }
-
 
 
     @Override
@@ -190,45 +188,59 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                 }
             }
         });
-        viewModel.requestSuccess.observe(this,a -> dismissDialog());
+        viewModel.requestSuccess.observe(this, a -> dismissDialog());
         viewModel.userList.observe(this, liteAvUserBeans -> {
-            if (currentPage==1) adapter.getData().clear();
+            if (liteAvUserBeans == null) {
+                return;
+            }
+            int temp = -1;
+            for (int i = 0; i < liteAvUserBeans.size(); i++) {
+                if (liteAvUserBeans.get(i).getAttentionUserId().equals(UserInfoMgr.getInstance().getUserInfo().getId())) {
+                    temp = i;
+                }
+            }
+            if (temp != -1) {
+                liteAvUserBeans.remove(temp);
+            }
+
+
+            if (currentPage == 1)
+                adapter.getData().clear();
             adapter.addData(liteAvUserBeans);
             if (liteAvUserBeans.isEmpty()) {
                 adapter.getLoadMoreModule().loadMoreEnd(false);
-            }else{
+            } else {
                 adapter.getLoadMoreModule().loadMoreComplete();
             }
             currentPage++;
             binding.swipeContent.setRefreshing(false);
         });
         viewModel.flow.observe(this, aBoolean -> {
-                dismissDialog();
-                LiteAvUserBean friendBean = (LiteAvUserBean) adapter.getData().get(opIndex);
-                if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
-                    //陌生人
-                    friendBean.setIdentity(AddFriendAdapter.ATTENTION);
-                } else if (friendBean.getIdentity().equals(AddFriendAdapter.FANS)) {
-                    //粉丝
-                    friendBean.setIdentity(AddFriendAdapter.FRIEND);
-                } else if (friendBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
-                    //关注的人
-                    friendBean.setIdentity(AddFriendAdapter.STRANGER);
-                } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
-                    //朋友
-                    friendBean.setIdentity(AddFriendAdapter.FANS);
-                }  else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
-                    //关注的人
-                    friendBean.setIdentity(AddFriendAdapter.STRANGER);
-                }
-            adapter.notifyItemChanged(opIndex,99);
+            dismissDialog();
+            LiteAvUserBean friendBean = (LiteAvUserBean) adapter.getData().get(opIndex);
+            if (friendBean.getIdentity().equals(AddFriendAdapter.STRANGER)) {
+                //陌生人
+                friendBean.setIdentity(AddFriendAdapter.ATTENTION);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FANS)) {
+                //粉丝
+                friendBean.setIdentity(AddFriendAdapter.FRIEND);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.ATTENTION)) {
+                //关注的人
+                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FRIEND)) {
+                //朋友
+                friendBean.setIdentity(AddFriendAdapter.FANS);
+            } else if (friendBean.getIdentity().equals(AddFriendAdapter.FOLLOW)) {
+                //关注的人
+                friendBean.setIdentity(AddFriendAdapter.STRANGER);
+            }
+            adapter.notifyItemChanged(opIndex, 99);
         });
         viewModel.del.observe(this, aBoolean -> {
             if (aBoolean) {
                 dialog.dismiss();
-                adapter.getData().remove(opIndex);
-                adapter.notifyItemChanged(opIndex + 1);
-            }else{
+                adapter.remove(opIndex);
+            } else {
                 ToastUtil.toastShortMessage("解除失败,请重试");
             }
         });
@@ -245,7 +257,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                                 adapter.getData().get(opIndex).identity = FriendProvider.FRIEND;
                             }
                         } else if (eventBean.msgType == 0) {
-                            if (adapter.getData().get(opIndex).identity.equals(FriendProvider.FOLLOW)||adapter.getData().get(opIndex).identity.equals(FriendProvider.ATTENTION)) {
+                            if (adapter.getData().get(opIndex).identity.equals(FriendProvider.FOLLOW) || adapter.getData().get(opIndex).identity.equals(FriendProvider.ATTENTION)) {
                                 adapter.getData().get(opIndex).identity = FriendProvider.STRANGER;
                             } else if (adapter.getData().get(opIndex).identity.equals(FriendProvider.FRIEND)) {
                                 adapter.getData().get(opIndex).identity = FriendProvider.FANS;
@@ -260,6 +272,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     }
 
     private Dialog dialog;
+
     private void showDelPop(LiteAvUserBean userBean) {
         if (dialog == null) {
             dialog = new Dialog(getContext(), R.style.CustomerDialog);
@@ -285,7 +298,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
         ImageView avatar = dialog.findViewById(R.id.avatar);
         TextView cancel = dialog.findViewById(R.id.cancel);
         TextView confirm = dialog.findViewById(R.id.confirm);
-        GlideUtil.intoImageView(getContext(),userBean.attentionUserInfo.avatarUrl,avatar);
+        GlideUtil.intoImageView(getContext(), userBean.attentionUserInfo.avatarUrl, avatar);
         cancel.setOnClickListener(view -> dialog.dismiss());
         confirm.setOnClickListener(view -> {
             //TODO 删除粉丝

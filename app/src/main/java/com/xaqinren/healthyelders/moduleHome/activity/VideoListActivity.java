@@ -281,42 +281,45 @@ public class VideoListActivity extends BaseActivity<ActivityVideoListBinding, Vi
         });
 
         //点赞视频列表接受数据
-        viewModel.dzDatas.observe(this, datas -> {
+        viewModel.dzDatas.observe(this, data -> {
             //            closeLoadView();
+            if (data != null) {
+                List<DZVideoInfo> datas = data.content;
+                if (datas != null && datas.size() > 0) {
+                    List<VideoInfo> tempList = new ArrayList<>();
 
-            if (datas != null && datas.size() > 0) {
-                List<VideoInfo> tempList = new ArrayList<>();
+                    for (DZVideoInfo dzVideoInfo : datas) {
+                        if (dzVideoInfo.homeComprehensiveHall != null && !dzVideoInfo.homeComprehensiveHall.isArticle()) {
+                            tempList.add(dzVideoInfo.homeComprehensiveHall);
+                        }
+                    }
 
-                for (DZVideoInfo dzVideoInfo : datas) {
-                    if (dzVideoInfo.homeComprehensiveHall != null && !dzVideoInfo.homeComprehensiveHall.isArticle()) {
-                        tempList.add(dzVideoInfo.homeComprehensiveHall);
+                    if (page == 1) {
+                        mVideoInfoList.clear();
+                        fragmentList.clear();
+                        fragmentPosition = 0;
+                    }
+
+                    mVideoInfoList.addAll(tempList);
+
+                    //ViewPage添加
+                    for (int i = 0; i < tempList.size(); i++) {
+                        addFragment(tempList, i);
+                    }
+
+                    if (page == 1) {
+                        //需要重new否者会出现缓存
+                        homeAdapter = new FragmentPagerAdapter(this, fragmentList);
+                        binding.viewPager2.setAdapter(homeAdapter);
+                    }
+
+                } else {
+                    if (page > 1) {
+                        page--;
                     }
                 }
-
-                if (page == 1) {
-                    mVideoInfoList.clear();
-                    fragmentList.clear();
-                    fragmentPosition = 0;
-                }
-
-                mVideoInfoList.addAll(tempList);
-
-                //ViewPage添加
-                for (int i = 0; i < tempList.size(); i++) {
-                    addFragment(tempList, i);
-                }
-
-                if (page == 1) {
-                    //需要重new否者会出现缓存
-                    homeAdapter = new FragmentPagerAdapter(this, fragmentList);
-                    binding.viewPager2.setAdapter(homeAdapter);
-                }
-
-            } else {
-                if (page > 1) {
-                    page--;
-                }
             }
+
         });
     }
 

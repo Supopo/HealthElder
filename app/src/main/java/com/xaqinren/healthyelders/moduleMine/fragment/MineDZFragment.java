@@ -41,7 +41,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
     private int page = 1;
     private int pageSize = 10;
     private DZVideoAdapter videoAdapter;
-    private BaseLoadMoreModule mLoadMore;
+    public BaseLoadMoreModule mLoadMore;
     private Disposable subscribe;
 
 
@@ -62,13 +62,12 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
         videoAdapter = new DZVideoAdapter(R.layout.item_mine_dz_video);
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
-        mLoadMore.setEnableLoadMore(true);//打开上拉加载
+
         mLoadMore.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
         mLoadMore.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
             @Override
             public void onLoadMore() {
-                page++;
                 viewModel.getMyLikeVideoList(page, pageSize);
             }
         });
@@ -143,7 +142,7 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
 
     public void toRefresh() {
         if (mLoadMore != null) {
-            mLoadMore.loadMoreComplete();
+            mLoadMore.setEnableLoadMore(false);
         }
         page = 1;
         viewModel.getMyLikeVideoList(page, pageSize);
@@ -156,27 +155,35 @@ public class MineDZFragment extends BaseFragment<FragmentMineDzBinding, MineDZVi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.mVideoList.observe(this, dataList -> {
-            if (dataList != null) {
-                if (dataList.size() > 0) {
-                    //加载更多加载完成
-                    mLoadMore.loadMoreComplete();
+        viewModel.mVideoList.observe(this, data -> {
+            if (data != null) {
+                List<DZVideoInfo> dataList = data.content;
+                if (dataList != null) {
+                    mLoadMore.setEnableLoadMore(true);//打开上拉加载
+
+                    //number从0开始的
+                    if (data.number == 0) {
+                        //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                        videoAdapter.setList(dataList);
+                    } else {
+                        videoAdapter.addData(dataList);
+                    }
+
+                    if (dataList.size() < 10) {
+                        if (dataList.size() == 0 && page == 1) {
+                            //创建适配器.空布局，没有数据时候默认展示的
+                            videoAdapter.setEmptyView(R.layout.item_empty);
+                        } else {
+                            mLoadMore.loadMoreEnd();
+                        }
+                    } else {
+                        mLoadMore.loadMoreComplete();
+                    }
+
+                    //number从0开始的
+                    page = data.number + 2;
                     mLoadMore.setAutoLoadMore(true);//自动加载
-                }
-                if (page == 1) {
-                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
-                    videoAdapter.setList(dataList);
-                    if (dataList.size() == 0) {
-                        //创建适配器.空布局，没有数据时候默认展示的
-                        videoAdapter.setEmptyView(R.layout.item_empty);
-                    }
-                } else {
-                    if (dataList.size() == 0) {
-                        //加载更多加载结束
-                        mLoadMore.loadMoreEnd();
-                        page--;
-                    }
-                    videoAdapter.addData(dataList);
+
                 }
             }
         });

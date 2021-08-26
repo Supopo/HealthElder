@@ -29,6 +29,7 @@ import com.xaqinren.healthyelders.modulePicture.activity.TextPhotoDetailActivity
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -67,14 +68,13 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
         videoAdapter = new ZPVideoAdapter(R.layout.item_mine_zp_video);
 
         mLoadMore = videoAdapter.getLoadMoreModule();//创建适配器.上拉加载
-        mLoadMore.setEnableLoadMore(true);//打开上拉加载
-        mLoadMore.setAutoLoadMore(true);//自动加载
+
         mLoadMore.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
         mLoadMore.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
             @Override
             public void onLoadMore() {
-                page++;
+
                 viewModel.getMyVideoList(page, pageSize, userId);
             }
         });
@@ -144,6 +144,9 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
     }
 
     public void toRefresh() {
+        if (mLoadMore != null) {
+            mLoadMore.setEnableLoadMore(false);
+        }
         page = 1;
         viewModel.getMyVideoList(page, pageSize, userId);
     }
@@ -209,28 +212,39 @@ public class UserZPFragment extends BaseFragment<FragmentUserZpBinding, UserZPVi
             }
         });
 
-        viewModel.mVideoList.observe(this, dataList -> {
-            if (dataList != null) {
-                if (dataList.size() > 0) {
-                    //加载更多加载完成
-                    mLoadMore.loadMoreComplete();
-                }
-                if (page == 1) {
-                    if (dataList.size() == 0) {
-                        videoAdapter.setEmptyView(R.layout.item_empty);
+        viewModel.mVideoList.observe(this, data -> {
+            if (data != null) {
+                List<VideoInfo> dataList = data.content;
+                if (dataList != null) {
+                    mLoadMore.setEnableLoadMore(true);//打开上拉加载
+
+                    //number从0开始的
+                    if (data.number == 0) {
+
+                        //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
+                        videoAdapter.setList(dataList);
+                    } else {
+                        videoAdapter.addData(dataList);
                     }
 
-                    //为了防止刷新时候图片闪烁统一用notifyItemRangeInserted刷新
-                    videoAdapter.setList(dataList);
-                } else {
-                    if (dataList.size() == 0) {
-                        //加载更多加载结束
-                        mLoadMore.loadMoreEnd();
-                        page--;
+                    if (dataList.size() < 10) {
+                        if (dataList.size() == 0 && page == 1) {
+                            //创建适配器.空布局，没有数据时候默认展示的
+                            videoAdapter.setEmptyView(R.layout.item_empty);
+                        } else {
+                            mLoadMore.loadMoreEnd();
+                        }
+                    } else {
+                        mLoadMore.loadMoreComplete();
                     }
-                    videoAdapter.addData(dataList);
+
+                    //number从0开始的
+                    page = data.number + 2;
+                    mLoadMore.setAutoLoadMore(true);//自动加载
+
                 }
             }
+
         });
     }
     @Override

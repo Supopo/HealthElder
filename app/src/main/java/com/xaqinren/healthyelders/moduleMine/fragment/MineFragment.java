@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleMine.fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -17,10 +19,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.MainActivity;
+import com.xaqinren.healthyelders.MainViewModel;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMineBinding;
 import com.xaqinren.healthyelders.moduleHome.adapter.FragmentPagerAdapter;
+import com.xaqinren.healthyelders.moduleHome.viewModel.SearchAllViewModel;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.EditInfoActivity;
 import com.xaqinren.healthyelders.moduleMine.activity.LookAttentionActivity;
@@ -166,7 +170,14 @@ public class MineFragment extends BaseFragment<FragmentMineBinding, MineViewMode
             @Override
             public void onRefresh() {
                 refreshUserInfo();
-                binding.srlTop.setRefreshing(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.srlTop.setRefreshing(false);
+                    }
+                }, 500);
+                //刷新侧边栏菜单
+                ViewModelProviders.of(getActivity()).get(MainViewModel.class).getSlideBar();
             }
         });
 
