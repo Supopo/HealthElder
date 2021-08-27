@@ -14,11 +14,14 @@ import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.databinding.ActivityFriendsListBinding;
+import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.moduleMsg.adapter.FriendListAdapter;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.FriendsListViewModel;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.bus.RxBus;
 
 /**
  * Created by Lee. on 2021/8/20.
@@ -29,6 +32,9 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
     private FriendListAdapter mAdapter;
     private BaseLoadMoreModule loadMoreModule;
     private int pageNum = 1;
+    private Bundle extras;
+    private int type;
+
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -41,10 +47,17 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
     }
 
     @Override
+    public void initParam() {
+        super.initParam();
+        extras = getIntent().getExtras();
+        type = extras.getInt("type");
+    }
+
+    @Override
     public void initData() {
         super.initData();
         tvTitle.setText("朋友列表");
-        mAdapter = new FriendListAdapter(R.layout.item_friends_list);
+        mAdapter = new FriendListAdapter(R.layout.item_friends_list, type);
         binding.rvContent.setLayoutManager(new LinearLayoutManager(this));
         binding.rvContent.setAdapter(mAdapter);
         loadMoreModule = mAdapter.getLoadMoreModule();
@@ -68,12 +81,18 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.tv_send_msg) {
-                    //打开聊天页面
-                    ChatInfo chatInfo = new ChatInfo();
-                    chatInfo.setChatName(mAdapter.getData().get(position).getName());
-                    chatInfo.setTopChat(false);
-                    chatInfo.setId(mAdapter.getData().get(position).getAttentionUserId());
-                    ChatActivity.startChar(getContext(), chatInfo);
+                    if (type == 0) {
+                        //打开聊天页面
+                        ChatInfo chatInfo = new ChatInfo();
+                        chatInfo.setChatName(mAdapter.getData().get(position).getName());
+                        chatInfo.setTopChat(false);
+                        chatInfo.setId(mAdapter.getData().get(position).getAttentionUserId());
+                        ChatActivity.startChar(getContext(), chatInfo);
+                    } else if (type == 1) {//分享
+                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_USER, mAdapter.getData().get(position).getAttentionUserId()));
+                    }
+
+
                 }
             }
         });

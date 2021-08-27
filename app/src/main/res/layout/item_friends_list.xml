@@ -57,7 +57,8 @@
             android:textSize="@dimen/sp_14" />
 
         <ImageView
-            android:id="@+id/close"
+            android:visibility="gone"
+            android:id="@+id/iv_more"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
             android:background="@mipmap/shangc_sy_more" />

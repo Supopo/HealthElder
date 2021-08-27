@@ -20,12 +20,23 @@ public class FriendListAdapter extends BaseQuickAdapter<LiteAvUserBean, BaseView
         addChildClickViewIds(R.id.tv_send_msg);
     }
 
+    private int type;
+
+    public FriendListAdapter(int layoutResId, int type) {
+        super(layoutResId);
+        this.type = type;
+        addChildClickViewIds(R.id.tv_send_msg);
+    }
+
     @Override
     protected void convert(BaseViewHolder helper, LiteAvUserBean item) {
         ItemFriendsListBinding binding = DataBindingUtil.bind(helper.itemView);
         binding.setViewModel(item);
         binding.executePendingBindings();
         GlideUtil.intoImageView(getContext(), item.getAvatar(), binding.avatar);
+        if (type == 1) {
+            binding.tvSendMsg.setText("分享");
+        }
     }
 
     //局部刷新用的

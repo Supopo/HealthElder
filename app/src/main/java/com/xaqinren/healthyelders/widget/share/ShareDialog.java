@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,18 +31,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
-import com.tencent.qcloud.tim.uikit.base.IBaseMessageSender;
-import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
-import com.tencent.qcloud.tim.uikit.base.TUIKitListenerManager;
-import com.tencent.qcloud.tim.uikit.modules.message.CustomMessage;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
-import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.PopShareBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
@@ -49,6 +44,7 @@ import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
+import com.xaqinren.healthyelders.moduleMsg.activity.FriendsListActivity;
 import com.xaqinren.healthyelders.moduleMsg.bean.MCustomMsgBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBUserListBean;
 import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.TCGlobalConfig;
@@ -89,6 +85,7 @@ public class ShareDialog {
     private ShareBean shareBean;
     private VideoInfo videoInfo;
     private Disposable uniSubscribe;
+    private Disposable Subscribe;
     //视频/日记发布者id
     private String userId;
     //当前登录用户Id
@@ -101,6 +98,7 @@ public class ShareDialog {
     private Fragment fragment;
     private Disposable disposable;
     private IMMessageMgr imMessageMgr;
+    private String shareData;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -220,7 +218,6 @@ public class ShareDialog {
 
 
         shareFriendAdapter.setOnItemClickListener(((adapter, view, position) -> {
-            ZBUserListBean userInfo = (ZBUserListBean) adapter.getData().get(position);
 
         }));
 
@@ -287,8 +284,12 @@ public class ShareDialog {
                 messageCustom.resource = new Gson().toJson(videoInfo);
             }
 
-            String data = gson.toJson(messageCustom);
-
+            shareData = gson.toJson(messageCustom);
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent(mContext, FriendsListActivity.class);
+            bundle.putInt("type", 1);
+            intent.putExtras(bundle);
+            mContext.startActivity(intent);
             //            MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
             //            IBaseMessageSender messageSender = TUIKitListenerManager.getInstance().getMessageSender();
             //            if (messageSender != null) {
@@ -310,19 +311,6 @@ public class ShareDialog {
             //            }
 
 
-            imMessageMgr.sendC2CCustomMessage("1398569262716555264", data, new IMMessageMgr.Callback() {
-                @Override
-                public void onError(int code, String errInfo) {
-                    LogUtils.v("im-send", "errInfo: " + errInfo);
-                    LogUtils.v("im-send", "code: " + code);
-                }
-
-                @Override
-                public void onSuccess(Object... args) {
-                    Log.v("CustomChatController", "IM Custom Data: " + data);
-                    ToastUtil.toastShortMessage("分享成功");
-                }
-            });
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
             //私信微信朋友
@@ -405,6 +393,27 @@ public class ShareDialog {
                     }
                 } else if (event.msgId == CodeTable.UNI_RELEASE_FAIL) {
                     //ToastUtils.showShort("打开小程序失败");
+                }
+            }
+        });
+
+        Subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == CodeTable.SHARE_USER) {
+                    //分享给好友
+                    imMessageMgr.sendC2CCustomMessage(event.content, shareData, new IMMessageMgr.Callback() {
+                        @Override
+                        public void onError(int code, String errInfo) {
+                            LogUtils.v("im-send", "errInfo: " + errInfo);
+                            LogUtils.v("im-send", "code: " + code);
+                        }
+
+                        @Override
+                        public void onSuccess(Object... args) {
+                            Log.v("CustomChatController", "IM Custom Data: " + shareData);
+                            ToastUtil.toastShortMessage("分享成功");
+                        }
+                    });
                 }
             }
         });
@@ -505,8 +514,8 @@ public class ShareDialog {
         }
     }
 
-    public void setData(List<? extends IShareUser> data) {
-        this.userList = data;
+    public void setShareData(List<? extends IShareUser> shareData) {
+        this.userList = shareData;
     }
 
     public void show(View Parent) {

@@ -12,9 +12,7 @@ import android.widget.ImageView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Registry;
 import com.tencent.liteav.basic.log.TXCLog;
-import com.tencent.qcloud.tim.uikit.utils.SoftKeyBoardUtil;
 import com.tencent.qcloud.ugckit.UGCKitConstants;
 import com.tencent.qcloud.ugckit.utils.LogReport;
 import com.tencent.qcloud.ugckit.utils.TelephonyUtil;
@@ -32,13 +30,11 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.ActivityLiteAvPlayBinding;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
-import com.xaqinren.healthyelders.moduleLiteav.bean.VideoCommentBean;
 import com.xaqinren.healthyelders.moduleLiteav.viewModel.LiteAvPlayViewModel;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.LiteAvPlayView;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
-import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 import com.xaqinren.healthyelders.widget.share.IShareUser;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
@@ -442,7 +438,7 @@ public class LiteAvPlayActivity extends BaseActivity <ActivityLiteAvPlayBinding 
     private void showShareDialog(){
         if (shareDialog == null)
             shareDialog = new ShareDialog(this);
-        shareDialog.setData(getShareData());
+        shareDialog.setShareData(getShareData());
         shareDialog.show(binding.rlContainer);
     }
     private List<? extends IShareUser> getShareData() {

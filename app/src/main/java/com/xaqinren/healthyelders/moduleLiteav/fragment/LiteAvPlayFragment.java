@@ -35,7 +35,6 @@ import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.databinding.FragmentPlayLiteAvBinding;
 import com.xaqinren.healthyelders.global.AppApplication;
-import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.CommentListBean;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoEvent;
 import com.xaqinren.healthyelders.moduleHome.bean.VideoInfo;
@@ -48,7 +47,6 @@ import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.comment.CommentDialog;
 import com.xaqinren.healthyelders.widget.comment.CommentPublishDialog;
-import com.xaqinren.healthyelders.widget.comment.ICommentBean;
 import com.xaqinren.healthyelders.widget.share.IShareUser;
 import com.xaqinren.healthyelders.widget.share.ShareDialog;
 
@@ -538,7 +536,7 @@ public class LiteAvPlayFragment extends BaseFragment<FragmentPlayLiteAvBinding, 
     private void showShareDialog(){
         if (shareDialog == null)
             shareDialog = new ShareDialog(getActivity());
-        shareDialog.setData(getShareData());
+        shareDialog.setShareData(getShareData());
         shareDialog.show(binding.rlContainer);
     }
     private List<? extends IShareUser> getShareData() {
