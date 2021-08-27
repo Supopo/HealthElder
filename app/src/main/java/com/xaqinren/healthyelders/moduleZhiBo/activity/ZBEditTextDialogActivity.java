@@ -269,10 +269,10 @@ public class ZBEditTextDialogActivity extends AppCompatActivity {
                 ToastUtil.toastShortMessage("请输入内容");
             } else {
                 if (type == 0) {
-                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString(), System.currentTimeMillis()));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_MSG, etView.getText().toString().trim(), System.currentTimeMillis()));
                     hasSend = true;
                 } else if (type == 1) {
-                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_WORD, etView.getText().toString()));
+                    RxBus.getDefault().post(new EventBean(LiveConstants.SEND_WORD, etView.getText().toString().trim()));
                 }
                 finish();
             }

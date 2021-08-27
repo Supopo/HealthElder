@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -154,7 +155,7 @@ public class ZBMorePop extends BasePopupWindow {
                         public void run() {
                             qmuiTipDialog.dismiss();
                         }
-                    },1000);
+                    }, 1000);
                     break;
                 case 4:
                     showMYPop();
@@ -173,7 +174,7 @@ public class ZBMorePop extends BasePopupWindow {
                         public void run() {
                             qmuiTipDialog.dismiss();
                         }
-                    },1000);
+                    }, 1000);
                     break;
                 case 6:
                     loadingDialog.show();
@@ -189,7 +190,7 @@ public class ZBMorePop extends BasePopupWindow {
                         public void run() {
                             qmuiTipDialog.dismiss();
                         }
-                    },1000);
+                    }, 1000);
                     break;
                 case 7:
                     showLJPop();
@@ -270,6 +271,11 @@ public class ZBMorePop extends BasePopupWindow {
             mMeiYanControl.setPosition(0);
             mMeiYanControl.setBeautyManager(mLiveRoom.getBeautyManager());
             mMeiYanControl.setPopTitle("美颜");
+
+            if (mLiveInitInfo != null) {
+                mMeiYanControl.setInitData(mLiveInitInfo.beautyPos, mLiveInitInfo.allBeautyLevel,0);
+            }
+
             mMeiYanPop = new BottomDialog(getContext(), filterView,
                     null, true);
         }
@@ -323,7 +329,10 @@ public class ZBMorePop extends BasePopupWindow {
             mLvJingControl.setPopTitle("滤镜");
             BeautyInfo defaultBeautyInfo = mLvJingControl.getDefaultBeautyInfo();
             mLvJingControl.setBeautyInfo(defaultBeautyInfo);
-
+            //初始化选中位置
+            if (mLiveInitInfo != null && mLiveInitInfo.filterStyle != null) {
+                mLvJingControl.setInitData(mLiveInitInfo.filterStyle.itemPos, mLiveInitInfo.filterStyle.itemLevel,1);
+            }
             mLvJingPop = new BottomDialog(getContext(), filterView,
                     null, true);
         }

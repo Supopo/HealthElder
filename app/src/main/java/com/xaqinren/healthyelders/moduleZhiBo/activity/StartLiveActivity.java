@@ -33,8 +33,7 @@ import me.goldze.mvvmhabit.bus.RxBus;
  */
 public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, BaseViewModel> implements StartLiteAVFragment.OnFragmentStatusListener {
     private List<Fragment> mFragments;
-    private StartLiveFragment startLiveFragment;
-    private StartLiteAVFragment startLiteAVFragment;
+    public StartLiteAVFragment startLiteAVFragment;
     private StartLiveUiViewModel liveUiViewModel;
     private int currentFragmentPosition = 0;
     private boolean isLiteAVRecode = false;
@@ -72,7 +71,7 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startLiveFragment.onActivityStop();
+                        startLiteAVFragment.onActivityStop();
                         finish();
                     }
                 }, 500);
@@ -83,14 +82,13 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
     }
 
     private void initFragment() {
-        startLiveFragment = new StartLiveFragment();
         startLiteAVFragment = new StartLiteAVFragment();
         startLiteAVFragment.setOnFragmentStatusListener(this);
         mFragments = new ArrayList<>();
-        mFragments.add(startLiveFragment);
         mFragments.add(startLiteAVFragment);
+
         currentFragmentPosition = 1;
-        commitAllowingStateLoss(currentFragmentPosition);
+        commitAllowingStateLoss(0);
         liveUiViewModel.getCurrentPage().setValue(currentFragmentPosition);
         //默认选中第一个
         binding.llMenu.selectTab(binding.llMenu.getTabAt(currentFragmentPosition));
@@ -106,14 +104,17 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
                     return;
                 }*/
 
-                if (po == 2) {
-                    po = 1;
-                    commitAllowingStateLoss(po);
-                    liveUiViewModel.getCurrentPage().setValue(2);
-                } else {
-                    commitAllowingStateLoss(po);
-                    liveUiViewModel.getCurrentPage().setValue(po);
-                }
+                //                if (po == 2) {
+                //                    po = 1;
+                //                    commitAllowingStateLoss(po);
+                //                    liveUiViewModel.getCurrentPage().setValue(2);
+                //                } else {
+                //                    commitAllowingStateLoss(po);
+                //                    liveUiViewModel.getCurrentPage().setValue(po);
+                //                }
+
+                commitAllowingStateLoss(0);
+                liveUiViewModel.getCurrentPage().setValue(po);
 
                 currentFragmentPosition = po;
             }
@@ -174,9 +175,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
 
         if (currentFragmentPosition == 1) {
             startLiteAVFragment.onActivityStop();
-        } else if (currentFragmentPosition == 0) {
-//            startLiveFragment.onActivityStop();
-            //最小化后会导致设置重置
         }
     }
 
@@ -200,8 +198,6 @@ public class StartLiveActivity extends BaseActivity<ActivityStartLiveBinding, Ba
             startLiteAVFragment.onActivityRestart();
             if (isMusicRestart)
                 startLiteAVFragment.onMusicSelActivityBack();
-        } else if (currentFragmentPosition == 0) {
-//            startLiveFragment.onActivityRestart();
         }
         isMusicRestart = false;
     }

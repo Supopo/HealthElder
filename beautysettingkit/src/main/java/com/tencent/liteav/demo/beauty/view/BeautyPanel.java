@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -31,7 +34,7 @@ import com.tencent.liteav.demo.beauty.utils.ResourceUtils;
 
 /**
  * 美颜面板控件 View
- *
+ * <p>
  * -引用，在 xml 中引用该布局，设置其大小
  * -外部可通过 getDefaultBeautyInfo 获取默认美颜面板的属性
  * -外部可通过 setBeautyInfo 设置美颜面板内部属性
@@ -60,6 +63,7 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
     private int[] mCurrentItemPosition;
 
     private int position;
+    private int scrollX;
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -226,14 +230,34 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         llReset.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View list) {
+                //重置美颜 滤镜
                 mScrollItemView.setClicked(0);
+                mSeekBarLevel.setProgress(0);
             }
         });
     }
 
-    public void setPopTitle(String title){
+    public void setInitData(final int position, final int progress, final int type) {
+        mScrollItemView.setClicked(position);
+
+        scrollX = BeautyUtils.dip2px(getContext(), 59);
+        //滑动到选中位置
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                mSeekBarLevel.setProgress(progress);
+                if (type == 1) {
+                    mScrollItemView.scrollTo((scrollX * position), 0);
+                }
+            }
+        });
+
+    }
+
+    public void setPopTitle(String title) {
         tvPopTitle.setText(title);
     }
+
     private void initData() {
         setBeautyInfo(getDefaultBeautyInfo());
     }
@@ -304,12 +328,15 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
     public void setOnCancelClickListener(OnCancelClickListener listener) {
         this.onCancelClickListener = listener;
     }
+
     public void setMeiYDialogBgDraw(Drawable resId) {
         meiYDialogLayout.setBackgroundDrawable(resId);
     }
+
     public void setMeiYDialogBgRes(int resId) {
         meiYDialogLayout.setBackgroundResource(resId);
     }
+
     public void setMeiYDialogBgColor(int color) {
         meiYDialogLayout.setBackgroundColor(color);
     }

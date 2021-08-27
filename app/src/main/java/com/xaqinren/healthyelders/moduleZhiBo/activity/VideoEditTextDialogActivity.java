@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import com.tencent.qcloud.tim.uikit.component.face.Emoji;
 import com.tencent.qcloud.tim.uikit.component.face.FaceFragment;
 import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.CodeTable;
@@ -111,7 +112,12 @@ public class VideoEditTextDialogActivity extends AppCompatActivity {
         setEditTextInhibitInputSpace();
         ivPublish.setOnClickListener(lis -> {
             //发送消息通知发送
-            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, etView.getText().toString(), type, pos));
+            if (TextUtils.isEmpty(etView.getText().toString().trim()
+            )) {
+                ToastUtil.toastShortMessage("请输入内容");
+                return;
+            }
+            RxBus.getDefault().post(new EventBean(CodeTable.VIDEO_SEND_COMMENT, etView.getText().toString().trim(), type, pos));
             hasSend = true;
             finish();
         });

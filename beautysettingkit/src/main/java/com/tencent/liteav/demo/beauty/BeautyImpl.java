@@ -718,7 +718,8 @@ public class BeautyImpl implements Beauty {
         });
     }
 
-    private Bitmap decodeFilterResource(@NonNull ItemInfo itemInfo) {
+    //获取滤镜Bitmap
+    public Bitmap decodeFilterResource(@NonNull ItemInfo itemInfo) {
         int itemType = itemInfo.getItemType();
         int resId = 0;
         switch (itemType) {

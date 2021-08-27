@@ -4,6 +4,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import com.tencent.liteav.audio.TXCAudioEngine;
 import com.tencent.liteav.audio.TXCAudioUGCRecorder;
 import com.tencent.liteav.audio.impl.Record.TXCAudioSysRecord;
+import com.tencent.liteav.demo.beauty.BeautyImpl;
 import com.tencent.qcloud.tim.uikit.component.face.FaceManager;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.rtmp.ui.TXCloudVideoView;
@@ -551,6 +553,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         mLiveRoom.getBeautyManager().setBeautyLevel(mLiveInitInfo.beautyLevel);
         mLiveRoom.getBeautyManager().setWhitenessLevel(mLiveInitInfo.whitenessLevel);
         mLiveRoom.getBeautyManager().setRuddyLevel(mLiveInitInfo.ruddinessLevel);
+        //设置滤镜
+        if (mLiveInitInfo.filterStyle != null) {
+            BeautyImpl beauty = new BeautyImpl(this);
+            Bitmap bitmap = beauty.decodeFilterResource(mLiveInitInfo.filterStyle);
+            mLiveRoom.getBeautyManager().setFilter(bitmap);
+            mLiveRoom.getBeautyManager().setFilterStrength(mLiveInitInfo.filterStyle.getItemLevel() / 10.0f);
+        }
+
 
         //设置垫片
         mLiveRoom.setCameraMuteImage(R.drawable.sp_leave_bg);
@@ -583,7 +593,7 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                 //无网络
                 if (errCode != -1307) {
                     ToastUtil.toastShortMessage("直播间开启失败，请重新尝试");
-                }else {
+                } else {
                     //结束直播
                     Bundle bundle = new Bundle();
                     bundle.putString("liveRoomRecordId", mLiveInitInfo.liveRoomRecordId);

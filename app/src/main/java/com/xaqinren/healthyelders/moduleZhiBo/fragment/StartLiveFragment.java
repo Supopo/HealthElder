@@ -56,6 +56,7 @@ import com.xaqinren.healthyelders.moduleLiteav.bean.LocationBean;
 import com.xaqinren.healthyelders.moduleLiteav.service.LocationService;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveZhuboActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.SettingRoomPwdActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.LiveMenuAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
@@ -96,7 +97,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private List<LocalMedia> selectList;
     private String photoPath;
     private boolean isAgree = true;
-    private boolean isBackCamera;//是否后置摄像头
+    public boolean isBackCamera;//是否后置摄像头
     private boolean isOpenRoom = true;//是否公开
     private ZBStartSettingPop startSettingPop;
     private BottomDialog mLvJingPop;
@@ -131,6 +132,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private Handler handler;
     private boolean granted1;
     private boolean granted2;
+    private StartLiveActivity startLiveActivity;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -150,22 +152,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         //直播间控制类
         mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
         //打开本地摄像头预览
-        mLiveRoom.startLocalPreview(true, binding.videoView);
+        //        mLiveRoom.startLocalPreview(true, binding.videoView);
         initLiveMenu();
-        //检查直播权限
-        viewModel.checkLiveInfo();
+
         initEvent();
         mLiveInitInfo.setHasLocation(true);
-        granted1 = permissions.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
-        granted2 = permissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (granted1 && granted2) {
-            LocationService.startService(getActivity());
-        }
-
     }
 
     private void initLiveMenu() {
+        startLiveActivity = (StartLiveActivity) getActivity();
+
         menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
         binding.rvMenu.setLayoutManager(new GridLayoutManager(getActivity(), 5));
 
@@ -178,7 +174,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             switch (menuAdapter.getData().get(position).menuName) {
                 case "翻转":
                     isBackCamera = !isBackCamera;
-                    mLiveRoom.switchCamera();
+                    //                    mLiveRoom.switchCamera();
+                    startLiveActivity.startLiteAVFragment.liteAvRecode.switchCamera();
                     mLiveInitInfo.isBackCamera = isBackCamera;
                     break;
                 case "镜像":
@@ -192,10 +189,16 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     menuAdapter.notifyItemChanged(position, 99);
                     break;
                 case "美颜":
-                    showMYPop();
+                    //                    showMYPop();
+                    //通知StartLiveAVFragment调用弹窗
+                    startLiveActivity.startLiteAVFragment.hidePanel();
+                    startLiveActivity.startLiteAVFragment.showMYPop();
+                    //设置完需要再LiveInitInfo中记录参数
                     break;
                 case "滤镜":
-                    showLJPop();
+                    //                    showLJPop();
+                    startLiveActivity.startLiteAVFragment.hidePanel();
+                    startLiveActivity.startLiteAVFragment.showLJPop();
                     break;
                 case "商品":
                     //                    UniService.startService(getActivity(), mLiveInitInfo.appId, 0x10112, mLiveInitInfo.jumpUrl);
@@ -488,21 +491,17 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         liveUiViewModel.getCurrentPage().observe(getActivity(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
-                if (integer.intValue() == 1) {
-                    //释放
-                    mLiveRoom.stopBGM();
-                    mLiveRoom.stopScreenCapture();
-                    mLiveRoom.stopLocalPreview();
-                    //                    MLVBLiveRoom.destroySharedInstance();
-                    //                    liveUiViewModel.getCurrentPage().setValue(11);
-                } else {
-                    //                    if (integer == 12) {
-                    /*mLiveRoom = MLVBLiveRoom.sharedInstance(getActivity());
-                    mLiveRoom.startLocalPreview(true, binding.videoView);*/
-                    //                    }
-                    mLiveRoom.startLocalPreview(true, binding.videoView);
+                if (integer.intValue() == 0) {
+                    //检查直播权限
+                    granted1 = permissions.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
+                    granted2 = permissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION);
+
+                    if (granted1 && granted2) {
+                        LocationService.startService(getActivity());
+                    }
+                    viewModel.checkLiveInfo();
                 }
+
             }
         });
 
@@ -526,6 +525,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         mLiveInitInfo.beautyLevel = mBeautyLevel;
         mLiveInitInfo.whitenessLevel = mWhitenessLevel;
         mLiveInitInfo.ruddinessLevel = mRuddinessLevel;
+        mLiveInitInfo.beautyPos = mBeautypos;
+        mLiveInitInfo.allBeautyLevel = mAllBeautyLevel;
+
+        mLiveInitInfo.filterStyle = mFilterStyle;
+
+        mLiveInitInfo.isBackCamera = isBackCamera;
+
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
@@ -683,10 +689,14 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         });
     }
 
-    private int mBeautyStyle = 2;//美颜风格，三种美颜风格 默认第三种
-    private int mBeautyLevel = 4;//美颜级别，取值范围 0 - 9
-    private int mWhitenessLevel = 1;//美白级别，取值范围
-    private int mRuddinessLevel;//红润级别，取值范围
+    public int mBeautyStyle = 2;//美颜风格，三种美颜风格 默认第三种
+    public int mBeautyLevel = 4;//美颜级别，取值范围 0 - 9
+    public int mWhitenessLevel = 1;//美白级别，取值范围
+    public int mRuddinessLevel;//红润级别，取值范围
+    public int mBeautypos;
+    public int mAllBeautyLevel;
+
+    public ItemInfo mFilterStyle;//滤镜类型
 
     //滤镜设置弹窗
     private void showLJPop() {

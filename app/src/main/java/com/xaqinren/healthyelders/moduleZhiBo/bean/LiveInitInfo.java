@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 
 import java.io.Serializable;
@@ -29,7 +30,6 @@ public class LiveInitInfo implements Serializable {
 
     public String appId;//小程序跳转的appId
     public String jumpUrl;//小程序跳转地址
-
 
 
     //------用户进入直播间返回字段-----
@@ -144,6 +144,9 @@ public class LiveInitInfo implements Serializable {
     public int beautyLevel;//美颜等级
     public int whitenessLevel;//美白等级
     public int ruddinessLevel;//红润等级
+    public int beautyPos;//美颜选项
+    public int allBeautyLevel;//美颜等级
+    public ItemInfo filterStyle;//滤镜设置
 
     public int linkType;
 

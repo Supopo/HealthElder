@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -70,6 +73,7 @@ import com.xaqinren.healthyelders.modulePicture.activity.PublishTextPhotoActivit
 import com.xaqinren.healthyelders.modulePicture.activity.SelectorMediaActivity;
 import com.xaqinren.healthyelders.modulePicture.activity.TackPictureActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.StartLiveActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.fragment.StartLiveFragment;
 import com.xaqinren.healthyelders.moduleZhiBo.viewModel.StartLiveUiViewModel;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.LogUtils;
@@ -101,7 +105,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private boolean isRecord = false;
 
     private StartLiveUiViewModel liveUiViewModel;
-    private LiteAvRecode liteAvRecode;
+    public LiteAvRecode liteAvRecode;
     private OnFragmentStatusListener onFragmentStatusListener;
     private int REQUEST_PERMISSION = 100;
     private int REQUEST_MUSIC = 10003;
@@ -113,6 +117,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
      */
     private boolean holderScreen = false;
     private boolean isStartMusicActivity;
+    private StartLiveFragment startLiveFragment;
 
 
     public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
@@ -146,12 +151,20 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                         LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
                         if (integer.intValue() == 0) {
                             //释放
-                            TXUGCRecord recorder = VideoRecordSDK.getInstance().getRecorder();
-                            if (recorder != null) {
-                                VideoRecordSDK.getInstance().getRecorder().stopBGM();
-                                VideoRecordSDK.getInstance().stopCameraPreview();
-                            }
+                            //                            TXUGCRecord recorder = VideoRecordSDK.getInstance().getRecorder();
+                            //                            if (recorder != null) {
+                            //                                VideoRecordSDK.getInstance().getRecorder().stopBGM();
+                            //                                VideoRecordSDK.getInstance().stopCameraPreview();
+                            //                            }
+
+
+                            binding.rlLive.setVisibility(View.VISIBLE);
+                            binding.rlVideo.setVisibility(View.GONE);
+
                         } else {
+                            binding.rlLive.setVisibility(View.GONE);
+                            binding.rlVideo.setVisibility(View.VISIBLE);
+
                             VideoRecordSDK.getInstance().initSDK();
                             if (integer.intValue() == 2) {
                                 //变为拍照模式
@@ -205,6 +218,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         liveUiViewModel = ViewModelProviders.of(getActivity()).get(StartLiveUiViewModel.class);
         initCameraRecode();
         initView();
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        startLiveFragment = new StartLiveFragment();
+        fragmentManager.beginTransaction().add(R.id.fl_live, startLiveFragment).commit();
     }
 
     private void initView() {
@@ -214,6 +231,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         //翻转
         binding.turnLayout.setOnClickListener(view -> {
             liteAvRecode.switchCamera();
+            startLiveFragment.isBackCamera = !startLiveFragment.isBackCamera;
         });
         //快慢速
         binding.speedLayout.setOnClickListener(view -> {
@@ -403,7 +421,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         }
     };
 
-    private void showMYPop() {
+    public void showMYPop() {
         if (mMeiYanPop == null) {
             View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
             mMeiYanControl = filterView.findViewById(R.id.beauty_pannel);
@@ -418,7 +436,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         Window window = mMeiYanPop.getWindow();
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
-            mMeiYanPop.getWindow().setDimAmount(0.f);
+            mMeiYanPop.getWindow().setDimAmount(0f);
             mMeiYanPop.getWindow().setAttributes(lp);
         }
         mMeiYanControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
@@ -433,11 +451,25 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
             @Override
             public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
+                if (itemPosition < 3) {
+                    startLiveFragment.mBeautyStyle = itemPosition;
+                }
+                startLiveFragment.mBeautypos = itemPosition;
                 return false;
             }
 
             @Override
             public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
+                if (itemPosition < 3) {
+                    startLiveFragment.mBeautyStyle = itemPosition;
+                    startLiveFragment.mBeautyLevel = beautyLevel;
+                } else if (itemPosition == 3) {
+                    startLiveFragment.mWhitenessLevel = beautyLevel;
+                } else {
+                    startLiveFragment.mRuddinessLevel = beautyLevel;
+                }
+                startLiveFragment.mBeautypos = itemPosition;
+                startLiveFragment.mAllBeautyLevel = beautyLevel;
                 return false;
             }
         });
@@ -455,7 +487,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         });
     }
 
-    private void showLJPop() {
+    public void showLJPop() {
         if (mLvJingPop == null) {
             View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
             mLvJingControl = filterView.findViewById(R.id.beauty_pannel);
@@ -489,11 +521,20 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
             @Override
             public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
+                if (itemInfo != null) {
+                    itemInfo.itemPos = itemPosition;
+                    startLiveFragment.mFilterStyle = itemInfo;
+                }
                 return false;
             }
 
             @Override
             public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
+                if (itemInfo != null) {
+                    itemInfo.itemPos = itemPosition;
+                    itemInfo.itemLevel = beautyLevel;
+                    startLiveFragment.mFilterStyle = itemInfo;
+                }
                 return false;
             }
         });
@@ -719,7 +760,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         }
     }
 
-    private void hidePanel() {
+    public void hidePanel() {
 
         binding.recordSpeedLayout.setVisibility(View.GONE);
         binding.rightPanel.setVisibility(View.GONE);

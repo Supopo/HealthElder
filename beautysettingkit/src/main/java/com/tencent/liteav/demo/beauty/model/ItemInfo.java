@@ -1,10 +1,14 @@
 package com.tencent.liteav.demo.beauty.model;
 
+import java.io.Serializable;
+
 /**
  * 美颜面板 item 相关属性
  * 成员变量名和 assets/default_beauty_data.json 的 key 相对应，便于 json 解析
  */
-public class ItemInfo {
+public class ItemInfo implements Serializable {
+    public int itemPos;
+    public int itemLevel;
 
     private long item_id;               // long, item id，item 唯一标识
     private int item_icon_width;              //
