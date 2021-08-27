@@ -347,11 +347,11 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             ToastUtils.showShort("请选择照片");
             return false;
         }
-        if (binding.desText.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(binding.desText.getText().toString().trim())) {
             ToastUtils.showShort("请添加标题");
             return false;
         }
-        if (binding.contentInput.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(binding.contentInput.getText().toString().trim())) {
             ToastUtils.showShort("请添加正文");
             return false;
         }

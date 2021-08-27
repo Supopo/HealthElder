@@ -34,6 +34,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_32"
                 android:layout_marginRight="@dimen/dp_32"
+                android:hint="搜索用户名或健康号"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"
                 android:textSize="@dimen/sp_13"/>

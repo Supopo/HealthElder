@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiteAvRepository;
@@ -30,12 +31,13 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 /**
  * 草稿箱
  */
-public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewModel>{
+public class DraftActivity extends BaseActivity<ActivityDraftBinding, BaseViewModel> {
     private DraftAdapter draftAdapter;
     private boolean isEdit = false;
     private int selCount;
     private int dataCount;
     private boolean isAllSel;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_draft;
@@ -59,7 +61,7 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
 
         Uri uri = getIntent().getData();
         if (uri != null) {
-            String value = UrlUtils.getUrlQueryByTag(uri,"key");
+            String value = UrlUtils.getUrlQueryByTag(uri, "key");
         }
 
         String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
@@ -67,7 +69,7 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
         draftAdapter = new DraftAdapter(R.layout.item_draft);
         reset();
         binding.content.setLayoutManager(new GridLayoutManager(this, 3));
-        binding.content.addItemDecoration(new GridDividerItemDecoration(2,getResources().getColor(R.color.transparent)));
+        binding.content.addItemDecoration(new GridDividerItemDecoration(2, getResources().getColor(R.color.transparent)));
         binding.content.setAdapter(draftAdapter);
         tvRight.setOnClickListener(view -> {
             setEdit();
@@ -84,11 +86,11 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
                     adapter.notifyItemChanged(position);
                     if (bean.isSel()) {
                         selCount++;
-                    }else{
+                    } else {
                         selCount--;
                     }
                     checkAllSel();
-                }else{
+                } else {
                     //进入详情
                     Bundle bundle = new Bundle();
                     bundle.putLong(Constant.DraftId, bean.getId());
@@ -106,11 +108,18 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
             checkAllSel();
         });
         binding.delBtn.setOnClickListener(view -> {
+            boolean hasSel = false;
             for (SaveDraftBean datum : draftAdapter.getData()) {
                 if (datum.isSel()) {
-                    LiteAvRepository.getInstance().delDraftsById(this,fileName , datum.getId());
+                    hasSel = true;
+                    LiteAvRepository.getInstance().delDraftsById(this, fileName, datum.getId());
                 }
             }
+            if (!hasSel) {
+                ToastUtil.toastShortMessage("请先选择需要删除的作品！");
+                return;
+            }
+
             //重新加载数据
             reset();
             setEdit();
@@ -120,7 +129,7 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
 
     private void reset() {
         String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-        List<SaveDraftBean>  list = LiteAvRepository.getInstance().getDraftsList(this, fileName);
+        List<SaveDraftBean> list = LiteAvRepository.getInstance().getDraftsList(this, fileName);
         dataCount = list.size();
         draftAdapter.setList(list);
         selCount = 0;
@@ -131,7 +140,7 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
         if (selCount < dataCount) {
             isAllSel = false;
             binding.selAllIv.setImageResource(R.mipmap.rad_py_nor);
-        }else{
+        } else {
             isAllSel = true;
             binding.selAllIv.setImageResource(R.mipmap.rad_py_sel);
         }
@@ -141,10 +150,12 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
         isEdit = !isEdit;
         setTvRight(isEdit ? "保存" : "编辑");
     }
+
     private void setDataEdit() {
         for (SaveDraftBean datum : draftAdapter.getData()) {
             datum.setEdit(isEdit);
-            if (!isEdit) datum.setSel(false);
+            if (!isEdit)
+                datum.setSel(false);
         }
         if (!isEdit) {
             isAllSel = false;
@@ -152,6 +163,7 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
         }
         draftAdapter.notifyDataSetChanged();
     }
+
     private void showBottom() {
         binding.bottomLayout.setVisibility(isEdit ? View.VISIBLE : View.GONE);
     }
@@ -163,7 +175,7 @@ public class DraftActivity extends BaseActivity <ActivityDraftBinding, BaseViewM
         }
         if (isSel) {
             selCount = 0;
-        }else{
+        } else {
             selCount = dataCount;
         }
         draftAdapter.notifyDataSetChanged();

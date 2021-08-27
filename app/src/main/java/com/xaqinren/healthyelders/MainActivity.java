@@ -441,37 +441,43 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                 //判断商城页面appBar处于展开，且向下滑动超过左右滑动再打开下拉刷新
                 else if (selectView.getId() == R.id.tv_menu2) {
-                    if (scrollX > scrollY) {
-                        mallFragment.viewPager2.setUserInputEnabled(true);
-                        if (mallFragment.isTop) {
-                            if (mallFragment.srl != null) {
-                                mallFragment.srl.setEnabled(false);
+                    if (mallFragment != null) {
+                        if (scrollX > scrollY) {
+                            mallFragment.viewPager2.setUserInputEnabled(true);
+                            if (mallFragment.isTop) {
+                                if (mallFragment.srl != null) {
+                                    mallFragment.srl.setEnabled(false);
+                                }
                             }
-                        }
-                    } else {
-                        mallFragment.viewPager2.setUserInputEnabled(false);
-                        if (mallFragment.isTop) {
-                            if (mallFragment.srl != null) {
-                                mallFragment.srl.setEnabled(true);
+                        } else {
+                            mallFragment.viewPager2.setUserInputEnabled(false);
+                            if (mallFragment.isTop) {
+                                if (mallFragment.srl != null) {
+                                    mallFragment.srl.setEnabled(true);
+                                }
                             }
                         }
                     }
+
                 } else if (selectView.getId() == R.id.tv_menu4) {
-                    if (scrollX > scrollY) {
-                        mineFragment.vpContent.setUserInputEnabled(true);
-                        if (mineFragment.isTop) {
-                            if (mineFragment.srl != null) {
-                                mineFragment.srl.setEnabled(false);
+                    if (mineFragment != null) {
+                        if (scrollX > scrollY) {
+                            mineFragment.vpContent.setUserInputEnabled(true);
+                            if (mineFragment.isTop) {
+                                if (mineFragment.srl != null) {
+                                    mineFragment.srl.setEnabled(false);
+                                }
                             }
-                        }
-                    } else {
-                        mineFragment.vpContent.setUserInputEnabled(false);
-                        if (mineFragment.isTop) {
-                            if (mineFragment.srl != null) {
-                                mineFragment.srl.setEnabled(true);
+                        } else {
+                            mineFragment.vpContent.setUserInputEnabled(false);
+                            if (mineFragment.isTop) {
+                                if (mineFragment.srl != null) {
+                                    mineFragment.srl.setEnabled(true);
+                                }
                             }
                         }
                     }
+
                 }
                 break;
             case MotionEvent.ACTION_UP:
