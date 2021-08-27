@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -31,7 +33,13 @@ import com.xaqinren.healthyelders.moduleMine.adapter.AttentionAdapter;
 import com.xaqinren.healthyelders.moduleMine.viewModel.AttentionViewModel;
 import com.xaqinren.healthyelders.moduleMsg.adapter.AddFriendAdapter;
 import com.xaqinren.healthyelders.moduleMsg.adapter.provider.FriendProvider;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.utils.GlideUtil;
+import com.xaqinren.healthyelders.widget.ListBottomPopup;
+import com.xaqinren.healthyelders.widget.YesOrNoDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -56,6 +64,7 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
     private LiteAvUserBean tempUserBean = null;
     private int tempUserIndex = -1;
     private Disposable disposable;
+    private ListBottomPopup listBottomPopup;
 
     public AttentionFragment(int i, String uid) {
         super();
@@ -117,6 +126,17 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
                 }
                 break;
                 case R.id.attention_btn: {
+                    //判断是否取关
+                    if (userBean.getIdentity().equals(AddFriendAdapter.FOLLOW)
+                            || userBean.getIdentity().equals(AddFriendAdapter.FRIEND)
+                            || userBean.getIdentity().equals(AddFriendAdapter.ATTENTION)
+                    ) {
+                        //弹出是否取关
+                        showListPop(userBean);
+
+                        return;
+                    }
+
                     showDialog();
                     viewModel.recommendFriend(userBean.getId());
                 }
@@ -144,6 +164,28 @@ public class AttentionFragment extends BaseFragment<FramentAttentionBinding, Att
             }
         });
     }
+
+    private void showListPop(LiteAvUserBean userBean) {
+        List<ListPopMenuBean> menus = new ArrayList<>();
+        menus.add(new ListPopMenuBean("确定取消关注？", getResources().getColor(R.color.gray_999), 14));
+        menus.add(new ListPopMenuBean("取消关注", getResources().getColor(R.color.color_DC3530), 16));
+        if (listBottomPopup == null) {
+            listBottomPopup = new ListBottomPopup(getActivity(), menus, true);
+        }
+        listBottomPopup.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (position == 1) {
+                    showDialog();
+                    viewModel.recommendFriend(userBean.getId());
+                }
+                listBottomPopup.dismiss();
+            }
+        });
+        listBottomPopup.showPopupWindow();
+    }
+
 
     private void initHeader() {
         binding.searchEt.setOnEditorActionListener((textView, i, keyEvent) -> {

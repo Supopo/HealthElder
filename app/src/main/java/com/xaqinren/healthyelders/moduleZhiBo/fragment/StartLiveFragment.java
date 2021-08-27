@@ -133,6 +133,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private boolean granted1;
     private boolean granted2;
     private StartLiveActivity startLiveActivity;
+    private ListBottomPopup listBottomPopup;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -588,7 +589,9 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         menus.add(new ListPopMenuBean("显示位置更多人能看到你噢", getResources().getColor(R.color.gray_999), 14));
         menus.add(new ListPopMenuBean("显示位置", 0, 16));
         menus.add(new ListPopMenuBean("隐藏位置", 0, 16));
-        ListBottomPopup listBottomPopup = new ListBottomPopup(getActivity(), menus);
+        if (listBottomPopup == null) {
+            listBottomPopup = new ListBottomPopup(getActivity(), menus);
+        }
         listBottomPopup.setOnItemClickListener(new OnItemClickListener() {
 
             @Override

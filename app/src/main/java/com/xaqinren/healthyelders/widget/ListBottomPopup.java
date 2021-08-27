@@ -48,6 +48,14 @@ public class ListBottomPopup extends BasePopupWindow {
         initView();
     }
 
+    public ListBottomPopup(Context context, List<ListPopMenuBean> menus,boolean hasBg) {
+        super(context);
+        setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
+        setDismissAnimation(AnimUtils.PopAnimBottom2Exit(context));
+        this.menus = menus;
+        initView();
+    }
+
     public ListBottomPopup(Context context, List<ListPopMenuBean> menus, OnItemClickListener itemClickListener) {
         super(context);
         setShowAnimation(AnimUtils.PopAnimBottom2Enter(context));
