@@ -7,7 +7,9 @@ import java.util.List;
 public class SaveDraftBean implements Serializable {
     //存储ID
     private long id;
+
     //发布内容
+    private String title;
     private String content;
     //内容描述
     private List<PublishFocusItemBean> publishFocusItemBeans;
@@ -48,6 +50,14 @@ public class SaveDraftBean implements Serializable {
     private boolean isEdit;
     //选择
     private boolean isSel;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public boolean isSel() {
         return isSel;

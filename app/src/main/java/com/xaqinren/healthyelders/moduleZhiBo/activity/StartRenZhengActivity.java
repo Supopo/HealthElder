@@ -116,6 +116,10 @@ public class StartRenZhengActivity extends BaseActivity<ActivityStartRenzhengBin
             selectImage();
         });
         binding.btnNext.setOnClickListener(lis -> {
+            if (!isAgree) {
+                ToastUtil.toastShortMessage("请阅读并同意条款");
+            }
+
             if (isSuccess1 && isSuccess2) {
                 showDialog();
                 viewModel.updatePhoto(zmPath, 1);

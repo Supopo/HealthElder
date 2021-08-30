@@ -5,11 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
+import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -17,6 +21,7 @@ import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.FragmentMsgBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
+import com.xaqinren.healthyelders.moduleLiteav.bean.LiteAvUserBean;
 import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
@@ -29,8 +34,12 @@ import com.xaqinren.healthyelders.moduleMsg.activity.ServiceMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.SysMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.WalletMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
+import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
@@ -45,6 +54,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
 
     boolean isInitIm;
     private Disposable subscribe;
+    private ListBottomPopup listBottomPopup;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -135,32 +145,63 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             ChatActivity.startChar(getContext(), chatInfo);
         });
         binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
-            //条目长按,置顶，删除，
-            String id = messageInfo.getId();
-            switch (id) {
-                case Constant.CONVERSATION_SYS_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_SYS_ID);
-                    return;
-                case Constant.CONVERSATION_INT_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_INT_ID);
-                    return;
-                case Constant.CONVERSATION_FANS_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_FANS_ID);
-                    return;
-                case Constant.CONVERSATION_LIVE_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_LIVE_ID);
-                    return;
-                case Constant.CONVERSATION_SERVICE_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_SERVICE_ID);
-                    return;
-                case Constant.CONVERSATION_WALLET_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_WALLET_ID);
-                    return;
-                case Constant.CONVERSATION_CUSTOMER_SERVICE_ID:
-                    ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
-                    return;
+            showListPop(position, messageInfo);
+            return;
+        });
+    }
+
+    private void showListPop(int pos, ConversationInfo messageInfo) {
+        List<ListPopMenuBean> menus = new ArrayList<>();
+        boolean isTop = ConversationManagerKit.getInstance().isTopConversation(messageInfo.getId());
+
+        menus.add(new ListPopMenuBean(isTop ? "取消置顶" : "置顶消息", 0, 16));
+        menus.add(new ListPopMenuBean("删除聊天", 0, 16));
+        listBottomPopup = new ListBottomPopup(getActivity(), menus, true);
+        listBottomPopup.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (position == 0) {
+                    ConversationManagerKit.getInstance().setConversationTop(messageInfo, null);
+                } else {
+                    delMsg(pos, messageInfo);
+                }
+                listBottomPopup.dismiss();
             }
         });
+        listBottomPopup.showPopupWindow();
+    }
+
+
+    private void delMsg(int position, ConversationInfo messageInfo) {
+        String id = messageInfo.getId();
+        switch (id) {
+            case Constant.CONVERSATION_SYS_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_SYS_ID);
+                return;
+            case Constant.CONVERSATION_INT_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_INT_ID);
+                return;
+            case Constant.CONVERSATION_FANS_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_FANS_ID);
+                return;
+            case Constant.CONVERSATION_LIVE_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_LIVE_ID);
+                return;
+            case Constant.CONVERSATION_SERVICE_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_SERVICE_ID);
+                return;
+            case Constant.CONVERSATION_WALLET_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_WALLET_ID);
+                return;
+            case Constant.CONVERSATION_CUSTOMER_SERVICE_ID:
+                ImManager.getInstance().delConversationLocal(Constant.CONVERSATION_CUSTOMER_SERVICE_ID);
+                return;
+            default:
+                //删除聊天信息
+                ConversationManagerKit.getInstance().deleteConversation(position, messageInfo);
+                return;
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleMine.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -177,7 +178,6 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         }
         page = 1;
         getDraft();
-        viewModel.getMyVideoList(page, pageSize);
     }
 
     private void getDraft() {
@@ -191,6 +191,12 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
                 draftDoverPath = list.get(0).getCoverPath();
             }
         }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewModel.getMyVideoList(page, pageSize);
+            }
+        }, 300);
     }
 
     public void getVideoList() {

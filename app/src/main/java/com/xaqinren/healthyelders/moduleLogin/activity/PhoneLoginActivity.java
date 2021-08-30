@@ -138,7 +138,7 @@ public class PhoneLoginActivity extends BaseActivity<ActivityPhoneLoginBinding, 
 
     private boolean checkParam() {
         String phone = binding.etPhone.getText().toString().trim();
-        String code = binding.etPhone.getText().toString().trim();
+        String code = binding.etVCode.getText().toString().trim();
         if (StringUtils.isEmpty(phone)) {
             Toast.makeText(this, "请填写手机号", Toast.LENGTH_SHORT).show();
             return false;

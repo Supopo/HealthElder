@@ -50,7 +50,9 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
     public void initParam() {
         super.initParam();
         extras = getIntent().getExtras();
-        type = extras.getInt("type");
+        if (extras != null) {
+            type = extras.getInt("type");
+        }
     }
 
     @Override

@@ -78,7 +78,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 /**
  * 图文发布
  */
-public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPhotoBinding , PublishTextPhotoViewModel> implements PoiSearch.OnPoiSearchListener {
+public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPhotoBinding, PublishTextPhotoViewModel> implements PoiSearch.OnPoiSearchListener {
 
     private String TAG = "PublishTextPhotoActivity";
 
@@ -125,6 +125,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private int upLoadFileCount;
     private boolean isShowKeyBord = false;
     private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -202,7 +203,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
 
         binding.includePublish.publishBtn.setOnClickListener(view -> {
-            if (!checkParams())return;
+            if (!checkParams())
+                return;
             showDialog();
             uploadFile();
         });
@@ -221,14 +223,14 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
             @Override
             public void inputNoTopic() {
-                LogUtils.e(TAG, "inputNoTopic 隐藏话题弹窗 -> " );
+                LogUtils.e(TAG, "inputNoTopic 隐藏话题弹窗 -> ");
                 binding.includeListTopic.layoutPublishAt.setVisibility(View.GONE);
             }
 
             @Override
             public void inputAt(String str) {
                 LogUtils.e(TAG, "inputTopic 提出@弹窗 -> " + str);
-//                showAtView(str);
+                //                showAtView(str);
                 binding.contentInput.setEnablePost(false);
                 Intent intent = new Intent(PublishTextPhotoActivity.this, PublishAtActivity.class);
                 startActivityForResult(intent, AT_CODE);
@@ -239,18 +241,18 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
             @Override
             public void inputNoAt() {
-                LogUtils.e(TAG, "inputNoTopic 隐藏@弹窗 -> " );
+                LogUtils.e(TAG, "inputNoTopic 隐藏@弹窗 -> ");
                 binding.includeListAt.layoutPublishAt.setVisibility(View.GONE);
             }
 
             @Override
             public void maxInput() {
-                LogUtils.e(TAG, "inputNoTopic 已到最大输入值 -> " );
-                ToastUtils.showShort("最多输入"+binding.contentInput.getInputMax()+"个文字");
+                LogUtils.e(TAG, "inputNoTopic 已到最大输入值 -> ");
+                ToastUtils.showShort("最多输入" + binding.contentInput.getInputMax() + "个文字");
             }
         });
 
-        publishLocationAdapter.setOnItemClickListener((adapter,view,position)->{
+        publishLocationAdapter.setOnItemClickListener((adapter, view, position) -> {
             LocationBean bean = locationBeans.get(position);
             if (bean.isLookMore) {
                 Intent intent = new Intent(this, ChooseLocationActivity.class);
@@ -273,7 +275,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
 
         pictureAdapter = new PictureAdapter();
         pictureAdapter.setList(localPhotoBeans);
-        binding.photoList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL ,false));
+        binding.photoList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.photoList.setAdapter(pictureAdapter);
         pictureAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -282,7 +284,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 if (localPhotoBeans.get(position).type == 0) {
                     //查看
 
-                }else{
+                } else {
                     showListPop();
                 }
             }
@@ -336,12 +338,15 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             }
         });
     }
+
     public void hideSoftInput() {
         View currentFocus = getCurrentFocus();
-        if (currentFocus==null)return;
+        if (currentFocus == null)
+            return;
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
+
     private boolean checkParams() {
         if (getUploadFiles().isEmpty()) {
             ToastUtils.showShort("请选择照片");
@@ -357,7 +362,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         }
         return true;
     }
+
     private ListBottomPopup listBottomPopup;
+
     private void showListPop() {
         List<ListPopMenuBean> menus = new ArrayList<>();
         menus.add(new ListPopMenuBean("拍照", getResources().getColor(R.color.color_252525), 16));
@@ -369,10 +376,11 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
                 if (position == 0) {
                     Intent intent = new Intent(PublishTextPhotoActivity.this, TackPictureActivity.class);
                     startActivityForResult(intent, REQUEST_CAMERA);
-                }else{
+                } else {
                     List<LocalMedia> localMedia = new ArrayList<>();
                     for (LocalPhotoBean localPhotoBean : localPhotoBeans) {
-                        if (localPhotoBean.type == 1)continue;
+                        if (localPhotoBean.type == 1)
+                            continue;
                         LocalMedia media = new LocalMedia();
                         media.setPath(localPhotoBean.getPath());
                         media.setRealPath(localPhotoBean.getPath());
@@ -401,7 +409,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     }
 
     private void addPhoto(List<String> path) {
-        if (path!=null) {
+        if (path != null) {
             for (String s : path) {
                 LocalPhotoBean bean = new LocalPhotoBean();
                 bean.setPath(s);
@@ -410,6 +418,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         }
         addAddPhoto();
     }
+
     private void addPhoto(String path) {
         LocalPhotoBean bean = new LocalPhotoBean();
         bean.setPath(path);
@@ -437,7 +446,9 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         addAddPhoto();
         pictureAdapter.setList(localPhotoBeans);
     }
+
     private String currentTopicStr = "";
+
     private void showTopicView(String str) {
         //TODO 调用接口
         currentTopicStr = str.replace("#", "");
@@ -463,7 +474,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             userAdapter.setList(this.liteAvUserBeans);
             if (liteAvUserBean.isEmpty() || liteAvUserBean.size() < atPageSize) {
                 userAdapter.getLoadMoreModule().loadMoreEnd(false);
-            }else{
+            } else {
                 userAdapter.getLoadMoreModule().loadMoreComplete();
             }
         });
@@ -476,24 +487,24 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
             }
             chooseTopicAdapter.setList(this.listTopicBeans);
         });
-        viewModel.uploadFile.observe(this,objects -> {
+        viewModel.uploadFile.observe(this, objects -> {
             uploadFileUrl.addAll(objects);
             LogUtils.e(TAG, "上传完成");
             publish();
         });
-        viewModel.publishLiveData.observe(this,s -> {
+        viewModel.publishLiveData.observe(this, s -> {
             ToastUtils.showShort(s);
             if (s.equals("发布成功")) {
                 if (publishDraftId > 0) {
                     //装在草稿箱内容
                     String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-                    viewModel.delDraftsById(getContext(),fileName,publishDraftId);
+                    viewModel.delDraftsById(getContext(), fileName, publishDraftId);
                 }
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
                 startActivity(MainActivity.class, bundle);
                 finish();
-                overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+                overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
             }
         });
     }
@@ -506,8 +517,8 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         bean.bannerImages = uploadFileUrl;
         if (locationBean != null) {
             bean.address = locationBean.desName;
-            bean.latitude = locationBean.lat+"";
-            bean.longitude = locationBean.lon+"";
+            bean.latitude = locationBean.lat + "";
+            bean.longitude = locationBean.lon + "";
             bean.city = locationBean.city;
             bean.province = locationBean.province;
             bean.district = locationBean.district;
@@ -535,14 +546,14 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     private List<String> uploadFileUrl = new ArrayList<>();
     private boolean singleSearchAt = false;
     private String currentAt;
+
     private void showAtView(String str) {
         atPage = 1;
         this.liteAvUserBeans.clear();
         if (str.equals("@")) {
             singleSearchAt = true;
             viewModel.getMyAtList(atPage, atPageSize);
-        }
-        else{
+        } else {
             //搜索
             singleSearchAt = false;
             currentAt = str.replace("@", "");
@@ -596,16 +607,19 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         });
     }
 
-    /** 定位部分 begin*/
+    /**
+     * 定位部分 begin
+     */
     private void checkPermission() {
-        boolean check = PermissionUtils.checkPermission(this,  new String[]{
+        boolean check = PermissionUtils.checkPermission(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION ,
+                Manifest.permission.ACCESS_FINE_LOCATION,
         });
         if (check) {
             LocationService.startService(this);
         }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -625,7 +639,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         PoiSearch.Query query = new PoiSearch.Query(poiName, "", cityCode);
         query.setPageSize(20);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);//设置查询页码
-        PoiSearch poiSearch = new PoiSearch(this,query);
+        PoiSearch poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(lat, lon), 1000));//设置周边搜索的中心点以及半径
         poiSearch.searchPOIAsyn();
@@ -636,7 +650,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         locationBeans.clear();
         int index = 0;
         for (PoiItem item : poiResult.getPois()) {
-            if (index == 6){
+            if (index == 6) {
                 break;
             }
             LocationBean bean = new LocationBean();
@@ -660,7 +674,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         bean.address = "查看更多";
         locationBeans.add(bean);
         publishLocationAdapter.setList(locationBeans);
-        if (this.locationBean!=null)
+        if (this.locationBean != null)
             equalsLocation(locationBean);
     }
 
@@ -670,10 +684,11 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         boolean check = PermissionUtils.checkPermissionAllGranted(this, permissions);
         if (check) {
             LocationService.startService(this);
-        }else{
+        } else {
             ToastUtils.showShort("定位权限缺失");
         }
     }
+
     @Override
     public void onPoiItemSearched(PoiItem poiItem, int i) {
 
@@ -682,59 +697,60 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK ) {
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode == location_code) {
                 LocationBean bean = (LocationBean) data.getSerializableExtra("bean");
                 this.locationBean = bean;
                 binding.includePublish.myLocation.setText(bean.desName);
                 equalsLocation(bean);
-            }
-            else if (requestCode == REQUEST_GALLERY) {
+            } else if (requestCode == REQUEST_GALLERY) {
                 List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 meagerPhoto(result);
-            }
-            else if (requestCode == REQUEST_CAMERA) {
+            } else if (requestCode == REQUEST_CAMERA) {
                 removeLast();
                 /*List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                 String path = result.get(0).getPath();*/
                 ArrayList<String> stringArrayListExtra = data.getStringArrayListExtra(com.xaqinren.healthyelders.modulePicture.Constant.PHOTO_PATH);
                 String path = stringArrayListExtra.get(0);
                 addLast(path);
-            }
-            else if (requestCode == AT_CODE) {
+            } else if (requestCode == AT_CODE) {
                 if (data != null) {
                     LiteAvUserBean bean = (LiteAvUserBean) data.getSerializableExtra(com.xaqinren.healthyelders.modulePicture.Constant.PUBLISH_AT);
                     binding.contentInput.setAtStr("@" + bean.getName(), bean.getId());
-                }else{
+                } else {
                     //删除at文字
                     binding.contentInput.delLastChar();
                 }
                 binding.contentInput.setEnablePost(true);
             }
-        }else{
-            if (requestCode == AT_CODE)
-            {
+        } else {
+            if (requestCode == AT_CODE) {
                 //删除at文字
                 binding.contentInput.delLastChar();
                 binding.contentInput.setEnablePost(true);
             }
         }
     }
+
     private void removeLast() {
         if (localPhotoBeans.get(localPhotoBeans.size() - 1).type == 1) {
             localPhotoBeans.remove(localPhotoBeans.get(localPhotoBeans.size() - 1));
         }
     }
+
     private void addLast(String path) {
         addPhoto(path);
         pictureAdapter.setList(localPhotoBeans);
     }
+
     /**
      * 判断当前location地址有相同的地址
+     *
      * @param bean
      */
     private void equalsLocation(LocationBean bean) {
-        if (locationBeans.isEmpty())return;
+        if (locationBeans.isEmpty())
+            return;
         for (LocationBean locationBean : locationBeans) {
             if (locationBean.desName.equals(bean.desName)) {
                 //同一地址
@@ -746,12 +762,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         }
         publishLocationAdapter.notifyDataSetChanged();
     }
+
     /**
      * TODO 从草稿箱获取内容
      */
     private void getDraftContent() {
         String fileName = UserInfoMgr.getInstance().getUserInfo().getId();
-        SaveDraftBean bean = viewModel.getDraftsById(this,fileName,publishDraftId);
+        SaveDraftBean bean = viewModel.getDraftsById(this, fileName, publishDraftId);
         if (bean == null) {
             return;
         }
@@ -760,6 +777,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         publishDesBean.content = bean.getContent();
         publishDesBean.publishFocusItemBeans = bean.getPublishFocusItemBeans();
         binding.contentInput.initDesStr(publishDesBean);
+        binding.desText.setText(bean.getTitle());
         //地址
         lon = bean.getLon();
         lat = bean.getLat();
@@ -774,6 +792,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         addPhoto(bean.getFilePaths());
 
     }
+
     /**
      * TODO 创建草稿箱内容
      */
@@ -784,12 +803,13 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         PublishDesBean publishDesBean = binding.contentInput.getDesStr();
         SaveDraftBean saveDraftBean;
         if (publishDraftId > 0) {
-            saveDraftBean = viewModel.getDraftsById(this,fileName,publishDraftId);
-        }else{
+            saveDraftBean = viewModel.getDraftsById(this, fileName, publishDraftId);
+        } else {
             saveDraftBean = new SaveDraftBean();
             saveDraftBean.setId(System.currentTimeMillis() / 1000);
         }
 
+        saveDraftBean.setTitle(binding.desText.getText().toString().trim());
         saveDraftBean.setContent(publishDesBean.content);
         saveDraftBean.setPublishFocusItemBeans(publishDesBean.publishFocusItemBeans);
 
@@ -797,7 +817,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         saveDraftBean.setBodyStr(binding.contentInput.getText().toString());
 
 
-        if (locationBean!=null) {
+        if (locationBean != null) {
             saveDraftBean.setAddress(locationBean.desName);
             saveDraftBean.setLon(lon);
             saveDraftBean.setLat(lat);
@@ -820,7 +840,7 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
         bundle.putBoolean(Constant.PUBLISH_SUCCESS, true);
         startActivity(MainActivity.class, bundle);
         finish();
-        overridePendingTransition(R.anim.activity_push_none,R.anim.activity_right_2exit);
+        overridePendingTransition(R.anim.activity_push_none, R.anim.activity_right_2exit);
     }
 
     @Override
@@ -843,9 +863,11 @@ public class PublishTextPhotoActivity extends BaseActivity<ActivityPublishTextPh
     }
 
     List<String> lubanList = new ArrayList<>();
+
     private void uploadFile() {
 
-        if (isUploadFile) return;
+        if (isUploadFile)
+            return;
         isUploadFile = true;
         List<String> files = getUploadFiles();
         upLoadFileCount = files.size();
