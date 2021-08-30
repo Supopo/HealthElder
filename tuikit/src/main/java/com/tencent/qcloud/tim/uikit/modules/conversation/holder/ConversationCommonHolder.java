@@ -77,12 +77,12 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
         DraftInfo draftInfo = conversation.getDraft();
         if (draftInfo != null && !TextUtils.isEmpty(draftInfo.getDraftText())) {
             messageText.setText(draftInfo.getDraftText());
-            timelineText.setText(DateTimeUtil.getTimeFormatText(new Date(draftInfo.getDraftTime() * 1000)));
+            timelineText.setText(lastMsg.getMsgTime() == 0 ? "" : DateTimeUtil.getTimeFormatText(new Date(draftInfo.getDraftTime() * 1000)));
         } else {
             if (lastMsg != null) {
                 // 如果最后一条消息是自定义消息，由消息创建者决定显示什么字符
                 if (lastMsg.getMsgType() > MessageInfo.MSG_STATUS_REVOKE) {
-                    for(TUIConversationControllerListener conversationListener : TUIKitListenerManager.getInstance().getTUIConversationListeners()) {
+                    for (TUIConversationControllerListener conversationListener : TUIKitListenerManager.getInstance().getTUIConversationListeners()) {
                         CharSequence displayStr = conversationListener.getConversationDisplayString(lastMsg);
                         if (displayStr != null) {
                             messageText.setText(displayStr);
@@ -96,7 +96,7 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
                         messageText.setText(Html.fromHtml(result));
                         messageText.setTextColor(rootView.getResources().getColor(R.color.list_bottom_text_bg));
                     }
-                    timelineText.setText(DateTimeUtil.getTimeFormatText(new Date(lastMsg.getMsgTime() * 1000)));
+                    timelineText.setText(lastMsg.getMsgTime() == 0 ? "" : DateTimeUtil.getTimeFormatText(new Date(lastMsg.getMsgTime() * 1000)));
                 }
             }
         }
@@ -155,13 +155,13 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
     }
 
 
-    private static String emojiJudge(String text){
-        if (TextUtils.isEmpty(text)){
+    private static String emojiJudge(String text) {
+        if (TextUtils.isEmpty(text)) {
             return "";
         }
 
         String[] emojiList = FaceManager.getEmojiFilters();
-        if (emojiList ==null || emojiList.length == 0){
+        if (emojiList == null || emojiList.length == 0) {
             return text;
         }
 
@@ -185,12 +185,12 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
 
             int index = findeEmoji(emojiName);
             String[] emojiListValues = FaceManager.getEmojiFiltersValues();
-            if (index != -1 && emojiListValues != null && emojiListValues.length >= index){
+            if (index != -1 && emojiListValues != null && emojiListValues.length >= index) {
                 emojiName = emojiListValues[index];
             }
 
 
-            EmojiData emojiData =new EmojiData();
+            EmojiData emojiData = new EmojiData();
             emojiData.setStart(start);
             emojiData.setEnd(end);
             emojiData.setEmojiText(emojiName);
@@ -199,10 +199,10 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
         }
 
         //倒叙替换
-        if (emojiDataArrayList.isEmpty()){
+        if (emojiDataArrayList.isEmpty()) {
             return text;
         }
-        for (int i = emojiDataArrayList.size() - 1; i >= 0; i--){
+        for (int i = emojiDataArrayList.size() - 1; i >= 0; i--) {
             EmojiData emojiData = emojiDataArrayList.get(i);
             String emojiName = emojiData.getEmojiText();
             int start = emojiData.getStart();
@@ -215,19 +215,19 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
         return sb.toString();
     }
 
-    private static int findeEmoji(String text){
+    private static int findeEmoji(String text) {
         int result = -1;
-        if (TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             return result;
         }
 
         String[] emojiList = FaceManager.getEmojiFilters();
-        if (emojiList ==null || emojiList.length == 0){
+        if (emojiList == null || emojiList.length == 0) {
             return result;
         }
 
-        for (int i = 0; i < emojiList.length; i++){
-            if (text.equals(emojiList[i])){
+        for (int i = 0; i < emojiList.length; i++) {
+            if (text.equals(emojiList[i])) {
                 result = i;
                 break;
             }
@@ -240,7 +240,7 @@ public class ConversationCommonHolder extends ConversationBaseHolder {
 
     }
 
-    private static class EmojiData{
+    private static class EmojiData {
         private int start;
         private int end;
         private String emojiText;

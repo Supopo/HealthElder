@@ -99,6 +99,19 @@ public class ShareDialog {
     private Disposable disposable;
     private IMMessageMgr imMessageMgr;
     private String shareData;
+    private MCustomMsgBean messageCustom;
+    private long shareTime;
+
+    //    //类加载时就初始化
+    //    private static final ShareDialog instance = new ShareDialog();
+    //
+    //    private ShareDialog() {
+    //    }
+    //
+    //    public static ShareDialog getInstance() {
+    //        return instance;
+    //    }
+
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -188,7 +201,9 @@ public class ShareDialog {
     private void init() {
         contentView = View.inflate(context.get(), R.layout.pop_share, null);
         binding = DataBindingUtil.bind(contentView);
-        popupWindow = new PopupWindow(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (popupWindow == null) {
+            popupWindow = new PopupWindow(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable());
@@ -271,7 +286,7 @@ public class ShareDialog {
 
             Gson gson = new Gson();
 
-            MCustomMsgBean messageCustom = new MCustomMsgBean();
+            messageCustom = new MCustomMsgBean();
 
             messageCustom.msgType = showType;
             messageCustom.content = shareBean.introduce;
@@ -288,6 +303,8 @@ public class ShareDialog {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(mContext, FriendsListActivity.class);
             bundle.putInt("type", 1);
+            shareTime = System.currentTimeMillis();
+            bundle.putLong("time", shareTime);
             intent.putExtras(bundle);
             mContext.startActivity(intent);
             //            MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
@@ -399,7 +416,8 @@ public class ShareDialog {
 
         Subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
-                if (event.msgId == CodeTable.SHARE_USER) {
+                //根据分享时间来判断 防止重复
+                if (event.msgId == CodeTable.SHARE_USER && event.time == shareTime) {
                     //分享给好友
                     imMessageMgr.sendC2CCustomMessage(event.content, shareData, new IMMessageMgr.Callback() {
                         @Override

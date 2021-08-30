@@ -34,6 +34,7 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
     private int pageNum = 1;
     private Bundle extras;
     private int type;
+    private long time;
 
 
     @Override
@@ -52,6 +53,7 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
         extras = getIntent().getExtras();
         if (extras != null) {
             type = extras.getInt("type");
+            time = extras.getLong("time");
         }
     }
 
@@ -91,7 +93,7 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
                         chatInfo.setId(mAdapter.getData().get(position).getAttentionUserId());
                         ChatActivity.startChar(getContext(), chatInfo);
                     } else if (type == 1) {//分享
-                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_USER, mAdapter.getData().get(position).getAttentionUserId()));
+                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_USER, mAdapter.getData().get(position).getAttentionUserId(), time));
                     }
 
 

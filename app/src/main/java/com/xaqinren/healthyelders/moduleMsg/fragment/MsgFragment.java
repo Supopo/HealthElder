@@ -145,6 +145,11 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             ChatActivity.startChar(getContext(), chatInfo);
         });
         binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
+            //先判断是不是互动和粉丝关注消息
+            //            if (messageInfo.getId().equals(Constant.CONVERSATION_INT_ID) ||
+            //                    messageInfo.getId().equals(Constant.CONVERSATION_FANS_ID)) {
+            //                return;
+            //            }
             showListPop(position, messageInfo);
             return;
         });
@@ -166,6 +171,7 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                 } else {
                     delMsg(pos, messageInfo);
                 }
+
                 listBottomPopup.dismiss();
             }
         });

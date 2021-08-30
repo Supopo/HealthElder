@@ -619,6 +619,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         });
 
 
+
+
+
+        //处理穿透消息
         mSubscription = RxBus.getDefault().toObservable(PayLoadBean.class)
                 .observeOn(AndroidSchedulers.mainThread()) //回调到主线程更新UI
                 .subscribe(new Consumer<PayLoadBean>() {

@@ -19,16 +19,4 @@ public class MsgViewModel extends BaseViewModel {
     public MsgViewModel(@NonNull Application application) {
         super(application);
     }
-
-    public MutableLiveData<List<MsgBean>> msgList = new MutableLiveData<>();
-
-    public void getMsgList() {
-        List<MsgBean> msgs = new ArrayList();
-        for (int i = 0; i < 30; i++) {
-            MsgBean msgBean = new MsgBean();
-            msgBean.name = "用户" + (i + 1);
-            msgs.add(msgBean);
-        }
-        msgList.setValue(msgs);
-    }
 }

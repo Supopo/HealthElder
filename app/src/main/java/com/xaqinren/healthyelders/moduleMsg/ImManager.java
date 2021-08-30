@@ -62,6 +62,7 @@ public class ImManager {
         if (localCon == null) {
             localCon = new ArrayList<>();
         }
+
         TUIKit.addIMEventListener(new IMEventListener() {
             @Override
             public void onRefreshConversation(List<V2TIMConversation> conversations) {
@@ -170,9 +171,67 @@ public class ImManager {
         if (temp != null) {
             for (ConversationInfo info : temp) {
                 unReadCount += info.getUnRead();
+                //判断有没有系统消息
+                if (info.getId().equals(Constant.CONVERSATION_INT_ID)) {
+                    hasIntMsg = true;
+                } else if (info.getId().equals(Constant.CONVERSATION_FANS_ID)) {
+                    hasFansMsg = true;
+                }
             }
         }
+
+
         return temp;
+    }
+
+    private boolean hasIntMsg;
+    private boolean hasFansMsg;
+
+    //手动添加互动-关注消息
+    public void saveConversationToLocal(boolean showRead, String id, String title, String extra, String iconUrl) {
+        ConversationInfo conversation;
+
+        List<Object> urlIons = new ArrayList<>();
+        urlIons.add(iconUrl);
+        MessageInfo messageInfo = new MessageInfo();
+        messageInfo.setMsgType(MessageInfo.MSG_TYPE_TEXT);
+        messageInfo.setExtra(extra);
+        //手动添加时间去掉
+        messageInfo.setMsgTime(showRead ? System.currentTimeMillis() / 1000 : 0);
+        boolean flag;
+        conversation = getConversationById(id);
+        if (conversation == null) {
+            conversation = new ConversationInfo();
+            conversation.setUnRead(showRead ? 1 : 0);
+            flag = false;
+        } else {
+            flag = true;
+            if (showRead) {
+                conversation.setUnRead(conversation.getUnRead() + 1);
+            } else {
+                conversation.setUnRead(0);
+            }
+        }
+
+        conversation.setType(ConversationInfo.TYPE_COMMON);
+        conversation.setId(id);
+        conversation.setConversationId(title);
+        conversation.setGroup(false);
+        conversation.setLastMessageTime(System.currentTimeMillis() / 1000);
+        conversation.setTitle(title);
+        conversation.setTop(false);
+
+        conversation.setIconUrlList(urlIons);
+        conversation.setLastMessage(messageInfo);
+        if (flag) {
+            ConversationManagerKit.getInstance().updateConversation(conversation);
+        } else {
+            ConversationManagerKit.getInstance().addConversationTop(conversation);
+        }
+        if (showRead) {
+            unReadCount++;
+        }
+        saveConversationToSp(conversation);
     }
 
     public void saveConversationToLocal(String id, String title, String extra, String iconUrl) {
@@ -314,6 +373,7 @@ public class ImManager {
     private GroupIconBean groupIconBean;
     private ApiServer userApi = RetrofitClient.getInstance().create(ApiServer.class);
 
+    //获取系统消息图标
     public void getIcon() {
         if (groupIconBean != null) {
             return;
@@ -332,6 +392,20 @@ public class ImManager {
                     @Override
                     protected void onSuccess(MBaseResponse<GroupIconBean> data) {
                         groupIconBean = data.getData();
+                        //判断是否已经插入了
+
+                        if (!hasIntMsg) {
+                            //插入互动消息 关注粉丝消息
+                            ImManager.getInstance().saveConversationToLocal(false,
+                                    Constant.CONVERSATION_INT_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(com.xaqinren.healthyelders.moduleMsg.Constant.INTERACTIVE_MESSAGE), "点击查看全部", groupIconBean.getiNTERACTIVE_MESSAGE());
+                        }
+
+                        if (!hasFansMsg) {
+                            ImManager.getInstance().saveConversationToLocal(false,
+                                    Constant.CONVERSATION_FANS_ID, com.xaqinren.healthyelders.moduleMsg.Constant.getNameByGroup(com.xaqinren.healthyelders.moduleMsg.Constant.FANS), "点击查看全部", groupIconBean.getfANS());
+
+                        }
+
                     }
                 });
     }

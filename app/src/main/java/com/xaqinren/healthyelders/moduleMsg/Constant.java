@@ -32,6 +32,7 @@ public class Constant {
     public static final String AT = "AT";
     public static final String COMMENT = "COMMENT";
     public static final String REPLY = "REPLY";
+    public static final String ALL  = "ALL";
 
 
     public static String getNameByGroup(String name) {

@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.liveRoom.roomutil.im;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -564,6 +565,12 @@ public class IMMessageMgr implements TIMMessageListener {
             mMessageListener.onDebugLog("[sendCustomMessage] IM 没有初始化");
             if (callback != null)
                 callback.onError(-1, "IM 没有初始化");
+            return;
+        }
+        if (TextUtils.isEmpty(toUserID)) {
+            return;
+        }
+        if (content == null) {
             return;
         }
 
