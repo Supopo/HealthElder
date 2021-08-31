@@ -11,10 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tencent.qcloud.ugckit.module.effect.utils.DraftEditer;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
@@ -53,7 +55,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     private List<MMusicItemBean> musicCollItemBeans;//收藏
     private int currentPlayReIndex = -1;//推荐页播放索引
     private int currentPlayCoIndex = -1;//收藏页播放索引
-//    private FragmentMusicSettingBinding binding;
+    //    private FragmentMusicSettingBinding binding;
     private boolean isFirstShow;
 
     private LinearLayout musicLayout;
@@ -97,10 +99,11 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
     /**
      * 在show之前调用
+     *
      * @param editVolume
      * @param editOriginal
      */
-    public void setEnableVolumeEdit(boolean editVolume,boolean editOriginal){
+    public void setEnableVolumeEdit(boolean editVolume, boolean editOriginal) {
         canEditVolume = editVolume;
         canEditOriginalVolume = editOriginal;
     }
@@ -151,7 +154,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
         musicSelAdapter.setOnItemClickListener((adapter, view, position) -> {
             MMusicItemBean bean = musicItemBeans.get(position);
-            if (playPage == 1){
+            if (playPage == 1) {
                 stopPlayMusic();
                 clearPlayStatus();
             }
@@ -160,14 +163,14 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 clickListener.onMoreClick();
                 stopPlayMusicByMore();
 
-            }else{
+            } else {
                 if (bean.myMusicStatus == 0) {
                     if (currentPlayReIndex != -1) {
                         musicItemBeans.get(currentPlayReIndex).myMusicStatus = 0;
                         adapter.notifyItemChanged(currentPlayReIndex);
                     }
                     bean.myMusicStatus = 1;
-//                    currentPlayCoIndex = -1;
+                    //                    currentPlayCoIndex = -1;
                     currentPlayReIndex = position;
                     record.setBGMNofify(itxbgmNotify);
                     loadTrialMusic(bean);
@@ -179,11 +182,11 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     //显示收藏
                     collIv.setVisibility(View.VISIBLE);
                     collIv.setImageResource(bean.hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
-                }else {
+                } else {
                     collIv.setVisibility(View.GONE);
                     bean.myMusicStatus = 0;
                     currentPlayReIndex = -1;
-//                    currentPlayCoIndex = -1;
+                    //                    currentPlayCoIndex = -1;
                     showTitleRight(false);
                     record.setBGMNofify(null);
                     stopPlayMusic();
@@ -197,39 +200,39 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
         selCollAdapter.setOnItemClickListener((adapter, view, position) -> {
             MMusicItemBean bean = musicCollItemBeans.get(position);
-            if (playPage == 0){
+            if (playPage == 0) {
                 stopPlayMusic();
                 clearPlayStatus();
             }
-                if (bean.myMusicStatus == 0) {
-                    if (currentPlayCoIndex != -1) {
-                        musicCollItemBeans.get(currentPlayCoIndex).myMusicStatus = 0;
-                        adapter.notifyItemChanged(currentPlayCoIndex);
-                    }
-                    bean.myMusicStatus = 1;
-                    currentPlayCoIndex = position;
-//                    currentPlayReIndex = -1;
-                    record.setBGMNofify(itxbgmNotify);
-                    loadTrialMusic(bean);
-                    showTitleRight(true);
-                    if (clickListener != null) {
-                        clickListener.onItemPlay(bean);
-                    }
-                    playPage = 1;
-                    //显示收藏
-                    collIv.setVisibility(View.VISIBLE);
-                    collIv.setImageResource(bean.hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
-                }else {
-                    collIv.setVisibility(View.GONE);
-                    bean.myMusicStatus = 0;
-                    currentPlayCoIndex = -1;
-//                    currentPlayReIndex = -1;
-                    showTitleRight(false);
-                    record.setBGMNofify(null);
-                    stopPlayMusic();
-                    playPage = -1;
+            if (bean.myMusicStatus == 0) {
+                if (currentPlayCoIndex != -1) {
+                    musicCollItemBeans.get(currentPlayCoIndex).myMusicStatus = 0;
+                    adapter.notifyItemChanged(currentPlayCoIndex);
                 }
-                adapter.notifyItemChanged(position);
+                bean.myMusicStatus = 1;
+                currentPlayCoIndex = position;
+                //                    currentPlayReIndex = -1;
+                record.setBGMNofify(itxbgmNotify);
+                loadTrialMusic(bean);
+                showTitleRight(true);
+                if (clickListener != null) {
+                    clickListener.onItemPlay(bean);
+                }
+                playPage = 1;
+                //显示收藏
+                collIv.setVisibility(View.VISIBLE);
+                collIv.setImageResource(bean.hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
+            } else {
+                collIv.setVisibility(View.GONE);
+                bean.myMusicStatus = 0;
+                currentPlayCoIndex = -1;
+                //                    currentPlayReIndex = -1;
+                showTitleRight(false);
+                record.setBGMNofify(null);
+                stopPlayMusic();
+                playPage = -1;
+            }
+            adapter.notifyItemChanged(position);
         });
         clearSeekBar();
         originalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -334,8 +337,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         }
         RxSubscriptions.add(mSubscription);
         page = 1;
-        musicItemBeans.clear();
-        musicCollItemBeans.clear();
+
         initComment = false;
         initColl = false;
         getCommentList();
@@ -348,6 +350,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
     private int page = 1, pageSize = 10;
     private boolean initComment, initColl;
+
     private void initObservable() {
         commentList.observe((LifecycleOwner) context, mMusicItemBeans -> {
             initComment = true;
@@ -360,24 +363,24 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             if (initColl)
                 addCurrentPlayIntoList();
             if (initColl && initComment)
-            if (currentPlayReIndex != -1 || currentPlayCoIndex != -1) {
-                //继续播放
-                if (currentPlayReIndex != -1) {
-                    if (!musicItemBeans.isEmpty()) {
-                        loadTrialMusic(musicItemBeans.get(currentPlayReIndex));
-                        musicList.scrollToPosition(currentPlayReIndex);
+                if (currentPlayReIndex != -1 || currentPlayCoIndex != -1) {
+                    //继续播放
+                    if (currentPlayReIndex != -1) {
+                        if (!musicItemBeans.isEmpty()) {
+                            loadTrialMusic(musicItemBeans.get(currentPlayReIndex));
+                            musicList.scrollToPosition(currentPlayReIndex);
+                        }
+                    } else if (currentPlayCoIndex != -1) {
+                        if (!musicCollItemBeans.isEmpty()) {
+                            loadTrialMusic(musicCollItemBeans.get(currentPlayCoIndex));
+                            musicList.scrollToPosition(currentPlayCoIndex);
+                        }
                     }
-                } else if (currentPlayCoIndex != -1) {
-                    if (!musicCollItemBeans.isEmpty()) {
-                        loadTrialMusic(musicCollItemBeans.get(currentPlayCoIndex));
-                        musicList.scrollToPosition(currentPlayCoIndex);
+                    //弹窗后自动播放
+                    if (clickListener != null) {
+                        clickListener.onMusicPlay();
                     }
                 }
-                //弹窗后自动播放
-                if (clickListener != null) {
-                    clickListener.onMusicPlay();
-                }
-            }
         });
         collList.observe((LifecycleOwner) context, mMusicItemBeans -> {
             initColl = true;
@@ -385,41 +388,40 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             for (MMusicItemBean bean : mMusicItemBeans) {
                 bean.hasFavorite = true;
             }
-            musicCollItemBeans.addAll(0,mMusicItemBeans);
+            musicCollItemBeans.addAll(0, mMusicItemBeans);
             selCollAdapter.setList(musicCollItemBeans);
             if (musicCollItemBeans.isEmpty()) {
                 page = 1;
-            }else{
+            } else {
                 page++;
             }
             if (initComment)
                 addCurrentPlayIntoList();
             if (initColl && initComment)
-            if (currentPlayReIndex != -1 || currentPlayCoIndex != -1) {
-                //继续播放
-                if (currentPlayReIndex != -1) {
-                    if (!musicItemBeans.isEmpty()) {
-                        loadTrialMusic(musicItemBeans.get(currentPlayReIndex));
-                        musicList.scrollToPosition(currentPlayReIndex);
+                if (currentPlayReIndex != -1 || currentPlayCoIndex != -1) {
+                    //继续播放
+                    if (currentPlayReIndex != -1) {
+                        if (!musicItemBeans.isEmpty()) {
+                            loadTrialMusic(musicItemBeans.get(currentPlayReIndex));
+                            musicList.scrollToPosition(currentPlayReIndex);
+                        }
+                    } else if (currentPlayCoIndex != -1) {
+                        if (!musicCollItemBeans.isEmpty()) {
+                            loadTrialMusic(musicCollItemBeans.get(currentPlayCoIndex));
+                            musicList.scrollToPosition(currentPlayCoIndex);
+                        }
                     }
-                } else if (currentPlayCoIndex != -1) {
-                    if (!musicCollItemBeans.isEmpty()) {
-                        loadTrialMusic(musicCollItemBeans.get(currentPlayCoIndex));
-                        musicList.scrollToPosition(currentPlayCoIndex);
+                    //弹窗后自动播放
+                    if (clickListener != null) {
+                        clickListener.onMusicPlay();
                     }
                 }
-                //弹窗后自动播放
-                if (clickListener != null) {
-                    clickListener.onMusicPlay();
-                }
-            }
         });
         initMusicItemScription();
     }
 
     /**
      * 吧其他地方选择的音乐加入到list中
-     *
      */
     private void addCurrentPlayIntoList() {
         if (MusicRecode.getInstance().getUseMusicItem() != null) {
@@ -428,11 +430,12 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             List<MMusicItemBean> temp;
             if (showPage == 0) {
                 temp = musicItemBeans;
-            }else{
+            } else {
                 temp = musicCollItemBeans;
             }
             for (MMusicItemBean bean : temp) {
-                if (bean.getId()==null) continue;
+                if (bean.getId() == null)
+                    continue;
                 if (bean.getId().equals(MusicRecode.getInstance().getUseMusicItem().getId())) {
                     //找到当前
                     bean.setOperation(true);
@@ -453,13 +456,14 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             MMusicItemBean useMusicItem = MusicRecode.getInstance().getUseMusicItem();
             boolean flag = false;
             for (MMusicItemBean itemBean : musicItemBeans) {
-                if (itemBean.getId()==null) continue;
+                if (itemBean.getId() == null)
+                    continue;
                 if (itemBean.getId().equals(useMusicItem.getId())) {
                     flag = true;
                     break;
                 }
             }
-            if (!flag){
+            if (!flag) {
                 musicItemBeans.add(1, useMusicItem.cloneThis());
                 currentPlayReIndex = 1;
                 collIv.setImageResource(MusicRecode.getInstance().getUseMusicItem().hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
@@ -485,7 +489,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                         case DownMusicProBean.ERROR:
                             LogUtils.e(TAG, eventBean.err);
                             break;
-                        case DownMusicProBean.FULL:{
+                        case DownMusicProBean.FULL: {
                             if (itemBean != null) {
                                 if (eventBean.id.equals(itemBean.getId())) {
                                     //当前准备播放的
@@ -507,27 +511,30 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     public void getCommentList() {
         LiteAvRepository.getInstance().getMusicReComment(commentList);
     }
+
     public void getCollList() {
         LiteAvRepository.getInstance().getMusicColl(collList, page, pageSize);
     }
+
     public void collMusic(MMusicItemBean bean) {
         if (bean == null) {
             return;
         }
         bean.hasFavorite = !bean.hasFavorite;
-        LiteAvRepository.getInstance().musicColl(collStatus , bean.getId() , bean.hasFavorite);
+        LiteAvRepository.getInstance().musicColl(collStatus, bean.getId(), bean.hasFavorite);
         if (bean.hasFavorite) {
             addCollLocal(bean);
-        }else {
+        } else {
             //两个列表都要移除
             removeCollLocal(bean);
         }
         if (showPage == 0) {
             collIv.setImageResource(bean.hasFavorite ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
-        }else{
+        } else {
             collIv.setVisibility(View.GONE);
         }
     }
+
     /**
      * 本地添加一个收藏
      */
@@ -543,8 +550,10 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         }
         collList.postValue(list);
     }
+
     /**
      * 移除一个本地收藏
+     *
      * @param bean
      */
     private void removeCollLocal(MMusicItemBean bean) {
@@ -558,6 +567,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             bean1.hasFavorite = false;
         }
     }
+
     //下载
     private void loadTrialMusic(MMusicItemBean bean) {
         //下载音乐
@@ -569,6 +579,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         downloadMusic.addWork(downMusicBean);
 
     }
+
     //播放音乐
     private void playMusic(MMusicItemBean bean) {
         stopPlayMusic();
@@ -612,6 +623,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             }
         }.execute(new Object());
     }
+
     //取消使用
     private void stopPlayMusic() {
         MusicRecode.getInstance().setUseMusicItem(null);
@@ -623,6 +635,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             clickListener.onStopPlay();
         }
     }
+
     //选择更多
     private void stopPlayMusicByMore() {
         stopPreviewMusic();
@@ -635,13 +648,13 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     }
 
     private void prepareSeekBar() {
-//        currentVolume = 0;
+        //        currentVolume = 0;
         if (tempBGMVolume == 0) {
             //防止停止播放后,或者手动置为0时候，播放没有声音
             tempBGMVolume = 1f;
         }
         currentBGMVolume = tempBGMVolume;
-        int temp  = (int) (currentVolume * 100);
+        int temp = (int) (currentVolume * 100);
         int temp2 = (int) (currentBGMVolume * 100);
         if (canEditVolume) {
             if (canEditOriginalVolume)
@@ -651,21 +664,21 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 originalSeekBar.setEnabled(false);
             }
             bmgSeekBar.setEnabled(true);
-        }else{
+        } else {
             originalSeekBar.setEnabled(false);
             bmgSeekBar.setEnabled(false);
         }
         originalSeekBar.setProgress(temp);
         bmgSeekBar.setProgress(temp2);
-        originalTvValue.setText(temp+ "%");
+        originalTvValue.setText(temp + "%");
         bgmTvValue.setText(temp2 + "%");
     }
 
     private void clearSeekBar() {
-//        currentVolume = 0;
+        //        currentVolume = 0;
         tempBGMVolume = currentBGMVolume;
         currentBGMVolume = 0;
-        int temp  = (int) (currentVolume * 100);
+        int temp = (int) (currentVolume * 100);
         int temp2 = (int) (currentBGMVolume * 100);
         originalSeekBar.setProgress(temp);
         bmgSeekBar.setProgress(temp2);
@@ -678,19 +691,19 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 originalSeekBar.setEnabled(false);
             }
             bmgSeekBar.setEnabled(true);
-        }else{
+        } else {
             originalSeekBar.setEnabled(false);
             bmgSeekBar.setEnabled(false);
         }
 
 
-        originalTvValue.setText(temp+ "%");
+        originalTvValue.setText(temp + "%");
         bgmTvValue.setText(temp2 + "%");
     }
 
     private void clearPlayStatus() {
-//        currentPlayReIndex = -1;
-//        currentPlayCoIndex = -1;
+        //        currentPlayReIndex = -1;
+        //        currentPlayCoIndex = -1;
         showTitleRight(false);
     }
 
@@ -700,11 +713,10 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     }
 
     /**
-     *
-     * @param volume 原声
+     * @param volume    原声
      * @param bgmVolume bgm
-      */
-    public void setVolum(float volume,float bgmVolume) {
+     */
+    public void setVolum(float volume, float bgmVolume) {
         TXUGCRecord record = VideoRecordSDK.getInstance().getRecorder();
         if (record != null) {
             record.setMicVolume(volume);
@@ -714,6 +726,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             }
         }
     }
+
     @Override
     public void onBottomItemClick(BottomDialog dialog, View view) {
         switch (view.getId()) {
@@ -723,14 +736,16 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     musicList.setAdapter(musicSelAdapter);
                 }
                 changeHolder(true);
-            }break;
+            }
+            break;
             case R.id.coll: {
                 showComment(false);
                 if (musicList.getAdapter() instanceof MusicSelAdapter) {
                     musicList.setAdapter(selCollAdapter);
                 }
                 changeHolder(false);
-            }break;
+            }
+            break;
             case R.id.jianji_iv:
                 if (currentPlayReIndex != -1) {
                     clickListener.onJianJiClick(musicItemBeans.get(currentPlayReIndex));
@@ -741,15 +756,14 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 }
 
                 break;
-            case R.id.coll_iv:
-            {
+            case R.id.coll_iv: {
                 if (currentPlayReIndex != -1) {
                     clickListener.onCollClick(musicItemBeans.get(currentPlayReIndex));
                 } else if (currentPlayCoIndex != -1) {
                     clickListener.onCollClick(musicCollItemBeans.get(currentPlayCoIndex));
                 }
 
-//                收藏,取消
+                //                收藏,取消
                 MMusicItemBean item = getCurrentPlayItem();
                 collMusic(item);
                 if (showPage == 1) {
@@ -759,7 +773,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                     holdRecommendPlayItem(item.getId());
                 }
             }
-                break;
+            break;
             case R.id.sel_music:
                 showMusic(true);
                 break;
@@ -768,12 +782,13 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 break;
         }
     }
-    private MMusicItemBean getCurrentPlayItem(){
+
+    private MMusicItemBean getCurrentPlayItem() {
         MMusicItemBean itemBean = null;
         if (playPage == 0) {
-            itemBean =  getCurrentRePlayItem();
+            itemBean = getCurrentRePlayItem();
         } else if (playPage == 1) {
-            itemBean =  getCurrentCollPlayItem();
+            itemBean = getCurrentCollPlayItem();
         }
         return itemBean;
     }
@@ -795,9 +810,11 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     }
 
     private MMusicItemBean getRecommendPlayItemById(String id) {
-        if (id == null) return null;
+        if (id == null)
+            return null;
         for (MMusicItemBean musicItemBean : musicItemBeans) {
-            if (musicItemBean.getId()==null)continue;
+            if (musicItemBean.getId() == null)
+                continue;
             if (musicItemBean.getId().equals(id)) {
                 return musicItemBean;
             }
@@ -806,7 +823,8 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     }
 
     private MMusicItemBean getCollPlayItemById(String id) {
-        if (id == null) return null;
+        if (id == null)
+            return null;
         for (MMusicItemBean musicItemBean : musicCollItemBeans) {
             if (musicItemBean.getId().equals(id)) {
                 return musicItemBean;
@@ -817,11 +835,12 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
     /**
      * 页面切换后调用
+     *
      * @param id
      */
     private void holdRecommendPlayItem(String id) {
         MMusicItemBean itemBean = getRecommendPlayItemById(id);
-        if (itemBean == null ) {
+        if (itemBean == null) {
             //清理推荐页选中
             changeCollIv(false, false);
             //没有播放项
@@ -854,8 +873,10 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
         currentPlayReIndex = musicItemBeans.indexOf(itemBean);
     }
+
     /**
      * 页面切换后调用
+     *
      * @param id
      */
     private void holdCollPlayItem(String id) {
@@ -895,17 +916,18 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         currentPlayCoIndex = musicCollItemBeans.indexOf(itemBean);
     }
 
-    private void changeCollIv(boolean showColl , boolean isColl) {
-        collIv.setVisibility(showColl ? View.VISIBLE :  View.GONE);
+    private void changeCollIv(boolean showColl, boolean isColl) {
+        collIv.setVisibility(showColl ? View.VISIBLE : View.GONE);
         collIv.setImageResource(isColl ? R.mipmap.icon_music_coll : R.mipmap.icon_music_coll_nor);
     }
 
-    private void showComment(boolean comment){
+    private void showComment(boolean comment) {
         this.comment.setSelected(comment);
         this.coll.setSelected(!comment);
 
     }
-    private void changeHolder(boolean comment){
+
+    private void changeHolder(boolean comment) {
         MMusicItemBean item = getCurrentPlayItem();
         int tempPage = showPage;
         showPage = comment ? 0 : 1;
@@ -913,23 +935,26 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             if (showPage == 0) {
                 //推荐页
                 holdRecommendPlayItem(item == null ? null : item.getId());
-            }else{
+            } else {
                 //收藏页
                 holdCollPlayItem(item == null ? null : item.getId());
             }
         }
     }
-    private void showMusic(boolean comment){
+
+    private void showMusic(boolean comment) {
         selMusic.setSelected(comment);
         selVoice.setSelected(!comment);
         musicLayout.setVisibility(comment ? View.VISIBLE : View.GONE);
         voiceLayout.setVisibility(!comment ? View.VISIBLE : View.GONE);
     }
+
     private void showTitleRight(boolean show) {
         jianjiIv.setVisibility(show ? View.GONE : View.GONE);
         collIv.setVisibility(show ? View.VISIBLE : View.GONE);
     }
-    public void setOnClickListener(OnClickListener listener){
+
+    public void setOnClickListener(OnClickListener listener) {
         this.clickListener = listener;
     }
 
@@ -942,15 +967,22 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         RxSubscriptions.remove(mSubscription);
     }
 
-    public interface OnClickListener{
+    public interface OnClickListener {
         void onMusicPlay();
+
         void onMoreClick();
+
         void onItemPlay(MMusicItemBean bean);
+
         void onStopPlay();
+
         void onJianJiClick(MMusicItemBean bean);
+
         void onCollClick(MMusicItemBean bean);
+
         void onDismiss();
-        void onVolumeChange(float oVolume , float bgmVolume);
+
+        void onVolumeChange(float oVolume, float bgmVolume);
     }
 
 }

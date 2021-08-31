@@ -239,7 +239,7 @@ public class VideoPublishActivity extends BaseActivity<ActivityVideoPublishBindi
         });
         binding.includePublish.publishBtn.setOnClickListener(view -> {
             //判断内容
-            if (TextUtils.isEmpty(binding.desText.getText().toString())) {
+            if (TextUtils.isEmpty(binding.desText.getText().toString().trim())) {
                 ToastUtil.toastShortMessage("请输入标题");
                 return;
             }

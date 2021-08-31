@@ -118,6 +118,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private boolean holderScreen = false;
     private boolean isStartMusicActivity;
     private StartLiveFragment startLiveFragment;
+    private int type;//type = 1 是发布页面的选择拍照
 
 
     public void setOnFragmentStatusListener(OnFragmentStatusListener onFragmentStatusListener) {
@@ -190,12 +191,15 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             onFragmentStatusListener.isRecode(false);
         binding.recodeTime.setText(null);
         binding.recodeBtn.setRecodeProgress(0);
-        liteAvRecode.restart();
-
-
+        if (liteAvRecode != null && type != 1) {
+            liteAvRecode.restart();
+        }
         binding.selMusic.setVisibility(View.GONE);
         binding.speedLayout.setVisibility(View.GONE);
         binding.recodeBtn.setMode(RecordButton.PHOTO_MODE);
+        if (type == 1) {
+            binding.galleryLayout.setVisibility(View.GONE);
+        }
     }
 
     private void changeVideoMode() {
@@ -210,6 +214,7 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         super.initData();
         Bundle bundle = getArguments();
         if (bundle != null) {
+            type = bundle.getInt("type");
             currentMode = bundle.getInt(com.xaqinren.healthyelders.modulePicture.constant.Constant.RECODE_MODE);
         }
         if (currentMode == RecordButton.PHOTO_MODE) {
@@ -340,10 +345,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             binding.photoPreview.rlContainer.setVisibility(View.GONE);
             if (getActivity() instanceof TackPictureActivity) {
                 getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
             } else {
                 startActivity(intent);
             }
+            //因为当前页面会二次服用，防止相机资源冲突，跳转页面时候关闭它
+            getActivity().finish();
         });
     }
 
@@ -716,7 +722,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     @Override
     public void onDestroyView() {
-        liteAvRecode.releaseRecode();
+        if (liteAvRecode != null) {
+            liteAvRecode.releaseRecode();
+        }
         super.onDestroyView();
     }
 

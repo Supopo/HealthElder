@@ -19,6 +19,7 @@ import me.goldze.mvvmhabit.base.BaseViewModel;
 public class TackPictureActivity extends BaseActivity<ActivityTackPictureBinding, BaseViewModel> {
 
     StartLiteAVFragment fragment;
+
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_tack_picture;
@@ -36,6 +37,7 @@ public class TackPictureActivity extends BaseActivity<ActivityTackPictureBinding
         rlTitle.setVisibility(View.GONE);
         fragment = new StartLiteAVFragment();
         Bundle bundle = new Bundle();
+        bundle.putInt("type", 1);//拍照-单拍照模式
         bundle.putInt(Constant.RECODE_MODE, RecordButton.PHOTO_MODE);
         fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().add(R.id.rl_container, fragment).commit();

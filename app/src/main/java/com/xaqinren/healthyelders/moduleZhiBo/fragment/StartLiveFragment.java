@@ -161,7 +161,11 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     }
 
     private void initLiveMenu() {
-        startLiveActivity = (StartLiveActivity) getActivity();
+        try {
+            startLiveActivity = (StartLiveActivity) getActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         menuAdapter = new LiveMenuAdapter(R.layout.item_start_live_menu);
         binding.rvMenu.setLayoutManager(new GridLayoutManager(getActivity(), 5));
