@@ -3,6 +3,7 @@ package com.tencent.qcloud.tim.uikit.modules.conversation;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tencent.imsdk.v2.V2TIMCallback;
 import com.tencent.imsdk.v2.V2TIMConversation;
@@ -51,6 +52,7 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
     private final static String SP_NAME = "_top_conversion_list";
     private final static String TOP_LIST = "top_list";
     private LinkedList<ConversationInfo> mTopLinkedList = new LinkedList<>();//储存app的系统消息（点赞 评论 关注等）
+    private List<ConversationInfo> oldInfos;
 
 
     private ConversationManagerKit() {
@@ -406,21 +408,21 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         TUIKitLog.i(TAG, "setConversationTop" + "|conversation:" + conversation);
         final boolean setTop = !conversation.isTop();
 
-        //            V2TIMManager.getConversationManager().pinConversation(conversation.getConversationId(), setTop, new V2TIMCallback() {
-        //                @Override
-        //                public void onSuccess() {
-        //                    conversation.setTop(setTop);
-        //                    mProvider.setDataSource(sortConversations(mProvider.getDataSource()));
-        //                }
+        //        V2TIMManager.getConversationManager().pinConversation(conversation.getConversationId(), setTop, new V2TIMCallback() {
+        //            @Override
+        //            public void onSuccess() {
+        //                conversation.setTop(setTop);
+        //                mProvider.setDataSource(sortConversations(mProvider.getDataSource()));
+        //            }
         //
-        //                @Override
-        //                public void onError(int code, String desc) {
-        //                    TUIKitLog.e(TAG, "setConversationTop code:" + code + "|desc:" + desc);
-        //                    if (callBack != null) {
-        //                        callBack.onError("setConversationTop", code, desc);
-        //                    }
+        //            @Override
+        //            public void onError(int code, String desc) {
+        //                TUIKitLog.e(TAG, "setConversationTop code:" + code + "|desc:" + desc);
+        //                if (callBack != null) {
+        //                    callBack.onError("setConversationTop", code, desc);
         //                }
-        //            });
+        //            }
+        //        });
         conversation.setTop(setTop);
         mProvider.setDataSource(sortConversations(mProvider.getDataSource()));
 
@@ -632,21 +634,31 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         ArrayList<ConversationInfo> conversationInfos = new ArrayList<>();
         List<ConversationInfo> normalConversations = new ArrayList<>();
         List<ConversationInfo> topConversations = new ArrayList<>();
+        List<ConversationInfo> diyConversations = new ArrayList<>();//存储自定义置顶消息
+
 
         for (int i = 0; i <= sources.size() - 1; i++) {
             ConversationInfo conversation = sources.get(i);
+            Log.v("IM:", "lastTime: " + conversation.getLastMessageTime());
             if (conversation.isTop()) {
-                topConversations.add(conversation);
+                topConversations.add(0, conversation);
             } else {
-                normalConversations.add(conversation);
+                if (conversation.getId().equals("22222") || conversation.getId().equals("33333")) {
+                    diyConversations.add(conversation);
+                } else {
+                    normalConversations.add(conversation);
+                }
             }
         }
 
-        if (topConversations != null && topConversations.size() > 1) {
+        //自定义消息排在前面-接下来是置顶消息
+        conversationInfos.addAll(diyConversations);
+
+        if (topConversations.size() > 1) {
             Collections.sort(topConversations); // 置顶会话列表页也需要按照最后一条时间排序，由新到旧，如果旧会话收到新消息，会排序到前面
         }
         conversationInfos.addAll(topConversations);
-        if (normalConversations != null && normalConversations.size() > 1) {
+        if (normalConversations.size() > 1) {
             Collections.sort(normalConversations); // 正常会话也是按照最后一条消息时间排序，由新到旧
         }
         conversationInfos.addAll(normalConversations);

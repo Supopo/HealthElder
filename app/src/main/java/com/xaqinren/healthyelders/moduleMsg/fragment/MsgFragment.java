@@ -144,12 +144,13 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             chatInfo.setId(messageInfo.getId());
             ChatActivity.startChar(getContext(), chatInfo);
         });
+        //长按删除 置顶
         binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
             //先判断是不是互动和粉丝关注消息
-            //            if (messageInfo.getId().equals(Constant.CONVERSATION_INT_ID) ||
-            //                    messageInfo.getId().equals(Constant.CONVERSATION_FANS_ID)) {
-            //                return;
-            //            }
+            if (messageInfo.getId().equals(Constant.CONVERSATION_INT_ID) ||
+                    messageInfo.getId().equals(Constant.CONVERSATION_FANS_ID)) {
+                return;
+            }
             showListPop(position, messageInfo);
             return;
         });
