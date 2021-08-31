@@ -6,9 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -96,6 +98,8 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
     private boolean canEditVolume = true;
     private boolean canEditOriginalVolume = true;
+    private RelativeLayout originalLayout;//原生控制面板
+    private int type;
 
     /**
      * 在show之前调用
@@ -138,6 +142,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
 
         musicLayout = findViewById(R.id.music_layout);
         voiceLayout = findViewById(R.id.voice_layout);
+        originalLayout = findViewById(R.id.original_layout);
         originalTvValue = findViewById(R.id.original_tv_seek_bar_value);
         bgmTvValue = findViewById(R.id.bgm_tv_seek_bar_value);
         originalSeekBar = findViewById(R.id.original_seek_bar_third);
@@ -315,6 +320,11 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
             RecordMusicManager.getInstance().startMusic();
         }
     };
+
+    //用来区分是照片合成视频还是原视频
+    public void setType(int type) {
+        this.type = type;
+    }
 
     @Override
     public void show() {
@@ -947,6 +957,11 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         selVoice.setSelected(!comment);
         musicLayout.setVisibility(comment ? View.VISIBLE : View.GONE);
         voiceLayout.setVisibility(!comment ? View.VISIBLE : View.GONE);
+        if (type == 1) {
+            originalLayout.setVisibility(View.INVISIBLE);
+        } else {
+            originalLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showTitleRight(boolean show) {

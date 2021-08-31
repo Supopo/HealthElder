@@ -152,6 +152,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
     private boolean isStartMusicActivity;
     //是否使用了音乐
     private boolean hasMusic;
+    private int type;
 
 
     @Override
@@ -200,6 +201,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
         mUGCKitVideoEdit.setConfig(config);
         mVideoPath = getIntent().getStringExtra(UGCKitConstants.VIDEO_PATH);
         hasMusic = getIntent().getBooleanExtra(UGCKitConstants.VIDEO_HAS_MUSIC,false);
+        type = getIntent().getIntExtra("type",0);//1说明是从照片合成视频来的
         if (!TextUtils.isEmpty(mVideoPath)) {
             mUGCKitVideoEdit.setVideoPath(mVideoPath);
         }
@@ -712,6 +714,7 @@ public class VideoEditerActivity extends BaseActivity<ActivityVideoEditerBinding
             mMusicPop = new MusicSelDialog(this);
             mMusicPop.setEnableVolumeEdit(true,!hasMusic);
         }
+        mMusicPop.setType(type);//区分 照片合成和视频编辑
         mMusicPop.show();
 
         Window window = mMusicPop.getWindow();

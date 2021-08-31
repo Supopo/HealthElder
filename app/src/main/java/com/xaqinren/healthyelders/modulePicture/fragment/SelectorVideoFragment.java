@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
     private ArrayList<TCVideoFileInfo> selList;
     private SelPictureAdapter adapter;
     private MenuAdapter menuAdapter;
-    private long maxTime = 3 * 60 * 1000;
+    private long maxTime = 3 * 60 * 1000 + 1000;
 
     @NonNull
     private Handler mHandlder = new Handler();
@@ -89,20 +90,10 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
         adapter.addFooterView(footer);
         adapter.setOnItemClickListener((adapter, view, position) -> {
             TCVideoFileInfo info = list.get(position);
-            if (checkMaxTime(info.getDuration())){
-                ToastUtils.showShort("最多支持选择3分钟");
-                return;
-            }
 
-            //计算添加后是否超过3分钟
-
-            info.setSelected(!info.isSelected());
             if (info.isSelected()) {
-                //更改序列号
-                info.setCurrentPosition(selList.size() + 1);
-                menuAdapter.addItem(info);
-                setMenuVisible();
-            }else{
+                //取消
+                info.setSelected(!info.isSelected());
                 int index = selList.indexOf(info);
                 for (int i = index + 1; i < selList.size(); i++) {
                     int currentPosition = selList.get(i).getCurrentPosition();
@@ -110,7 +101,19 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
                 }
                 menuAdapter.removeIndex(index);
                 setMenuVisible();
+            }else {
+                //计算添加后是否超过3分钟
+                if (checkMaxTime(info.getDuration())) {
+                    ToastUtils.showShort("最多支持选择3分钟");
+                    return;
+                }
+                info.setSelected(!info.isSelected());
+                //更改序列号
+                info.setCurrentPosition(selList.size() + 1);
+                menuAdapter.addItem(info);
+                setMenuVisible();
             }
+
             adapter.notifyDataSetChanged();
             if (selList.size() >= mMinSelectedItemCount) {
                 binding.btnNext.setEnabled(true);
@@ -118,7 +121,7 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
         });
 
         menuAdapter = new MenuAdapter(getContext(), selList);
-        binding.menuList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false));
+        binding.menuList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         menuAdapter.setOnItemDeleteListener(this);
         binding.menuList.setAdapter(menuAdapter);
         binding.menuList.setLongPressDragEnabled(true);
@@ -131,41 +134,45 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
                     Intent intent = new Intent(getContext(), VideoEditerActivity.class);
                     intent.putExtra(UGCKitConstants.VIDEO_PATH, selList.get(0).getFilePath());
                     startActivity(intent);
-                }else
+                } else
                     startVideoJoinActivity(selList);
             }
         });
     }
+
     private boolean checkMaxTime() {
         long time = 0;
         for (TCVideoFileInfo info : selList) {
             time += info.getDuration();
         }
-        if (time > maxTime){
+        if (time > maxTime) {
             return true;
         }
         return false;
     }
+
     private boolean checkMaxTime(long duration) {
         long time = 0;
         for (TCVideoFileInfo info : selList) {
+            Log.v("--Time", info.getFileName() + "-" + info.getDuration());
             time += info.getDuration();
         }
-        if (time > maxTime){
+        if (time > maxTime) {
             //当前已经大于3分钟
             return true;
         }
         time += duration;
-        if (time > maxTime){
+        if (time > maxTime) {
             //加上当前需要添加的后大于3分钟
             return true;
         }
         return false;
     }
+
     private void setMenuVisible() {
         if (menuAdapter.getAll().isEmpty()) {
             binding.menuList.setVisibility(View.GONE);
-        }else{
+        } else {
             binding.menuList.setVisibility(View.VISIBLE);
         }
         if (menuAdapter.getItemCount() < mMinSelectedItemCount) {
@@ -253,6 +260,7 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
         intent.putExtra(UGCKitConstants.VIDEO_PATH, fileInfo.getFilePath());
         startActivity(intent);
     }
+
     /**
      * 视频选择后,合成【多个视频】
      */
@@ -261,7 +269,6 @@ public class SelectorVideoFragment extends BaseFragment<FragmentSelectorVideoBin
         intent.putExtra(UGCKitConstants.INTENT_KEY_MULTI_CHOOSE, videoPathList);
         startActivity(intent);
     }
-
 
 
 }

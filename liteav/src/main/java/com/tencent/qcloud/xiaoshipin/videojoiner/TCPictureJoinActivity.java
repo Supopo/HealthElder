@@ -83,6 +83,7 @@ public class TCPictureJoinActivity extends FragmentActivity {
         }
         Intent intent = new Intent(this, cls);
         intent.putExtra(UGCKitConstants.VIDEO_PATH, ugcKitResult.outputPath);
+        intent.putExtra("type", 1);//标记说明视频是合成照片
         startActivity(intent);
         finish();
     }
