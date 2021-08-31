@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.tencent.qcloud.ugckit.module.picker.data.ItemView;
 import com.tencent.qcloud.ugckit.module.picker.data.PickerManagerKit;
 import com.tencent.qcloud.ugckit.module.picker.data.TCVideoFileInfo;
 import com.tencent.qcloud.ugckit.module.picker.view.IPickerLayout;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.tencent.qcloud.xiaoshipin.mainui.list.DividerGridItemDecoration;
 import com.tencent.qcloud.xiaoshipin.videochoose.TCPicturePickerActivity;
 import com.tencent.qcloud.xiaoshipin.videoeditor.TCVideoCutActivity;
@@ -63,6 +65,7 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
     @NonNull
     private Handler mHandlder = new Handler();
     private int mMinSelectedItemCount = 3;
+    private int mMaxSelectedItemCount = 35;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,6 +94,11 @@ public class SelectorImageFragment extends BaseFragment <FragmentSelectorImageBi
         binding.imageList.setAdapter(adapter);
         adapter.addFooterView(footer);
         adapter.setOnItemClickListener((adapter, view, position) -> {
+            if (selList.size() >= mMaxSelectedItemCount) {
+                ToastUtil.toastShortMessage("照片选择超过最大数了");
+                return;
+            }
+
             TCVideoFileInfo info = list.get(position);
             info.setSelected(!info.isSelected());
             if (info.isSelected()) {

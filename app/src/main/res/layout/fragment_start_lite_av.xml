@@ -204,14 +204,14 @@
                         android:id="@+id/scale_iv"
                         android:layout_width="@dimen/dp_28"
                         android:layout_height="@dimen/dp_28"
-                        android:src="@mipmap/icon_xsp_16_9" />
+                        android:src="@mipmap/icon_xsp_9_16" />
 
                     <TextView
                         android:id="@+id/scale_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="16:9"
+                        android:text="9:16"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_12" />
                 </LinearLayout>

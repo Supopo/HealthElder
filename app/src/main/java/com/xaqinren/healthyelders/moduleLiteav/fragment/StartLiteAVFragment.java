@@ -151,18 +151,18 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
                     public void onChanged(Integer integer) {
                         LogUtils.i(getClass().getSimpleName(), "liveUiViewModel onChanged\t" + integer.intValue());
                         if (integer.intValue() == 0) {
-                            //释放
-                            //                            TXUGCRecord recorder = VideoRecordSDK.getInstance().getRecorder();
-                            //                            if (recorder != null) {
-                            //                                VideoRecordSDK.getInstance().getRecorder().stopBGM();
-                            //                                VideoRecordSDK.getInstance().stopCameraPreview();
-                            //                            }
-
+                            if (liteAvRecode != null) {
+                                liteAvRecode.setCurrentAsp(TXRecordCommon.VIDEO_ASPECT_RATIO_9_16);
+                            }
 
                             binding.rlLive.setVisibility(View.VISIBLE);
                             binding.rlVideo.setVisibility(View.GONE);
 
                         } else {
+                            if (liteAvRecode != null) {
+                                liteAvRecode.setCurrentAsp(mAspectRatio);
+                            }
+
                             binding.rlLive.setVisibility(View.GONE);
                             binding.rlVideo.setVisibility(View.VISIBLE);
 
@@ -392,10 +392,11 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
 
     }
 
+    private int mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;
+
     private View.OnClickListener scaleClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            int mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_9_16;
             switch (view.getId()) {
                 case R.id.one_one:
                     mAspectRatio = TXRecordCommon.VIDEO_ASPECT_RATIO_1_1;
