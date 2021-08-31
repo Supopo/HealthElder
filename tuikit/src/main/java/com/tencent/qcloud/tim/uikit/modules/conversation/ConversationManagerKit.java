@@ -260,8 +260,12 @@ public class ConversationManagerKit implements MessageRevokedManager.MessageRevo
         if (message == null) {
             long time = DateTimeUtil.getStringToDate("0001-01-01 00:00:00", "yyyy-MM-dd HH:mm:ss");
             info.setLastMessageTime(time);
+            //给收到的消息设置排序参数
+            info.setOrderKey(time);
         } else {
             info.setLastMessageTime(message.getTimestamp());
+            //给收到的消息设置排序参数
+            info.setOrderKey(message.getTimestamp());
         }
         MessageInfo messageInfo = MessageInfoUtil.TIMMessage2MessageInfo(message);
         if (messageInfo != null) {

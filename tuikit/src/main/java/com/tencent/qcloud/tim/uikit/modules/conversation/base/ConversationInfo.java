@@ -225,8 +225,8 @@ public class ConversationInfo implements Serializable, Comparable<ConversationIn
     @Override
     public int compareTo(@NonNull ConversationInfo other) {
         //修改排序规则  改为用时间
-        long thisOrderKey = this.lastMessageTime;
-        long otherOrderKey = other.lastMessageTime;
+        long thisOrderKey = this.orderKey;
+        long otherOrderKey = other.orderKey;
         if (thisOrderKey > otherOrderKey) {
             return -1;
         } else if (thisOrderKey == otherOrderKey) {

@@ -187,7 +187,7 @@ public class ImManager {
     private boolean hasIntMsg;
     private boolean hasFansMsg;
 
-    //手动添加互动-关注消息
+    //初次手动添加互动-关注消息
     public void saveConversationToLocal(boolean showRead, String id, String title, String extra, String iconUrl) {
         ConversationInfo conversation;
 
@@ -218,9 +218,9 @@ public class ImManager {
         conversation.setConversationId(title);
         conversation.setGroup(false);
         conversation.setLastMessageTime(System.currentTimeMillis() / 1000);
+        conversation.setOrderKey(showRead ? conversation.getLastMessageTime() : 9876543210L);
         conversation.setTitle(title);
         conversation.setTop(false);
-
         conversation.setIconUrlList(urlIons);
         conversation.setLastMessage(messageInfo);
         if (flag) {
@@ -259,6 +259,11 @@ public class ImManager {
         conversation.setConversationId(title);
         conversation.setGroup(false);
         conversation.setLastMessageTime(System.currentTimeMillis() / 1000);
+        if (id.equals("22222") || id.equals("33333")) {
+            conversation.setOrderKey(9876543210L);
+        } else {
+            conversation.setOrderKey(conversation.getLastMessageTime());
+        }
         conversation.setTitle(title);
         conversation.setTop(false);
 
