@@ -24,6 +24,6 @@
         android:includeFontPadding="false"
         android:layout_marginTop="5dp"
         android:textColor="@color/text_color_gray"
-        android:textSize="9sp" />
+        android:textSize="12sp" />
 
 </LinearLayout>

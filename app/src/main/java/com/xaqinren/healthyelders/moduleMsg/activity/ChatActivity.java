@@ -41,5 +41,6 @@ public class ChatActivity extends BaseActivity<ActivityChatBinding, BaseViewMode
         binding.chatLayout.initDefault();
         binding.chatLayout.setChatInfo(chatInfo);
         binding.chatLayout.getInputLayout().disableMoreInput(false);
+
     }
 }

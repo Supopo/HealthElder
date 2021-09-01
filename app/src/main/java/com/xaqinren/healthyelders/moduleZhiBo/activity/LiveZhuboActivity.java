@@ -58,6 +58,7 @@ import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityLiveZhuboBinding;
+import com.xaqinren.healthyelders.global.AppApplication;
 import com.xaqinren.healthyelders.global.CodeTable;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.LoadGiftService;
@@ -219,7 +220,14 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
         //后期判断是否登录，如果已经则登录注入用户信息一定要注入的
         viewModel.toLoginRoom(mLiveRoom);
 
-        LoadGiftService.startService(this);
+        //判断礼物是否下载完成
+        if (!AppApplication.get().giftLoadSuccess) {
+            //判断服务是否存在
+            if (AppApplication.get().isServiceRunning("com.xaqinren.healthyelders.moduleHome.LoadGiftService")) {
+                LoadGiftService.stopService(this);
+            }
+            LoadGiftService.startService(this);
+        }
 
         initEvent();
         initLiveInfo();

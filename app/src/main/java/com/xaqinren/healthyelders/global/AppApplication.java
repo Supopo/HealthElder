@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.global;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -331,6 +332,7 @@ public class AppApplication extends BaseApplication {
     }
 
     private boolean hasNavBar;//是否开启了虚拟按键
+    public boolean giftLoadSuccess;//礼物是否下载完成
 
 
     //本次关注列表
@@ -451,5 +453,20 @@ public class AppApplication extends BaseApplication {
 
     public interface OnUniIntCallBack {
         void initSuccess();
+    }
+
+    /**
+     * 判断服务是否运行
+     */
+    public boolean isServiceRunning(final String className) {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> info = activityManager.getRunningServices(Integer.MAX_VALUE);
+        if (info == null || info.size() == 0)
+            return false;
+        for (ActivityManager.RunningServiceInfo aInfo : info) {
+            if (className.equals(aInfo.service.getClassName()))
+                return true;
+        }
+        return false;
     }
 }

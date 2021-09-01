@@ -15,7 +15,7 @@ public class PermissionUtils {
     /**
      * 检查并申请权限
      */
-    public static boolean checkPermission(Activity context , String[] permissions) {
+    public static boolean checkPermission(Activity context, String[] permissions) {
         int targetSdkVersion = 0;
         try {
             final PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -29,7 +29,7 @@ public class PermissionUtils {
             //如果系统>=6.0
             if (targetSdkVersion >= Build.VERSION_CODES.M) {
                 //第 1 步: 检查是否有相应的权限
-                boolean isAllGranted = checkPermissionAllGranted(context,permissions);
+                boolean isAllGranted = checkPermissionAllGranted(context, permissions);
                 if (isAllGranted) {
                     Log.e("err", "所有权限已经授权！");
                     return true;
@@ -41,16 +41,31 @@ public class PermissionUtils {
         }
         return true;
     }
+
     /**
      * 检查是否拥有指定的所有权限
      */
-    public static boolean checkPermissionAllGranted(Context context , String[] permissions) {
+    public static boolean checkPermissionAllGranted(Context context, String[] permissions) {
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 // 只要有一个权限没有被授予, 则直接返回 false
                 Log.e("err", "权限" + permission + "没有授权");
                 return false;
             }
+        }
+        return true;
+    }
+
+    /**
+     * 检查是否有权限
+     *
+     * @param context
+     * @param permissions
+     * @return
+     */
+    public static boolean hasPermission(Context context, String[] permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PermissionUtils.checkPermissionAllGranted(context, permissions);
         }
         return true;
     }

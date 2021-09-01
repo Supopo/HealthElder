@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -72,7 +71,6 @@ import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.uniApp.bean.UniEventBean;
 import com.xaqinren.healthyelders.utils.GlideEngine;
 import com.xaqinren.healthyelders.utils.GlideUtil;
-import com.xaqinren.healthyelders.utils.LogUtils;
 import com.xaqinren.healthyelders.widget.BottomDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 import com.xaqinren.healthyelders.widget.YesOrNoDialog;
@@ -83,6 +81,7 @@ import java.util.List;
 import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.bus.RxBus;
+import me.goldze.mvvmhabit.utils.PermissionUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 import static com.tencent.liteav.demo.beauty.utils.BeautyUtils.getPackageName;
@@ -116,24 +115,19 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private String cityCode;
     private String province;
     private String district;
-    private boolean isToZhibo;
     private LiveMenuAdapter menuAdapter;
     private LiveZhuboViewModel liveZbViewModel;
     private List<MenuBean> menus;
     private Disposable disposable;
-    private Disposable disposable1;
-    private Disposable disposable2;
+    private Disposable preDisposable;
     private ZBGoodsListPop zbGoodsListPop;
     private Disposable uniSubscribe;
     private boolean isCloseXN;
     private int goodsTempPos;//商品位置
-    private int openTempPos;//公开位置
-    private boolean noPwd;
-    private Handler handler;
-    private boolean granted1;
-    private boolean granted2;
+    private int openTempPos = 4;//公开位置
     private StartLiveActivity startLiveActivity;
     private ListBottomPopup listBottomPopup;
+    private boolean isFirst = true;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -237,6 +231,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             R.mipmap.icon_lvjing, R.mipmap.icon_shangpin, R.mipmap.icon_gongkai, R.mipmap.icon_shezhi
     };
 
+    private String[] permission = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+
     private void initEvent() {
         binding.ivBack.setOnClickListener(lis -> {
             getActivity().finish();
@@ -248,8 +244,15 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
 
         binding.llLoc.setOnClickListener(lis -> {
+            boolean hasPre = PermissionUtils.hasPermission(getActivity(), permission);
             //如果权限被拒绝，提示打开设置去开启
-            if (!granted1 && !granted2) {
+            if (hasPre) {
+                if (locSuccess == 2) {
+                    openGPSSettings();
+                } else {
+                    showListPop();
+                }
+            } else {
                 YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
                 yesOrNoDialog.setMessageText("请打开应用权限-位置信息");
                 yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
@@ -264,8 +267,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     }
                 });
                 yesOrNoDialog.showDialog();
-            } else {
-                showListPop();
             }
 
 
@@ -342,7 +343,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
 
     private void toStartLive() {
-        disposable2 = permissions.request(Manifest.permission.RECORD_AUDIO)
+        preDisposable = permissions.request(Manifest.permission.RECORD_AUDIO)
                 .subscribe(granted -> {
                     if (granted) {
                         if (TextUtils.isEmpty(binding.etTitle.getText().toString().trim())) {
@@ -374,7 +375,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 });
     }
 
-    private int locSuccess;
+    private int locSuccess;//2- 定位失败 3-定位失败同意打开GPS
 
     @Override
     public void initViewObservable() {
@@ -416,6 +417,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         viewModel.liveInfo.observe(this, liveInfo -> {
             if (liveInfo != null) {
+                isFirst = false;
                 binding.rvMenu.setVisibility(View.VISIBLE);
                 binding.rlTopInfo.setVisibility(View.VISIBLE);
 
@@ -435,13 +437,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                     menus.remove(goodsTempPos);
                 }
 
-                if (!noPwd) {
+
                     for (int i = 0; i < menus.size(); i++) {
                         if (menus.get(i).menuName.equals("公开") || menus.get(i).menuName.equals("私密")) {
                             openTempPos = i;
                         }
                     }
-                }
+
 
 
                 menuAdapter.setNewInstance(menus);
@@ -493,18 +495,19 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             }
         });
 
+
         liveUiViewModel.getCurrentPage().observe(getActivity(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer.intValue() == 0) {
                     //检查直播权限
-                    granted1 = permissions.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
-                    granted2 = permissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION);
-
-                    if (granted1 && granted2) {
-                        LocationService.startService(getActivity());
+                    boolean hasPre = PermissionUtils.hasPermission(getActivity(), permission);
+                    if (isFirst) {
+                        if (hasPre) {
+                            LocationService.startService(getActivity());
+                        }
+                        viewModel.checkLiveInfo();
                     }
-                    viewModel.checkLiveInfo();
                 }
 
             }
@@ -540,7 +543,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);
-        isToZhibo = true;
 
         startActivity(LiveZhuboActivity.class, bundle);
     }
@@ -551,17 +553,15 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         GlideUtil.intoImageView(getActivity(), mLiveInitInfo.liveRoomCover, binding.ivCover, R.mipmap.icon_add_cover);
 
 
-        if (!noPwd) {
-            //密码锁图标变化
-            if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
-                menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_jiami;
-                menuAdapter.getData().get(openTempPos).menuName = "私密";
-            } else {
-                menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_gongkai;
-                menuAdapter.getData().get(openTempPos).menuName = "公开";
-            }
-            menuAdapter.notifyItemChanged(openTempPos, 99);
+        //密码锁图标变化
+        if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
+            menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_jiami;
+            menuAdapter.getData().get(openTempPos).menuName = "私密";
+        } else {
+            menuAdapter.getData().get(openTempPos).menuRes = R.mipmap.icon_gongkai;
+            menuAdapter.getData().get(openTempPos).menuName = "公开";
         }
+        menuAdapter.notifyItemChanged(openTempPos, 99);
 
     }
 
@@ -930,11 +930,8 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         if (disposable != null) {
             disposable.dispose();
         }
-        if (disposable1 != null) {
-            disposable1.dispose();
-        }
-        if (disposable2 != null) {
-            disposable2.dispose();
+        if (preDisposable != null) {
+            preDisposable.dispose();
         }
         if (subscribe != null) {
             subscribe.dispose();

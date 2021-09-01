@@ -205,6 +205,7 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
         if (type == SEND_FILE || type == SEND_PHOTO) {
             return true;
         } else if (type == CAPTURE) {
+            //此处应该去获取权限
             return PermissionUtils.checkPermission(mActivity, Manifest.permission.CAMERA);
         } else if (type == AUDIO_RECORD) {
             return PermissionUtils.checkPermission(mActivity, Manifest.permission.RECORD_AUDIO);

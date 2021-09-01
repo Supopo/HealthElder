@@ -130,6 +130,8 @@ public class Constant {
     public static final String MINI_BANK_CARD_LIST = "pages_user/wallet/bankCardList?action=redirect";
     //用户协议
     public static final String MINI_AGREEMENT = "pages_base/agreement/userService?action=redirect";
+    //充值协议
+    public static final String CHONGZHI_AGREEMENT = "pages_base/agreement/paymentService";
     //隐私协议
     public static final String MINI_PRIVACY = "pages_base/agreement/userPrivacy?action=redirect";
     //关于我们

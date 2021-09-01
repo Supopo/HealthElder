@@ -232,7 +232,7 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
             public void onClick(View list) {
                 //重置美颜 滤镜
                 mScrollItemView.setClicked(0);
-                mSeekBarLevel.setProgress(0);
+                mSeekBarLevel.setProgress(4);
             }
         });
     }

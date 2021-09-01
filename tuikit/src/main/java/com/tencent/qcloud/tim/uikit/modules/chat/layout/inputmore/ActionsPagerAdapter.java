@@ -20,7 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 public class ActionsPagerAdapter extends PagerAdapter {
 
     // 每页8个
-    private final int ITEM_COUNT_PER_GRID_VIEW = 8;
+    private final int ITEM_COUNT_PER_GRID_VIEW = 4;
     // 每行4个
     private final int COLUMN_COUNT = 4;
     private final Context mContext;

@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoadGiftService extends Service implements LifecycleOwner {
@@ -43,8 +46,11 @@ public class LoadGiftService extends Service implements LifecycleOwner {
     private MutableLiveData<List<GiftBean>> mutableLiveData = new MutableLiveData<>();
     private MutableLiveData<SlideBarBean> slideBarLiveData = new MutableLiveData<>();
     private String TAG = LoadGiftService.class.getSimpleName();
+    private static Context mContext;
+    private List<GiftBean> temp;
 
     public static void startService(Context context) {
+        mContext = context;
         //Android 8.0 不再允许后台service直接通过startService方式去启动，否则就会引起IllegalStateException。
         Intent intent = new Intent(context, LoadGiftService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -54,22 +60,33 @@ public class LoadGiftService extends Service implements LifecycleOwner {
         }
     }
 
+    public static void stopService(Context context) {
+        Intent intent = new Intent(context, LoadGiftService.class);
+        context.stopService(intent);
+    }
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.v("--gifts--", "onCreate");
+        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
+        toStart();
+    }
+
+    public void toStart() {
         //适配8.0service
         NotificationManager notificationManager = (NotificationManager) AppApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel mChannel = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannel = new NotificationChannel("InitService", getString(R.string.app_name),
                     NotificationManager.IMPORTANCE_LOW);
             notificationManager.createNotificationChannel(mChannel);
             Notification notification = new Notification.Builder(getApplicationContext(), "InitService").build();
+            //会在通知栏展示
             startForeground(1, notification);
         }
 
-        mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
         initObservable();
         getGiftList();
         getSlideBar();
@@ -79,6 +96,7 @@ public class LoadGiftService extends Service implements LifecycleOwner {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
+        Log.v("--gifts--", "onStart");
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
     }
 
@@ -97,7 +115,9 @@ public class LoadGiftService extends Service implements LifecycleOwner {
 
     @Override
     public void onDestroy() {
+        Log.v("--gifts--", "onDestroy");
         mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+        stopForeground(true);
         super.onDestroy();
     }
 
@@ -116,6 +136,8 @@ public class LoadGiftService extends Service implements LifecycleOwner {
         slideBarLiveData.observe(this, data -> GlobalData.getInstance().saveSlideBar(data));
     }
 
+    private int count;
+
     //下载svga动画
     private void loadCache(List<GiftBean> gifts) {
         //svga缓存设置
@@ -129,24 +151,40 @@ public class LoadGiftService extends Service implements LifecycleOwner {
         try { // new URL needs try catch.
             SVGAParser svgaParser = new SVGAParser(this);
             svgaParser.setFrameSize(100, 100);
+
+            temp = new ArrayList<>();
+            //统计需要下载的数量
             for (GiftBean gift : gifts) {
-
                 if (!TextUtils.isEmpty(gift.giftUrl)) {
-                    svgaParser.decodeFromURL(new URL(gift.giftUrl), new SVGAParser.ParseCompletion() {
-                        @Override
-                        public void onComplete(@NotNull SVGAVideoEntity videoItem) {
-
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+                    temp.add(gift);
                 }
             }
 
+            for (GiftBean gift : temp) {
+                svgaParser.decodeFromURL(new URL(gift.giftUrl), new SVGAParser.ParseCompletion() {
+                    @Override
+                    public void onError() {
+                        count++;
+                        if (count == temp.size()) {
+                            count = 0;
+                            stopForeground(true);
+                        }
+                    }
 
+                    @Override
+                    public void onComplete(@NotNull SVGAVideoEntity videoItem) {
+                        count++;
+                        Log.v("--gifts--", "Count: " + count);
+                        if (count == temp.size()) {
+                            //下载完成关闭前台通知
+                            count = 0;
+                            stopForeground(true);
+                            AppApplication.get().giftLoadSuccess = true;
+                            stopService(mContext);
+                        }
+                    }
+                });
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -159,6 +197,7 @@ public class LoadGiftService extends Service implements LifecycleOwner {
 
     //获取礼物列表
     private void getGiftList() {
+        count = 0;
         LiveRepository.getInstance().getGiftList(mutableLiveData);
     }
 

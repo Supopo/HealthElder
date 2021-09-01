@@ -16,11 +16,13 @@ import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.bean.UserInfoMgr;
 import com.xaqinren.healthyelders.databinding.ActivityPopCzSelectBinding;
 import com.xaqinren.healthyelders.global.CodeTable;
+import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleHome.bean.MenuBean;
 import com.xaqinren.healthyelders.moduleLogin.bean.UserInfoBean;
 import com.xaqinren.healthyelders.moduleMine.bean.WalletBean;
 import com.xaqinren.healthyelders.moduleZhiBo.adapter.ChongZhiSelectAdapter;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ChongZhiListRes;
+import com.xaqinren.healthyelders.uniApp.UniUtil;
 import com.xaqinren.healthyelders.widget.SpeacesItemDecoration;
 
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
     private void setWindow() {
         //窗口对齐屏幕宽度
         Window win = this.getWindow();
-//        win.getDecorView().setPadding(0, 0, 0, 0);
+        //        win.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams lp = win.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -119,6 +121,9 @@ public class CZSelectPopupActivity extends BaseActivity<ActivityPopCzSelectBindi
             } else {
                 startActivity(PayActivity.class, bundle);
             }
+        });
+        binding.llXy.setOnClickListener(lis -> {
+            UniUtil.openUniApp(getContext(), Constant.JKZL_MINI_APP_ID, Constant.CHONGZHI_AGREEMENT, null, true);
         });
     }
 

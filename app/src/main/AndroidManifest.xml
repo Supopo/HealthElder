@@ -538,6 +538,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".uniApp.UniService" />
         <service android:name=".moduleHome.LoadGiftService" />
+        <service android:name=".moduleHome.CloseNotifService" />
 
 
     </application>
