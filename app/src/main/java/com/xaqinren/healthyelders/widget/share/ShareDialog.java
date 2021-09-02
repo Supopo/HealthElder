@@ -31,9 +31,22 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.gson.Gson;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.imsdk.v2.V2TIMConversation;
+import com.tencent.imsdk.v2.V2TIMManager;
+import com.tencent.imsdk.v2.V2TIMMessage;
+import com.tencent.imsdk.v2.V2TIMMessageManager;
+import com.tencent.imsdk.v2.V2TIMSendCallback;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.qcloud.tim.uikit.base.IBaseMessageSender;
+import com.tencent.qcloud.tim.uikit.base.IUIKitCallBack;
+import com.tencent.qcloud.tim.uikit.base.TUIKitListenerManager;
+import com.tencent.qcloud.tim.uikit.modules.chat.C2CChatManagerKit;
+import com.tencent.qcloud.tim.uikit.modules.chat.ChatLayout;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfo;
+import com.tencent.qcloud.tim.uikit.modules.message.MessageInfoUtil;
+import com.tencent.qcloud.tim.uikit.utils.TUIKitConstants;
 import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -101,6 +114,9 @@ public class ShareDialog {
     private String shareData;
     private MCustomMsgBean messageCustom;
     private long shareTime;
+    private IBaseMessageSender messageSender;
+    private MessageInfo customMessage;
+    private Gson gson;
 
     //    //类加载时就初始化
     //    private static final ShareDialog instance = new ShareDialog();
@@ -284,7 +300,7 @@ public class ShareDialog {
             //发送分享消息
 
 
-            Gson gson = new Gson();
+            gson = new Gson();
 
             messageCustom = new MCustomMsgBean();
 
@@ -298,8 +314,8 @@ public class ShareDialog {
                 videoInfo.resourceUrl = videoInfo.oldResourceUrl;
                 messageCustom.resource = new Gson().toJson(videoInfo);
             }
-
             shareData = gson.toJson(messageCustom);
+
             Bundle bundle = new Bundle();
             Intent intent = new Intent(mContext, FriendsListActivity.class);
             bundle.putInt("type", 1);
@@ -307,26 +323,6 @@ public class ShareDialog {
             bundle.putLong("time", shareTime);
             intent.putExtras(bundle);
             mContext.startActivity(intent);
-//                        MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
-            //            IBaseMessageSender messageSender = TUIKitListenerManager.getInstance().getMessageSender();
-            //            if (messageSender != null) {
-            //                // 发送消息
-            //                messageSender.sendMessage(info, null, "1398569262716555264",
-            //                        false, false, new IUIKitCallBack() {
-            //                            @Override
-            //                            public void onSuccess(Object data) {
-            //                                ToastUtil.toastShortMessage("分享成功");
-            //
-            //                            }
-            //
-            //                            @Override
-            //                            public void onError(String module, int errCode, String errMsg) {
-            //                                LogUtils.v("im-send", "errInfo: " + errMsg);
-            //                                LogUtils.v("im-send", "code: " + errCode);
-            //                            }
-            //                        });
-            //            }
-
 
         });
         binding.shareClsLayout.shareWxFriend.setOnClickListener(view -> {
@@ -418,23 +414,64 @@ public class ShareDialog {
             if (event != null) {
                 //根据分享时间来判断 防止重复
                 if (event.msgId == CodeTable.SHARE_MSG && event.time == shareTime) {
-                    //分享给好友
-                    imMessageMgr.sendC2CCustomMessage(event.content, shareData, new IMMessageMgr.Callback() {
-                        @Override
-                        public void onError(int code, String errInfo) {
-                            LogUtils.v("im-send", "errInfo: " + errInfo);
-                            LogUtils.v("im-send", "code: " + code);
-                        }
-
-                        @Override
-                        public void onSuccess(Object... args) {
-                            Log.v("CustomChatController", "IM Custom Data: " + shareData);
-                            ToastUtil.toastShortMessage("分享成功");
-                        }
-                    });
+                    shareMsg(event);
                 }
             }
         });
+    }
+
+    private void shareMsg(EventBean event) {
+        //分享给好友
+        //                    imMessageMgr.sendC2CCustomMessage(event.content, shareData, new IMMessageMgr.Callback() {
+        //                        @Override
+        //                        public void onError(int code, String errInfo) {
+        //                            LogUtils.v("im-send", "errInfo: " + errInfo);
+        //                            LogUtils.v("im-send", "code: " + code);
+        //                        }
+        //
+        //                        @Override
+        //                        public void onSuccess(Object... args) {
+        //                            Log.v("CustomChatController", "IM Custom Data: " + shareData);
+        //                            ToastUtil.toastShortMessage("分享成功");
+        //                        }
+        //                    });
+
+        //发送IM自定义消息 富文本消息
+        V2TIMMessage v2TIMMessage = V2TIMManager.getMessageManager().createCustomMessage(shareData.getBytes(), "分享自定义", null);
+        V2TIMManager.getMessageManager().sendMessage(v2TIMMessage, event.content, null, V2TIMMessage.V2TIM_PRIORITY_DEFAULT, false, null, new V2TIMSendCallback<V2TIMMessage>() {
+            @Override
+            public void onError(int code, String desc) {
+                LogUtils.v("im-send", "errInfo: " + desc);
+                LogUtils.v("im-send", "code: " + code);
+            }
+
+            @Override
+            public void onSuccess(V2TIMMessage v2TIMMessage) {
+                ToastUtil.toastShortMessage("分享成功");
+            }
+
+            @Override
+            public void onProgress(int progress) {
+
+            }
+        });
+
+        //这种写法只适用于聊天页面，有封装的方法。
+        //                    customMessage = MessageInfoUtil.buildCustomMessage(shareData);
+        //                    IBaseMessageSender messageSender = C2CChatManagerKit.getInstance();
+        //                    if (messageSender != null) {
+        //                        // 发送消息
+        //                        messageSender.sendMessage(customMessage, null, event.content,
+        //                                false, false, new IUIKitCallBack() {
+        //                                    @Override
+        //                                    public void onSuccess(Object data) {
+        //                                    }
+        //
+        //                                    @Override
+        //                                    public void onError(String module, int errCode, String errMsg) {
+        //                                    }
+        //                                });
+        //                    }
     }
 
 

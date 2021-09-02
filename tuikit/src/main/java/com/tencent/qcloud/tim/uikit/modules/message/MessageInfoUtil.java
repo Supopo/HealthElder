@@ -395,7 +395,7 @@ public class MessageInfoUtil {
         return msgInfo;
     }
 
-    //自定义消息处理
+    //IM自定义消息处理
     private static MessageInfo createCustomMessageInfo(V2TIMMessage timMessage, Context context) {
         for (TUIChatControllerListener chatListener : TUIKitListenerManager.getInstance().getTUIChatListeners()) {
             IBaseInfo IBaseInfo = chatListener.createCommonInfoFromTimMessage(timMessage);

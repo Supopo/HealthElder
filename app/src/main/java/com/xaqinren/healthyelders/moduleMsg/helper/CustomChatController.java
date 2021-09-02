@@ -34,6 +34,7 @@ public class CustomChatController implements TUIChatControllerListener {
         return null;
     }
 
+    //收到消息之后本地做的处理
     @Override
     public IBaseInfo createCommonInfoFromTimMessage(V2TIMMessage timMessage) {
         if (timMessage.getElemType() == V2TIMMessage.V2TIM_ELEM_TYPE_CUSTOM) {
@@ -49,6 +50,7 @@ public class CustomChatController implements TUIChatControllerListener {
             }
             if (customMessage != null && customMessage.msgType != 0) {
                 MessageInfo messageInfo = new CustomMessageInfo();
+                //因为是收消息之后才做的区分，所以不重要，自己端自己决定
                 messageInfo.setMsgType(MessageInfo.MSG_TYPE_CUSTOM);
                 MessageInfoUtil.setMessageInfoCommonAttributes(messageInfo, timMessage);
                 switch (customMessage.msgType) {
