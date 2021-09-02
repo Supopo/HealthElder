@@ -20,6 +20,39 @@
             app:qmui_border_width="0dp"
             app:qmui_corner_radius="@dimen/dp_4" />
 
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/ll_showZhibo"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/btn_2top"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_6"
+            >
+
+            <ImageView
+                android:layout_width="@dimen/dp_6"
+                android:layout_height="@dimen/dp_6"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/dp_3"
+                android:background="@mipmap/zhiboz_circle" />
+
+            <TextView
+                android:id="@+id/tv_showZb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="直播中"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+
+
+        </LinearLayout>
+
+
+
         <ImageView
             android:visibility="gone"
             android:id="@+id/iv_video"

@@ -37,7 +37,9 @@ public class CodeTable {
     public static int HOME_STOP_LOADING = 555;//
     public static int ZBJ_GZ = 444;//
     public static int FOLLOW_USER = 3331;//
-    public static int SHARE_USER = 3332;//
+    public static int SHARE_MSG = 3332;//
+    public static int SHARE_LIVE = 33321;//聊天框打开直播间
+    public static int SHARE_JOININ_LIVE = 33322;//聊天框打开直播间接口回调
 
     /**
      * 成功

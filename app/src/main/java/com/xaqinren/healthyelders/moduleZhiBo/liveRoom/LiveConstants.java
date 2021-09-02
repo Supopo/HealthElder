@@ -38,6 +38,7 @@ public class LiveConstants {
     public static final int ZBJ_SET_SUCCESS = 103;                  // 直播间设置-成功
     public static final int ZBJ_MORE_SETTING = 104;                  // 直播间设置-更多 1-开启连麦 2关闭连麦 3开启评论 4禁止评论 5开启礼物 6禁止礼物
 
+    public static final int SETTING_DES = 1003;                  // 直播间介绍设置开关
     public static final int DISMISS_ET = 1002;                  // 直播间发送弹窗关闭
     public static final int SHOW_ET = 1001;                     // 直播间发送弹窗展示
     public static final int SEND_MSG = 10011;                   // 直播间发送消息

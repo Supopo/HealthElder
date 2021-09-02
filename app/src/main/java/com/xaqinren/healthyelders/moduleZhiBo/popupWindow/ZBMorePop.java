@@ -16,6 +16,7 @@ import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.tencent.liteav.demo.beauty.model.TabInfo;
 import com.tencent.liteav.demo.beauty.view.BeautyPanel;
+import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -32,6 +33,7 @@ import com.xaqinren.healthyelders.widget.share.ShareDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import me.goldze.mvvmhabit.bus.RxBus;
 import me.goldze.mvvmhabit.widget.LoadingDialog;
 import razerdp.basepopup.BasePopupWindow;
@@ -55,6 +57,7 @@ public class ZBMorePop extends BasePopupWindow {
     private Context context;
     private QMUITipDialog qmuiTipDialog;
     private Handler mHandler;
+    private Disposable subscribe;
 
     public ZBMorePop(Context context, MLVBLiveRoom mLiveRoom, LiveInitInfo mLiveInitInfo) {
         super(context);
@@ -137,6 +140,12 @@ public class ZBMorePop extends BasePopupWindow {
                     break;
                 case 2:
                     if (shareDialog == null) {
+                        if (mLiveInitInfo.share != null) {
+                            mLiveInitInfo.share.resourceId = mLiveInitInfo.liveRoomId;
+                            mLiveInitInfo.share.userNickname = mLiveInitInfo.nickname;
+                            mLiveInitInfo.share.userAvatar = mLiveInitInfo.avatarUrl;
+                            mLiveInitInfo.share.title = mLiveInitInfo.liveRoomName;
+                        }
                         shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, ShareDialog.LIVE_TYPE);
                     }
                     shareDialog.show(rlItem);
@@ -202,6 +211,14 @@ public class ZBMorePop extends BasePopupWindow {
     public int selectPos;
 
     public void initEvent() {
+        subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
+            if (event != null) {
+                if (event.msgId == LiveConstants.SETTING_DES) {
+                    mLiveInitInfo.setHasIntroduce(event.doIt);
+                }
+            }
+        });
+
         dismissDialog.observe((LifecycleOwner) getContext(), dismiss -> {
             if (dismiss != null) {
                 loadingDialog.dismiss();
@@ -273,7 +290,7 @@ public class ZBMorePop extends BasePopupWindow {
             mMeiYanControl.setPopTitle("美颜");
 
             if (mLiveInitInfo != null) {
-                mMeiYanControl.setInitData(mLiveInitInfo.beautyPos, mLiveInitInfo.allBeautyLevel,0);
+                mMeiYanControl.setInitData(mLiveInitInfo.beautyPos, mLiveInitInfo.allBeautyLevel, 0);
             }
 
             mMeiYanPop = new BottomDialog(getContext(), filterView,
@@ -331,7 +348,7 @@ public class ZBMorePop extends BasePopupWindow {
             mLvJingControl.setBeautyInfo(defaultBeautyInfo);
             //初始化选中位置
             if (mLiveInitInfo != null && mLiveInitInfo.filterStyle != null) {
-                mLvJingControl.setInitData(mLiveInitInfo.filterStyle.itemPos, mLiveInitInfo.filterStyle.itemLevel,1);
+                mLvJingControl.setInitData(mLiveInitInfo.filterStyle.itemPos, mLiveInitInfo.filterStyle.itemLevel, 1);
             }
             mLvJingPop = new BottomDialog(getContext(), filterView,
                     null, true);
@@ -364,6 +381,9 @@ public class ZBMorePop extends BasePopupWindow {
 
     @Override
     public void dismiss() {
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
         super.dismiss();
 
     }

@@ -142,8 +142,8 @@ public class CZInputPopupActivity extends BaseActivity<ActivityPopCzInputBinding
                     extras = new Bundle();
                 }
 
-                if (Double.parseDouble(binding.etContent.getText().toString()) < 2) {
-                    ToastUtil.toastShortMessage("充值金额最少2元");
+                if (Double.parseDouble(binding.etContent.getText().toString()) < 1) {
+                    ToastUtil.toastShortMessage("充值金额最少1元");
                     return;
                 }
 

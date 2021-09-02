@@ -13,4 +13,5 @@ public class MCustomMsgBean {
     public String userName;
     public String resourceId;
     public String resource;
+    public String roomPwd;
 }

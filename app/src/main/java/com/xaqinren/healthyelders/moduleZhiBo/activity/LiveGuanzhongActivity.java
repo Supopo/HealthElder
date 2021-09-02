@@ -666,7 +666,7 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
 
     }
 
-    Set<String> pbWords = new HashSet<>();
+    private Set<String> pbWords = new HashSet<>();
 
     //发送文字消息
     private void toSendTextMsg(String msg) {
@@ -1927,6 +1927,13 @@ public class LiveGuanzhongActivity extends BaseActivity<ActivityLiveGuanzhunBind
                 //更多设置
                 //                zbMorePop = new ZBMoreGZPop(this, mLiveRoom, mLiveInitInfo);
                 //                zbMorePop.showPopupWindow();
+                if (mLiveInitInfo.share != null) {
+                    mLiveInitInfo.share.resourceId = mLiveInitInfo.liveRoomId;
+                    mLiveInitInfo.share.userNickname = mLiveInitInfo.nickname;
+                    mLiveInitInfo.share.userAvatar = mLiveInitInfo.avatarUrl;
+                    mLiveInitInfo.share.title = mLiveInitInfo.liveRoomName;
+                }
+
                 shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, ShareDialog.LIVE_TYPE);
                 shareDialog.show(binding.llMenu);
                 break;

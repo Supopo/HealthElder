@@ -10,7 +10,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.module.BaseLoadMoreModule;
-import com.tencent.imsdk.v2.V2TIMConversation;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
@@ -93,7 +92,7 @@ public class FriendsListActivity extends BaseActivity<ActivityFriendsListBinding
                         chatInfo.setId(mAdapter.getData().get(position).getAttentionUserId());
                         ChatActivity.startChar(getContext(), chatInfo);
                     } else if (type == 1) {//分享
-                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_USER, mAdapter.getData().get(position).getAttentionUserId(), time));
+                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_MSG, mAdapter.getData().get(position).getAttentionUserId(), time));
                     }
 
 

@@ -1,10 +1,14 @@
 package com.xaqinren.healthyelders.moduleMsg.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -34,7 +38,10 @@ import com.xaqinren.healthyelders.moduleMsg.activity.ServiceMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.SysMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.WalletMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.viewModel.MsgViewModel;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
+import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverGZActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
+import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
 import java.io.File;
@@ -55,6 +62,8 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
     boolean isInitIm;
     private Disposable subscribe;
     private ListBottomPopup listBottomPopup;
+    private String liveRoomId;
+    private LiveInitInfo liveInfo;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -147,10 +156,10 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
         //长按删除 消息 置顶
         binding.conversationLayout.getConversationList().setOnItemLongClickListener((view, position, messageInfo) -> {
             //先判断是不是互动和粉丝关注消息
-//            if (messageInfo.getId().equals(Constant.CONVERSATION_INT_ID) ||
-//                    messageInfo.getId().equals(Constant.CONVERSATION_FANS_ID)) {
-//                return;
-//            }
+            //            if (messageInfo.getId().equals(Constant.CONVERSATION_INT_ID) ||
+            //                    messageInfo.getId().equals(Constant.CONVERSATION_FANS_ID)) {
+            //                return;
+            //            }
             showListPop(position, messageInfo);
             return;
         });
@@ -223,10 +232,40 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                     } else if (eventBean.msgId == CodeTable.LOGIN_OUT) {
                         isInitIm = false;
                         initView();
+                    } else if (eventBean.msgId == CodeTable.SHARE_LIVE) {
+                        liveRoomId = eventBean.content;
+                        viewModel.joinLive(liveRoomId, eventBean.type);
+                    } else if (eventBean.msgId == CodeTable.SHARE_JOININ_LIVE) {
+                        //不能用LiveData来回调接收，打开的页面会出现在聊天页面下层
+                        liveInfo = (LiveInitInfo) eventBean.data;
+                        if (liveInfo != null) {
+
+                            if (liveInfo.liveRoomStatus.equals("LIVE_OVER")) {
+                                //直播结束 直接跳转结束页面
+                                //跳转结算页面
+                                Bundle bundle = new Bundle();
+                                bundle.putString("liveRoomRecordId", liveInfo.liveRoomRecordId);
+                                bundle.putString("liveRoomId", liveRoomId);
+                                startActivity(ZhiboOverGZActivity.class, bundle);
+                            } else {
+                                //进入直播间
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(Constant.LiveInitInfo, liveInfo);
+                                startActivity(LiveGuanzhongActivity.class, bundle);
+                            }
+
+                        }
                     }
                 }
         );
         RxSubscriptions.add(subscribe);
+    }
+
+    private boolean isMain() {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            return true;
+        }
+        return false;
     }
 
     @Override

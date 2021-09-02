@@ -120,6 +120,7 @@ public class CustomChatController implements TUIChatControllerListener {
         public CharSequence getConversationDisplayString(IBaseInfo baseInfo) {
             if (baseInfo instanceof CustomMessageInfo) {
                 if (!TextUtils.isEmpty(((CustomMessageInfo) baseInfo).getExtra().toString())) {
+                    Log.v(TAG, "IM CustomMessageInfo: " + ((CustomMessageInfo) baseInfo).getExtra().toString());
                     return ((CustomMessageInfo) baseInfo).getExtra().toString();
                 }
                 return "[自定义消息]";

@@ -15,12 +15,15 @@ import androidx.lifecycle.MutableLiveData;
 import com.tencent.qcloud.tim.uikit.utils.ToastUtil;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.apiserver.LiveRepository;
+import com.xaqinren.healthyelders.bean.EventBean;
 import com.xaqinren.healthyelders.global.Constant;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ZBSettingBean;
+import com.xaqinren.healthyelders.moduleZhiBo.liveRoom.LiveConstants;
 import com.xaqinren.healthyelders.utils.AnimUtils;
 import com.xaqinren.healthyelders.widget.SwitchButton;
 
+import me.goldze.mvvmhabit.bus.RxBus;
 import razerdp.basepopup.BasePopupWindow;
 
 /**
@@ -85,6 +88,7 @@ public class ZBDesSettingPop extends BasePopupWindow {
         });
         setSuccess.observe((LifecycleOwner) getContext(), setSuccess -> {
             if (setSuccess != null) {
+                RxBus.getDefault().post(new EventBean(LiveConstants.SETTING_DES, sbKQJS.isChecked()));
                 liveInitInfo.liveRoomIntroduce = etContent.getText().toString().trim();
                 ToastUtil.toastShortMessage("保存成功");
                 dismiss();
@@ -102,9 +106,6 @@ public class ZBDesSettingPop extends BasePopupWindow {
     @Override
     public void dismiss() {
         super.dismiss();
-        if (type != 1) {
-            liveInitInfo.setHasIntroduce(sbKQJS.isChecked());
-        }
     }
 
     @Override

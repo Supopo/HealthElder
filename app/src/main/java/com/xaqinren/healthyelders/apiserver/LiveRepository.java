@@ -1,6 +1,8 @@
 package com.xaqinren.healthyelders.apiserver;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.fastjson.JSON;
@@ -148,8 +150,12 @@ public class LiveRepository {
 
                     @Override
                     protected void onSuccess(MBaseResponse<LiveInitInfo> data) {
-                        liveInfo.postValue(data.getData());
-
+                        if (liveInfo != null) {
+                            liveInfo.postValue(data.getData());
+                        }else {
+                            //用于聊天界面中打开直播间页面
+                            RxBus.getDefault().post(new EventBean<LiveInitInfo>(CodeTable.SHARE_JOININ_LIVE,data.getData()));
+                        }
                     }
                 });
     }

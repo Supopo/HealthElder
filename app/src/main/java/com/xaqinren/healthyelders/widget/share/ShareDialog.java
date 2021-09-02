@@ -307,7 +307,7 @@ public class ShareDialog {
             bundle.putLong("time", shareTime);
             intent.putExtras(bundle);
             mContext.startActivity(intent);
-            //            MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
+//                        MessageInfo info = MessageInfoUtil.buildCustomMessage(data);
             //            IBaseMessageSender messageSender = TUIKitListenerManager.getInstance().getMessageSender();
             //            if (messageSender != null) {
             //                // 发送消息
@@ -417,7 +417,7 @@ public class ShareDialog {
         Subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 //根据分享时间来判断 防止重复
-                if (event.msgId == CodeTable.SHARE_USER && event.time == shareTime) {
+                if (event.msgId == CodeTable.SHARE_MSG && event.time == shareTime) {
                     //分享给好友
                     imMessageMgr.sendC2CCustomMessage(event.content, shareData, new IMMessageMgr.Callback() {
                         @Override

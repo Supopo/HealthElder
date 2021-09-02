@@ -2079,6 +2079,9 @@ public class LiveZhuboActivity extends BaseActivity<ActivityLiveZhuboBinding, Li
                     pbWords.remove(eventBean.content);
                     SensitiveWordsUtils.init(pbWords);
                     break;
+                case LiveConstants.SETTING_DES:
+                    mLiveInitInfo.setHasIntroduce(eventBean.doIt);
+                    break;
                 default:
                     break;
             }

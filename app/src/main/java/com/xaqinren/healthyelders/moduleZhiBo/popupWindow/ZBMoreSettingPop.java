@@ -2,6 +2,7 @@ package com.xaqinren.healthyelders.moduleZhiBo.popupWindow;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -89,6 +90,10 @@ public class ZBMoreSettingPop extends BasePopupWindow {
         if (words == null) {
             words = new ArrayList<>();
             words.add("");
+        } else {
+            for (String word : words) {
+                wordsSet.add(word);
+            }
         }
 
         wordsAdapter = new SensitiveWordsAdapter(R.layout.item_sensitive_words);
@@ -96,7 +101,7 @@ public class ZBMoreSettingPop extends BasePopupWindow {
         rvTags.setAdapter(wordsAdapter);
         if (words.size() == 0) {
             words.add("");
-        }else {
+        } else {
             if (!words.get(0).equals("")) {
                 words.add(0, "");
             }
@@ -107,6 +112,10 @@ public class ZBMoreSettingPop extends BasePopupWindow {
 
         wordsAdapter.setOnItemClickListener(((adapter, view, position) -> {
             if (position == 0) {
+                if (words.size() >= 11) {
+                    ToastUtil.toastShortMessage("屏蔽词数量已上限");
+                    return;
+                }
                 //添加标签弹窗
                 Intent intent = new Intent();
                 intent.putExtra("type", 1);
@@ -136,13 +145,15 @@ public class ZBMoreSettingPop extends BasePopupWindow {
         subscribe = RxBus.getDefault().toObservable(EventBean.class).subscribe(event -> {
             if (event != null) {
                 if (event.msgId == LiveConstants.SEND_WORD) {
-                    if (!wordsSet.equals(event.content)) {
+                    if (!wordsSet.contains(event.content)) {
                         //调用添加屏蔽词接口
                         setBlockWord(event.content, true);
                     } else {
                         ToastUtil.toastShortMessage("该词汇已存在");
                     }
 
+                } else if (event.msgId == LiveConstants.SETTING_DES) {
+                    mLiveInitInfo.setHasIntroduce(event.doIt);
                 }
             }
         });
@@ -207,7 +218,9 @@ public class ZBMoreSettingPop extends BasePopupWindow {
     @Override
     public void dismiss() {
         super.dismiss();
-        subscribe.dispose();
+        if (subscribe != null) {
+            subscribe.dispose();
+        }
     }
 
     @Override
