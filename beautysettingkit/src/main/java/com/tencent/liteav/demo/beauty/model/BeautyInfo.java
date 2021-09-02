@@ -1,12 +1,13 @@
 package com.tencent.liteav.demo.beauty.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 美颜面板相关属性
  * 成员变量名和 assets/default_beauty_data.json 的 key 相对应，便于 json 解析
  */
-public class BeautyInfo {
+public class BeautyInfo implements Serializable {
 
     private int beauty_tab_name_size;           // int, tab文字大小
     private int beauty_tab_name_width;          // int, tab 宽度

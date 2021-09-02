@@ -438,12 +438,11 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 }
 
 
-                    for (int i = 0; i < menus.size(); i++) {
-                        if (menus.get(i).menuName.equals("公开") || menus.get(i).menuName.equals("私密")) {
-                            openTempPos = i;
-                        }
+                for (int i = 0; i < menus.size(); i++) {
+                    if (menus.get(i).menuName.equals("公开") || menus.get(i).menuName.equals("私密")) {
+                        openTempPos = i;
                     }
-
+                }
 
 
                 menuAdapter.setNewInstance(menus);
@@ -540,6 +539,12 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
         mLiveInitInfo.isBackCamera = isBackCamera;
 
+        if (startLiveActivity.startLiteAVFragment.mMeiYanControl != null) {
+            mLiveInitInfo.beautyInfo1 = startLiveActivity.startLiteAVFragment.mMeiYanControl.getBeautyInfo();
+        }
+        if (startLiveActivity.startLiteAVFragment.mLvJingControl != null) {
+            mLiveInitInfo.beautyInfo2 = startLiveActivity.startLiteAVFragment.mLvJingControl.getBeautyInfo();
+        }
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.LiveInitInfo, mLiveInitInfo);

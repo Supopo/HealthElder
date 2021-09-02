@@ -1,12 +1,13 @@
 package com.tencent.liteav.demo.beauty.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 美颜面板 tab 相关属性
  * 成员变量名和 assets/default_beauty_data.json 的 key 相对应，便于 json 解析
  */
-public class TabInfo {
+public class TabInfo implements Serializable {
 
     private long tab_id;                            // long, tab id，tab 唯一标识
 

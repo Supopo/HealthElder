@@ -1,5 +1,6 @@
 package com.xaqinren.healthyelders.moduleZhiBo.bean;
 
+import com.tencent.liteav.demo.beauty.model.BeautyInfo;
 import com.tencent.liteav.demo.beauty.model.ItemInfo;
 import com.xaqinren.healthyelders.moduleHome.bean.ShareBean;
 
@@ -147,6 +148,8 @@ public class LiveInitInfo implements Serializable {
     public int beautyPos;//美颜选项
     public int allBeautyLevel;//美颜等级
     public ItemInfo filterStyle;//滤镜设置
+    public BeautyInfo beautyInfo1;//美颜参数数据
+    public BeautyInfo beautyInfo2;//滤镜参数数据
 
     public int linkType;
 

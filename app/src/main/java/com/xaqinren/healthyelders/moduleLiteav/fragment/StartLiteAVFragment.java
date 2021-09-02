@@ -98,8 +98,8 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
     private BottomDialog mMeiYanPop;            //美颜弹窗
     //    private BottomDialog mMusicPop;            //美颜弹窗
     private MusicSelDialog mMusicPop;            //音乐弹窗
-    private BeautyPanel mMeiYanControl;         //美颜控制器
-    private BeautyPanel mLvJingControl;         //滤镜控制器
+    public BeautyPanel mMeiYanControl;         //美颜控制器
+    public BeautyPanel mLvJingControl;         //滤镜控制器
     private RecordMusicPannel musicPannel;         //滤镜控制器
     private PopupWindow scalePop;               //屏幕比例弹窗
     private boolean isRecord = false;
@@ -434,7 +434,10 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
             mMeiYanControl = filterView.findViewById(R.id.beauty_pannel);
             mMeiYanControl.setPosition(0);
             mMeiYanControl.setBeautyManager(VideoRecordSDK.getInstance().getRecorder().getBeautyManager());
+
             mMeiYanControl.setPopTitle("美颜");
+            BeautyInfo defaultBeautyInfo = mMeiYanControl.getDefaultBeautyInfo();
+            mMeiYanControl.setBeautyInfo(defaultBeautyInfo);
             mMeiYanPop = new BottomDialog(getActivity(), filterView,
                     null);
         }

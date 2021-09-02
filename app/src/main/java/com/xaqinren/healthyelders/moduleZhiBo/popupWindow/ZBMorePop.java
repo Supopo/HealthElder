@@ -287,8 +287,9 @@ public class ZBMorePop extends BasePopupWindow {
             mMeiYanControl = filterView.findViewById(R.id.beauty_pannel);
             mMeiYanControl.setPosition(0);
             mMeiYanControl.setBeautyManager(mLiveRoom.getBeautyManager());
-            mMeiYanControl.setPopTitle("美颜");
 
+            mMeiYanControl.setPopTitle("美颜");
+            mMeiYanControl.setBeautyInfo(mLiveInitInfo.beautyInfo1);
             if (mLiveInitInfo != null) {
                 mMeiYanControl.setInitData(mLiveInitInfo.beautyPos, mLiveInitInfo.allBeautyLevel, 0);
             }
@@ -344,8 +345,7 @@ public class ZBMorePop extends BasePopupWindow {
             mLvJingControl.setBeautyManager(mLiveRoom.getBeautyManager());
 
             mLvJingControl.setPopTitle("滤镜");
-            BeautyInfo defaultBeautyInfo = mLvJingControl.getDefaultBeautyInfo();
-            mLvJingControl.setBeautyInfo(defaultBeautyInfo);
+            mLvJingControl.setBeautyInfo(mLiveInitInfo.beautyInfo2);
             //初始化选中位置
             if (mLiveInitInfo != null && mLiveInitInfo.filterStyle != null) {
                 mLvJingControl.setInitData(mLiveInitInfo.filterStyle.itemPos, mLiveInitInfo.filterStyle.itemLevel, 1);

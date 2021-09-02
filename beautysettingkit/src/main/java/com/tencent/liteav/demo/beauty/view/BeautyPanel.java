@@ -137,12 +137,23 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
      */
     public void setBeautyInfo(@NonNull BeautyInfo beautyInfo) {
         mBeautyInfo = beautyInfo;
-
         //根据配置文件选择默认选中项
         setCurrentBeautyInfo(beautyInfo);
         mBeauty.fillingMaterialPath(beautyInfo);
         setBackgroundColor(Color.TRANSPARENT);
         refresh(position);
+    }
+
+    public void reSet(){
+        mBeautyInfo = getDefaultBeautyInfo();
+        setCurrentBeautyInfo(mBeautyInfo);
+        mBeauty.fillingMaterialPath(mBeautyInfo);
+        setBackgroundColor(Color.TRANSPARENT);
+        refresh(position);
+    }
+
+    public BeautyInfo getBeautyInfo() {
+        return mBeautyInfo;
     }
 
     /**
@@ -231,8 +242,10 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
             @Override
             public void onClick(View list) {
                 //重置美颜 滤镜
-                mScrollItemView.setClicked(0);
-                mSeekBarLevel.setProgress(4);
+                //                mScrollItemView.setClicked(0);
+                //                mSeekBarLevel.setProgress(4);
+                reSet();
+
             }
         });
     }
