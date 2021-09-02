@@ -19,6 +19,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.tencent.qcloud.ugckit.module.effect.utils.DraftEditer;
 import com.tencent.qcloud.ugckit.module.record.MusicInfo;
 import com.tencent.qcloud.ugckit.module.record.RecordMusicManager;
@@ -100,6 +102,7 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
     private boolean canEditOriginalVolume = true;
     private RelativeLayout originalLayout;//原生控制面板
     private int type;
+    private BaseLoadMoreModule selCollMoreModule;
 
     /**
      * 在show之前调用
@@ -202,6 +205,18 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
         });
         selCollAdapter = new MusicSelCollAdapter(R.layout.item_music_sel);
         selCollAdapter.setList(musicCollItemBeans);
+
+        selCollMoreModule = selCollAdapter.getLoadMoreModule();
+        selCollMoreModule.setEnableLoadMore(true);
+        selCollMoreModule.setPreLoadNumber(1);//设置滑动到倒数第几个条目时自动加载，默认为1
+        selCollMoreModule.setEnableLoadMoreIfNotFullPage(true);//当数据不满一页时继续自动加载
+
+        selCollMoreModule.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getCollList();
+            }
+        });
 
         selCollAdapter.setOnItemClickListener((adapter, view, position) -> {
             MMusicItemBean bean = musicCollItemBeans.get(position);
@@ -393,18 +408,35 @@ public class MusicSelDialog extends BottomDialog implements BottomDialog.OnBotto
                 }
         });
         collList.observe((LifecycleOwner) context, mMusicItemBeans -> {
+            if (mMusicItemBeans == null) {
+                return;
+            }
             initColl = true;
-            musicCollItemBeans.clear();
+
+            if (page == 1) {
+                musicCollItemBeans.clear();
+            }
+
             for (MMusicItemBean bean : mMusicItemBeans) {
                 bean.hasFavorite = true;
             }
-            musicCollItemBeans.addAll(0, mMusicItemBeans);
-            selCollAdapter.setList(musicCollItemBeans);
-            if (musicCollItemBeans.isEmpty()) {
-                page = 1;
+            musicCollItemBeans.addAll(mMusicItemBeans);
+
+            if (page == 1) {
+                selCollAdapter.setList(mMusicItemBeans);
             } else {
-                page++;
+                selCollAdapter.addData(mMusicItemBeans);
             }
+            if (mMusicItemBeans.size() >= 10) {
+                selCollMoreModule.loadMoreComplete();
+            } else {
+                selCollMoreModule.loadMoreEnd(true);
+            }
+
+            page++;
+            selCollMoreModule.setAutoLoadMore(true);//自动加载
+
+
             if (initComment)
                 addCurrentPlayIntoList();
             if (initColl && initComment)

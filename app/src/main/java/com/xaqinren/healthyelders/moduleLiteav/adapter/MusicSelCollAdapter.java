@@ -5,6 +5,7 @@ import android.view.View;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.xaqinren.healthyelders.databinding.ItemMusicSelBinding;
 import com.xaqinren.healthyelders.moduleLiteav.bean.MMusicItemBean;
@@ -12,7 +13,7 @@ import com.xaqinren.healthyelders.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-public class MusicSelCollAdapter extends BaseQuickAdapter<MMusicItemBean, BaseViewHolder> {
+public class MusicSelCollAdapter extends BaseQuickAdapter<MMusicItemBean, BaseViewHolder> implements LoadMoreModule {
 
 
     public MusicSelCollAdapter(int layoutResId) {
