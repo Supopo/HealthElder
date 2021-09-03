@@ -128,6 +128,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
     private StartLiveActivity startLiveActivity;
     private ListBottomPopup listBottomPopup;
     private boolean isFirst = true;
+    private YesOrNoDialog yesOrNoDialog;
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -235,7 +236,13 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
     private void initEvent() {
         binding.ivBack.setOnClickListener(lis -> {
-            getActivity().finish();
+            try {
+                getActivity().finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                getActivity().finish();
+            }
         });
         //选择图片
         binding.rlAddCover.setOnClickListener(lis -> {
@@ -244,32 +251,7 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
 
         binding.llLoc.setOnClickListener(lis -> {
-            boolean hasPre = PermissionUtils.hasPermission(getActivity(), permission);
-            //如果权限被拒绝，提示打开设置去开启
-            if (hasPre) {
-                if (locSuccess == 2) {
-                    openGPSSettings();
-                } else {
-                    showListPop();
-                }
-            } else {
-                YesOrNoDialog yesOrNoDialog = new YesOrNoDialog(getActivity());
-                yesOrNoDialog.setMessageText("请打开应用权限-位置信息");
-                yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //引导用户到设置中去进行设置
-                        Intent intent = new Intent();
-                        intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-                        intent.setData(Uri.fromParts("package", getPackageName(), null));
-                        startActivityForResult(intent, 1011);
-                        yesOrNoDialog.dismissDialog();
-                    }
-                });
-                yesOrNoDialog.showDialog();
-            }
-
-
+            showToStartLocPre();
         });
 
         //选择同意协议
@@ -303,6 +285,20 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
 
         });
+    }
+
+    private void showToStartLocPre() {
+        boolean hasPre = PermissionUtils.hasPermission(getActivity(), permission);
+        //如果权限被拒绝，提示打开设置去开启
+        if (hasPre) {
+            if (locSuccess == 2) {
+                openGPSSettings();
+            } else {
+                showListPop();
+            }
+        } else {
+            showToStartDialog();
+        }
     }
 
     /**
@@ -655,52 +651,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
         listBottomPopup.showPopupWindow();
     }
 
-
-    private void showMYPop() {
-
-        if (mMeiYanPop == null) {
-            View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
-            mMeiYanControl = filterView.findViewById(R.id.beauty_pannel);
-            mMeiYanControl.setPosition(0);
-            mMeiYanControl.setBeautyManager(mLiveRoom.getBeautyManager());
-            mMeiYanControl.setPopTitle("美颜");
-            mMeiYanPop = new BottomDialog(getActivity(), filterView,
-                    null, true);
-        }
-        mMeiYanPop.show();
-        mMeiYanControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
-            @Override
-            public void onTabChange(TabInfo tabInfo, int position) {
-            }
-
-            @Override
-            public boolean onClose() {
-                return false;
-            }
-
-            @Override
-            public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
-                if (itemPosition < 3) {
-                    mBeautyStyle = itemPosition;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
-                if (itemPosition < 3) {
-                    mBeautyStyle = itemPosition;
-                    mBeautyLevel = beautyLevel;
-                } else if (itemPosition == 3) {
-                    mWhitenessLevel = beautyLevel;
-                } else {
-                    mRuddinessLevel = beautyLevel;
-                }
-                return false;
-            }
-        });
-    }
-
     public int mBeautyStyle = 2;//美颜风格，三种美颜风格 默认第三种
     public int mBeautyLevel = 4;//美颜级别，取值范围 0 - 9
     public int mWhitenessLevel = 1;//美白级别，取值范围
@@ -710,46 +660,6 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
 
     public ItemInfo mFilterStyle;//滤镜类型
 
-    //滤镜设置弹窗
-    private void showLJPop() {
-        if (mLvJingPop == null) {
-            View filterView = View.inflate(getActivity(), R.layout.pop_beauty_control, null);
-            mLvJingControl = filterView.findViewById(R.id.beauty_pannel);
-            mLvJingControl.setPosition(1);
-            mLvJingControl.setBeautyManager(mLiveRoom.getBeautyManager());
-
-            mLvJingControl.setPopTitle("滤镜");
-            BeautyInfo defaultBeautyInfo = mLvJingControl.getDefaultBeautyInfo();
-            mLvJingControl.setBeautyInfo(defaultBeautyInfo);
-
-            mLvJingPop = new BottomDialog(getActivity(), filterView,
-                    null, true);
-        }
-
-        mLvJingPop.show();
-
-
-        mLvJingControl.setOnBeautyListener(new BeautyPanel.OnBeautyListener() {
-            @Override
-            public void onTabChange(TabInfo tabInfo, int position) {
-            }
-
-            @Override
-            public boolean onClose() {
-                return false;
-            }
-
-            @Override
-            public boolean onClick(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition) {
-                return false;
-            }
-
-            @Override
-            public boolean onLevelChanged(TabInfo tabInfo, int tabPosition, ItemInfo itemInfo, int itemPosition, int beautyLevel) {
-                return false;
-            }
-        });
-    }
 
     //设置一段文字多种点击事件
     public void setMoreTextData(String text1, String text2, String text3, String text4) {
@@ -884,10 +794,36 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
             //开启定位
             LocationService.startService(getActivity());
         } else if (requestCode == 1011) {
-            //开启定位
-            LocationService.startService(getActivity());
-            showListPop();
+            //开启位置-去打开权限回来二次判断
+            boolean hasPre = PermissionUtils.hasPermission(getActivity(), permission);
+            //如果权限被拒绝，提示打开设置去开启
+            if (hasPre) {
+                //开启定位
+                LocationService.startService(getActivity());
+                showListPop();
+            } else {
+                showToStartDialog();
+            }
         }
+    }
+
+    public void showToStartDialog() {
+        if (yesOrNoDialog == null) {
+            yesOrNoDialog = new YesOrNoDialog(getActivity());
+            yesOrNoDialog.setMessageText("请打开应用权限-位置信息");
+            yesOrNoDialog.setRightBtnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //引导用户到设置中去进行设置
+                    Intent intent = new Intent();
+                    intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                    intent.setData(Uri.fromParts("package", getPackageName(), null));
+                    startActivityForResult(intent, 1011);
+                    yesOrNoDialog.dismissDialog();
+                }
+            });
+        }
+        yesOrNoDialog.showDialog();
     }
 
     private String getFilePathByUri(Uri uri, Context context) {

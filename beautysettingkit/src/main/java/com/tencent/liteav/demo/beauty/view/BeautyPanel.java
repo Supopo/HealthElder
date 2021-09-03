@@ -135,7 +135,10 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
      *
      * @param beautyInfo
      */
-    public void setBeautyInfo(@NonNull BeautyInfo beautyInfo) {
+    public void setBeautyInfo(BeautyInfo beautyInfo) {
+        if (beautyInfo == null) {
+            beautyInfo = getDefaultBeautyInfo();
+        }
         mBeautyInfo = beautyInfo;
         //根据配置文件选择默认选中项
         setCurrentBeautyInfo(beautyInfo);
@@ -144,7 +147,7 @@ public class BeautyPanel extends FrameLayout implements SeekBar.OnSeekBarChangeL
         refresh(position);
     }
 
-    public void reSet(){
+    public void reSet() {
         mBeautyInfo = getDefaultBeautyInfo();
         setCurrentBeautyInfo(mBeautyInfo);
         mBeauty.fillingMaterialPath(mBeautyInfo);

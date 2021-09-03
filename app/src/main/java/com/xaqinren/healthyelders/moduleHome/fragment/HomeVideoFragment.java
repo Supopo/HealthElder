@@ -188,6 +188,10 @@ public class HomeVideoFragment extends BaseFragment<FragmentHomeVideoBinding, Ho
             binding.rlView.setVisibility(View.VISIBLE);
         }
 
+        //防空判断
+        if (videoInfo == null || TextUtils.isEmpty(videoInfo.resourceId)) {
+            return;
+        }
         commentId = videoInfo.resourceId;
         if (type.equals("home-list")) {
             if (videoInfo.getVideoType() == 1) {

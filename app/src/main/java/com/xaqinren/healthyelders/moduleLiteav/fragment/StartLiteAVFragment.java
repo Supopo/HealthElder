@@ -886,7 +886,9 @@ public class StartLiteAVFragment extends BaseFragment<FragmentStartLiteAvBinding
         if (isStartMusicActivity) {
             return;
         }
-        liteAvRecode.pauseRecode();
+        if (liteAvRecode != null) {
+            liteAvRecode.pauseRecode();
+        }
     }
 
     public void onMusicSelActivityBack() {
