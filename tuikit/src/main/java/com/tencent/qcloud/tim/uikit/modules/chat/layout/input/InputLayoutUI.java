@@ -123,8 +123,9 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
                     startSendPhoto();
                 }
             };
-            actionUnit.setIconResId(R.drawable.ic_more_picture);
+            actionUnit.setIconResId(R.drawable.chat_xiangc);
             actionUnit.setTitleId(R.string.pic);
+            actionUnit.setTitle("相册");
             mInputMoreActionList.add(actionUnit);
         }
 
@@ -135,8 +136,9 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
                     startCapture();
                 }
             };
-            actionUnit.setIconResId(R.drawable.ic_more_camera);
+            actionUnit.setIconResId(R.drawable.chat_pais);
             actionUnit.setTitleId(R.string.photo);
+            actionUnit.setTitle("拍摄");
             mInputMoreActionList.add(actionUnit);
         }
 
@@ -147,8 +149,9 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
                     startVideoRecord();
                 }
             };
-            actionUnit.setIconResId(R.drawable.ic_more_video);
+            actionUnit.setIconResId(R.drawable.chat_pais);
             actionUnit.setTitleId(R.string.video);
+            actionUnit.setTitle("摄像");
             mInputMoreActionList.add(actionUnit);
         }
 
@@ -159,8 +162,9 @@ abstract class InputLayoutUI extends LinearLayout implements IInputLayout {
                     startSendFile();
                 }
             };
-            actionUnit.setIconResId(R.drawable.ic_more_file);
+            actionUnit.setIconResId(R.drawable.chat_file);
             actionUnit.setTitleId(R.string.file);
+            actionUnit.setTitle("文件");
             mInputMoreActionList.add(actionUnit);
         }
 

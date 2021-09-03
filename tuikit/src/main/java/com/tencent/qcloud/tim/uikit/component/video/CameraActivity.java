@@ -50,6 +50,8 @@ public class CameraActivity extends Activity {
             jCameraView.setTip(getString(R.string.tap_capture));
         } else if (state == JCameraView.BUTTON_STATE_ONLY_RECORDER) {
             jCameraView.setTip(getString(R.string.tap_video));
+        } else {
+            jCameraView.setTip(getString(R.string.tap_capture) + " " + getString(R.string.tap_video));
         }
 
         jCameraView.setMediaQuality(JCameraView.MEDIA_QUALITY_MIDDLE);
@@ -77,8 +79,12 @@ public class CameraActivity extends Activity {
                /* Intent intent = new Intent();
                 intent.putExtra(ILiveConstants.CAMERA_IMAGE_PATH, path);
                 setResult(-1, intent);*/
+
+                //为了方便二合一判断 都返回Intent
+                Intent intent = new Intent();
+                intent.putExtra(TUIKitConstants.CAMERA_IMAGE_PATH, path);
                 if (mCallBack != null) {
-                    mCallBack.onSuccess(path);
+                    mCallBack.onSuccess(intent);
                 }
                 finish();
             }

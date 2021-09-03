@@ -13,9 +13,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
         android:minHeight="57dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:padding="5dp">
 
         <ImageView
@@ -33,10 +34,13 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/msg_editor_border"
+            android:hint="请输入消息"
             android:maxHeight="120dp"
-            android:minHeight="30dp"
+            android:minHeight="38dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
             android:textCursorDrawable="@drawable/my_cursor"
-            android:padding="5dp" />
+            android:textSize="@dimen/sp_14" />
 
         <Button
             android:id="@+id/chat_voice_input"

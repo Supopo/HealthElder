@@ -41,6 +41,14 @@ public class ChatActivity extends BaseActivity<ActivityChatBinding, BaseViewMode
         binding.chatLayout.initDefault();
         binding.chatLayout.setChatInfo(chatInfo);
         binding.chatLayout.getInputLayout().disableMoreInput(false);
+        //隐藏聊天更多里面的摄像
+        binding.chatLayout.getInputLayout().disableSendFileAction(true);
+        binding.chatLayout.getInputLayout().disableVideoRecordAction(true);
+        //设置自己聊天文字颜色
+        binding.chatLayout.getMessageLayout().setRightChatContentFontColor(getResources().getColor(R.color.white));
+        //设置自己的聊天气泡
+        binding.chatLayout.getMessageLayout().setRightBubble(getResources().getDrawable(R.drawable.new_msg_right_bg));
+        binding.chatLayout.getMessageLayout().setLeftBubble(getResources().getDrawable(R.drawable.new_msg_left_bg));
 
     }
 }

@@ -57,7 +57,8 @@ public class ActionsPagerAdapter extends PagerAdapter {
                 }
             });
         } else {
-            gridView.setNumColumns(mInputMoreList.size());
+//            gridView.setNumColumns(mInputMoreList.size());
+            gridView.setNumColumns(COLUMN_COUNT);
 
             container.post(new Runnable() {
                 @Override
@@ -70,7 +71,7 @@ public class ActionsPagerAdapter extends PagerAdapter {
         }
         gridView.setSelector(R.color.transparent);
         gridView.setHorizontalSpacing(80);
-        gridView.setVerticalSpacing(60);
+        gridView.setVerticalSpacing(10);
         gridView.setGravity(Gravity.CENTER);
         gridView.setTag(Integer.valueOf(position));
         gridView.setOnItemClickListener(new GridView.OnItemClickListener() {

@@ -77,7 +77,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
     private String mInputContent;
     private OnStartActivityListener mStartActivityListener;
 
-    private Map<String,String> atUserInfoMap = new HashMap<>();
+    private Map<String, String> atUserInfoMap = new HashMap<>();
     private String displayInputString;
 
     public InputLayout(Context context) {
@@ -190,8 +190,8 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         });
     }
 
-    public void updateInputText(String names, String ids){
-        if (names == null || ids == null || names.isEmpty() || ids.isEmpty()){
+    public void updateInputText(String names, String ids) {
+        if (names == null || ids == null || names.isEmpty() || ids.isEmpty()) {
             return;
         }
 
@@ -202,10 +202,10 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         }
     }
 
-    private void updateAtUserInfoMap(String names, String ids){
+    private void updateAtUserInfoMap(String names, String ids) {
         displayInputString = "";
 
-        if (ids.equals(V2TIMGroupAtInfo.AT_ALL_TAG)){
+        if (ids.equals(V2TIMGroupAtInfo.AT_ALL_TAG)) {
             atUserInfoMap.put(names, ids);
 
             //for display
@@ -240,7 +240,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
             }
         }
 
-        if(!displayInputString.isEmpty()) {
+        if (!displayInputString.isEmpty()) {
             displayInputString = displayInputString.substring(0, displayInputString.length() - 1);
         }
     }
@@ -275,13 +275,13 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
             @Override
             public void onSuccess(Object data) {
                 TUIKitLog.i(TAG, "onSuccess: " + data);
-                if (data == null){
+                if (data == null) {
                     TUIKitLog.e(TAG, "data is null");
                     return;
                 }
 
                 String uri = data.toString();
-                if (TextUtils.isEmpty(uri)){
+                if (TextUtils.isEmpty(uri)) {
                     TUIKitLog.e(TAG, "uri is empty");
                     return;
                 }
@@ -293,15 +293,15 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
                     TUIKitLog.e(TAG, "mimeType is empty.");
                     return;
                 }
-                if (mimeType.contains("video")){
+                if (mimeType.contains("video")) {
                     MessageInfo msg = buildVideoMessage(FileUtil.getPathFromUri((Uri) data));
-                    if (msg == null){
+                    if (msg == null) {
                         TUIKitLog.e(TAG, "start send video error data: " + data);
                     } else if (mMessageHandler != null) {
                         mMessageHandler.sendMessage(msg);
                         hideSoftInput();
                     }
-                } else if (mimeType.contains("image")){
+                } else if (mimeType.contains("image")) {
                     MessageInfo info = MessageInfoUtil.buildImageMessage((Uri) data, true);
                     if (mMessageHandler != null) {
                         mMessageHandler.sendMessage(info);
@@ -320,15 +320,14 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         });
     }
 
-    private MessageInfo buildVideoMessage(String mUri)
-    {
+    private MessageInfo buildVideoMessage(String mUri) {
         android.media.MediaMetadataRetriever mmr = new android.media.MediaMetadataRetriever();
         try {
             mmr.setDataSource(mUri);
             String sDuration = mmr.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION);//时长(毫秒)
             Bitmap bitmap = mmr.getFrameAtTime(0, android.media.MediaMetadataRetriever.OPTION_NEXT_SYNC);//缩略图
 
-            if (bitmap == null){
+            if (bitmap == null) {
                 TUIKitLog.e(TAG, "buildVideoMessage() bitmap is null");
                 return null;
             }
@@ -341,8 +340,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
             MessageInfo msg = MessageInfoUtil.buildVideoMessage(imgPath, videoPath, imgWidth, imgHeight, duration);
 
             return msg;
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             TUIKitLog.e(TAG, "MediaMetadataRetriever exception " + ex);
         } finally {
             mmr.release();
@@ -351,6 +349,7 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         return null;
     }
 
+    //拍照摄像
     @Override
     protected void startCapture() {
         TUIKitLog.i(TAG, "startCapture");
@@ -358,16 +357,37 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
             TUIKitLog.i(TAG, "startCapture checkPermission failed");
             return;
         }
+        if (!checkPermission(VIDEO_RECORD)) {
+            TUIKitLog.i(TAG, "startVideoRecord checkPermission failed");
+            return;
+        }
         Intent captureIntent = new Intent(getContext(), CameraActivity.class);
-        captureIntent.putExtra(TUIKitConstants.CAMERA_TYPE, JCameraView.BUTTON_STATE_ONLY_CAPTURE);
+        captureIntent.putExtra(TUIKitConstants.CAMERA_TYPE, JCameraView.BUTTON_STATE_BOTH);
         CameraActivity.mCallBack = new IUIKitCallBack() {
             @Override
             public void onSuccess(Object data) {
-                Uri contentUri = Uri.fromFile(new File(data.toString()));
-                MessageInfo msg = MessageInfoUtil.buildImageMessage(contentUri, true);
-                if (mMessageHandler != null) {
-                    mMessageHandler.sendMessage(msg);
-                    hideSoftInput();
+                Intent videoData = (Intent) data;
+                String imgPath = videoData.getStringExtra(TUIKitConstants.CAMERA_IMAGE_PATH);
+                String videoPath = videoData.getStringExtra(TUIKitConstants.CAMERA_VIDEO_PATH);
+                int imgWidth = videoData.getIntExtra(TUIKitConstants.IMAGE_WIDTH, 0);
+                int imgHeight = videoData.getIntExtra(TUIKitConstants.IMAGE_HEIGHT, 0);
+                long duration = videoData.getLongExtra(TUIKitConstants.VIDEO_TIME, 0);
+
+
+                //说明是照片
+                if (TextUtils.isEmpty(videoPath)) {
+                    Uri contentUri = Uri.fromFile(new File(imgPath));
+                    MessageInfo msg = MessageInfoUtil.buildImageMessage(contentUri, true);
+                    if (mMessageHandler != null) {
+                        mMessageHandler.sendMessage(msg);
+                        hideSoftInput();
+                    }
+                } else {
+                    MessageInfo msg = MessageInfoUtil.buildVideoMessage(imgPath, videoPath, imgWidth, imgHeight, duration);
+                    if (mMessageHandler != null) {
+                        mMessageHandler.sendMessage(msg);
+                        hideSoftInput();
+                    }
                 }
             }
 
@@ -531,15 +551,15 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         } else if (view.getId() == R.id.send_btn) {
             if (mSendEnable) {
                 if (mMessageHandler != null) {
-                    if(mChatLayout.getChatInfo().getType() == V2TIMConversation.V2TIM_GROUP && !atUserInfoMap.isEmpty()) {
+                    if (mChatLayout.getChatInfo().getType() == V2TIMConversation.V2TIM_GROUP && !atUserInfoMap.isEmpty()) {
                         //发送时通过获取输入框匹配上@的昵称list，去从map中获取ID list。
                         List<String> atUserList = updateAtUserList(mTextInput.getMentionList(true));
                         if (atUserList == null || atUserList.isEmpty()) {
                             mMessageHandler.sendMessage(MessageInfoUtil.buildTextMessage(mTextInput.getText().toString().trim()));
-                        }else {
+                        } else {
                             mMessageHandler.sendMessage(MessageInfoUtil.buildTextAtMessage(atUserList, mTextInput.getText().toString().trim()));
                         }
-                    }else {
+                    } else {
                         mMessageHandler.sendMessage(MessageInfoUtil.buildTextMessage(mTextInput.getText().toString().trim()));
                     }
                 }
@@ -548,14 +568,14 @@ public class InputLayout extends InputLayoutUI implements View.OnClickListener, 
         }
     }
 
-    private List<String> updateAtUserList(List<String> atMentionList){
-        if (atMentionList == null || atMentionList.isEmpty()){
+    private List<String> updateAtUserList(List<String> atMentionList) {
+        if (atMentionList == null || atMentionList.isEmpty()) {
             return null;
         }
 
         List<String> atUserIdList = new ArrayList<>();
-        for (String name : atMentionList){
-            if (atUserInfoMap.containsKey(name)){
+        for (String name : atMentionList) {
+            if (atUserInfoMap.containsKey(name)) {
                 atUserIdList.add(atUserInfoMap.get(name));
             }
         }

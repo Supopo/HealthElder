@@ -2,6 +2,7 @@ package com.tencent.qcloud.tim.uikit.modules.chat.layout.inputmore;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class ActionsGridViewAdapter extends BaseAdapter {
         if (action.getTitleId() > 0) {
             ((TextView) itemlayout.findViewById(R.id.textView)).setText(context.getString(action.getTitleId()));
         }
+
         return itemlayout;
     }
 }

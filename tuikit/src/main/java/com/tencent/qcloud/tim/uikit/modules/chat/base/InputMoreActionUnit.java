@@ -12,6 +12,16 @@ public class InputMoreActionUnit implements IBaseAction {
 
     private int titleId;
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    private String title;
+
     private int actionId;
 
     private OnActionClickListener onClickListener = new OnActionClickListener();
