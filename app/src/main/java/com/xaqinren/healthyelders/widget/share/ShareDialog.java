@@ -310,6 +310,8 @@ public class ShareDialog {
             messageCustom.userAvatar = shareBean.userAvatar;
             messageCustom.userName = shareBean.userNickname;
             messageCustom.resourceId = shareBean.resourceId;
+            messageCustom.hasRoomPwd = shareBean.hasRoomPwd;
+
             if (videoInfo != null) {
                 videoInfo.resourceUrl = videoInfo.oldResourceUrl;
                 messageCustom.resource = new Gson().toJson(videoInfo);

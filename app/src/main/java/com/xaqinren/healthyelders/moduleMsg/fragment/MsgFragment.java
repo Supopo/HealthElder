@@ -3,6 +3,7 @@ package com.xaqinren.healthyelders.moduleMsg.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.tencent.imsdk.v2.V2TIMManager;
 import com.tencent.qcloud.tim.uikit.modules.chat.base.ChatInfo;
 import com.tencent.qcloud.tim.uikit.modules.conversation.ConversationManagerKit;
 import com.tencent.qcloud.tim.uikit.modules.conversation.base.ConversationInfo;
+import com.tencent.qcloud.ugckit.utils.ToastUtil;
 import com.xaqinren.healthyelders.BR;
 import com.xaqinren.healthyelders.R;
 import com.xaqinren.healthyelders.bean.EventBean;
@@ -30,6 +32,7 @@ import com.xaqinren.healthyelders.moduleLogin.activity.PhoneLoginActivity;
 import com.xaqinren.healthyelders.moduleMsg.ImManager;
 import com.xaqinren.healthyelders.moduleMsg.activity.AddFriendActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.ChatActivity;
+import com.xaqinren.healthyelders.moduleMsg.activity.EmptyActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.FansMsgActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.FriendsListActivity;
 import com.xaqinren.healthyelders.moduleMsg.activity.InteractiveActivity;
@@ -42,6 +45,7 @@ import com.xaqinren.healthyelders.moduleZhiBo.activity.LiveGuanzhongActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.activity.ZhiboOverGZActivity;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.ListPopMenuBean;
 import com.xaqinren.healthyelders.moduleZhiBo.bean.LiveInitInfo;
+import com.xaqinren.healthyelders.widget.InputPwdDialog;
 import com.xaqinren.healthyelders.widget.ListBottomPopup;
 
 import java.io.File;
@@ -234,7 +238,15 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
                         initView();
                     } else if (eventBean.msgId == CodeTable.SHARE_LIVE) {
                         liveRoomId = eventBean.content;
-                        viewModel.joinLive(liveRoomId, eventBean.type);
+                        //判断是否有密码
+                        //有密码
+                        if (eventBean.msgType == 1) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("liveRoomId", liveRoomId);
+                            startActivity(EmptyActivity.class, bundle);
+                        } else {
+                            viewModel.joinLive(liveRoomId, eventBean.type);
+                        }
                     } else if (eventBean.msgId == CodeTable.SHARE_JOININ_LIVE) {
                         //不能用LiveData来回调接收，打开的页面会出现在聊天页面下层
                         liveInfo = (LiveInitInfo) eventBean.data;

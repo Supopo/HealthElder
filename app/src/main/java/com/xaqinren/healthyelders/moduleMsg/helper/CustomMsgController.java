@@ -92,7 +92,7 @@ public class CustomMsgController {
                         break;
                     case 3:
                         //发送消息进入直播间
-                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_LIVE, data.resourceId, data.roomPwd, 0));
+                        RxBus.getDefault().post(new EventBean(CodeTable.SHARE_LIVE, data.resourceId, data.hasRoomPwd ? 1 : 0));
                         break;
                 }
             }

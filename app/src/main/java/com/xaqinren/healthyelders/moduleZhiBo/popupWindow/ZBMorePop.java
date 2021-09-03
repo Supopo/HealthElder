@@ -145,6 +145,7 @@ public class ZBMorePop extends BasePopupWindow {
                             mLiveInitInfo.share.userNickname = mLiveInitInfo.nickname;
                             mLiveInitInfo.share.userAvatar = mLiveInitInfo.avatarUrl;
                             mLiveInitInfo.share.title = mLiveInitInfo.liveRoomName;
+                            mLiveInitInfo.share.hasRoomPwd = mLiveInitInfo.hasPassword;
                         }
                         shareDialog = new ShareDialog(getContext(), mLiveInitInfo.share, ShareDialog.LIVE_TYPE);
                     }

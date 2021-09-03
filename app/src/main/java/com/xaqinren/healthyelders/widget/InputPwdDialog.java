@@ -89,6 +89,10 @@ public class InputPwdDialog {
         rightBtn.setOnClickListener(onClickListener);
     }
 
+    public void setLeftBtnClickListener(View.OnClickListener onClickListener) {
+        leftBtn.setOnClickListener(onClickListener);
+    }
+
     public void showDialog() {
         if (centerDialog != null && centerDialog.isShowing()) {
             return;

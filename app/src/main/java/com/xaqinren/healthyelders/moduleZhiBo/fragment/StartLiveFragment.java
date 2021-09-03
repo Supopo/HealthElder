@@ -872,9 +872,11 @@ public class StartLiveFragment extends BaseFragment<FragmentStartLiveBinding, St
                 if (!TextUtils.isEmpty(mLiveInitInfo.roomPassword)) {
                     menuAdapter.getData().get(temp).menuRes = R.mipmap.icon_jiami;
                     menuAdapter.getData().get(temp).menuName = "私密";
+                    mLiveInitInfo.hasPassword = true;
                 } else {
                     menuAdapter.getData().get(temp).menuRes = R.mipmap.icon_gongkai;
                     menuAdapter.getData().get(temp).menuName = "公开";
+                    mLiveInitInfo.hasPassword = false;
                 }
                 menuAdapter.notifyItemChanged(temp, 99);
             }

@@ -19,5 +19,6 @@ public class ShareBean implements Serializable {
     public String userNickname;
     public String userAvatar;
     public String resourceId;
+    public boolean hasRoomPwd;
 
 }

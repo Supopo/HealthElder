@@ -527,6 +527,9 @@
         <activity android:name=".moduleMsg.activity.FriendsListActivity"
             android:theme="@style/AnimTheme"
             />
+        <activity android:name=".moduleMsg.activity.EmptyActivity"
+            android:theme="@style/EditDialogStyle"
+            />
 
         <service
             android:name=".push.IPushService"
