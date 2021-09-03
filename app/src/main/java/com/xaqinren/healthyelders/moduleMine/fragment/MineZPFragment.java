@@ -76,7 +76,6 @@ public class MineZPFragment extends BaseFragment<FragmentMineZpBinding, MineZPVi
         mLoadMore.setOnLoadMoreListener(new OnLoadMoreListener() {//设置加载更多监听事件
             @Override
             public void onLoadMore() {
-                page++;
                 viewModel.getMyVideoList(page, pageSize);
             }
         });

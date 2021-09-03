@@ -46,12 +46,12 @@ public class MessageTextHolder extends MessageContentHolder {
                 msgBodyText.setTextColor(properties.getRightChatContentFontColor());
             }
             //设置文字消息离头像间距
-            params.leftMargin = ScreenUtil.dip2px(50);
+            params.leftMargin = ScreenUtil.dip2px(45);
         } else {
             if (properties.getLeftChatContentFontColor() != 0) {
                 msgBodyText.setTextColor(properties.getLeftChatContentFontColor());
             }
-            params.rightMargin = ScreenUtil.dip2px(50);
+            params.rightMargin = ScreenUtil.dip2px(45);
         }
         msgContentFrame.setLayoutParams(params);
     }

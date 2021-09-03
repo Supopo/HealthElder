@@ -1,5 +1,6 @@
 package com.tencent.qcloud.tim.uikit.modules.chat.layout.message.holder;
 
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -61,15 +62,15 @@ public class MessageAudioHolder extends MessageContentHolder {
         if (msg.isSelf()) {
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.rightMargin = 24;
-            audioPlayImage.setImageResource(R.drawable.voice_msg_playing_3);
+            audioPlayImage.setImageResource(R.drawable.r_voice_msg_playing_3);
             audioPlayImage.setRotation(180f);
             audioContentView.removeView(audioPlayImage);
             audioContentView.addView(audioPlayImage);
             unreadAudioText.setVisibility(View.GONE);
+            audioTimeText.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
         } else {
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             params.leftMargin = 24;
-            // TODO 图标不对
             audioPlayImage.setImageResource(R.drawable.voice_msg_playing_3);
             audioContentView.removeView(audioPlayImage);
             audioContentView.addView(audioPlayImage, 0);
@@ -82,6 +83,7 @@ public class MessageAudioHolder extends MessageContentHolder {
             } else {
                 unreadAudioText.setVisibility(View.GONE);
             }
+            audioTimeText.setTextColor(android.graphics.Color.parseColor("#000000"));
         }
         audioContentView.setLayoutParams(params);
 
@@ -115,9 +117,11 @@ public class MessageAudioHolder extends MessageContentHolder {
                     ToastUtil.toastLongMessage(TUIKit.getAppContext().getString(R.string.voice_play_tip));
                     return;
                 }
-                audioPlayImage.setImageResource(R.drawable.play_voice_message);
                 if (msg.isSelf()) {
+                    audioPlayImage.setImageResource(R.drawable.play_voice_message_r);
                     audioPlayImage.setRotation(180f);
+                }else {
+                    audioPlayImage.setImageResource(R.drawable.play_voice_message);
                 }
                 final AnimationDrawable animationDrawable = (AnimationDrawable) audioPlayImage.getDrawable();
                 animationDrawable.start();

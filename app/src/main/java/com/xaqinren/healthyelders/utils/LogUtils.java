@@ -24,7 +24,7 @@ public class LogUtils {
     }
 
     public static void v(String tag, String content) {
-        if (!Constant.DEBUG) {
+        if (Constant.DEBUG) {
             Log.v(tag, content);
         }
     }
