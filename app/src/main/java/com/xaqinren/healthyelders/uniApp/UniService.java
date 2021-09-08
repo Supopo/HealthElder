@@ -34,7 +34,8 @@ import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
 import me.goldze.mvvmhabit.utils.StringUtils;
 
-public class UniService extends Service implements LifecycleOwner {
+public class
+UniService extends Service implements LifecycleOwner {
     private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     private String fileDir;
     private List<SaveBean> saveBeans;
