@@ -310,18 +310,19 @@ public class UpdateApkManger extends AppCompatActivity {
                         }
                     }
                     Log.v("======", "下载结束了。");
-                    //检查安装权限
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        //先获取是否有安装未知来源应用的权限
-                        haveInstallPermission = context.getPackageManager().canRequestPackageInstalls();
-                        if (!haveInstallPermission) {
-                            //没有权限
-                            showInstallDialog(context);
-                            return;
-                        }
-                    }
-                    //先去尝试安装
-                    installApk(options, context);
+//                    //检查安装权限
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                        //先获取是否有安装未知来源应用的权限
+//                        haveInstallPermission = context.getPackageManager().canRequestPackageInstalls();
+//                        if (!haveInstallPermission) {
+//                            //没有权限
+//                            showInstallDialog(context);
+//                        }else {
+//                            //先去尝试安装
+//                            installApk(options, context);
+//                        }
+//                    }
+
                 }
             } catch (IOException e) {
             } finally {
@@ -343,7 +344,6 @@ public class UpdateApkManger extends AppCompatActivity {
                     fos = null;
                 }
             }
-            downDialog.dismissDialog();
         }
     }
 

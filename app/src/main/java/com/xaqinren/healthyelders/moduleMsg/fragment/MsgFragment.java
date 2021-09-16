@@ -90,6 +90,12 @@ public class MsgFragment extends BaseFragment<FragmentMsgBinding, MsgViewModel> 
             //添加联系人
             startActivity(AddFriendActivity.class);
         });
+
+        if (Constant.ENABLE_CHAT) {
+            binding.ivFriend.setVisibility(View.VISIBLE);
+        } else {
+            binding.ivFriend.setVisibility(View.INVISIBLE);
+        }
         binding.ivFriend.setOnClickListener(v -> {
             startActivity(FriendsListActivity.class);
         });

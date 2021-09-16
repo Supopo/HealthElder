@@ -55,8 +55,8 @@ public class NormalDialog {
 
         //初始化控件
         content = view.findViewById(R.id.content);
-        message = view.findViewById(R.id.message);
-        title = view.findViewById(R.id.title);
+        message = view.findViewById(R.id.tv_message);
+        title = view.findViewById(R.id.tv_title);
         leftBtn = view.findViewById(R.id.btn_left);
         rightBtn = view.findViewById(R.id.btn_right);
         bottomLine = view.findViewById(R.id.bottom_line);
